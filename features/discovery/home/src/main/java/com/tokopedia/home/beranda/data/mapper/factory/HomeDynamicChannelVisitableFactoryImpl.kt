@@ -74,7 +74,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         || homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true) && useDefaultWhenEmpty) {
             homeDefaultDataSource
             dynamicChannelList = homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
-        } else {
+        } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
         dynamicChannelList.forEachIndexed { index, channel ->

@@ -52,7 +52,7 @@ class HomeDataMapper(
                 .addHomeHeaderOvo()
                 .addAtfComponentVisitable(processingAtf)
 
-        if (!processingDynamicChannel) {
+        if (!processingDynamicChannel && !isCache) {
             factory.addDynamicChannelVisitable(firstPage, true)
                     .build()
         }

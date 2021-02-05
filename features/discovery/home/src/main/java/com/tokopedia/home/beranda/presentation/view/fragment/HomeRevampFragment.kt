@@ -995,7 +995,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
@@ -1007,7 +1007,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if(status == Result.Status.ERROR_GENERAL) {
                 showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else {
                 showLoading()
             }
@@ -1149,6 +1149,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeHomeNotif() {
+        context?.let {
+            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
+                navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
+                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data, isProcessingAtf) && getPageLoadTimeCallback() != null) {
@@ -1245,11 +1255,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-    private val floatingEggButtonFragment: FloatingEggButtonFragment?
-        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-            if (activity != null && isAdded && childsFragmentManager != null) {
-                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
-            } else null
+    private val floatingEggButtonFragment: FloatingEggButtonFragment? = null
+//        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+//            if (activity != null && isAdded && childsFragmentManager != null) {
+//                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
+//            } else null
 
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
@@ -1576,6 +1586,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         getHomeViewModel().showTicker()
+        observeHomeNotif()
+        pageLoadTimeCallback?.invalidate()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -2158,9 +2170,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
-                    navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
+                    getHomeViewModel().setHomeNotif(
+                            notificationCount, inboxCount, cartCount
+                    )
                 }
         )
     }

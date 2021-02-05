@@ -33,6 +33,7 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -210,6 +211,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _rechargeBUWidgetLiveData = MutableLiveData<Event<RechargePerso>>()
     val rechargeBUWidgetLiveData: LiveData<Event<RechargePerso>> get() = _rechargeBUWidgetLiveData
 
+    private val _homeNotifLiveData = MutableLiveData<HomeNotifModel>()
+    val homeNotifLiveData: LiveData<HomeNotifModel> get() = _homeNotifLiveData
+
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
@@ -255,10 +259,13 @@ open class HomeRevampViewModel @Inject constructor(
     private var homeTicker: Pair<Int, TickerDataModel>? = null
     private var takeTicker = true
 
+    private var homeNotifModel = HomeNotifModel()
+
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
-        initFlow()
+        initCacheData()
+//        initFlow()
     }
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
@@ -880,8 +887,32 @@ open class HomeRevampViewModel @Inject constructor(
 // ================================= PLEASE SORT BY NAME A-Z =================================
 // ===========================================================================================
 
-    private fun initFlow() {
+    private fun initCacheData() {
         _isRequestNetworkLiveData.value = Event(true)
+
+        launch {
+            val homeCacheData = homeUseCase.get().getHomeCachedData()
+            homeCacheData?.let {
+                homeVisitableListData = it.list.toMutableList()
+                _homeLiveData.postValue(it)
+
+                if (it.list.size > 1) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
+                    takeTicker = false
+                }
+                if (it.list.isEmpty()) {
+                    val initialHomeDataModel = HomeDataModel(list = listOf(
+                            HomeHeaderOvoDataModel(),
+                            HomeInitialShimmerDataModel()
+                    ))
+                    homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                }
+            }
+            initFlow()
+        }
+    }
+
+    private fun initFlow() {
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
@@ -914,21 +945,6 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else if (onRefreshState) {
-                    if (homeDataModel?.list?.size?:0 > 1) {
-                        _isRequestNetworkLiveData.postValue(Event(false))
-                        takeTicker = false
-                    }
-                    homeDataModel?.let {
-                        if (homeDataModel.list.isEmpty()) {
-                            val initialHomeDataModel = HomeDataModel(list = listOf(
-                                    HomeHeaderOvoDataModel(),
-                                    HomeInitialShimmerDataModel()
-                            ))
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
-                        } else {
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
-                        }
-                    }
                     refreshHomeData()
                 }
             }
@@ -1528,6 +1544,15 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setHomeNotif(notifCount: Int, messageCount: Int, cartCount: Int) {
+        homeNotifModel = HomeNotifModel(
+                notifCount = notifCount,
+                messageCount = messageCount,
+                cartCount = cartCount
+        )
+        _homeNotifLiveData.value = homeNotifModel
     }
 
 // ============================================================================================

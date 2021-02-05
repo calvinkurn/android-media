@@ -36,6 +36,10 @@ class HomeRepositoryImpl @Inject constructor(
     var isCacheExist = false
     private val queryHashingKey = "android_do_query_hashing"
 
+//    override fun getHomeCachedData(): HomeData? {
+//        return homeCachedDataSource.getCachedHomeDataObject()
+//    }
+
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
         it

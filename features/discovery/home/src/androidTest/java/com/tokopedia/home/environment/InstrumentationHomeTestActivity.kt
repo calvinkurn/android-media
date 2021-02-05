@@ -61,7 +61,7 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_test)
 
-        val homeFragment: Fragment = HomeFragment()
+        val homeFragment: Fragment = HomeRevampFragment()
         initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()

@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.usecase
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
+import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -26,6 +27,9 @@ class HomeRevampUseCase @Inject constructor(
             else emit(homeDataMapper.mapToHomeRevampViewModel(data, false))
         }
     }
+
+    fun getHomeCachedData(): HomeDataModel? =
+            homeDataMapper.mapToHomeRevampViewModel(HomeData(atfData = homeRepository.getHomeCachedAtfData(), isProcessingDynamicChannel = true), true)
 
     suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
 
