@@ -190,4 +190,16 @@ class PreferenceListBottomSheetRobot {
             }
         }))
     }
+
+    fun assertPreferenceRevampEnable(position: Int, isEnable: Boolean) {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewMainPreferenceListViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "perform click gunakan"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(if (isEnable) 1.0f else 0.5f, view.alpha)
+            }
+        }))
+    }
 }
