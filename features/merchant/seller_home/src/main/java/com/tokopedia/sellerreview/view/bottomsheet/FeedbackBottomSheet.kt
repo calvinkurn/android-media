@@ -31,6 +31,8 @@ class FeedbackBottomSheet : BaseBottomSheet() {
 
         fun createInstance(rating: Int): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
+                showCloseIcon = false
+                showHeader = false
                 arguments = Bundle().apply {
                     putInt(KEY_RATING, rating)
                 }
@@ -70,6 +72,9 @@ class FeedbackBottomSheet : BaseBottomSheet() {
         setOnTextAreaTextChanged()
         btnSirSubmitFeedback.setOnClickListener {
             setOnSubmitClicked()
+        }
+        btnSirCloseFeedback.setOnClickListener {
+            dismiss()
         }
         imgSirFeedback.setImageUrl(Const.IMG_REQUEST_FEEDBACK)
     }
