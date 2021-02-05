@@ -793,7 +793,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun checkInternetOnButtonActionAndRedirect() {
         if (context != null) {
-            var internetAvailable = true
+            var internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, context!!)
             } else {
