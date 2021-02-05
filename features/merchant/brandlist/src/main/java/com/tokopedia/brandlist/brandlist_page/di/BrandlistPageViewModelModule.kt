@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@BrandlistPageScope
 abstract class BrandlistPageViewModelModule {
 
     @BrandlistPageScope

@@ -137,7 +137,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            //use installment info here in case of credit card
+            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
+                tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
+                tvInstallmentInfo.visible()
+            }
         } else
             tv_payment_method.text = thanksPageData.gatewayName
 

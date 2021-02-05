@@ -24,7 +24,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@ProductAddScope
 @Module
 public class ProductAddModule {
 

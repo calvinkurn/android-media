@@ -67,7 +67,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
@@ -635,7 +634,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed.visibility = View.GONE
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
-        TopAdsHeadlineActivityCounter.page = 0
+        TopAdsHeadlineActivityCounter.page = 1
     }
 
     override fun onDestroyView() {
@@ -646,6 +645,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (layoutManager != null) {
             layoutManager = null
         }
+        TopAdsHeadlineActivityCounter.page = 1
     }
 
     override fun onInfoClicked() {
@@ -982,7 +982,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
         dialog.setBtnOk(getString(R.string.button_delete))
-        dialog.setBtnCancel(getString(R.string.cancel))
+        dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         dialog.setOnOkClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()

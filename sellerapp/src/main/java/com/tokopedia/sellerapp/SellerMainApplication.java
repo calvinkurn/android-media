@@ -144,6 +144,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         setVersionName();
+        initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
@@ -257,6 +258,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                         CacheApiWhiteList.getWhiteList(),
                         String.valueOf(getCurrentVersion(getApplicationContext())))
         );
+    }
+
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     //Please do not delete this function to keep AppNotificationReceiver

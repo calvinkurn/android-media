@@ -7,7 +7,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class DynamicHomeIcon (
     @Expose
     @SerializedName("dynamicIcon")
-    val dynamicIcon: List<DynamicIcon> = listOf()
+    val dynamicIcon: List<DynamicIcon> = listOf(),
+    var type: Int = 1
 ){
     data class UseCaseIcon(
         @Expose
@@ -69,6 +70,9 @@ data class DynamicHomeIcon (
         val categoryPersona: String = "",
 
         @SerializedName("campaignCode")
-        val campaignCode: String = ""
+        val campaignCode: String = "",
+
+        @SerializedName("withBackground")
+        val withBackground: Boolean = false
     ) : ImpressHolder()
 }

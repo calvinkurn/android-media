@@ -35,6 +35,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
         setVersionCode();
         setVersionName();
+        initFileDirConfig();
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;

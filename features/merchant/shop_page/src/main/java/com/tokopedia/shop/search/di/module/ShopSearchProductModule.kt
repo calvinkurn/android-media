@@ -18,7 +18,6 @@ import dagger.Module
 import dagger.Provides
 
 
-@ShopSearchProductScope
 @Module(includes = [ShopSearchProductViewModelModule::class])
 class ShopSearchProductModule {
     @Provides

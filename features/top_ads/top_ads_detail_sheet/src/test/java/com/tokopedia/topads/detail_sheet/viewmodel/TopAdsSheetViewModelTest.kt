@@ -9,9 +9,9 @@ import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import io.mockk.every
 import io.mockk.invoke
@@ -196,7 +196,7 @@ class TopAdsSheetViewModelTest {
     @Test
     fun testOnClear() {
         viewModel.onCleared()
-        verify { topAdsGetGroupProductDataUseCase.cancelJobs() }
+        verify { topAdsGetGroupProductDataUseCase.unsubscribe() }
         verify { topAdsGetProductStatisticsUseCase.cancelJobs() }
         verify { topAdsGetGroupIdUseCase.cancelJobs() }
         verify { topAdsProductActionUseCase.cancelJobs() }

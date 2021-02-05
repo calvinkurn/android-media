@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 data class InspirationCardViewModel(
@@ -13,4 +14,6 @@ data class InspirationCardViewModel(
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun isRelated() = type == SearchConstant.InspirationCard.TYPE_RELATED
 }

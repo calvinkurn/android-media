@@ -82,15 +82,8 @@ internal class GetRecommendationUseCaseRequest {
     """.trimIndent()
 
         val singleQuery = """
-            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!) {
-                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs){
-                    meta {
-                        recommendation
-                        size
-                        failSize
-                        processTime
-                        experimentVersion
-                    }
+            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
+                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){
                    data {
                        tID
                        source
@@ -100,6 +93,9 @@ internal class GetRecommendationUseCaseRequest {
                        seeMoreAppLink
                        seeMoreUrlLink
                        pageName
+                       pagination{
+                            hasNext
+                       }
                        recommendation {
                            id
                            name
