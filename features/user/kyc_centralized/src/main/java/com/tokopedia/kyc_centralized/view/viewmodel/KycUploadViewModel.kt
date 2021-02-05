@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.view.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,12 +35,16 @@ class KycUploadViewModel @Inject constructor(
     val encryptImageLiveData : LiveData<Result<String>>
         get() = _encryptImage
 
-    fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String) {
+    fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String, isUsingEncrypt: Boolean) {
         launchCatchError(block = {
             withContext(dispatcher.io()) {
-                val decryptedKtpImage = decryptImage(ktpPath)
-                val decryptedFaceImage = decryptImage(facePath)
-                val kycUploadResult = kycUploadUseCase.uploadImages(decryptedKtpImage, decryptedFaceImage, tkpdProjectId)
+                var finalKtp = ktpPath
+                var finalFace = facePath
+                if(isUsingEncrypt) {
+                    finalKtp = decryptImage(ktpPath)
+                    finalFace = decryptImage(facePath)
+                }
+                val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                 _kycResponse.postValue(Success(kycUploadResult))
             }
         }) {

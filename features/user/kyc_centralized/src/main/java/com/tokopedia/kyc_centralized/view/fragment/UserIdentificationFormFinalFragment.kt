@@ -28,12 +28,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -43,6 +45,7 @@ import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -70,7 +73,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var bulletTextLayout: LinearLayout? = null
     private var info: TextView? = null
     private var subtitle: TextView? = null
-    private var uploadButton: TextView? = null
+    private var uploadButton: UnifyButton? = null
     private var stepperModel: UserIdentificationStepperModel? = null
     private var stepperListener: StepperListener? = null
     private var analytics: UserIdentificationCommonAnalytics? = null
@@ -110,6 +113,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_identification_final, container, false)
         initView(view)
+        encryptImage()
         setContentView()
         if (projectId == 4) //TradeIn project Id
             uploadButton?.setText(R.string.upload_button_tradein)
@@ -124,16 +128,31 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun initObserver() {
         kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            hideLoading()
             when (it) {
                 is Success -> {
-                    setKycUploadResultView(it.data)
                     sendSuccessTimberLog()
+                    setKycUploadResultView(it.data)
                 }
                 is Fail -> {
+                    hideLoading()
                     showUploadError()
                     setFailedResult(it.throwable)
                     sendErrorTimberLog(it.throwable)
+                }
+            }
+        })
+
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    uploadButton?.isEnabled = true
+                    //if liveness, upload the files immediately
+                    if(!isKycSelfie) {
+                        uploadKycFiles()
+                    }
+                }
+                is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
                 }
             }
         })
@@ -178,13 +197,29 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
+    private fun encryptImage() {
+        context?.let {
+            if(ImageEncryptionUtil.isUsingEncrypt(it)) {
+                uploadButton?.isEnabled = false
+                kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull())
+            }
+        }
+    }
+
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
         if (isKycSelfie) {
             hideLoading()
             setKycSelfieView()
         } else {
-            uploadKycFiles()
+            //if not using encryption, send immediately, else wait for encrypt and show loading
+            context?.let {
+                if(!ImageEncryptionUtil.isUsingEncrypt(it)) {
+                    uploadKycFiles()
+                } else {
+                    showLoading()
+                }
+            }
         }
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
@@ -198,7 +233,9 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             if(isSocketTimeoutException) {
                 isSocketTimeoutException = false
             }
-            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString())
+            context?.let {ctx ->
+                kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), ImageEncryptionUtil.isUsingEncrypt(ctx))
+            }
         }
     }
 
@@ -224,6 +261,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             activity?.setResult(Activity.RESULT_OK)
             stepperListener?.finishPage()
         } else {
+            hideLoading()
             var imageKtp = KycUrl.KTP_VERIF_OK
             var imageFace = KycUrl.FACE_VERIF_OK
             var colorKtp: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)

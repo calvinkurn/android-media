@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
@@ -19,19 +16,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import javax.inject.Inject
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -40,7 +33,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var onboardingImage: LottieAnimationView? = null
     protected var title: TextView? = null
     protected var subtitle: TextView? = null
-    protected var button: TextView? = null
+    protected var button: UnifyButton? = null
     protected var correctImage: ImageView? = null
     protected var wrongImage: ImageView? = null
     protected var analytics: UserIdentificationCommonAnalytics? = null
@@ -49,11 +42,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     private var stepperListener: StepperListener? = null
 
     private lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,27 +70,13 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_identification_form, container, false)
         initView(view)
+        encryptImage()
         setContentView()
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
-    }
-
-    private fun initObserver() {
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    stepperModel?.faceFile = it.data
-                    stepperListener?.goToNextPage(stepperModel)
-                }
-                is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
-                }
-            }
-        })
     }
 
     protected open fun initView(view: View) {
@@ -146,22 +120,14 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             stepperModel?.isLiveness = true
             faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)?: ""
         }
-        if(isUsingEncrypt) {
-            kycUploadViewModel.encryptImage(faceFile.toEmptyStringIfNull())
-        } else {
-            stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
-            stepperListener?.goToNextPage(stepperModel)
-        }
+        stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     private fun handleKtpImage(data: Intent) {
         val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-        if(isUsingEncrypt) {
-            kycUploadViewModel.encryptImage(ktpFile.toEmptyStringIfNull())
-        } else {
-            stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
-            stepperListener?.goToNextPage(stepperModel)
-        }
+        stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     private fun sendAnalyticErrorImageTooLarge(requestCode: Int) {
@@ -184,25 +150,9 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             return true
         }
 
-    private val isUsingEncrypt: Boolean
-        get() {
-            try {
-                return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_ENCRYPT, true)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return true
-        }
-
-    override fun initInjector() {
-        if (activity != null) {
-            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
-            daggerUserIdentificationComponent.inject(this)
-        }
-    }
+    abstract override fun initInjector()
     protected abstract fun setContentView()
+    protected abstract fun encryptImage()
 
     companion object {
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"

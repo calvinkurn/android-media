@@ -1,5 +1,8 @@
 package com.tokopedia.kyc_centralized.util
 
+import android.content.Context
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.io.File
 import java.io.IOException
 import javax.crypto.SecretKey
@@ -78,5 +81,14 @@ object ImageEncryptionUtil {
             from.renameTo(to)
 
         return to.path
+    }
+
+    fun isUsingEncrypt(context: Context) : Boolean {
+        try {
+            return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.KYC_USING_ENCRYPT, true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return true
     }
 }
