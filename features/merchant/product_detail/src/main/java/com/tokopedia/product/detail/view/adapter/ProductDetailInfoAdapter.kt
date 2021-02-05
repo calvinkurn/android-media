@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import kotlinx.android.synthetic.main.item_info_product_detail.view.*
 
 /**
  * Created by Yehezkiel on 01/02/21
@@ -34,9 +33,12 @@ class ProductDetailInfoAdapter : RecyclerView.Adapter<ProductDetailInfoAdapter.I
 
     inner class ItemProductDetailInfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val detailTitle: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_title)
+        private val detailDesc: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_value)
+
         fun bind(data: ProductDetailInfoContent) {
-            itemView.info_detail_title?.text = data.title
-            itemView.info_detail_value?.text = data.subtitle
+            detailTitle?.text = data.title
+            detailDesc?.text = data.subtitle
         }
     }
 }
