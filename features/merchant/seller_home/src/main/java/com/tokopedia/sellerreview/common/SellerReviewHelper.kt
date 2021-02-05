@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerreview.view.bottomsheet.BaseBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
@@ -99,7 +100,9 @@ class SellerReviewHelper @Inject constructor(
         }
         ratingBottomSheet.setOnSubmittedListener {
             setOnRatingSubmitted(context, fm, it)
-        }.show(fm)
+        }
+
+        showBottomSheet(fm, ratingBottomSheet)
     }
 
     private fun setOnRatingSubmitted(context: Context, fm: FragmentManager, rating: Int) {
@@ -123,7 +126,9 @@ class SellerReviewHelper @Inject constructor(
             handler.postDelayed({
                 showTankYouBottomSheet(fm)
             }, POPUP_DELAY)
-        }.show(fm)
+        }
+
+        showBottomSheet(fm, feedbackBottomSheet)
     }
 
     private fun showTankYouBottomSheet(fm: FragmentManager) {
@@ -133,7 +138,17 @@ class SellerReviewHelper @Inject constructor(
         val thankYouBottomSheet = (fm.findFragmentByTag(ThankYouBottomSheet.TAG) as? ThankYouBottomSheet)
                 ?: ThankYouBottomSheet.createInstance()
 
-        thankYouBottomSheet.show(fm)
+        showBottomSheet(fm, thankYouBottomSheet)
+    }
+
+    private fun showBottomSheet(fm: FragmentManager, fragment: BaseBottomSheet) {
+        //to prevent IllegalStateException: Fragment already added
+        if (fragment.isAdded) {
+            fragment.dismiss()
+            return
+        }
+
+        fragment.show(fm)
     }
 
     /**
