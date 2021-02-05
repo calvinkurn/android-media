@@ -74,7 +74,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
                 appVersion = GlobalConfig.VERSION_NAME,
                 deviceModel = "${Build.BRAND}_${Build.MODEL}",
                 osType = Const.OS_TYPE,
-                osVersion = Build.VERSION.SDK_INT.toString()
+                osVersion = Build.VERSION.RELEASE
         )
     }
 
