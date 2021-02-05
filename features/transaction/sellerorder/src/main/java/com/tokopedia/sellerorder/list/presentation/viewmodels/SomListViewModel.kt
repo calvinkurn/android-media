@@ -249,10 +249,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun resetNextOrderId() {
-        getOrderListParams.nextOrderId = 0
+        getOrderListParams.nextOrderId = 0.toString()
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != "0"
 
     fun getDataOrderListParams() = getOrderListParams
 

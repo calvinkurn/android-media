@@ -349,7 +349,7 @@ data class SomDetailOrder(
             data class Warehouse(
                     @SerializedName("warehouse_id")
                     @Expose
-                    val warehouseId: Long = 0,
+                    val warehouseId: String = "0",
 
                     @SerializedName("fulfill_by")
                     @Expose
