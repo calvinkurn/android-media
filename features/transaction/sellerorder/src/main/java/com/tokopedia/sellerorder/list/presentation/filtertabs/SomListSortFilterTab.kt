@@ -1,8 +1,10 @@
 package com.tokopedia.sellerorder.list.presentation.filtertabs
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -82,7 +84,7 @@ class SomListSortFilterTab(
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
-        updateStatusFilterAppliedFromAdvancedFilter(status)
+        isStatusFilterAppliedFromAdvancedFilter = false
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
             sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
@@ -132,14 +134,6 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    private fun updateStatusFilterAppliedFromAdvancedFilter(status: SomListFilterUiModel.Status?) {
-        selectedTab?.key?.let {
-            if (status?.key != it) {
-                isStatusFilterAppliedFromAdvancedFilter = false
-            }
-        }
-    }
-
     private fun updateSelectedTab(status: SomListFilterUiModel.Status?) {
         selectedTab = status
     }
@@ -164,7 +158,7 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
+    fun shouldShowBulkAction() = (selectedTab?.key == STATUS_NEW_ORDER || selectedTab?.key == KEY_CONFIRM_SHIPPING) && GlobalConfig.isSellerApp()
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()

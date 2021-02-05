@@ -12,7 +12,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Named
 
-@ProductDetailScope
 @Module
 class GqlRawQueryModule {
 
@@ -72,13 +71,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
     fun providePostFavorite(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_TICKER)
-    fun provideQueryTicker(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.stickylogin.R.raw.gql_sticky_login_query)
 
     @ProductDetailScope
     @Provides

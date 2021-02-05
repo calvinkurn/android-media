@@ -16,7 +16,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@ChatListScope
 @Module
 class ChatListQueryModuleStub(
         private val chatListUseCase: GetChatListMessageUseCase,

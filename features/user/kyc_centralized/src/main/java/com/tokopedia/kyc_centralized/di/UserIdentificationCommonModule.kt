@@ -20,7 +20,6 @@ import dagger.multibindings.StringKey
 /**
  * @author by nisie on 13/11/18.
  */
-@UserIdentificationCommonScope
 @Module
 class UserIdentificationCommonModule {
 

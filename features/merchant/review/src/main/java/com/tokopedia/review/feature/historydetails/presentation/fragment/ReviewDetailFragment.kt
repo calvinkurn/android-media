@@ -53,10 +53,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val SCORE_ZERO = 0
         const val SCORE_MAX = 2
 
-        fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: Long) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(KEY_FEEDBACK_ID, feedbackId)
+                    putLong(KEY_FEEDBACK_ID, feedbackId)
                 }
             }
         }
@@ -182,7 +182,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setFeedbackId(it.getInt(KEY_FEEDBACK_ID))
+            viewModel.setFeedbackId(it.getLong(KEY_FEEDBACK_ID))
         }
     }
 
@@ -239,7 +239,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Int) {
+    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Long) {
         with(product) {
             reviewDetailProductCard.setOnClickListener {
                 ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
@@ -446,7 +446,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
     }
 
-    private fun goToPdp(productId: Int) {
+    private fun goToPdp(productId: Long) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 

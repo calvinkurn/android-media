@@ -94,15 +94,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun trackCardClicked(reputationId: Int, productId: Int, isEligible: Boolean) {
+    override fun trackCardClicked(reputationId: Long, productId: Long, isEligible: Boolean) {
         ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible)
     }
 
-    override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int, isEligible: Boolean) {
+    override fun trackStarsClicked(reputationId: Long, productId: Long, rating: Int, isEligible: Boolean) {
         ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible)
     }
 
-    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int, inboxReviewId: Int, seen: Boolean) {
+    override fun onStarsClicked(reputationId: Long, productId: Long, rating: Int, inboxReviewId: Long, seen: Boolean) {
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
         }
@@ -401,7 +401,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int, inboxId: String) {
+    private fun goToCreateReviewActivity(reputationId: Long, productId: Long, rating: Int, inboxId: String) {
         val intent = RouteManager.getIntent(context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
                         .buildUpon()

@@ -6,7 +6,6 @@ import com.tokopedia.usecase.UseCase
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class DeleteRecentSearchUseCaseModule {
 

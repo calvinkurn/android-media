@@ -16,6 +16,8 @@ import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -60,6 +62,7 @@ class RegisterInitialViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
+        private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
@@ -140,6 +143,10 @@ class RegisterInitialViewModel @Inject constructor(
     private val _dynamicBannerResponse = MutableLiveData<Result<DynamicBannerDataModel>>()
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
+
+    private val _checkOvoResponse = MutableLiveData<Result<CheckOvoResponse>>()
+    val checkOvoResponse: LiveData<Result<CheckOvoResponse>>
+        get() = _checkOvoResponse
 
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
@@ -337,6 +344,17 @@ class RegisterInitialViewModel @Inject constructor(
             }
         }, {
             _dynamicBannerResponse.postValue(Fail(it))
+        })
+    }
+
+    fun checkHasOvoAccount(phone: String) {
+        launchCatchError(block = {
+            checkHasOvoAccUseCase.setParams(phone)
+            checkHasOvoAccUseCase.executeOnBackground().run {
+                _checkOvoResponse.postValue(Success(this))
+            }
+        }, onError = {
+            _checkOvoResponse.postValue(Fail(it))
         })
     }
 
