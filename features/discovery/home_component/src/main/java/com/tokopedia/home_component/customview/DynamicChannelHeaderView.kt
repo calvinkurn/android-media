@@ -13,7 +13,6 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -24,22 +23,24 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class DynamicChannelHeaderView: FrameLayout {
     private var itemView: View?
 
     private var listener: HeaderListener? = null
 
-    var countDownView: CountDownView? = null
+    var countDownView: TimerUnifySingle? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
     var seeAllButtonUnify: UnifyButton? = null
     var channelSubtitle: TextView? = null
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.home_component_dynamic_channel_header, this)
@@ -216,16 +217,29 @@ class DynamicChannelHeaderView: FrameLayout {
             countDownView = if (stubCountDownView is ViewStub &&
                     !isViewStubHasBeenInflated(stubCountDownView)) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
-                inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+                inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
                 itemView?.findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime) {
+                val currentDate = Date()
+                val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
+                val serverTime = Date()
+                serverTime.time = currentMillisecond
+                val timeDiff = getTimeDiff(serverTime, expiredTime)
+                countDownView?.targetDate = timeDiff
+                countDownView?.onFinish = {
                     listener?.onChannelExpired(channel)
                 }
+
+                if(channel.channelHeader.backColor.isNotEmpty()){
+                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+                } else {
+                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+                }
+
                 countDownView?.visibility = View.VISIBLE
             }
         } else {
@@ -248,6 +262,16 @@ class DynamicChannelHeaderView: FrameLayout {
                     titleContainer.paddingBottom)
         }
 
+    }
+
+    private fun getTimeDiff(startTime: Date, endTime: Date): Calendar {
+        var diff = endTime.time - startTime.time
+        if (diff < 0) diff = 0
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR, (diff / (60 * 60 * 1000) % 24).toInt())
+        calendar.add(Calendar.MINUTE, (diff / (60 * 1000) % 60).toInt())
+        calendar.add(Calendar.SECOND, (diff / 1000 % 60).toInt())
+        return calendar
     }
 
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {

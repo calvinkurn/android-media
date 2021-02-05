@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:clickable="true"
     android:background="?attr/selectableItemBackground"
@@ -27,7 +26,7 @@
                 android:layout_width="116dp"
                 android:layout_height="116dp" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/channel_discount"
                 style="@style/TextView.Nano"
                 android:textStyle="bold"
@@ -43,7 +42,7 @@
         </FrameLayout>
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/price1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +54,7 @@
             android:textSize="12sp"
             android:textStyle="normal" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/price2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +66,7 @@
             android:textSize="14sp"
             android:textStyle="normal" />
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/stock_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
@@ -79,7 +78,7 @@
             android:progressBackgroundTint="@color/Unify_N100"
             android:progressDrawable="@drawable/gradient_progress" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/stock_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
