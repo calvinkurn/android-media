@@ -79,7 +79,10 @@ class PlayParentViewModel constructor(
     }
 
     fun loadNextPage() {
-        getChannelDetailsWithRecom(mNextKey)
+        val nextKey = mNextKey
+        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor && nextKey.cursor.isEmpty()) return
+
+        getChannelDetailsWithRecom(nextKey)
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
