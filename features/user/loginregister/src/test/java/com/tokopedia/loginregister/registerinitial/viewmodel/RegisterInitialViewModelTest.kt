@@ -16,6 +16,8 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -75,6 +77,7 @@ class RegisterInitialViewModelTest {
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
+    val checkHasOvoUseCase = mockk<CheckHasOvoAccUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val rawQueries = mapOf(
@@ -100,6 +103,7 @@ class RegisterInitialViewModelTest {
     private var validateTokenObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
+    private var hasOvoObserver = mockk<Observer<Result<CheckOvoResponse>>>(relaxed = true)
 
     lateinit var viewModel: RegisterInitialViewModel
 
@@ -122,6 +126,7 @@ class RegisterInitialViewModelTest {
                 getProfileUseCase,
                 tickerInfoUseCase,
                 dynamicBannerUseCase,
+                checkHasOvoUseCase,
                 userSession,
                 rawQueries,
                 testDispatcher
@@ -145,6 +150,7 @@ class RegisterInitialViewModelTest {
         viewModel.validateToken.observeForever(validateTokenObserver)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
+        viewModel.checkOvoResponse.observeForever(hasOvoObserver)
     }
 
     @Test
@@ -781,5 +787,19 @@ class RegisterInitialViewModelTest {
         verify {
             goToSecurityAfterReloginQuestionObserver.onChanged("")
         }
+    }
+
+    @Test
+    fun `has ovo check`() {
+        val response = CheckOvoResponse()
+        val phone = "082242454511"
+
+        checkHasOvoUseCase.setParams(phone)
+        coEvery { checkHasOvoUseCase.executeOnBackground() } returns response
+
+        viewModel.checkHasOvoAccount(phone)
+
+        verify { hasOvoObserver.onChanged(Success(response)) }
+
     }
 }
