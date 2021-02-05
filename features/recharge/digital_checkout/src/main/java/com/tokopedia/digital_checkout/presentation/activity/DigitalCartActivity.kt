@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CATEGORY_ID
@@ -37,7 +38,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         var subParams: DigitalSubscriptionParams? = null
 
         uriData?.let { uri ->
-            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
+            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL && uri.getQueryParameter(DeeplinkMapperDigital.IS_FROM_WIDGET_PARAM).isNullOrEmpty()) {
                 cartPassData = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA)
                 subParams = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA)
             } else if (uri.queryParameterNames.size > 0) {
