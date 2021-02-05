@@ -1,8 +1,10 @@
-package com.tokopedia.utils.view
+package com.tokopedia.test.application.util
 
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import timber.log.Timber
 import java.io.File
@@ -16,14 +18,17 @@ import java.io.IOException
 object ViewUtils {
 
     @JvmStatic
-    fun Activity.screenShotAndSave(view: View, dir: String, fileName: String) {
-        val bitmap = Bitmap.createBitmap(
-                view.width,
-                view.height, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        saveImage(this, dir, fileName, bitmap)
+    fun Activity.takeScreenShot(fileName: String, dir: String = "") {
+        Handler(Looper.getMainLooper()).post {
+            val view = window.decorView
+            val bitmap = Bitmap.createBitmap(
+                    view.width,
+                    view.height, Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+            saveImage(this, dir, fileName, bitmap)
+        }
     }
 
     fun saveImage(activity: Activity, dir: String, fileName: String, bitmap: Bitmap?) {
