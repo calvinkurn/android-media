@@ -143,6 +143,7 @@ class PopularKeywordViewHolder (val view: View,
             }
             if(!element.isErrorLoad) errorPopularKeyword?.hide()
             else errorPopularKeyword.show()
+            errorPopularKeyword.progressState = false
             errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
         } catch (e: Exception) {
             e.printStackTrace()
@@ -159,6 +160,7 @@ class PopularKeywordViewHolder (val view: View,
             loadingView?.show()
             errorPopularKeyword.hide()
             adapter?.clearList()
+            errorPopularKeyword.progressState = true
             popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
         }
     }
