@@ -218,6 +218,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     fun activatedAds(editAutoads: Int = 0) {
+        btnSubmit.isEnabled = false
         isEditFlow = editAutoads == 1
         val budget = priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
@@ -237,6 +238,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
     private fun insufficientCredit() {
         val sheet = TopAdsOutofCreditSheet()
+        sheet.overlayClickDismiss = false
         sheet.show(childFragmentManager)
     }
 

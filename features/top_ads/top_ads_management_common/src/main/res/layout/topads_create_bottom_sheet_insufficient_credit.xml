@@ -4,7 +4,8 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_bg_top_round">
+    android:background="@drawable/topads_bg_top_round"
+    android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_ilustration"
@@ -53,9 +54,11 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_topup"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_27"
         android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_27"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/tambah_kredit_topads"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,9 +69,11 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/dismissBS"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_27"
         android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_27"
         android:text="@string/topads_common_later"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

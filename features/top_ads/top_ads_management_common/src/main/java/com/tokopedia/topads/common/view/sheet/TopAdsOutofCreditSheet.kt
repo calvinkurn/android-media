@@ -48,7 +48,7 @@ class TopAdsOutofCreditSheet : BottomSheetUnify() {
             dismiss()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KREDIT_TOPADS, "")
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            activity?.finish()
             startActivity(intent)
         }
         dismissBS?.setOnClickListener {
