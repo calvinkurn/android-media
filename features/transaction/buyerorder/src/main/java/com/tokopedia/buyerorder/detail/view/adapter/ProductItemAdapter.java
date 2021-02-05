@@ -38,6 +38,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context context;
     private Status status;
     private String userId;
+    private String orderId;
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
@@ -47,13 +48,14 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter,
-                              boolean isTradeIn, Status status, String userId) {
+                              boolean isTradeIn, Status status, String userId, String orderId) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
         this.isOrderTradeIn = isTradeIn;
         this.status = status;
         this.userId = userId;
+        this.orderId = orderId;
         orderListAnalytics = new OrderListAnalytics();
     }
 
@@ -170,7 +172,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(view -> {
                 orderListAnalytics.hitClickProductName(status.status(), userId);
 
-                String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ items.getId() +"/"+ items.getOrderDetailId();
+                String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ orderId +"/"+ items.getOrderDetailId();
                 RouteManager.route(context, applinkSnapshot);
             });
 
