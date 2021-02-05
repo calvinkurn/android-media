@@ -30,8 +30,13 @@ object DateHelper {
     }
 
     fun formatDateToUi(date: Date): String? {
-        val toFormat: DateFormat = SimpleDateFormat(DEFAULT_VIEW_FORMAT, DEFAULT_LOCALE)
-        toFormat.isLenient = false
-        return toFormat.format(date)
+        return try {
+            val toFormat: DateFormat = SimpleDateFormat(DEFAULT_VIEW_FORMAT, DEFAULT_LOCALE)
+            toFormat.isLenient = false
+            toFormat.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 }

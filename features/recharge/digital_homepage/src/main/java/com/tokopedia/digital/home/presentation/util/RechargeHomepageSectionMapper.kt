@@ -156,9 +156,9 @@ object RechargeHomepageSectionMapper {
             val serverDateMillisecond = getServerTime(serverDate).time
 
             return ChannelModel(sectionId, sectionId,
-                    channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate,
-                            enableTimeDiffMoreThan24h = true),
-                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond))
+                    channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
+                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond),
+                    enableTimeDiffMoreThan24h = true)
             )
         }
         return null

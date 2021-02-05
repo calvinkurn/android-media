@@ -10,6 +10,5 @@ data class ChannelHeader(
         val url: String = "",
         val backColor: String = "",
         val backImage: String = "",
-        val textColor: String = "",
-        val enableTimeDiffMoreThan24h: Boolean = false
+        val textColor: String = ""
 )

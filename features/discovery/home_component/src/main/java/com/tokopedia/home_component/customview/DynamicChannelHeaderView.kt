@@ -225,7 +225,7 @@ class DynamicChannelHeaderView: FrameLayout {
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                if (channel.channelHeader.enableTimeDiffMoreThan24h) {
+                if (channel.channelConfig.enableTimeDiffMoreThan24h) {
                     countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime,
                             getDayChangedListener(channel.channelHeader.subtitle, expiredTime)) {
                         listener?.onChannelExpired(channel)
@@ -236,7 +236,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
                 }
                 countDownView?.visibility = View.VISIBLE
-            } else listener?.onChannelExpired(channel)
+            }
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
