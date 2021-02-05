@@ -17,6 +17,7 @@ import rx.Subscriber
 internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtures() {
 
     private val searchProductModel = "searchproduct/with-topads.json".jsonToObject<SearchProductModel>()
+    private val searchProductModelRelatedKeyword = "searchproduct/generalsearchtracking/response-code-6-related-search.json".jsonToObject<SearchProductModel>()
     private val cartId = "12345"
     private val className = "SearchProductClassName"
     private val errorMessageFromATC = "Error message from ATC"
@@ -24,13 +25,15 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     private val productCardOptionModel by lazy { productCardOptionsModelSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
+    private var suggestedRelatedKeyword = ""
+    private val suggestedRelatedKeywordSlot = slot<String>()
 
     @Before
     fun setUpAddToCartTest() {
-        `Given view already load data`()
+        `Given view already load data`(searchProductModel)
     }
 
-    private fun `Given view already load data`() {
+    private fun `Given view already load data`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.execute(any(), any()) } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
@@ -40,6 +43,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         every { productListView.className } returns className
 
         productListPresenter.loadData(mapOf())
+        suggestedRelatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
     }
 
     @Test
@@ -158,7 +162,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
 
         verify (exactly = 0) {
             productListView.showAddToCartFailedMessage(any())
-            productListView.trackSuccessAddToCartEvent(any(), any())
+            productListView.trackSuccessAddToCartEvent(any(), any(), any())
             productListView.showAddToCartSuccessMessage()
             topAdsUrlHitter.hitClickUrl(any<String>(), any(), any(), any(), any(), any())
         }
@@ -176,11 +180,13 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         `When handle add to cart action`()
 
         `Then verify add to cart success view interaction for organic product`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify add to cart success view interaction for organic product`(productItemViewModel: ProductItemViewModel) {
         verify {
             productListView.trackSuccessAddToCartEvent(
+                    capture(suggestedRelatedKeywordSlot),
                     false,
                     productItemViewModel.getProductAsATCObjectDataLayer(cartId)
             )
@@ -192,6 +198,10 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
             productListView.launchLoginActivity(any())
             productListView.showAddToCartFailedMessage(any())
         }
+    }
+
+    private fun `Then verify relatedKeyword`() {
+        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     private fun `Given product card option model with add to cart success`() {
@@ -214,11 +224,13 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         `When handle add to cart action`()
 
         `Then verify add to cart success view interaction for top ads product`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify add to cart success view interaction for top ads product`(productItemViewModel: ProductItemViewModel) {
         verify {
             productListView.trackSuccessAddToCartEvent(
+                    capture(suggestedRelatedKeywordSlot),
                     true,
                     productItemViewModel.getProductAsATCObjectDataLayer(cartId)
             )
@@ -268,9 +280,43 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
 
         verify(exactly = 0) {
             productListView.launchLoginActivity(any())
-            productListView.trackSuccessAddToCartEvent(any(), any())
+            productListView.trackSuccessAddToCartEvent(any(), any(), any())
             productListView.showAddToCartSuccessMessage()
             topAdsUrlHitter.hitClickUrl(any<String>(), any(), any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `Test add to cart with related keyword`() {
+        `Given view already load data`(searchProductModelRelatedKeyword)
+
+        val indexedProductItem = visitableList.getIndexedProductItem(false)
+        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val position = indexedProductItem.index
+
+        `Given view click three dots`(productItemViewModel, position)
+        `Given product card option model with add to cart success`()
+
+        `When handle add to cart action`()
+
+        `Then verify add to cart success view interaction for organic product with related keyword`(productItemViewModel)
+        `Then verify relatedKeyword`()
+    }
+
+    private fun `Then verify add to cart success view interaction for organic product with related keyword`(productItemViewModel: ProductItemViewModel) {
+        verify {
+            productListView.trackSuccessAddToCartEvent(
+                    capture(suggestedRelatedKeywordSlot),
+                    false,
+                    productItemViewModel.getProductAsATCObjectDataLayer(cartId)
+            )
+            productListView.showAddToCartSuccessMessage()
+        }
+
+        verify (exactly = 0) {
+            topAdsUrlHitter.hitClickUrl(any<String>(), any(), any(), any(), any(), any())
+            productListView.launchLoginActivity(any())
+            productListView.showAddToCartFailedMessage(any())
         }
     }
 }
