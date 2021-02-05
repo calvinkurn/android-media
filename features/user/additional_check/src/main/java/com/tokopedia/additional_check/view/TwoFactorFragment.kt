@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.additional_check.R
+import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
+import com.tokopedia.additional_check.common.ADD_PIN_PAGE
 import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
@@ -26,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_two_factor.view.*
  */
 
 class TwoFactorFragment constructor(
-        activePageListener: ActivePageListener
+        private val activePageListener: ActivePageListener
 ): BaseDaggerFragment() {
 
     private val ADD_PHONE_REQ_CODE = 1
@@ -59,6 +61,7 @@ class TwoFactorFragment constructor(
 
     private fun renderPinView(mView: View?){
         context?.run {
+            activePageListener.currentPage(ADD_PIN_PAGE)
             twoFactorTracker.viewPageOnboardingAddPin()
 
             mView?.title_two_factor?.text = getString(R.string.add_pin_heading)
@@ -76,6 +79,8 @@ class TwoFactorFragment constructor(
 
     private fun renderPhoneView(mView: View?){
         context?.run {
+            activePageListener.currentPage(ADD_PHONE_NUMBER_PAGE)
+
             mView?.title_two_factor?.text = getString(R.string.add_phone_heading)
             mView?.body_two_factor?.text = getString(R.string.add_phone_body)
             mView?.btn_two_factor?.text = getString(R.string.add_phone_button_title)
