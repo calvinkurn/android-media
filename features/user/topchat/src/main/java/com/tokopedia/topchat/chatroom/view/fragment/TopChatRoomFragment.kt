@@ -93,6 +93,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.MessageTextWatcher
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -130,8 +131,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener,
-        BroadcastSpamHandlerViewHolder.Listener, RoomSettingFraudAlertViewHolder.Listener,
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
+        SearchListener, BroadcastSpamHandlerViewHolder.Listener,
+        RoomSettingFraudAlertViewHolder.Listener,
         ReviewViewHolder.Listener {
 
     @Inject
@@ -187,6 +189,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
     private var chatBackground: ImageView? = null
+    private var textWatcher: MessageTextWatcher? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -201,10 +204,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initReplyTextWatcher()
             initStickerView()
             initFbNewUnreadMessage()
             initTextComposeBackground()
         }
+    }
+
+    private fun initReplyTextWatcher() {
+        textWatcher = MessageTextWatcher(this)
+        composeArea?.addTextChangedListener(textWatcher)
     }
 
     private fun initTextComposeBackground() {
@@ -832,6 +841,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendMessage(message: String? = null) {
+        textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
