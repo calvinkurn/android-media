@@ -64,6 +64,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)

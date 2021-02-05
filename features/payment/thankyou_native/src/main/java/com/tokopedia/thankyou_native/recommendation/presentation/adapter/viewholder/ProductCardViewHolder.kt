@@ -35,6 +35,10 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                     listener?.onProductClick(thankYouProductCardModel
                             .recommendationItem, null, adapterPosition)
                 }
+
+                setThreeDotsOnClickListener {
+                    listener?.onThreeDotsAllProductClicked(thankYouProductCardModel)
+                }
             }
         }
 

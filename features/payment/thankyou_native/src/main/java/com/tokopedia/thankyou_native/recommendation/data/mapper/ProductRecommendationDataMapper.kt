@@ -59,7 +59,8 @@ class ProductRecommendationDataMapper @Inject constructor(
                                         title = recommendationLabel.title,
                                         type = recommendationLabel.type
                                 )
-                            }
+                            },
+                            hasThreeDots = true
                     )
             )
         }

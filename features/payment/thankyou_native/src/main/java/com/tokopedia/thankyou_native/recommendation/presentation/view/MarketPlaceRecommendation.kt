@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.recommendation.presentation.view
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.Observer
@@ -12,21 +13,26 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
-import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.data.ProductRecommendationData
 import com.tokopedia.thankyou_native.recommendation.data.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.di.module.RecommendationModule
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ProductCardViewAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,6 +44,8 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     private lateinit var fragment: BaseDaggerFragment
     private lateinit var paymentId: String
     private lateinit var thanksPageData: ThanksPageData
+
+    private var thankYouProductCardModel: ThankYouProductCardModel? = null
 
     @Inject
     lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
@@ -96,6 +104,14 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         viewModel.loadRecommendationData()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+    }
+
     private fun startViewModelObserver() {
         if (!isObserverAttached)
             viewModel.recommendationMutableData.observe(fragment,
@@ -151,6 +167,73 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
                                                        position: Int) {
                 analytics.get().sendRecommendationItemDisplayed(thanksPageData, recommendationItem, position)
             }
+
+            override fun onThreeDotsAllProductClicked(thankYouProductCardModel: ThankYouProductCardModel) {
+                this@MarketPlaceRecommendation.onThreeDotsAllProductClicked(thankYouProductCardModel)
+            }
+        }
+    }
+
+    fun onThreeDotsAllProductClicked(thankYouProductCardModel: ThankYouProductCardModel) {
+        this.thankYouProductCardModel = thankYouProductCardModel
+        showProductCardOptions(
+                fragment,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = thankYouProductCardModel.recommendationItem.isWishlist,
+                        productId = thankYouProductCardModel.recommendationItem.productId.toString()
+                )
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            /*threeDotsClickShopProductViewModel?.let {
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, true)
+            }
+            redirectToLoginPage()*/
+        } else {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleWishlistActionAddToWishlist()
+        } else {
+            handleWishlistActionRemoveFromWishlist()
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlist() {
+        thankYouProductCardModel?.apply {
+            recommendationItem.isWishlist = false
+            if (::adapter.isInitialized) {
+                findViewById<RecyclerView>(R.id.recyclerView).post {
+                    adapter.notifyDataSetChanged()
+                    showToastSuccess(fragment
+                            .getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+                }
+            }
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlist() {
+        thankYouProductCardModel?.apply {
+            recommendationItem.isWishlist = true
+            if (::adapter.isInitialized) {
+                findViewById<RecyclerView>(R.id.recyclerView).post {
+                    adapter.notifyDataSetChanged()
+                    showToastSuccess(fragment
+                            .getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+                }
+            }
+        }
+    }
+
+    private fun showToastSuccess(message: String) {
+        fragment.activity?.run {
+            Toaster.build(findViewById(android.R.id.content), message).show()
         }
     }
 
