@@ -10,6 +10,10 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -364,19 +368,36 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             if(isOldGcmUpdate()) {
-                SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
                 sessionRefresh.gcmUpdate();
             } else {
                 if(gcmUpdateComponent == null) {
                     injectGcmUpdateComponent();
                 }
-                fcmManager.get().onNewToken(newAccessToken);
+                newGcmUpdate(sessionRefresh);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void newGcmUpdate(SessionRefresh sessionRefresh) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    try {
+                        sessionRefresh.gcmUpdate();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    fcmManager.get().onNewToken(task.getResult().getToken());
+                }
+            }
+        });
     }
 
     @Override
