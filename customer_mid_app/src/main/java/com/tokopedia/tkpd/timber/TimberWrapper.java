@@ -22,6 +22,8 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.tokopedia.keys.Keys.SCALYR_TOKEN_CUSTOMERAPP;
+
 /**
  * Wrap for timber library
  * Initialize this in application level
@@ -40,12 +42,6 @@ public class TimberWrapper {
                     98, 51, 57, 99, 45, 51, 54, 53, 100, 99, 54, 52, 55, 97, 99, 101, 100
             }),
     };
-
-    private static final String SCALYR_TOKEN = new String(new char[]{
-            48, 73, 89, 118, 95, 77, 81, 105, 88, 74, 97, 65, 97, 89, 89, 75, 71, 101, 56,
-            48, 57, 117, 109, 49, 109, 77, 51, 75, 117, 106, 85, 69, 65, 89, 56, 65, 75,
-            101, 70, 75, 97, 72, 122, 56, 45
-    });
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
@@ -114,6 +110,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(SCALYR_TOKEN_CUSTOMERAPP, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }
