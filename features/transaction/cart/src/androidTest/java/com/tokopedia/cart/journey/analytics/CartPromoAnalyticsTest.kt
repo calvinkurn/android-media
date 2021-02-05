@@ -25,7 +25,7 @@ class CartPromoAnalyticsTest {
     var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
 

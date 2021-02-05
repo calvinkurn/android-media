@@ -25,7 +25,7 @@ class CheckoutPromoAnalyticsTest {
     var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
 
@@ -53,7 +53,6 @@ class CheckoutPromoAnalyticsTest {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
 
-        Thread.sleep(5000)
     }
 
     @After
