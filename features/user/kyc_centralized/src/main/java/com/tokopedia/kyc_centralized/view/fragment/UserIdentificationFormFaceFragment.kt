@@ -62,7 +62,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
         context?.let {
             if(ImageEncryptionUtil.isUsingEncrypt(it)) {
                 button?.isEnabled = false
-                kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull())
+                kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull())
             }
         }
     }

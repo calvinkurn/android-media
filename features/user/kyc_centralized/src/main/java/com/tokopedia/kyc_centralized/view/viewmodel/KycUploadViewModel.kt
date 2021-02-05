@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.view.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -64,7 +63,7 @@ class KycUploadViewModel @Inject constructor(
 
                 val fs = FileOutputStream(File(encryptedImagePath))
                 val out = CipherOutputStream(fs, aes)
-                out.write(fis.readBytes())
+                out.write(fis.readBytes(1024 * 1024))
                 out.flush()
                 out.close()
 

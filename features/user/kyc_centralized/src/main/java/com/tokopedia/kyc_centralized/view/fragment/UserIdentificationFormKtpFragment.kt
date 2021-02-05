@@ -90,4 +90,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
             return fragment
         }
     }
+
+    override fun initInjector() {}
+    override fun encryptImage() {}
 }
