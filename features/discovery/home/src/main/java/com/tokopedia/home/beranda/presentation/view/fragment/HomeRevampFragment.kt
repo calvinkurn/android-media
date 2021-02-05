@@ -764,9 +764,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun initStickyLogin() {
-        stickyLoginView.page = StickyLoginConstant.Page.HOME
-        stickyLoginView.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView.setStickyAction(object : StickyLoginAction {
+        stickyLoginView?.page = StickyLoginConstant.Page.HOME
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
@@ -1499,7 +1499,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1516,7 +1516,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1558,7 +1558,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
