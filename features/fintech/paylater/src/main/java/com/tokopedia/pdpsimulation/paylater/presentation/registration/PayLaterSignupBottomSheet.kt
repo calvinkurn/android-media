@@ -179,9 +179,10 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
         const val TAG = "PL_TAG"
         fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
-            val fragment = PayLaterSignupBottomSheet()
-            fragment.arguments = bundle
-            fragment.pdpSimulationCallback = pdpSimulationCallback
+            val fragment = PayLaterSignupBottomSheet().apply {
+                arguments = bundle
+                this.pdpSimulationCallback = pdpSimulationCallback
+            }
             fragment.show(childFragmentManager, TAG)
         }
     }

@@ -8,20 +8,16 @@ import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.helper.CreditCard
-import com.tokopedia.pdpsimulation.common.helper.PayLater
-import com.tokopedia.pdpsimulation.common.helper.PaymentMode
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
-import com.tokopedia.pdpsimulation.common.helper.BottomSheetManager
+import com.tokopedia.pdpsimulation.common.helper.*
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterPagerAdapter
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
@@ -41,8 +37,6 @@ import javax.inject.Inject
 
 class PdpSimulationFragment : BaseDaggerFragment(),
         PdpSimulationCallback,
-        TabLayout.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener,
         CompoundButton.OnCheckedChangeListener {
 
     @Inject
@@ -130,12 +124,16 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun initListeners() {
+        modeSwitcher.setOnCheckedChangeListener(this)
         paylaterDaftarWidget.setOnClickListener {
             onRegisterWidgetClicked()
         }
-        modeSwitcher.setOnCheckedChangeListener(this)
-        paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
-        payLaterViewPager.addOnPageChangeListener(this)
+        paylaterTabLayout.tabLayout.onTabSelected { tab ->
+            handleRegisterWidgetVisibility(tab.position)
+        }
+        payLaterViewPager.onPageSelected { position ->
+            handleRegisterWidgetVisibility(position)
+        }
     }
 
     private fun renderTabAndViewPager() {
@@ -173,6 +171,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         return fragmentList
     }
 
+    private fun handleRegisterWidgetVisibility(position: Int) {
+        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive) showRegisterWidget()
+        else daftarGroup.gone()
+    }
 
     override fun showRegisterWidget() {
         if (isPayLaterSimulationPage())
@@ -189,27 +191,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun populatePayLaterBundle() = Bundle().apply {
         putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
         putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
-    }
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        onPageSelected(tab.position)
-    }
-
-    override fun onTabUnselected(tab: TabLayout.Tab) {
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) {
-    }
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
-
-    override fun onPageSelected(position: Int) {
-        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive) showRegisterWidget()
-        else daftarGroup.gone()
-    }
-
-    override fun onPageScrollStateChanged(state: Int) {
     }
 
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {

@@ -15,6 +15,7 @@
     <string name="pay_later_register">Daftar PayLater</string>
     <string name="pay_later_widget_more_choices_description">Makin banyak pilihan, makin bebas belanja.</string>
     <string name="pay_later_btn_text">Daftar PayLater Sekarang</string>
+    <string name="credit_card_widget_title">Mau buat kartu kredit?</string>
 
     <!-- PayLater Simulation Page -->
     <string name="pay_later_simulation_header_title">Simulasi pembayaran</string>

@@ -74,10 +74,14 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         applicationStatusData?.let {
             setLabelData(it)
         }
-        val imageUrl: String?
-        if (context.isDarkMode())
-            imageUrl = responseData?.partnerImgDarkUrl
-        else imageUrl = responseData?.partnerImgLightUrl
+        setPartnerImage()
+    }
+
+    private fun setPartnerImage() {
+        val imageUrl: String? = if (context.isDarkMode())
+            responseData?.partnerImgDarkUrl
+        else responseData?.partnerImgLightUrl
+
         if (!imageUrl.isNullOrEmpty())
             ImageHandler.loadImage(context,
                     ivPaylaterPartner,

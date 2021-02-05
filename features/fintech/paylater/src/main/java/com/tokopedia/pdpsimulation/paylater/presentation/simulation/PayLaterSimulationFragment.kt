@@ -19,13 +19,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.common.helper.onLinkClickedEvent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterSimulationTenureType
 import com.tokopedia.pdpsimulation.paylater.presentation.simulation.widgets.*
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_simulation.*
@@ -92,12 +92,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             }
         })
         payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(
-                viewLifecycleOwner,
-                {
-                    when (it) {
-                        is Success -> handleRegisterWidgetVisibility()
-                        is Fail -> handleRegisterWidgetVisibility()
-                    }
+                viewLifecycleOwner, {
+                    handleRegisterWidgetVisibility()
                 }
         )
     }
@@ -111,10 +107,10 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     private fun showSimulationData(data: java.util.ArrayList<PayLaterSimulationGatewayItem>) {
         simulationDataGroup.visible()
         tickerSimulation.visible()
-        clearAllViews()
-        populateSimulationTable(data)
         tickerSimulation.setTextDescription(context?.getString(R.string.pay_later_simulation_ticker_text)
                 ?: "")
+        clearAllViews()
+        populateSimulationTable(data)
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
@@ -142,13 +138,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                 tickerSimulation.visible()
                 tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")
-                tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        pdpSimulationCallback?.switchPaymentMode()
-                    }
-
-                    override fun onDismiss() {}
-                })
+                tickerSimulation.onLinkClickedEvent { pdpSimulationCallback?.switchPaymentMode() }
                 return
             }
             else -> setGlobalErrors(GlobalError.SERVER_ERROR)
@@ -187,7 +177,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         context?.let {
             val tenureList = arrayOf(1, 3, 6, 9, 12)
             val rowCount = simulationDataList.size + 1
-            val colCount = 5
+            val colCount = MAX_INSTALLMENT_COLUMN_COUNT
             val contentLayoutParam = TableRow.LayoutParams(it.dpToPx(CONTENT_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
             val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
             for (rowIdx in 0 until rowCount) {
@@ -257,6 +247,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         const val ROW_HEADER_WIDTH = 84
         const val TABLE_ITEM_HEIGHT = 52
         const val CONTENT_WIDTH = 110
+        const val MAX_INSTALLMENT_COLUMN_COUNT = 5
 
         @JvmStatic
         fun newInstance(pdpSimulationCallback: PdpSimulationCallback): PayLaterSimulationFragment {

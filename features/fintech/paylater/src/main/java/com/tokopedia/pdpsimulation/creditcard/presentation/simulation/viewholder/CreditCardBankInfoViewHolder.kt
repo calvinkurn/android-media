@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.credit_card_available_bank_item.view.*
 class CreditCardBankInfoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(bankData: SimulationBank) {
-        val duration = bankData.availableDurationList?.joinToString(separator = ",")
+        val duration = bankData.availableDurationList?.joinToString(separator = ", ")
         view.apply {
             ivBank.maxWidth = 40.dpToPx(context.resources.displayMetrics)
             ImageHandler.loadImage(context,

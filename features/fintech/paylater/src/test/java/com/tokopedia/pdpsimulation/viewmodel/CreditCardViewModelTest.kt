@@ -1,4 +1,4 @@
-package com.tokopedia.viewmodel
+package com.tokopedia.pdpsimulation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -8,10 +8,7 @@ import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions

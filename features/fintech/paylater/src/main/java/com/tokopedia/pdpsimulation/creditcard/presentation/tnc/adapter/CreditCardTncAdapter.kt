@@ -31,6 +31,7 @@ class CreditCardTncAdapter(val moreInfoListener: () -> Unit) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
+            is CreditCardPdpInfoButtonViewHolder -> holder.bindData(ctaRedirectionLabel)
             is CreditCardPdpInfoViewHolder -> {
                 holder.bindData(pdpInfoContentList[position])
                 if (position != RecyclerView.NO_POSITION) {
@@ -62,7 +63,6 @@ class CreditCardTncAdapter(val moreInfoListener: () -> Unit) : RecyclerView.Adap
                     else holder.view.dividerInstallment.visible()
                 }
             }
-            is CreditCardPdpInfoButtonViewHolder -> holder.bindData(ctaRedirectionLabel)
         }
     }
 

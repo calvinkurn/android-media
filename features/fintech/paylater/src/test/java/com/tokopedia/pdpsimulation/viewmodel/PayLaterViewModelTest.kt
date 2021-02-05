@@ -1,8 +1,9 @@
-package com.tokopedia.viewmodel
+package com.tokopedia.pdpsimulation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.Gson
+import com.tokopedia.pdpsimulation.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel

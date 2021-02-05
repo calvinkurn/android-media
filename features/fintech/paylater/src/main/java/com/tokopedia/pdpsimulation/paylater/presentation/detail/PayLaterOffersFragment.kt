@@ -109,7 +109,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterOffersGlobalError.show()
         payLaterOffersGlobalError.setActionClickListener {
             payLaterOffersGlobalError.hide()
-            // notify pdp simulation fragment to invoke again
             payLaterOffersShimmerGroup.visible()
             payLaterViewModel.getPayLaterProductData()
         }

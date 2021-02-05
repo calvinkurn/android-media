@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails;
+package com.tokopedia.pdpsimulation;
 
 import android.content.Context;
 

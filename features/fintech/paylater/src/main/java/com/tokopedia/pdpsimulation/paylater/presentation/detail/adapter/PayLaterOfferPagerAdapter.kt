@@ -54,8 +54,6 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentSt
         notifyDataSetChanged()
     }
 
-    fun getCurrentPaymentOption(position: Int) = paymentOptionsFragmentArray[position]
-
     override fun getPageWidth(position: Int): Float {
         return 0.9f
     }

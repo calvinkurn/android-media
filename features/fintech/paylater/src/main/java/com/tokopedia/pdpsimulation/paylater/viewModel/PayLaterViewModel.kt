@@ -99,7 +99,7 @@ class PayLaterViewModel @Inject constructor(
     fun getPayLaterOptions(): ArrayList<PayLaterItemProductData> {
         payLaterActivityResultLiveData.value?.let {
             if (it is Success && !it.data.productList.isNullOrEmpty()) {
-                return it.data.productList!!
+                return it.data.productList ?: arrayListOf()
             }
         }
         return arrayListOf()

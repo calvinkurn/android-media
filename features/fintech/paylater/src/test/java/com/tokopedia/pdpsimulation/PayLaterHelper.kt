@@ -1,4 +1,4 @@
-package com.tokopedia.viewmodel
+package com.tokopedia.pdpsimulation
 
 import java.io.File
 

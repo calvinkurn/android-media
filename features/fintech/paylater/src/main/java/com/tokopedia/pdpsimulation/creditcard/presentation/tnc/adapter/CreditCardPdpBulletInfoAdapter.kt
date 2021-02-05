@@ -14,12 +14,9 @@ class CreditCardPdpBulletInfoAdapter(var notesList: ArrayList<String>) : Recycle
 
     override fun onBindViewHolder(holder: CreditCardPdpInfoBulletViewHolder, position: Int) {
         holder.bindData(notesList[position])
-
     }
 
     override fun getItemCount(): Int {
         return notesList.size
     }
-
-
 }
