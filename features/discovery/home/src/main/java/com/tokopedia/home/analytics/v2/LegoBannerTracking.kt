@@ -156,6 +156,8 @@ object LegoBannerTracking : BaseTrackerConst() {
 
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .appendUserId(userId)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -267,6 +269,8 @@ object LegoBannerTracking : BaseTrackerConst() {
                     )
                 })
                 .appendChannelId(channel.id)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendUserId(userId)
                 .build()
     }
