@@ -172,6 +172,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     private fun setupBottomSheet(show: Boolean) {
         if (show) {
+            pdpGamificationView.visibility = View.VISIBLE
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.isHideable = false
         } else {
