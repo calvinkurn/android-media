@@ -40,7 +40,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
-        if (preference.profileId == currentProfileId) {
+        if (preference.enable && preference.profileId == currentProfileId) {
             cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
@@ -128,7 +128,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
-        if (preference.profileId == currentProfileId) {
+        if (preference.enable && preference.profileId == currentProfileId) {
             cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
