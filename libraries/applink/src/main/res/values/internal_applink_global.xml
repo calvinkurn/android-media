@@ -89,6 +89,8 @@
 
     <string name="path_internal_feedback">/internal-feedback</string>
 
+    <string name="path_term_privacy">/term-privacy/.*\</string>
+
     <!-- Ovo Register -->
     <string name="path_ovo_add_name">/ovo-add-name</string>
     <string name="path_ovo_final_page">/ovo-final-page</string>
