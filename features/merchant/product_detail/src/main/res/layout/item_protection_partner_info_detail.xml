@@ -22,7 +22,7 @@
         app:typographyType="body_2"
         tools:text="@string/ktp_protection"/>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_pdp_additional_info"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/unify_space_0"

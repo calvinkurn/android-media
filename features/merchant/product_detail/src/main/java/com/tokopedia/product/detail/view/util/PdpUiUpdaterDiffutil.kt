@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -307,10 +308,10 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                     shopLocation = it.shopInfo.location
                     isGoApotik = it.isGoApotik
                     infoShopData = if (context == null) listOf() else
-                        getTwoShopInfoHiearchy(context,
+                        getTwoShopInfoHieararchy(context,
                                 it.shopSpeed,
-                                it.shopChatSpeed.toIntOrZero(),
-                                it.shopInfo.activeProduct.toIntOrZero(),
+                                it.shopChatSpeed.toLongOrZero(),
+                                it.shopInfo.activeProduct.toLongOrZero(),
                                 it.shopInfo.createdInfo.shopCreated,
                                 it.shopRating)
                 }

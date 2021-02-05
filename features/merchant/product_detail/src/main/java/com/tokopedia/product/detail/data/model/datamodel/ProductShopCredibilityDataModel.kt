@@ -46,7 +46,7 @@ data class ProductShopCredibilityDataModel(
         return typeFactory.type(this)
     }
 
-    fun getTwoShopInfoHiearchy(context: Context, shopSpeed: Int, shopChatSpeed: Int, shopActiveProduct: Int, shopCreated: String, shopRating: Float): List<ShopCredibilityUiData> {
+    fun getTwoShopInfoHieararchy(context: Context, shopSpeed: Long, shopChatSpeed: Long, shopActiveProduct: Long, shopCreated: String, shopRating: Float): List<ShopCredibilityUiData> {
         val createdDated = try {
             SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopCreated).toFormattedString("MMM yyyy", getIdLocale())
         } catch (e: Throwable) {
