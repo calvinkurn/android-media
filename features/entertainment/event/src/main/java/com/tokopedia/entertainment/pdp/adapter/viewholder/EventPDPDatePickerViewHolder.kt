@@ -6,14 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
-import com.tokopedia.entertainment.pdp.common.util.EventConst
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.toFormattedString
 import kotlinx.android.synthetic.main.ent_pdp_form_date_picker_item.view.*
-import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
 import java.text.SimpleDateFormat
-import java.util.*
 
 class EventPDPDatePickerViewHolder(val view: View,
                                    val addOrRemoveData: (Int, String, String) -> Unit,
@@ -27,7 +24,7 @@ class EventPDPDatePickerViewHolder(val view: View,
             tg_event_date_picker.textFieldInput.apply {
                 keyListener = null
                 if (element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
-                    setText(resources.getString(R.string.ent_pdo_form_date_picker_placeholder))
+                    setText(resources.getString(R.string.ent_pdp_form_date_picker_placeholder))
                 } else {
                     val format = SimpleDateFormat(element.options)
                     val date = format.parse(element.value)

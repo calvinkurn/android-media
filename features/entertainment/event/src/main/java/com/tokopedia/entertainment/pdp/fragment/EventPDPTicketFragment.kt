@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -53,8 +52,9 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
@@ -83,6 +83,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
     private var pdpData: ProductDetailData = ProductDetailData()
     private var packageTypeFactoryImp = PackageTypeFactoryImpl(this, this)
+
+    private lateinit var recommendationAdapter: EventPDPParentPackageAdapter
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel
@@ -173,6 +175,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun setupView() {
         setupRecycler()
+        setupRecommendationRecycler()
         setupSwipeRefresh()
         setupHeader()
         setupPilihTicketButton()
@@ -185,12 +188,23 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
+    private fun setupRecommendationRecycler() {
+        val adapterTypeFactory = PackageTypeFactoryImpl(this, this)
+        recommendationAdapter = EventPDPParentPackageAdapter(adapterTypeFactory, eventPDPTracking)
+        rvEventRecommendationList.apply {
+            setHasFixedSize(true)
+            itemAnimator = null
+            adapter = recommendationAdapter
+        }
+    }
+
     private fun setupSwipeRefresh() {
         swipe_refresh_layout.apply {
             setOnRefreshListener {
                 showViewBottom(false)
                 showUbah(false)
                 loadInitialData()
+                showLoadingRecommendationList()
             }
         }
     }
@@ -219,6 +233,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
+                        showLoadingRecommendationList()
                     }
 
                     override fun onDateUnselected(date: Date) {}
@@ -284,10 +299,17 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             showUbah(true)
         })
 
+        viewModel.recommendationTicketModel.observe(viewLifecycleOwner, Observer {
+            it?.run {
+                renderRecommendationList(this)
+            }
+        })
+
         viewModel.error.observe(viewLifecycleOwner, Observer {
             NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewBottom(false)
                 loadInitialData()
+                showLoadingRecommendationList()
             }.showRetrySnackbar()
         })
 
@@ -390,6 +412,26 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         } else {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
             activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
+        }
+    }
+
+    private fun showLoadingRecommendationList() {
+        recommendationAdapter.clearAllElements()
+        recommendationAdapter.addElement(loadingModel)
+    }
+
+    private fun renderRecommendationList(recommendationList: List<EventPDPTicketModel>) {
+        recommendationAdapter.clearAllElements()
+
+        if (recommendationList.isNotEmpty()) {
+            recommendationAdapter.addElement(recommendationList)
+            recommendationAdapter.notifyDataSetChanged()
+
+            tgEventTicketRecommendationTitle.show()
+            rvEventRecommendationList.show()
+        } else {
+            tgEventTicketRecommendationTitle.hide()
+            rvEventRecommendationList.hide()
         }
     }
 
