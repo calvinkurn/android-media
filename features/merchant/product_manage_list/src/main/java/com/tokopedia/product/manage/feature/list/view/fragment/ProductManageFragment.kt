@@ -929,16 +929,16 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
-        Toaster.make(coordinatorLayout, getString(
+        Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_price_success, productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         productManageListAdapter.updatePrice(productId, price)
     }
 
     private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
-        Toaster.make(coordinatorLayout, getString(
+        Toaster.build(coordinatorLayout, getString(
                 com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success, productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         productManageListAdapter.updateStock(productId, stock, status)
 
         filterTab?.getSelectedFilter()?.let {
@@ -950,9 +950,9 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.make(coordinatorLayout, getString(
+        Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         productManageListAdapter.updateCashBack(setCashbackResult.productId, setCashbackResult.cashback)
         val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
         if (filterOptions == listOf(FilterByCondition.CashBackOnly)) {
@@ -1001,9 +1001,9 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     private fun onSuccessDeleteProduct(productName: String, productId: String) {
-        Toaster.make(coordinatorLayout, getString(
+        Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_delete_product_success, productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
         getFiltersTab(withDelay = true)
@@ -1012,13 +1012,13 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     private fun showMessageToast(message: String) {
         view?.let {
             val actionLabel = getString(com.tokopedia.design.R.string.close)
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel)
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel).show()
         }
     }
 
     private fun showMessageToastWithoutAction(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
@@ -1029,7 +1029,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     ) {
         view?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel).show()
         }
     }
 
@@ -1042,14 +1042,14 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
             }
-            Toaster.make(
+            Toaster.build(
                     it,
                     getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.retry_label),
                     onClickActionLabel
-            )
+            ).show()
         }
     }
 
@@ -1105,7 +1105,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
+                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
@@ -1751,9 +1751,9 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
 
     private fun onSetStockReminderResult(threshold: Int, productName: String) {
         if (threshold > 0) {
-            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         } else {
-            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 

@@ -13,7 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import kotlinx.android.synthetic.main.holder_transaction_product.view.*

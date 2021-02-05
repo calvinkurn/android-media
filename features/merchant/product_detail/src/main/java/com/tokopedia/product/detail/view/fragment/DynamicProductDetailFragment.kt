@@ -141,8 +141,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -231,7 +231,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var initToolBarMethod: (() -> Unit)? = null
 
     //Data
-    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     private lateinit var remoteConfig: RemoteConfig
 
@@ -301,8 +300,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         initRecyclerView(view)
         initBtnAction()
         navAbTestCondition({ initNavToolbar() }, { initToolbar() })
-        initStickyLogin(view)
         renderInitialAffiliate()
+        if (!viewModel.isUserSessionActive) initStickyLogin(view)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
@@ -310,12 +309,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        productVideoCoordinator?.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         isLoadingInitialData = true
         ticker_occ_layout.gone()
         loadProductData(true)
+        stickyLoginView?.loadContent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -385,7 +384,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             videoTrackerData?.let {
                 DynamicProductDetailTracking.Click.eventVideoStateChange(
                         viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
-                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
+                        videoTrackerData.first, videoTrackerData.second, isAutoPlay
                 )
                 alreadyHitVideoTracker = true
             }
@@ -558,8 +557,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-                updateStickyState()
-                updateActionButtonShadow()
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
@@ -583,13 +580,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
-                        updateStickyState()
-                        updateActionButtonShadow()
+                        stickyLoginView?.hide()
                     }
+
                     if (isFavoriteFromShopPage != wasFavorite) {
                         onSuccessFavoriteShop(true)
                     }
@@ -1012,7 +1008,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
                         //Tracker Data
                         trackerData?.shopTypeString
-                        ?: "",
+                                ?: "",
                         trackerData?.basic?.shopID ?: "",
                         viewModel.userId, trackerData?.basic?.productID ?: ""))
 
@@ -1028,7 +1024,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0), isMute)
     }
 
-    override fun onVideoStateChange(stopDuration: Long, videoDuration:Long) {
+    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
         viewModel.updateVideoTrackerData(stopDuration, videoDuration)
     }
 
@@ -1101,7 +1097,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
                 setDesc(getString(R.string.campaign_expired_descr))
-                setBtnCancel(getString(R.string.close))
+                setBtnCancel(getString(com.tokopedia.abstraction.R.string.close))
                 setOnCancelClickListener {
                     onSwipeRefresh()
                     dismiss()
@@ -1126,7 +1122,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
-                        toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.msg_success_add_wishlist)
+                        toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
                         addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -1614,7 +1610,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 result.data.ovoValidationDataModel)
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
-                    else -> view?.showToasterError(getString(R.string.default_request_error_unknown), ctaText = getString(R.string.label_oke_pdp))
+                    else -> view?.showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown), ctaText = getString(R.string.label_oke_pdp))
                 }
             }
         }
@@ -1809,8 +1805,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
         }
 
-        updateStickyContent(it.tickerStickyLogin)
-
+        stickyLoginView?.loadContent()
         pdpUiUpdater?.updateDataP3(context, it)
         dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
     }
@@ -1846,7 +1841,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun showSnackbarClose(string: String) {
         view?.let {
             Snackbar.make(it, string, Snackbar.LENGTH_LONG).apply {
-                setAction(getString(R.string.close)) { dismiss() }
+                setAction(getString(com.tokopedia.abstraction.R.string.close)) { dismiss() }
                 setActionTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }.show()
         }
@@ -2093,12 +2088,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onErrorMoveToEtalase(throwable: Throwable) {
         hideProgressDialog()
-        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(R.string.oke))
+        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun onErrorWarehouseProduct(throwable: Throwable) {
         hideProgressDialog()
-        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(R.string.oke))
+        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun onSuccessWarehouseProduct() {
@@ -2353,7 +2348,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
         view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
-                ctaText = getString(R.string.oke))
+                ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
@@ -2371,7 +2366,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
-                ctaText = getString(R.string.oke))
+                ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
@@ -2404,7 +2399,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         varToolbar = search_pdp_toolbar
         initToolBarMethod = ::initToolbarLight
         activity?.let {
-            varToolbar?.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
+            varToolbar?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -2440,67 +2435,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        updateStickyState()
-        updateActionButtonShadow()
-        stickyLoginView?.setOnClickListener {
-            goToLogin()
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnLogin(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnLogin(StickyLoginConstant.Page.PDP)
+        stickyLoginView?.page = StickyLoginConstant.Page.PDP
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                goToLogin()
             }
-        }
-        stickyLoginView?.setOnDismissListener(View.OnClickListener {
-            stickyLoginView?.dismiss(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnDismiss(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnDismiss(StickyLoginConstant.Page.PDP)
+
+            override fun onDismiss() {
+
             }
-            updateStickyState()
+
+            override fun onViewChange(isShowing: Boolean) {
+                updateActionButtonShadow()
+            }
         })
-    }
 
-    private fun updateStickyState() {
-        if (tickerDetail == null) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        if (viewModel.isUserSessionActive) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
-        if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
-            stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        } else {
-            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
-            if (!isCanShowing) {
-                stickyLoginView?.visibility = View.GONE
-                return
-            }
-
-            this.tickerDetail?.let { stickyLoginView?.setContent(it) }
-            stickyLoginView?.show(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.tracker?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        }
-    }
-
-    private fun updateStickyContent(stickyData: StickyLoginTickerPojo.TickerDetail?) {
-        if (stickyData == null) {
-            stickyLoginView?.hide()
-        } else {
-            this.tickerDetail = stickyData
-            updateStickyState()
-            updateActionButtonShadow()
-        }
+        stickyLoginView?.hide()
     }
 
     private fun goToPdpSellerApp() {
@@ -2609,7 +2560,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 activity?.run {
                     val statusMessage = productInfo.basic.statusMessage(this)
                     if (statusMessage.isNotEmpty()) {
-                        view.showToasterError(getString(R.string.product_is_at_status_x, statusMessage), ctaText = getString(R.string.close))
+                        view.showToasterError(getString(R.string.product_is_at_status_x, statusMessage), ctaText = getString(com.tokopedia.abstraction.R.string.close))
                     }
                 }
             }
@@ -2857,10 +2808,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActionOrLogin({
                 nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
-                pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
-                pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
                         ?: "", isNplFollowType)
             })
@@ -2900,7 +2847,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onFailFavoriteShop(t: Throwable) {
-        view?.showToasterError(getErrorMessage(t), ctaText = getString(R.string.retry_label)) {
+        view?.showToasterError(getErrorMessage(t), ctaText = getString(com.tokopedia.abstraction.R.string.retry_label)) {
             onShopFavoriteClick()
         }
         pdpUiUpdater?.failUpdateShopFollow()
@@ -2929,7 +2876,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             if (isAdded) {
                 varToolbar?.setTitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400))
-                varToolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.Unify_N0))
+                varToolbar?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -3046,7 +2993,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateActionButtonShadow() {
         if (stickyLoginView?.isShowing() == true) {
-            actionButtonView.setBackground(R.color.Unify_N0)
+            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
             val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
             drawable?.let { actionButtonView.setBackground(it) }
@@ -3080,7 +3027,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
-                    getString(R.string.title_loading),
+                    getString(com.tokopedia.abstraction.R.string.title_loading),
                     cancelable = onCancelClicked != null,
                     onCancelClicked = {
                         onCancelClicked?.invoke()
@@ -3210,7 +3157,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onFailNotifyMe(t: Throwable) {
         val dataModel = pdpUiUpdater?.notifyMeMap
-        view?.showToasterError(getErrorMessage(t), ctaText = getString(R.string.oke))
+        view?.showToasterError(getErrorMessage(t), ctaText = getString(com.tokopedia.design.R.string.oke))
         if (dataModel != null) {
             pdpUiUpdater?.notifyMeMap?.notifyMe = !dataModel.notifyMe
             dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)

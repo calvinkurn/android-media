@@ -1,7 +1,6 @@
 package com.tokopedia.topads.detail_sheet
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Switch
@@ -17,9 +16,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
-import com.tokopedia.topads.detail_sheet.data.AdData
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
@@ -192,13 +191,13 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 currentAutoAdsStatus == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE)
     }
 
-    private fun onSuccessGroupId(data: List<AdData>) {
+    private fun onSuccessGroupId(data: List<SingleAd>) {
         data.firstOrNull().let {
             groupId = it?.groupID ?: SINGLE_AD
             btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
-        viewModel.getGroupProductData(resources, groupId.toInt(), ::onSuccessProductInfo)
+        viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
             txtBudget.visibility = View.GONE

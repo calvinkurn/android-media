@@ -90,18 +90,10 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <com.google.android.material.tabs.TabLayout
+            <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:elevation="4dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:tabIndicatorColor="@color/topads_common_tab_green"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/Green_G500"
-                app:tabTextAppearance="@style/tabTopAdsStyle"
-                app:tabTextColor="@color/font_black_disabled_38" />
+                android:layout_height="wrap_content" />
         </com.google.android.material.appbar.AppBarLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -25,6 +25,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     init {
         showCloseIcon = false
         showKnob = true
+        overlayClickDismiss = false
     }
 
     companion object {
@@ -84,20 +85,27 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                         it.isEmpty() -> {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_empty_error))
+                            setBtnEnabled(false)
                         }
                         it.length in promoMsgRange -> {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_length_error))
+                            setBtnEnabled(false)
                         }
                         else -> {
                             promotionalMessageInputText.setError(false)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_success))
+                            setBtnEnabled(true)
                         }
                     }
                 }
             }
 
         })
+    }
+
+    private fun setBtnEnabled(isEnabled: Boolean) {
+        saveBtn.isEnabled = isEnabled
     }
 
     private fun setUpChipsText() {

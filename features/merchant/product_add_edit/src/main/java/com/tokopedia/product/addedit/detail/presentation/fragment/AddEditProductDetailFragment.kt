@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
@@ -55,6 +56,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SPECIFICATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
@@ -77,7 +79,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
-import com.tokopedia.product.addedit.tracking.*
+import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
+import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
+import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -148,6 +152,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
     private var categoryAlertDialog: DialogUnify? = null
+
+    // product specification
+    private var productSpecificationLayout: ViewGroup? = null
+    private var productSpecificationTextView: Typography? = null
+    private var addProductSpecificationButton: Typography? = null
+    private var productSpecificationReloadLayout: View? = null
+    private var productSpecificationReloadButton: Typography? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -306,7 +317,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.isEditing) {
+                if (viewModel.specificationList.isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -315,6 +326,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        // add product specification button
+        productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
+        productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
+        addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
+        productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
+        productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
@@ -630,6 +648,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.setupMultiLocationShopValues()
         productStockField?.setMessage(viewModel.productStockMessage)
 
+        setupSpecificationField()
         enableProductNameField()
         onFragmentResult()
         setupBackPressed()
@@ -645,6 +664,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
+        subscribeToSpecificationList()
+        subscribeToSpecificationText()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
@@ -837,6 +858,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     selectedCategoryItemUnify.isBold = false
                     selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
+
+                    // clear specification, get new annotation spec
+                    getAnnotationCategory()
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -847,6 +871,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // display the show case names with comma separator
                         displayProductShowCaseNames(selectedShowcaseList.map { it.showcaseName })
                     } else displayProductShowCaseTips()
+                }
+                REQUEST_CODE_SPECIFICATION -> {
+                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                    val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
+                    saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
+                            ProductInputModel::class.java, viewModel.productInputModel)?.apply {
+                        viewModel.updateSpecification(detailInputModel.specifications.orEmpty())
+                    }
                 }
             }
         }
@@ -1008,6 +1041,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
+            specifications = viewModel.specificationList
         }
     }
 
@@ -1115,6 +1149,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             listItemUnify.isBold = false
             selectedCategory.add(listItemUnify)
             productCategoryRecListView?.setData(selectedCategory)
+            productCategoryId = detailInputModel.categoryId
         }
 
         // product wholesale
@@ -1302,6 +1337,34 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun subscribeToSpecificationList() {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    productSpecificationLayout?.isVisible = result.data.isNotEmpty()
+                    productSpecificationTextView?.show()
+                    productSpecificationReloadLayout?.hide()
+                    viewModel.updateSpecificationByAnnotationCategory(result.data)
+                }
+                is Fail -> {
+                    productSpecificationTextView?.hide()
+                    productSpecificationReloadLayout?.show()
+                }
+            }
+        })
+    }
+
+    private fun subscribeToSpecificationText() {
+        viewModel.specificationText.observe(viewLifecycleOwner, Observer {
+            productSpecificationTextView?.text = it
+            addProductSpecificationButton?.text = if (viewModel.specificationList.isEmpty()) {
+                getString(R.string.action_specification_add)
+            } else {
+                getString(R.string.action_specification_change)
+            }
+        })
+    }
+
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
             if (it) enableSubmitButton()
@@ -1357,9 +1420,58 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
+    private fun setupSpecificationField() {
+        // get annotation category, if not already obtained from the server (specifications == null)
+        val specifications = viewModel.productInputModel.detailInputModel.specifications
+        if (specifications != null) {
+            viewModel.updateSpecification(specifications)
+        } else {
+            getAnnotationCategory()
+        }
+
+        productSpecificationLayout?.isVisible = RollenceUtil.getSpecificationRollence()
+
+        addProductSpecificationButton?.setOnClickListener {
+            showSpecificationPicker()
+        }
+
+        productSpecificationReloadButton?.setOnClickListener {
+            getAnnotationCategory()
+        }
+    }
+
+    private fun getAnnotationCategory() {
+        if (!RollenceUtil.getSpecificationRollence()) return
+        val productId = viewModel.productInputModel.productId
+
+        productSpecificationLayout?.gone()
+        viewModel.getAnnotationCategory(productCategoryId, if (productId > 0) {
+            productId.toString()
+        } else {
+            ""
+        })
+    }
+
+    private fun showSpecificationPicker(){
+        context?.run {
+            val productInputModel = viewModel.productInputModel
+            productInputModel.detailInputModel.apply {
+                if (productCategoryId.isNotBlank()) categoryId = productCategoryId
+                if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+                specifications = viewModel.specificationList
+            }
+
+            val cacheManager = SaveInstanceCacheManager(this, true)
+            cacheManager.put(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+
+            val intent = AddEditProductSpecificationActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, REQUEST_CODE_SPECIFICATION)
+        }
+    }
+
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -1536,12 +1648,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
 
-            productCategoryRecListView?.run {
-                this.setOnItemClickListener { _, _, position, _ ->
-                    if (viewModel.isAdding) {
-                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
-                    }
+            productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
+                if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                }
+
+                // display confirmation if product has a specs
+                if (viewModel.specificationList.isEmpty()) {
                     selectCategoryRecommendation(items, position)
+                } else {
+                    showChangeCategoryDialog {
+                        selectCategoryRecommendation(items, position)
+                    }
                 }
             }
 
@@ -1576,6 +1694,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 val categoryName = it.getCategoryName()
                 productCategoryId = categoryId
                 productCategoryName = categoryName
+                getAnnotationCategory() // update annotation specification
                 true
             }
         }

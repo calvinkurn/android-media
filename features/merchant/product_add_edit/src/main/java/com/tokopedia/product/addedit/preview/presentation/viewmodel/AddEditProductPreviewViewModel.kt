@@ -26,6 +26,9 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationU
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
@@ -57,6 +60,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -137,8 +141,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
-    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
-
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -160,6 +162,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         } else {
                             productInputModel.itemSold = 0 // reset item sold when duplicate product
                             productInputModel.detailInputModel.currentProductName = ""
+                            updateSpecificationFromRemote(productInputModel.detailInputModel.categoryId, it.data.productID)
                         }
 
                         // decrement wholesale min order by one because of > symbol
@@ -420,6 +423,38 @@ class AddEditProductPreviewViewModel @Inject constructor(
     fun resetValidateResult() {
         mValidationResult.value?.result = UNVALIDATED
         mValidationResult.value?.message = ""
+    }
+
+    fun updateSpecificationFromRemote(categoryId: String, productId: String) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            }
+            updateSpecificationByAnnotationCategory(result)
+            mIsLoading.value = false
+        }, onError = {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mIsLoading.value = false
+        })
+    }
+
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
+            }
+        }
+
+        productInputModel.value?.apply {
+            detailInputModel.specifications = result
+        }
     }
 
     private fun authorizeAccess() {

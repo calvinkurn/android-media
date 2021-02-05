@@ -52,7 +52,7 @@ class TopAdsGetListProductUseCase @Inject constructor(graphqlRepository: Graphql
         setGraphqlQuery(TopAdsGetListProductQuery.GQL_QUERY)
     }
 
-    public fun setParams(keyword: String, etalaseId: String, sortBy: String, promoted: String, rows: Int, start: Int, shopId:Int) {
+    fun setParams(keyword: String, etalaseId: String, sortBy: String, promoted: String, rows: Int, start: Int, shopId:Int) {
         val queryMap = mutableMapOf(
                 ParamObject.KEYWORD to keyword,
                 ParamObject.ETALASE to etalaseId,

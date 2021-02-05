@@ -88,7 +88,8 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            />
 
         <include
             android:id="@+id/play_widget_badge_total_view"
@@ -99,7 +100,8 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/play_widget_badge_live"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="@dimen/spacing_lvl3" />
+            app:layout_goneMarginStart="@dimen/spacing_lvl3"
+            />
 
         <include
             android:id="@+id/play_widget_badge_promo"
@@ -109,7 +111,8 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
         <LinearLayout
             android:id="@+id/play_widget_info_container"

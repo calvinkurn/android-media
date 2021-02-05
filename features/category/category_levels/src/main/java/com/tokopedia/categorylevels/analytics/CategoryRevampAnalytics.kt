@@ -19,10 +19,16 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                               private val userSession: UserSessionInterface)
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
+    private var categoryPageIdentifier : String = pageIdentifier
+
+    private fun changePageIdentifier(pageIdentifier: String){
+        categoryPageIdentifier = pageIdentifier
+    }
+
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
     private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
-                                   eventCategory: String = "$VALUE_CATEGORY_PAGE - $pageIdentifier",
+                                   eventCategory: String = "$VALUE_CATEGORY_PAGE - $categoryPageIdentifier",
                                    eventAction: String,
                                    eventLabel: String = EMPTY_STRING): MutableMap<String, Any> {
         return mutableMapOf(
@@ -212,6 +218,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         additionalInfo?.categoryData?.let {
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())
                 TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME, createOpenScreenEventMap(rootId = it[KEY_ROOT_ID], parent = it[KEY_PARENT], id = it[KEY_CATEGORY_ID_MAP], url = it[KEY_URL]))
+            if(!it[KEY_CATEGORY_ID_MAP].isNullOrEmpty()){
+                changePageIdentifier(it[KEY_CATEGORY_ID_MAP]!!)
+            }
         }
     }
 

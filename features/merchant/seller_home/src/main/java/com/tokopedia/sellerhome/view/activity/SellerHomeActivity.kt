@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.activity
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,9 +9,11 @@ import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -31,7 +32,6 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -51,7 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
 
     companion object {
         @JvmStatic
@@ -88,7 +88,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private var statusBarCallback: StatusBarCallback? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
-    var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
+
+    override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
+    override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -116,7 +118,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun onResume() {
         super.onResume()
-        clearNotification()
         homeViewModel.getNotifications()
 
         if (!userSession.isLoggedIn) {
@@ -169,6 +170,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
+                initSomListLoadTimeMonitoring()
                 UpdateShopActiveService.startService(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
@@ -183,6 +185,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override fun menuReselected(position: Int, id: Int) {
 
     }
+
+    override fun initSomListLoadTimeMonitoring() {
+        performanceMonitoringSomListPlt = SomListLoadTimeMonitoring()
+        performanceMonitoringSomListPlt?.initPerformanceMonitoring()
+    }
+
+    override fun getSomListLoadTimeMonitoring() =  performanceMonitoringSomListPlt
 
     private fun fetchSellerAppWidget() {
         val broadcastIntent = Intent().apply {
@@ -309,13 +318,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         when (page.type) {
             FragmentType.PRODUCT -> lastProductManagePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
-        }
-    }
-
-    private fun clearNotification() {
-        if (remoteConfig.isNotificationTrayClear()) {
-            (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
-            NotificationManagerCompat.from(this).cancelAll()
         }
     }
 

@@ -50,7 +50,6 @@
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
     <string name="courier_title">Kurir</string>
-    <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>

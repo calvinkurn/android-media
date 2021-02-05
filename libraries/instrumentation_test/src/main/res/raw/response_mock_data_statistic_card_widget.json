@@ -1,0 +1,74 @@
+[
+  {
+    "data": {
+      "fetchCardWidgetData": {
+        "data": [
+          {
+            "dataKey": "totalNetRevenueVerified",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "productViewStatistic",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "conversionRateSummary",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "totalOrderSummary",
+            "value": "2",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "grossIncomeSummary",
+            "value": "0",
+            "state": "GOOD",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "totalNetRevenueFinish",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "averageOrderSummary",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "averageQuantitySoldSummary",
+            "value": "20",
+            "state": "GOOD",
+            "description": "\u003cspan style\u003dcolor:#EF144A;\u003e\u003cb\u003e-9.09%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "error": false,
+            "errorMsg": ""
+          }
+        ]
+      }
+    }
+  }
+]

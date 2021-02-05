@@ -55,12 +55,12 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
     }
 
     @GqlQuery(REVIEW_DETAIL_QUERY_CLASS_NAME, REVIEW_DETAIL_QUERY)
-    fun setRequestParams(feedbackID: Int) {
+    fun setRequestParams(feedbackID: Long) {
         setGraphqlQuery(ReviewDetail.GQL_QUERY)
         setTypeClass(ProductrevGetReviewDetailResponseWrapper::class.java)
         setRequestParams(
                 RequestParams.create().apply {
-                    putInt(PARAM_FEEDBACK_ID, feedbackID)
+                    putLong(PARAM_FEEDBACK_ID, feedbackID)
                 }.parameters
         )
     }

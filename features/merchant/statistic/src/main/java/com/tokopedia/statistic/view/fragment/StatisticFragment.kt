@@ -113,6 +113,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var performanceMonitoringPieChartWidget: PerformanceMonitoring? = null
     private var performanceMonitoringBarChartWidget: PerformanceMonitoring? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        coroutineScope.launch {
+            startLayoutNetworkPerformanceMonitoring()
+            mViewModel.getWidgetLayout()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
     }
@@ -710,6 +719,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun observeWidgetLayoutLiveData() {
         mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
@@ -719,9 +729,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         })
 
         setProgressBarVisibility(true)
-
-        startLayoutNetworkPerformanceMonitoring()
-        mViewModel.getWidgetLayout()
     }
 
     private fun observeUserRole() {

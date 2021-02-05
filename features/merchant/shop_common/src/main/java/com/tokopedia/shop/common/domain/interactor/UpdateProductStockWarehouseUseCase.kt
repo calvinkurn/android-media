@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.query.UpdateProductStockWarehouse
+import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.query.param.UpdateProductStockWarehouseParam
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.UpdateProductStockWarehouseResponse
@@ -23,8 +24,18 @@ class UpdateProductStockWarehouseUseCase @Inject constructor(graphqlRepository: 
                                 productId: String,
                                 warehouseId: String,
                                 stock: String): RequestParams {
+            val products = listOf(ProductStock(productId, stock))
+            return createRequestParams(shopId, warehouseId, products)
+        }
+
+        @JvmStatic
+        fun createRequestParams(shopId: String,
+                                warehouseId: String,
+                                products: List<ProductStock>): RequestParams {
             return RequestParams.create().apply {
-                putObject(UpdateProductStockWarehouse.INPUT_KEY, UpdateProductStockWarehouseParam.mapToParam(shopId, productId, warehouseId, stock))
+                val params = UpdateProductStockWarehouseParam
+                    .mapToParam(shopId, warehouseId, products)
+                putObject(UpdateProductStockWarehouse.INPUT_KEY, params)
             }
         }
     }

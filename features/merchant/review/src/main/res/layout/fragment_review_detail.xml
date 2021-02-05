@@ -24,6 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/reviewDetailTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/reviewDetailProductCard"
                 android:layout_width="match_parent"
@@ -31,7 +38,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl1"
                 app:card_type="border"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailTicker">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

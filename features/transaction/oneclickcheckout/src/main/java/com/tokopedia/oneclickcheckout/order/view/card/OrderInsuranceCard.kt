@@ -2,9 +2,9 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.design.component.Tooltip
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
@@ -21,7 +21,7 @@ class OrderInsuranceCard(private val view: View, private val listener: OrderInsu
     private val groupInsurance by lazy { view.findViewById<Group>(R.id.group_insurance) }
     private val tvInsurance by lazy { view.findViewById<Typography>(R.id.tv_insurance) }
     private val cbInsurance by lazy { view.findViewById<CheckboxUnify>(R.id.cb_insurance) }
-    private val imgBtInsuranceInfo by lazy { view.findViewById<ImageView>(R.id.img_bt_insurance_info) }
+    private val imgBtInsuranceInfo by lazy { view.findViewById<IconUnify>(R.id.img_bt_insurance_info) }
     private val tvInsurancePrice by lazy { view.findViewById<Typography>(R.id.tv_insurance_price) }
 
     fun setGroupInsuranceVisible(isVisible: Boolean) {

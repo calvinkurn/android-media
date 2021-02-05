@@ -15,7 +15,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module(includes = [ShopShowcaseManagementViewModelModule::class])
-@ShopShowcaseManagementScope
 class ShopShowcaseManagementModule(val context: Context) {
 
     @Provides

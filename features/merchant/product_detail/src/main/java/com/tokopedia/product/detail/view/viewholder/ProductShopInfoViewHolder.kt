@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialDynamicShopInfoView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_shop_info.view.*
@@ -53,10 +54,9 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
             return
         }
         when (payloads[0] as Int) {
-            2 -> shopInfoView.toggleClickableFavoriteBtn(element.enableButtonFavorite)
+            ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE -> shopInfoView.enableButton() // Will only invoke if fail follow shop
             else -> {
                 shopInfoView.updateFavorite(element.isFavorite)
-                shopInfoView.toggleClickableFavoriteBtn(element.enableButtonFavorite)
             }
         }
     }

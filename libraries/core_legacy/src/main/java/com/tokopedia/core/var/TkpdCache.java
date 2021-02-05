@@ -11,7 +11,6 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
-    public static final String MAINTENANCE = "MAINTENANCE";
     public static final String PRODUCT_DETAIL = "PRODUCT_DETAIL_PAGE";
 
     public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
@@ -22,8 +21,8 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String PREV_CODE = "prev_code";
         public static final String PREV_TIME = "prev_time";
         public static final String UUID = "uuid";
-        public static final String MESSAGE = "message";
-        public static final String STATUS2 = "STATUS";
+
+
         public static final String DELAY = "delay";
 
         public static final String WISHLIST = "WISHLIST";

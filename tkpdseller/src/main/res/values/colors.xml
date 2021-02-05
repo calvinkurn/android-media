@@ -34,4 +34,7 @@
     <color name="color_complain_header">#c0000000</color>
     <color name="color_complain_body">#8a000000</color>
     <color name="white_four">#e0e0e0</color>
+
+    <color name="colorBlack">#494949</color>
+    <color name="tkpd_bg_color">#EAEAEA</color>
 </resources>

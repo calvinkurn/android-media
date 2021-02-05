@@ -170,6 +170,20 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
+    // Product specification properties
+
+    fun getProductSpecificationTips(): String {
+        return getString(R.string.label_product_specification_tips).orEmpty()
+    }
+
+    fun getProductSpecificationCounter(count: Int): String {
+        return try {
+            context?.getString(R.string.action_specification_counter, count).orEmpty()
+        } catch (e: Resources.NotFoundException) {
+            ""
+        }
+    }
+
     // admin multi location string properties
 
     fun getAddProductMultiLocationMessage(): String? {
