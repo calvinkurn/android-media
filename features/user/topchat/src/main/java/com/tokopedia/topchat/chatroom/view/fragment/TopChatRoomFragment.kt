@@ -1137,14 +1137,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = getBuyPageIntent(element)
-        startActivity(buyPageIntent)
+        if (usePdp()) {
+            goToPdp(element.productId.toString())
+        } else {
+            val buyPageIntent = getBuyPageIntent(element)
+            startActivity(buyPageIntent)
+        }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = getAtcPageIntent(element)
-        startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
+        if (usePdp()) {
+            goToPdp(element.productId.toString())
+        } else {
+            val atcPageIntent = getAtcPageIntent(element)
+            startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
+        }
     }
 
     override fun onGoToShop() {
@@ -1766,6 +1774,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackReviewCardClick(element: ReviewUiModel) {
         analytics.trackReviewCardClick(element, isSeller(), session.userId)
+    }
+
+    private fun usePdp(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
+    }
+
+    private fun goToPdp(productId: String?) {
+        if (productId == null) return
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+        )
     }
 
     companion object {
