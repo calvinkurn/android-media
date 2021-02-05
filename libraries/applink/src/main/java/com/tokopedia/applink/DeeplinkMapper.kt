@@ -574,15 +574,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
             ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-            ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
-            ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
-            ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
-            ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
-            ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
-            ApplinkConst.PRODUCT_DRAFT -> ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
-            ApplinkConst.SELLER_NEW_ORDER -> getSomNewOrderAppLink(uri)
-            ApplinkConst.SELLER_SHIPMENT -> getSomReadyToShipAppLink(uri)
-            ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink(uri)
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
             ApplinkConst.SellerApp.CONTENT_CREATE_POST -> ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
             ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
