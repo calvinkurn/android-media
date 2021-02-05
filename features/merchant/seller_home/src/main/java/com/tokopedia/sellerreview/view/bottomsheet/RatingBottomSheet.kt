@@ -27,7 +27,7 @@ class RatingBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "SirRatingBottomSheet"
-        private const val PAGE_NAME = "pupup feedback"
+        private const val PAGE_NAME = "popup rating"
 
         fun createInstance(): RatingBottomSheet {
             return RatingBottomSheet()

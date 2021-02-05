@@ -27,7 +27,7 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     companion object {
         const val TAG = "SirFeedbackBottomSheet"
         private const val KEY_RATING = "key_rating"
-        private const val PAGE_NAME = "pupup feedback"
+        private const val PAGE_NAME = "popup feedback"
 
         fun createInstance(rating: Int): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
