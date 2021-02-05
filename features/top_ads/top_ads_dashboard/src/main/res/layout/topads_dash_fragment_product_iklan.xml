@@ -43,11 +43,19 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.unifycomponents.LoaderUnify
                     android:id="@+id/loaderImage"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:translationY="@dimen/dp_20"
+                    app:loader_type="circular" />
+
+                <!--                <com.tokopedia.unifycomponents.ImageUnify-->
+                <!--                    android:id="@+id/loaderImage"-->
+                <!--                    android:layout_width="@dimen/dp_24"-->
+                <!--                    android:layout_height="@dimen/dp_24"-->
+                <!--                    android:layout_gravity="center_horizontal" />-->
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/loader_title"

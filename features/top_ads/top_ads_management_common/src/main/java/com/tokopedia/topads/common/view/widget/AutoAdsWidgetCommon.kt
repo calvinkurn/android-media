@@ -2,6 +2,7 @@ package com.tokopedia.topads.common.view.widget
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -113,9 +114,9 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
             }
-            (context as BaseActivity).startActivity(intent)
             (context as BaseActivity).setResult(Activity.RESULT_OK)
-            (context as BaseActivity).finish()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            (context as BaseActivity).startActivity(intent)
         })
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.common.view.sheet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,11 +51,8 @@ class TopAdsSuccessSheet : BottomSheetUnify() {
                 }
                 putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_PRODUK_IKLAN)
             }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            activity?.finish()
-        }
-        setOnDismissListener {
-            activity?.finish()
         }
     }
 

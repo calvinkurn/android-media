@@ -88,7 +88,7 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btn_submit) {
-            activatedAds()
+            activatedAds(EDIT_AUTOADS)
         }
         if (v?.id == R.id.tip_btn) {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()

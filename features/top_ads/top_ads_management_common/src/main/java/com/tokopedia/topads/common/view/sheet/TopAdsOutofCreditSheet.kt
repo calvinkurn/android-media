@@ -1,5 +1,6 @@
 package com.tokopedia.topads.common.view.sheet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +48,8 @@ class TopAdsOutofCreditSheet : BottomSheetUnify() {
             dismiss()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KREDIT_TOPADS, "")
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            activity?.finish()
         }
         dismissBS?.setOnClickListener {
             dismiss()
@@ -59,9 +60,8 @@ class TopAdsOutofCreditSheet : BottomSheetUnify() {
                 }
                 putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
             }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            activity?.finish()
-
         }
     }
 

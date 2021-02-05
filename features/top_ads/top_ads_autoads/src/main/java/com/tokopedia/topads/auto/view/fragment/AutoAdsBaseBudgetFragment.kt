@@ -1,6 +1,7 @@
 package com.tokopedia.topads.auto.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -13,6 +14,8 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.di.AutoAdsComponent
@@ -20,6 +23,7 @@ import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
@@ -53,7 +57,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     private var lowClickDivider = 1
     private var minDailyBudget = 1
     private var maxDailyBudget = 1
-
+    private var isEditFlow = false
     var topAdsDeposit: Int = 0
 
     val requestType = "auto_ads"
@@ -97,10 +101,19 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
             budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
         budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
-            if (topAdsDeposit <= 0) {
-                insufficientCredit()
-            } else
-                eligible()
+            if (!isEditFlow) {
+                if (topAdsDeposit <= 0) {
+                    insufficientCredit()
+                } else
+                    eligible()
+            } else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
+                    putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
+                    putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+                }
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
         })
 
         priceEditText.textFieldInput.addTextChangedListener(
@@ -204,7 +217,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         }
     }
 
-    fun activatedAds() {
+    fun activatedAds(editAutoads: Int = 0) {
+        isEditFlow = editAutoads == 1
         val budget = priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 TOGGLE_ON,

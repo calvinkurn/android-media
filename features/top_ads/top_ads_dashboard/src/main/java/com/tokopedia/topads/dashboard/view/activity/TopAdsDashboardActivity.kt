@@ -21,6 +21,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -41,6 +42,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendation
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
@@ -141,6 +143,14 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             }
         })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
+        setToast()
+    }
+
+    private fun setToast() {
+        val bundle = intent.extras
+        if (bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, 0) == PARAM_AUTOADS_BUDGET) {
+            Toaster.build(this.findViewById(android.R.id.content), getString(R.string.topads_dashboard_updated_daily_budget), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL).show()
+        }
     }
 
     private fun checkVisibility() {
@@ -187,6 +197,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
+        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, 0)
+                ?: 0)?.select()
         view_pager.currentItem = bundle?.getInt(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, 0)
                 ?: 0
         if (view_pager.currentItem != 0) {

@@ -313,6 +313,7 @@
     <string name="topads_dashboard_no_product_sheet_header">Kamu belum punya produk</string>
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
+    <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>
