@@ -700,9 +700,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            getBottomSheetInstance().setState(it.isFreeze)
+            getBottomSheetInstance().setState(it.statusType.isFreeze)
 
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 gradientBackgroundView.hide()
                 likeView.hide()
                 quickReplyView?.hide()
@@ -1182,13 +1182,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun endLiveInfoViewOnStateChanged(
             event: PlayStatusInfoUiModel
     ) {
-        if(event.isFreeze) {
-            endLiveInfoView.setInfo(
-                    title = event.freezeModel.title,
-                    message = event.freezeModel.message,
-//                    btnTitle = event.freezeButtonTitle,
-//                    btnUrl = event.freezeButtonUrl
-            )
+        if(event.statusType.isFreeze) {
+            endLiveInfoView.setInfo(title = event.freezeModel.title)
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
     }

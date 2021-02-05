@@ -1,10 +1,12 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.Voucher
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import javax.inject.Inject
 
@@ -15,6 +17,7 @@ class PlayUiModelMapper @Inject constructor(
         private val productTagMapper: PlayProductTagUiMapper,
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
+        private val channelStatusMapper: PlayChannelStatusMapper,
 ) {
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
@@ -27,5 +30,9 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
         return chatMapper.mapChat(input)
+    }
+
+    fun mapStatus(input: ChannelStatusResponse): PlayStatusType {
+        return channelStatusMapper.mapStatusFromResponse(input)
     }
 }

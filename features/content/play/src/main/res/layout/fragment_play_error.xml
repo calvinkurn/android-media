@@ -5,7 +5,7 @@
     android:id="@+id/container_global_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_error_background"
+    android:background="@color/play_background"
     android:visibility="gone"
     >
 

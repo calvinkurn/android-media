@@ -1,11 +1,12 @@
 package com.tokopedia.play.view.uimodel.recom
 
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+
 /**
  * Created by jegul on 01/02/21
  */
 data class PlayStatusInfoUiModel(
-        val isBanned: Boolean,
-        val isFreeze: Boolean,
+        val statusType: PlayStatusType,
         val bannedModel: PlayBannedUiModel,
         val freezeModel: PlayFreezeUiModel
 )

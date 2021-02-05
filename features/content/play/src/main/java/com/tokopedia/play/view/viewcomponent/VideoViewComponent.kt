@@ -94,7 +94,7 @@ class VideoViewComponent(
 
         fun configureBackground() {
             rootView.setBackgroundColor(MethodChecker.getColor(rootView.context,
-                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_solid_black
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_video_background
                     else R.color.transparent
             ))
         }

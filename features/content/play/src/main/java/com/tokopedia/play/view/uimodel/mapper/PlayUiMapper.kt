@@ -7,7 +7,6 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
@@ -50,10 +49,7 @@ object PlayUiAMapper {
             bannedMessage = channel.configuration.channelBannedMessage.message,
             bannedTitle = channel.configuration.channelBannedMessage.title,
             bannedButtonTitle = channel.configuration.channelBannedMessage.buttonText,
-            freezeMessage = channel.configuration.channelFreezeScreen.desc,
             freezeTitle = String.format(channel.configuration.channelFreezeScreen.title, channel.title),
-            freezeButtonTitle = channel.configuration.channelFreezeScreen.btnTitle,
-            freezeButtonUrl = channel.configuration.channelFreezeScreen.btnAppLink
     )
 
     private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
