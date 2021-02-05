@@ -16,6 +16,9 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT;
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH;
+
 public class TouchImageAdapter extends PagerAdapter {
     public interface OnImageStateChange {
         void OnStateDefault();
@@ -67,7 +70,7 @@ public class TouchImageAdapter extends PagerAdapter {
 
     private void loadImageFromFile(Context context, ImageView imageView, String thumbnail){
         if (!TextUtils.isEmpty(thumbnail)) {
-            Bitmap bitmap = ImageProcessingUtil.getBitmapFromFile(context, thumbnail);
+            Bitmap bitmap = ImageProcessingUtil.getBitmapFromPath(thumbnail, DEF_WIDTH, DEF_HEIGHT, false);
             imageView.setImageBitmap(bitmap);
         }
     }

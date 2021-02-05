@@ -56,7 +56,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
         ) as HashMap<String, Any>
     }
 
-    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
+    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int, positionOnHome: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
@@ -84,13 +84,13 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST, "1", LIST_MIX_LEFT
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
                 .build()
     }
 
-    fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
+    fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int, positionOnHome: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW_IRIS,
@@ -118,7 +118,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST, "1", LIST_MIX_LEFT
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -127,7 +127,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                 .build()
     }
 
-    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
+    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
@@ -157,7 +157,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, "1", LIST_MIX_LEFT
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
                 .appendScreen(Screen.DEFAULT)
@@ -183,7 +183,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.persoType,
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
-                                name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
+                                name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
                                 position = position.toString()
                         )
                 ))
@@ -210,7 +210,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.persoType,
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
-                                name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
+                                name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
                                 position = position.toString()
                         )
                 ))
@@ -227,8 +227,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                 .build()
     }
 
-    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) {
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome))
     }
 
     fun sendMixLeftSeeAllCardClick(channel: ChannelModel, userId: String){

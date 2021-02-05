@@ -94,11 +94,11 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, adapterPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {

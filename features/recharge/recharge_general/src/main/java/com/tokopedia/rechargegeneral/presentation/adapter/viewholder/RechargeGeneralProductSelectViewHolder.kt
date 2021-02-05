@@ -24,6 +24,10 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             override fun onCustomInputClick() {
                 listener.onCustomInputClick(inputView, productData = mapProducts(data.dataCollections))
             }
+
+            override fun onTextChangeInput() {
+                //do nothing
+            }
         }
 
         // Set recent/applink item data
