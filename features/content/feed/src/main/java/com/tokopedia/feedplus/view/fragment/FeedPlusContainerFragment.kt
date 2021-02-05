@@ -169,7 +169,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initToolbar() {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+//        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
@@ -202,13 +202,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setContentInsetsAbsolute(0,0)
                 it.setToolbarPageName(FEED_PAGE)
                 viewLifecycleOwner.lifecycle.addObserver(it)
-                it.setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
-                                .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
-                )
+                val iconBuilder =IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+                        .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+                        .addIcon(IconList.ID_CART) {}
+                if(RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)){
+                    iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
+                it.setIcon(iconBuilder)
                 it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
             }
         }
