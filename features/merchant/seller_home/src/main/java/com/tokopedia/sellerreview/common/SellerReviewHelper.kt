@@ -34,7 +34,8 @@ import kotlin.math.absoluteValue
 @SellerHomeScope
 class SellerReviewHelper @Inject constructor(
         private val cacheHandler: LocalCacheHandler,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val remoteConfig: SellerAppReviewRemoteConfig
 ) : CoroutineScope {
 
     companion object {
@@ -55,7 +56,8 @@ class SellerReviewHelper @Inject constructor(
      * and never seen the bottom sheet before within last 30 days
      * */
     fun checkForReview(context: Context, fm: FragmentManager) {
-        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
+        val isEnabled = remoteConfig.isSellerReviewEnabled()
+        if (!isEnabled || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
         launchCatchError(block = {
             delay(QUOTA_CHECK_DELAY)

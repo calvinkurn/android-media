@@ -239,4 +239,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
+
+    public static final String SELLERAPP_IN_APP_REVIEW = "android_sellerapp_seller_inapp_review";
 }
