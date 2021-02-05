@@ -20,12 +20,12 @@
 
                 <data
                     android:host="@string/host_digital"
-                    android:path="@string/path_telco_cart"
+                    android:path="@string/path_digital_checkout"
                     android:scheme="@string/internal_scheme" />
 
                 <data
                     android:host="@string/host_digital"
-                    android:path="@string/path_telco_cart"
+                    android:path="@string/path_digital_checkout"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
