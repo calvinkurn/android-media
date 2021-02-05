@@ -283,23 +283,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun setStatusBarColor() {
-        if (GlobalConfig.isSellerApp()) {
-            statusBarColorUtil = StatusBarColorUtil(requireActivity())
-            statusBarColorUtil?.setStatusBarColor()
-        } else {
-            activity?.run {
-                window?.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
-            }
-        }
+        statusBarColorUtil = StatusBarColorUtil(requireActivity())
+        statusBarColorUtil?.setStatusBarColor()
     }
 
     private fun undoStatusBarColor() {
-        if (GlobalConfig.isSellerApp()) {
-            statusBarColorUtil?.undoSetStatusBarColor()
-            statusBarColorUtil = null
-        } else {
-            activity?.window?.statusBarColor = Color.TRANSPARENT
-        }
+        statusBarColorUtil?.undoSetStatusBarColor()
+        statusBarColorUtil = null
     }
 
     private fun clickShowOrder() {
