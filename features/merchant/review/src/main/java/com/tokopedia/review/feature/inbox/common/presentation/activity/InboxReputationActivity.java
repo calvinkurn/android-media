@@ -16,9 +16,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -29,6 +27,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.review.R;
+import com.tokopedia.review.ReviewInstance;
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener;
 import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.common.util.ReviewUtil;
@@ -39,10 +38,15 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
+import com.tokopedia.review.feature.inbox.common.di.component.DaggerInboxReputationComponent;
+import com.tokopedia.review.feature.inbox.common.di.component.InboxReputationComponent;
+import com.tokopedia.review.feature.inbox.common.presentation.viewmodel.InboxReputationViewModel;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.unifycomponents.TabsUnify;
+import com.tokopedia.usecase.coroutines.Fail;
+import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -50,13 +54,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
+public class InboxReputationActivity extends BaseActivity implements HasComponent<InboxReputationComponent>, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
+
+    @Inject
+    InboxReputationViewModel inboxReputationViewModel;
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
@@ -106,12 +114,26 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
             finish();
         }
+        initInjector();
+        observeTabCounter();
         startPerformanceMonitoring();
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
         initView();
         openBuyerReview();
+    }
+
+    @Override
+    public InboxReputationComponent getComponent() {
+        return DaggerInboxReputationComponent
+                .builder()
+                .reviewComponent(ReviewInstance.Companion.getComponent(getApplication()))
+                .build();
+    }
+
+    private void initInjector() {
+        getComponent().inject(this);
     }
 
     private void initView() {
@@ -129,6 +151,21 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
             sellerReputationFragment = SellerReputationFragment.createInstance();
         }
+    }
+
+    private void observeTabCounter() {
+        inboxReputationViewModel.getInboxReviewCounterText().observe(this, stringResult -> {
+            if (stringResult instanceof Success) {
+                String tabCounter = ((Success<String>) stringResult).getData();
+                setupTabViewpager("(" + tabCounter + ")");
+            } else if (stringResult instanceof Fail) {
+                setupTabViewpager("");
+            }
+        });
+        inboxReputationViewModel.getInboxReviewCounter();
+    }
+
+    private void setupTabViewpager(String counter) {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -144,32 +181,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             }
         });
 
-        if (!GlobalConfig.isSellerApp()) {
-            indicator.addNewTab(getString(R.string
-                    .title_tab_waiting_review));
-            indicator.addNewTab(getString(R.string
-                    .title_tab_my_review));
-        }
-
-        if (GlobalConfig.isSellerApp()) {
-            if (reviewSellerFragment != null) {
-                indicator.addNewTab(getString(R.string.title_rating_product));
-            }
-            if (inboxReviewFragment != null) {
-                indicator.addNewTab(getString(R.string.title_review_inbox));
-            }
-        }
-
-        if (userSession.hasShop()) {
-            indicator.addNewTab(getString(R.string
-                    .title_tab_buyer_review));
-        }
-
-        if (GlobalConfig.isSellerApp()) {
-            if (sellerReputationFragment != null) {
-                indicator.addNewTab(getString(R.string.title_reputation_history));
-            }
-        }
+        setupTabName(counter);
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
         viewPager.setOffscreenPageLimit(getFragmentList().size());
@@ -184,6 +196,35 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
+    }
+
+    private void setupTabName(String tabName) {
+        if (!GlobalConfig.isSellerApp()) {
+            indicator.addNewTab(getString(R.string
+                    .title_tab_waiting_review));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_my_review));
+        }
+
+        if (GlobalConfig.isSellerApp()) {
+            if (reviewSellerFragment != null) {
+                indicator.addNewTab(getString(R.string.title_rating_product));
+            }
+            if (inboxReviewFragment != null) {
+                indicator.addNewTab(getString(R.string.title_review_inbox, tabName));
+            }
+        }
+
+        if (userSession.hasShop()) {
+            indicator.addNewTab(getString(R.string
+                    .title_tab_buyer_review));
+        }
+
+        if (GlobalConfig.isSellerApp()) {
+            if (sellerReputationFragment != null) {
+                indicator.addNewTab(getString(R.string.title_reputation_history));
+            }
+        }
     }
 
     private void openBuyerReview() {
@@ -282,11 +323,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     private void setupToolbar() {

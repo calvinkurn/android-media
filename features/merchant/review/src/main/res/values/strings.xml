@@ -1,6 +1,6 @@
 <resources>
     <string name="title_review_rating_product">Rating Produk</string>
-    <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="title_review_inbox">Inbox Ulasan %s</string>
     <string name="title_reputation_history">Penalti dan Reward</string>
     <string name="title_review_detail_page">Review Detail Page</string>
     <string name="title_review_reply">Balas Ulasan</string>
