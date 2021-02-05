@@ -24,6 +24,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import kotlinx.coroutines.Dispatchers
@@ -127,8 +128,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
         // This value determine whether we should update stock in separate use case.
         // If true we do not need use separate use case
         val shouldEditStockDirectly =
-                productInputModel.detailInputModel.stock > 0 ||
-                        !(userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin))
+                !(userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin))
         val param = editProductInputMapper.mapInputToParam(
                 shopId,
                 productInputModel.productId.toString(),
@@ -145,7 +145,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 val updateHqStockDeferred = async {
                     if (!shouldEditStockDirectly) {
                         productInputModel.run {
-                            updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock)
+                            updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
                     }
                 }}
                 productEditDeferred.await()
@@ -182,11 +182,19 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     private suspend fun updateHqStockThroughIms(shopId: String,
                                                 productId: String,
-                                                stock: Int) {
+                                                stock: Int,
+                                                variantInputModel: VariantInputModel) {
         getHeadquartersLocationId(shopId)?.let { warehouseId ->
-            UpdateProductStockWarehouseUseCase
-                    .createRequestParams(shopId, productId, warehouseId, stock.toString()).let { requestParam ->
-                updateProductStockWarehouseUseCase.execute(requestParam)
+            variantInputModel.products.map { variantProduct ->
+                ProductStock(variantProduct.id, variantProduct.stock.toString()) }.let { variants ->
+                    mutableListOf(ProductStock(productId, stock.toString())).apply {
+                        addAll(variants)
+                    }
+            }.let { productsParam ->
+                UpdateProductStockWarehouseUseCase
+                        .createRequestParams(shopId, warehouseId, productsParam).let { requestParam ->
+                            updateProductStockWarehouseUseCase.execute(requestParam)
+                        }
             }
         }
     }
