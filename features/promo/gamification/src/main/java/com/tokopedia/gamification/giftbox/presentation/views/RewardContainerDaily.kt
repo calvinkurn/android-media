@@ -3,11 +3,9 @@ package com.tokopedia.gamification.giftbox.presentation.views
 import android.animation.*
 import android.app.Activity
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -26,6 +24,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecorat
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.user.session.UserSession
+import kotlin.math.min
 
 open class RewardContainerDaily @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -45,7 +44,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
     var userSession: UserSession? = null
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
     private var milliSecondsPerInch = 2f
-    private var cancelAutoScroll = false
+    var isTablet = false
 
     open val LAYOUT_ID = R.layout.view_reward_container_daily
 
@@ -59,7 +58,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
         initViews()
     }
 
-    open fun readAttrs(attrs: AttributeSet?) {}
+    open fun readAttrs(attrs: AttributeSet?) {
+        isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
+    }
 
     open fun initViews() {
         rvCoupons = findViewById(R.id.rv_coupons)
@@ -101,23 +102,6 @@ open class RewardContainerDaily @JvmOverloads constructor(
                 rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
 
-        rvCoupons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && !cancelAutoScroll) {
-                    rvCoupons.smoothScrollToPosition(0)
-                }
-            }
-        })
-
-        rvCoupons.setOnTouchListener { _, event ->
-            when (event?.action) {
-                MotionEvent.ACTION_DOWN,
-                MotionEvent.ACTION_MOVE -> cancelAutoScroll = true
-            }
-            false
-        }
-
         couponAdapter = CouponAdapter(sourceType, couponList, isTablet)
         rvCoupons.adapter = couponAdapter
 
@@ -129,9 +113,16 @@ open class RewardContainerDaily @JvmOverloads constructor(
         val anim2 = rvCouponsAnimations()
         anim2.addListener(onEnd = {
             if (couponList.size > 1) {
-                Handler().postDelayed({
-                    rvCoupons.smoothScrollToPosition(couponList.size - 1)
-                },700L)
+                val baseDuration = 1000
+                val maxDuration = 5000
+                var scrollDistance = 0
+                val animDuration = min((couponList.size - 1) * baseDuration, maxDuration)
+                if (isTablet) {
+                    scrollDistance = (couponList.size - 1) * context.resources.getDimension(R.dimen.gami_rv_coupons_width).toInt()
+                } else {
+                    scrollDistance = (couponList.size - 1) * rvCoupons.width
+                }
+                rvCoupons.smoothScrollBy(scrollDistance, 0, CubicBezierInterpolator(0.63f, 0.01f, 0.29f, 1f), animDuration)
             }
         })
         return anim2
