@@ -6,12 +6,14 @@ import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.JsonReader
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,7 +35,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var allowOverride = true
     protected var needLogin = false
     var webViewTitle = ""
-    private var whiteListedDomains = emptyList<String>()
+    var whiteListedDomains = WhiteListedDomains()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getWhiteListedDomains()
@@ -200,7 +202,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val domain = getDomainName(url)
         if (domain.isNotEmpty()) {
             val baseDomain = getBaseDomain(domain)
-            if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(baseDomain)) {
+            if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
                 Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
                 redirectToNativeBrowser()
             }
@@ -214,10 +216,13 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        whiteListedDomains.forEach {
-            if(it.contains(domain)) {
-                return true
+        if(whiteListedDomains.isEnabled) {
+            whiteListedDomains.domains.forEach {
+                if(it.contains(domain)) {
+                    return true
+                }
             }
+            return false
         }
         return false
     }
@@ -225,7 +230,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun getWhiteListedDomains() {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
         val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-        whiteListedDomains = whiteListedDomainsCsv.split(",".toRegex()).map { getBaseDomain(getDomainName(it)) }.filter { it.isNotEmpty() }
+        whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
     }
 
     private fun getBaseDomain(host: String): String {
