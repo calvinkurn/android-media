@@ -122,11 +122,11 @@ class NotifViewModel @Inject constructor(
             val params = verifyPushNotifExpUseCase.getParams(challengeCode, signature, status)
             val data = verifyPushNotifExpUseCase.getData(params).data
             when {
-                data.success -> {
-                    _verifyPushNotifExpResult.value = Success(data)
-                }
                 data.errorMessage.isNotEmpty() -> {
                     _verifyPushNotifExpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+                else -> {
+                    _verifyPushNotifExpResult.value = Success(data)
                 }
             }
         }, {
