@@ -335,9 +335,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupFilter() {
         filter?.setFilterListener(
                 object : NotificationFilterView.FilterListener {
-                    override fun onFilterChanged(filterType: Long) {
+                    override fun onFilterChanged(filterType: Long, filterName: String) {
                         viewModel.filter = filterType
                         loadInitialData()
+                        analytic.trackFilterClick(
+                                filterType, filterName, containerListener?.role
+                        )
                     }
                 }
         )
@@ -500,6 +503,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun refreshPage() {
         onRetryClicked()
+    }
+
+    override fun trackClickCtaWidget(element: NotificationUiModel) {
+        analytic.trackClickCtaWidget(element, containerListener?.role)
     }
 
     private fun createViewHolderState(

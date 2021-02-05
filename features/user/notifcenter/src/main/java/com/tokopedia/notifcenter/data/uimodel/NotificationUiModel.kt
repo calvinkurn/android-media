@@ -1,12 +1,15 @@
 package com.tokopedia.notifcenter.data.uimodel
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
 
+@SuppressLint("Invalid Data Type")
 data class NotificationUiModel(
         @SerializedName("bottomsheet")
         val bottomsheet: Bottomsheet = Bottomsheet(),
@@ -69,7 +72,13 @@ data class NotificationUiModel(
         @SerializedName("update_time_unix")
         val updateTimeUnix: Long = 0,
         @SerializedName("user_id")
-        val userId: Long = 0
+        val userId: Long = 0,
+        @SerializedName("notif_order_type")
+        val widgetType: Int = 0,
+        @SerializedName("track_history")
+        val trackHistory: List<TrackHistory> = listOf(),
+        @SerializedName("widget")
+        val widget: Widget = Widget()
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient
@@ -78,10 +87,34 @@ data class NotificationUiModel(
             time = Date(expireTimeUnix * 1000)
         }
     }
+
+    @delegate:Transient
+    val widgetTitleHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.title)
+    }
+
+    @delegate:Transient
+    val widgetDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.description)
+    }
+
+    @delegate:Transient
+    val widgetMessageHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.message)
+    }
+
+    @delegate:Transient
+    val shortDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(shortDescriptionHtml)
+    }
+
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
     val createTimeUnixMillis: Long get() = createTimeUnix * 1000
+    val widgetCtaText: String get() = widget.buttonText
+    var isHistoryVisible = false
+        private set
 
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)
@@ -127,6 +160,39 @@ data class NotificationUiModel(
         return readStatus != STATUS_UNREAD
     }
 
+    fun hasWidget(): Boolean {
+        return isSingleLineWidget() || isMultiLineWidget()
+    }
+
+    fun toggleHistoryVisibility() {
+        isHistoryVisible = !isHistoryVisible
+    }
+
+    fun isSingleLineWidget(): Boolean {
+        return widgetType == WIDGET_SINGLE
+    }
+
+    fun isMultiLineWidget(): Boolean {
+        return widgetType == WIDGET_MULTIPLE
+    }
+
+    fun hasSingleLineDesc(): Boolean {
+        return isSingleLineWidget() && widget.description.isNotEmpty()
+    }
+
+    fun noWidgetWithTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET
+                && trackHistory.isNotEmpty()
+    }
+
+    fun isTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY
+    }
+
+    fun hasTrackHistory(): Boolean {
+        return trackHistory.isNotEmpty()
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2
@@ -135,11 +201,16 @@ data class NotificationUiModel(
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
         const val TYPE_ATC = 3
+        const val TYPE_TRACK_HISTORY = 8
         const val TYPE_RECOM = 2
 
         const val BS_TYPE_LongerContent = 0
         const val BS_TYPE_ProductCheckout = 1
         const val BS_TYPE_StockHandler = 2
         const val BS_TYPE_Information = 3
+
+        const val NO_WIDGET = 0
+        const val WIDGET_SINGLE = 1
+        const val WIDGET_MULTIPLE = 2
     }
 }
