@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -188,10 +189,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
-            /*threeDotsClickShopProductViewModel?.let {
-                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, true)
-            }
-            redirectToLoginPage()*/
+            RouteManager.route(context, ApplinkConst.LOGIN)
         } else {
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
         }
