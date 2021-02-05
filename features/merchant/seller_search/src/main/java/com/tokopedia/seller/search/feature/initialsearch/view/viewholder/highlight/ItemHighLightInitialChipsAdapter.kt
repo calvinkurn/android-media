@@ -19,20 +19,11 @@ class ItemHighLightInitialChipsAdapter(private val highLightListener: HistorySea
     private var highLightChipsUiModel = mutableListOf<ItemHighlightInitialSearchUiModel>()
 
     fun setChipsHighlight(newHighLightChipsUiModelInitial: List<ItemHighlightInitialSearchUiModel>) {
-        if (newHighLightChipsUiModelInitial.size >= MAX_CHIPS_FILTER) {
-            val maxChipsHighlight = newHighLightChipsUiModelInitial.take(MAX_CHIPS_FILTER)
-            val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, maxChipsHighlight)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            highLightChipsUiModel.clear()
-            highLightChipsUiModel.addAll(maxChipsHighlight)
-            diffResult.dispatchUpdatesTo(this)
-        } else {
-            val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModelInitial)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            highLightChipsUiModel.clear()
-            highLightChipsUiModel.addAll(newHighLightChipsUiModelInitial)
-            diffResult.dispatchUpdatesTo(this)
-        }
+        val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModelInitial)
+        val diffResult = DiffUtil.calculateDiff(callBack)
+        highLightChipsUiModel.clear()
+        highLightChipsUiModel.addAll(newHighLightChipsUiModelInitial)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsListViewHolder {
@@ -66,9 +57,5 @@ class ItemHighLightInitialChipsAdapter(private val highLightListener: HistorySea
                 }
             }
         }
-    }
-
-    companion object {
-        const val MAX_CHIPS_FILTER = 5
     }
 }
