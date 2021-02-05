@@ -15,7 +15,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTitle"
         android:text="@string/power_merchant_register_title"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"
@@ -26,7 +26,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textDescription"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -39,7 +39,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textHowToUpgrade"
         android:text="@string/power_merchant_how_to_upgrade"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:textAllCaps="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textRegister"
         android:text="@string/power_merchant_register"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textVerification"
         android:text="@string/power_merchant_verification_hint"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textShopScore"
         android:text="@string/power_merchant_shop_score_hint"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
