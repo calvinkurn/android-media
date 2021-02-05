@@ -30,7 +30,10 @@ class RatingBottomSheet : BaseBottomSheet() {
         private const val PAGE_NAME = "popup rating"
 
         fun createInstance(): RatingBottomSheet {
-            return RatingBottomSheet()
+            return RatingBottomSheet().apply {
+                showCloseIcon = false
+                showHeader = false
+            }
         }
     }
 
@@ -80,6 +83,9 @@ class RatingBottomSheet : BaseBottomSheet() {
                 givenRating = rating
             }
         })
+        btnSirCloseRating.setOnClickListener {
+            dismiss()
+        }
         btnSirSubmit.setOnClickListener {
             submitRating()
         }

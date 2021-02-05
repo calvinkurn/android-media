@@ -9,7 +9,16 @@
         android:id="@+id/lottieSirRatingIllustration"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/sah_dimen_280dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnSirCloseRating"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
