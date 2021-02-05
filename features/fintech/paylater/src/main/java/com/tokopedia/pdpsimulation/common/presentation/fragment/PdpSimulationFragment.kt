@@ -16,9 +16,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.CreditCard
-import com.tokopedia.pdpsimulation.common.PayLater
-import com.tokopedia.pdpsimulation.common.PaymentMode
+import com.tokopedia.pdpsimulation.common.helper.CreditCard
+import com.tokopedia.pdpsimulation.common.helper.PayLater
+import com.tokopedia.pdpsimulation.common.helper.PaymentMode
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.BottomSheetManager

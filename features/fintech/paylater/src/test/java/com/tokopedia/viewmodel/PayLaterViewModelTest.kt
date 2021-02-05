@@ -38,7 +38,6 @@ class PayLaterViewModelTest {
     val fetchFailedErrorMessage = "Fetch Failed"
     val nullDataErrorMessage = "NULL DATA"
     val mockThrowable = Throwable(message = fetchFailedErrorMessage)
-    private val emptyPayLaterActivityResponseResult = PayLaterActivityResponse()
     private var payLaterActivityObserver = mockk<Observer<Result<PayLaterProductData>>>(relaxed = true)
 
     @Before

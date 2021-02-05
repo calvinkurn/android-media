@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.common
+package com.tokopedia.pdpsimulation.common.helper
 
 sealed class PaymentMode
 object PayLater: PaymentMode()
