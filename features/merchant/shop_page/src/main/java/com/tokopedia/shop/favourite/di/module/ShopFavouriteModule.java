@@ -16,7 +16,6 @@ import dagger.Provides;
 
 import static com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase.QUERY_SHOP_FOLLOWER_LIST;
 
-@ShopFavouriteScope
 @Module
 public class ShopFavouriteModule {
 

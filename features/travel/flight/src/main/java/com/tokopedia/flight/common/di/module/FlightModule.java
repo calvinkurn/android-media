@@ -59,7 +59,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by User on 10/24/2017.
  */
 
-@FlightScope
 @Module
 public class FlightModule {
     private static final int NET_READ_TIMEOUT = 60;

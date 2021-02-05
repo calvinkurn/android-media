@@ -27,21 +27,18 @@ class UohRecommendationTrackingTest {
         private const val QUERY_SUMMARY_RECOMMENDATION_UOH = "tracker/transaction/uoh_recommendation_summary.json"
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
         private const val KEY_UOH_RECOMMENDATION = "productRecommendation"
-        private const val IDLING_RESOURCE = "uoh_fake_login"
     }
 
     @get:Rule
     var activityRule = IntentsTestRule(UohListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        IdlingRegistry.getInstance().register(idlingResourceLogin)
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
 
         setupGraphqlMockResponse {
@@ -49,7 +46,7 @@ class UohRecommendationTrackingTest {
             addMockResponse(KEY_UOH_RECOMMENDATION, InstrumentationMockHelper.getRawString(context, R.raw.response_uoh_recommendation_items), MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         onIdle()
 
         activityRule.launchActivity(null)
@@ -59,7 +56,6 @@ class UohRecommendationTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(UohIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
         activityRule.finishActivity()
     }
 

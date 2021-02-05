@@ -62,7 +62,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
-        fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
+        fun onErrorReloginAfterSQ(): Function1<Throwable, Unit>
 
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
 
@@ -78,7 +78,7 @@ interface LoginEmailPhoneContract {
 
         fun showPopup(): Function1<PopupError, Unit>
 
-        fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
+        fun onGoToActivationPage(email: String)
 
         fun onGoToSecurityQuestion(email: String): Function0<Unit>
 

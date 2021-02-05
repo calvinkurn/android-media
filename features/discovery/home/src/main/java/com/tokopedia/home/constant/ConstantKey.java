@@ -47,4 +47,9 @@ public class ConstantKey {
         public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
         public static final String AUTO_TRANSITION_VARIANT = "auto_transition";
     }
+
+    public class HomeTimber {
+        public static final String TAG = "P2#HOME_STATUS#";
+        public static final int MAX_LIMIT = 1000;
+    }
 }

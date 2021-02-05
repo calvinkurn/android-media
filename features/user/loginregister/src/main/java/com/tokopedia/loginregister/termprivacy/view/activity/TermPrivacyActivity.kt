@@ -1,7 +1,5 @@
 package com.tokopedia.loginregister.termprivacy.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -25,7 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_C
  * RouteManager.getIntent(getActivity(), TERM_PRIVACY, PAGE_TERM_AND_CONDITION)
  * */
 
-class TermPrivacyActivity: BaseSimpleActivity() {
+class TermPrivacyActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return null

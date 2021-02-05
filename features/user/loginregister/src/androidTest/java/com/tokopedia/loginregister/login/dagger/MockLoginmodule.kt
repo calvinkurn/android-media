@@ -10,10 +10,11 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.common.di.LoginRegisterScope
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Named
 
@@ -37,13 +38,6 @@ class MockLoginmodule {
     }
 
     @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
-        override fun ui(): CoroutineDispatcher = Dispatchers.Main
-
-        override fun io(): CoroutineDispatcher = Dispatchers.IO
-    }
-
-    @Provides
     @RequiresApi(Build.VERSION_CODES.M)
     fun provideCryptographyUtils(): Cryptography? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -54,6 +48,19 @@ class MockLoginmodule {
     @Provides
     fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
         return FingerprintPreferenceHelper(context)
+    }
+
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return object : DispatcherProvider {
+            override fun io(): CoroutineDispatcher {
+                return IO
+            }
+
+            override fun ui(): CoroutineDispatcher {
+                return Main
+            }
+        }
     }
 
 }

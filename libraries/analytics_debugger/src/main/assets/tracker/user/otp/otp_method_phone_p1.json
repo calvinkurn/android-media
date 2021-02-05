@@ -1,0 +1,13 @@
+{
+  "readme": "P1#OTP - OTP METHOD PHONE",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickOtp",
+      "eventCategory": "choose otp page",
+      "eventAction": "click on otp method",
+      "eventLabel": "116 - sms",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

@@ -17,7 +17,6 @@ import dagger.Provides;
 
 import static com.tokopedia.shop.product.data.GQLQueryConstant.SHOP_NOTES;
 
-@ShopNoteScope
 @Module
 public class ShopNoteModule {
 
