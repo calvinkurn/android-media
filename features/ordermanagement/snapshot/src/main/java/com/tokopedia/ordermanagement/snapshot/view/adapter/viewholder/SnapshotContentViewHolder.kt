@@ -70,14 +70,26 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 tickerInfo.setHtmlDescription(it) }
 
             val productPrice = itemView.findViewById<Typography>(R.id.snapshot_main_price)
-            productPrice.text = "Rp${item.dataObject.orderDetail.normalPrice}"
+            productPrice.text = item.dataObject.productAdditionalData.productPrice
 
             val discLabel = itemView.findViewById<Label>(R.id.snapshot_label_disc)
-            discLabel.text = item.dataObject.campaignData.campaign.discountPercentageText
+            val discPercentage = item.dataObject.campaignData.campaign.discountPercentageText
+            if (discPercentage.isEmpty()) {
+                discLabel.gone()
+            } else {
+                discLabel.visible()
+                discLabel.text = item.dataObject.campaignData.campaign.discountPercentageText
+            }
 
             val hargaCoret = itemView.findViewById<Typography>(R.id.snapshot_harga_coret)
-            hargaCoret.text = item.dataObject.campaignData.campaign.originalPrice
-            hargaCoret.paintFlags = hargaCoret.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+            val originalPrice = item.dataObject.campaignData.campaign.originalPrice
+            if (originalPrice.isEmpty()) {
+                hargaCoret.gone()
+            } else {
+                hargaCoret.visible()
+                hargaCoret.text = item.dataObject.campaignData.campaign.originalPrice
+                hargaCoret.paintFlags = hargaCoret.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+            }
 
             val productName = itemView.findViewById<Typography>(R.id.snapshot_product_name)
             productName.text = item.dataObject.orderDetail.productName

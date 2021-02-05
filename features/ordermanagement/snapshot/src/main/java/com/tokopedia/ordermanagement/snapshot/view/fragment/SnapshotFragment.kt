@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -37,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
+class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,6 +53,8 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
     private var orderId = ""
     private var orderDetailId = ""
     private var responseSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
+    private var srlSnapshot: SwipeToRefresh? = null
+    private var refreshHandler: RefreshHandler? = null
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
@@ -81,6 +85,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
                               savedInstanceState: Bundle?): View {
         val contentView = inflater.inflate(R.layout.snapshot_fragment, container, false)
         rv = contentView.findViewById(R.id.rv_snapshot)
+        srlSnapshot = contentView.findViewById(R.id.swipe_refresh_layout)
         btnSnapshotToPdp = contentView.findViewById(R.id.btn_snapshot_to_pdp)
         clShop = contentView.findViewById(R.id.cl_shop)
         return contentView
@@ -135,6 +140,8 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
     }
 
     private fun prepareLayout() {
+        refreshHandler = RefreshHandler(srlSnapshot, this)
+        refreshHandler?.setPullEnabled(true)
         snapshotAdapter = SnapshotAdapter().apply {
             setActionListener(this@SnapshotFragment)
         }
@@ -151,6 +158,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    refreshHandler?.finishRefresh()
                     responseSnapshot = result.data
                     snapshotAdapter.snapshotResponse = result.data
                     snapshotAdapter.showContent()
@@ -193,5 +201,9 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
                     strings,
                     null, position))
         }
+    }
+
+    override fun onRefresh(view: View?) {
+        initialLoad()
     }
 }
