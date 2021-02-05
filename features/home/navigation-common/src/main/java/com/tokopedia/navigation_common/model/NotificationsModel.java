@@ -31,7 +31,7 @@ public class NotificationsModel {
 
     @SerializedName("inbox_counter")
     @Expose
-    private final InboxCounter inboxCounter = new InboxCounter();
+    private InboxCounter inboxCounter = new InboxCounter();
 
     @SerializedName("chat")
     @Expose
