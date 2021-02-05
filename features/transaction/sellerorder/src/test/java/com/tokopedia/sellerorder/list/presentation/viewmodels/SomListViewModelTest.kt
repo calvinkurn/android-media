@@ -113,7 +113,7 @@ class SomListViewModelTest {
             shippingList = mutableSetOf(12)
             orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
-            nextOrderId = "123456"
+            nextOrderId = 123456L
         }
         viewModel.updateGetOrderListParams(newParams)
     }
