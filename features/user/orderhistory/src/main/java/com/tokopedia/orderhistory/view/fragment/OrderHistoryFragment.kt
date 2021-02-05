@@ -27,6 +27,7 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
@@ -41,8 +42,10 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var analytic: OrderHistoryAnalytic
+
     @Inject
     lateinit var session: UserSessionInterface
 
@@ -61,8 +64,13 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
             bindView(it)
             setupRecyclerview()
             initializeArguments()
+            initRemoteConfig()
             setupProductListObserver()
         }
+    }
+
+    private fun initRemoteConfig() {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     private fun bindView(view: View?) {
