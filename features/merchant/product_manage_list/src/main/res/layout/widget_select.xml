@@ -30,7 +30,8 @@
         app:srcCompat="@drawable/ic_check_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
-        app:layout_constraintBottom_toBottomOf="@id/title" />
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:contentDescription="@string/checklist_filter_see_all_product_manage" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
