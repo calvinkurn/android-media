@@ -29,7 +29,7 @@ object TrackingConstant {
     }
 
     object Value {
-        const val PHYSICAL_GOODS = "physical goods"
+        const val PHYSICAL_GOODS = "physicalgoods"
         const val TOKOPEDIASELLER = "tokopediaseller"
     }
 }
