@@ -3,12 +3,14 @@ package com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
+import com.tokopedia.ordermanagement.snapshot.analytics.SnapshotAnalytics
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
@@ -130,6 +132,12 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     null
                 }
             }
+
+            val clShop = itemView.findViewById<ConstraintLayout>(R.id.cl_shop)
+            clShop?.setOnClickListener {
+                actionListener?.onSnapshotShopClicked(item.dataObject.shopSummary.shopId)
+            }
+
             val kondisiLabel = itemView.findViewById<Typography>(R.id.snapshot_kondisi_label)
             val kondisiValue = itemView.findViewById<Typography>(R.id.snapshot_kondisi_value)
             val dividerKondisi = itemView.findViewById<View>(R.id.divider_kondisi)
