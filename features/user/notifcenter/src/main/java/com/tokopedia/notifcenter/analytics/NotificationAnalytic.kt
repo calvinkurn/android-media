@@ -19,10 +19,6 @@ class NotificationAnalytic @Inject constructor(
     private val CURRENCY_IDR = "IDR"
     private val KEY_EVENT_LABEL = "eventLabel"
 
-    companion object {
-        const val LIST_NOTIFCENTER = "/notifcenter"
-    }
-
     private class Event private constructor() {
         companion object {
             const val PRODUCT_VIEW = "productView"
@@ -273,9 +269,16 @@ class NotificationAnalytic @Inject constructor(
 
     private fun getRoleString(@RoleType role: Int): String {
         return when (role) {
-            RoleType.BUYER -> "buyer"
-            RoleType.SELLER -> "seller"
+            RoleType.BUYER -> labelBuyer
+            RoleType.SELLER -> labelSeller
             else -> ""
         }
     }
+
+    companion object {
+        const val LIST_NOTIFCENTER = "/notifcenter"
+        private const val labelBuyer = "buyer"
+        private const val labelSeller = "seller"
+    }
+
 }
