@@ -49,14 +49,6 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun dismiss() {
-        view?.post {
-            if (isVisible) {
-                super.dismiss()
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         onDestroyCallback?.invoke()
