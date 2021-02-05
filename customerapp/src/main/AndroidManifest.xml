@@ -85,10 +85,10 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="7Z8WMZDP88R5LO4QJ7VLDJVLY"/>
+            android:value="@string/hansel_app_id"/>
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="NDQUDBAK0GKIYDBGN16I5MRJQ3DJK9XGLVY28Y6462R6YY274K"/>
+            android:value="@string/hansel_app_key"/>
         <meta-data android:name="com.google.android.actions" android:resource="@xml/actions" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
