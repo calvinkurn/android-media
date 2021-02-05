@@ -442,7 +442,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
-            if (isSellerView() && isNewView() || GlobalConfig.isSellerApp()) {
+            if (isSellerView() && isNewView()) {
                 addItem(getSellerFilterList())
                 setSettingsChipMargins()
                 initCoachmark()
@@ -538,7 +538,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter, isSellerView() || GlobalConfig.isSellerApp())
+        viewModel.setFilter(filter, isSellerView())
         showFullPageLoading()
         clearAllData()
     }
@@ -575,7 +575,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isSellerView(): Boolean {
-        return viewModel.getType() == TalkInboxTab.SHOP_OLD
+        return viewModel.getType() == TalkInboxTab.SHOP_OLD || GlobalConfig.isSellerApp() || viewModel.getType() == TalkInboxTab.SHOP_TAB
     }
 
     private fun getProblemCount(): Long {
