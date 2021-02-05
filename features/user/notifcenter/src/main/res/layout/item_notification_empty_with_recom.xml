@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tv_empty_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl8"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl8"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:text="@string/title_notifcenter_empty_with_recom"
+    android:textColor="@color/Unify_N700_68"
+    app:typographyType="body_3" />
