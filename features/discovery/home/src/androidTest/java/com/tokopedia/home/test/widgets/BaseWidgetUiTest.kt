@@ -78,7 +78,6 @@ abstract class BaseWidgetUiTest{
             homeUseCase = getHomeUseCase,
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
