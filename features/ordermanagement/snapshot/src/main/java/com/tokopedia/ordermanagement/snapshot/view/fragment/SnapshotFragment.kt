@@ -85,7 +85,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                               savedInstanceState: Bundle?): View {
         val contentView = inflater.inflate(R.layout.snapshot_fragment, container, false)
         rv = contentView.findViewById(R.id.rv_snapshot)
-        srlSnapshot = contentView.findViewById(R.id.swipe_refresh_layout)
+        srlSnapshot = contentView.findViewById(R.id.snapshot_swipe_to_refresh)
         btnSnapshotToPdp = contentView.findViewById(R.id.btn_snapshot_to_pdp)
         clShop = contentView.findViewById(R.id.cl_shop)
         return contentView

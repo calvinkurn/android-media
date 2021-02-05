@@ -8,13 +8,13 @@
     tools:context=".view.fragment.SnapshotFragment">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/snapshot_swipe_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/btn_snapshot_to_pdp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_snapshot"
@@ -25,11 +25,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/btn_snapshot_to_pdp"/>
 
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_snapshot_to_pdp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/rv_snapshot"
+            app:layout_constraintTop_toBottomOf="@id/snapshot_swipe_to_refresh"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +39,5 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"/>
-
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
