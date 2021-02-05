@@ -73,11 +73,11 @@ class RatingBottomSheet : BaseBottomSheet() {
         val defaultImageIndex = 3
         setOnStarClicked(this, defaultImageIndex)
         ratePickerSirRating.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-            override fun onClick(position: Int) {
-                setOnStarClicked(this@run, position)
-                showRatePickerStatus(position)
+            override fun onRatingSelected(rating: Int) {
+                setOnStarClicked(this@run, rating)
+                showRatePickerStatus(rating)
                 btnSirSubmit.isEnabled = true
-                givenRating = position
+                givenRating = rating
             }
         })
         btnSirSubmit.setOnClickListener {
