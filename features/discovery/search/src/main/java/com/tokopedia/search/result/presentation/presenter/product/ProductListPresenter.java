@@ -180,6 +180,7 @@ final class ProductListPresenter
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
     private boolean isABTestNavigationRevamp = false;
+    private boolean bottomSheetFilterEnabled = true;
 
     @Inject
     ProductListPresenter(
@@ -1957,6 +1958,10 @@ final class ProductListPresenter
     public void openFilterPage(Map<String, Object> searchParameter) {
         if (getView() == null || searchParameter == null) return;
 
+        if (!isBottomSheetFilterEnabled()) return;
+
+        bottomSheetFilterEnabled = false;
+
         getView().sendTrackingOpenFilterPage();
         getView().openBottomSheetFilter(this.dynamicFilterModel);
 
@@ -1964,6 +1969,16 @@ final class ProductListPresenter
             getDynamicFilterUseCase.get().
                     execute(createRequestDynamicFilterParams(searchParameter), createGetDynamicFilterModelSubscriber());
         }
+    }
+
+    @Override
+    public boolean isBottomSheetFilterEnabled() {
+        return bottomSheetFilterEnabled;
+    }
+
+    @Override
+    public void onBottomSheetFilterDismissed() {
+        bottomSheetFilterEnabled = true;
     }
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
