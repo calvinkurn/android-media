@@ -53,7 +53,7 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
         if(payloads.isNullOrEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
-            val bundle = payloads[0] as? Bundle
+            val bundle = payloads.getOrNull(0) as? Bundle
             bundle?.keySet()?.forEach { key ->
                 if(key == KEY_SELECT_BUNDLE) {
                     holder.bind(data[position])

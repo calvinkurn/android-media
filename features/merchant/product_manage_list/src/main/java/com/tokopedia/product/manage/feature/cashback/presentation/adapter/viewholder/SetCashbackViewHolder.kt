@@ -30,7 +30,7 @@ class SetCashbackViewHolder(view: View, private val selectClickListener: SelectC
 
         val selectWidget: SelectWidget = itemView.selectWidget
 
-        val bundle = payloads[0] as? Bundle
+        val bundle = payloads.getOrNull(0) as? Bundle
         bundle?.keySet()?.forEach { key ->
             if (key == KEY_IS_SELECTED_CASHBACK) {
                 val isSelected = bundle.getBoolean(KEY_IS_SELECTED_CASHBACK)

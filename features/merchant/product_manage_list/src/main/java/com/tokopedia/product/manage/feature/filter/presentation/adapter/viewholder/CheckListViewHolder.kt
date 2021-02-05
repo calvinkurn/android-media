@@ -29,7 +29,7 @@ class CheckListViewHolder(view: View, private val checklistClickListener: Checkl
     override fun bind(element: ChecklistUiModel?, payloads: MutableList<Any>) {
         if(element == null || payloads.isNullOrEmpty()) return
 
-        when (payloads[0] as Int) {
+        when (payloads.getOrNull(0) as? Int) {
             CHECKLIST_FILTER_PAYLOAD -> {
                 checklistWidget.updateChecklist(element, checklistClickListener)
             }

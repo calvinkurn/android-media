@@ -59,10 +59,10 @@ class FilterViewHolder(view: View,
     }
 
     private fun setChipsShown(isChipsShown: Boolean) {
-        if(!isChipsShown) {
-            hideChips()
-        } else {
+        if(isChipsShown) {
             showChips()
+        } else {
+            hideChips()
         }
     }
 
