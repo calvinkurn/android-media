@@ -15,7 +15,7 @@ import com.tokopedia.review.common.util.getGeneratedFilterByText
 import com.tokopedia.review.common.util.removeFilterElement
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewUseCase
-import com.tokopedia.review.feature.inboxreview.domain.usecase.InboxReviewCounterUseCase
+import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewCounterUseCase
 import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewUiModel
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
@@ -28,10 +28,10 @@ import java.util.*
 import javax.inject.Inject
 
 class InboxReviewViewModel @Inject constructor(
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val getInboxReviewUseCase: GetInboxReviewUseCase,
-    private val inboxReviewCounterUseCase: InboxReviewCounterUseCase,
-    val userSession: UserSessionInterface
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val getInboxReviewUseCase: GetInboxReviewUseCase,
+        private val getInboxReviewCounterUseCase: GetInboxReviewCounterUseCase,
+        val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _inboxReview = MutableLiveData<Result<InboxReviewUiModel>>()
@@ -93,7 +93,7 @@ class InboxReviewViewModel @Inject constructor(
     fun getInboxReviewCounter() {
         launchCatchError(block = {
             val counterResult = withContext(dispatcherProvider.io) {
-                inboxReviewCounterUseCase.executeOnBackground().productrevReviewTabCounter.list.firstOrNull()?.count.orZero()
+                getInboxReviewCounterUseCase.executeOnBackground().productrevReviewTabCounter.list.firstOrNull()?.count.orZero()
             }
             _inboxReviewCounterText.postValue(Success(counterResult))
         }, onError = {

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewTabCounterResponse
 import javax.inject.Inject
 
-class InboxReviewCounterUseCase @Inject constructor(
+class GetInboxReviewCounterUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<InboxReviewTabCounterResponse>(graphqlRepository) {
 
