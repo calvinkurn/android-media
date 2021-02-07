@@ -1,5 +1,7 @@
 package com.tokopedia.media.loader
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -44,12 +46,26 @@ inline fun ImageView.loadImageRounded(
 }
 
 fun ImageView?.clearImage() {
-    if (this != null) {
+    if (this != null && context.isValidContext()) {
         GlideApp.with(this.context).clear(this)
     }
 }
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
-    glideLoadImage(source, this, properties)
+    if (context.isValidContext()) {
+        try {
+            glideLoadImage(source, this, properties)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+private fun Context?.isValidContext(): Boolean {
+    return when {
+        this == null -> false
+        this is Activity -> !(this.isDestroyed || this.isFinishing)
+        else -> true
+    }
 }

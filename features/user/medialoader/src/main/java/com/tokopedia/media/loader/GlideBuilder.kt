@@ -23,6 +23,7 @@ import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.utils.AttributeUtils
@@ -32,9 +33,6 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDisk
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 
 object GlideBuilder {
-
-    private const val MEDIA_LOADER_TRACE = "mp_medialoader"
-    private const val URL_PREFIX = "https://ecs7-p.tokopedia.net/img/cache/"
 
     private val blurHashRandom = listOf(
             "A4ADcRuO_2y?",
@@ -80,10 +78,12 @@ object GlideBuilder {
             val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it) }?: 0
             val endTime = System.currentTimeMillis()
 
-            performanceMonitoring?.putCustomAttribute("load_time", (endTime - startTime).toString())
-            performanceMonitoring?.putCustomAttribute("file_size", fileSize.toString())
+            PerformanceTracker.postRender(
+                    performanceMonitoring,
+                    (endTime - startTime).toString(),
+                    fileSize.toString()
+            )
 
-            performanceMonitoring?.stopTrace()
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
@@ -110,7 +110,7 @@ object GlideBuilder {
                     }
 
                     source = Loader.glideUrl(source)
-                    performanceMonitoring = getPerformanceMonitoring(source, context)
+                    performanceMonitoring = PerformanceTracker.track(source, context)
                 }
 
                 GlideApp.with(context).asBitmap().load(source).apply {
@@ -199,19 +199,6 @@ object GlideBuilder {
                     .transform(RoundedCorners(10))
                     .into(this)
         }
-    }
-
-    private fun getPerformanceMonitoring(url: String, context: Context): PerformanceMonitoring {
-        val urlWithoutPrefix = url.removePrefix(URL_PREFIX)
-        val mediaSetting = MediaSettingPreferences(context)
-        val mediaSettingIndex = mediaSetting.qualitySettings()
-
-        val performanceMonitoring = PerformanceMonitoring.start(MEDIA_LOADER_TRACE)
-        performanceMonitoring?.putCustomAttribute("image_url", urlWithoutPrefix)
-        performanceMonitoring?.putCustomAttribute("image_quality_setting", mediaSetting.getQualitySetting(mediaSettingIndex))
-        performanceMonitoring?.putCustomAttribute("date_time", AttributeUtils.getDateTime())
-
-        return performanceMonitoring
     }
 
 }
