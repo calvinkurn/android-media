@@ -77,10 +77,10 @@ object RechargeHomepageSectionMapper {
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
-                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(sections.first()))
+                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
                         if (!isExpired(it)) {
-                            RechargeHomepageSingleBannerModel(it, mapSectionToChannel(sections.first()))
+                            RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                         } else null
                     }
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
