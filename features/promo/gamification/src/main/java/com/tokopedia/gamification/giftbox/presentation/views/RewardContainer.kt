@@ -44,7 +44,7 @@ class RewardContainer @JvmOverloads constructor(
     lateinit var imageCircleReward: DeferredImageView
 
     val FADE_OUT_REWARDS_DURATION_TAP_TAP = 600L
-    override val LAYOUT_ID = com.tokopedia.gamification.R.layout.view_reward_container
+    override fun getLayoutId() = R.layout.view_reward_container
 
     companion object {
         const val NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM = 250L

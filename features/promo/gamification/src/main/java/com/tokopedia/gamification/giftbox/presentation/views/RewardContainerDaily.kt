@@ -46,14 +46,14 @@ open class RewardContainerDaily @JvmOverloads constructor(
     private var milliSecondsPerInch = 2f
     var isTablet = false
 
-    open val LAYOUT_ID = R.layout.view_reward_container_daily
+    open fun getLayoutId() = R.layout.view_reward_container_daily
 
     init {
         setup(attrs)
     }
 
     fun setup(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(LAYOUT_ID, this, true)
+        LayoutInflater.from(context).inflate(getLayoutId(), this, true)
         readAttrs(attrs)
         initViews()
     }
