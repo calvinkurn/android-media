@@ -34,7 +34,7 @@ class RechargeHomepageProductBannerViewHolder(
         val section = element.section
         if (section.items.isNotEmpty()) {
             setBackground(section)
-            setHeader(section, element.visitableId())
+            setHeader(element.channelModel, element.visitableId())
             setProduct(section)
 
             itemView.view_recharge_home_product_banner_shimmering.hide()
@@ -47,10 +47,10 @@ class RechargeHomepageProductBannerViewHolder(
         }
     }
 
-    private fun setHeader(section: RechargeHomepageSections.Section,
+    private fun setHeader(channel: ChannelModel?,
                           sectionId: Int) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                itemView.view_recharge_home_product_banner_header, section,
+                itemView.view_recharge_home_product_banner_header, channel,
                 object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
 

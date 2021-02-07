@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,7 +24,7 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
             if (section.items.isNotEmpty()) {
                 val item = section.items[0]
                 RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                        view_recharge_home_single_banner_header, section,
+                        view_recharge_home_single_banner_header, element.channelModel,
                         object : HeaderListener {
                             override fun onSeeAllClick(link: String) {
 

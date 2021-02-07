@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections(
@@ -222,7 +223,8 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
 
 }
 
-data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section,
+val channelModel: ChannelModel?) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -273,7 +275,8 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
 
 }
 
-data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section,
+                                              val channelModel: ChannelModel?) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -290,7 +293,7 @@ data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSecti
 
 }
 
-data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

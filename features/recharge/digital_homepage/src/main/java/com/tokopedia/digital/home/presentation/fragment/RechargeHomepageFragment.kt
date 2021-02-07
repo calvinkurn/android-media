@@ -233,7 +233,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun loadRechargeSectionData(sectionID: Int) {
         if (sectionID >= 0) {
             viewModel.getRechargeHomepageSections(
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), enablePersonalize)
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), enablePersonalize),
+                    true
             )
         }
     }
