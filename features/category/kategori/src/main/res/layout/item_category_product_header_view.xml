@@ -29,7 +29,7 @@
         android:maxLines="2"
         android:paddingStart="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_12"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/arrow_icon"
         app:layout_constraintRight_toRightOf="@+id/arrow_icon"

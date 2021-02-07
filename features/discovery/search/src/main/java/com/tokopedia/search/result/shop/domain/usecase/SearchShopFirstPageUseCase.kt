@@ -200,6 +200,12 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
                 name
                 price_format
                 applinks
+                rating_average
+                label_group {
+                    title
+                    type
+                    position
+                }
                 image_product {
                   product_id
                   product_name

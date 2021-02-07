@@ -20,8 +20,8 @@ class UohListUseCase @Inject constructor(private val gqlRepository: GraphqlRepos
             val request = GraphqlRequest(QUERY, UohListOrder.Data::class.java, generateParam(param))
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohListOrder.Data>()
             Success(response.uohOrders)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+        } catch (e: Exception) {
+            Fail(e)
         }
     }
 

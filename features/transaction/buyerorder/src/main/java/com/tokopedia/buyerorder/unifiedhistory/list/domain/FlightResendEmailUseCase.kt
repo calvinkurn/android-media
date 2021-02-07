@@ -19,8 +19,8 @@ class FlightResendEmailUseCase @Inject constructor(private val gqlRepository: Gr
             val request = GraphqlRequest(QUERY, FlightResendEmail.Data::class.java, generateParam(invoiceId, email))
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<FlightResendEmail.Data>()
             Success(response)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+        } catch (e: Exception) {
+            Fail(e)
         }
     }
 
