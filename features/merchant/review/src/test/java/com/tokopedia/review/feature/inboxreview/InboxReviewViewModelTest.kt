@@ -38,8 +38,8 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             viewModel.getInboxReviewCounter()
 
             verifySuccessGetInboxReviewCounterUseCaseCalled()
-            Assert.assertTrue(viewModel.inboxReview.value is Success)
-            Assert.assertNotNull(viewModel.inboxReview.value)
+            Assert.assertTrue(viewModel.inboxReviewCounterText.value is Success)
+            Assert.assertNotNull(viewModel.inboxReviewCounterText.value)
         }
     }
 

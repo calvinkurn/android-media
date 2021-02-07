@@ -304,7 +304,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                                 ?.indicator
                                 ?.tabLayout
                                 ?.getTabAt(index)
-                                ?.setCustomText(getString(R.string.title_review_inbox))
                                 ?.setCounter(counter)
                                 ?.setNotification(hasNotification = true)
                     }
