@@ -29,7 +29,6 @@ import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUs
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 /**
@@ -141,15 +140,15 @@ class AddEditProductEditService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
-                val productEditDeferred = async { productEditUseCase.executeOnBackground() }
                 val updateHqStockDeferred = async {
                     if (!shouldEditStockDirectly) {
                         productInputModel.run {
                             updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
-                    }
-                }}
-                productEditDeferred.await()
+                        }
+                    }}
+                val productEditDeferred = async { productEditUseCase.executeOnBackground() }
                 updateHqStockDeferred.await()
+                productEditDeferred.await()
             }
             // (4)
             clearProductDraft()

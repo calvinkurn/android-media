@@ -82,7 +82,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, shouldPutStockOnParam),
+                mapVariantParam(variantInputModel),
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }
@@ -92,11 +92,7 @@ class EditProductInputMapper @Inject constructor() {
                 ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
             }
 
-    private fun mapVariantParam(variantInputModel: VariantInputModel,
-                                shouldPutStockOnParam: Boolean): Variant? {
-        if (!shouldPutStockOnParam) {
-            return null
-        }
+    private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
             // if there is no variant input then return null
             if (variantInputModel.isRemoteDataHasVariant) {
