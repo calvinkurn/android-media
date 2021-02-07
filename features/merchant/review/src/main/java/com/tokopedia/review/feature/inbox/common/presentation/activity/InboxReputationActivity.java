@@ -71,7 +71,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
-    private static final int MARGIN_START_END_TAB_FIXED = 0;
     public static String tickerTitle;
 
     private ViewPager viewPager;
@@ -164,7 +163,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
-        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB_FIXED), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB_FIXED));
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB));
     }
 
     private void setupTabName() {
