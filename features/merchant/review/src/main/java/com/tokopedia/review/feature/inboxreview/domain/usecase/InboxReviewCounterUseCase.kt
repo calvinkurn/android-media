@@ -1,8 +1,8 @@
-package com.tokopedia.review.feature.inbox.common.domain.usecase
+package com.tokopedia.review.feature.inboxreview.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.review.feature.inbox.common.domain.response.InboxReviewTabCounterResponse
+import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewTabCounterResponse
 import javax.inject.Inject
 
 class InboxReviewCounterUseCase @Inject constructor(

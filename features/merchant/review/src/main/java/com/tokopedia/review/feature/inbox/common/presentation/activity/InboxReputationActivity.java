@@ -16,7 +16,9 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -27,7 +29,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.review.R;
-import com.tokopedia.review.ReviewInstance;
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener;
 import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.common.util.ReviewUtil;
@@ -38,15 +39,10 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
-import com.tokopedia.review.feature.inbox.common.di.component.DaggerInboxReputationComponent;
-import com.tokopedia.review.feature.inbox.common.di.component.InboxReputationComponent;
-import com.tokopedia.review.feature.inbox.common.presentation.viewmodel.InboxReputationViewModel;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.unifycomponents.TabsUnify;
-import com.tokopedia.usecase.coroutines.Fail;
-import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -55,16 +51,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseActivity implements HasComponent<InboxReputationComponent>, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
-
-    @Inject
-    InboxReputationViewModel inboxReputationViewModel;
+public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
@@ -80,10 +71,11 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
+    private static final int MARGIN_START_END_TAB_FIXED = 0;
     public static String tickerTitle;
 
     private ViewPager viewPager;
-    private TabsUnify indicator;
+    public TabsUnify indicator;
     private PagerAdapter sectionAdapter;
     private HeaderUnify toolbar;
 
@@ -114,26 +106,13 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
             finish();
         }
-        initInjector();
-        observeTabCounter();
         startPerformanceMonitoring();
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
         initView();
+        setupTabViewpager();
         openBuyerReview();
-    }
-
-    @Override
-    public InboxReputationComponent getComponent() {
-        return DaggerInboxReputationComponent
-                .builder()
-                .reviewComponent(ReviewInstance.Companion.getComponent(getApplication()))
-                .build();
-    }
-
-    private void initInjector() {
-        getComponent().inject(this);
     }
 
     private void initView() {
@@ -153,19 +132,9 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
     }
 
-    private void observeTabCounter() {
-        inboxReputationViewModel.getInboxReviewCounterText().observe(this, stringResult -> {
-            if (stringResult instanceof Success) {
-                String tabCounter = ((Success<String>) stringResult).getData();
-                setupTabViewpager("(" + tabCounter + ")");
-            } else if (stringResult instanceof Fail) {
-                setupTabViewpager("");
-            }
-        });
-        inboxReputationViewModel.getInboxReviewCounter();
-    }
-
-    private void setupTabViewpager(String counter) {
+    private void setupTabViewpager() {
+        indicator.setCustomTabMode(TabLayout.MODE_SCROLLABLE);
+        indicator.setCustomTabGravity(TabLayout.GRAVITY_FILL);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -181,7 +150,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             }
         });
 
-        setupTabName(counter);
+        setupTabName();
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
         viewPager.setOffscreenPageLimit(getFragmentList().size());
@@ -195,10 +164,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
-        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB_FIXED), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB_FIXED));
     }
 
-    private void setupTabName(String tabName) {
+    private void setupTabName() {
         if (!GlobalConfig.isSellerApp()) {
             indicator.addNewTab(getString(R.string
                     .title_tab_waiting_review));
@@ -211,7 +180,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 indicator.addNewTab(getString(R.string.title_rating_product));
             }
             if (inboxReviewFragment != null) {
-                indicator.addNewTab(getString(R.string.title_review_inbox, tabName));
+                indicator.addNewTab(getString(R.string.title_review_inbox));
             }
         }
 
@@ -285,7 +254,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
     }
 
-    protected List<Fragment> getFragmentList() {
+    public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
@@ -440,5 +409,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 pageLoadTimePerformance.stopRenderPerformanceMonitoring();
             }
         }
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

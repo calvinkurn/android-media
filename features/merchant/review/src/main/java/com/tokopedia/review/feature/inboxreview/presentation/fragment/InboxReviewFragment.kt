@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -27,6 +29,7 @@ import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 
@@ -47,11 +50,8 @@ import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
@@ -122,6 +122,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeInboxReviewCounter()
         observeInboxReview()
         observeFeedbackInboxReview()
         initTickerInboxReview()
@@ -278,6 +279,37 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         if (tickerInboxReview?.isVisible == false) {
             val sortFilterMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
             sortFilterMargin?.topMargin = 16.toPx()
+        }
+    }
+
+    private fun observeInboxReviewCounter() {
+        observe(inboxReviewViewModel.inboxReviewCounterText) {
+            when (it) {
+                is Success -> {
+                    setInboxReviewTabCounter(it.data)
+                }
+                is Fail -> {
+                    setInboxReviewTabCounter()
+                }
+            }
+        }
+        inboxReviewViewModel.getInboxReviewCounter()
+    }
+
+    private fun setInboxReviewTabCounter(counter: Int = 0) {
+        (activity as? InboxReputationActivity)?.fragmentList?.forEachIndexed { index, fragment ->
+            if (fragment::class.java == this::class.java) {
+                    if (counter.isMoreThanZero()) {
+                        (activity as? InboxReputationActivity)
+                                ?.indicator
+                                ?.tabLayout
+                                ?.getTabAt(index)
+                                ?.setCustomText(getString(R.string.title_review_inbox))
+                                ?.setCounter(counter)
+                                ?.setNotification(hasNotification = true)
+                    }
+                return
+            }
         }
     }
 

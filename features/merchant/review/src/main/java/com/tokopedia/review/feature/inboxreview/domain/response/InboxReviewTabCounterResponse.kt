@@ -1,13 +1,12 @@
-package com.tokopedia.review.feature.inbox.common.domain.response
-
+package com.tokopedia.review.feature.inboxreview.domain.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class InboxReviewTabCounterResponse(
-    @SerializedName("productrevReviewTabCounter")
-    @Expose
-    val productrevReviewTabCounter: ProductReviewTabCounter = ProductReviewTabCounter()
+        @SerializedName("productrevReviewTabCounter")
+        @Expose
+        val productrevReviewTabCounter: ProductReviewTabCounter = ProductReviewTabCounter()
 ) {
     data class ProductReviewTabCounter(
             @SerializedName("list")
