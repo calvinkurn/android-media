@@ -1135,6 +1135,16 @@ class AddEditProductDetailViewModelTest {
         assert(viewModel.productStockMessage == addMessage)
     }
 
+    @Test
+    fun `when either is shop admin or shop owner and not has multi location shop, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns true
+        every { userSession.isShopOwner } returns false
+
+        viewModel.setupDefaultStockAllocationMessage()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+    }
+
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
                 PictureInputModel(picID = "1", urlOriginal = "url 1", urlThumbnail = "thumb 1", url300 = "300 1"),

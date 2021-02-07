@@ -414,7 +414,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
             val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
             productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
-                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
+                    productStock < minProductStockLimit.toBigInteger()
         }
     }
 
