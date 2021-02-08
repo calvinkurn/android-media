@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import androidx.annotation.IdRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
@@ -44,7 +45,9 @@ import org.junit.runner.RunWith
 class TopChatRoomManualProductTest {
 
     @get:Rule
-    var activityTestRule = IntentsTestRule(TopChatRoomActivityStub::class.java)
+    var activityTestRule = IntentsTestRule(
+            TopChatRoomActivityStub::class.java, false, false
+    )
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -69,6 +72,7 @@ class TopChatRoomManualProductTest {
     private val cassavaDirTopchat = "tracker/user/topchat"
     private val cassavaProduct = "$cassavaDirTopchat/product_card_p0.json"
     private val cassavaBroadcastProduct = "$cassavaDirTopchat/product_card_from_broadcast_p0.json"
+    private val cassavaSearchProduct = "$cassavaDirTopchat/product_card_from_search_p0.json"
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
@@ -78,12 +82,10 @@ class TopChatRoomManualProductTest {
     @Before
     fun before() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        activity = activityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
         gtmLogDbSource.deleteAll().subscribe()
         setupOccAbTest()
-        setupChatRoom()
     }
 
     private fun setupOccAbTest() {
@@ -93,13 +95,10 @@ class TopChatRoomManualProductTest {
         )
     }
 
-    private fun setupChatRoom() {
-        activityTestRule.activity.intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, exMessageId)
-    }
-
     @Test
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_user() {
         // Given
+        setupChatRoomActivity()
         getChatUseCase.response = firstPageChat
         chatAttachmentUseCase.response = chatAttachmentResponse
         intending(anyIntent()).respondWith(
@@ -123,6 +122,7 @@ class TopChatRoomManualProductTest {
     @Test
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_broadcast() {
         // Given
+        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatBroadcast
         chatAttachmentUseCase.response = chatAttachmentResponse
         intending(anyIntent()).respondWith(
@@ -141,6 +141,45 @@ class TopChatRoomManualProductTest {
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaBroadcastProduct),
                 hasAllSuccess()
         )
+    }
+
+    @Test
+    fun asses_view_click_cta_atc_and_buy_product_attachment_from_chat_search() {
+        // Given
+        setupChatRoomActivity(
+                sourcePage = ApplinkConst.Chat.SOURCE_CHAT_SEARCH
+        )
+        getChatUseCase.response = firstPageChat
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        intending(anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
+        performClickOnProductCard(R.id.recycler_view)
+        performClickAtcButton(R.id.recycler_view)
+        performClickBuyButton(R.id.recycler_view)
+
+        // Then
+        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDbSource, context, cassavaSearchProduct),
+                hasAllSuccess()
+        )
+    }
+
+    private fun setupChatRoomActivity(
+            sourcePage: String? = null
+    ) {
+        val intent = Intent().apply {
+            putExtra(ApplinkConst.Chat.MESSAGE_ID, exMessageId)
+            sourcePage?.let {
+                putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
+            }
+        }
+        activityTestRule.launchActivity(intent)
+        activity = activityTestRule.activity
     }
 
     private fun verifyRecyclerViewDisplayed(@IdRes recyclerViewId: Int) {
