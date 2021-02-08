@@ -256,7 +256,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         setupSettingsIcon()
         initSortFilter()
         initErrorPage()
-        setupTicker()
         hideToolbar()
         setupToolbar()
         showFullPageLoading()
@@ -652,18 +651,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 title,
                 subtitle
         )
-    }
-
-    private fun setupTicker() {
-        if (GlobalConfig.isSellerApp() && isNewView()) {
-            talkInboxTicker.apply {
-                tickerTitle = getString(R.string.inbox_ticker_title)
-                setTextDescription(getString(R.string.inbox_ticker_description))
-                show()
-            }
-            return
-        }
-        talkInboxTicker.hide()
     }
 
     private fun hideToolbar() {

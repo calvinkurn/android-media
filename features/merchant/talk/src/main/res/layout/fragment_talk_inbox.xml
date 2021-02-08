@@ -17,15 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"/>
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/talkInboxTicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:tickerType="announcement"
-        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
-        tools:visibility="visible"/>
-
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/talkInboxSortFilter"
         android:paddingTop="@dimen/dp_12"
@@ -33,7 +24,7 @@
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/talkInboxTicker"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/talkInboxSettingsIcon"
         app:sort_filter_relationship="AND"
@@ -48,7 +39,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:icon_name="SETTING"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/talkInboxTicker" />
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/talkInboxSwipeToRefresh"
