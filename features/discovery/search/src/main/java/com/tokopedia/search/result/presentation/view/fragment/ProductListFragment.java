@@ -546,10 +546,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword) {
         String userId = getUserId();
         String searchRef = getSearchRef();
-        String eventLabel = getSearchProductTrackingEventLabel(item);
+        String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
@@ -570,8 +570,9 @@ public class ProductListFragment
         return searchParameter.get(SearchApiConst.SEARCH_REF);
     }
 
-    private String getSearchProductTrackingEventLabel(ProductItemViewModel item) {
-        return TextUtils.isEmpty(item.getPageTitle()) ? getQueryKey() : item.getPageTitle();
+    private String getSearchProductTrackingEventLabel(ProductItemViewModel item, String suggestedRelatedKeyword) {
+        String keyword = suggestedRelatedKeyword.isEmpty() ? getQueryKey() : suggestedRelatedKeyword;
+        return TextUtils.isEmpty(item.getPageTitle()) ? keyword : item.getPageTitle();
     }
 
     @Override
@@ -772,8 +773,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
-        String eventLabel = getSearchProductTrackingEventLabel(item);
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword) {
+        String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
