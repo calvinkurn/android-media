@@ -25,6 +25,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecorat
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import kotlin.math.min
 
 open class RewardContainerDaily @JvmOverloads constructor(
@@ -84,11 +85,11 @@ open class RewardContainerDaily @JvmOverloads constructor(
             listItemWidthInTablet = 0f
         }
 
-        if (this !is RewardContainer) {
+        if (sourceType == RewardContainer.RewardSourceType.DAILY) {
             rvCoupons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && !cancelAutoScroll) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && !cancelAutoScroll && canAutoScroll()) {
                         performRvScrollAnimation(false)
                     }
                 }
@@ -120,7 +121,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
     open fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
         val anim2 = rvCouponsAnimations()
         anim2.addListener(onEnd = {
-            if (couponList.size > 1) {
+            if (canAutoScroll()) {
                 val delay = 700L
                 val handler = Handler()
                 handler.postDelayed({
@@ -132,18 +133,27 @@ open class RewardContainerDaily @JvmOverloads constructor(
         return anim2
     }
 
+    private fun canAutoScroll():Boolean{
+        return couponList.size > 1
+    }
+
     private fun performRvScrollAnimation(toEnd: Boolean) {
-        val baseDuration = 7000
-        val maxDuration = 35000
-        var scrollDistance = 0
-        val animDuration = min((couponList.size - 1) * baseDuration, maxDuration)
-        if (isTablet) {
-            scrollDistance = (couponList.size - 1) * context.resources.getDimension(R.dimen.gami_rv_coupons_width).toInt()
-        } else {
-            scrollDistance = (couponList.size - 1) * rvCoupons.width
+        try {
+            val baseDuration = 7000
+            val maxDuration = 35000
+            var scrollDistance = 0
+            val animDuration = min((couponList.size - 1) * baseDuration, maxDuration)
+            if (isTablet) {
+                scrollDistance = (couponList.size - 1) * context.resources.getDimension(R.dimen.gami_rv_coupons_width).toInt()
+            } else {
+                scrollDistance = (couponList.size - 1) * rvCoupons.width
+            }
+            scrollDistance = if (toEnd) scrollDistance else -scrollDistance
+            rvCoupons.smoothScrollBy(scrollDistance, 0, null, animDuration)
+        }catch (th:Throwable){
+            Timber.e(th)
         }
-        scrollDistance = if (toEnd) scrollDistance else -scrollDistance
-        rvCoupons.smoothScrollBy(scrollDistance, 0, null, animDuration)
+
     }
 
     fun rvCouponsAnimations(): Animator {
