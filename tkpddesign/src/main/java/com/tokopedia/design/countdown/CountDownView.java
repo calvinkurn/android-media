@@ -312,7 +312,9 @@ public class CountDownView extends FrameLayout {
                 setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
                 refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
 
-                if (dayChangedListener != null && isMoreThanADay(timeDiff)) {
+                if (dayChangedListener == null) return;
+
+                if (isMoreThanADay(timeDiff)) {
                     dayChangedListener.onMoreThan24h();
                 } else {
                     dayChangedListener.onLessThan24h();
