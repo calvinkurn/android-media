@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -26,6 +25,7 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.config.GlobalConfig
@@ -432,12 +432,14 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun navigateToCart() {
-        if (::checkoutPassData.isInitialized) {
-            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-            checkoutPassData.voucherCodeCopied = promoCode
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CART_DIGITAL)
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        context?.let { context ->
+            if (::checkoutPassData.isInitialized) {
+                checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+                checkoutPassData.voucherCodeCopied = promoCode
+                val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+                startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+            }
         }
     }
 

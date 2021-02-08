@@ -158,20 +158,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(false)
 
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            analytics.eventAddToCart(mappedCartData, source)
-            analytics.eventCheckout(mappedCartData)
-
-            requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
-
-            if (mappedCartData.isNeedOtp) {
-                _isNeedOtp.postValue(userSession.phoneNumber)
-            } else {
-                _showContentCheckout.postValue(true)
-                _showLoading.postValue(false)
-                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
-                _cartDigitalInfoData.postValue(mappedCartData)
-                _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-            }
+            mapDataSuccessCart(source, mappedCartData)
         }
     }
 
@@ -199,21 +186,7 @@ class DigitalCartViewModel @Inject constructor(
                 val responseCartData: ResponseCartData = data.data as ResponseCartData
                 val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
 
-                analytics.eventAddToCart(mappedCartData, source)
-                analytics.eventCheckout(mappedCartData)
-
-                requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
-
-                if (mappedCartData.isNeedOtp) {
-                    _isNeedOtp.postValue(userSession.phoneNumber)
-                } else {
-                    _showContentCheckout.postValue(true)
-                    _showLoading.postValue(false)
-                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
-                    _cartDigitalInfoData.postValue(mappedCartData)
-                    _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-                    _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
-                }
+                mapDataSuccessCart(source, mappedCartData)
             }
         }
     }
@@ -242,7 +215,25 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun errorHandler(e: Throwable) {
+    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
+        analytics.eventAddToCart(mappedCartData, source)
+        analytics.eventCheckout(mappedCartData)
+
+        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
+
+        if (mappedCartData.isNeedOtp) {
+            _isNeedOtp.postValue(userSession.phoneNumber)
+        } else {
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
+            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
+            _cartDigitalInfoData.postValue(mappedCartData)
+            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
+        }
+    }
+
+    private fun errorHandler(e: Throwable) {
         if (e is UnknownHostException) {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
         } else if (e is SocketTimeoutException || e is ConnectException) {
@@ -267,7 +258,7 @@ class DigitalCartViewModel @Inject constructor(
         return {
             if (it.response.success) {
                 _isSuccessCancelVoucherCart.postValue(Success(true))
-                applyPromoData(PromoData(state = TickerCheckoutView.State.EMPTY))
+                applyPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
             } else {
                 _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
             }
