@@ -14,7 +14,7 @@ class ChatSearchActivityStub: ChatSearchActivity() {
     }
 
     fun setupTestFragment(
-            useCase: GetSearchQueryUseCaseStub,
+            useCase: GetSearchQueryUseCaseStub
     ) {
         this.getSearchQueryUsecase = useCase
         supportFragmentManager.beginTransaction()
