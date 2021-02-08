@@ -83,6 +83,7 @@ class NotificationTypeFactoryImpl constructor(
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
             return when {
+                item.isTrackHistory() && item.hasWidget() -> WidgetNotificationViewHolder.LAYOUT
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
@@ -102,15 +103,18 @@ class NotificationTypeFactoryImpl constructor(
             adapterListener: Any
     ): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        val notifAdapterListener = adapterListener as? NotificationAdapterListener
         return when (viewType) {
             CarouselProductNotificationViewHolder.LAYOUT -> CarouselProductNotificationViewHolder(
                     view, notificationListener,
                     adapterListener as? CarouselProductNotificationViewHolder.Listener,
-                    adapterListener as? NotificationAdapterListener
+                    notifAdapterListener
             )
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(
-                    view,
-                    adapterListener as? NotificationAdapterListener
+                    view, notifAdapterListener
+            )
+            WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
+                    view, notificationListener, notifAdapterListener
             )
             else -> createViewHolder(view, viewType)
         }

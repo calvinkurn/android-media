@@ -11,7 +11,7 @@ import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class TopChatWebSocket(
+class TopChatWebSocket constructor(
         private val okHttpClient: OkHttpClient,
         private val webSocketUrl: String,
         private val token: String
