@@ -163,7 +163,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
-        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB));
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
     }
 
     private void setupTabName() {
