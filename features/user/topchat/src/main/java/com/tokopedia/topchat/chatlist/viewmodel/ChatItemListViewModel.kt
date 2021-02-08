@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
@@ -123,10 +122,8 @@ class ChatItemListViewModel @Inject constructor(
         get() = (_isChatAdminEligible.value as? Success)?.data == true
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
-        whenChatAdminAuthorized(tab) { isEligible ->
-            if (isEligible) {
-                queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
-            }
+        whenChatAdminAuthorized(tab) {
+            queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
         }
     }
 
@@ -136,7 +133,10 @@ class ChatItemListViewModel @Inject constructor(
             RoleType.SELLER -> PARAM_TAB_SELLER
             else -> PARAM_TAB_USER
         }
-        queryGetChatListMessage(page, filter, tabRole)
+
+        whenChatAdminAuthorized(tabRole) {
+            queryGetChatListMessage(page, filter, tabRole)
+        }
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
@@ -154,12 +154,18 @@ class ChatItemListViewModel @Inject constructor(
         )
     }
 
-    private fun whenChatAdminAuthorized(tab: String, action: (Boolean) -> Unit) {
-        val isTabUser = tab == ChatListQueriesConstant.PARAM_TAB_USER
+    private fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
+        val isTabUser = tab == PARAM_TAB_USER
         _isChatAdminEligible.value.let { result ->
             when {
-                isTabUser -> action(true)
-                result != null && result is Success -> action(result.data)
+                isTabUser -> action()
+                result != null && result is Success -> {
+                    if (result.data) {
+                        action()
+                    } else {
+                        _isChatAdminEligible.value = Success(false)
+                    }
+                }
                 else -> setChatAdminAccessJob()
             }
         }
