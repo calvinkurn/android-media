@@ -224,7 +224,7 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
 }
 
 data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section,
-val channelModel: ChannelModel?) : RechargeHomepageSectionModel {
+                                             val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -276,7 +276,7 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
 }
 
 data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section,
-                                              val channelModel: ChannelModel?) : RechargeHomepageSectionModel {
+                                              val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

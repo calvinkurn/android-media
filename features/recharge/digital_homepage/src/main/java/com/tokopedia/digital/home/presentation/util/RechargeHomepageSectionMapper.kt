@@ -80,7 +80,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
                         if (!isExpired(it)) {
-                            RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
+                            RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it), true)
                         } else null
                     }
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
@@ -95,7 +95,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
                         if (!isExpired(it)) {
-                            RechargeHomepageProductBannerModel(it, mapSectionToChannel(it))
+                            RechargeHomepageProductBannerModel(it, mapSectionToChannel(it), true)
                         } else null
                     }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
