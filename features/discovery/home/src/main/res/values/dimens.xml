@@ -62,4 +62,9 @@
     <dimen name="new_margin_sm">24dp</dimen>
     <dimen name="padding_small">10dp</dimen>
 
+    <dimen name="default_toolbar_height">56dp</dimen>
+    <dimen name="default_status_bar_height">24dp</dimen>
+
+<!--    default toolbar height + default status bar height + 16 margin-->
+    <dimen name="default_toolbar_status_height">96dp</dimen>
 </resources>

@@ -230,7 +230,6 @@ class ShopPageFragment :
         }?: button_chat_old
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
-    private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
     private var shouldOverrideTabToReview: Boolean = false
@@ -585,7 +584,6 @@ class ShopPageFragment :
     private fun getInitialData() {
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
-        isFirstLoading = true
         if (shopId.isEmpty()) {
             shopViewModel?.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
@@ -979,19 +977,15 @@ class ShopPageFragment :
             override fun onTabSelected(tab: TabLayout.Tab) {
                 selectedPosition = tab.position
                 viewPagerAdapter?.handleSelectedTab(tab, true)
-                if (isFirstLoading) {
-                    isFirstLoading = false
-                } else {
-                    shopPageTracking?.clickTab(
-                            shopViewModel?.isMyShop(shopId) ?: false,
-                            listShopPageTabModel[tab.position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
-                }
+                shopPageTracking?.clickTab(
+                        shopViewModel?.isMyShop(shopId) ?: false,
+                        listShopPageTabModel[tab.position].tabTitle,
+                        CustomDimensionShopPage.create(
+                                shopId,
+                                shopPageHeaderDataModel?.isOfficial ?: false,
+                                shopPageHeaderDataModel?.isGoldMerchant ?: false
+                        )
+                )
                 if (isSellerMigrationEnabled(context)) {
                     if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
                         val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
