@@ -238,6 +238,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val HOME_SOURCE = "home"
 
         private const val MARGIN_BOTTOM_TOASTER_RESET_PASSWORD = 32
+        private const val DELAY_TOASTER_RESET_PASSWORD = 5000
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
@@ -2565,11 +2566,12 @@ open class HomeFragment : BaseDaggerFragment(),
         Toaster.toasterCustomBottomHeight = MARGIN_BOTTOM_TOASTER_RESET_PASSWORD
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
-                Toaster.LENGTH_INDEFINITE,
+                DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
                 getString(R.string.cta_dialog_success_reset_password),
                 View.OnClickListener {
                     saveStateReset(false)
+                    onGoToLogin()
         }).show()
     }
 }

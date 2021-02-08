@@ -2584,11 +2584,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         Toaster.toasterCustomBottomHeight = MARGIN_BOTTOM_TOASTER_RESET_PASSWORD
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
-                Toaster.LENGTH_INDEFINITE,
+                DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
                 getString(R.string.cta_dialog_success_reset_password),
                 View.OnClickListener {
                     saveStateReset(false)
-                }).show()
+                    onGoToLogin()
+                }
+        ).show()
     }
 }
