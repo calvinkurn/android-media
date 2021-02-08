@@ -39,8 +39,8 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ic_ilustration.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
-        btn_go_to_dashboard.setOnClickListener {
+        ic_ilustration?.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
+        goToDashboard?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
                     putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
@@ -58,7 +58,7 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
                subtitle.text = getString(EXTRA_SUBTITLE)
             }
             if(!getString(EXTRA_BUTTON).isNullOrEmpty()){
-               btn_go_to_dashboard.text = getString(EXTRA_BUTTON)
+               goToDashboard.text = getString(EXTRA_BUTTON)
             }
         }
     }

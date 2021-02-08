@@ -12,11 +12,15 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CAPTURE_SELFIE
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SELFIE
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneDataUploadActivity
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
+import javax.inject.Inject
 
 class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
+
+    lateinit var tracker: InactivePhoneTracker
 
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
 
@@ -33,8 +37,11 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
+        tracker = InactivePhoneTracker()
 
         btnNext?.setOnClickListener {
+            tracker.clickOnNextButtonSelfiewOnboarding()
+
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
             startActivityForResult(intent, REQUEST_CAPTURE_SELFIE)
         }

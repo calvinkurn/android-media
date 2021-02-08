@@ -1004,6 +1004,15 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 
+
+        // AN-23730
+        Object xClid = param.get(AppEventTracking.GTM.X_CLID);
+        if (xClid != null && xClid instanceof String) {
+            String xClid_  = (String)xClid;
+            bundle.putString(AppEventTracking.GTM.X_CLID,xClid_);
+        }
+
+
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
         if (!TextUtils.isEmpty(gclid)) {
             bundle.putString("gclid", gclid);

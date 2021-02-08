@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -11,7 +12,6 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_18"
         android:paddingTop="@dimen/dp_18"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:lines="1"
         app:typographyWeight="bold"
@@ -27,18 +27,16 @@
         android:background="@null"
         android:visibility="gone"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         app:srcCompat="@drawable/ic_check_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
-        app:layout_constraintBottom_toBottomOf="@id/title" />
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:contentDescription="@string/checklist_filter_see_all_product_manage" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/dp_negative_8"
         android:layout_marginEnd="@dimen/dp_negative_8"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
