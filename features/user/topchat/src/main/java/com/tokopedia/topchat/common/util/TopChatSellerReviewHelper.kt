@@ -1,11 +1,9 @@
 package com.tokopedia.topchat.common.util
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatroom.di.ChatScope
+import com.tokopedia.topchat.chatroom.di.SellerAppReviewCacheHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,18 +15,13 @@ import kotlin.coroutines.CoroutineContext
  * Created By @ilhamsuaib on 27/01/21
  */
 
-@ChatScope
 class TopChatSellerReviewHelper @Inject constructor(
-        @ApplicationContext private val context: Context,
+        @SellerAppReviewCacheHandler private val cacheHandler: LocalCacheHandler,
         private val userSession: UserSessionInterface
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
-
-    private val cacheHandler: LocalCacheHandler by lazy {
-        LocalCacheHandler(context, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-    }
 
     var hasRepliedChat: Boolean = false
 

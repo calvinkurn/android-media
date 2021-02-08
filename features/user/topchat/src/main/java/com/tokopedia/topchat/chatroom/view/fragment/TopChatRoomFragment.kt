@@ -1058,14 +1058,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (data == null || resultCode != RESULT_OK) return
         initInvoicePreview(data.extras)
         presenter.initAttachmentPreview()
-        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
-        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
@@ -1106,7 +1104,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
         presenter.initProductPreviewFromAttachProduct(resultProducts)
-        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
