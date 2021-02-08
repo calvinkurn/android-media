@@ -2,6 +2,8 @@ package com.tokopedia.catalog.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.catalog.usecase.GetProductCatalogOneUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -28,8 +30,20 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(graphqlUseCase: GraphqlUseCase): GetProductCatalogOneUseCase {
-        return GetProductCatalogOneUseCase(graphqlUseCase)
+    fun provideBaseRepository(): BaseRepository {
+        return BaseRepository()
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogDetailRepository(): CatalogDetailRepository {
+        return CatalogDetailRepository()
+    }
+
+    @CatalogScope
+    @Provides
+    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): GetProductCatalogOneUseCase {
+        return GetProductCatalogOneUseCase(catalogDetailRepository)
     }
 
     @CatalogScope

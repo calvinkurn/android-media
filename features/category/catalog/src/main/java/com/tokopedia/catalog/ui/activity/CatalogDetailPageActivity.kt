@@ -32,9 +32,8 @@ import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 class CatalogDetailPageActivity : BaseActivity(),
         CatalogDetailPageFragment.Listener,
         CategoryNavigationListener,
-        BottomSheetListener,
-        SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener {
+        BottomSheetListener {
+
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -83,7 +82,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
+        //searchNavContainer = findViewById(R.id.search_nav_container)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
             intent.getStringExtra(EXTRA_CATALOG_ID)
         else {
@@ -95,7 +94,6 @@ class CatalogDetailPageActivity : BaseActivity(),
     private fun prepareView() {
         setupToolbar()
         setFragment()
-        initSwitchButton()
         initBottomSheetListener()
 
         bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
@@ -200,32 +198,6 @@ class CatalogDetailPageActivity : BaseActivity(),
                 .commit()
     }
 
-    private fun initSwitchButton() {
-        searchNavContainer?.setSearchNavListener(this)
-        img_display_button.tag = STATE_GRID
-        img_display_button.setOnClickListener {
-
-            for (navListener in navigationListenerList) {
-                navListener.onChangeGridClick()
-            }
-            when (img_display_button.tag) {
-
-                STATE_GRID -> {
-                    img_display_button.tag = STATE_LIST
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
-                }
-
-                STATE_LIST -> {
-                    img_display_button.tag = STATE_BIG
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
-                }
-                STATE_BIG -> {
-                    img_display_button.tag = STATE_GRID
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
-                }
-            }
-        }
-    }
 
     override fun onBackPressed() {
         bottomSheetFilterView?.let {
@@ -284,19 +256,5 @@ class CatalogDetailPageActivity : BaseActivity(),
 
     private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onSortButtonClicked() {
-        CatalogDetailPageAnalytics.trackEventClickSort()
-        visibleFragmentListener?.onSortClick()
-    }
-
-    override fun onFilterButtonClicked() {
-        CatalogDetailPageAnalytics.trackEventClickFilter()
-        visibleFragmentListener?.onFilterClick()
-    }
-
-    override fun onSortApplied(showTick: Boolean) {
-        searchNavContainer?.onSortSelected(showTick)
     }
 }

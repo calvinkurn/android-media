@@ -2,37 +2,38 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.catalog.model.ProductCatalogResponse
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.catalog.model.raw.CatalogResponse
+import com.tokopedia.catalog.model.util.CatalogDetailMapper
 import com.tokopedia.catalog.usecase.GetProductCatalogOneUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import rx.Subscriber
 import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(var getProductCatalogOneUseCase: GetProductCatalogOneUseCase) : ViewModel() {
 
-    private val productCatalogResponse = MutableLiveData<Result<ProductCatalogResponse>>()
+    private val catalogResponseData = MutableLiveData<Result<CatalogResponse.CatalogResponseData>>()
 
     fun getProductCatalog(catalogId: String) {
-        getProductCatalogOneUseCase.execute(getProductCatalogOneUseCase.createRequestParams(catalogId), object : Subscriber<ProductCatalogResponse>() {
-            override fun onNext(t: ProductCatalogResponse?) {
-                productCatalogResponse.value = Success((t as ProductCatalogResponse))
-            }
+        viewModelScope.launchCatchError(
+                block = {
+                    val response = getProductCatalogOneUseCase.getCatalogDetail(catalogId)
+                    //val item: CatalogResponse.CatalogResponseData? = response?.getData<CatalogResponse.CatalogResponseData>(CatalogResponse.CatalogResponseData::class.java)
 
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                productCatalogResponse.value = Fail(e)
-            }
-
-        })
-
+                    val item = CatalogDetailMapper.getDummyCatalogData().data
+                    item?.let {
+                        catalogResponseData.value = Success(it)
+                    }
+                },
+                onError = {
+                    catalogResponseData.value = Fail(it)
+                }
+        )
     }
 
-    fun getProductCatalogResponse(): MutableLiveData<Result<ProductCatalogResponse>> {
-        return productCatalogResponse
+    fun getCatalogResponseData(): MutableLiveData<Result<CatalogResponse.CatalogResponseData>> {
+        return catalogResponseData
     }
-
 }

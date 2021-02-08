@@ -1,27 +1,32 @@
 package com.tokopedia.catalog.ui.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.AsyncDifferConfig
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.adapter.CatalogImageAdapter
+import com.tokopedia.catalog.adapter.CatalogDetailAdapter
+import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
+import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog
+import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
+import com.tokopedia.catalog.model.raw.CatalogResponse
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,18 +35,28 @@ import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
-        HasComponent<CatalogComponent>,
-        CatalogImageAdapter.Listener {
+        HasComponent<CatalogComponent>, CatalogDetailListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
+
     private var catalogId: String = ""
     private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
     private lateinit var fragment: CatalogGalleryFragment
-    private lateinit var catalog: Catalog
+    private lateinit var catalogResponseData: CatalogResponse.CatalogResponseData
     private var listener: Listener? = null
+
+    private val adapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
+
+    private val catalogDetailAdapter by lazy {
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
+                .build()
+        CatalogDetailAdapter(asyncDifferConfig, this, adapterFactory
+        )
+    }
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -81,12 +96,12 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun setObservers() {
-        catalogDetailPageViewModel.getProductCatalogResponse().observe(this, Observer {
+        catalogDetailPageViewModel.getCatalogResponseData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     catalog_layout.show()
-                    catalog = it.data.productCatalogQuery.data.catalog
-                    setUI(catalog)
+                    catalogResponseData = it.data
+                    setUI(catalogResponseData)
                 }
                 is Fail -> {
                 }
@@ -99,64 +114,34 @@ class CatalogDetailPageFragment : Fragment(),
         this.listener = listener
     }
 
-    private fun setUI(catalog: Catalog) {
-        val marketPrice = "${catalog.marketPrice[0].minFmt} - ${catalog.marketPrice[0].maxFmt}"
-        marketprice.text = marketPrice
-        setBanner(catalog.catalogImage)
-        setTopThreeSpecs(catalog.topthreespec)
-        complete_specifications.setOnClickListener {
-            CatalogDetailPageAnalytics.trackEventClickSpecification()
-            val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalog.description, catalog.specification)
-            catalogSpecsAndDetailView.show(childFragmentManager, "")
-        }
-        listener?.deliverCatalogShareData(generateCatalogShareData(catalog.url, catalogId), catalog.name, catalog.departmentId)
+    private fun setUI(catalogResponseData: CatalogResponse.CatalogResponseData) {
+
+        val listOfDataModel = arrayListOf<BaseCatalogDataModel>()
+        val categoryInfoDataModel = CatalogInfoDataModel("product_info", "product_info",
+                catalogResponseData.catalogGetDetailModular.basicInfo.name,
+                catalogResponseData.catalogGetDetailModular.basicInfo.brand,
+                catalogResponseData.catalogGetDetailModular.basicInfo.tag,
+                "${catalogResponseData.catalogGetDetailModular.basicInfo.marketPrice[0].minFmt} - ${catalogResponseData.catalogGetDetailModular.basicInfo.marketPrice[0].maxFmt} ",
+                catalogResponseData.catalogGetDetailModular.basicInfo.description
+        )
+
+//        val catalogSpecificationsDataModel = CatalogSpecificationDataModel("specifications",
+//                "specifications", catalogResponseData.catalogGetDetailModular.basicInfo.components[0] )
+//
+
+        catalog_detail_rv.adapter = catalogDetailAdapter
     }
 
-    private fun setBanner(catalogImage: ArrayList<Catalog.CatalogImage>) {
-        val catalogImageAdapter = CatalogImageAdapter(catalogImage, this)
-        var previousPosition: Int = -1
-        view_pager_intermediary.adapter = catalogImageAdapter
-        indicator_intermediary.setIndicator(catalogImage.size)
-        view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {}
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                indicator_intermediary.setCurrentIndicator(position)
-                when {
-                    previousPosition >= 0 -> when {
-                        previousPosition > position -> CatalogDetailPageAnalytics.trackEventSwipeCatalogPicture(LEFT)
-                        previousPosition < position -> CatalogDetailPageAnalytics.trackEventSwipeCatalogPicture(RIGHT)
-                    }
-                }
-                previousPosition = position
-            }
-
-        })
-        this.catalogImage = catalogImage
-        if (catalogImage.size == 1)
-            indicator_intermediary.hide()
-    }
-
-    override fun onImageClick() {
-        CatalogDetailPageAnalytics.trackEventClickCatalogPicture()
-        showImage(view_pager_intermediary.currentItem)
+    private fun viewMoreSpecifications() {
+        CatalogDetailPageAnalytics.trackEventClickSpecification()
+        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
+                catalogResponseData.catalogGetDetailModular.basicInfo.description,
+                arrayListOf())
+        catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
 
     private fun showImage(currentItem: Int) {
         context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogImage))
-    }
-
-    private fun setTopThreeSpecs(topthreespec: ArrayList<Catalog.Topthreespec>) {
-        top_three_specs.removeAllViews()
-        for (specs in topthreespec) {
-            val textView = TextView(context)
-            textView.textSize = 12f
-            textView.text = MethodChecker.fromHtml(resources.getString(R.string.catalog_bullet_string, specs.value)).toString()
-            textView.setTextColor(MethodChecker.getColor(context, R.color.catalog_grey_796))
-            top_three_specs.addView(textView)
-        }
     }
 
     fun onBackPress() {
@@ -181,6 +166,6 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     interface Listener {
-        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId:String)
+        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String)
     }
 }

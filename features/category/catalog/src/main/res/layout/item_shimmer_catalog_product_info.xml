@@ -5,51 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/product_label"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/product_name_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/unify_space_2"
-        android:paddingEnd="@dimen/unify_space_4"
-        android:paddingBottom="@dimen/unify_space_2"
-        android:paddingStart="@dimen/unify_space_4"
-        tools:text="10 HP Terbaik 2021"
-        app:labelType="general_light_orange"
-        android:textSize="@dimen/unify_font_10"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_brand"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/product_label"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:text="Apple"
-        app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        app:loader_type="line"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/product_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_250"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/product_brand"
-        app:layout_constraintStart_toStartOf="@id/product_brand"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_name_title"
+        app:layout_constraintStart_toStartOf="@id/product_name_title"
         android:layout_marginTop="@dimen/unify_space_2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        tools:text="iPhone 12 - 64GB"
-        app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
+        app:loader_type="line"
         />
 
     <View
@@ -67,51 +42,39 @@
         tools:visibility="visible"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/price_range"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/bottom_spliter"
-        app:layout_constraintEnd_toEndOf="@id/product_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:text="Kisaran Harga"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        app:loader_type="line"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/price_range_value"
-        android:layout_width="0dp"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/price_range_tv"
+        android:layout_width="@dimen/dp_250"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/price_range"
         app:layout_constraintStart_toStartOf="@id/price_range"
-        app:layout_constraintEnd_toEndOf="@id/product_name"
         android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginBottom="@dimen/unify_space_12"
-        tools:text="Rp14.500.000 - 15.250.000"
-        app:typographyType="heading_4"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textColor="@color/Unify_N700_96"
+        app:loader_type="line"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/catalog_images_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/price_range_value"
+        android:layout_height="@dimen/dp_250"
+        app:layout_constraintTop_toBottomOf="@id/price_range_tv"
         android:layout_marginTop="@dimen/unify_space_12"
-        tools:listitem="@layout/item_catalog_image"
-        tools:itemCount="2"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:loader_type="rect"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/product_description_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -121,17 +84,13 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:text="Deskripsi"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
+        app:loader_type="line"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/product_description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_250"
         app:layout_constraintTop_toBottomOf="@id/product_description_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,9 +99,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:text="@string/lorem"
-        app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        app:loader_type="rect"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

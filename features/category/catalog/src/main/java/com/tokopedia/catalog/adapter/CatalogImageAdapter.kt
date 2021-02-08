@@ -34,11 +34,15 @@ class CatalogImageAdapter(val list: List<CatalogImage>, val listener: Listener?)
     }
 
     class CatalogImageViewHolder(val itemView: View, val listener: Listener?) {
+
         fun bind(model: CatalogImage) {
             itemView.image.loadImage(model.imageUrl)
             itemView.setOnClickListener {
                 listener?.onImageClick()
             }
+        }
+        companion object{
+            val LAYOUT = R.layout.item_catalog_image
         }
     }
 

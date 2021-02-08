@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.ui.fragment
+package com.tokopedia.catalog.ui.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle
@@ -15,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
 import com.tokopedia.catalog.model.ProductCatalogResponse
+import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
     var list: ArrayList<Fragment> = ArrayList()

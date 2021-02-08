@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/video_thumbnail_iv"
         android:layout_width="@dimen/dp_200"
         android:layout_height="@dimen/dp_112"
@@ -26,13 +26,13 @@
         android:lines="2"
         />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/channel_icon"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/video_title_tv"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/unify_space_4"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars"
         />
@@ -43,8 +43,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/video_title_tv"
         app:layout_constraintStart_toEndOf="@id/channel_icon"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginStart="@dimen/unify_space_4"
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_68"
         tools:text="GadgetIn"
