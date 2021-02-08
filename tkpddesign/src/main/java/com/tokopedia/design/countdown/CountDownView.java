@@ -9,7 +9,6 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
@@ -19,8 +18,6 @@ import androidx.core.content.ContextCompat;
 
 import com.tokopedia.design.R;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -312,7 +309,9 @@ public class CountDownView extends FrameLayout {
                 setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
                 refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
 
-                if (dayChangedListener != null && isMoreThanADay(timeDiff)) {
+                if (dayChangedListener == null) return;
+
+                if (isMoreThanADay(timeDiff)) {
                     dayChangedListener.onMoreThan24h();
                 } else {
                     dayChangedListener.onLessThan24h();
