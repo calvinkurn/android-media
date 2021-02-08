@@ -48,6 +48,7 @@ import java.util.List;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IMAGES_FED_INTO_IMAGE_PICKER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
 
@@ -573,6 +574,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
+        intent.putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, selectedImagePaths);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
 

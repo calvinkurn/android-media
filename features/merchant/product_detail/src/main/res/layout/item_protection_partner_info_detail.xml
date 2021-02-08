@@ -3,36 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl2">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/desc_info_item"
+        android:id="@+id/pdp_additional_info_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:lineSpacingExtra="@dimen/pdp_dp_3"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_info_item"
+        app:layout_constraintEnd_toStartOf="@+id/ic_pdp_additional_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         tools:text="@string/ktp_protection"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ic_info_item"
+        android:id="@+id/ic_pdp_additional_info"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/unify_space_0"
         android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="@+id/desc_info_item"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_additional_info_desc"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/desc_info_item"
-        app:layout_constraintTop_toTopOf="@+id/desc_info_item"
-        app:unify_image_corner_radius="0"
+        app:layout_constraintStart_toEndOf="@+id/pdp_additional_info_desc"
+        app:layout_constraintTop_toTopOf="@+id/pdp_additional_info_desc"
         app:layout_constraintHorizontal_bias="0"
         tools:src="@tools:sample/avatars" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

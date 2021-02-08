@@ -84,7 +84,7 @@ class SomListSortFilterTab(
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
-        updateStatusFilterAppliedFromAdvancedFilter(status)
+        isStatusFilterAppliedFromAdvancedFilter = false
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
             sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
@@ -134,14 +134,6 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    private fun updateStatusFilterAppliedFromAdvancedFilter(status: SomListFilterUiModel.Status?) {
-        selectedTab?.key?.let {
-            if (status?.key != it) {
-                isStatusFilterAppliedFromAdvancedFilter = false
-            }
-        }
-    }
-
     private fun updateSelectedTab(status: SomListFilterUiModel.Status?) {
         selectedTab = status
     }
@@ -151,13 +143,6 @@ class SomListSortFilterTab(
             parentListener = {
                 listener.onParentSortFilterClicked()
             }
-        }
-    }
-
-    fun decrementOrderCount() {
-        selectedTab?.run {
-            amount -= 1
-            filterItems.find { it.title.contains(status) }?.title = composeTabTitle(status, amount)
         }
     }
 

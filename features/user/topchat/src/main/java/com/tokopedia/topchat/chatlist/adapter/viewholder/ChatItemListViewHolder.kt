@@ -25,12 +25,12 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
-import com.tokopedia.topchat.common.util.ChatHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.time.TimeHelper
 
 /**
  * @author : Steven 2019-08-07
@@ -324,7 +324,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTimeStamp(chat: ItemChatListPojo) {
-        time.text = ChatHelper.convertToRelativeDate(chat.lastReplyTimeStr)
+        time.text = TimeHelper.getRelativeTimeFromNow(chat.lastReplyTimeMillis)
     }
 
     private fun bindLabel(chat: ItemChatListPojo) {

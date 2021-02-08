@@ -16,16 +16,22 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.utils.convertBitmapToImageFile
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
 import java.io.File
+import javax.inject.Inject
 
 class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
+    lateinit var tracker: InactivePhoneTracker
+
     private var mode = 0
     private val permissionCheckerHelper = PermissionCheckerHelper()
+
+    private var isPictureTaken = false
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
@@ -38,7 +44,9 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tracker = InactivePhoneTracker()
 
+        isPictureTaken = false
         arguments?.let {
             mode = it.getInt(KEY_MODE, 0)
             if (mode == 0) {
@@ -68,6 +76,11 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         btnShutter?.setOnClickListener {
+            cameraViewModeCondition(
+                    onIdCardMode = { tracker.clickOnCaptureButtonCameraViewIdCard() },
+                    onSelfieMode = { tracker.clickOnCaptureButtonCameraViewSelfie() }
+            )
+
             cameraView?.takePicture()
         }
 
@@ -81,12 +94,34 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
         btnNext?.setOnClickListener {
             activity?.let {
+
+                cameraViewModeCondition(
+                        onIdCardMode = { tracker.clickOnNextButtonCameraViewIdCardConfirmation() },
+                        onSelfieMode = { tracker.clickOnNextButtonCameraViewSelfiewConfirmation()}
+                )
+
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             }
         }
 
         btnBack?.setOnClickListener {
+            cameraViewModeCondition(
+                    onIdCardMode = {
+                        if (isPictureTaken) {
+                            tracker.clickOnBackButtonCameraViewIdCardConfirmation()
+                        } else {
+                            tracker.clickOnBackButtonCameraViewIdCard()
+                        }
+                    },
+                    onSelfieMode = {
+                        if (isPictureTaken) {
+                            tracker.clickOnBackButtonCameraViewSelfieConfirmation()
+                        } else {
+                            tracker.clickOnBackButtonCameraViewSelfiew()
+                        }
+                    }
+            )
             activity?.onBackPressed()
         }
     }
@@ -102,20 +137,24 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     private fun setLayoutCameraView() {
         layoutCameraView?.layoutType = mode
-        when (mode) {
-            CameraViewMode.ID_CARD.id -> {
-                cameraView?.facing = Facing.BACK
-                updateTitle(getString(R.string.text_title_id_card))
-                updateDescription(getString((R.string.text_camera_description_id_card)))
-                showCamera()
-            }
-            CameraViewMode.SELFIE.id -> {
-                cameraView?.facing = Facing.FRONT
-                updateTitle(getString(R.string.text_title_selfie))
-                updateDescription(getString((R.string.text_camera_description_selfie)))
-                showCamera()
-            }
-        }
+        cameraViewModeCondition(
+                onIdCardMode = { setLayoutCameraIdCard() },
+                onSelfieMode = { setLayoutCameraSelfie() }
+        )
+    }
+
+    private fun setLayoutCameraIdCard() {
+        cameraView?.facing = Facing.BACK
+        updateTitle(getString(R.string.text_title_id_card))
+        updateDescription(getString((R.string.text_camera_description_id_card)))
+        showCamera()
+    }
+
+    private fun setLayoutCameraSelfie() {
+        cameraView?.facing = Facing.FRONT
+        updateTitle(getString(R.string.text_title_selfie))
+        updateDescription(getString((R.string.text_camera_description_selfie)))
+        showCamera()
     }
 
     private fun updateTitle(title: String) {
@@ -206,6 +245,13 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     private fun onError(message: String) {
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun cameraViewModeCondition(onIdCardMode: () -> Unit = {}, onSelfieMode: () -> Unit = {}) {
+        when (mode) {
+            CameraViewMode.ID_CARD.id -> onIdCardMode.invoke()
+            CameraViewMode.SELFIE.id -> onSelfieMode.invoke()
         }
     }
 

@@ -24,8 +24,8 @@ class LsPrintFinishOrderUseCase @Inject constructor(private val gqlRepository: G
             val request = GraphqlRequest(QUERY, LsPrintData.Data::class.java, generateParam(verticalId))
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<LsPrintData.Data>()
             Success(response)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+        } catch (e: Exception) {
+            Fail(e)
         }
     }
 

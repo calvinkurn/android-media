@@ -80,7 +80,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
-            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
+            finishCalculate: (() -> Unit)? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
@@ -96,7 +97,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, showSeeMoreCard, scrollToPosition, true)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, showSeeMoreCard, scrollToPosition, true, finishCalculate)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -148,11 +149,13 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             showSeeMoreCard: Boolean = false,
             scrollToPosition: Int = 0,
-            isGrid: Boolean
+            isGrid: Boolean,
+            finishCalculate: (() -> Unit)? = null
     ) {
         initRecyclerView(productCardModelList, recyclerViewPool, isGrid)
         submitList(productCardModelList, showSeeMoreCard, carouselProductCardListenerInfo)
         scrollCarousel(scrollToPosition)
+        finishCalculate?.invoke()
     }
 
     private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {

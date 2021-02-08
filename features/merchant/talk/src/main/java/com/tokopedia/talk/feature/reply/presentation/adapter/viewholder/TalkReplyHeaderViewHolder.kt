@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,13 +37,13 @@ class TalkReplyHeaderViewHolder(view: View,
 
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {
-            showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask)
+            showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask, isSeller)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
             showUserNameWithCondition(element.userName, element.isMyQuestion)
-            showUnmaskCardWithCondition(element.allowUnmask)
+            showMaskingState(element.isMasked, element.allowUnmask, element.maskedContent)
             itemView.apply {
                 replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
@@ -52,21 +53,10 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
-        if(isMarkNotFraud) {
+        if (isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
             threadListener.onDismissUnmaskCard(commentId)
-        }
-    }
-
-    private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
-        if(allowUnmask) {
-            itemView.replyUnmaskCard.apply {
-                show()
-                setListener(this@TalkReplyHeaderViewHolder, "")
-            }
-        } else {
-            itemView.replyUnmaskCard.hide()
         }
     }
 
@@ -129,19 +119,19 @@ class TalkReplyHeaderViewHolder(view: View,
         labelMyQuestion.hide()
     }
 
-    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean) {
+    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean, isSeller: Boolean) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                if(!allowUnmask) {
-                    setType(Typography.BODY_2)
-                    setWeight(Typography.REGULAR)
-                    text = maskedContent
+                if (allowUnmask && isSeller) {
+                    text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+                    setType(Typography.HEADING_4)
+                    setWeight(Typography.BOLD)
                     return
                 }
-                text = HtmlLinkHelper(context, question).spannedString
-                setType(Typography.HEADING_4)
-                setWeight(Typography.BOLD)
+                setType(Typography.BODY_2)
+                setWeight(Typography.REGULAR)
+                text = maskedContent
                 return
             }
             text = HtmlLinkHelper(context, question).spannedString
@@ -182,6 +172,26 @@ class TalkReplyHeaderViewHolder(view: View,
             }
         } else {
             itemView.replyHeaderFollowButton.hide()
+        }
+    }
+
+    private fun showMaskingState(isMasked: Boolean, allowUnmask: Boolean, maskedContent: String) {
+        if (isMasked) {
+            if (allowUnmask) {
+                itemView.replyUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyHeaderViewHolder, "")
+                }
+            } else {
+                itemView.replyQuestionTicker.apply {
+                    show()
+                    setTextDescription(maskedContent)
+                }
+                itemView.replyUnmaskCard.hide()
+            }
+        } else {
+            itemView.replyQuestionTicker.hide()
+            itemView.replyUnmaskCard.hide()
         }
     }
 }

@@ -100,6 +100,67 @@
             tools:text="Rp 10.000" />
 
         <ImageView
+            android:id="@+id/imageViewRatingAverage"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_3"
+            android:adjustViewBounds="true"
+            android:contentDescription="image rating"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/price"
+            app:srcCompat="@drawable/topads_ic_rating_active"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textRatingAverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginStart="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/imageViewRatingAverage"
+            app:layout_constraintTop_toBottomOf="@id/price"
+            app:typographyType="body_3"
+            tools:text="4.8"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/ratingAverageIntegrityLine"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_10"
+            android:background="@color/Unify_N700_32"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/textRatingAverage"
+            app:layout_constraintStart_toEndOf="@+id/textRatingAverage"
+            app:layout_constraintTop_toTopOf="@id/textRatingAverage"
+            app:layout_constraintEnd_toStartOf="@+id/textViewIntegrity"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewIntegrity"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:textColor="@color/Unify_N700_68"
+            android:layout_marginEnd="@dimen/dp_6"
+            app:layout_constraintStart_toEndOf="@id/ratingAverageIntegrityLine"
+            app:layout_constraintTop_toTopOf="@id/textRatingAverage"
+            app:layout_constraintBottom_toBottomOf="@id/textRatingAverage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            tools:text="Terjual 122"
+            tools:visibility="visible" />
+
+        <ImageView
             android:id="@+id/imageViewRating1"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
@@ -111,7 +172,7 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/price"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewRatingAverage"
             tools:src="@drawable/topads_ic_rating_active"
             tools:visibility="visible" />
 
