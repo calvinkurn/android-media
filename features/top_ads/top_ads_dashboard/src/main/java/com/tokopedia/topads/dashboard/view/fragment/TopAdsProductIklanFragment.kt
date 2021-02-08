@@ -19,7 +19,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -106,7 +108,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
-
     enum class State {
         EXPANDED, COLLAPSED, IDLE
     }
@@ -186,7 +187,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun renderManualViewPager() {
-        tab_layout?.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
@@ -255,20 +255,37 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun noAds() {
         /*ad switching in progress*/
         adTypeCallBack?.adInfo(MANUAL_AD)
-        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState || STATUS_IN_PROGRESS_AUTOMANAGE == adCurrentState || STATUS_IN_PROGRESS_INACTIVE == adCurrentState) {
-            app_bar_layout_2.visibility = View.VISIBLE
-            autoads_layout.visibility = View.VISIBLE
+        if (checkInProgress()) {
+            showProgressLayout()
         } else {
             manualAds()
         }
     }
 
+    private fun showProgressLayout() {
+        btnReload?.setOnClickListener {
+            swipe_refresh_layout.isRefreshing = true
+            loadData()
+        }
+        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState)
+            description?.text = getString(R.string.topads_dash_auto_ads_enable_msg)
+        else if (STATUS_IN_PROGRESS_INACTIVE == adCurrentState)
+            description?.text = getString(R.string.topads_dash_auto_ads_disable_msg)
+        autoadsOnboarding?.gone()
+        graph_layout?.gone()
+        progressView?.visible()
+        autoads_layout?.gone()
+        graph_layout?.gone()
+        tab_layout?.gone()
+        view_pager_frag?.gone()
+    }
+
     private fun setEmptyView() {
-        view_pager_frag.visibility = View.GONE
-        autoads_layout.visibility = View.GONE
-        app_bar_layout_2.visibility = View.GONE
-        empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
-        empty_view.visibility = View.VISIBLE
+        view_pager_frag?.gone()
+        autoads_layout?.gone()
+        app_bar_layout_2?.gone()
+        empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
+        empty_view?.visible()
         mulai_beriklan.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
@@ -284,21 +301,59 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
     }
 
+    private fun checkInProgress(): Boolean {
+        return STATUS_IN_PROGRESS_ACTIVE == adCurrentState || STATUS_IN_PROGRESS_AUTOMANAGE == adCurrentState || STATUS_IN_PROGRESS_INACTIVE == adCurrentState
+    }
+
     private fun manualAds() {
-        adTypeCallBack?.adInfo(MANUAL_AD)
-        empty_view.visibility = View.GONE
-        view_pager_frag.visibility = View.VISIBLE
-        autoads_layout.visibility = View.GONE
-        autoAdsWidget?.visibility = View.GONE
-        if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
+        autoAdsWidget?.gone()
+        autoads_layout.gone()
+        if (checkInProgress()) {
             imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
             autoadsDeactivationProgress?.visibility = View.VISIBLE
-            autoadsOnboarding.visibility = View.GONE
+            showProgressLayout()
+            autoadsOnboarding.gone()
         } else {
-            autoadsDeactivationProgress?.visibility = View.GONE
-            autoadsOnboarding.visibility = View.VISIBLE
+            setCommonViewVisible()
+            setManualAds(true)
+            adTypeCallBack?.adInfo(MANUAL_AD)
             renderManualViewPager()
         }
+    }
+
+    private fun setManualAds(manual: Boolean) {
+        if (manual) {
+            tab_layout?.visible()
+            view_pager_frag?.visible()
+            autoadsDeactivationProgress?.gone()
+            autoadsOnboarding?.visible()
+        } else {
+            view_pager_frag?.gone()
+            autoads_layout?.visible()
+            tab_layout?.gone()
+            autoadsOnboarding?.gone()
+        }
+    }
+
+    private fun autoAds() {
+        autoAdsWidget?.loadData(0)
+        autoAdsWidget?.visibility = View.VISIBLE
+        if (checkInProgress()) {
+            showProgressLayout()
+        } else {
+            setCommonViewVisible()
+            adTypeCallBack?.adInfo(SINGLE_AD)
+            setAutoAdsAdapter()
+            setManualAds(false)
+            fetchData()
+        }
+    }
+
+    private fun setCommonViewVisible() {
+        graph_layout?.visible()
+        progressView?.gone()
+        app_bar_layout_2?.visible()
+        empty_view?.gone()
     }
 
     private fun fetchData() {
@@ -307,19 +362,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsAdapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getGroupProductData(1, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
-    }
-
-    private fun autoAds() {
-        adTypeCallBack?.adInfo(SINGLE_AD)
-        setAutoAdsAdapter()
-        autoAdsWidget?.loadData(0)
-        autoAdsWidget?.visibility = View.VISIBLE
-        view_pager_frag.visibility = View.GONE
-        autoads_layout.visibility = View.VISIBLE
-        tab_layout?.visibility = View.GONE
-        empty_view.visibility = View.GONE
-        autoadsOnboarding.visibility = View.GONE
-        fetchData()
     }
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {

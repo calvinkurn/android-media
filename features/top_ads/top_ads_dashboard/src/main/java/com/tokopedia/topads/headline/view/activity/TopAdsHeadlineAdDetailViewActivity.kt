@@ -251,7 +251,6 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
     fun setKeywordCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
-//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {
