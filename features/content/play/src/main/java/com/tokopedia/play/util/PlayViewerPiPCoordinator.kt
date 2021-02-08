@@ -28,6 +28,8 @@ class PlayViewerPiPCoordinator(
 
     private val floatingView: FloatingWindowView
 
+    val view: PlayViewerPiPView
+
     init {
         val scaleFactor =
                 if (videoOrientation is VideoOrientation.Horizontal) 0.6f
@@ -41,7 +43,7 @@ class PlayViewerPiPCoordinator(
             screenWidth to screenHeight
         }
 
-        val view = PlayViewerPiPView(context.applicationContext).also {
+        view = PlayViewerPiPView(context.applicationContext).also {
             it.setPlayer(videoPlayer)
             it.setPiPInfo(pipInfoUiModel)
         }

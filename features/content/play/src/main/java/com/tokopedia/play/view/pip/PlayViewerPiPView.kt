@@ -64,7 +64,7 @@ class PlayViewerPiPView : ConstraintLayout {
     private val ivLoading: LoaderUnify
     private val flCloseArea: FrameLayout
 
-    private var isRoutingToRoom: Boolean = false
+    private var mPauseOnDetached: Boolean = true
 
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
@@ -90,6 +90,13 @@ class PlayViewerPiPView : ConstraintLayout {
         super.onDetachedFromWindow()
         mVideoPlayer.removeListener(videoListener)
 
+        if (mPiPInfo?.stopOnClose == true) {
+            if (mVideoPlayer.isVideoLive()) mVideoPlayer.release()
+            else mVideoPlayer.stop()
+        } else if (mPauseOnDetached) {
+            mVideoPlayer.pause(false)
+        }
+
         pipRemovedAnalytic()
     }
 
@@ -114,22 +121,19 @@ class PlayViewerPiPView : ConstraintLayout {
 
     fun getPlayerView(): PlayerView = pvVideo
 
+    fun setPauseOnDetached(shouldPause: Boolean) {
+        mPauseOnDetached = shouldPause
+    }
+
     private fun setupView() {
         mVideoPlayer.addListener(videoListener)
         flCloseArea.setOnClickListener {
-            if (mPiPInfo?.stopOnClose == true) {
-                if (mVideoPlayer.isVideoLive()) mVideoPlayer.release()
-                else mVideoPlayer.stop()
-            } else {
-                mVideoPlayer.pause(false)
-            }
-
-            pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
+            removePiP()
         }
 
         setOnClickListener {
             mPiPInfo?.let { pipInfo ->
-                isRoutingToRoom = true
+                removePiP()
                 val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context.startActivity(intent)
@@ -149,6 +153,10 @@ class PlayViewerPiPView : ConstraintLayout {
     private fun onVideoEnded() {
         flLoading.visibility = View.VISIBLE
         ivLoading.visibility = View.GONE
+    }
+
+    private fun removePiP() {
+        pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
     }
 
     private fun pipRemovedAnalytic() {

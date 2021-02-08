@@ -20,22 +20,18 @@ import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
-import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -129,6 +125,8 @@ class PlayVideoFragment @Inject constructor(
         }
     }
 
+    private lateinit var piPCoordinator: PlayViewerPiPCoordinator
+
     private val cornerRadius = 16f.dpToPx()
 
     private lateinit var playViewModel: PlayViewModel
@@ -161,7 +159,12 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if (!isEnterPiPAfterPermission) playViewModel.stopPiP()
+        if (!isEnterPiPAfterPermission) {
+            if (::piPCoordinator.isInitialized) {
+                piPCoordinator.view.setPauseOnDetached(false)
+            }
+            playViewModel.stopPiP()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -207,7 +210,7 @@ class PlayVideoFragment @Inject constructor(
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
-        PlayViewerPiPCoordinator(
+        piPCoordinator = PlayViewerPiPCoordinator(
                 context = requireContext(),
                 videoPlayer = playViewModel.getVideoPlayer(),
                 videoOrientation = playViewModel.videoOrientation,
@@ -220,7 +223,8 @@ class PlayVideoFragment @Inject constructor(
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
-        ).startPip()
+        )
+        piPCoordinator.startPip()
     }
 
     /**
