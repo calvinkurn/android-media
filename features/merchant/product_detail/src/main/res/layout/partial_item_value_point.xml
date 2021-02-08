@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lihat"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
