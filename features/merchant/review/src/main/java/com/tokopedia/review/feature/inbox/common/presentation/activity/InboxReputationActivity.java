@@ -60,11 +60,13 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
+    public static final String GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
+    public static final int TAB_SELLER_INBOX_REVIEW = 1;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
     private Fragment inboxReviewFragment;
@@ -82,6 +84,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private boolean goToReputationHistory;
     private boolean goToBuyerReview;
+    private boolean goToInboxReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
@@ -96,6 +99,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
+        goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
@@ -154,6 +158,12 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
         viewPager.setOffscreenPageLimit(getFragmentList().size());
         viewPager.setAdapter(sectionAdapter);
+
+        if (GlobalConfig.isSellerApp()) {
+            if(goToInboxReview) {
+                viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
+            }
+        }
 
         if (goToReputationHistory) {
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
