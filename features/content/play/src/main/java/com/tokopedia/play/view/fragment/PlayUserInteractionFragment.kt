@@ -138,7 +138,7 @@ class PlayUserInteractionFragment @Inject constructor(
         get() = requireParentFragment() as PlayFragment
 
     private val orientationListener: PlayOrientationListener
-        get() = requireParentFragment() as PlayOrientationListener
+        get() = requireActivity() as PlayOrientationListener
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
@@ -154,6 +154,8 @@ class PlayUserInteractionFragment @Inject constructor(
             return orientation
         }
     }
+
+    private var hasBeenOpened = false
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
@@ -197,7 +199,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         spaceSize.rootView.requestApplyInsetsWhenAttached()
-        endLiveInfoView.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onPause() {
@@ -228,6 +229,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        hasBeenOpened = true
         invalidateSystemUiVisibility()
     }
 
@@ -418,29 +420,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
-        /**
-         * This is a temporary workaround for when insets not working inside viewpager
-         * //TODO("Find the root cause and handle it the right way")
-         */
-        val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
-                val initialBottomMargin = layoutParams.bottomMargin
-                val insets = activity?.window?.decorView?.rootWindowInsets
-                if (insets != null) {
-                    layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
-                    initialBottomMargin
-                } else error("Insets not supported")
-            } catch (e: Throwable) { 0 }
-        } else 0
+        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
+            if (!hasBeenOpened && (insets.systemWindowInsetTop == 0 || insets.systemWindowInsetBottom == 0)) return@doOnApplyWindowInsets
 
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-
-            /**
-             * Reduce margin by the first added value
-             */
-            val margin = recordedMargin.copy(bottom = realBottomMargin)
 
             var isMarginChanged = false
 
@@ -469,14 +452,6 @@ class PlayUserInteractionFragment @Inject constructor(
             }
 
             if (isMarginChanged) v.parent.requestLayout()
-        }
-
-        endLiveInfoView.rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(
-                    left = padding.left + insets.systemWindowInsetLeft,
-                    right = padding.right + insets.systemWindowInsetRight,
-                    bottom = padding.bottom + insets.systemWindowInsetBottom
-            )
         }
     }
 
