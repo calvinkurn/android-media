@@ -9,13 +9,13 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -47,14 +47,13 @@ import org.junit.runner.RunWith
 class TopChatRoomManualProductTest {
 
     @get:Rule
-    var activityTestRule = ActivityTestRule(TopChatRoomActivityStub::class.java)
+    var activityTestRule = IntentsTestRule(TopChatRoomActivityStub::class.java)
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var getChatUseCase: GetChatUseCaseStub
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
-
     private lateinit var activity: TopChatRoomActivityStub
 
     private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
@@ -67,96 +66,89 @@ class TopChatRoomManualProductTest {
     )
 
     private val trackerResultProductCard = "tracker/user/topchat/product_card_p0.json"
-
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     private val gtmLogDbSource = GtmLogDBSource(context)
-
-    private var fragmentIdlingResource: FragmentTransactIdlingResource? = null
-
     private val exMessageId = "66961"
 
     @ExperimentalCoroutinesApi
     @Before
     fun before() {
-        Intents.init()
         Dispatchers.setMain(TestCoroutineDispatcher())
         activity = activityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
-
         gtmLogDbSource.deleteAll().subscribe()
-
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(TopchatProductAttachmentViewHolder.AB_TEST_KEY, TopchatProductAttachmentViewHolder.VARIANT_DEFAULT)
-
-        setIdlingResource()
+        setupOccAbTest()
         setupChatRoom()
+    }
 
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+    private fun setupOccAbTest() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                TopchatProductAttachmentViewHolder.AB_TEST_KEY,
+                TopchatProductAttachmentViewHolder.VARIANT_DEFAULT
         )
-    }
-
-    @After
-    fun finish() {
-        IdlingRegistry.getInstance().unregister(fragmentIdlingResource)
-        Intents.release()
-        activityTestRule.finishActivity()
-    }
-
-    private fun setIdlingResource() {
-        fragmentIdlingResource = FragmentTransactIdlingResource(
-                activity.supportFragmentManager,
-                "ChatToolbarActivity"
-        ).apply {
-            registerIdleTransitionCallback {
-                Log.i("ChatToolbarActivity", "transition to idle")
-            }
-        }
-
-        IdlingRegistry.getInstance().register(fragmentIdlingResource)
     }
 
     private fun setupChatRoom() {
         activityTestRule.activity.intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, exMessageId)
-        getChatUseCase.response = firstPageChat
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
     }
 
     @Test
-    fun assess_product_topchat() {
-        onViewChatRoom()
-        onClickProductTopchat()
-        onClickAddToCart()
-        onClickBuy()
+    fun asses_view_click_cta_atc_and_buy_product_attachment_from_user() {
+        // Given
+        getChatUseCase.response = firstPageChat
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        intending(anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
 
-        Thread.sleep(2000)
-        assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, trackerResultProductCard), hasAllSuccess())
+        // When
+        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
+        performClickOnProductCard()
+        performClickAtcButton()
+        performClickBuyButton()
+
+        // Then
+        verifyRecyclerViewDisplayed()
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDbSource, context, trackerResultProductCard),
+                hasAllSuccess()
+        )
     }
 
-    private fun onViewChatRoom() {
-        onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
-    }
-
-    private fun onClickProductTopchat() {
+    private fun verifyRecyclerViewDisplayed() {
         onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view)))
                 .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                        1, ViewActions.click()))
     }
 
-    private fun onClickAddToCart() {
+    private fun performClickOnProductCard() {
+        val viewAction =
+                RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                        1, ViewActions.click()
+                )
         onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view)))
-                .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                        1, ClickChildViewWithIdAction(null).clickChildViewWithId(R.id.tv_atc)))
+                .perform(viewAction)
     }
 
-    private fun onClickBuy() {
+    private fun performClickAtcButton() {
+        val viewAction =
+                RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                        1,
+                        ClickChildViewWithIdAction(null)
+                                .clickChildViewWithId(R.id.tv_atc)
+                )
         onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view)))
-                .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                        1, ClickChildViewWithIdAction(null).clickChildViewWithId(R.id.tv_buy)))
+                .perform(viewAction)
+    }
+
+    private fun performClickBuyButton() {
+        val viewAction =
+                RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                        1,
+                        ClickChildViewWithIdAction(null)
+                                .clickChildViewWithId(R.id.tv_buy)
+                )
+        onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view)))
+                .perform(viewAction)
     }
 }
