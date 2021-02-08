@@ -556,7 +556,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             inboxType = if (containerListener?.role == RoleType.BUYER) {
                 TalkInboxTab.BUYER_TAB
             } else {
-                TalkInboxTab.SHOP_OLD
+                TalkInboxTab.SHOP_TAB
             }
         }
         viewModel.setInboxType(inboxType)
