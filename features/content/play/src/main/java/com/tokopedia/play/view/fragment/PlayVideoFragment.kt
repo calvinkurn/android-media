@@ -65,7 +65,6 @@ class PlayVideoFragment @Inject constructor(
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
-    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
@@ -109,7 +108,6 @@ class PlayVideoFragment @Inject constructor(
         }
 
         override fun onFailedEnterPiPMode(error: FloatingWindowException) {
-
         }
 
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
@@ -238,7 +236,6 @@ class PlayVideoFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
         observePiPEvent()
@@ -296,12 +293,6 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeOneTapOnboarding() {
-        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) onboardingView.showAnimated()
-        })
-    }
-
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             if (::containerVideo.isInitialized) {
@@ -313,10 +304,6 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                onboardingView.hide()
-            }
-
             videoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }

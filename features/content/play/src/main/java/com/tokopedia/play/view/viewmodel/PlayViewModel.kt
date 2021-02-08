@@ -732,6 +732,7 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
+                                    shouldAutoSwipe = true,
                                     statusType = playSocketToModelMapper.mapStatus(
                                             isBanned = result.isBanned && result.userId.isNotEmpty()
                                                     && result.userId.equals(userSession.userId, true)))
@@ -947,7 +948,7 @@ class PlayViewModel @Inject constructor(
                     statusType = playUiModelMapper.mapStatus(channelStatus)
             )
         }, onError = {
-            // TODO handle onError() get channel status
+
         })
     }
 

@@ -409,10 +409,8 @@ class PlayFragment @Inject constructor(
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 
-                scope.launch {
-                    delay(DELAY_FREEZE_AUTO_SWIPE)
-                    playNavigation.navigateToNextPage()
-                }
+                if (it.shouldAutoSwipe) doAutoSwipe()
+
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
@@ -561,6 +559,13 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
+    }
+
+    private fun doAutoSwipe() {
+        scope.launch {
+            delay(DELAY_FREEZE_AUTO_SWIPE)
+            playNavigation.navigateToNextPage()
+        }
     }
 
     //region onStateChanged
