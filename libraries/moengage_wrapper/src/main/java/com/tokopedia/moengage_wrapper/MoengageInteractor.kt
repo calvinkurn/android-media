@@ -281,9 +281,11 @@ object MoengageInteractor {
             if (!isMoengageInitialised)
                 initialiseMoengage()
         }, {
-            setPushListener(null)
-            setInAppListener(null)
-            setInAppListener(null)
+            if (isMoengageInitialised) {
+                setPushListener(null)
+                setInAppListener(null)
+                setInAppListener(null)
+            }
         })
     }
 
