@@ -323,6 +323,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var serverOffsetTime: Long = 0L
     private val gson = Gson()
     private var coachmarkIsShowing = false
+    private var useNewInbox = false
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -516,7 +517,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
-
+        initInboxAbTest()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -556,13 +557,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 },
                                 fixedIconColor = TOOLBAR_LIGHT_TYPE
                         ))
-                        it.setIcon(
-                                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                        .addIcon(IconList.ID_MESSAGE) {}
-                                        .addIcon(IconList.ID_NOTIFICATION) {}
-                                        .addIcon(IconList.ID_CART) {}
-                                        .addIcon(IconList.ID_NAV_GLOBAL) {}
-                        )
+                        val icons = IconBuilder(
+                                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                        ).addIcon(IconList.ID_MESSAGE) {}
+                        if (!useNewInbox) {
+                            icons.addIcon(IconList.ID_NOTIFICATION) {}
+                        }
+                        icons.apply {
+                            addIcon(IconList.ID_CART) {}
+                            addIcon(IconList.ID_NAV_GLOBAL) {}
+                        }
+                        it.setIcon(icons)
                     }
                 }
         )
@@ -580,6 +585,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupHomeRecyclerView()
         initEggDragListener()
         return view
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = getAbTestPlatform().getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun showNavigationOnboarding() {
@@ -901,7 +912,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                     },
                     ifNavRevamp = {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                        if (!useNewInbox) {
+                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                        }
                     }
             )
         }
@@ -2151,7 +2164,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+                    if (!useNewInbox) {
+                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+                    }
                     navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
                     navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
                 }
@@ -2161,11 +2176,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height = 0
+            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let {
                 if (isNavOld()) {
                     if (oldToolbar != null) {
-                        height = oldToolbar?.height ?: 0
+                        height = oldToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                         oldToolbar?.let {
                             if (!it.isShadowApplied()) {
                                 height += resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -2174,7 +2189,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 } else if (isNavRevamp()) {
                     navToolbar?.let {
-                        height = navToolbar?.height ?: 0
+                        height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                         height += resources.getDimensionPixelSize(R.dimen.dp_8)
                     }
                 }

@@ -24,6 +24,7 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.cameraview.FileType
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneSuccessPageActivity
 import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneDataUploadViewModel
@@ -36,6 +37,9 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userDataTemp: UserDataTemporary
+
+    @Inject
+    lateinit var tracker: InactivePhoneTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,6 +75,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                 return@setOnClickListener
             }
 
+            tracker.clickOnButtonSubmitUploadData()
             showLoading()
             viewModel.userValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail(), userDataTemp.getIndex())
         }
@@ -83,6 +88,10 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         imgSelfie?.setOnClickListener {
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
             startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_SELFIE)
+        }
+
+        textPhoneNumber?.setOnClickListener {
+            tracker.clickOnTextViewInputNewPhoneNumber()
         }
 
         setImage(imgIdCard, CameraViewMode.ID_CARD.id)
