@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -58,7 +59,7 @@ class ToolbarViewComponent(
     }
 
     fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
-        tvPartnerName.text = partnerInfo.name
+        tvPartnerName.text = MethodChecker.fromHtml(partnerInfo.name)
         setFollowStatus(partnerInfo.isFollowed)
 
         if (!partnerInfo.isFollowable) {
