@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
@@ -252,6 +253,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     }
 
     fun setGif(drawable: Int) {
+        if(!context.isValidGlideContext()) return
         Glide.with(context).asGif().load(drawable).into(this)
     }
 
@@ -341,6 +343,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     }
 
     private fun loadGif(url: String, placeholderHeight: Int?) {
+        if(!context.isValidGlideContext()) return
         val mRequestBuilder: RequestBuilder<GifDrawable> = Glide.with(context).asGif().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 
         if (heightRatio == null) mRequestBuilder.dontTransform()
@@ -385,6 +388,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     }
 
     private fun loadImage(url: String, placeholderHeight: Int?, isSkipCache: Boolean) {
+        if(!context.isValidGlideContext()) return
         val mRequestBuilder: RequestBuilder<Bitmap> = Glide.with(context).asBitmap().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 
         if (heightRatio == null) mRequestBuilder.dontTransform()
