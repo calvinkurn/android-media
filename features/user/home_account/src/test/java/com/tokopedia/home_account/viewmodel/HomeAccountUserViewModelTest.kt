@@ -117,21 +117,11 @@ class HomeAccountUserViewModelTest {
         every { debitInstantModel.data } returns debitInstandData
 
         /* When */
-        val response = UserAccountDataModel(vccUserStatus = VccUserStatus().apply {
-            status = "status"
-            redirectionUrl = "http://redirect"
-        }, wallet = WalletModel().apply {
-            isLinked = true
-        }, profile = ProfileModel().apply {
-            isPhoneVerified = true
-        }, isAffiliate = true,
-        debitInstant = debitInstantModel)
+        val response = UserAccountDataModel()
 
         viewModel.saveLocallyAttributes(response)
         verify {
             walletPref.saveWallet(response.wallet)
-            walletPref.tokoSwipeUrl = response.vccUserStatus.redirectionUrl
-            walletPref.saveVccUserStatus(response.vccUserStatus)
             userSession.setIsMSISDNVerified(response.profile.isPhoneVerified)
             userSession.setIsAffiliateStatus(response.isAffiliate)
         }
