@@ -54,7 +54,7 @@ class PayLaterViewModel @Inject constructor(
         else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
     }
 
-    fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
+    private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         payLaterTenureMapperUseCase.mapTenureToSimulation(payLaterGetSimulationResponse, onSuccess = {
             when (it) {
                 is StatusSuccess -> payLaterSimulationResultLiveData.value = Success(it.data)
@@ -70,7 +70,7 @@ class PayLaterViewModel @Inject constructor(
         payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
-    fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
+    private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
         payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(userCreditApplicationStatus, onSuccess = {
             when (it) {
                 is StatusAppSuccess -> {
