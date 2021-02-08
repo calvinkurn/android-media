@@ -1015,7 +1015,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun getSelectedOrderStatusCodes(): List<Int> {
         return adapter.data.filterIsInstance<SomListOrderUiModel>()
                 .filter { it.isChecked }
-                .map { it.orderStatusId }
+                .map { it.orderStatusId.toInt() }
                 .distinct()
     }
 
