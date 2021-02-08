@@ -247,16 +247,20 @@ class DynamicChannelHeaderView: FrameLayout {
     private fun getDayChangedListener(subtitle: String, date: Date): CountDownView.DayChangedListener {
         return object: CountDownView.DayChangedListener {
             override fun onLessThan24h() {
-                if (countDownView?.isVisible == false) {
-                    countDownView?.visibility = View.VISIBLE
-                    channelSubtitle?.text = subtitle
+                countDownView?.let {
+                    if (!it.isVisible) {
+                        countDownView?.visibility = View.VISIBLE
+                        channelSubtitle?.text = subtitle
+                    }
                 }
             }
 
             override fun onMoreThan24h() {
-                if (countDownView?.isVisible == true) {
-                    countDownView?.visibility = View.GONE
-                    channelSubtitle?.text = String.format("%s %s", subtitle, DateHelper.formatDateToUi(date))
+                countDownView?.let {
+                    if (it.isVisible) {
+                        countDownView?.visibility = View.GONE
+                        channelSubtitle?.text = String.format("%s %s", subtitle, DateHelper.formatDateToUi(date))
+                    }
                 }
             }
         }
