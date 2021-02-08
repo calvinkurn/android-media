@@ -237,6 +237,10 @@ public interface ProductListSectionContract {
 
         void openFilterPage(Map<String, Object> searchParameter);
 
+        boolean isBottomSheetFilterEnabled();
+
+        void onBottomSheetFilterDismissed();
+
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);

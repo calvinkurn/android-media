@@ -53,10 +53,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
-import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
+import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
@@ -75,6 +72,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvProgressCount: Typography
     lateinit var rewardSummary: RewardSummaryView
     lateinit var lottieTimeUp: LottieAnimationView
+    lateinit var rewardContainer: RewardContainer
     lateinit var viewDim: View
     var fmCoupons: FrameLayout? = null
 
@@ -754,6 +752,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     override fun initViews(v: View) {
+        rewardContainer = v.findViewById(R.id.reward_container)
         tvTimer = v.findViewById(R.id.tv_timer)
         progressBarTimer = v.findViewById(R.id.progress_bar_timer)
         tvProgressCount = v.findViewById(R.id.tv_progress_count)

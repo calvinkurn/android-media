@@ -28,4 +28,5 @@ interface NotificationItemListener {
     fun trackDeleteReminder()
     fun markAsSeen(notifId: String)
     fun refreshPage()
+    fun trackClickCtaWidget(element: NotificationUiModel)
 }

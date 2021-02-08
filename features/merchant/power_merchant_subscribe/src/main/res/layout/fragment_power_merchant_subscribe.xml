@@ -2,7 +2,7 @@
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
@@ -71,7 +71,7 @@
         android:id="@+id/btnCallToAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         app:cardElevation="@dimen/layout_lvl2"
         app:contentPaddingBottom="@dimen/spacing_lvl3"
@@ -90,7 +90,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textCancelMembership"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
