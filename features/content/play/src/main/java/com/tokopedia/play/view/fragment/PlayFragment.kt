@@ -411,7 +411,8 @@ class PlayFragment @Inject constructor(
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-                playNavigation.navigateToNextPage()
+
+                if (it.shouldAutoSwipe) doAutoSwipe()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
@@ -563,6 +564,10 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
+    }
+
+    private fun doAutoSwipe() {
+        playNavigation.navigateToNextPage()
     }
 
     //region onStateChanged

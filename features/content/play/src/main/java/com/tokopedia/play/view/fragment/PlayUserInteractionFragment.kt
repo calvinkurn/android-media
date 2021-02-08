@@ -93,7 +93,6 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-//        EndLiveInfoViewComponent.Listener,
         PiPViewComponent.Listener
 {
     private val job = SupervisorJob()
@@ -114,6 +113,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -366,16 +366,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * EndLiveInfo View Component Listener
-     */
-//    override fun onButtonActionClicked(view: EndLiveInfoViewComponent, btnUrl: String) {
-//        openPageByApplink(
-//                applink = btnUrl,
-//                shouldFinish = true
-//        )
-//    }
-
-    /**
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
@@ -463,6 +453,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
+        observeOnboarding()
         observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
@@ -578,14 +569,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeTotalLikes() {
 //        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
 //            likeView.setTotalLikes(it)
-//            endLiveInfoView.setTotalLikes(it)
 //        })
     }
 
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
-//            endLiveInfoView.setTotalViews(it)
         })
     }
 
@@ -714,6 +703,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeShareInfo() {
         playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setShareInfo(it)
+        })
+    }
+
+    private fun observeOnboarding() {
+        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            if (!orientation.isLandscape) onboardingView.showAnimated()
         })
     }
     //endregion
@@ -1107,7 +1102,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
-        if (isFreezeOrBanned) statsInfoView.show()
+        if (isFreezeOrBanned) statsInfoView.hide()
         else if (!bottomInsets.isAnyShown && orientation.isPortrait) statsInfoView.show()
         else statsInfoView.hide()
     }
