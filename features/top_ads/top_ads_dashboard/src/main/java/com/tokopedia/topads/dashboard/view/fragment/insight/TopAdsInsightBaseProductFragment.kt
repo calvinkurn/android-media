@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -35,6 +34,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsProductRecomAda
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
@@ -50,7 +50,7 @@ import kotlin.collections.set
 class TopAdsInsightBaseProductFragment(private val productRecommendData: ProductRecommendationData?, val height: Int?) : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
-    private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, _ -> }
+    private lateinit var checkBox: CheckboxUnify
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -87,6 +87,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.topads_dash_recom_product_list, container, false)
         rvRecomProduct = view.findViewById(R.id.rvProductRecom)
+        checkBox = view.findViewById(R.id.cb_product_recom)
         setAdapter()
         return view
     }
@@ -106,11 +107,12 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     }
 
     private fun checkUnchekAll() {
-        onCheckedChangeListener = { _, checked ->
-            adapter.setAllChecked(checked)
-            selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.getSelectedIds().size)
+        checkBox.run {
+            setOnClickListener {
+                adapter.setAllChecked(isChecked)
+                selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.getSelectedIds().size)
+            }
         }
-        cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
     }
 
     private fun calculateSetTitle(products: List<ProductRecommendation>?): Int {
@@ -127,7 +129,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             adapter.items.add(it)
         }
         adapter.notifyDataSetChanged()
-        cb_product_recom?.isChecked = true
+        checkBox.isChecked = true
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
         product_recom_desc.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_product_desc), products?.size, calculateSetTitle(products)))
         selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.itemCount)
@@ -150,7 +152,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         rvProductRecom?.gone()
         product_recom_title?.gone()
         product_recom_desc?.gone()
-        cb_product_recom?.gone()
+        checkBox.gone()
         selectedItems?.gone()
         (parentFragment as TopAdsRecommendationFragment).setEmptyProduct()
         (activity as TopAdsDashboardActivity).hideButton(true)
@@ -291,9 +293,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private fun itemCheckedUnchecked() {
         val selected = adapter.getSelectedIds().size
         selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), selected)
-        cb_product_recom?.setOnCheckedChangeListener(null)
-        cb_product_recom?.isChecked = selected == adapter.itemCount
-        cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
+        checkBox.isChecked = selected == adapter.itemCount
         if (selected == 0) {
             enableButton(false)
         } else {

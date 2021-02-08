@@ -22,6 +22,7 @@ data class ChatReplyUiModel(
 
     val tag get() = contact.attributes.tag
     val thumbnailUrl: String get() = contact.attributes.thumbnail
+    val timeStampMillis get() = timeStamp.toLongOrZero()
 
     val modifiedTimeStamp: String get() {
         val addOffsetTimeStamp = timeStamp.toLongOrZero() + 5000
