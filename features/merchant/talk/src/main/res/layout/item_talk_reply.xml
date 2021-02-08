@@ -79,16 +79,28 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/replySmartReplyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:labelTitle="@string/smart_reply_label"
+        app:labelType="general_light_grey"
+        app:layout_constraintTop_toBottomOf="@id/barrierReplyMessage"
+        app:layout_constraintStart_toEndOf="@id/replyProfilePicture"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyMessage"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/replyProfilePicture"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        app:layout_constraintStart_toEndOf="@id/replySmartReplyLabel"
         app:layout_constraintTop_toBottomOf="@+id/barrierReplyMessage"
         app:typographyType="body_2"
         app:typographyWeight="reguler"

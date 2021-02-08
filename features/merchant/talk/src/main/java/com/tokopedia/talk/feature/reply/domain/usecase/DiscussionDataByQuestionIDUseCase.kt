@@ -68,6 +68,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowReport
                           allowDelete
                           isYours
+                          isAutoReplied
                         }
                         attachedProductCount
                         attachedProduct {

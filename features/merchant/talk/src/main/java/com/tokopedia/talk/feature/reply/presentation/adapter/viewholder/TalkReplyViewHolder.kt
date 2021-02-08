@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
@@ -56,6 +57,7 @@ class TalkReplyViewHolder(view: View,
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
             showMaskingState(state.isMasked, state.allowUnmask, maskedContent, answerID)
+            showSmartReplyLabel(state.isAutoReplied)
         }
     }
 
@@ -212,5 +214,9 @@ class TalkReplyViewHolder(view: View,
                 itemView.replyCommentTicker.hide()
             }
         }
+    }
+
+    private fun showSmartReplyLabel(isAutoReplied: Boolean) {
+        itemView.replySmartReplyLabel.showWithCondition(isAutoReplied)
     }
 }
