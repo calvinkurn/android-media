@@ -30,7 +30,6 @@ class SnapshotRobot {
     }
 
     fun clickShopArea() {
-        println("++ clickShopArea")
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Espresso.onView(ViewMatchers.withId(R.id.rv_snapshot))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
@@ -39,7 +38,6 @@ class SnapshotRobot {
     }
 
     fun clickBtnLihatHalamanProduk() {
-        println("++ clickBtnLihatHalamanProduk")
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Espresso.onView(ViewMatchers.withId(R.id.btn_snapshot_to_pdp))
                 .perform(ViewActions.click())

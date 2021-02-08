@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -32,14 +33,18 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             // header
             val productImages = item.dataObject.productImageSecondary
             if (productImages.isNotEmpty()) {
-                val ivHeader = itemView.findViewById<ImageUnify>(R.id.snapshot_main_img)
+                val ivHeader = itemView.findViewById<ImageView>(R.id.snapshot_main_img)
                 val viewPager2 = itemView.findViewById<ViewPager2>(R.id.snapshot_header_view_pager)
                 val indicator = itemView.findViewById<PageControl>(R.id.snapshot_page_indicator)
 
                 if (productImages.size > 1) {
                     ivHeader.gone()
                     viewPager2.visible()
-                    indicator.visible()
+                    indicator.apply {
+                        visible()
+                        setIndicator(productImages.size)
+                        setCurrentIndicator(position)
+                    }
                     val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
                     val arrayListImg = arrayListOf<String>()
@@ -98,7 +103,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             val productName = itemView.findViewById<Typography>(R.id.snapshot_product_name)
             productName.text = item.dataObject.orderDetail.productName
 
-            val shopLogo = itemView.findViewById<ImageUnify>(R.id.snapshot_shop_logo)
+            val shopLogo = itemView.findViewById<ImageView>(R.id.snapshot_shop_logo)
             ImageHandler.loadImageCircle2(itemView.context, shopLogo, item.dataObject.shopImagePrimaryUrl)
 
             val drawable = when {
@@ -113,7 +118,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 }
             }
 
-            val shopBadge = itemView.findViewById<ImageUnify>(R.id.snapshot_shop_badge)
+            val shopBadge = itemView.findViewById<ImageView>(R.id.snapshot_shop_badge)
             if (drawable == null) shopBadge.gone()
             else {
                 shopBadge.setImageDrawable(drawable)

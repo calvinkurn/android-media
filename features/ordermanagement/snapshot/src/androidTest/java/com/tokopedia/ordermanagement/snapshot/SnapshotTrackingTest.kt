@@ -2,6 +2,7 @@ package com.tokopedia.ordermanagement.snapshot
 
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -39,6 +40,7 @@ class SnapshotTrackingTest {
 
     @Before
     fun setup() {
+        Intents.init()
         gtmLogDBSource.deleteAll().subscribe()
 
         setupGraphqlMockResponse {
@@ -68,11 +70,11 @@ class SnapshotTrackingTest {
                 ?: throw AssertionError("Validator Query not found")
 
         runBot {
-            // loading()
+            loading()
             clickShopArea()
             clickBtnLihatHalamanProduk()
-        } /*submit {
+        } submit {
             hasPassedAnalytics(gtmLogDBSource, query)
-        }*/
+        }
     }
 }

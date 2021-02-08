@@ -2,6 +2,7 @@ package com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder
 
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.ordermanagement.snapshot.R
@@ -14,7 +15,7 @@ import com.tokopedia.unifycomponents.ImageUnify
  */
 class SnapshotImageViewPagerItemViewHolder(itemView: View, private val actionListener: SnapshotAdapter.ActionListener?) : SnapshotImageViewPagerAdapter.BaseViewHolder<String>(itemView) {
     override fun bind(item: String, position: Int) {
-        val imgViewHolder = itemView.findViewById<ImageUnify>(R.id.img_item)
+        val imgViewHolder = itemView.findViewById<ImageView>(R.id.img_item)
         ImageHandler.loadImageFromUriFitCenter(itemView.context, imgViewHolder, Uri.parse(item))
         imgViewHolder.setOnClickListener {
             actionListener?.onSnapshotImgClicked(position)

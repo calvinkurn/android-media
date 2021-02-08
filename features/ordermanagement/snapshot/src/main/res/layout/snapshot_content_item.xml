@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/snapshot_main_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/snapshot_dimen_360dp"
@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:indicator_type="CIRCLE"
+            app:indicator_color="DEFAULT"
             app:layout_constraintBottom_toBottomOf="@id/snapshot_header_view_pager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -116,7 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_info">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/snapshot_shop_logo"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
@@ -129,7 +130,7 @@
             tools:ignore="ContentDescription"
             tools:src="@color/Unify_G400" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/snapshot_shop_badge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
