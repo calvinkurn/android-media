@@ -193,14 +193,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         a.recycle();
     }
 
-    public void setDraggable(boolean draggable) {
-        this.isDraggable = draggable;
-    }
-
-    public void setInitialEggMarginBottom(int px) {
-        this.initialEggMarginBottom = px;
-    }
-
     public void hideOnScrolling() {
         hideFloatingEggAnimate();
         showFloatingEggAnimate(true);
