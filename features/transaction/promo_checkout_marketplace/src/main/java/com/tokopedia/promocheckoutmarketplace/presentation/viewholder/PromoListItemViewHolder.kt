@@ -7,9 +7,9 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -28,7 +28,7 @@ class PromoListItemViewHolder(private val view: View,
 ) : AbstractViewHolder<PromoListItemUiModel>(view) {
 
     private val containerImagePromoItem by lazy {
-        view.findViewById<LinearLayout>(R.id.container_image_promo_item)
+        view.findViewById<FlexboxLayout>(R.id.container_image_promo_item)
     }
     private val labelPromoItemTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_title)
@@ -64,9 +64,9 @@ class PromoListItemViewHolder(private val view: View,
                 if (it.isNotBlank()) {
                     hasNonBlankUrl = true
                     val imageView = ImageView(itemView.context)
-                    imageView.layoutParams = LinearLayout.LayoutParams(
-                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
-                            LinearLayout.LayoutParams.MATCH_PARENT
+                    imageView.layoutParams = FlexboxLayout.LayoutParams(
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20)
                     )
                     imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4), 0)
                     imageView.scaleType = ImageView.ScaleType.FIT_START

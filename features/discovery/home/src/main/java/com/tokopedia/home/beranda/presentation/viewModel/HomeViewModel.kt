@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,6 +38,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.util.*
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -243,6 +245,8 @@ open class HomeViewModel @Inject constructor(
     private var hasGeoLocationPermission = false
     private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
+
+    private var homeFlowDataCancelled = false
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
@@ -864,6 +868,11 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     homeData?.let {
+                        if (it.list.isEmpty()) {
+                            Timber.w("${ConstantKey.HomeTimber.TAG}empty_update;" +
+                                    "reason='Visitables is empty';" +
+                                    "data='isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
+                        }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeViewModel))
 
                         //initialize master list data here
@@ -890,10 +899,26 @@ open class HomeViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            Timber.w("${ConstantKey.HomeTimber.TAG}error_init_flow;reason='${it.message?:""
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+        }.invokeOnCompletion {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            Timber.w("${ConstantKey.HomeTimber.TAG}cancelled_init_flow;reason='${it?.message?:"No error propagated"
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            homeFlowDataCancelled = true
         }
     }
 
     fun refreshHomeData() {
+        if (homeFlowDataCancelled) {
+            initFlow()
+            homeFlowDataCancelled = false
+        }
+
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
@@ -906,6 +931,10 @@ open class HomeViewModel @Inject constructor(
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+
+            Timber.w("${ConstantKey.HomeTimber.TAG}error_refresh;reason='${it.message?:""
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
         }
     }
 

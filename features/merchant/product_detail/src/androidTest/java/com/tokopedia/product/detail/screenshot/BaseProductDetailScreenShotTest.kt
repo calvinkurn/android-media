@@ -13,6 +13,7 @@ import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.ProductDetailActivityCommonTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
