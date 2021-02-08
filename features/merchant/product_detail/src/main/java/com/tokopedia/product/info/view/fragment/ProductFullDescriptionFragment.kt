@@ -59,7 +59,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         super.onViewCreated(view, savedInstanceState)
         youtube_scroll.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false)
-        youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+        youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
                 ?: 0,
                 LinearLayoutManager.HORIZONTAL))
         arguments?.let {
@@ -77,7 +77,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
                 }
                 descriptionData.isGoldMerchant -> {
                     ic_badge.show()
-                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_power_merchant))
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
                 }
                 else -> {
                     ic_badge.hide()

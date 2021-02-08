@@ -35,7 +35,7 @@ class KeywordAdapter(val typeFactory: KeywordAdapterTypeFactory) : RecyclerView.
     }
 
     override fun onBindViewHolder(holder: KeywordViewHolder<KeywordViewModel>, position: Int) {
-        holder.bind(items[position], isSelectMode, fromSearch, fromHeadline)
+        holder.bind(items[position], isSelectMode, fromSearch)
     }
 
     fun getSelectedItems(): MutableList<KeywordItemViewModel> {

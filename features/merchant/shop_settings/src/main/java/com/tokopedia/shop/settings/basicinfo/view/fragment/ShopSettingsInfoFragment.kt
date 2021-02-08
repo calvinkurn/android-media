@@ -28,6 +28,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -390,11 +391,16 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
 
             val logoUrl = shopBasicData.logo
-            if (TextUtils.isEmpty(logoUrl)) {
-                ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-            } else {
-                ImageHandler.LoadImage(ivShopLogo, logoUrl)
-            }
+            //avoid crash in ImageUnify when image url is returned as base64
+            try {
+                if (ivShopLogo.context.isValidGlideContext()) {
+                    if (TextUtils.isEmpty(logoUrl)) {
+                        ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
+                    } else {
+                        ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                    }
+                }
+            }catch (e: Exception) {}
 
             if (shopBasicData.tagline.isNullOrBlank()) {
                 tvShopSloganTitle.visibility = View.GONE
@@ -448,7 +454,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun onErrorGetShopBasicData(throwable: Throwable) {
         hideLoading()
-        val message = ErrorHandler.getErrorMessage(context, throwable)
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable.cause)
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
@@ -466,16 +472,18 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun onErrorUpdateShopSchedule(throwable: Throwable) {
         hideSubmitLoading()
-        showSnackbarErrorSubmitEdit(throwable)
+        showSnackbarErrorUpdateShopSchedule(throwable)
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
-    private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        view?.let {
-            snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            snackbar?.show()
+    private fun showSnackbarErrorUpdateShopSchedule(throwable: Throwable) {
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable.cause)
+        view?.let { view ->
+            message?.let {
+                snackbar = Toaster.build(view, it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                snackbar?.show()
+            }
         }
     }
 
@@ -506,10 +514,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
-        shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
-        shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        shopSettingsInfoViewModel.resetAllLiveData()
     }
 }

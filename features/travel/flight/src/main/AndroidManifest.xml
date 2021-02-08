@@ -91,16 +91,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationListActivity"
-            android:label="@string/flight_cancellation_list_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".cancellation.view.activity.FlightCancellationDetailActivity"
-            android:label="@string/flight_cancellation_list_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
@@ -133,7 +123,8 @@
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
+        <activity
+            android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -150,6 +141,16 @@
         <activity
             android:name=".bookingV3.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationListActivity"
+            android:label="@string/flight_cancellation_list_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationDetailActivity"
+            android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
     </application>

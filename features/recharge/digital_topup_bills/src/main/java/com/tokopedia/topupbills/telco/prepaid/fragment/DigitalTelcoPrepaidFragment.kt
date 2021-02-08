@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -27,18 +27,15 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
-import com.tokopedia.topupbills.telco.common.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.RechargePrefix
@@ -49,20 +46,18 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
-import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
-import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
 class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
+    private lateinit var dynamicSpacer: View
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
-    private lateinit var mainContainer: TelcoNestedCoordinatorLayout
-    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var mainContainer: CoordinatorLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
@@ -139,9 +134,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
 
         sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
-            if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
-            else telcoClientNumberWidget.setVisibleResultNumber(true)
+            if (it) {
+                telcoClientNumberWidget.setVisibleResultNumber(false)
+                hideDynamicSpacer()
+            }
+            else {
+                telcoClientNumberWidget.setVisibleResultNumber(true)
+                if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
+            }
         })
+    }
+
+    private fun showDynamicSpacer() {
+        val defaultSpaceHeight = 81
+        dynamicSpacer.layoutParams.height =
+                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
+        dynamicSpacer.requestLayout()
+    }
+
+    private fun hideDynamicSpacer() {
+        dynamicSpacer.layoutParams.height = 0
+        dynamicSpacer.requestLayout()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -150,6 +163,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         mainContainer = view.findViewById(R.id.telco_main_container)
         appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
+        dynamicSpacer = view.findViewById(R.id.digital_telco_dynamic_banner_spacer)
+        bannerImage = view.findViewById(R.id.telco_bg_img_banner)
         viewPager = view.findViewById(R.id.telco_view_pager)
         tabLayout = view.findViewById(R.id.telco_tab_layout)
         buyWidget = view.findViewById(R.id.telco_buy_widget)

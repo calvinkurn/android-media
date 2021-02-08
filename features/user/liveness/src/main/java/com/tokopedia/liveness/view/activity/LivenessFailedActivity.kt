@@ -37,8 +37,6 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putInt(LivenessConstants.ARG_FAILED_TYPE, intent.getIntExtra(LivenessConstants.ARG_FAILED_TYPE, DEFAULT_FAILED_TYPE))
-        val errorCode = intent.getIntExtra(LivenessConstants.ARG_ERROR_CODE, DEFAULT_ERROR_CODE)
-        bundle.putInt(LivenessConstants.ARG_ERROR_CODE, errorCode)
         val fragment = LivenessErrorFragment.newInstance()
         fragment.arguments = bundle
 
@@ -47,6 +45,5 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
 
     companion object {
         const val DEFAULT_FAILED_TYPE = -1
-        const val DEFAULT_ERROR_CODE = 99
     }
 }

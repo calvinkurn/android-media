@@ -9,7 +9,6 @@ import dagger.Provides
 /**
  * Created by zulfikarrahman on 10/20/17.
  */
-@GamificationScope
 @Module(includes = [ActivityContextModule::class])
 class GamificationModule {
     @GamificationScope

@@ -39,7 +39,7 @@
             app:typographyType="heading_6"
             tools:text="sepatu" />
 
-        <ImageButton
+        <com.tokopedia.unifycomponents.UnifyImageButton
             android:id="@+id/img_menu"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
@@ -47,9 +47,9 @@
             android:layout_marginTop="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
+            app:unifyImageButtonVariant="image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_dashboard_menu" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/check_box"
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@id/group_title"
             app:typographyType="small" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_total"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -83,7 +83,6 @@
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/label"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_dashboard_total"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16" />
 
@@ -98,7 +97,7 @@
             app:typographyType="small"
             tools:text="400" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_key"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -106,7 +105,6 @@
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/total_item"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_dashboard_key"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16" />
 
@@ -121,7 +119,7 @@
             app:typographyType="small"
             tools:text="4" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/scheduleImg"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -130,7 +128,6 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/key_count"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_ic_calendar"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16"
             tools:visibility="visible" />

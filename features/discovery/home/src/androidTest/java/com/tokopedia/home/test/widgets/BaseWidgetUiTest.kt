@@ -78,7 +78,6 @@ abstract class BaseWidgetUiTest{
             homeUseCase = getHomeUseCase,
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
@@ -94,6 +93,7 @@ abstract class BaseWidgetUiTest{
             playWidgetTools = playWidgetTools,
             getRecommendationUseCase = getRecommendationUseCase,
             getRecommendationFilterChips = getRecommendationFilterChips,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             bestSellerMapper = bestSellerMapper
     )

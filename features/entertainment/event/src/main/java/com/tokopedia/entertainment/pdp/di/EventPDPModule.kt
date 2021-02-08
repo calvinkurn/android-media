@@ -7,17 +7,20 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
-import com.tokopedia.entertainment.pdp.network_api.*
+import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
+import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
+import com.tokopedia.entertainment.pdp.network_api.RedeemTicketEventUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,7 +33,6 @@ import javax.inject.Named
  * Author firman on 06-04-20
  */
 
-@EventPDPScope
 @Module
 class EventPDPModule {
 
@@ -82,7 +84,7 @@ class EventPDPModule {
 
     @Provides
     @EventPDPScope
-    fun provideIris(@ApplicationContext  context: Context): IrisSession {
+    fun provideIris(@ApplicationContext context: Context): IrisSession {
         return IrisSession(context)
     }
 
@@ -98,19 +100,27 @@ class EventPDPModule {
         return ChuckerInterceptor(context)
     }
 
+    @EventPDPScope
+    @Provides
+    fun provideAuthInterceptors(@ApplicationContext context: Context,
+                                userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
+    }
+
     @Provides
     @EventPDPScope
-    fun provideInterceptors(fingerprintInterceptor: FingerprintInterceptor,
+    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
+                            fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
-        return mutableListOf(fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
+        return mutableListOf(tkpdAuthInterceptor, fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
     }
 
     @Provides
     fun provideRestRepository(interceptors: MutableList<Interceptor>,
-            @ApplicationContext context: Context): RestRepository {
+                              @ApplicationContext context: Context): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
-            updateInterceptors(interceptors,context)
+            updateInterceptors(interceptors, context)
         }
     }
 

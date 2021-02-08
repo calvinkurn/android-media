@@ -2,6 +2,7 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,8 +108,8 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void initInAppManager() {
-
-        application.registerActivityLifecycleCallbacks(new CMActivityLifeCycle(activityLifecycleHandler));
+        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler);
+        application.registerActivityLifecycleCallbacks(lifeCycle);
         CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
         FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);
         FragmentLifecycleObserver.INSTANCE.registerCallback(fragmentObserver);
@@ -147,7 +149,6 @@ public class CMInAppManager implements CmInAppListener,
         }
         return false;
     }
-
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);

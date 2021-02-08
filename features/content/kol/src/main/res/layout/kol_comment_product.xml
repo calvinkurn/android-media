@@ -4,53 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:visibility="gone"
     android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_margin="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"/>
+        android:contentDescription="null"
+        android:layout_marginStart="@dimen/dp_5"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
         android:layout_toEndOf="@id/avatar"
-        android:layout_toRightOf="@id/avatar"
         android:gravity="center_vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            tools:text="TOPI SNAPBACK AIR JORDAN 01"/>
+            android:textColor="@color/Unify_N700_68"
+            tools:text="TOPI SNAPBACK AIR JORDAN 01"
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_name"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/tkpd_main_orange"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
+            android:textColor="@color/Unify_R400"
             tools:text="Rp 250.000"
-            />
+            app:typographyType="body_3" />
 
     </RelativeLayout>
 
@@ -58,9 +55,9 @@
         android:id="@+id/wishlist"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
+        android:contentDescription="null"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         app:srcCompat="@drawable/ic_wishlist_unchecked"/>
 </RelativeLayout>

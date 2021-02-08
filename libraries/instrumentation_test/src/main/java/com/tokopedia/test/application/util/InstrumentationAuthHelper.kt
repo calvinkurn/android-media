@@ -30,6 +30,7 @@ object InstrumentationAuthHelper {
             userId = "108956738"
             email = "erick.samuel+testingtokenandroid1@tokopedia.com"
             accessTokenBearer = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
+            shopId = "0"
         }
     }
 

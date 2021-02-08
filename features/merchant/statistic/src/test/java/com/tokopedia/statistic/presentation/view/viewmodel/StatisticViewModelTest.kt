@@ -3,31 +3,34 @@ package com.tokopedia.statistic.presentation.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.mockito.ArgumentMatchers.anyString
+import java.lang.reflect.Field
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 20/07/20
@@ -77,6 +80,7 @@ class StatisticViewModelTest {
 
     private lateinit var viewModel: StatisticViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
+    private lateinit var privateDynamicParameter: Field
 
     @Before
     fun setup() {
@@ -84,29 +88,52 @@ class StatisticViewModelTest {
 
         viewModel = StatisticViewModel(
                 userSession,
-                Lazy { getTickerUseCase },
-                Lazy { getUserRoleUseCase },
-                Lazy { getLayoutUseCase },
-                Lazy { getCardDataUseCase },
-                Lazy { getLineGraphDataUseCase },
-                Lazy { getProgressDataUseCase },
-                Lazy { getPostDataUseCase },
-                Lazy { getCarouselDataUseCase },
-                Lazy { getTableDataUseCase },
-                Lazy { getPieChartDataUseCase },
-                Lazy { getBarChartDataUseCase },
+                { getTickerUseCase },
+                { getUserRoleUseCase },
+                { getLayoutUseCase },
+                { getCardDataUseCase },
+                { getLineGraphDataUseCase },
+                { getProgressDataUseCase },
+                { getPostDataUseCase },
+                { getCarouselDataUseCase },
+                { getTableDataUseCase },
+                { getPieChartDataUseCase },
+                { getBarChartDataUseCase },
                 CoroutineTestDispatchersProvider
         )
 
         dynamicParameter = getDynamicParameter()
+
+        privateDynamicParameter = viewModel::class.java.getDeclaredField("dynamicParameter").apply {
+            isAccessible = true
+        }
     }
 
     private fun getDynamicParameter(): DynamicParameterModel {
         return DynamicParameterModel(
                 startDate = "15-07-20202",
                 endDate = "21-07-20202",
-                pageSource = TestConst.PAGE_SOURCE
+                pageSource = TestConst.PAGE_SOURCE,
+                dateType = DateFilterType.DATE_TYPE_DAY
         )
+    }
+
+    @Test
+    fun `when update set filter then private dynamic parameter should updated`() {
+        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7))
+        val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1))
+
+        val startDateFmt = DateTimeUtil.format(startDate.time, TestConst.DATE_FORMAT)
+        val endDateFmt = DateTimeUtil.format(endDate.time, TestConst.DATE_FORMAT)
+
+        viewModel.setDateFilter(startDate, endDate, TestConst.DATE_TYPE_DAY)
+
+        val dynamicParameterModel = privateDynamicParameter.get(viewModel) as DynamicParameterModel
+
+        assert(dynamicParameterModel.startDate == startDateFmt)
+        assert(dynamicParameterModel.endDate == endDateFmt)
+        assert(dynamicParameterModel.pageSource == TestConst.PAGE_SOURCE)
+        assert(dynamicParameterModel.dateType == TestConst.DATE_TYPE_DAY)
     }
 
     @Test
@@ -228,6 +255,8 @@ class StatisticViewModelTest {
 
         viewModel.getUserRole()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.userId
         }
@@ -237,6 +266,35 @@ class StatisticViewModelTest {
         }
 
         assertEquals(Success(userRoles), viewModel.userRole.value)
+    }
+
+    @Test
+    fun `when failed to get user role then throws exception`() = runBlocking {
+        val userId = 123456
+        val throwable = RuntimeException("error message")
+        getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
+
+        every {
+            userSession.userId
+        } returns userId.toString()
+
+        coEvery {
+            getUserRoleUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getUserRole()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            userSession.userId
+        }
+
+        coVerify {
+            getUserRoleUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.userRole.value is Fail)
     }
 
     @Test

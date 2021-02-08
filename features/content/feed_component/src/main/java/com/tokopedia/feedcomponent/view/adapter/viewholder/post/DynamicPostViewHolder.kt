@@ -1,16 +1,15 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
-import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -44,6 +43,7 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
@@ -64,7 +64,7 @@ open class DynamicPostViewHolder(v: View,
                                  private val userSession: UserSessionInterface)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
-    lateinit var captionTv: TextView
+    var captionTv: Typography = itemView.caption
     lateinit var adapter: PostPagerAdapter
 
     companion object {
@@ -91,10 +91,6 @@ open class DynamicPostViewHolder(v: View,
 
         const val POSTTAG_PRODUCT = "product"
         const val POSTTAG_BUTTONCTA = "buttoncta"
-    }
-
-    init {
-        captionTv = itemView.caption
     }
 
     override fun bind(element: DynamicPostViewModel?) {

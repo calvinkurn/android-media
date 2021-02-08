@@ -5,12 +5,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-
-import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,11 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.otaliastudios.cameraview.CameraException;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
+import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
@@ -34,10 +33,11 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -71,6 +71,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     protected TextView headerText;
 
     private static int IMAGE_QUALITY = 95;
+
+    private static final String FOLDER_NAME = "extras";
+    private static final String FILE_EXTENSIONS = ".jpg";
 
     @Override
     protected void initInjector() {
@@ -116,11 +119,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_on_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_off_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_off_flash));
         }
     }
 
@@ -188,18 +191,23 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     private void generateImage(byte[] imageByte) {
-
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         try {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
-                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                onSuccessImageTakenFromCamera(cameraResultFile);
+                if (bitmap != null) {
+                    File cameraResultFile = saveToCacheDirectory(imageByte);
+                    if (cameraResultFile != null) {
+                        onSuccessImageTakenFromCamera(cameraResultFile);
+                    }
+                }
             });
         } catch (Throwable error) {
-            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            onSuccessImageTakenFromCamera(cameraResultFile);
+            File cameraResultFile = saveToCacheDirectory(imageByte);
+            if (cameraResultFile != null) {
+                onSuccessImageTakenFromCamera(cameraResultFile);
+            }
         }
     }
 
@@ -228,7 +236,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     }
 
-    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap){
+    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int min, max;
@@ -240,14 +248,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             max = height;
         }
         boolean loadFitCenter = min != 0 && (max / min) > 2;
-        if(loadFitCenter)
+        if (loadFitCenter)
             Glide.with(context).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
         else
             Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
     }
 
 
-    private byte[] bitmapToByte(Bitmap bitmap){
+    private byte[] bitmapToByte(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
         return stream.toByteArray();
@@ -350,4 +358,39 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         cameraView.close();
         super.onDestroy();
     }
+
+    private File getFileLocationFromDirectory() {
+        File directory = new ContextWrapper(getActivity()).getDir(FOLDER_NAME, Context.MODE_PRIVATE);
+        if (!directory.exists())
+            directory.mkdir();
+
+        String imageName = System.currentTimeMillis() + FILE_EXTENSIONS;
+        return new File(directory.getAbsolutePath(), imageName);
+
+    }
+
+
+    private File saveToCacheDirectory(byte[] imageByte) {
+        FileOutputStream out = null;
+        try {
+            File file = getFileLocationFromDirectory();
+            out = new FileOutputStream(file);
+            out.write(imageByte);
+            return file;
+        } catch (Exception e) {
+            if (getActivity() != null)
+                getActivity().finish();
+            return null;
+        } finally {
+            if (out != null) {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                }
+
+            }
+        }
+    }
+
 }

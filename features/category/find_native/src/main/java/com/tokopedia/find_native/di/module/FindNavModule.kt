@@ -12,7 +12,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
-@FindNavScope
 @Module
 class FindNavModule {
 

@@ -14,6 +14,7 @@ import kotlinx.coroutines.*
 import org.junit.Assert
 import org.junit.Test
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
@@ -119,7 +120,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             onValidateDomainName_thenReturn()
 
             val domainName: String = "domain"
-            shopEditBasicInfoViewModel.validateShopDomain(domain = domainName)
+            shopEditBasicInfoViewModel.validateShopDomain(domainName)
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
@@ -140,7 +141,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturn()
-            shopEditBasicInfoViewModel.validateShopDomain(domain = "domain")
+            shopEditBasicInfoViewModel.validateShopDomain("domain")
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameCalled()

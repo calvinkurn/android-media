@@ -6,6 +6,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDa
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT_BROADCAST_CHAT_SA
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.CURRENT_SITE_BROADCAST_CHAT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.CURRENT_SITE_BROADCAST_CHAT_SA
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_ACTION_CLICK_BROADCAST_CHAT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CAROUSEL
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_MANAGE_PAGE
@@ -126,7 +127,7 @@ object ProductManageTracking {
             eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_ON_CAROUSEL, category = EVENT_CATEGORY_PRODUCT_MANAGE_PAGE,
                     label = EVENT_LABEL_BROADCAST_CHAT, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT)
         } else {
-            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_ON_CAROUSEL, category = EVENT_CATEGORY,
+            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_BROADCAST_CHAT, category = EVENT_CATEGORY,
                     label = productId, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT_SA, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT_SA)
         }
     }

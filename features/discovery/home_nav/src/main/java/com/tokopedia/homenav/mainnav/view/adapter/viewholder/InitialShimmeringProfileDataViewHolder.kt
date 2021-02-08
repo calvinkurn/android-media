@@ -4,8 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.mainnav.view.viewmodel.InitialShimmerDataModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.InitialShimmerProfileDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerProfileDataModel
 
 class InitialShimmeringProfileDataViewHolder (itemView: View)
     : AbstractViewHolder<InitialShimmerProfileDataModel>(itemView) {

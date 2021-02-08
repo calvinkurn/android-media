@@ -3,8 +3,8 @@ package com.tokopedia.homenav.common.util
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +30,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
     val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
     val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
 
-    fun getMenu(menuId: Int, notifCount: String = "", sectionId: Int = 0): HomeNavMenuViewModel {
+    fun getMenu(menuId: Int, notifCount: String = "", sectionId: Int = 0): HomeNavMenuDataModel {
         when(menuId) {
             ID_WISHLIST_MENU -> return getWishlistUserMenu(notifCount, sectionId)
             ID_FAVORITE_SHOP -> return getFavoriteShopMenu(notifCount, sectionId)
@@ -44,18 +44,18 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
         }
-        return HomeNavMenuViewModel()
+        return HomeNavMenuDataModel()
     }
 
-    fun getTicker(menuId: Int): HomeNavTickerViewModel {
+    fun getTicker(menuId: Int): HomeNavTickerDataModel {
         when(menuId) {
             ID_OPEN_SHOP_TICKER -> return getOpenShopTicker()
         }
-        return HomeNavTickerViewModel()
+        return HomeNavTickerDataModel()
     }
 
-    private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_wishlist_tracker_name),
                 id = ID_WISHLIST_MENU,
                 srcIconId = IconUnify.HEART,
@@ -66,8 +66,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getFavoriteShopMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getFavoriteShopMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_favorite_shop_tracker_name),
                 id = ID_FAVORITE_SHOP,
                 srcIconId = IconUnify.SHOP_FAVORITE,
@@ -78,8 +78,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_recent_view_tracker_name),
                 id = ID_RECENT_VIEW,
                 srcIconId = IconUnify.CLOCK,
@@ -90,8 +90,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getSubscriptionMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getSubscriptionMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_subscription_tracker_name),
                 id = ID_SUBSCRIPTION,
                 srcIconId = IconUnify.BILL,
@@ -102,8 +102,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getComplainMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getComplainMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_complain_tracker_name),
                 id = ID_COMPLAIN,
                 srcIconId = IconUnify.COMPLAINT,
@@ -114,8 +114,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getTokopediaCareMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getTokopediaCareMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_tokopedia_care_tracker_name),
                 id = ID_TOKOPEDIA_CARE,
                 srcIconId = IconUnify.CALL_CENTER,
@@ -126,8 +126,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getQRCodeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getQRCodeMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_qr_code_tracker_name),
                 id = ID_QR_CODE,
                 srcIconId = IconUnify.QR_CODE,
@@ -138,8 +138,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getAllTransactionMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getAllTransactionMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_ALL_TRANSACTION,
                 srcIconId = IconUnify.LIST_TRANSACTION,
                 itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
@@ -149,8 +149,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getTicketMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getTicketMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_TICKET,
                 srcIconId = IconUnify.TICKET_ACTIVE,
                 itemTitle = context.getString(R.string.menu_transaction_menu_ticket),
@@ -160,8 +160,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getReviewMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getReviewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_REVIEW,
                 srcIconId = IconUnify.STAR,
                 itemTitle = context.getString(R.string.menu_transaction_menu_review),
@@ -171,8 +171,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getHomeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getHomeMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_HOME,
                 srcIconId = IconUnify.HOME,
                 itemTitle = context.getString(R.string.menu_home_back_to_home),
@@ -182,8 +182,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getOpenShopTicker(): HomeNavTickerViewModel {
-        return HomeNavTickerViewModel(
+    private fun getOpenShopTicker(): HomeNavTickerDataModel {
+        return HomeNavTickerDataModel(
                 title = context.getString(R.string.menu_user_menu_shop_ticker_title),
                 description = context.getString(R.string.menu_user_menu_shop_ticker_description),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,

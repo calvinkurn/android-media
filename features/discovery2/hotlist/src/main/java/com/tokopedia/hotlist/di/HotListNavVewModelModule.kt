@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@HotlistNavScope
 abstract class HotListNavVewModelModule {
 
     @Binds

@@ -1,6 +1,10 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailModel
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
+import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
 import com.tokopedia.flight.orderdetail.presentation.model.*
 import com.tokopedia.usecase.coroutines.Success
 
@@ -463,7 +467,35 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         arrayListOf(),
         arrayListOf(),
         arrayListOf(),
-        arrayListOf()
+        arrayListOf(
+                FlightOrderDetailCancellationModel(
+                        cancelId = 1234567890,
+                        cancelDetails = arrayListOf(
+                                FlightOrderDetailCancellationModel.OrderDetailCancellationDetail(
+                                        journeyId = 1,
+                                        passengerId = 1,
+                                        refundedGateway = "",
+                                        refundedTime = ""
+                                )
+                        ),
+                        createTime = "2021-11-11T10:10:10Z",
+                        updateTime = "",
+                        estimatedRefund = "Rp1.000.000",
+                        estimatedRefundNumeric = 1000000,
+                        realRefund = "Rp1.000.000",
+                        realRefundNumeric = 1000000,
+                        status = 1,
+                        statusStr = "Berhasil",
+                        statusType = "",
+                        refundInfo = "Refund Info",
+                        refundDetail = FlightOrderDetailCancellationModel.OrderDetailRefundDetailModel(
+                                arrayListOf(),
+                                arrayListOf(),
+                                arrayListOf(),
+                                arrayListOf()
+                        )
+                )
+        )
 )
 
 val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
@@ -667,6 +699,70 @@ val DUMMY_CROSS_SELL = Success(
                         "Lengkapi perjalananmu",
                         "",
                         ""
+                )
+        )
+)
+
+val DUMMY_CANCELLATION_LIST_DATA = arrayListOf(
+        FlightOrderCancellationListModel(
+                orderId = "1234567890",
+                cancellationDetail = FlightOrderCancellationDetailModel(
+                        refundId = 0,
+                        createTime = "",
+                        realRefund = "",
+                        status = 0,
+                        passengers = arrayListOf(
+                                FlightOrderCancellationDetailPassengerModel(
+                                        id = 1,
+                                        type = 1,
+                                        typeString = "dewasa",
+                                        title = 1,
+                                        titleString = "Tuan",
+                                        firstName = "Muhammad",
+                                        lastName = "Furqan",
+                                        departureAirportId = "BTJ",
+                                        arrivalAirportId = "CGK",
+                                        journeyId = 1,
+                                        amenities = arrayListOf()
+                                )
+                        ),
+                        journeys = arrayListOf(
+                                FlightOrderDetailJourneyModel(
+                                        id = 1,
+                                        status = 700,
+                                        departureId = "BTJ",
+                                        departureTime = "2020-11-11T10:10:10Z",
+                                        departureAirportName = "Bandara Intl. Sultan Iskandar Muda",
+                                        departureCityName = "Banda Aceh",
+                                        arrivalId = "CGK",
+                                        arrivalTime = "2020-11-11T11:11:11Z",
+                                        arrivalAirportName = "Bandara Intl. Soekarno Hatta",
+                                        arrivalCityName = "Jakarta",
+                                        totalTransit = 0,
+                                        totalStop = 0,
+                                        addDayArrival = 0,
+                                        duration = "1jam",
+                                        durationMinute = 60,
+                                        fare = FlightOrderDetailFareModel(10000, 0, 0),
+                                        routes = arrayListOf(),
+                                        webCheckIn = FlightOrderDetailWebCheckInModel(
+                                                title = "",
+                                                subtitle = "",
+                                                startTime = "",
+                                                endTime = "",
+                                                iconUrl = "",
+                                                appUrl = "",
+                                                webUrl = ""
+                                        ),
+                                        airlineLogo = "",
+                                        airlineName = "",
+                                        refundableInfo = false
+                                )
+                        ),
+                        statusStr = "",
+                        statusType = "",
+                        refundInfo = "",
+                        refundDetail = OrderDetailCancellation.OrderDetailRefundDetail()
                 )
         )
 )
