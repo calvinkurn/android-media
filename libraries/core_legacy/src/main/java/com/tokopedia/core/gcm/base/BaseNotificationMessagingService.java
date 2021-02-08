@@ -18,6 +18,9 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -38,6 +41,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     @Inject FirebaseMessagingManager fcmManager;
     private UserSessionInterface userSession;
+    private RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
@@ -49,6 +53,8 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 .fcmComponent(fcmComponent)
                 .build()
                 .inject(this);
+
+        remoteConfig = new FirebaseRemoteConfigImpl(getBaseContext());
     }
 
     public BaseNotificationMessagingService() {
@@ -109,7 +115,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     }
 
     public void propagateIDtoServer(String token) {
-        if (!TextUtils.isEmpty(token)) {
+        if (!TextUtils.isEmpty(token) && isOldGcmUpdate()) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             if (!localToken.equals(token)) {
                 UserSessionInterface userSession = new UserSession(this);
@@ -127,5 +133,9 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 }
             }
         }
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
     }
 }
