@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
 import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.CHIPS_SORT_ASC
@@ -80,7 +81,7 @@ object GetSomFilterMapper {
     private fun mapToFilterCourierUiModel(shippingList: List<SomFilterResponse.OrderFilterSom.Shipping>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             shippingList.map {
-                add(SomFilterChipsUiModel(id = it.shippingId, key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
+                add(SomFilterChipsUiModel(id = it.shippingId.toIntOrZero(), key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
             }
         }
     }

@@ -17,7 +17,7 @@ import com.tokopedia.variant_common.model.WarehouseInfo
  */
 data class ProductInfoP2UiData(
         var shopInfo: ShopInfo = ShopInfo(),
-        var shopSpeed: Int = 0,
+        var shopSpeed: Long = 0L,
         var shopChatSpeed: String = "",
         var shopRating: Float = 0F,
         var productView: String = "",

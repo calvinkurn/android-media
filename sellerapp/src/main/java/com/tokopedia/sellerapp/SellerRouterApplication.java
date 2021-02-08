@@ -81,6 +81,7 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
 import timber.log.Timber;
 
+import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
@@ -412,11 +413,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType) {
+    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         return SomListFragment.newInstance(bundle);
     }
 
