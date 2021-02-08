@@ -1,13 +1,16 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -33,12 +36,13 @@ import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.Brandlist
 import com.tokopedia.brandlist.common.Constant
 import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class BrandlistSearchFragment : BaseDaggerFragment(),
@@ -50,6 +54,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
     companion object {
         const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
+        private const val INITIAL_OFFSET = 0
+        private const val ALL_BRANDS_REQUEST_SIZE = 30
+        private const val ALPHABETIC_ASC_SORT = 3
+        private const val DELAY_SEARCH = 250L
 
         @JvmStatic
         fun createInstance(category: Category?) = BrandlistSearchFragment().apply {
@@ -65,7 +73,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var brandlistTracking: BrandlistTracking? = null
-    private var searchView: SearchInputView? = null
+    private var searchView: SearchBarUnify? = null
     private var statusBar: View? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
@@ -74,9 +82,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private var keywordSearch = ""
     private var categoryName = ""
     private var categoryData: Category? = null
-    private val INITIAL_OFFSET = 0
-    private val ALL_BRANDS_REQUEST_SIZE = 30
-    private val ALPHABETIC_ASC_SORT = 3
+
 
     private var selectedChip: Int = Constant.DEFAULT_SELECTED_CHIPS
     private var isLoadMore: Boolean = false
@@ -135,6 +141,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         return view
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTotalBrands()
@@ -151,7 +158,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         observeAllBrands()
         recyclerView?.addOnScrollListener(endlessScrollListener)
         recyclerView?.setOnTouchListener { _, _ ->
-            searchView?.hideKeyboard()
+            searchView?.clearFocus()
             false
         }
     }
@@ -185,7 +192,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
     override fun focusSearchView() {
         searchView?.requestFocus()
-        searchView?.searchText = ""
+        searchView?.searchBarTextField?.setText("")
     }
 
     private fun initView(view: View) {
@@ -207,41 +214,58 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     }
 
     private fun initSearchView() {
-        searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                searchView?.hideKeyboard()
+        searchView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
+            private var timer = Timer()
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun onSearchTextChanged(text: String?) {
-                text?.let {
-                    categoryData?.let {
-                        brandlistTracking?.clickSearchBox(
-                                it.title, text.toString(), false)
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                runTimer(s.toString())
+            }
+
+            private fun runTimer(text: String) {
+                timer = Timer()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        updateListener(text)
                     }
-                    if (it.isNotEmpty()) {
-                        val offset = 0
-                        val firstLetter = ""
-                        val brandSize = 10
-                        keywordSearch = it
-                        viewModel.searchBrand(offset, it,
-                                brandSize, firstLetter)
-                        adapterBrandSearch?.showShimmering()
-                    } else {
-                        isInitialDataLoaded = false
-                        viewModel.resetParams()
-                        viewModel.getTotalBrands()
-                        recyclerView?.addOnScrollListener(endlessScrollListener)
+                }, DELAY_SEARCH)
+            }
+
+            private fun updateListener(text: String) {
+                searchView?.searchBarTextField?.context?.mainLooper?.run {
+                    val mainHandler = Handler(this)
+                    val myRunnable = Runnable {
+                        categoryData?.let {
+                            brandlistTracking?.clickSearchBox(
+                                    it.title, text, false)
+                        }
+                        if (text.isNotEmpty()) {
+                            val offset = 0
+                            val firstLetter = ""
+                            val brandSize = 10
+                            keywordSearch = text
+                            viewModel.searchBrand(offset, text, brandSize, firstLetter)
+                            adapterBrandSearch?.showShimmering()
+                        } else {
+                            isInitialDataLoaded = false
+                            viewModel.resetParams()
+                            viewModel.getTotalBrands()
+                            recyclerView?.addOnScrollListener(endlessScrollListener)
+                        }
                     }
+                    mainHandler.post(myRunnable)
                 }
             }
-
         })
     }
 
     private fun observeSearchResultData() {
         val userId = if (userSession.userId.isEmpty()) "0" else userSession.userId
-        viewModel.brandlistSearchResponse.observe(this, Observer {
+        viewModel.brandlistSearchResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val response = it.data.brands
@@ -252,7 +276,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-                                        response, searchView?.searchText ?: "", this))
+                                        response, searchView?.searchBarTextField?.text?.toString() ?: "", this))
                     }
                     recyclerView?.removeOnScrollListener(endlessScrollListener)
                 }
@@ -264,7 +288,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchRecommendationResultData() {
-        viewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
+        viewModel.brandlistSearchRecommendationResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val response = it.data.shops
@@ -280,7 +304,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     }
 
     private fun observeTotalBrands() {
-        viewModel.brandlistAllBrandTotal.observe(this, Observer {
+        viewModel.brandlistAllBrandTotal.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     totalBrandsNumber = it.data
@@ -294,7 +318,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     }
 
     private fun observeAllBrands() {
-        viewModel.brandlistAllBrandsSearchResponse.observe(this, Observer {
+        viewModel.brandlistAllBrandsSearchResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     adapterBrandSearch?.hideLoading()
@@ -306,19 +330,19 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
 
                     val existingTotalBrands: Int = viewModel.getTotalBrandSizeForChipHeader()
-                    if (!isLoadMore && existingTotalBrands !== totalBrandsFiltered) {
+                    if (!isLoadMore && existingTotalBrands != totalBrandsFiltered) {
                         adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
                     }
 
-                    var _brandlistSearchMapperResult: List<BrandlistSearchResultUiModel> = listOf()
+                    var brandListSearchMapperResult: List<BrandlistSearchResultUiModel> = listOf()
                     if (totalBrandPerCharacter == 0) {
                         adapterBrandSearch?.mappingBrandSearchNotFound(
-                                _brandlistSearchMapperResult,
+                                brandListSearchMapperResult,
                                 isLoadMore)
                     } else {
-                        _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+                        brandListSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
                                 response.brands, "", this)
-                        adapterBrandSearch?.updateBrands(_brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
+                        adapterBrandSearch?.updateBrands(brandListSearchMapperResult, stateLoadBrands, isLoadMore)
                     }
 
                     viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
@@ -346,7 +370,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
     private fun showErrorNetwork(t: Throwable) {
         view?.let {
-            Toaster.showError(it, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG)
+            Toaster.build(it, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

@@ -20,16 +20,16 @@ open class GetSingleRecommendationUseCase @Inject
 constructor(
         private val recomRawString: String,
         private val graphqlUseCase: GraphqlUseCase,
-        private val userSession: UserSessionInterface) : UseCase<List<RecommendationItem>>() {
+        private val userSession: UserSessionInterface) : UseCase<SingleProductRecommendationEntity.RecommendationData>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationItem>> {
+    override fun createObservable(requestParams: RequestParams): Observable<SingleProductRecommendationEntity.RecommendationData> {
         val graphqlRequest = GraphqlRequest(recomRawString, SingleProductRecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
-                    mapToRecommendationItem(entity.productRecommendationWidget?.data)
+                    entity.productRecommendationWidget?.data
                 }
     }
 
@@ -51,7 +51,7 @@ constructor(
         return params
     }
 
-    private fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData?): List<RecommendationItem>{
+    fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData?): List<RecommendationItem>{
         if(data == null) return listOf()
         return SingleProductRecommendationMapper.convertIntoRecommendationList(
                 data.recommendation,
@@ -62,11 +62,11 @@ constructor(
     }
 
     companion object {
-        val USER_ID = "userID"
-        val PAGE_NUMBER = "pageNumber"
-        val X_DEVICE = "xDevice"
-        val QUERY_PARAM = "queryParam"
-        val DEFAULT_VALUE_X_DEVICE = "android"
-        val PRODUCT_IDS = "productIDs"
+        const val USER_ID = "userID"
+        const val PAGE_NUMBER = "pageNumber"
+        const val X_DEVICE = "xDevice"
+        const val QUERY_PARAM = "queryParam"
+        const val DEFAULT_VALUE_X_DEVICE = "android"
+        const val PRODUCT_IDS = "productIDs"
     }
 }

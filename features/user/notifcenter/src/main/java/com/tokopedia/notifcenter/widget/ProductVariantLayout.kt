@@ -76,7 +76,7 @@ class ProductVariantLayout @JvmOverloads constructor(
     private fun applyStrokeTo(backgroundDrawable: Drawable?) {
         if (backgroundDrawable is GradientDrawable) {
             val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, R.color.grey_300))
+            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
         }
     }
 

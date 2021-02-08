@@ -201,21 +201,26 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     it.status.isEmpty() -> showEmpty()
                     it.status.isError() -> showGetListError(it.exception)
                     it.status.isSuccess() -> {
-                        if (it.data?.isNotEmpty() == true) {
-                            it.data[0].let {
-                                activity?.run {
-                                    (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                        it.data?.let { pair ->
+                            val recommendationItems = pair.first
+                            if (recommendationItems.isNotEmpty()) {
+                                recommendationItems.getOrNull(0)?.let {
+                                    activity?.run {
+                                        (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                    }
                                 }
+                                hasNextPage = pair.second
+                                renderList(mapDataModel(recommendationItems), pair.second)
+                                if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
+                            }else{
+                                hideLoading()
+                                hasNextPage = false
+                                updateScrollListenerState(false)
+                                showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }
-                            hasNextPage = true
-                            renderList(mapDataModel(it.data), true)
-                        }else{
-                            hasNextPage = false
-                            hideLoading()
-                            updateScrollListenerState(false)
-                            showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                         }
                     }
+                    else -> {}
                 }
             }
         })
