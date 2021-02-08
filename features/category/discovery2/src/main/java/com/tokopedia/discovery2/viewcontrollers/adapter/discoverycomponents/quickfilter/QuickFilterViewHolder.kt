@@ -52,6 +52,9 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                     sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
                 }
             })
+            quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
+                setQuickFilters(filters)
+            })
         }
     }
 
@@ -61,6 +64,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             quickFilterViewModel.getDynamicFilterModelLiveData().removeObservers(it)
             quickFilterViewModel.getSyncPageLiveData().removeObservers(it)
             quickFilterViewModel.productCountLiveData.removeObservers(it)
+            quickFilterViewModel.getQuickFilterLiveData().removeObservers(it)
         }
     }
 
@@ -157,13 +161,4 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
     }
 
-    override fun onViewAttachedToWindow() {
-        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
-            setQuickFilters(filters)
-        })
-    }
-
-    override fun onViewDetachedToWindow() {
-        quickFilterViewModel.getQuickFilterLiveData().removeObservers(fragment.viewLifecycleOwner)
-    }
 }
