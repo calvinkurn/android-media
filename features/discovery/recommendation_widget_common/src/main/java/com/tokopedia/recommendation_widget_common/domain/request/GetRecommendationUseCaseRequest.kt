@@ -93,6 +93,9 @@ internal class GetRecommendationUseCaseRequest {
                        seeMoreAppLink
                        seeMoreUrlLink
                        pageName
+                       pagination{
+                            hasNext
+                       }
                        recommendation {
                            id
                            name

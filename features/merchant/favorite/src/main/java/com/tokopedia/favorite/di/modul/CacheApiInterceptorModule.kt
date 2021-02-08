@@ -7,7 +7,6 @@ import com.tokopedia.favorite.di.scope.FavoriteScope
 import dagger.Module
 import dagger.Provides
 
-@FavoriteScope
 @Module
 class CacheApiInterceptorModule {
 

@@ -113,7 +113,7 @@ class SomListViewModelTest {
             shippingList = mutableSetOf(12)
             orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
-            nextOrderId = 123456
+            nextOrderId = 123456L
         }
         viewModel.updateGetOrderListParams(newParams)
     }
@@ -431,7 +431,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } returns Success(SomListFilterUiModel())
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()
@@ -446,7 +446,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } throws Throwable()
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()
@@ -489,7 +489,7 @@ class SomListViewModelTest {
     fun getOrderList_shouldSuccess() {
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
@@ -506,7 +506,7 @@ class SomListViewModelTest {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
@@ -540,7 +540,7 @@ class SomListViewModelTest {
 
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         viewModel.refreshSelectedOrder(invoice)
 

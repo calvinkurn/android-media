@@ -10,7 +10,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import dagger.Module;
 import dagger.Provides;
 
-@SearchScope
 @Module
 public class RemoteConfigModule {
 

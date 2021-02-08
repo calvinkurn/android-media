@@ -204,7 +204,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     override fun updateToolBar() {
-        when(activity){
+        when (activity) {
             is HeadlineStepperActivity -> {
                 (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
             }
@@ -227,7 +227,14 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
         keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onKeywordBidChange, stepperModel?.selectedKeywords)
         getLatestBid()
-        viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (stepperModel?.selectedProductIds?.isEmpty() == false) {
+            viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+        } else
+            onEmptySuggestion()
     }
 
     private fun onKeywordBidChange(enable: Boolean, keywordData: KeywordDataItem) {
@@ -272,7 +279,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
-                if(!addedKeywords.contains(item)){
+                if (!addedKeywords.contains(item)) {
                     addedKeywords.add(item)
                 }
                 setCount()
@@ -304,13 +311,13 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onItemChecked(keywordData: KeywordDataItem) {
-        if(keywordData.onChecked){
-            if(!addedKeywords.contains(keywordData)){
+        if (keywordData.onChecked) {
+            if (!addedKeywords.contains(keywordData)) {
                 addedKeywords.add(keywordData)
             }
             deletedKeywords.remove(keywordData.keyword)
-        }else{
-            if(!deletedKeywords.contains(keywordData.keyword)){
+        } else {
+            if (!deletedKeywords.contains(keywordData.keyword)) {
                 deletedKeywords.add(keywordData.keyword)
             }
             addedKeywords.remove(keywordData)
@@ -319,7 +326,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onItemUnselect(pos: Int, keywordData: KeywordDataItem) {
-        if(!deletedKeywords.contains(keywordData.keyword)){
+        if (!deletedKeywords.contains(keywordData.keyword)) {
             deletedKeywords.add(keywordData.keyword)
         }
         removeFromList(pos)

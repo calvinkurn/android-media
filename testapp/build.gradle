@@ -45,6 +45,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
+        multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
         versionCode 299900000

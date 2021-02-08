@@ -5,6 +5,8 @@ import androidx.lifecycle.Observer
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
+import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
+import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,11 +29,13 @@ class AddPasswordViewModelTestJunit {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val addPasswordUseCase = mockk<AddPasswordUseCase>(relaxed = true)
+    val getProfileCompletionUseCase = mockk<GetProfileCompletionUseCase>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
     private var observer = mockk<Observer<Result<AddPasswordResponseModel>>>(relaxed = true)
     private var validatePasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
     private var validateConfirmPasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
+    private var hasPasswordObserver = mockk<Observer<Result<ProfileDataModel>>>(relaxed = true)
 
     lateinit var viewModel: AddPasswordViewModel
 
@@ -39,11 +43,13 @@ class AddPasswordViewModelTestJunit {
     fun setUp() {
         viewModel = AddPasswordViewModel(
                 addPasswordUseCase,
+                getProfileCompletionUseCase,
                 dispatcher
         )
         viewModel.response.observeForever(observer)
         viewModel.validatePassword.observeForever(validatePasswordObserver)
         viewModel.validatePasswordConfirmation.observeForever(validateConfirmPasswordObserver)
+        viewModel.profileDataModel.observeForever(hasPasswordObserver)
 
     }
 
@@ -168,5 +174,32 @@ class AddPasswordViewModelTestJunit {
         viewModel.validatePasswordConfirmation(confirmPassword)
         /* Then */
         assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, "Maksimum 32 karakter")
+    }
+
+    @Test
+    fun `checkPassword Success`() {
+        val profile = ProfileDataModel.Profile()
+        val mockResponse = ProfileDataModel(profile)
+
+        every { getProfileCompletionUseCase.getData(any(), any()) } answers {
+            firstArg<(ProfileDataModel) -> Unit>().invoke(mockResponse)
+        }
+        viewModel.checkPassword()
+
+        /* Then */
+        verify { hasPasswordObserver.onChanged(Success(mockResponse)) }
+    }
+
+    @Test
+    fun `checkPassword Error`() {
+        val throwable = Throwable(message = "Error")
+
+        every { getProfileCompletionUseCase.getData(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        viewModel.checkPassword()
+
+        /* Then */
+        verify { hasPasswordObserver.onChanged(Fail(throwable)) }
     }
  }

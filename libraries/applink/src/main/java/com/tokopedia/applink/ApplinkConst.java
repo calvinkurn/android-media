@@ -66,6 +66,7 @@ public interface ApplinkConst {
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
+    String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
@@ -129,6 +130,7 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String BRAND_LIST_CATEGORY = "tokopedia://official-store/brand/{category_id}";
     String REGISTER = "tokopedia://registration";
+    String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
@@ -180,6 +182,9 @@ public interface ApplinkConst {
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
+
+    String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
+    String OVO_FINAL_PAGE = "tokopedia://ovo-final";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
@@ -320,6 +325,7 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
     String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
+    String THANKYOU_PAGE_NATIVE = "tokopedia://payment/thankyou?payment_id={payment_id}&merchant={merchant_code}";
 
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
@@ -412,6 +418,7 @@ public interface ApplinkConst {
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String CONTENT_CREATE_POST = "sellerapp://content/create_post";
+        String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
     }
 
     interface Query {
@@ -580,7 +587,7 @@ public interface ApplinkConst {
         }
     }
 
-    interface Navigation{
+    interface Navigation {
         String MAIN_NAV = "tokopedia://navigation/main";
     }
 }

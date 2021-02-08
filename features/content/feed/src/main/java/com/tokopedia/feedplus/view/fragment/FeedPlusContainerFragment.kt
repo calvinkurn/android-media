@@ -126,6 +126,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
+    private var useNewInbox = false
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -163,13 +164,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initNavRevampAbTest()
+        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
     }
 
+    private fun initNavRevampAbTest() {
+        showOldToolbar = !RemoteConfigInstance.getInstance()
+                .abTestPlatform
+                .getString(EXP_NAME, VARIANT_OLD)
+                .equals(VARIANT_REVAMP, true)
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
+    }
+
     private fun initToolbar() {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
@@ -180,39 +195,58 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             else -> View.GONE
         }
         toolbarParent.removeAllViews()
-        if (showOldToolbar) {
-            feed_background_frame.show()
-            feedToolbar = context?.let { FeedMainToolbar(it) }
-            setFeedBackgroundCrossfader()
-            feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
-            })
-            (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
-        } else {
-            feed_background_frame.hide()
-            feedToolbar = context?.let { NavToolbar(it) }
-            (feedToolbar as? NavToolbar)?.let {
-                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
-                it.switchToLightToolbar()
-                it.setContentInsetsAbsolute(0,0)
-                it.setToolbarPageName(FEED_PAGE)
-                viewLifecycleOwner.lifecycle.addObserver(it)
-                it.setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
-                                .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
-                )
-                it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
-            }
-        }
+//        if (showOldToolbar) {
+//            initOldToolBar()
+//        } else {
+//            initNewToolBar()
+//        }
+        initNewToolBar()
         toolbarParent.addView(feedToolbar)
+    }
+
+    private fun initNewToolBar() {
+        feed_background_frame.hide()
+        feedToolbar = context?.let { NavToolbar(it) }
+        (feedToolbar as? NavToolbar)?.let {
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+            it.switchToLightToolbar()
+            it.setContentInsetsAbsolute(0,0)
+            it.setToolbarPageName(FEED_PAGE)
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setIcon(getToolbarIcons())
+            it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+        }
+    }
+
+    private fun initOldToolBar() {
+        feed_background_frame.show()
+        feedToolbar = context?.let { FeedMainToolbar(it) }
+        setFeedBackgroundCrossfader()
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
+            }
+        })
+        (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
+    }
+
+    private fun getToolbarIcons(): IconBuilder {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+
+        if (!useNewInbox) {
+            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+        }
+        icons.apply {
+            addIcon(IconList.ID_CART) {}
+        }
+        if(!showOldToolbar){
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+        return icons
     }
 
     override fun onPause() {
@@ -270,7 +304,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            if (!useNewInbox) {
+                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            }
             setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -393,8 +429,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             requestStatusBarDark()
         }
@@ -409,8 +445,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.Unify_N0))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.Unify_N0), MethodChecker.getColor(activity, R.color.Unify_N0))
             }
             requestStatusBarLight()
         }

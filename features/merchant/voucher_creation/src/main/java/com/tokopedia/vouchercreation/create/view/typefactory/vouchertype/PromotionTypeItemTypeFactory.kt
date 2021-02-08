@@ -11,5 +11,5 @@ interface PromotionTypeItemTypeFactory {
     fun type(promotionTypeInputListUiModel: PromotionTypeInputListUiModel): Int
     fun type(unavailableTickerUiModel: UnavailableTickerUiModel): Int
     fun type(voucherTitleUiModel: VoucherTitleUiModel): Int
-
+    fun type(recommendationTickerUiModel: RecommendationTickerUiModel): Int
 }

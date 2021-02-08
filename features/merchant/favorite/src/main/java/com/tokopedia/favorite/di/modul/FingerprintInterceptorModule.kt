@@ -9,7 +9,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@FavoriteScope
 @Module
 class FingerprintInterceptorModule {
 
