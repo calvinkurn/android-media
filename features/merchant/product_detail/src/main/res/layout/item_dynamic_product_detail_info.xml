@@ -25,13 +25,14 @@
         app:typographyWeight="bold"
         tools:text="Detail Produk" />
 
-    <LinearLayout
-        android:id="@+id/product_detail_info_container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_detail_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical" />
 
     <com.tokopedia.unifyprinciples.Typography

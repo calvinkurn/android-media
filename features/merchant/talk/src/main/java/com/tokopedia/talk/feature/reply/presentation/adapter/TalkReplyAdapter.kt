@@ -37,4 +37,8 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
             }
         }
     }
+
+    fun hasProductHeader(): Boolean {
+        return visitables.filterIsInstance(TalkReplyProductHeaderModel::class.java).isNotEmpty()
+    }
 }

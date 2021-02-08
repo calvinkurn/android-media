@@ -46,14 +46,15 @@ public class RouteManager {
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
     public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
+    public static final String DEFAULT_VIEW = "android.intent.action.VIEW";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
-    private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink) {
+    private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink, String action) {
         ApplinkLogger.getInstance(context).appendTrace("Building implicit intent...");
         Uri uri = Uri.parse(deeplink);
-        Intent intent = new Intent(INTERNAL_VIEW);
+        Intent intent = new Intent(action);
         intent.setData(uri);
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -89,7 +90,7 @@ public class RouteManager {
     private static @Nullable
     Intent buildInternalExplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         ApplinkLogger.getInstance(context).appendTrace("Building explicit intent...");
-        Intent intent = buildInternalImplicitIntent(context, deeplink);
+        Intent intent = buildInternalImplicitIntent(context, deeplink, INTERNAL_VIEW);
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
 
         Uri uri = Uri.parse(deeplink);
@@ -227,7 +228,7 @@ public class RouteManager {
             }
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
-            intent = buildInternalImplicitIntent(context, mappedDeeplink);
+            intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
             if (intent.resolveActivity(context.getPackageManager()) == null) {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
@@ -394,7 +395,7 @@ public class RouteManager {
         }
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
-            Intent intent = buildInternalImplicitIntent(context, mappedDeeplink);
+            Intent intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
             Intent webIntent;
             if (intent.resolveActivity(context.getPackageManager()) == null) {
                 webIntent = null;
