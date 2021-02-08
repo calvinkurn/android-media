@@ -57,9 +57,7 @@ class ShopPageBuyerAnalyticTest {
         private const val SHOP_PAGE_PRODUCT_TAB_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_tab_product_card_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_display_widget_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_featured_product_widget_tracker.json"
-        private const val SHOP_PAGE_HOME_TAB_PLAY_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_play_widget_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_npl_widget_tracker.json"
-
 
     }
 
@@ -109,7 +107,6 @@ class ShopPageBuyerAnalyticTest {
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
-        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_PLAY_WIDGET_TRACKER_MATCHER_PATH)
 
     }
 
@@ -121,7 +118,6 @@ class ShopPageBuyerAnalyticTest {
         testDisplayWidget()
         testProductWidget()
         testNplWidget()
-        testPlayWidget()
     }
 
     private fun testNplWidget() {
@@ -143,7 +139,7 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.layout_remind_me))
         )).perform(click())
-        waitForData(200)
+        waitForData(1000)
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.snackbar_btn))
         )).perform(click())
@@ -155,30 +151,6 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.rv_product_carousel))
         )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
-    }
-
-    private fun testPlayWidget() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        val playWidgetPosition = 4
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.recycler_view),
-                isDisplayed())
-        )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
-        waitForData(200)
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
-
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
     }
 
     private fun testProductWidget() {
@@ -207,13 +179,15 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        waitForData(200)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
+        waitForData(200)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))
-
+        waitForData(200)
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.tvSeeAll),
                 isDisplayed()))

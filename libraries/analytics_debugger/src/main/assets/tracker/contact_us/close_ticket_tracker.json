@@ -1,0 +1,13 @@
+{
+  "readme": "close ticket tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "inbox pesan bantuan",
+      "event": "clickInboxBantuan",
+      "eventAction": "click close ticket",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

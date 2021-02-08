@@ -11,7 +11,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
@@ -45,13 +44,13 @@ class PartialContentView(private val view: View,
         when {
             isUpcomingNplType -> {
                 renderNplRibbon(upcomingNplData.ribbonCopy, upcomingNplData.startDate)
-                renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
+                renderCampaignInactiveNpl(data.price.priceFmt)
             }
             data.campaign.isActive -> {
                 renderCampaignActive(data.campaign, data.stockWording)
             }
             else -> {
-                renderCampaignInactive(data.price.value.getCurrencyFormatted())
+                renderCampaignInactive(data.price.priceFmt)
             }
         }
 
@@ -109,19 +108,19 @@ class PartialContentView(private val view: View,
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
         txt_main_price?.run {
             text = context.getString(R.string.template_price, "",
-                    campaign.discountedPrice.getCurrencyFormatted())
+                    campaign.discountedPriceFmt)
             show()
         }
 
         text_slash_price?.run {
             text = context.getString(R.string.template_price, "",
-                    campaign.originalPrice.getCurrencyFormatted())
+                    campaign.originalPriceFmt)
             paintFlags = text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
 
         text_discount_red?.run {
-            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.toString())
             show()
         }
         hideGimmick(campaign)

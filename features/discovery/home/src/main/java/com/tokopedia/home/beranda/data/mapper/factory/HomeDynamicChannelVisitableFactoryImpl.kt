@@ -408,11 +408,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isCache = isCache
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                    RecommendationListTracking.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 
