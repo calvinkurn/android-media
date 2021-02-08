@@ -2,20 +2,15 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.talk.R
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
-import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
@@ -24,7 +19,7 @@ import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.
 import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel.TalkEditTemplateViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_talk_edit_template.*
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateComponent> {
@@ -53,6 +48,8 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private var allowDelete: Boolean = false
     private var cacheManagerId = ""
     private var talkTemplateBottomSheetListener: TalkTemplateBottomSheetListener? = null
+    private var talkEditTemplateEditText: EditText? = null
+    private var talkEditTemplateSaveButton: UnifyButton? = null
 
     fun setCacheManagerId(cacheId: String) {
         cacheManagerId = cacheId
@@ -79,9 +76,8 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromCacheManager()
-        setupEditText()
         observeTemplateMutation()
-        initButton()
+        initButton(view)
         if (isEditMode && allowDelete) {
             context?.let {
                 setAction(getString(R.string.template_list_delete)) {
@@ -93,6 +89,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 }
             }
         }
+        setupEditText(view)
     }
 
     private fun observeTemplateMutation() {
@@ -118,13 +115,14 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private fun showToaster(successMessage: String) {
         view?.let {
-            this.toaster = Toaster.build(talkEditTemplateContainer, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
             toaster?.show()
         }
     }
 
-    private fun initButton() {
-        talkEditTemplateSaveButton.setOnClickListener {
+    private fun initButton(view: View) {
+        talkEditTemplateSaveButton = view.findViewById(R.id.talkEditTemplateSaveButton)
+        talkEditTemplateSaveButton?.setOnClickListener {
             saveTemplate()
         }
     }
@@ -154,7 +152,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     }
 
     private fun addTemplate() {
-        viewModel.addTemplate(isSeller, talkEditTemplateEditText.text.toString())
+        viewModel.addTemplate(isSeller, talkEditTemplateEditText?.text.toString())
     }
 
     private fun deleteTemplate() {
@@ -162,14 +160,16 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     }
 
     private fun editTemplate() {
-        viewModel.updateSpecificTemplate(isSeller, talkEditTemplateEditText.text.toString(), index)
+        viewModel.updateSpecificTemplate(isSeller, talkEditTemplateEditText?.text.toString(), index)
     }
 
-    private fun setupEditText() {
+    private fun setupEditText(view: View) {
+        talkEditTemplateEditText = view.findViewById(R.id.talkEditTemplateEditText)
         if (isEditMode) {
-            talkEditTemplateEditText.apply {
-                text.clear()
-                setText(templateText)
+            talkEditTemplateEditText?.apply {
+                post {
+                    setText(templateText)
+                }
             }
         }
     }
