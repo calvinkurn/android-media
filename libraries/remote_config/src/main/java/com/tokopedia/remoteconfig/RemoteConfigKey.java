@@ -170,7 +170,7 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
-    public static final String MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_voucher_game_pdp";
+    public static final String MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
