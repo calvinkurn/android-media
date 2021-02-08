@@ -2591,6 +2591,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     saveStateReset(false)
                     onGoToLogin()
                 }
-        ).show()
+        ).addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                saveStateReset(false)
+            }
+        }).show()
     }
 }

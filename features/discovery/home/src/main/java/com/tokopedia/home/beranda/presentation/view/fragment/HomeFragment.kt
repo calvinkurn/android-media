@@ -2571,7 +2571,12 @@ open class HomeFragment : BaseDaggerFragment(),
                 getString(R.string.cta_dialog_success_reset_password),
                 View.OnClickListener {
                     saveStateReset(false)
-                    onGoToLogin()
+                    onGoToLogin() }
+        ).addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                saveStateReset(false)
+            }
         }).show()
     }
 }
