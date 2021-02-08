@@ -44,6 +44,8 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
@@ -355,6 +357,7 @@ class PlayFragment @Inject constructor(
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
+        observeChannelInfo()
         observeBottomInsetsState()
         observePinned()
         observePiPEvent()
@@ -426,13 +429,15 @@ class PlayFragment @Inject constructor(
 
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
-            meta.videoStream?.let {
-                setWindowSoftInputMode(it.channelType.isLive)
-                setBackground(it.backgroundUrl)
-            }
-
             fragmentVideoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             fragmentYouTubeViewOnStateChanged(videoPlayer = meta.videoPlayer)
+        })
+    }
+
+    private fun observeChannelInfo() {
+        playViewModel.observableChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            setWindowSoftInputMode(it.channelType.isLive)
+            setBackground(it.backgroundUrl)
         })
     }
 
@@ -570,7 +575,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun fragmentVideoViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (videoPlayer.isYouTube || isFreezeOrBanned) {
@@ -589,7 +594,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun fragmentYouTubeViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {

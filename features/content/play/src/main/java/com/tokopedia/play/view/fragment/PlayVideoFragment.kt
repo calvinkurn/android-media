@@ -32,6 +32,8 @@ import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
@@ -205,7 +207,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onEnterPiPMode(pipMode: PiPMode) {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
-        if (videoMeta.videoPlayer !is General) return
+        if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
         PlayViewerPiPCoordinator(
                 context = requireContext(),
@@ -345,13 +347,13 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
             videoView.setPlayer(null)
             videoView.hide()
-        } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
+        } else if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
     }
     //endregion
 

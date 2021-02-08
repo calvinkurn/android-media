@@ -1,36 +1,26 @@
 package com.tokopedia.play.view.uimodel.mapper
 
-import android.content.Context
-import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.General
-import com.tokopedia.play.view.uimodel.Unknown
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
-import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.player.PlayVideoManager
+import javax.inject.Inject
 
 /**
  * Created by jegul on 21/01/21
  */
-class PlayChannelDetailsWithRecomMapper(
-        private val context: Context
-) {
-
-    private val exoPlayer: ExoPlayer
-        get() = PlayVideoManager.getInstance(context).videoPlayer
+class PlayChannelDetailsWithRecomMapper @Inject constructor() {
 
     fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
+                    channelInfo = mapChannelInfo(it.isLive, it.config),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
                     totalViewInfo = mapTotalViewInfo(),
@@ -38,12 +28,19 @@ class PlayChannelDetailsWithRecomMapper(
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
-                    videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
+                    videoMetaInfo = mapVideoMeta(it.video),
                     statusInfo = mapChannelStatusInfo(it.config, it.title)
-//                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
     }
+
+    private fun mapChannelInfo(
+            isLive: Boolean,
+            configResponse: ChannelDetailsWithRecomResponse.Config,
+    ) = PlayChannelInfoUiModel(
+            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            backgroundUrl = configResponse.roomBackground.imageUrl
+    )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
             basicInfo = PlayPartnerBasicInfoUiModel(
@@ -123,31 +120,28 @@ class PlayChannelDetailsWithRecomMapper(
 
     private fun mapVideoMeta(
             videoResponse: ChannelDetailsWithRecomResponse.Video,
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-            isLive: Boolean
     ) = PlayVideoMetaInfoUiModel(
             videoPlayer = mapVideoPlayer(videoResponse),
-            videoStream = mapVideoStream(videoResponse, configResponse, isLive)
+            videoStream = mapVideoStream(videoResponse)
     )
 
     private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video) = when (videoResponse.type) {
-        "live", "vod" -> General(exoPlayer)
-        "youtube" -> YouTube(videoResponse.streamSource)
-        else -> Unknown
+        "live", "vod" -> PlayVideoPlayerUiModel.General.Incomplete(
+                params = PlayGeneralVideoPlayerParams(
+                        videoUrl = videoResponse.streamSource,
+//                        videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                        buffer = mapVideoBufferControl(videoResponse.bufferControl),
+                )
+        )
+        "youtube" -> PlayVideoPlayerUiModel.YouTube(videoResponse.streamSource)
+        else -> PlayVideoPlayerUiModel.Unknown
     }
 
     private fun mapVideoStream(
             videoResponse: ChannelDetailsWithRecomResponse.Video,
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-            isLive: Boolean
-    ) = VideoStreamUiModel(
-            uriString = videoResponse.streamSource,
-            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            buffer = mapVideoBufferControl(videoResponse.bufferControl),
+    ) = PlayVideoStreamUiModel(
+            id = videoResponse.id,
             orientation = VideoOrientation.getByValue(videoResponse.orientation),
-            backgroundUrl = configResponse.roomBackground.imageUrl,
-            isActive = configResponse.active,
-            lastMillis = null
     )
 
     private fun mapChannelStatusInfo(
@@ -175,10 +169,6 @@ class PlayChannelDetailsWithRecomMapper(
             message = freezeDataResponse.desc,
             btnTitle = freezeDataResponse.buttonText,
             btnUrl = freezeDataResponse.buttonAppLink
-    )
-
-    private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(
-            shouldShowCart = configResponse.showCart
     )
 
     private fun mapVideoBufferControl(bufferControl: ChannelDetailsWithRecomResponse.BufferControl?): PlayBufferControl {

@@ -115,12 +115,6 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayChannelResponseMapper(): PlayChannelDetailsWithRecomMapper {
-        return PlayChannelDetailsWithRecomMapper(mContext)
-    }
-
-    @PlayScope
-    @Provides
     fun providePlayVideoWrapperBuilder(@ApplicationContext context: Context): PlayVideoWrapper.Builder {
         return PlayVideoWrapper.Builder(context)
     }
