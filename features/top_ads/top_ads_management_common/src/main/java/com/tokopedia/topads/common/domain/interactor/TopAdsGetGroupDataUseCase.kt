@@ -66,7 +66,7 @@ const val TOP_ADS_GET_GROUP_LIST_QUERY: String = """query GetTopadsDashboardGrou
 }
 """
 
-@GqlQuery("GetTopadsGroupListQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
+@GqlQuery("GetTopadsGroupDataQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
 class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
     fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupType: Int): RequestParams {
@@ -87,7 +87,7 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
         val token = object : TypeToken<DataResponse<GroupItemResponse>>() {}.type
-        val query = GetTopadsGroupListQuery.GQL_QUERY
+        val query = GetTopadsGroupDataQuery.GQL_QUERY
         val request = GraphqlRequest(query, GroupItemResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
         headers["Content-Type"] = "application/json"

@@ -2,6 +2,7 @@ package com.tokopedia.navigation_common.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.inboxcounter.InboxCounter;
 
 /**
  * @author okasurya on 7/21/18.
@@ -27,6 +28,10 @@ public class NotificationsModel {
     @SerializedName("inbox")
     @Expose
     private InboxModel inbox = new InboxModel();
+
+    @SerializedName("inbox_counter")
+    @Expose
+    private InboxCounter inboxCounter = new InboxCounter();
 
     @SerializedName("chat")
     @Expose
@@ -86,5 +91,9 @@ public class NotificationsModel {
 
     public void setChat(ChatModel chat) {
         this.chat = chat;
+    }
+
+    public int getTotalNewInbox() {
+        return inboxCounter.all.totalInt;
     }
 }
