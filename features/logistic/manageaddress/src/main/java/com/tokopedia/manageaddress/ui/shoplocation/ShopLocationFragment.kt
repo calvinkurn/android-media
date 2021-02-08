@@ -83,7 +83,6 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         checkWhitelistedUser()
         initViews()
         initViewModel()
-//        fetchData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -181,7 +180,6 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun fetchData() {
-//        viewModel.getShopLocationList(480735)
         viewModel.getShopLocationList(userSession.shopId.toInt())
     }
 

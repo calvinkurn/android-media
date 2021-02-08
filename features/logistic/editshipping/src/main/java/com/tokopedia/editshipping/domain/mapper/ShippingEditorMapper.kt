@@ -18,7 +18,6 @@ class ShippingEditorMapper @Inject constructor() {
         return ShipperTickerModel().apply {
             headerTicker = mapHeaderTicker(data.headerTicker, data.warehouses)
             courierTicker = mapCourierTicker(data.courierTicker, data.warehouses)
-//            warehouses = mapWarehousesTicker(data.warehouses)
         }
     }
 
@@ -30,7 +29,6 @@ class ShippingEditorMapper @Inject constructor() {
     }
 
     private fun mapShipperOnDemand(response: List<OnDemand>): List<OnDemandModel> {
-//        val data = response.ongkirShippingEditor.data.shippers.onDemand
         val onDemandModelList =  ArrayList<OnDemandModel>()
         response.forEach { data ->
             val onDemandUiModel = OnDemandModel().apply {
