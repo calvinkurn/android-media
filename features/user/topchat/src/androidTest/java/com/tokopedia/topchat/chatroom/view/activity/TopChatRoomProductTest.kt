@@ -42,7 +42,7 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class TopChatRoomManualProductTest {
+class TopChatRoomProductTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
