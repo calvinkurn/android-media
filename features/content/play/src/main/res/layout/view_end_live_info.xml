@@ -18,23 +18,20 @@
         android:textColor="@color/play_live_ended_title"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_5"
-        android:layout_marginBottom="@dimen/spacing_lvl8"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/space"
+        app:layout_constraintTop_toBottomOf="@id/gl_live_ended_title"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Live streaming telah berakhir"
         />
 
-    <Space
-        android:id="@+id/space"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_live_ended_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.30"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

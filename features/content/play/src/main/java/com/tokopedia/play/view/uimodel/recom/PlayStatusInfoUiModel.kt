@@ -8,7 +8,8 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 data class PlayStatusInfoUiModel(
         val statusType: PlayStatusType,
         val bannedModel: PlayBannedUiModel,
-        val freezeModel: PlayFreezeUiModel
+        val freezeModel: PlayFreezeUiModel,
+        val shouldAutoSwipe: Boolean,
 )
 
 data class PlayBannedUiModel(

@@ -51,10 +51,7 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.recom.LikeSource
-import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -96,7 +93,6 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-//        EndLiveInfoViewComponent.Listener,
         PiPViewComponent.Listener
 {
     private val job = SupervisorJob()
@@ -117,6 +113,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -369,16 +366,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * EndLiveInfo View Component Listener
-     */
-//    override fun onButtonActionClicked(view: EndLiveInfoViewComponent, btnUrl: String) {
-//        openPageByApplink(
-//                applink = btnUrl,
-//                shouldFinish = true
-//        )
-//    }
-
-    /**
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
@@ -466,6 +453,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
+        observeOnboarding()
         observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
@@ -509,26 +497,20 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
-            meta.videoStream?.let {
-                changeLayoutBasedOnVideoOrientation(it.orientation)
-                triggerImmersive(false)
+            changeLayoutBasedOnVideoOrientation(meta.videoStream.orientation)
+            triggerImmersive(false)
 
-                scope.launch(dispatchers.immediate) {
-                    playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
-                    if (it.channelType.isLive) invalidateChatListBounds(videoOrientation = it.orientation, videoPlayer = meta.videoPlayer)
-                }
-
-                statsInfoViewOnStateChanged(channelType = it.channelType)
-                videoControlViewOnStateChanged(channelType = it.channelType)
-                sendChatViewOnStateChanged(channelType = it.channelType)
-                chatListViewOnStateChanged(channelType = it.channelType)
-                videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
-                gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
-                pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            scope.launch(dispatchers.immediate) {
+                playFragment.setCurrentVideoTopBounds(meta.videoStream.orientation, getVideoTopBounds(meta.videoStream.orientation))
+                if (playViewModel.channelType.isLive) invalidateChatListBounds(videoOrientation = meta.videoStream.orientation, videoPlayer = meta.videoPlayer)
             }
 
+            videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
+            gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
+            pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
-            if (meta.videoPlayer is General) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
+            if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
         })
     }
 
@@ -546,9 +528,15 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        playViewModel.observableLatestChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-            triggerStartMonitoring()
+        playViewModel.observableChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            statsInfoViewOnStateChanged(channelType = it.channelType)
+            videoControlViewOnStateChanged(channelType = it.channelType)
+            sendChatViewOnStateChanged(channelType = it.channelType)
+            chatListViewOnStateChanged(channelType = it.channelType)
         })
+//        playViewModel.observableLatestChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+//            triggerStartMonitoring()
+//        })
     }
 
     private fun observeQuickReply() {
@@ -581,14 +569,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeTotalLikes() {
 //        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
 //            likeView.setTotalLikes(it)
-//            endLiveInfoView.setTotalLikes(it)
 //        })
     }
 
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
-//            endLiveInfoView.setTotalViews(it)
         })
     }
 
@@ -717,6 +703,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeShareInfo() {
         playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setShareInfo(it)
+        })
+    }
+
+    private fun observeOnboarding() {
+        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            if (!orientation.isLandscape) onboardingView.showAnimated()
         })
     }
     //endregion
@@ -957,7 +949,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private suspend fun invalidateChatListBounds(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             maxTopPosition: Int = mMaxTopChatMode ?: 0
     ) {
@@ -971,8 +963,8 @@ class PlayUserInteractionFragment @Inject constructor(
         getDynamicLayoutManager().onVideoOrientationChanged(videoOrientation)
     }
 
-    private fun changeLayoutBasedOnVideoType(videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
-        getDynamicLayoutManager().onVideoPlayerChanged(videoPlayerUiModel, channelType)
+    private fun changeLayoutBasedOnVideoType(videoPlayer: PlayVideoPlayerUiModel, channelType: PlayChannelType) {
+        getDynamicLayoutManager().onVideoPlayerChanged(videoPlayer, channelType)
     }
 
     private fun getDynamicLayoutManager(): DynamicLayoutManager = synchronized(this) {
@@ -1031,7 +1023,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun videoControlViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
@@ -1052,7 +1044,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun videoSettingsViewOnStateChanged(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
@@ -1110,7 +1102,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
-        if (isFreezeOrBanned) statsInfoView.show()
+        if (isFreezeOrBanned) statsInfoView.hide()
         else if (!bottomInsets.isAnyShown && orientation.isPortrait) statsInfoView.show()
         else statsInfoView.hide()
     }
@@ -1162,7 +1154,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pipViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
