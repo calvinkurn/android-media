@@ -18,11 +18,14 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,46 +57,57 @@ class VoucherGameListActivityTest{
         }
     }
 
-    @Test
-    fun validateToolbarMenu(){
+    @Before
+    fun setUp(){
         intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        Espresso.onView(withId(R.id.action_overflow_menu)).perform(ViewActions.click())
-        Thread.sleep(1000)
-        Espresso.onView(withId(R.id.menu_promo)).check(ViewAssertions.matches(isDisplayed()))
-        Espresso.onView(withId(R.id.menu_help)).check(ViewAssertions.matches(isDisplayed()))
-        Espresso.onView(withId(R.id.menu_order_list)).check(ViewAssertions.matches(isDisplayed()))
-        Thread.sleep(1000)
-        Espresso.onView(withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
     }
 
     @Test
+    fun validateTracking(){
+        clickOnCard()
+        clearSearch()
+        search_ItemIsAvailable()
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTICS_VALIDATOR),
+                hasAllSuccess())
+    }
+
     fun clearSearch(){
-        intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Espresso.onView(withId(R.id.search_input_view)).perform(ViewActions.click())
+        Thread.sleep(3000)
         Espresso.onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(GAME_NAME), ViewActions.closeSoftKeyboard())
+        Thread.sleep(3000)
         Espresso.onView(withId(R.id.searchbar_icon)).perform(ViewActions.click())
+        Thread.sleep(3000)
         Espresso.onView(withId(R.id.searchbar_textfield)).check(ViewAssertions.matches(ViewMatchers.withText("")))
     }
 
-    @Test
     fun search_ItemIsAvailable(){
-        intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(3000)
         Espresso.onView(withId(R.id.search_input_view)).check(ViewAssertions.matches(isDisplayed()))
         Espresso.onView(withId(R.id.searchbar_textfield)).check(ViewAssertions.matches(isDisplayed())).perform(ViewActions.click())
         Espresso.onView(withId(R.id.searchbar_textfield)).check(ViewAssertions.matches(isDisplayed())).perform(ViewActions.typeText(GAME_NAME))
-        val itemCount = (mActivityRule.activity.findViewById(R.id.recycler_view) as RecyclerView).adapter?.itemCount ?: 0
-        if (itemCount > 0) {
+        if (itemCount() > 0) {
+            Thread.sleep(3000)
+            Espresso.onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<VoucherGameListViewHolder>(0, ViewActions.click()))
+        }
+    }
+    fun clickOnCard(){
+        Thread.sleep(3000)
+        if (itemCount() > 0) {
             Thread.sleep(3000)
             Espresso.onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<VoucherGameListViewHolder>(0, ViewActions.click()))
         }
     }
 
+    fun itemCount() = (mActivityRule.activity.findViewById(R.id.recycler_view) as RecyclerView).adapter?.itemCount ?: 0
+
     companion object {
         private const val GAME_NAME = "POKEMON GO"
         private const val KEY_QUERY_VOUCHER_LIST = "voucherGameProductList"
         private const val KEY_QUERY_VOUCHER_DETAIL = "catalogMenuDetail"
-        private const val ANALYTICS = ""
+        private const val ANALYTICS_VALIDATOR = "tracker/recharge/recharge_voucher_game_list.json"
     }
 }
 

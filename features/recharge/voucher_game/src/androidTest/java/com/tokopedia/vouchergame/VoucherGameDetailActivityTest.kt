@@ -15,6 +15,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -23,6 +25,7 @@ import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
 import com.tokopedia.vouchergame.test.R
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,9 +52,20 @@ class VoucherGameDetailActivityTest{
         }
     }
 
-    @Test
-    fun clickOnDetail(){
+    @Before
+    fun setUp(){
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    @Test
+    fun validateTracking(){
+        clickOnDetail()
+        clickOnInfoButton()
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTICS_VOUCHER_GAME_DETAIL),
+                hasAllSuccess())
+    }
+
+    fun clickOnDetail(){
         val itemCount = (mActivityRule.activity.findViewById(R.id.recycler_view) as RecyclerView).adapter?.itemCount ?: 0
         if (itemCount > 0) {
             Thread.sleep(3000)
@@ -60,7 +74,6 @@ class VoucherGameDetailActivityTest{
         }
     }
 
-    @Test
     fun clickOnInfoButton(){
         Thread.sleep(3000)
         Espresso.onView(ViewMatchers.withId(R.id.btn_info_icon)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
@@ -69,6 +82,6 @@ class VoucherGameDetailActivityTest{
     companion object {
         private const val KEY_QUERY_VOUCHER_DETAIL = "voucherGameProductDetail"
         private const val POKEMON_DETAIL_DESCRIPTION = "Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat"
-        private const val ANALYTICS = ""
+        private const val ANALYTICS_VOUCHER_GAME_DETAIL = "tracker/recharge/recharge_voucher_game_detail.json"
     }
 }
