@@ -21,7 +21,6 @@ import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecorati
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
-import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel

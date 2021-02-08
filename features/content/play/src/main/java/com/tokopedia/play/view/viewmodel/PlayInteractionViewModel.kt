@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.view.uimodel.FeedInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeParamInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -43,20 +42,6 @@ class PlayInteractionViewModel @Inject constructor(
                 if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
                 else LoginStateEvent.InteractionAllowed(event)
         )
-    }
-
-    fun doLikeUnlike(feedInfoUiModel: FeedInfoUiModel?, shouldLike: Boolean) {
-        scope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(
-                        contentId = feedInfoUiModel?.contentId.toIntOrZero(),
-                        contentType = feedInfoUiModel?.contentType.orZero(),
-                        likeType = feedInfoUiModel?.likeType.orZero(),
-                        action = shouldLike
-                )
-                postLikeUseCase.executeOnBackground()
-            }
-        }) {}
     }
 
     fun doLikeUnlike(likeParamInfo: PlayLikeParamInfoUiModel, shouldLike: Boolean) {
