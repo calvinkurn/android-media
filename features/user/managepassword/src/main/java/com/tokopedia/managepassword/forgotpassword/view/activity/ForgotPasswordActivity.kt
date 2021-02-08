@@ -140,7 +140,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
             intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
             userSession.autofillUserData = decodeParam(phone)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
