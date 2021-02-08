@@ -39,7 +39,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                        private val context: Context) {
     private var isShopFavorite = false
-    private var voucherUrl: String? = null
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
             isUsingNewNavigation()
@@ -136,7 +135,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.VISIBLE
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
-                voucherUrl?.run { followButton.removeDrawable() }
+                removeCompoundDrawableFollowButton()
                 followButton.isLoading = true
                 listener.setFollowStatus(isShopFavorite)
             }
@@ -277,7 +276,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
-            voucherUrl = it.followButton?.voucherIconURL
+            val voucherUrl = it.followButton?.voucherIconURL
             val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 followButton.loadLeftDrawable(
@@ -285,6 +284,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         url = voucherUrl,
                         convertIntoSize = 50
                 )
+            } else {
+                removeCompoundDrawableFollowButton()
             }
             if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
@@ -300,6 +301,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun dismissCoachMark() {
         coachMark?.dismissCoachMark()
+    }
+
+    fun removeCompoundDrawableFollowButton() {
+        if (!followButton.compoundDrawables.isNullOrEmpty()) {
+            followButton.removeDrawable()
+        }
     }
 
     private fun setCoachMark(description: String) {

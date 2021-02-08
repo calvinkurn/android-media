@@ -1,5 +1,7 @@
 <resources>
     <string name="mvc_pelajari">Pelajari</string>
+    <string name="mvc_follow">Follow</string>
+    <string name="mvc_daftar_kupon_toko">Daftar Kupon Toko</string>
     <string name="mvc_jadi_member">Jadi Member</string>
     <string name="mvc_cek_info">Cek Info</string>
     <string name="mvc_daftar_jadi_member">Daftar Jadi Member</string>

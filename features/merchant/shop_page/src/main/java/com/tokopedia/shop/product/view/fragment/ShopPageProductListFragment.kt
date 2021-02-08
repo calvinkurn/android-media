@@ -524,7 +524,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
             REQUEST_CODE_LOGIN_USE_VOUCHER, REQUEST_CODE_MERCHANT_VOUCHER, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    viewModel.clearMerchantVoucherCache()
                     loadMerchantVoucher()
                 }
             }
@@ -713,7 +712,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 this,
                 this,
                 this,
-                this,
                 null,
                 this,
                 true,
@@ -805,7 +803,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
+            snackbar.setAction(getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
@@ -1235,11 +1233,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherUiModel) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
-        data.shopMerchantVoucherViewModelArrayList?.let {
-            if (it.isNotEmpty())
-                shopProductAdapter.setMerchantVoucherDataModel(data)
-        }
+        //shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
+        shopProductAdapter.setMerchantVoucherDataModel(data)
     }
 
     private fun onSuccessGetMembershipData(data: MembershipStampProgressUiModel) {
@@ -1312,14 +1307,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToasterError(message: String) {
         activity?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.clearMembershipData()
         activity?.let {
-            Toaster.make(view!!, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(requireView(), ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

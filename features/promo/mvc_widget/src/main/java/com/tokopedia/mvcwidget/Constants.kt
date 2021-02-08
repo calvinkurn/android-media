@@ -2,8 +2,6 @@ package com.tokopedia.mvcwidget
 
 const val IO = "IO"
 
-const val TOKOPOINTS_CATALOG_MVC_SUMMARY = "TOKOPOINTS_CATALOG_MVC_SUMMARY"
-
 const val TOKOPOINTS_CATALOG_MVC_SUMMARY_QUERY = """
 query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!){
     tokopointsCatalogMVCSummary(shopID: ${'$'}shopID,limit: ${'$'}limit) {

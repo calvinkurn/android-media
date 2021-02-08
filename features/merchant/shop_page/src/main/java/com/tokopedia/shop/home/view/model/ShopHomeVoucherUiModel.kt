@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.shop.common.data.model.MerchantVoucherCouponUiModel
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 /**

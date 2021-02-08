@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.views.viewholders
 
+import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,9 +28,28 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tv2.text = data.title2
         tv3.text = data.title3
 
+        toggleView(data.title2,tv2)
+        toggleView(data.title3,tv3)
+
         if (!data.urlList.isNullOrEmpty()) {
             rvImage.adapter = ImageAdapter(data.urlList)
             (rvImage.adapter as ImageAdapter).notifyDataSetChanged()
+        }
+    }
+
+    fun toggleView(text:String?,view:View){
+        if(text.isNullOrEmpty()){
+            view.visibility = View.GONE
+        }else{
+            view.visibility = View.VISIBLE
+        }
+    }
+
+    fun toggleView(text:SpannableString?,view:View){
+        if(text.isNullOrEmpty()){
+            view.visibility = View.GONE
+        }else{
+            view.visibility = View.VISIBLE
         }
     }
 
@@ -45,6 +65,7 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
             if (!urlList[position].isNullOrEmpty()) {
                 Glide.with(holder.image)
                         .load(urlList[position])
+                        .dontAnimate()
                         .into(holder.image)
             }
         }

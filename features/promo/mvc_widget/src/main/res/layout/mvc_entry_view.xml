@@ -21,10 +21,11 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/mvc_bg_duplicate" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.mvcwidget.views.SquareImageView
             android:id="@+id/image_coupon"
             android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="match_parent"
+            tools:layout_height="@dimen/dp_48"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@color/red_400" />

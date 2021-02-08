@@ -102,7 +102,8 @@ class ShopHomeVoucherViewHolder(
                             subTitle = model.data.subTitle ?: "",
                             imageUrl = model.data.imageURL ?: ""
                     ),
-                            shopId = model.data.shopId ?: "0"
+                            shopId = model.data.shopId ?: "0",
+                            isMainContainerSetFitsSystemWindows = false
                     )
                 }
             }
