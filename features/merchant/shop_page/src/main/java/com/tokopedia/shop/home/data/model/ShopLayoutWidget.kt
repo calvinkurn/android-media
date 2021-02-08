@@ -68,7 +68,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("productID")
-                val productID: Int = -1,
+                val productID: String = "",
                 @SerializedName("name")
                 val name: String = "",
                 @SerializedName("campaignID")

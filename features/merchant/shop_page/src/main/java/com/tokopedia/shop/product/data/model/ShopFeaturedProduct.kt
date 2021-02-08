@@ -53,7 +53,7 @@ data class ShopFeaturedProduct(
 
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "",
 
         @SerializedName("rating")
         @Expose
