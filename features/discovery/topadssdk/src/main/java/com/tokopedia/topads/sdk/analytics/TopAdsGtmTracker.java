@@ -1037,4 +1037,92 @@ public class TopAdsGtmTracker {
             return 0;
         }
     }
+
+    public static void eventTopAdsHeadlineProductView(String prouctId, String shopID, String keyword, int index, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "topads headline",
+                "eventAction", "impression - topads headline banner",
+                "eventLabel", shopID+", "+ prouctId+ ", " + keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", prouctId,
+                                                "name", "/search - headline",
+                                                "creative", keyword,
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void eventTopAdsHeadlineShopView(String shopID, int index, CpmData cpm, String keyword, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "topads headline",
+                "eventAction", "impression - topads headline banner",
+                "eventLabel", shopID+", "+ cpm.getId()+ ", " + keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void eventTopAdsHeadlineProductClick(String shopId, int index, String keyword, CpmData cpm, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "Headline Ads on SRP",
+                "eventAction", "click - product topads headline",
+                "eventLabel", shopId+", "+cpm.getId()+", "+ cpm.getCpm().getPromotedText(),
+                "businessUnit", "TopAds",
+                "creative_slot", index,
+                "item_list","{}",
+                "currentSite", "tokopediamarketplace",
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline product",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendGeneralEvent(map);
+    }
+
+    public static void eventTopAdsHeadlineShopClick(String shopId, int index, String keyword, CpmData cpm, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "topads headline",
+                "eventAction", "click - shop topads headline",
+                "eventLabel", shopId+", "+cpm.getId()+", "+ keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
 }
