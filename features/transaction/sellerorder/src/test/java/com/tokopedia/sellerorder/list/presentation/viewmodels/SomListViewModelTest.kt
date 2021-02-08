@@ -431,7 +431,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } returns Success(SomListFilterUiModel())
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()
@@ -446,7 +446,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } throws Throwable()
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()

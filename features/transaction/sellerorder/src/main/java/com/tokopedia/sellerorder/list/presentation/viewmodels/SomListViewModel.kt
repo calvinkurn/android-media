@@ -170,9 +170,9 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun getFilters() {
+    fun getFilters(refreshOrders: Boolean) {
         launchCatchError(block = {
-            _filterResult.postValue(somListGetFilterListUseCase.execute())
+            _filterResult.postValue(somListGetFilterListUseCase.execute().apply { data.refreshOrder = refreshOrders })
         }, onError = {
             _filterResult.postValue(Fail(it))
         })
