@@ -21,7 +21,6 @@ class HomeCachedDataSource(
     }
 
     fun getCachedAtfData(): List<AtfCacheEntity> {
-        BenchmarkHelper.beginSystraceSection(TRACE_GET_CACHED_DATA_SOURCE)
         return homeDao.getHomeDataObject()
     }
 
