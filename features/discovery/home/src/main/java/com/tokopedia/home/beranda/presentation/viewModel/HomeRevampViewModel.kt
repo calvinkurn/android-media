@@ -265,7 +265,6 @@ open class HomeRevampViewModel @Inject constructor(
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
         initCacheData()
-//        initFlow()
     }
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){

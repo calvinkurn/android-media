@@ -8,7 +8,6 @@ import retrofit2.Response
 import rx.Observable
 
 interface HomeRepository {
-//    fun getHomeCachedData(): HomeData?
     fun getHomeData(): Flow<HomeData?>
     fun updateHomeData(): Flow<Result<Any>>
     suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>>

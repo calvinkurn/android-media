@@ -28,8 +28,6 @@ class HomeUseCase @Inject constructor(
         }
     }
 
-//    fun getHomeCachedData(): HomeDataModel? = homeDataMapper.mapToHomeViewModel(homeRepository.getHomeCachedData(), true)
-
     suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
 
     fun updateHomeData() = homeRepository.updateHomeData()
