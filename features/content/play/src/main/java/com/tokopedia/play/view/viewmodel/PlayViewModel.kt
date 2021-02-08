@@ -529,7 +529,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun defocusVideoPlayer() {
-        if (!isInPiPMode) playVideoPlayer.pause(preventLoadingBuffer = true)
+        playVideoPlayer.pause(preventLoadingBuffer = true)
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
