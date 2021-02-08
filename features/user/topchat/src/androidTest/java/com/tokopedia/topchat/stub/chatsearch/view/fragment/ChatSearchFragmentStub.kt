@@ -25,15 +25,6 @@ class ChatSearchFragmentStub: ChatSearchFragment() {
                 .inject(this)
     }
 
-    override fun onChatReplyClick(element: ChatReplyUiModel) {
-        val chatRoomIntent = Intent(context, TopChatRoomActivityStub::class.java)
-        chatRoomIntent.putExtra(ApplinkConst.Chat.MESSAGE_ID, element.msgId.toString())
-        chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
-        chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
-        chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, getSearchKeyWord())
-        startActivity(chatRoomIntent)
-    }
-
     companion object {
         fun createFragment(getSearchQueryUsecase: GetSearchQueryUseCaseStub): ChatSearchFragmentStub {
             return ChatSearchFragmentStub().apply {
