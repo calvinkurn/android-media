@@ -1255,11 +1255,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-    private val floatingEggButtonFragment: FloatingEggButtonFragment? = null
-//        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-//            if (activity != null && isAdded && childsFragmentManager != null) {
-//                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
-//            } else null
+    private val floatingEggButtonFragment: FloatingEggButtonFragment?
+        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+            if (activity != null && isAdded && childsFragmentManager != null) {
+                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
+            } else null
 
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
