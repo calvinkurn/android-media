@@ -8,12 +8,15 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import org.json.JSONObject;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -26,9 +29,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -37,6 +46,9 @@ import java.util.ArrayList;
 
 public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
+
+    public static final String MAINAPP_GENERAL_INFO = "android_mainapp_general_info";
+    public static final String SELLERAPP_GENERAL_INFO = "android_sellerapp_general_info";
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -47,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
+    private RemoteConfig remoteConfig;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
 
@@ -60,6 +73,55 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
+        showGeneralInfoMessage();
+    }
+
+    private void showGeneralInfoMessage() {
+        try {
+            String className = getClass().getCanonicalName();
+            String webviewSwitchConfig = "";
+
+            if (GlobalConfig.isSellerApp()) {
+                webviewSwitchConfig = getRemoteConfig().getString(SELLERAPP_GENERAL_INFO);
+            } else {
+                webviewSwitchConfig = getRemoteConfig().getString(MAINAPP_GENERAL_INFO);
+            }
+
+            if (TextUtils.isEmpty(webviewSwitchConfig)) return;
+
+            JSONObject configJSON = new JSONObject(webviewSwitchConfig);
+
+            JSONObject switchData = configJSON.optJSONObject(className);
+
+            if (switchData == null) return;
+
+            String environment = switchData.optString("environment");
+            String versions = switchData.optString("versions");
+            String message = switchData.optString("message");
+
+            if (GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment)) return;
+            if (!GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment)) return;
+
+            List<String> versionList = Arrays.asList(versions.split(","));
+            if (versionList.contains(GlobalConfig.VERSION_NAME)) return;
+
+            Timber.w("P1#DISPLAY_GENERAL_INFO#'"+ className +"';message='" + message + "'");
+            showGeneralInfoSnackbar();
+
+        } catch(Exception e) { }
+    }
+
+    private void showGeneralInfoSnackbar(String message) {
+        final Snackbar snackBar = SnackbarManager.make(this, message,
+                Snackbar.LENGTH_INDEFINITE);
+        snackBar.show();
+    }
+
+    private RemoteConfig getRemoteConfig() {
+        if (remoteConfig == null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(this);
+        }
+        return remoteConfig;
     }
 
     @Override
