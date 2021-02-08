@@ -130,6 +130,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shopDetail?.gone()
                 adsBannerShopCardView?.visible()
                 container?.setBackgroundResource(0)
+                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 0, 0, 0)
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }
@@ -137,6 +138,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 list?.visible()
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
+                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 12.toPx(), 0, 0)
 
                 if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                     container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)

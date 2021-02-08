@@ -4,17 +4,15 @@ import android.content.Context
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.DimenRes
-import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.shopwidget_shop_card_layout.view.*
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.shopwidget_shop_card_layout.view.*
 
 class ShopCardView: BaseCustomView {
 
@@ -195,7 +193,7 @@ class ShopCardView: BaseCustomView {
             shopCardListener: ShopCardListener
     ) {
         imageViewShopItemProductImage?.let {
-            ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, productPreviewItem.imageUrl)
+            ImageHandler.loadImageRounded2(context, imageViewShopItemProductImage, productPreviewItem.imageUrl, 6.toPx().toFloat())
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->
