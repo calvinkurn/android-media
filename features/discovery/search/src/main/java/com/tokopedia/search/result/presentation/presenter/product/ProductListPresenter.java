@@ -126,6 +126,7 @@ final class ProductListPresenter
     private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
+    private static final List<String> trackRelatedKeywordResponseCodeList = Arrays.asList("3", "6");
     private static final List<String> showInspirationCarouselLayout =
             Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST, LAYOUT_INSPIRATION_CAROUSEL_GRID);
     private static final List<String> showInspirationCardType =
@@ -180,6 +181,7 @@ final class ProductListPresenter
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
     private boolean isABTestNavigationRevamp = false;
+    private boolean bottomSheetFilterEnabled = true;
 
     @Inject
     ProductListPresenter(
@@ -1852,7 +1854,13 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendProductImpressionTrackingEvent(item);
+        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword());
+    }
+
+    public String getSuggestedRelatedKeyword() {
+        if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
+
+        return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
     }
 
     @Override
@@ -1891,7 +1899,7 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendGTMTrackingProductClick(item, getUserId());
+        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword());
     }
 
     @Override
@@ -1957,6 +1965,10 @@ final class ProductListPresenter
     public void openFilterPage(Map<String, Object> searchParameter) {
         if (getView() == null || searchParameter == null) return;
 
+        if (!isBottomSheetFilterEnabled()) return;
+
+        bottomSheetFilterEnabled = false;
+
         getView().sendTrackingOpenFilterPage();
         getView().openBottomSheetFilter(this.dynamicFilterModel);
 
@@ -1964,6 +1976,16 @@ final class ProductListPresenter
             getDynamicFilterUseCase.get().
                     execute(createRequestDynamicFilterParams(searchParameter), createGetDynamicFilterModelSubscriber());
         }
+    }
+
+    @Override
+    public boolean isBottomSheetFilterEnabled() {
+        return bottomSheetFilterEnabled;
+    }
+
+    @Override
+    public void onBottomSheetFilterDismissed() {
+        bottomSheetFilterEnabled = true;
     }
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
