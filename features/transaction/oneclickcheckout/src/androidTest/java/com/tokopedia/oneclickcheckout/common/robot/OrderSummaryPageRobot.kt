@@ -201,6 +201,21 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
     }
 
+    fun assertProfileRevampWording(wording: String) {
+        onView(withId(R.id.tv_new_card_header)).perform(scrollTo()).check(matches(withText(wording)))
+    }
+
+    fun assertProfileRevampUtama(isDefaultProfile: Boolean) {
+        onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(if (isDefaultProfile) View.VISIBLE else View.GONE, view.visibility)
+        }
+    }
+
+    fun assertProfileRevampActionWording(actionWording: String) {
+        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
+    }
+
     fun assertProfileAddress(headerMessage: String,
                              addressName: String,
                              addressDetail: String,
