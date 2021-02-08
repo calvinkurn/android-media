@@ -5,7 +5,7 @@ import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFac
 /**
  * Created by Pika on 7/6/20.
  */
-class ProductEmptyViewModel : ProductViewModel(){
+class ProductEmptyModel : ProductModel() {
 
     override fun type(typesFactory: ProductAdapterTypeFactory): Int {
         return typesFactory.type(this)

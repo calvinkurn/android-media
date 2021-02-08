@@ -12,23 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
@@ -36,7 +31,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STAR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.AdStatusResponse
-import com.tokopedia.topads.dashboard.data.model.AutoAdsResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -46,12 +40,13 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.autoads.AutoAdsItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.autoads.AutoAdsItemsListAdapter
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemModel
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
@@ -203,8 +198,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
-        tab_layout?.addNewTab(TopAdsDashboardConstant.GRUP)
-        tab_layout?.addNewTab(TopAdsDashboardConstant.TANPA_GRUP)
+        tab_layout?.addNewTab(GRUP)
+        tab_layout?.addNewTab(TANPA_GRUP)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment()))
         list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment()))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
@@ -376,7 +371,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
             adIds.add(it.adId.toString())
-            autoAdsAdapter.items.add(AutoAdsItemsItemViewModel(it))
+            autoAdsAdapter.items.add(AutoAdsItemsItemModel(it))
         }
         if (adIds.isNotEmpty()) {
             topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, groupFilterSheet.getSelectedSortId(), 0, ::OnSuccessStats)
@@ -394,12 +389,12 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun onEmptyResult() {
-        autoAdsAdapter.items.add(AutoAdsItemsEmptyViewModel())
+        autoAdsAdapter.items.add(AutoAdsItemsEmptyModel())
         autoAdsAdapter.notifyDataSetChanged()
     }
 
     private fun loadData() {
-        topAdsDashboardPresenter.getAutoAdsStatus(resources)
+        topAdsDashboardPresenter.getAutoTopUpStatus(resources, ::onSuccessAdsInfo)
     }
 
     private fun loadStatisticsData() {
@@ -440,9 +435,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
     }
 
-    override fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
-        adCurrentState = data.status
-        topAdsDashboardPresenter.getAdsStatus(GraphqlHelper.loadRawString(resources, R.raw.query_ads_create_ads_creation_shop_info))
+    private fun onSuccessAdsInfo(data: AutoTopUpStatus?) {
+        adCurrentState = data?.status.toIntOrZero()
+        topAdsDashboardPresenter.getAdsStatus(resources)
     }
 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {

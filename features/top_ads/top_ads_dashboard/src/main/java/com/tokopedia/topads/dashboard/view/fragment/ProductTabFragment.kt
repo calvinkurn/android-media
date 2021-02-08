@@ -32,13 +32,13 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupModel
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapter
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
 import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
@@ -239,18 +239,18 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
 
         list.forEach {
             if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME)) {
-                groupList.add(MovetoGroupItemViewModel(it))
+                groupList.add(MovetoGroupItemModel(it))
                 groupIds.add(it.groupId)
             }
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            groupList.add(MovetoGroupEmptyViewModel())
+            groupList.add(MovetoGroupEmptyModel())
         } else
             viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         movetoGroupSheet.updateData(groupList)
@@ -276,7 +276,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         else
             ACTION_DEACTIVATE
         viewModel.setProductAction(::onSuccessAction, actionActivate,
-                listOf((adapter.items[pos] as ProductItemViewModel).data.adId.toString()), resources, null)
+                listOf((adapter.items[pos] as ProductItemModel).data.adId.toString()), resources, null)
     }
 
     private fun onSuccessAction() {
@@ -327,7 +327,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         }
         response.data.forEach {
             adIds.add(it.adId.toString())
-            adapter.items.add(ProductItemViewModel(it))
+            adapter.items.add(ProductItemModel(it))
         }
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
@@ -352,7 +352,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyProduct() {
-        adapter.items.add(ProductEmptyViewModel())
+        adapter.items.add(ProductEmptyModel())
         (activity as TopAdsGroupDetailViewActivity).setProductCount(0)
         adapter.notifyDataSetChanged()
         setFilterCount()

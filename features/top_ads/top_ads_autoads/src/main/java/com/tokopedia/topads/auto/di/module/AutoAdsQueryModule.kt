@@ -22,7 +22,7 @@ class AutoAdsQueryModule(val context: Context) {
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_ADS_SHOP_INFO)
     fun queryShopInfo(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info)
 
     @Provides
     @IntoMap

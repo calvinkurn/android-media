@@ -5,7 +5,7 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterT
 /**
  * Created by Pika on 7/6/20.
  */
-class NegKeywordEmptyViewModel : NegKeywordViewModel(){
+class NegKeywordEmptyModel : NegKeywordModel() {
     override fun type(typesFactory: NegKeywordAdapterTypeFactory): Int {
         return typesFactory.type(this)
     }

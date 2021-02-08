@@ -7,7 +7,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsAdapterT
 /**
  * Created by Pika on 2/6/20.
  */
-class GroupItemsItemViewModel(var data: DataItem) : GroupItemsViewModel() {
+class GroupItemsItemModel(var data: DataItem) : GroupItemsModel() {
     var isChecked = false
     override fun type(typesFactory: GroupItemsAdapterTypeFactory): Int {
         return typesFactory.type(this)

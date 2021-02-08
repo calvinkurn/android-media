@@ -6,7 +6,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsAdapterT
  * Created by Pika on 2/6/20.
  */
 
-class GroupItemsEmptyViewModel: GroupItemsViewModel() {
+class GroupItemsEmptyModel : GroupItemsModel() {
     override fun type(typesFactory: GroupItemsAdapterTypeFactory): Int {
         return typesFactory.type(this)
 

@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.model
 import android.content.res.Resources
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -21,6 +22,7 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.data.model.StatsData
+import com.tokopedia.topads.dashboard.data.raw.STATS_URL
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.presenter.StatsList
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
@@ -39,7 +41,7 @@ import javax.inject.Named
 
 class GroupDetailViewModel @Inject constructor(
         @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatchers,
         private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
         private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,
         private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
@@ -50,7 +52,7 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
         private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
-        private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
+        private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     fun getGroupProductData(page: Int, groupId: Int, search: String, sort: String, status: Int?, startDate: String,
                             endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
@@ -133,15 +135,13 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    @GqlQuery("StatsList", TopAdsDashboardPresenter.STATS_URL)
+    @GqlQuery("StatsList", STATS_URL)
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String) {
         val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
                 selectedStatisticType, userSession.shopId, groupId)
         topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
         topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
                 Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e?.localizedMessage)
@@ -186,7 +186,7 @@ class GroupDetailViewModel @Inject constructor(
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
         topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_group_action))
-        var requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
+        val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
         topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
             }
@@ -213,7 +213,7 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
         topAdsGetGroupProductDataUseCase.unsubscribe()

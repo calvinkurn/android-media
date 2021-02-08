@@ -5,7 +5,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.*

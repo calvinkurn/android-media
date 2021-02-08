@@ -6,6 +6,6 @@ import com.tokopedia.topads.dashboard.view.adapter.autoads.AutoAdsItemsAdapterTy
  * Created by Pika on 2/6/20.
  */
 
-abstract class AutoAdsItemsViewModel {
+abstract class AutoAdsItemsModel {
     abstract fun type(typesFactory: AutoAdsItemsAdapterTypeFactory): Int
 }

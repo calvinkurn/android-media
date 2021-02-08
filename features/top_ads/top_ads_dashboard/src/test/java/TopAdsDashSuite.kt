@@ -1,4 +1,5 @@
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModelTest
+import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModelTest
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenterTest
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenterTest
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModelTest
@@ -13,6 +14,7 @@ import org.junit.runners.Suite
         TopAdsCreditHistoryViewModelTest::class,
         TopAdsAutoTopUpViewModelTest::class,
         TopAdsDashboardPresenterTest::class,
-        TopAdsInsightPresenterTest::class
+        TopAdsInsightPresenterTest::class,
+        GroupDetailViewModelTest::class
 )
 class TopAdsDashSuite

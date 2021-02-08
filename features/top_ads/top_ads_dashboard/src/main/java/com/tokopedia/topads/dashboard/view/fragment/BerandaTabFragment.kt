@@ -227,8 +227,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun getAutoTopUpStatus() {
-        topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper
-                .loadRawString(resources, R.raw.gql_query_get_status_auto_topup), this::onSuccessGetAutoTopUpStatus)
+        topAdsDashboardPresenter.getAutoTopUpStatus(resources, this::onSuccessGetAutoTopUpStatus)
     }
 
     private fun goToCreditHistory(isFromSelection: Boolean = false) {

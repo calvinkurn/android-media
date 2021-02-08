@@ -47,7 +47,7 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(Dispatchers.Main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopAdsCreditHistory.CreditsResponse>()

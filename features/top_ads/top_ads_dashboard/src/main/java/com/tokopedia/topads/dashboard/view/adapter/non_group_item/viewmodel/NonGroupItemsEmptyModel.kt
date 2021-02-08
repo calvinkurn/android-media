@@ -7,7 +7,7 @@ import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsA
  * Created by Pika on 2/6/20.
  */
 
-class NonGroupItemsEmptyViewModel: NonGroupItemsViewModel() {
+class NonGroupItemsEmptyModel : NonGroupItemsModel() {
     override fun type(typesFactory: NonGroupItemsAdapterTypeFactory): Int {
         return typesFactory.type(this)
 
