@@ -43,7 +43,6 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     indicator.apply {
                         visible()
                         setIndicator(productImages.size)
-                        setCurrentIndicator(position)
                     }
                     val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
@@ -54,9 +53,18 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     }
                     imgViewPagerAdapter.listImg = arrayListImg
                     actionListener?.let { imgViewPagerAdapter.setActionListener(it) }
-                    viewPager2.adapter = imgViewPagerAdapter
-                    viewPager2.setOnClickListener {
-                        actionListener?.onSnapshotImgClicked(position)
+                    viewPager2.apply {
+                        adapter = imgViewPagerAdapter
+                        setOnClickListener {
+                            actionListener?.onSnapshotImgClicked(position)
+                        }
+                        registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+                            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                                indicator.setCurrentIndicator(position)
+                            }
+
+                        })
                     }
 
                 } else {

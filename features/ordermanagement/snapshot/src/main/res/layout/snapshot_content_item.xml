@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!--relativelayout to group either img/viewpager header-->
     <RelativeLayout
         android:id="@+id/snapshot_rl_header"
         android:layout_width="match_parent"
@@ -15,31 +16,22 @@
         <ImageView
             android:id="@+id/snapshot_main_img"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/snapshot_dimen_360dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="@dimen/snapshot_dimen_360dp" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/snapshot_header_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/snapshot_dimen_360dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="@dimen/snapshot_dimen_360dp"/>
 
         <com.tokopedia.unifycomponents.PageControl
             android:id="@+id/snapshot_page_indicator"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:indicator_type="CIRCLE"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_14"
             app:indicator_color="DEFAULT"
-            app:layout_constraintBottom_toBottomOf="@id/snapshot_header_view_pager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:indicator_type="CIRCLE" />
 
     </RelativeLayout>
 
