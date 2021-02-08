@@ -796,7 +796,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         List<ResolveInfo> activities = getActivity().getPackageManager()
                 .queryIntentActivities(linkAjaIntent, 0);
         boolean isIntentSafe = activities.isEmpty();
-        if (isIntentSafe) {
+        if (!isIntentSafe) {
             startActivity(linkAjaIntent);
             getActivity().finish();
             return true;
