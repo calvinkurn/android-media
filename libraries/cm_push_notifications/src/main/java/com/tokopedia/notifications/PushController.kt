@@ -30,30 +30,30 @@ class PushController(val context: Context) : CoroutineScope {
 
     fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {
-            //todo event notification received offline
-            launchCatchError(
-                    block = {
-                        Log.d("PUSHController", "Code update")
-
-                        val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
-                        if (isAmplification) baseNotificationModel.isAmplification = true
-                        if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
-                            if (isOfflinePushEnabled)
-                                onOfflinePushPayloadReceived(baseNotificationModel)
-                        } else {
-                            onLivePushPayloadReceived(baseNotificationModel)
-                        }
-                    }, onError = {
-                Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
-                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
-                        .take(CMConstant.TimberTags.MAX_LIMIT)}'")
-            })
-
+            val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
+            handleNotificationBundle(baseNotificationModel, isAmplification)
         } catch (e: Exception) {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
                     .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
+    }
+
+    fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel, isAmplification: Boolean = false) {
+        launchCatchError(
+                block = {
+                    if (isAmplification) baseNotificationModel.isAmplification = true
+                    if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
+                        if (isOfflinePushEnabled)
+                            onOfflinePushPayloadReceived(baseNotificationModel)
+                    } else {
+                        onLivePushPayloadReceived(baseNotificationModel)
+                    }
+                }, onError = {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${baseNotificationModel.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
+        })
     }
 
     fun handleNotificationAmplification(payloadJson: String) {

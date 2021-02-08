@@ -24,8 +24,9 @@ class NotificationValidationManager(
     * to showing the CM push notification based on app priorities
     * @param(bundle): comes from AIDL services, which is the data gathering from another apps
     * @param(notify): a callback for a valid type to rendering the notification
+    * @param(cancel): a callback for set the cancel tracking
     * */
-    fun validate(bundle: Bundle?, notify: () -> Unit) {
+    fun validate(bundle: Bundle?, notify: () -> Unit, cancel: () -> Unit) {
         if (data.priorityType is NotificationPriorityType.Both) {
             notify()
             return
@@ -43,6 +44,8 @@ class NotificationValidationManager(
                         || userSession.userId != sellerAppUserId
                         || data.priorityType is NotificationPriorityType.MainApp) {
                     notify()
+                } else {
+                    cancel()
                 }
             } else {
                 val isMainAppInstalled = context.isAppInstalled(CUSTOMER_APP)
@@ -53,15 +56,19 @@ class NotificationValidationManager(
                         || userSession.userId != mainAppUserId
                         || data.priorityType is NotificationPriorityType.SellerApp) {
                     notify()
+                } else {
+                    cancel()
                 }
             }
         }
     }
 
     fun validate(bundle: Bundle?, notify: ValidationCallback) {
-        validate(bundle) {
+        validate(bundle, {
             notify.isRenderable()
-        }
+        }, {
+            // no-op, notifier haven't cancel tracker
+        })
     }
 
     interface ValidationCallback {

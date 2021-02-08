@@ -13,14 +13,15 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
+import com.tokopedia.notifications.common.PayloadConverter
+import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification
+import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification as advanceTargetNotification
-import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle as convertMapToBundle
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -177,13 +178,7 @@ class CMPushNotificationManager : CoroutineScope {
                 if (confirmationValue.equals(SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
-                    aidlApiBundle?.let {
-                        val targeting = advanceTargetNotification(bundle)
-                        val validation = NotificationValidationManager(applicationContext, targeting)
-                        validation.validate(it) {
-                            renderPushNotification(bundle)
-                        }
-                    }?: renderPushNotification(bundle)
+                    validateAndRenderNotification(bundle)
                 } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){
                     Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
                     take(CMConstant.TimberTags.MAX_LIMIT)}'")
@@ -193,6 +188,33 @@ class CMPushNotificationManager : CoroutineScope {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
+    }
+
+    private fun validateAndRenderNotification(notification: Bundle) {
+        // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
+        aidlApiBundle?.let { aidlBundle ->
+
+            /*
+            * getting the smart push notification data such as:
+            * mainAppPriority
+            * sellerAppPriority
+            * advanceTarget
+            * */
+            val targeting = advanceTargetNotification(notification)
+
+            // the smart push notification validators
+            NotificationValidationManager(applicationContext, targeting).validate(aidlBundle, {
+                renderPushNotification(notification)
+            }, {
+                // set cancelled notification if isn't notified
+                PayloadConverter.convertToBaseModel(notification).apply {
+                    type = CMConstant.NotificationType.DROP_NOTIFICATION
+                }.also {
+                    PushController(applicationContext).handleNotificationBundle(it)
+                }
+            })
+
+        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL
     }
 
     private fun renderPushNotification(bundle: Bundle) {
