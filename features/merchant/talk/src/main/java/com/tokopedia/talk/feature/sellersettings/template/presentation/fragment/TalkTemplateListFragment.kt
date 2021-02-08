@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -17,23 +18,21 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
-import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.R
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
-import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
+import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
+import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateBottomSheetListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel.TalkTemplateViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_talk_template_list.*
 import javax.inject.Inject
 
 class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplateComponent>, TalkTemplateListListener, TalkTemplateBottomSheetListener {
@@ -52,6 +51,10 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private var toolbar: HeaderUnify? = null
     private var editBottomsheet: TalkTemplateBottomsheet? = null
     private var addBottomsheet: TalkTemplateBottomsheet? = null
+    private var talkTemplateListRecyclerView: RecyclerView? = null
+    private var talkTemplateListAddButton: UnifyButton? = null
+    private var talkTemplateListSwitch: SwitchUnify? = null
+    private var talkTemplateListLoading: View? = null
 
     override fun getScreenName(): String {
         return ""
@@ -92,6 +95,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViewReferences(view)
         showLoading()
         initRecyclerView()
         observeTemplateList()
@@ -145,16 +149,16 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun renderList(templates: List<String>, isEnabled: Boolean) {
-        talkTemplateListAddButton.isEnabled = templates.shouldEnableButton()
+        talkTemplateListAddButton?.isEnabled = templates.shouldEnableButton()
         adapter.setData(templates)
-        talkTemplateListRecyclerView.show()
+        talkTemplateListRecyclerView?.show()
         initSwitch(isEnabled)
     }
 
     private fun initRecyclerView() {
         val touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
         val itemTouchHelper = ItemTouchHelper(touchHelperCallback)
-        talkTemplateListRecyclerView.apply {
+        talkTemplateListRecyclerView?.apply {
             adapter = this@TalkTemplateListFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
@@ -162,15 +166,15 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun initSwitch(isEnabled: Boolean) {
-        talkTemplateListSwitch.apply {
+        talkTemplateListSwitch?.apply {
             isChecked = isEnabled
             setOnCheckedChangeListener { buttonView, isChecked ->
                 viewModel.enableTemplate(isChecked)
                 if (isChecked) {
-                    talkTemplateListRecyclerView.show()
+                    talkTemplateListRecyclerView?.show()
                     return@setOnCheckedChangeListener
                 }
-                talkTemplateListRecyclerView.hide()
+                talkTemplateListRecyclerView?.hide()
             }
         }
     }
@@ -189,7 +193,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun setupAddTemplateButton() {
-        talkTemplateListAddButton.setOnClickListener {
+        talkTemplateListAddButton?.setOnClickListener {
             goToAdd()
         }
     }
@@ -246,11 +250,18 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun showLoading() {
-        talkTemplateListLoading.show()
+        talkTemplateListLoading?.show()
     }
 
     private fun hideLoading() {
-        talkTemplateListLoading.hide()
+        talkTemplateListLoading?.hide()
+    }
+
+    private fun bindViewReferences(view: View) {
+        talkTemplateListRecyclerView = view.findViewById(R.id.talkTemplateListRecyclerView)
+        talkTemplateListAddButton = view.findViewById(R.id.talkTemplateListAddButton)
+        talkTemplateListSwitch = view.findViewById(R.id.talkTemplateListSwitch)
+        talkTemplateListLoading = view.findViewById(R.id.talkTemplateListLoading)
     }
 
 }

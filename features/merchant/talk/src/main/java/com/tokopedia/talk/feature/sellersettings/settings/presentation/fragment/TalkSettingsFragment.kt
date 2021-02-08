@@ -6,20 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity
-import kotlinx.android.synthetic.main.fragment_talk_settings.*
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 
 class TalkSettingsFragment : Fragment() {
 
@@ -29,6 +28,12 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private var navigation: String = ""
+    private var talkSettingsTemplateText: Typography? = null
+    private var talkSettingsTemplateLabel: Label? = null
+    private var talkSettingsTemplateChevron: IconUnify? = null
+    private var talkSettingsSmartReplyText: Typography? = null
+    private var talkSettingsSmartReplyLabel: Label? = null
+    private var talkSettingsSmartReplyChevron: IconUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,7 @@ class TalkSettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViewReferences(view)
         setNavigation()
         setToolbarTitle()
         showLabel()
@@ -62,16 +68,16 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun setNavigation() {
-        talkSettingsTemplateText.setOnClickListener {
+        talkSettingsTemplateText?.setOnClickListener {
             goToTemplate()
         }
-        talkSettingsTemplateChevron.setOnClickListener {
+        talkSettingsTemplateChevron?.setOnClickListener {
             goToTemplate()
         }
-        talkSettingsSmartReplyText.setOnClickListener {
+        talkSettingsSmartReplyText?.setOnClickListener {
             goToSmartReply()
         }
-        talkSettingsSmartReplyChevron.setOnClickListener {
+        talkSettingsSmartReplyChevron?.setOnClickListener {
             goToSmartReply()
         }
     }
@@ -107,12 +113,12 @@ class TalkSettingsFragment : Fragment() {
 
     private fun showLabel() {
         if (!GlobalConfig.isSellerApp()) {
-            talkSettingsTemplateLabel.show()
-            talkSettingsSmartReplyLabel.show()
+            talkSettingsTemplateLabel?.show()
+            talkSettingsSmartReplyLabel?.show()
             return
         }
-        talkSettingsTemplateLabel.hide()
-        talkSettingsSmartReplyLabel.hide()
+        talkSettingsTemplateLabel?.hide()
+        talkSettingsSmartReplyLabel?.hide()
     }
 
     private fun getSmartReplyApplink(): String {
@@ -129,6 +135,15 @@ class TalkSettingsFragment : Fragment() {
 
     private fun String.isGoToTemplateList(): Boolean {
         return this == TEMPLATE_LIST_NAVIGATION
+    }
+
+    private fun bindViewReferences(view: View) {
+        talkSettingsTemplateText = view.findViewById(R.id.talkSettingsTemplateText)
+        talkSettingsTemplateLabel = view.findViewById(R.id.talkSettingsTemplateLabel)
+        talkSettingsTemplateChevron = view.findViewById(R.id.talkSettingsTemplateChevron)
+        talkSettingsSmartReplyText = view.findViewById(R.id.talkSettingsSmartReplyText)
+        talkSettingsSmartReplyLabel = view.findViewById(R.id.talkSettingsSmartReplyLabel)
+        talkSettingsSmartReplyChevron = view.findViewById(R.id.talkSettingsSmartReplyChevron)
     }
 
 }

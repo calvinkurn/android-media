@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
@@ -29,19 +30,27 @@ import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationCon
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplyStatisticsWidget
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_talk_smart_reply_settings.*
 import javax.inject.Inject
 
 class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSmartReplySettingsComponent> {
 
     @Inject
     lateinit var viewModel: TalkSmartReplySettingsViewModel
+
+    private var talkSmartReplySubtitle: Typography? = null
+    private var talkSmartReplyStatisticsWidget: TalkSmartReplyStatisticsWidget? = null
+    private var talkIsSmartReplyOnLabel: Label? = null
+    private var talkSmartReplySettingsDescription: Typography? = null
+    private var talkStockSubtitleChevron: IconUnify? = null
+    private var talkSmartReplySettingsLoading: View? = null
 
     override fun getScreenName(): String {
         return ""
@@ -67,6 +76,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViewReferences(view)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         showLoading()
         observeSmartReplyData()
@@ -99,11 +109,11 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun updateStatisticsData(totalQuestion: String, totalAnsweredBySmartReply: String, speed: String) {
-        talkSmartReplyStatisticsWidget.setData(totalQuestion, totalAnsweredBySmartReply, speed)
+        talkSmartReplyStatisticsWidget?.setData(totalQuestion, totalAnsweredBySmartReply, speed)
     }
 
     private fun updateIsSmartReplyOnLabel(isActive: Boolean) {
-        talkStockSubtitleChevron.setOnClickListener {
+        talkStockSubtitleChevron?.setOnClickListener {
             val cacheManagerId = putDataIntoCacheManager()
             if(cacheManagerId.isNullOrEmpty()) {
                 return@setOnClickListener
@@ -113,20 +123,20 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
             NavigationController.navigate(this, destination)
         }
         if(isActive) {
-            talkIsSmartReplyOnLabel.apply {
+            talkIsSmartReplyOnLabel?.apply {
                 setLabel(getString(R.string.smart_reply_active_label))
                 setLabelType(Label.GENERAL_LIGHT_GREEN)
             }
             return
         }
-        talkIsSmartReplyOnLabel.apply {
+        talkIsSmartReplyOnLabel?.apply {
             setLabel(getString(R.string.smart_reply_inactive_label))
             setLabelType(Label.GENERAL_LIGHT_GREY)
         }
     }
 
     private fun setDescriptionText() {
-        talkSmartReplySettingsDescription.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_settings_description)).spannedString }
+        talkSmartReplySettingsDescription?.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_settings_description)).spannedString }
     }
 
     private fun setToolbarTitle() {
@@ -175,17 +185,26 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun showLoading() {
-        talkSmartReplySettingsLoading.show()
+        talkSmartReplySettingsLoading?.show()
     }
 
     private fun hideLoading() {
-        talkSmartReplySettingsLoading.hide()
+        talkSmartReplySettingsLoading?.hide()
     }
 
     private fun setSmartReplyInfoClickListener() {
-        talkSmartReplySubtitle.setOnClickListener {
+        talkSmartReplySubtitle?.setOnClickListener {
             RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.SMART_REPLY_INFORMATION_PAGE}")
         }
+    }
+
+    private fun bindViewReferences(view: View) {
+        talkSmartReplySubtitle = view.findViewById(R.id.talkSmartReplySubtitle)
+        talkSmartReplyStatisticsWidget = view.findViewById(R.id.talkSmartReplyStatisticsWidget)
+        talkIsSmartReplyOnLabel = view.findViewById(R.id.talkIsSmartReplyOnLabel)
+        talkSmartReplySettingsDescription = view.findViewById(R.id.talkSmartReplySettingsDescription)
+        talkStockSubtitleChevron = view.findViewById(R.id.talkStockSubtitleChevron)
+        talkSmartReplySettingsLoading = view.findViewById(R.id.talkSmartReplySettingsLoading)
     }
 
 }
