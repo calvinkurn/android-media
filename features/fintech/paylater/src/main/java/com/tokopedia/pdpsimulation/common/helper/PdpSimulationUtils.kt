@@ -5,8 +5,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 sealed class PaymentMode
-object PayLater: PaymentMode()
-object CreditCard: PaymentMode()
+object PayLater : PaymentMode()
+object CreditCard : PaymentMode()
 
 fun ViewPager.onPageSelected(action: (Int) -> Unit) {
     this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

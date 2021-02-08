@@ -10,10 +10,7 @@ import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
@@ -27,18 +24,18 @@ class PayLaterViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val payLaterProductDetailUseCase = mockk<PayLaterProductDetailUseCase>(relaxed = true)
-    val payLaterApplicationStatusUseCase = mockk<PayLaterApplicationStatusUseCase>(relaxed = true)
-    val payLaterSimulationDataUseCase = mockk<PayLaterSimulationUseCase>(relaxed = true)
-    val payLaterTenureMapperUseCase = mockk<PayLaterTenureMapperUseCase>(relaxed = true)
-    val payLaterApplicationStatusMapperUseCase = mockk<PayLaterApplicationStatusMapperUseCase>(relaxed = true)
+    private val payLaterProductDetailUseCase = mockk<PayLaterProductDetailUseCase>(relaxed = true)
+    private val payLaterApplicationStatusUseCase = mockk<PayLaterApplicationStatusUseCase>(relaxed = true)
+    private val payLaterSimulationDataUseCase = mockk<PayLaterSimulationUseCase>(relaxed = true)
+    private val payLaterTenureMapperUseCase = mockk<PayLaterTenureMapperUseCase>(relaxed = true)
+    private val payLaterApplicationStatusMapperUseCase = mockk<PayLaterApplicationStatusMapperUseCase>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: PayLaterViewModel
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: PayLaterViewModel
 
-    val fetchFailedErrorMessage = "Fetch Failed"
-    val nullDataErrorMessage = "NULL DATA"
-    val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+    private val fetchFailedErrorMessage = "Fetch Failed"
+    private val nullDataErrorMessage = "NULL DATA"
+    private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
     private var payLaterActivityObserver = mockk<Observer<Result<PayLaterProductData>>>(relaxed = true)
 
     @Before
@@ -100,12 +97,14 @@ class PayLaterViewModelTest {
             payLaterSimulationDataUseCase.cancelJobs()
         } just Runs
         viewModel.getPayLaterSimulationData(1000000)
+
+        coVerify(exactly = 0) { payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any()) }
         assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
 
     @Test
-    fun `Execute getPayLaterSimulationData Fail(Data Failure)`() {
+    fun `Execute getPayLaterSimulationData Response Data Success`() {
         val mockSimulationData = PayLaterGetSimulationResponse(PayLaterGetSimulationGateway(arrayListOf()))
 
         coEvery {
@@ -117,30 +116,29 @@ class PayLaterViewModelTest {
             payLaterSimulationDataUseCase.cancelJobs()
         } just Runs
 
+        viewModel.getPayLaterSimulationData(1000000)
+        coVerify(exactly = 1) { payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Execute mapTenureToSimulation Data Failure`() {
+        val mockSimulationData = PayLaterGetSimulationResponse(PayLaterGetSimulationGateway(arrayListOf()))
+
         coEvery {
-            payLaterTenureMapperUseCase.mapTenureToSimulation(mockSimulationData, any(), any())
+            payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any())
         } coAnswers {
             secondArg<(PayLaterSimulationDataStatus) -> Unit>().invoke(StatusDataFailure)
         }
 
-        viewModel.getPayLaterSimulationData(1000000)
+        viewModel.onPayLaterSimulationDataSuccess(mockSimulationData)
         assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
+        Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(PayLaterViewModel.DATA_FAILURE)
     }
 
     @Test
-    fun `Execute getPayLaterSimulationData PayLater Not Applicable`() {
+    fun `Execute mapTenureToSimulation PayLater Not Applicable`() {
         val item = PayLaterSimulationGatewayItem(1, "Kredivo", "", "", arrayListOf(), HashMap(), false)
         val mockSimulationData = PayLaterGetSimulationResponse(PayLaterGetSimulationGateway(arrayListOf(item, item)))
-
-        coEvery {
-            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
-        } coAnswers {
-            firstArg<(PayLaterGetSimulationResponse) -> Unit>().invoke(mockSimulationData)
-        }
-        coEvery {
-            payLaterSimulationDataUseCase.cancelJobs()
-        } just Runs
 
         coEvery {
             payLaterTenureMapperUseCase.mapTenureToSimulation(any(), any(), any())
@@ -148,7 +146,7 @@ class PayLaterViewModelTest {
             secondArg<(PayLaterSimulationDataStatus) -> Unit>().invoke(StatusPayLaterNotAvailable)
         }
 
-        viewModel.getPayLaterSimulationData(100)
+        viewModel.onPayLaterSimulationDataSuccess(mockSimulationData)
         assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(PayLaterViewModel.PAY_LATER_NOT_APPLICABLE)
     }
@@ -158,21 +156,12 @@ class PayLaterViewModelTest {
         val mockSimulationData = Gson().fromJson(PayLaterHelper.getJson("simulationtabledata.json"), PayLaterGetSimulationResponse::class.java)
 
         coEvery {
-            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
-        } coAnswers {
-            firstArg<(PayLaterGetSimulationResponse) -> Unit>().invoke(mockSimulationData)
-        }
-        coEvery {
-            payLaterSimulationDataUseCase.cancelJobs()
-        } just Runs
-
-        coEvery {
             payLaterTenureMapperUseCase.mapTenureToSimulation(mockSimulationData, any(), any())
         } coAnswers {
             secondArg<(PayLaterSimulationDataStatus) -> Unit>().invoke(StatusSuccess(mockSimulationData.payLaterGetSimulationGateway?.payLaterGatewayList!!))
         }
 
-        viewModel.getPayLaterSimulationData(1000000)
+        viewModel.onPayLaterSimulationDataSuccess(mockSimulationData)
 
         assert(viewModel.payLaterSimulationResultLiveData.value is Success)
         val expectedGatewayName = mockSimulationData.payLaterGetSimulationGateway?.payLaterGatewayList?.getOrNull(0)?.gatewayName
@@ -192,21 +181,61 @@ class PayLaterViewModelTest {
         } just Runs
 
         viewModel.getPayLaterApplicationStatus()
+        coVerify(exactly = 0) { payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(any(), any(), any()) }
+
         assert(viewModel.payLaterApplicationStatusResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.payLaterApplicationStatusResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
 
     @Test
-    fun `Execute getPayLaterApplicationStatus Success`() {
-        val mockApplicationStatusData = Gson().fromJson(PayLaterHelper.getJson("applicationstatusdata.json"), PayLaterApplicationStatusResponse::class.java)
+    fun `Execute getPayLaterApplicationStatus Response Success`() {
+        val mockData = UserCreditApplicationStatus("", arrayListOf())
         coEvery {
             payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(any(), any())
         } coAnswers {
-            firstArg<(UserCreditApplicationStatus) -> Unit>().invoke(mockApplicationStatusData.userCreditApplicationStatus)
+            firstArg<(UserCreditApplicationStatus) -> Unit>().invoke(mockData)
         }
         coEvery {
             payLaterApplicationStatusUseCase.cancelJobs()
         } just Runs
+
+        viewModel.getPayLaterApplicationStatus()
+        coVerify(exactly = 1) { payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(any(), any(), any()) }
+    }
+
+
+    @Test
+    fun `Execute mapLabelDataToApplicationStatus Exception`() {
+        val mockData = UserCreditApplicationStatus("", arrayListOf())
+        val mockThrowable = Throwable(nullDataErrorMessage)
+        coEvery {
+            payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(any(), any(), any())
+        } coAnswers {
+            thirdArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel.onPayLaterApplicationStatusSuccess(mockData)
+        assert(viewModel.payLaterApplicationStatusResultLiveData.value is Fail)
+        Assertions.assertThat((viewModel.payLaterApplicationStatusResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
+    }
+
+    @Test
+    fun `Execute mapLabelDataToApplicationStatus Data Failure`() {
+        val mockData = UserCreditApplicationStatus("", arrayListOf())
+        coEvery {
+            payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(any(), any(), any())
+        } coAnswers {
+            secondArg<(PayLaterAppStatus) -> Unit>().invoke(StatusFail)
+        }
+
+        viewModel.onPayLaterApplicationStatusSuccess(mockData)
+        assert(viewModel.payLaterApplicationStatusResultLiveData.value is Fail)
+        Assertions.assertThat((viewModel.payLaterApplicationStatusResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
+    }
+
+    @Test
+    fun `Execute getPayLaterApplicationStatus Success`() {
+        val mockApplicationStatusData = Gson().fromJson(PayLaterHelper.getJson("applicationstatusdata.json"), PayLaterApplicationStatusResponse::class.java)
 
         coEvery {
             payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(mockApplicationStatusData.userCreditApplicationStatus, any(), any())
@@ -214,7 +243,7 @@ class PayLaterViewModelTest {
             secondArg<(PayLaterAppStatus) -> Unit>().invoke(StatusAppSuccess(mockApplicationStatusData.userCreditApplicationStatus, false))
         }
 
-        viewModel.getPayLaterApplicationStatus()
+        viewModel.onPayLaterApplicationStatusSuccess(mockApplicationStatusData.userCreditApplicationStatus)
         assert(viewModel.payLaterApplicationStatusResultLiveData.value is Success)
         val actual = (viewModel.payLaterApplicationStatusResultLiveData.value as Success).data.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
         val expected = mockApplicationStatusData.userCreditApplicationStatus.applicationDetailList?.getOrNull(0)?.payLaterGatewayName

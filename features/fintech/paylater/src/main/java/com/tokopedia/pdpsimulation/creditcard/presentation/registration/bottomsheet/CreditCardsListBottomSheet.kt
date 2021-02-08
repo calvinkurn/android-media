@@ -106,7 +106,7 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         const val CREDIT_CARD_DATA = "CREDIT_DATA"
         const val BANK_NAME = "BANK_NAME"
         const val BANK_SLUG = "SLUG"
-        private const val TAG = "FT_TAG"
+        private const val TAG = "CreditCardRegistrationBottomSheet"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val creditCardsListBottomSheet = CreditCardsListBottomSheet().apply {

@@ -8,9 +8,9 @@ const val USAGE_STEPS_PARTNER = "how_to_use"
 const val PROCESSING_APPLICATION_PARTNER = "application_in_process"
 
 sealed class PayLaterPartnerType(val tag: String)
-object RegisterStepsPartnerType: PayLaterPartnerType(APPLY_STEPS_PARTNER)
-object ProcessingApplicationPartnerType: PayLaterPartnerType(PROCESSING_APPLICATION_PARTNER)
-object UsageStepsPartnerType: PayLaterPartnerType(USAGE_STEPS_PARTNER)
+object RegisterStepsPartnerType : PayLaterPartnerType(APPLY_STEPS_PARTNER)
+object ProcessingApplicationPartnerType : PayLaterPartnerType(PROCESSING_APPLICATION_PARTNER)
+object UsageStepsPartnerType : PayLaterPartnerType(USAGE_STEPS_PARTNER)
 object PayLaterPartnerTypeMapper {
 
     fun getPayLaterPartnerType(payLaterPartnerData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?): PayLaterPartnerType {
@@ -34,7 +34,8 @@ object PayLaterPartnerTypeMapper {
 
     fun getPayLaterApplicationDataForPartner(
             paymentOption: PayLaterItemProductData,
-            applicationStatusList: ArrayList<PayLaterApplicationDetail>): PayLaterApplicationDetail? {
+            applicationStatusList: ArrayList<PayLaterApplicationDetail>,
+    ): PayLaterApplicationDetail? {
         val partnerStatus = applicationStatusList.filter {
             it.payLaterGatewayCode == paymentOption.gateWayCode
         }

@@ -68,7 +68,7 @@ class CreditCardTncAdapter(val moreInfoListener: () -> Unit) : RecyclerView.Adap
 
     fun setData(pdpInfoContentList: ArrayList<CreditCardPdpInfoContent>, ctaRedirectionLabel: String?) {
         this.pdpInfoContentList = pdpInfoContentList
-        this.ctaRedirectionLabel =  ctaRedirectionLabel
+        this.ctaRedirectionLabel = ctaRedirectionLabel
         notifyDataSetChanged()
     }
 

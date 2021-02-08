@@ -56,8 +56,7 @@ class CreditCardViewModel @Inject constructor(
             )
     }
 
-
-    private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
+    fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
         creditCardSimulationMapperUseCase.parseSimulationData(pdpCreditCardSimulationData, onSuccess = {
             when (it) {
                 is StatusApiSuccess -> creditCardSimulationResultLiveData.value = Success(it.data)
@@ -73,7 +72,7 @@ class CreditCardViewModel @Inject constructor(
         creditCardSimulationResultLiveData.value = Fail(throwable)
     }
 
-    private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
+    fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
         creditCardTncMapperUseCase.parseTncData(creditCardPdpMetaData, onSuccess = {
             creditCardPdpMetaInfoLiveData.value = Success(it)
         }, onError = {

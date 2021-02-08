@@ -98,7 +98,7 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
 
 
     companion object {
-        private const val TAG = "FT_TAG"
+        private const val TAG = "PayLaterVerificationBottomSheet"
         const val APPLICATION_STATUS = "application_status"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {

@@ -15,8 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tickerType="announcement"
         app:tickerShapeType="loose"
-        app:closeButtonVisibility="gone"
-        />
+        app:closeButtonVisibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPayLaterRegisterSteps"
@@ -24,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/tickerPaylaterRegister"
-        tools:listitem="@layout/paylater_action_step_bottomsheet_item"/>
+        tools:listitem="@layout/paylater_action_step_bottomsheet_item" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnRegister"

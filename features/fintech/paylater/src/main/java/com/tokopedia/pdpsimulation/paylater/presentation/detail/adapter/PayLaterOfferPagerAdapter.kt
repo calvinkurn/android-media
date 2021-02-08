@@ -12,7 +12,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment
 
-class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {
+class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentStatePagerAdapter(fm, behaviour) {
     private val paymentOptionsFragmentArray = SparseArrayCompat<Fragment>()
     private var paymentProductList: ArrayList<PayLaterItemProductData> = ArrayList()
     private var applicationStatusList: ArrayList<PayLaterApplicationDetail> = ArrayList()

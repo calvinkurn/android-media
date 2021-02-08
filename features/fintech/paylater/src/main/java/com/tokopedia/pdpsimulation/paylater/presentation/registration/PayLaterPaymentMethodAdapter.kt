@@ -7,8 +7,10 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDeta
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 
-class PayLaterPaymentMethodAdapter(private val productDataList: ArrayList<PayLaterItemProductData>,
-                                   private val applicationStatusList: ArrayList<PayLaterApplicationDetail>, private val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.Adapter<PayLaterPaymentMethodViewHolder>() {
+class PayLaterPaymentMethodAdapter(
+        private val productDataList: ArrayList<PayLaterItemProductData>,
+        private val applicationStatusList: ArrayList<PayLaterApplicationDetail>, private val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit,
+) : RecyclerView.Adapter<PayLaterPaymentMethodViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PayLaterPaymentMethodViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return PayLaterPaymentMethodViewHolder.getViewHolder(inflater, parent, clickListener)

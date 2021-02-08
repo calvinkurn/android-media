@@ -141,7 +141,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "CC_TAG"
+        const val TAG = "CreditCardRegistrationBottomSheet"
         fun show(pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
             val fragment = CreditCardRegistrationBottomSheet().apply {
                 this.pdpSimulationCallback = pdpSimulationCallback

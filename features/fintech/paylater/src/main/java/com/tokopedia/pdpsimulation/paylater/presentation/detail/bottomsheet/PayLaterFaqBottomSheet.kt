@@ -106,7 +106,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TITLE = "Hal yang sering ditanyakan"
-        private const val TAG = "FT_TAG"
+        private const val TAG = "PayLaterFaqBottomSheet"
         const val FAQ_DATA = "faqData"
         const val FAQ_SEE_MORE_URL = "faqUrl"
 

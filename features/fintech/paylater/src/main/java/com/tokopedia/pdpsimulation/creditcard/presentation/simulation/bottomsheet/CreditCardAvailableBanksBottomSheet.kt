@@ -72,7 +72,7 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val CREDIT_CARD_BANK_DATA = "BANK_DATA"
-        private const val TAG = "FT_TAG"
+        private const val TAG = "CreditCardAvailableBanksBottomSheet"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val creditCardAvailableBanksBottomSheet = CreditCardAvailableBanksBottomSheet().apply {

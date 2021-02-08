@@ -51,15 +51,15 @@ class PayLaterViewModel @Inject constructor(
                     ::onPayLaterApplicationStatusSuccess,
                     ::onPayLaterApplicationStatusError
             )
-        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
+        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
     }
 
-    private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
+    fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         payLaterTenureMapperUseCase.mapTenureToSimulation(payLaterGetSimulationResponse, onSuccess = {
             when (it) {
                 is StatusSuccess -> payLaterSimulationResultLiveData.value = Success(it.data)
                 StatusPayLaterNotAvailable -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
-                StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+                StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
             }
         }, onError = {
             onPayLaterSimulationDataError(it)
@@ -70,14 +70,14 @@ class PayLaterViewModel @Inject constructor(
         payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
-    private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
+    fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
         payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(userCreditApplicationStatus, onSuccess = {
             when (it) {
                 is StatusAppSuccess -> {
                     isPayLaterProductActive = it.isPayLaterActive
                     payLaterApplicationStatusResultLiveData.value = Success(it.userCreditApplicationStatus)
                 }
-                StatusFail -> onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
+                StatusFail -> onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
             }
         }, onError = {
             onPayLaterApplicationStatusError(it)
@@ -110,12 +110,12 @@ class PayLaterViewModel @Inject constructor(
         payLaterSimulationDataUseCase.cancelJobs()
         payLaterApplicationStatusUseCase.cancelJobs()
         payLaterTenureMapperUseCase.cancelJobs()
+        payLaterApplicationStatusMapperUseCase.cancelJobs()
         super.onCleared()
     }
 
     companion object {
-        const val SIMULATION_DATA_FAILURE = "NULL DATA"
-        const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "NOT_APPLICABLE"
+        const val DATA_FAILURE = "NULL DATA"
+        const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"
     }
 }

@@ -93,8 +93,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         })
         payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(
                 viewLifecycleOwner, {
-                    handleRegisterWidgetVisibility()
-                }
+            handleRegisterWidgetVisibility()
+        }
         )
     }
 
@@ -131,8 +131,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
                 context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let {
-                        drawable -> payLaterTermsEmptyView.setImageDrawable(drawable)
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { drawable ->
+                        payLaterTermsEmptyView.setImageDrawable(drawable)
                     }
                 }
                 tickerSimulation.visible()

@@ -105,7 +105,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        private const val TAG = "FT_TAG"
+        private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
         const val ACTION_TITLE = "actionTitle"
         const val ACTION_URL = "actionUrl"

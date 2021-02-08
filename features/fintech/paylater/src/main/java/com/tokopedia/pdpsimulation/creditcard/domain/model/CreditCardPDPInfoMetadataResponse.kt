@@ -32,7 +32,7 @@ data class CreditCardPdpInfoContent(
         val notesList: ArrayList<String>?,
         var bulletList: ArrayList<String>?,
         var tableData: PdpInfoTableItem?,
-        var viewType: Int
+        var viewType: Int,
 )
 
 data class PdpInfoTableItem(

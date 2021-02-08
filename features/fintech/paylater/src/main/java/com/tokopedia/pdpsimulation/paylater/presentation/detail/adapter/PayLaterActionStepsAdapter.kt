@@ -13,7 +13,7 @@ class PayLaterActionStepsAdapter(private val partnerSteps: ArrayList<String>) : 
     }
 
     override fun onBindViewHolder(holder: PayLaterActionStepViewHolder, position: Int) {
-        holder.bindData(partnerSteps[position], position == partnerSteps.size-1, position+1)
+        holder.bindData(partnerSteps[position], position == partnerSteps.size - 1, position + 1)
     }
 
     override fun getItemCount(): Int {

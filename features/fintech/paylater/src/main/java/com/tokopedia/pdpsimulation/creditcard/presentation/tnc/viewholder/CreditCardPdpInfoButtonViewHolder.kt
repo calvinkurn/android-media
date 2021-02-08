@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.credit_card_pdp_meta_info_button.view.*
 class CreditCardPdpInfoButtonViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(labelName: String?) {
-        view.btnMoreInfo.text = labelName ?: view.context.getString(R.string.credit_card_tnc_more_info_text)
+        view.btnMoreInfo.text = labelName
+                ?: view.context.getString(R.string.credit_card_tnc_more_info_text)
     }
 
     companion object {

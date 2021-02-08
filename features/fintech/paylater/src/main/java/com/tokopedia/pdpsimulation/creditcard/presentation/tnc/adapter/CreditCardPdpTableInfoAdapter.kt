@@ -25,7 +25,7 @@ class CreditCardPdpTableInfoAdapter(var tableList: ArrayList<ArrayList<String>>,
     }
 
     override fun getItemViewType(position: Int): Int {
-       return tableType
+        return tableType
     }
 
     override fun getItemCount(): Int {

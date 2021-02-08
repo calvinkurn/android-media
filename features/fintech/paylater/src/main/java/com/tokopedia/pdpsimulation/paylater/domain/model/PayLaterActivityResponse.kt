@@ -6,13 +6,13 @@ import kotlinx.android.parcel.Parcelize
 
 data class PayLaterActivityResponse(
         @SerializedName("paylater_getActiveProduct")
-        val productData: PayLaterProductData = PayLaterProductData()
+        val productData: PayLaterProductData = PayLaterProductData(),
 )
 
 @Parcelize
 data class PayLaterProductData(
         @SerializedName("product")
-        val productList: ArrayList<PayLaterItemProductData>? = arrayListOf()
+        val productList: ArrayList<PayLaterItemProductData>? = arrayListOf(),
 ) : Parcelable
 
 @Parcelize
@@ -42,7 +42,7 @@ data class PayLaterItemProductData(
         @SerializedName("is_able_apply")
         val isAbleToApply: Boolean?,
         @SerializedName("how_to_action_url")
-        val actionWebUrl: String?
+        val actionWebUrl: String?,
 ) : Parcelable
 
 @Parcelize
@@ -50,7 +50,7 @@ data class PayLaterPartnerBenefit(
         @SerializedName("content")
         val partnerBenefitContent: String?,
         @SerializedName("is_highlight")
-        val isHighlighted: Boolean?
+        val isHighlighted: Boolean?,
 ) : Parcelable
 
 @Parcelize
@@ -59,7 +59,7 @@ data class PayLaterPartnerFaq(
         val faqQuestion: String?,
         @SerializedName("answer")
         val faqAnswer: String?,
-        var expandLayout: Boolean = false
+        var expandLayout: Boolean = false,
 ) : Parcelable
 
 @Parcelize
@@ -67,7 +67,7 @@ data class PayLaterPartnerStepDetails(
         @SerializedName("notes")
         val partnerNotes: ArrayList<String>?,
         @SerializedName("steps")
-        val partnerSteps: ArrayList<String>?
+        val partnerSteps: ArrayList<String>?,
 ) : Parcelable
 
 

@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivCircleGreen"
@@ -45,6 +44,6 @@
         app:layout_constraintTop_toBottomOf="@+id/ivCircleGreen"
         app:layout_constraintBottom_toBottomOf="@+id/tvDescription"
         app:layout_constraintStart_toStartOf="@id/tvNumber"
-        app:layout_constraintEnd_toEndOf="@id/tvNumber"/>
+        app:layout_constraintEnd_toEndOf="@id/tvNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

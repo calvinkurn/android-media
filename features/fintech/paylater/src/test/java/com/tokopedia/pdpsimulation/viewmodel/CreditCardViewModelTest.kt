@@ -22,18 +22,18 @@ class CreditCardViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val creditCardSimulationUseCase = mockk<CreditCardSimulationUseCase>(relaxed = true)
-    val creditCardPdpMetaInfoUseCase = mockk<CreditCardPdpMetaInfoUseCase>(relaxed = true)
-    val creditCardBankDataUseCase = mockk<CreditCardBankDataUseCase>(relaxed = true)
-    val credittncusecase = mockk<CreditCardTncMapperUseCase>(relaxed = true)
-    val creditCardSimulationMapperUseCase = mockk<CreditCardSimulationMapperUseCase>(relaxed = true)
+    private val creditCardSimulationUseCase = mockk<CreditCardSimulationUseCase>(relaxed = true)
+    private val creditCardPdpMetaInfoUseCase = mockk<CreditCardPdpMetaInfoUseCase>(relaxed = true)
+    private val creditCardBankDataUseCase = mockk<CreditCardBankDataUseCase>(relaxed = true)
+    private val creditTncusecase = mockk<CreditCardTncMapperUseCase>(relaxed = true)
+    private val creditCardSimulationMapperUseCase = mockk<CreditCardSimulationMapperUseCase>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: CreditCardViewModel
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: CreditCardViewModel
 
-    val fetchFailedErrorMessage = "Fetch Failed"
-    val nullDataErrorMessage = "NULL DATA"
-    val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+    private val fetchFailedErrorMessage = "Fetch Failed"
+    private val nullDataErrorMessage = "NULL DATA"
+    private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
     private val creditSimulationItem1 = CreditCardInstallmentItem(
             1, "", 1000, 10000.0f, 4, false, arrayListOf(),
             isDisabled = true,
@@ -57,7 +57,7 @@ class CreditCardViewModelTest {
                 creditCardSimulationUseCase,
                 creditCardPdpMetaInfoUseCase,
                 creditCardBankDataUseCase,
-                credittncusecase,
+                creditTncusecase,
                 creditCardSimulationMapperUseCase,
                 dispatcher,
         )
@@ -75,42 +75,14 @@ class CreditCardViewModelTest {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
         viewModel.getCreditCardSimulationData(1000000.0f)
+        coVerify(exactly = 0) { creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any()) }
+
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
 
     @Test
-    fun `Execute getCreditCardSimulationData Fail(Data Failure)`() {
-        val mockSimulationData = PdpCreditCardSimulation(
-                CreditCardSimulationResult(
-                        arrayListOf(),
-                        1000000.0f,
-                        "",
-                        "",
-                        ""
-                )
-        )
-        coEvery {
-            creditCardSimulationUseCase.getCreditCardSimulationData(any(), any(), any())
-        } coAnswers {
-            firstArg<(PdpCreditCardSimulation) -> Unit>().invoke(mockSimulationData)
-        }
-        coEvery {
-            creditCardSimulationUseCase.cancelJobs()
-        } just Runs
-
-        coEvery {
-            creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
-        } coAnswers {
-            secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiFail)
-        }
-        viewModel.getCreditCardSimulationData(1000000.0f)
-        assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
-    }
-
-    @Test
-    fun `Execute getCreditCardSimulationData Credit Card Simulation Not Applicable`() {
+    fun `Execute getCreditCardSimulationData Credit Card Simulation Response Success`() {
         val mockSimulationData = PdpCreditCardSimulation(
                 CreditCardSimulationResult(
                         arrayListOf(creditSimulationItem1, creditSimulationItem2),
@@ -129,19 +101,55 @@ class CreditCardViewModelTest {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
 
+        viewModel.getCreditCardSimulationData(1000000.0f)
+        coVerify(exactly = 1) { creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Execute parseSimulationData Credit Card Simulation StatusApiFail`() {
+        val mockSimulationData = PdpCreditCardSimulation(
+                CreditCardSimulationResult(
+                        arrayListOf(),
+                        1000000.0f,
+                        "",
+                        "",
+                        ""
+                )
+        )
+        coEvery {
+            creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
+        } coAnswers {
+            secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiFail)
+        }
+        viewModel.onCreditCardSimulationSuccess(mockSimulationData)
+        assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
+        Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(CreditCardViewModel.SIMULATION_DATA_FAILURE)
+    }
+
+    @Test
+    fun `Execute parseSimulationData Credit Card Simulation Not Applicable`() {
+        val mockSimulationData = PdpCreditCardSimulation(
+                CreditCardSimulationResult(
+                        arrayListOf(creditSimulationItem1, creditSimulationItem2),
+                        1000000.0f,
+                        "",
+                        "",
+                        ""
+                )
+        )
         coEvery {
             creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
         } coAnswers {
             secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusCCNotAvailable)
         }
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.onCreditCardSimulationSuccess(mockSimulationData)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(CreditCardViewModel.CREDIT_CARD_NOT_AVAILABLE)
     }
 
 
     @Test
-    fun `Execute getCreditCardSimulationData Success`() {
+    fun `Execute parseSimulationData Success`() {
         val mockSimulationData = PdpCreditCardSimulation(
                 CreditCardSimulationResult(
                         arrayListOf(creditSimulationItem1, creditSimulationItem2, creditSimulationItem3),
@@ -151,14 +159,6 @@ class CreditCardViewModelTest {
                         ""
                 )
         )
-        coEvery {
-            creditCardSimulationUseCase.getCreditCardSimulationData(any(), any(), any())
-        } coAnswers {
-            firstArg<(PdpCreditCardSimulation) -> Unit>().invoke(mockSimulationData)
-        }
-        coEvery {
-            creditCardSimulationUseCase.cancelJobs()
-        } just Runs
 
         coEvery {
             creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
@@ -166,7 +166,7 @@ class CreditCardViewModelTest {
             secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiSuccess(mockSimulationData.creditCardGetSimulationResult!!))
         }
 
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.onCreditCardSimulationSuccess(mockSimulationData)
         assert(viewModel.creditCardSimulationResultLiveData.value is Success)
         val actualInstallmentAmount = (viewModel.creditCardSimulationResultLiveData.value as Success).data.creditCardInstallmentList?.getOrNull(2)?.installmentAmount
         val expectedInstallmentAmount = mockSimulationData.creditCardGetSimulationResult?.creditCardInstallmentList?.getOrNull(2)?.installmentAmount
@@ -185,52 +185,51 @@ class CreditCardViewModelTest {
             creditCardPdpMetaInfoUseCase.cancelJobs()
         } just Runs
         viewModel.getCreditCardTncData()
+        coVerify(exactly = 0) { creditTncusecase.parseTncData(any(), any(), any()) }
+
         assert(viewModel.creditCardPdpMetaInfoLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardPdpMetaInfoLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
 
     @Test
-    fun `Execute getCreditCardTncData Fail(Data Failed)`() {
+    fun `Execute getCreditCardTncData Response Success`() {
         val mockData = CreditCardPdpMetaData("", "", "", arrayListOf())
-        val mockThrowable = Throwable(message = nullDataErrorMessage)
         coEvery {
             creditCardPdpMetaInfoUseCase.getPdpMetaData(any(), any())
         } coAnswers {
             firstArg<(CreditCardPdpMetaData) -> Unit>().invoke(mockData)
         }
-        coEvery {
-            creditCardPdpMetaInfoUseCase.cancelJobs()
-        } just Runs
 
+        viewModel.getCreditCardTncData()
+        coVerify(exactly = 1) { creditTncusecase.parseTncData(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Execute onPdpInfoMetaDataSuccess Response Fail`() {
+        val mockData = CreditCardPdpMetaData("", "", "", arrayListOf())
+        val mockThrowable = Throwable(nullDataErrorMessage)
         coEvery {
-            credittncusecase.parseTncData(any(), any(), any())
+            creditTncusecase.parseTncData(any(), any(), any())
         } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getCreditCardTncData()
+
+        viewModel.onPdpInfoMetaDataSuccess(mockData)
         assert(viewModel.creditCardPdpMetaInfoLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardPdpMetaInfoLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
     }
 
     @Test
-    fun `Execute getCreditCardTncData Success`() {
+    fun `Execute onPdpInfoMetaDataSuccess Success`() {
         val pdpInfoItem = CreditCardPdpInfoContent("title1", "", "bullet", "", arrayListOf(), arrayListOf(), null, 0)
         val mockData = CreditCardPdpMetaData("", "", "", arrayListOf(pdpInfoItem))
-        coEvery {
-            creditCardPdpMetaInfoUseCase.getPdpMetaData(any(), any())
-        } coAnswers {
-            firstArg<(CreditCardPdpMetaData) -> Unit>().invoke(mockData)
-        }
-        coEvery {
-            creditCardPdpMetaInfoUseCase.cancelJobs()
-        } just Runs
 
         coEvery {
-            credittncusecase.parseTncData(any(), any(), any())
+            creditTncusecase.parseTncData(any(), any(), any())
         } coAnswers {
             secondArg<(CreditCardPdpMetaData) -> Unit>().invoke(mockData)
         }
-        viewModel.getCreditCardTncData()
+        viewModel.onPdpInfoMetaDataSuccess(mockData)
         assert(viewModel.creditCardPdpMetaInfoLiveData.value is Success)
         val actualContentType = (viewModel.creditCardPdpMetaInfoLiveData.value as Success).data.pdpInfoContentList?.getOrNull(0)?.contentType
         val expectedContentType = mockData.pdpInfoContentList?.getOrNull(0)?.contentType

@@ -8,7 +8,7 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.viewholder
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.viewholder.CreditCardBankShimmerViewHolder
 
 class CreditCardAvailableBanksAdapter(
-        var bankList: ArrayList<SimulationBank>
+        var bankList: ArrayList<SimulationBank>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

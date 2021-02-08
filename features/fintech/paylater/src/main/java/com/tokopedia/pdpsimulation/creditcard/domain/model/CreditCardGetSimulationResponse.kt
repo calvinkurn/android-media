@@ -45,7 +45,7 @@ data class CreditCardInstallmentItem(
         val simulationBankList: ArrayList<SimulationBank>?,
         @SerializedName("is_disabled")
         val isDisabled: Boolean?,
-        var isSelected: Boolean
+        var isSelected: Boolean,
 )
 
 @Parcelize
@@ -60,4 +60,4 @@ data class SimulationBank(
         val availableDurationList: ArrayList<Int>?,
         @SerializedName("bank_image_url")
         val bankImageUrl: String?,
-): Parcelable
+) : Parcelable

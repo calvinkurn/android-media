@@ -26,15 +26,9 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.adapter.Cr
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.bottomsheet.CreditCardAvailableBanksBottomSheet
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
-import kotlinx.android.synthetic.main.fragment_credit_card_simulation.dividerVertical
-import kotlinx.android.synthetic.main.fragment_credit_card_simulation.simulationDataGroup
-import kotlinx.android.synthetic.main.fragment_credit_card_simulation.simulationGlobalError
-import kotlinx.android.synthetic.main.fragment_credit_card_simulation.tickerSimulation
-import kotlinx.android.synthetic.main.fragment_paylater_simulation.*
 import kotlinx.android.synthetic.main.paylater_daftar_widget.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -123,7 +117,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
                 rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 if (!it.getOrNull(0)?.simulationBankList.isNullOrEmpty()) {
                     rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    setBankData(it[0].simulationBankList?: arrayListOf())
+                    setBankData(it[0].simulationBankList ?: arrayListOf())
                 }
             }
         }
@@ -175,8 +169,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             is PdpSimulationException.CreditCardSimulationNotAvailableException -> {
                 creditCardTermsEmptyView.visible()
                 context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let {
-                        drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }
                 }
                 dividerVertical.visible()
                 tickerSimulation.visible()

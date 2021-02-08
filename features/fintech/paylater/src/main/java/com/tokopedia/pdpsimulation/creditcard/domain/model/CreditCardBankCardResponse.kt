@@ -44,4 +44,4 @@ data class CreditCardItem(
         val mainBenefit: String?,
         @SerializedName("is_special_offer")
         val isSpecialOffer: Boolean?,
-): Parcelable
+) : Parcelable

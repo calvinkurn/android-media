@@ -52,7 +52,7 @@ project.ext {
     artifactId = 'paylater'
     groupId = 'com.tokopedia.fintech'
     versionName = "0.0.2"
-    artifactName ="paylater-release"
+    artifactName = "paylater-release"
 }
 
 apply from: '../../../publish_local.gradle'
