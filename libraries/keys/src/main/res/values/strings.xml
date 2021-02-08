@@ -1,4 +1,10 @@
 <resources>
+    <!--List of development-keys.
+    These keys will be replaced with production-keys that are managed by Google Secret Manager
+    https://console.cloud.google.com/security/secret-manager/secret/android/overview?project=secrets-management-<projectKey>
+    Please contact Key Manager to add/change/delete keys
+    Please note that each string should be in 1 line. -->
     <string name="hansel_app_id" translatable="false">7Z8WMZDP88R5LO4QJ7VLDJVLY</string>
     <string name="hansel_app_key" translatable="false">NDQUDBAK0GKIYDBGN16I5MRJQ3DJK9XGLVY28Y6462R6YY274K</string>
 </resources>
+
