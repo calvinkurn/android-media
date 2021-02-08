@@ -776,6 +776,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
         })
+
+        stickyLoginView?.hide()
     }
 
     private fun scrollToRecommendList() {
