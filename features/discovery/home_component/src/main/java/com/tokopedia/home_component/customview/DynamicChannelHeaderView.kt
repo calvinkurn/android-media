@@ -249,7 +249,7 @@ class DynamicChannelHeaderView: FrameLayout {
             override fun onLessThan24h() {
                 countDownView?.let {
                     if (!it.isVisible) {
-                        countDownView?.visibility = View.VISIBLE
+                        it.visibility = View.VISIBLE
                         channelSubtitle?.text = subtitle
                     }
                 }
@@ -258,7 +258,7 @@ class DynamicChannelHeaderView: FrameLayout {
             override fun onMoreThan24h() {
                 countDownView?.let {
                     if (it.isVisible) {
-                        countDownView?.visibility = View.GONE
+                        it.visibility = View.GONE
                         channelSubtitle?.text = String.format("%s %s", subtitle, DateHelper.formatDateToUi(date))
                     }
                 }
