@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inboxreview.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -7,9 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -25,6 +24,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewConstants.ALL_RATINGS
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
+import com.tokopedia.review.common.util.ReviewConstants.RESULT_INTENT_REVIEW_REPLY
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
+import kotlinx.coroutines.isActive
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
@@ -133,6 +134,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onResume() {
         super.onResume()
+        inboxReviewViewModel.getInboxReviewCounter()
         InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
                 inboxReviewViewModel.userSession.userId.orEmpty())
     }
@@ -226,12 +228,24 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
+        startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
             putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
             putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
-        })
+        }, RESULT_INTENT_REVIEW_REPLY)
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RESULT_INTENT_REVIEW_REPLY -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    clearAllData()
+                    loadInitialData()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
