@@ -130,7 +130,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shopDetail?.gone()
                 adsBannerShopCardView?.visible()
                 container?.setBackgroundResource(0)
-                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 0, 0, 0)
+                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }
