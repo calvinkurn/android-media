@@ -28,7 +28,8 @@
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_viewParent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:itemCount="3"
                 tools:listitem="@layout/ent_ticket_adapter_item" />
@@ -47,7 +48,8 @@
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/rvEventRecommendationList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 tools:itemCount="3"
                 tools:listitem="@layout/ent_ticket_adapter_item" />
 

@@ -204,7 +204,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 showViewBottom(false)
                 showUbah(false)
                 loadInitialData()
-                showLoadingRecommendationList()
+                hideRecommendationView()
             }
         }
     }
@@ -233,7 +233,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
-                        showLoadingRecommendationList()
+                        hideRecommendationView()
                     }
 
                     override fun onDateUnselected(date: Date) {}
@@ -309,7 +309,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewBottom(false)
                 loadInitialData()
-                showLoadingRecommendationList()
+                hideRecommendationView()
             }.showRetrySnackbar()
         })
 
@@ -415,11 +415,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
-    private fun showLoadingRecommendationList() {
-        recommendationAdapter.clearAllElements()
-        recommendationAdapter.addElement(loadingModel)
-    }
-
     private fun renderRecommendationList(recommendationList: List<EventPDPTicketModel>) {
         recommendationAdapter.clearAllElements()
 
@@ -427,12 +422,20 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             recommendationAdapter.addElement(recommendationList)
             recommendationAdapter.notifyDataSetChanged()
 
-            tgEventTicketRecommendationTitle.show()
-            rvEventRecommendationList.show()
+            showRecommendationView()
         } else {
-            tgEventTicketRecommendationTitle.hide()
-            rvEventRecommendationList.hide()
+            hideRecommendationView()
         }
+    }
+
+    private fun showRecommendationView() {
+        tgEventTicketRecommendationTitle.show()
+        rvEventRecommendationList.show()
+    }
+
+    private fun hideRecommendationView() {
+        tgEventTicketRecommendationTitle.hide()
+        rvEventRecommendationList.hide()
     }
 
     companion object {
