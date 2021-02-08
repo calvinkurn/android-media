@@ -115,7 +115,7 @@ class PlayVideoFragment @Inject constructor(
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
             isEnterPiPAfterPermission = true
 
-            val videoPlayer = playViewModel.videoPlayer as? General ?: return
+            val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
             if (playViewModel.pipMode == PiPMode.WatchInPip) {

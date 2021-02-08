@@ -36,9 +36,6 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private var mVideoPlayer: PlayVideoWrapper = PlayVideoWrapper.Builder(context).build()
 
-//    private val playVideoPlayer: playVideoPlayer
-//        get() = playVideoPlayer.getInstance(context)
-
     private val userSession: UserSessionInterface = UserSession(context.applicationContext)
     private val pipAnalytic: PlayPiPAnalytic = PlayPiPAnalytic(userSession)
 

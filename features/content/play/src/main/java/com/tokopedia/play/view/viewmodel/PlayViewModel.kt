@@ -505,9 +505,9 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
     }
 
-    fun defocusPage() {
+    fun defocusPage(shouldPauseVideo: Boolean) {
         stopJob()
-        defocusVideoPlayer()
+        defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
     }
 
@@ -518,8 +518,8 @@ class PlayViewModel @Inject constructor(
         playVideoPlayer.resume()
     }
 
-    private fun defocusVideoPlayer() {
-        playVideoPlayer.pause(preventLoadingBuffer = true)
+    private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
+        if (shouldPauseVideo) playVideoPlayer.pause(preventLoadingBuffer = true)
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
