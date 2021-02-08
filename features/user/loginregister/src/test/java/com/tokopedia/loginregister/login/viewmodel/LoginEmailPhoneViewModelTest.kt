@@ -1,4 +1,4 @@
-package loginregister.viewmodel
+package com.tokopedia.loginregister.login.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.Fragment
@@ -19,6 +19,9 @@ import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -27,12 +30,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -42,7 +46,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.TestCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers
@@ -51,7 +54,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import java.lang.RuntimeException
 import kotlin.test.assertEquals
 
 class LoginEmailPhoneViewModelTest {
@@ -95,6 +97,7 @@ class LoginEmailPhoneViewModelTest {
     private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
+    private var statusPinObserver = mockk<Observer<Result<StatusPinData>>>(relaxed = true)
 
     private val mockFragment = mockk<Fragment>(relaxed = true)
     private val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
@@ -137,6 +140,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.goToActivationPage.observeForever(goToActivationPage)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
+        viewModel.getStatusPinResponse.observeForever(statusPinObserver)
     }
 
     private val throwable = Throwable("Error")
@@ -225,26 +229,6 @@ class LoginEmailPhoneViewModelTest {
         }
     }
 
-//    @Test
-//    fun `on Message is not empty during Activate User`() {
-//        val params = mapOf("email" to "asd")
-//
-//        /* When */
-//        val responseData = ActivateUserData(message = "error happen!")
-//        val response = ActivateUserPojo(data = responseData)
-//
-//        coEvery { activateUserUseCase.getParams(any(), any()) } returns params
-//        coEvery { activateUserUseCase.getData(any()) } throws throwable
-//
-//        viewModel.activateUser("", "")
-//
-//        /* Then */
-//        verify {
-//            MatcherAssert.assertThat(viewModel.activateResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-//            TestCase.assertEquals(responseData.message, (viewModel.activateResponse.value as Fail).throwable.message)
-//        }
-//    }
-
     @Test
     fun `on Success Discover`() {
         /* When */
@@ -302,6 +286,23 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
+    fun `on Success Get Phone Credential Facebook`() {
+        /* When */
+        val responseEmail = "yoris.prayogo@tokopedia.com"
+        val responseToken = mockk<AccessToken>(relaxed = true)
+
+        every { userSession.loginMethod } returns "facebook"
+        every { getFacebookCredentialUseCase.execute(any(), any()) } answers {
+            secondArg<GetFacebookCredentialSubscriber>().onSuccessPhone(responseToken, responseEmail)
+        }
+
+        viewModel.getFacebookCredential(mockFragment, mockCallbackManager)
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.getFacebookCredentialResponse.value, CoreMatchers.instanceOf(Success::class.java))
+    }
+
+    @Test
     fun `on Fail Facebook`() {
         /* When */
         val errorResponse = Exception()
@@ -334,6 +335,23 @@ class LoginEmailPhoneViewModelTest {
 
         /* Then */
         verify { loginToken.onChanged(Success(responseToken)) }
+    }
+
+    @Test
+    fun `on Login Email smart lock`() {
+        /* When */
+        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
+
+        every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
+            (secondArg() as LoginTokenSubscriber).onSuccessLoginToken(responseToken)
+        }
+
+        viewModel.loginEmail(email, password, true)
+
+        /* Then */
+        verify {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+        }
     }
 
     @Test
@@ -773,4 +791,65 @@ class LoginEmailPhoneViewModelTest {
         }
     }
 
+    @Test
+    fun `on Success get user info`() {
+        /* When */
+        val profileInfo = ProfileInfo(firstName = "yoris")
+        val response = ProfilePojo(profileInfo = profileInfo)
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Success(response))
+        }
+    }
+
+    @Test
+    fun `on Failed get user info`() {
+        /* When */
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on Success check status pin`() {
+        /* When */
+        val statusPinData = StatusPinData()
+        val response = StatusPinPojo(data = statusPinData)
+
+        coEvery { statusPinUseCase.executeOnBackground() } returns response
+
+        viewModel.checkStatusPin()
+
+        /* Then */
+        verify {
+            statusPinObserver.onChanged(Success(response.data))
+        }
+    }
+
+    @Test
+    fun `on Failed check status pin`() {
+        /* When */
+        coEvery { statusPinUseCase.executeOnBackground() } throws throwable
+
+        viewModel.checkStatusPin()
+
+        /* Then */
+        verify {
+            statusPinObserver.onChanged(Fail(throwable))
+        }
+    }
 }
