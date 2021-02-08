@@ -738,7 +738,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         initAdapter()
         initRefreshLayout()
         subscribeHome()
-        initEggTokenScrollListener()
         initStickyLogin()
 
         floatingTextButton.setOnClickListener { view: View? ->
@@ -1255,11 +1254,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-    private val floatingEggButtonFragment: FloatingEggButtonFragment?
-        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-            if (activity != null && isAdded && childsFragmentManager != null) {
-                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
-            } else null
+    private var floatingEggButtonFragment: FloatingEggButtonFragment? = null
+    get() {
+        return if (activity != null && isAdded) {
+            field
+        } else null
+    }
 
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
@@ -1587,7 +1587,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
         getHomeViewModel().showTicker()
         observeHomeNotif()
+        inflateEggFragment()
         pageLoadTimeCallback?.invalidate()
+    }
+
+    private fun inflateEggFragment() {
+        val eggFragment = FloatingEggButtonFragment()
+        eggFragment.setDraggable(true)
+        eggFragment.setInitialEggMarginBottom(resources.getDimensionPixelOffset(R.dimen.new_margin_sm))
+        this.floatingEggButtonFragment = eggFragment
+        childFragmentManager.beginTransaction().replace(R.id.floating_egg_fragment, eggFragment).commit()
+        initEggTokenScrollListener()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -2305,17 +2315,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
-        val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView.height)
-            val positionEgg = IntArray(2)
-            val eggHeight = floatingEggButtonFragment.egg.height
-            floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
-                floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+        floatingEggButtonFragment?.let {
+            val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
+            if (stickyLoginView.isShowing()) {
+                params.setMargins(0, 0, 0, stickyLoginView.height)
+                val positionEgg = IntArray(2)
+                val eggHeight = floatingEggButtonFragment.egg.height
+                floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
+                if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
+                    floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+                }
+            } else {
+                params.setMargins(0, 0, 0, 0)
             }
-        } else {
-            params.setMargins(0, 0, 0, 0)
         }
     }
 
