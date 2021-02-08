@@ -1,14 +1,17 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
@@ -21,6 +24,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
@@ -28,14 +32,14 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDI
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.concurrent.Executors
 import javax.inject.Inject
+
 
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductDetailShippingBottomSheet : BottomSheetUnify() {
+class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,36 +48,56 @@ class ProductDetailShippingBottomSheet : BottomSheetUnify() {
     private var adapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
 
-    fun show(childFragmentManager: FragmentManager) {
-        show(childFragmentManager, "shipping_bs")
+    override fun setupDialog(dialog: Dialog, style: Int) {
+        super.setupDialog(dialog, style)
+        val view = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
+        setupBottomSheet(dialog)
+
+        dialog.run {
+            setupRecyclerView(view)
+            setContentView(view)
+            initInjector()
+            initViewModel()
+            observeData()
+        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private fun setupBottomSheet(dialog: Dialog) {
+        val dialogFragment = dialog as BottomSheetDialog
+        dialogFragment.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dialogFragment.behavior.skipCollapsed = true
+    }
+
+    override fun getTheme(): Int {
+        return R.style.ProductBottomSheetDialogTheme
+    }
+
+    private fun initInjector() {
         activity?.let {
             DaggerRatesEstimationComponent.builder()
                     .baseAppComponent((activity?.application as com.tokopedia.abstraction.base.app.BaseMainApplication).baseAppComponent)
                     .ratesEstimationModule(RatesEstimationModule()).build()
                     .inject(this)
         }
-        super.onCreate(savedInstanceState)
+    }
+
+    private fun initViewModel() {
         if (::viewModelFactory.isInitialized) {
             viewModel = ViewModelProvider(this, viewModelFactory).get(RatesEstimationDetailViewModel::class.java)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        init()
-        return super.onCreateView(inflater, container, savedInstanceState)
+    fun show(childFragmentManager: FragmentManager) {
+        show(childFragmentManager, "shipping_bs")
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun observeData() {
         val sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
-        sharedViewModel.rateEstimateRequest.observeOnce(viewLifecycleOwner) {
+        sharedViewModel.rateEstimateRequest.observeOnce(this) {
             viewModel?.getCostEstimation(it.getWeightRequest(), it.shopDomain, it.origin, it.shopId, it.productId)
         }
 
-        viewModel?.rateEstResp?.observe(viewLifecycleOwner) {
+        viewModel?.rateEstResp?.observe(this) {
             it.doSuccessOrFail({
                 val address = it.data.address
                 val shop = it.data.shop
@@ -109,17 +133,7 @@ class ProductDetailShippingBottomSheet : BottomSheetUnify() {
         adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl())
 
         rv?.adapter = adapter
-    }
-
-    private fun init() {
-        context?.let {
-            val view = View.inflate(it, R.layout.bs_product_shipping_rate_estimate, null)
-
-            setTitle(it.getString(R.string.merchant_product_detail_shipping))
-            setChild(view)
-            clearContentPadding = true
-            setupRecyclerView(view)
-        }
+        adapter?.submitList(listOf(ProductShippingShimmerDataModel()))
     }
 
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
