@@ -28,14 +28,11 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -115,7 +112,7 @@ class PlayVideoFragment @Inject constructor(
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
             isEnterPiPAfterPermission = true
 
-            val videoPlayer = playViewModel.videoPlayer as? General ?: return
+            val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
             if (playViewModel.pipMode == PiPMode.WatchInPip) {
