@@ -52,9 +52,6 @@ class PlayActivity : BaseActivity(),
         PlayFullscreenManager {
 
     @Inject
-    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
-
-    @Inject
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
@@ -151,7 +148,6 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onEnterPiPMode() {
-        lifecycle.removeObserver(playLifecycleObserver)
         onBackPressed(isSystemBack = false)
     }
 
@@ -224,7 +220,6 @@ class PlayActivity : BaseActivity(),
 
     private fun setupPage() {
         setupOrientation()
-        lifecycle.addObserver(playLifecycleObserver)
     }
 
     private fun setupOrientation() {
