@@ -3,28 +3,42 @@ package com.tokopedia.vouchergame
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupRestMockResponse
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
 import com.tokopedia.vouchergame.test.R
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,24 +50,21 @@ class VoucherGameDetailActivityTest{
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
-    var mActivityRule: IntentsTestRule<VoucherGameDetailActivity> = object : IntentsTestRule<VoucherGameDetailActivity>(VoucherGameDetailActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().toBlocking().first()
-            setupGraphqlMockResponseWithCheck {
-                addMockResponse(
-                        KEY_QUERY_VOUCHER_DETAIL,
-                        InstrumentationMockHelper.getRawString(targetContext, R.raw.mock_response_recharge_product_input),
-                        MockModelConfig.FIND_BY_CONTAINS)
-            }
-        }
-        override fun getActivityIntent(): Intent {
-            return VoucherGameDetailActivity.newInstance(targetContext, VoucherGameExtraParam(menuId = "4", operatorId = "2616"), CatalogOperatorAttributes(description = POKEMON_DETAIL_DESCRIPTION))
-        }
-    }
+    var mActivityRule = ActivityTestRule(VoucherGameDetailActivity::class.java,false,false)
 
     @Before
     fun setUp(){
+        Intents.init()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+        setupGraphqlMockResponseWithCheck {
+            addMockResponse(
+                    KEY_QUERY_VOUCHER_DETAIL,
+                    InstrumentationMockHelper.getRawString(targetContext, R.raw.mock_response_recharge_product_input),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
+        val intent: Intent = VoucherGameDetailActivity.newInstance(targetContext, VoucherGameExtraParam(menuId = "4", operatorId = "2616"), CatalogOperatorAttributes(description = POKEMON_DETAIL_DESCRIPTION))
+        mActivityRule.launchActivity(intent)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -71,12 +82,21 @@ class VoucherGameDetailActivityTest{
             Thread.sleep(3000)
             Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<VoucherGameListViewHolder>(0, ViewActions.click()))
+            Thread.sleep(3000)
+            Espresso.onView(ViewMatchers.withId(R.id.checkout_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Thread.sleep(3000)
+            Espresso.onView(ViewMatchers.withId(R.id.btn_recharge_checkout_next)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
         }
     }
 
     fun clickOnInfoButton(){
         Thread.sleep(3000)
         Espresso.onView(ViewMatchers.withId(R.id.btn_info_icon)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+    }
+
+    @After
+    fun tearDown(){
+        Intents.release()
     }
 
     companion object {

@@ -9,6 +9,38 @@
           "creative_slot": "{{.*}}",
           "item_id": "{{.*}}",
           "item_name": "{{.*}}",
+          "creative_url": ""
+        }
+      ],
+      "eventCategory": "digital - homepage",
+      "event": "view_item",
+      "eventAction": "impression banner digital",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.* - .*}}"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "creative_url":  "{{.*}}"
+        }
+      ],
+      "eventCategory": "digital - homepage",
+      "event": "select_content",
+      "eventAction": "click banner digital",
+      "sessionIris": "{{.*}}",
+      "eventLabel":  "{{.* - .*}}"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
           "category": "{{.*}}"
         }
       ],
