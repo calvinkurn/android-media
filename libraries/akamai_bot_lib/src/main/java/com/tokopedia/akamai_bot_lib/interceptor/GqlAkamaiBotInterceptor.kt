@@ -63,7 +63,13 @@ class GqlAkamaiBotInterceptor : Interceptor {
             }
         }
 
-        val response = chain.proceed(newRequest.build())
+        val response: Response
+
+        try {
+            response = chain.proceed(newRequest.build())
+        } catch (e: Exception) {
+            throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
+        }
 
         if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
