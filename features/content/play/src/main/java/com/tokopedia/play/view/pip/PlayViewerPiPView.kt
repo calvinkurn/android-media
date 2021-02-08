@@ -131,7 +131,7 @@ class PlayViewerPiPView : ConstraintLayout {
             mPiPInfo?.let { pipInfo ->
                 isRoutingToRoom = true
                 val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context.startActivity(intent)
             }
         }
