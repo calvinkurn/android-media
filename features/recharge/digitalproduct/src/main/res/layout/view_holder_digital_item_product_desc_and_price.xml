@@ -3,47 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/digital_bg_chooser_operator_product_item">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_price"
-        style="@style/TextProductName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:paddingBottom="3dp"
+        app:typographyType="body_2"
         tools:text="Rp 25.000" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price"
-        style="@style/TextProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_price"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:paddingTop="3dp"
+        app:typographyType="heading_4"
         tools:text="Rp. 20.000" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/empty_stock_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
         android:background="@drawable/digital_bg_out_of_stock"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
+        android:paddingStart="@dimen/layout_lvl1"
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl1"
         android:text="@string/digital_common_title_empty_stock"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="heading_5"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -52,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/tv_price"
-        android:layout_marginTop="@dimen/dp_5"
-        android:background="@color/digital_separator" />
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@color/Unify_N700_20" />
 
 </RelativeLayout>

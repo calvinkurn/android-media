@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
+import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
@@ -20,8 +21,8 @@ import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase;
+import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase;
@@ -179,7 +180,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             getView().hideProgressBar();
                         }
                     }
-    
+
                     @Override
                     public void onNext(GraphqlResponse response) {
                         if (response != null) {
@@ -189,9 +190,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 details = data.orderDetails();
                                 getView().setDetailsData(data.orderDetails());
                                 if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)
-                                   || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
+                                        || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
                                     requestCancelInfo = details.getRequestCancelInfo();
                                 }
+                                orderListAnalytics.sendOrderDetailImpression(
+                                        OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                                        OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                                        userSessionInterface.getUserId()
+                                );
                             }
 
                             if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
@@ -272,7 +278,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
                 if (getView() != null && getView().getActivity() != null) {
-                    Type token = new TypeToken<SendEventEmail>() {}.getType();
+                    Type token = new TypeToken<SendEventEmail>() {
+                    }.getType();
                     RestResponse restResponse = typeDataResponseMap.get(token);
                     getView().setActionButtonLayoutClickable(false);
                     if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
@@ -325,7 +332,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         }
                     } else {
                         if (actionButtonList != null && actionButtonList.getActionButtonList() != null
-                        && actionButtonList.getActionButtonList().size() > 0 && getView() != null)
+                                && actionButtonList.getActionButtonList().size() > 0 && getView() != null)
                             getView().setActionButtons(actionButtonList.getActionButtonList());
                     }
                 }
@@ -415,6 +422,45 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 }
             });
         }
+    }
+
+    @Override
+    public void onLihatInvoiceButtonClick(String invoiceUrl) {
+        orderListAnalytics.sendInvoiceClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                userSessionInterface.getUserId()
+        );
+    }
+
+    @Override
+    public void onCopyButtonClick(String copiedValue) {
+        orderListAnalytics.sendCopyButtonClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                userSessionInterface.getUserId()
+        );
+    }
+
+    @Override
+    public void onActionButtonClick(String buttonId, String buttonName) {
+        orderListAnalytics.sendActionButtonClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                buttonId,
+                buttonName,
+                userSessionInterface.getUserId()
+        );
+    }
+
+    @Override
+    public String getOrderCategoryName() {
+        return OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails);
+    }
+
+    @Override
+    public String getOrderProductName() {
+        return OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails);
     }
 
     @Override

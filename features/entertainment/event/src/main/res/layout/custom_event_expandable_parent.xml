@@ -11,7 +11,7 @@
     <com.tokopedia.unifyprinciples.Typography
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/event_arrow_expandable"
+        app:layout_constraintRight_toLeftOf="@+id/event_arrow_expandable"
         app:layout_constraintRight_toRightOf="@+id/event_arrow_expandable"
         android:id="@+id/tg_event_pdp_expand_title"
         android:layout_width="0dp"
@@ -26,8 +26,8 @@
     <com.tokopedia.unifyprinciples.Typography
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_event_pdp_expand_title"
-        android:id="@+id/tg_event_pdp_expand_price"
-        android:layout_width="match_parent"
+        android:id="@+id/tg_event_pdp_expand_price_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
@@ -35,7 +35,22 @@
         android:justificationMode="inter_word"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Mulai dari 800000"
+        android:text="@string/ent_checkout_price_expand"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:layout_constraintLeft_toRightOf="@+id/tg_event_pdp_expand_price_title"
+        app:layout_constraintTop_toBottomOf="@+id/tg_event_pdp_expand_title"
+        android:id="@+id/tg_event_pdp_expand_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:justificationMode="inter_word"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="800000"
         />
 
     <androidx.appcompat.widget.AppCompatImageView

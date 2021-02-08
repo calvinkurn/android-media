@@ -145,12 +145,6 @@ class TrackingHotelUtil {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelUserClickFilter(context: Context?, screenName: String) {
-        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_FILTER,"$HOTEL_LABEL - true")
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
     fun hotelUserClickSort(context: Context?, sortValue: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_SORT, "$HOTEL_LABEL - $sortValue")

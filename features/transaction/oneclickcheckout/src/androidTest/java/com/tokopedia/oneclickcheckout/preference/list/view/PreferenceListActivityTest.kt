@@ -69,8 +69,7 @@ class PreferenceListActivityTest {
 
             assertPreferenceView(
                     position = 0,
-                    addressName = "Address 1",
-                    addressReceiver = " - User 1 (1)",
+                    addressName = "Address 1 - User 1 (1)",
                     addressStreet = "Address Street 1, District 1, City 1, Province 1 1",
                     shippingName = "Pengiriman Service 1",
                     shippingDuration = context.getString(R.string.lbl_no_exact_shipping_duration),
@@ -81,8 +80,7 @@ class PreferenceListActivityTest {
 
             assertPreferenceView(
                     position = 1,
-                    addressName = "Address 2",
-                    addressReceiver = " - User 1 (2)",
+                    addressName = "Address 2 - User 1 (2)",
                     addressStreet = "Address Street 2, District 2, City 2, Province 2 2",
                     shippingName = "Pengiriman Service 2",
                     shippingDuration = "Durasi 2",

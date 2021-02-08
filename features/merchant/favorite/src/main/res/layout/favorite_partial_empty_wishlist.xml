@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_32" android:paddingStart="@dimen/dp_32"
     android:paddingEnd="@dimen/dp_32" android:paddingRight="@dimen/dp_32"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:visibility="gone"
     android:id="@+id/partial_empty_wishlist"
-    android:layout_marginBottom="@dimen/dp_8">
+    android:layout_marginBottom="@dimen/spacing_lvl3">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -17,30 +17,30 @@
         app:srcCompat="@drawable/favorite_ic_no_wishlist"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginTop="@dimen/spacing_lvl5"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wishlist_empty_title"
         android:fontFamily="sans-serif"
-        android:textColor="@color/grey_550"
+        android:textColor="@color/Unify_N400"
         android:textSize="@dimen/font_medium"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/spacing_lvl3"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wishlist_empty_message"
         android:fontFamily="sans-serif"
-        android:textColor="@color/grey_450"
+        android:textColor="@color/Unify_N150"
         android:textSize="@dimen/sp_14"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_4"/>
+        android:layout_marginTop="@dimen/spacing_lvl2"/>
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
@@ -51,7 +51,7 @@
         android:textAllCaps="false"
         android:text="@string/favorite_empty_button"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_24"/>
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"/>
 
 </LinearLayout>

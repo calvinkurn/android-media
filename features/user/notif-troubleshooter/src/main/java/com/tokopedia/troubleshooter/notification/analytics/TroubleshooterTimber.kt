@@ -17,7 +17,7 @@ object TroubleshooterTimber {
     }
 
     fun combine(
-            token: String?,
+            token: Result<String>?,
             notification: Result<UserSettingUIView>?,
             device: Result<DeviceSettingState>?
     ) {

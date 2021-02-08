@@ -42,5 +42,5 @@
         android:layout_height="@dimen/changephonenumber_dp_1"
         android:layout_marginBottom="@dimen/changephonenumber_dp_20"
         android:layout_marginTop="@dimen/changephonenumber_dp_20"
-        android:background="@color/changephonenumber_white_two" />
+        android:background="@color/Unify_N100" />
 </LinearLayout>

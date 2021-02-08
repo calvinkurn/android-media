@@ -31,7 +31,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntOrNull() ?: 0
         val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
-        val productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
+        val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
         return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice)
     }

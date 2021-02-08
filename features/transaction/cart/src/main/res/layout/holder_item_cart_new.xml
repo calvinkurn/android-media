@@ -8,11 +8,6 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error"
-        tools:visibility="gone" />
-
     <FrameLayout
         android:id="@+id/fl_cart_item_container"
         android:layout_width="match_parent"
@@ -32,51 +27,37 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16">
 
-                <CheckBox
+                <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                     android:id="@+id/cb_select_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="-3dp"
+                    android:layout_marginStart="-2dp"
                     android:layout_marginTop="@dimen/dp_30"
-                    android:button="@drawable/ic_cart_check_box"
-                    android:paddingRight="@dimen/dp_8" />
+                    android:paddingEnd="@dimen/dp_8" />
 
                 <RelativeLayout
                     android:id="@+id/rl_product_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/cb_select_item"
-                    android:layout_toRightOf="@id/cb_select_item">
+                    android:layout_toEndOf="@id/cb_select_item">
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/iv_product_card"
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/iu_image_product"
                         android:layout_width="@dimen/dp_72"
                         android:layout_height="@dimen/dp_72"
-                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="@dimen/dp_4"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginRight="@dimen/dp_10"
-                        app:cardCornerRadius="@dimen/dp_6"
-                        app:cardElevation="@dimen/dp_0">
-
-                        <ImageView
-                            android:id="@+id/iv_image_product"
-                            android:layout_width="@dimen/dp_72"
-                            android:layout_height="@dimen/dp_72"
-                            tools:ignore="ContentDescription"
-                            tools:src="@drawable/empty_photo" />
-
-                    </androidx.cardview.widget.CardView>
+                        android:layout_marginEnd="@dimen/dp_10" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_toEndOf="@+id/iv_product_card"
-                        android:layout_toRightOf="@+id/iv_product_card"
+                        android:layout_toEndOf="@+id/iu_image_product"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyType="body_2"
                         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
@@ -85,11 +66,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
-                        android:layout_toEndOf="@+id/iv_product_card"
-                        android:layout_toRightOf="@+id/iv_product_card"
+                        android:layout_toEndOf="@+id/iu_image_product"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Biru, XL"
@@ -100,10 +80,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
-                        android:layout_toRightOf="@+id/text_product_variant"
+                        android:layout_toEndOf="@+id/text_product_variant"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Red_R600"
+                        android:textColor="@color/Unify_R600"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Sisa 3"
@@ -115,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_variant"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toEndOf="@+id/iu_image_product"
                         android:foregroundGravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         app:flexWrap="wrap"
@@ -127,7 +107,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/text_product_variant"
                             android:layout_marginEnd="@dimen/dp_4"
-                            android:layout_toEndOf="@+id/iv_product_card"
+                            android:layout_toEndOf="@+id/iu_image_product"
                             android:gravity="center_vertical"
                             android:visibility="gone"
                             app:labelType="general_dark_red"
@@ -143,7 +123,7 @@
                             android:layout_marginEnd="@dimen/dp_4"
                             android:layout_toEndOf="@+id/label_slash_price_percentage"
                             android:gravity="center_vertical"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_3"
                             tools:text="Rp300.000"
                             tools:visibility="visible" />
@@ -156,7 +136,7 @@
                             android:layout_alignBottom="@+id/label_slash_price_percentage"
                             android:layout_toEndOf="@+id/text_slash_price"
                             android:gravity="center_vertical"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_2"
                             app:typographyWeight="bold"
                             tools:text="Rp100.000" />
@@ -169,8 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/layout_product_price"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/iv_product_card"
-                        android:layout_toRightOf="@+id/iv_product_card"
+                        android:layout_toEndOf="@+id/iu_image_product"
                         android:foregroundGravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         app:flexWrap="wrap"
@@ -181,10 +160,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/layout_product_info"
-                        android:layout_toEndOf="@+id/iv_product_card"
-                        android:layout_toRightOf="@+id/iv_product_card"
+                        android:layout_toEndOf="@+id/iu_image_product"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Campaign"
@@ -213,7 +191,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
                             tools:text="sdkjf skdjbfg jksdg kjsdbg sfdsf jksdbg!"
@@ -224,7 +202,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_button_add_note"
-                            android:textColor="@color/Neutral_N700_68"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
                             tools:text="Ubah" />
@@ -254,11 +232,11 @@
                         android:paddingBottom="@dimen/dp_16"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textColor="@color/black_70"
-                        android:textColorHighlight="@color/tkpd_main_green"
+                        android:textColor="@color/Unify_N700_68"
+                        android:textColorHighlight="@color/Unify_G400"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
-                        app:backgroundTint="@color/tkpd_main_green"
+                        app:backgroundTint="@color/Unify_G400"
                         tools:ignore="TextFields"
                         tools:text="Saya pesan warna merah yah min, jangan sampai salah kirim
 barangnya gan! coy coy coy" />
@@ -267,13 +245,9 @@ barangnya gan! coy coy coy" />
                         android:id="@+id/tv_error_form_remark_validation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/et_remark"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
                         android:maxLines="1"
                         android:paddingStart="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:textColor="@color/text_cart_item_error_red"
+                        android:textColor="@color/Unify_R600"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
                         android:visibility="gone"
@@ -287,9 +261,6 @@ barangnya gan! coy coy coy" />
                         android:id="@+id/tv_note_char_counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/et_remark"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
                         android:layout_gravity="end"
                         android:lineSpacingExtra="0sp"
                         android:visibility="gone"
@@ -330,7 +301,7 @@ barangnya gan! coy coy coy" />
                                 android:paddingEnd="@dimen/dp_16"
                                 android:paddingBottom="@dimen/dp_8"
                                 android:text="@string/label_move_to_wishlist"
-                                android:textColor="@color/Neutral_N700_68"
+                                android:textColor="@color/Unify_N700_68"
                                 app:typographyType="body_3" />
 
                             <View
@@ -338,41 +309,17 @@ barangnya gan! coy coy coy" />
                                 android:layout_height="0dp"
                                 android:layout_weight="1" />
 
-                            <ImageView
+                            <com.tokopedia.iconunify.IconUnify
                                 android:id="@+id/btn_delete_cart"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
                                 android:layout_marginEnd="@dimen/dp_18"
-                                android:layout_marginRight="@dimen/dp_18"
-                                app:srcCompat="@drawable/ic_delete_cart"
-                                tools:ignore="ContentDescription" />
+                                app:icon_name="DELETE" />
 
-                            <ImageView
-                                android:id="@+id/btn_qty_min"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
-
-                            <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/et_qty"
-                                android:layout_width="@dimen/dp_60"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_horizontal"
-                                android:imeOptions="actionDone"
-                                android:inputType="number"
-                                android:maxLength="6"
-                                android:textColor="@color/black_70"
-                                android:textColorHighlight="@color/tkpd_main_green"
-                                android:textSize="@dimen/sp_16"
-                                app:backgroundTint="@color/tkpd_main_green"
-                                tools:text="10000" />
-
-                            <ImageView
-                                android:id="@+id/btn_qty_plus"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                app:srcCompat="@drawable/bg_button_counter_plus_checkout"
-                                tools:ignore="ContentDescription" />
+                            <com.tokopedia.unifycomponents.QuantityEditorUnify
+                                android:id="@+id/qty_editor_cart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
 
@@ -381,10 +328,10 @@ barangnya gan! coy coy coy" />
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:gravity="right"
+                            android:gravity="end"
                             android:maxLines="2"
                             android:textAlignment="gravity"
-                            android:textColor="@color/text_cart_item_error_red"
+                            android:textColor="@color/Unify_R600"
                             android:textSize="@dimen/sp_12"
                             android:visibility="gone"
                             app:typographyType="body_3"
@@ -410,6 +357,6 @@ barangnya gan! coy coy coy" />
         android:layout_marginLeft="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

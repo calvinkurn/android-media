@@ -1,0 +1,640 @@
+[
+  {
+    "data": {
+      "productRecommendationWidget": {
+        "data": [
+          {
+            "tID": "fK4j5XWgZh9hwKRAmR4R-E1GNP8\u003d",
+            "source": "custom",
+            "title": "Rekomendasi Untuk Anda",
+            "foreignTitle": "Recommendation For You",
+            "widgetUrl": "",
+            "pageName": "bom_empty",
+            "seeMoreAppLink": "",
+            "layoutType": "Custom-vertical",
+            "pagination": {
+              "currentPage": 1,
+              "nextPage": 2,
+              "prevPage": -1,
+              "hasNext": true
+            },
+            "recommendation": [
+              {
+                "id": 1063454386,
+                "name": "Sepeda Statis Twen Orbitrack fun Bike FB3 / Platinum Bike Murah - Hitam",
+                "categoryBreadcrumbs": "Olahraga/Gym \u0026 Fitness/Sepeda Statis",
+                "url": "https://www.tokopedia.com/tokindoid/sepeda-statis-twen-orbitrack-fun-bike-fb3-platinum-bike-murah-hitam?src\u003dtopads",
+                "appUrl": "tokopedia://product/1063454386",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJpH_Hhos1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndH_HNHAjFbm-srcHi6sHRosJDUMVj9RosQR-BUst7opyX6_nNopKaopyh6AKfopHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j7HJNEqR2o8Mr7_jz-o1NEu9Bozco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVVO_M2oHJO11_-o8BVd_jzg8jNJz92-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Oz8jYJqp-gHB1O_VPZq7Nku9z6zVj7_1HFoJda__uHuJJF_323q7OJqRx6Qu2W3jo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zH7N2oAuozcDp_7z-H7Nkz_zvzVjp_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32uHJNAoAV6qj1O_S2So1NJypVozcWEZ3dFvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstObm-XP3Oig9-wy3zp9R-BrZUEoZFiyfV79fBjraUE3pyabA17oiFpo_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHFopehwe?t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokindoid%2Fsepeda-statis-twen-orbitrack-fun-bike-fb3-platinum-bike-murah-hitam%3Fsrc%3Dtopads\u0026page\u003d1\u0026dv\u003dandroid-4.01\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026src\u003drecom_widget_bom_empty\u0026ob\u003d%00\u0026management_type\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosJpH_Hhos1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndH_HNHAjFbm-srcHi6sHRosJDUMVj9RosQR-BUst7opyX6_nNopKaopyh6AKfopHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j7HJNEqR2o8Mr7_jz-o1NEu9Bozco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVVO_M2oHJO11_-o8BVd_jzg8jNJz92-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Oz8jYJqp-gHB1O_VPZq7Nku9z6zVj7_1HFoJda__uHuJJF_323q7OJqRx6Qu2W3jo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zH7N2oAuozcDp_7z-H7Nkz_zvzVjp_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32uHJNAoAV6qj1O_S2So1NJypVozcWEZ3dFvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstObm-XP3Oig9-wy3zp9R-BrZUEoZFiyfV79fBjraUE3pyabA17oiFpo_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHFopehwe?product_id\u003d1063454386\u0026ob\u003d%00\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokindoid%2Fsepeda-statis-twen-orbitrack-fun-bike-fb3-platinum-bike-murah-hitam%3Fsrc%3Dtopads\u0026page\u003d1\u0026management_type\u003d1\u0026src\u003drecom_widget_bom_empty\u0026uid\u003d3660643\u0026t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026dv\u003dandroid-4.01",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syhHpJpH_yObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpJhbpusoAgMoA-Mb_jaHcUWocosya7NHpyNb3-xgsU7Hp1No_xiHiNkrcribm-xgVYpyfYagZUEoArfbsjF6_rdHsrfH_Kdosrpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oAC68MWE_92SoJNJZ_u68BuN_1zsq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzzP1Nk__CouVJa_92z8JNJ3926zJuEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW192vzcDa3_-uo1h91MW6qBu7_jzgoJOAHAz6Hj7O_VzCHJOkuMWozcWd_MOqQu2AZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk1_o6q_eO_1z0H7YJZ_o6qj17_7zgH7ONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBku_C6epeh_M2Vo1NEgpu6zcHh_1z08jBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHFopehwe?ob\u003d%00\u0026src\u003drecom_widget_bom_empty\u0026page\u003d1\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026dv\u003dandroid-4.01",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/11/5c46f42f-920b-4ccc-9369-baf2435958b2.jpg",
+                "price": "Rp1.255.000",
+                "priceInt": 1255000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 2881867,
+                  "name": "TOKINDO ID",
+                  "city": "Kab. Tangerang",
+                  "isGold": true,
+                  "isOfficial": true
+                },
+                "departmentId": 3525,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 159",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 61,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 0,
+                "isTopads": true
+              },
+              {
+                "id": 1427776795,
+                "name": "Masker 3ply isi 50 Pcs Earloop Chasa Medical Grade - Biru Emboss",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+                "url": "https://www.tokopedia.com/wendy-motor/masker-3ply-isi-50-pcs-earloop-chasa-medical-grade-biru-emboss?src\u003dtopads",
+                "appUrl": "tokopedia://product/1427776795",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosU7HpU7osJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndH_HNHAjFbm-srcHi6sKFHmFiy3zwrfo5rM1i6sHNoZd7opnaHsK7H_1poAnOoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zd_1zoH1N1qpz68jJh_BzC8JNkZ3BHe72kgJxGgMHauMxsQ1N5Z325q1N2oIPo8jVd_BzCH7N1__o6qMr7_jzzq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBo8MDh_c2zH7OJZ9BvzVVd_BzoHJOJu_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMDO_c2zH1NEqpovuJVR_92uo1N133BM1_7YUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUS-BPcVagfu79fVjraUDUMNOQ3-BrBY5gBYxgIHi6s1DUMNOQ3-BrBYxgIowrMuhUstObm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-ag9zxrMPBPcBXgOYxgIHibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstf6Arhwe?t\u003dandroid\u0026management_type\u003d1\u0026ob\u003d%00\u0026src\u003drecom_widget_bom_empty\u0026dv\u003dandroid-4.01\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwendy-motor%2Fmasker-3ply-isi-50-pcs-earloop-chasa-medical-grade-biru-emboss%3Fsrc%3Dtopads\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosU7HpU7osJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndH_HNHAjFbm-srcHi6sKFHmFiy3zwrfo5rM1i6sHNoZd7opnaHsK7H_1poAnOoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zd_1zoH1N1qpz68jJh_BzC8JNkZ3BHe72kgJxGgMHauMxsQ1N5Z325q1N2oIPo8jVd_BzCH7N1__o6qMr7_jzzq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBo8MDh_c2zH7OJZ9BvzVVd_BzoHJOJu_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMDO_c2zH1NEqpovuJVR_92uo1N133BM1_7YUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUS-BPcVagfu79fVjraUDUMNOQ3-BrBY5gBYxgIHi6s1DUMNOQ3-BrBYxgIowrMuhUstObm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-ag9zxrMPBPcBXgOYxgIHibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstf6Arhwe?t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026uid\u003d3660643\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwendy-motor%2Fmasker-3ply-isi-50-pcs-earloop-chasa-medical-grade-biru-emboss%3Fsrc%3Dtopads\u0026ob\u003d%00\u0026src\u003drecom_widget_bom_empty\u0026product_id\u003d1427776795\u0026page\u003d1\u0026management_type\u003d1\u0026dv\u003dandroid-4.01",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaoAHaoAyhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpJabpKOH3ypo_nab_Bx6cJWoAusoZ7NHszsb_-j6_ypoMgMg_eR6ZNkrcribm-xgVYpyfYagZUEHpjObseRHAUa6Aeho_H7HA1fbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oIxozJ7h_Bz0oJNEe_V6uJVd_M2-q1hAZM2jZJ2Myp-3qcoW_MY-qMY2_Mj7P7OEe9x6uJJp_BzoH7Nkgpz6zVV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2J__zvuV2k3Bz0PV2I1_-61pnF_M2SP7h1gpog8MW7_1zz81N919PvuJ1a3MOqq7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEqpVHqBJp_1z-81YJ19x6uJ7F_1zuHjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkqpuHqBJh_S20H7Y1e9Po8B1O_Bzgq3gzv_7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirMu7y9-Sg9zwy3zpUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDirMu7y9-Sg9z2QMPwy3zpUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sydopVY?t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026ob\u003d%00\u0026dv\u003dandroid-4.01\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1\u0026management_type\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/12/851f3502-9a8a-45c5-924c-2d9636ffe479.jpg",
+                "price": "Rp20.000",
+                "priceInt": 20000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 1616253,
+                  "name": "Wendy Motor",
+                  "city": "Jakarta Utara",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2520,
+                "labels": [
+                  {
+                    "title": "Grosir",
+                    "color": "#ffffff"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 100,6rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Grosir",
+                    "type": "lightGreen"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [
+                  {
+                    "price": 19500,
+                    "quantityMax": 79,
+                    "quantityMin": 40,
+                    "priceString": "Rp19.500"
+                  },
+                  {
+                    "price": 19000,
+                    "quantityMax": 10000,
+                    "quantityMin": 80,
+                    "priceString": "Rp19.000"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 6905,
+                "ratingAverage": "4.9",
+                "recommendationType": "retarget",
+                "stock": 0,
+                "isTopads": true
+              },
+              {
+                "id": 509123344,
+                "name": "Sepeda Statis Fitness Twen Belt Bike New Arrival BB379 Pembakar Lemak - Merah",
+                "categoryBreadcrumbs": "Olahraga/Gym \u0026 Fitness/Sepeda Statis",
+                "url": "https://www.tokopedia.com/tokindoid/sepeda-statis-fitness-twen-belt-bike-new-arrival-bb379-pembakar-lemak-merah?src\u003dtopads",
+                "appUrl": "tokopedia://product/509123344",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpK7H_HdHAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndH_HNHAjFbm-srcHi6sHh6AnDUMVj9RosQR-BUst7oAUXHp1foprhopn7HsHRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zR_7zo8jOE_92o8jOE_92o8jOE_3BHe72kgJxGgMHauMxsQ1N5Z325q1NAoAzo8Mrp_1z0HjNEypCoucWE_Bzuq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zVVN_c2oH1NkypooucoR_jz-8jNEu3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92o8MWO_32SH1N1Z_CozcHF_M2uHJNJ33BM1_7YUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6s1DUMNOQ3-BrBYxgIowrMuhUstObm-sy9zwq3zpUs2QosUDo_efbAHOHsuPbm-X9foxQMz2gcV7guYxgIHi6seFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpnRoAVY?sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026ob\u003d%00\u0026dv\u003dandroid-4.01\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokindoid%2Fsepeda-statis-fitness-twen-belt-bike-new-arrival-bb379-pembakar-lemak-merah%3Fsrc%3Dtopads\u0026page\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026management_type\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHpK7H_HdHAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndH_HNHAjFbm-srcHi6sHh6AnDUMVj9RosQR-BUst7oAUXHp1foprhopn7HsHRoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zR_7zo8jOE_92o8jOE_92o8jOE_3BHe72kgJxGgMHauMxsQ1N5Z325q1NAoAzo8Mrp_1z0HjNEypCoucWE_Bzuq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zVVN_c2oH1NkypooucoR_jz-8jNEu3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92o8MWO_32SH1N1Z_CozcHF_M2uHJNJ33BM1_7YUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6s1DUMNOQ3-BrBYxgIowrMuhUstObm-sy9zwq3zpUs2QosUDo_efbAHOHsuPbm-X9foxQMz2gcV7guYxgIHi6seFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpnRoAVY?t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokindoid%2Fsepeda-statis-fitness-twen-belt-bike-new-arrival-bb379-pembakar-lemak-merah%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026product_id\u003d509123344\u0026page\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026uid\u003d3660643\u0026ob\u003d%00\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHdoAJp6AnFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpJObf-xHsojHcujb31hoprWoAxMHZOxgczBb3Jd6_UOoAxxypndHmNkrcribm-xgVYpyfYagZUEoAeabsHOosrRH_rFoAUpop1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j7P7YJ_92o8jOE_92o8jOE_92o8jO2_JoGqMzUZMgsHBgtyfO6Q7BkQfB6epe7_92SH7OJqp-68MHF_uz08jN1u3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23jzooJY13M2qucW73jPzHjN_HAC6qMPR_VzSHOBEqRzozVVN_BPzP7Y1z_-qQu20Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_jzz81hk__V6qMHp_uzsP7NJZ9268Bu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_920P1OkgpV6uJjF_1zsHJNku_C6zVB2gBJYvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstObm-XP3Oig9-wy3zp9R-BrZUEoZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpnRoAVY?sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1\u0026ob\u003d%00\u0026t\u003dandroid\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty\u0026management_type\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/15/ba23d0ed-e177-48f1-adde-a892548ac080.jpg",
+                "price": "Rp739.000",
+                "priceInt": 739000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 2881867,
+                  "name": "TOKINDO ID",
+                  "city": "Kab. Tangerang",
+                  "isGold": true,
+                  "isOfficial": true
+                },
+                "departmentId": 3525,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 1,8rb",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 847,
+                "ratingAverage": "4.8",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 0,
+                "isTopads": true
+              },
+              {
+                "id": 1010263608,
+                "name": "Baju dokter jaga/tenaga medis - Putih, S",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/hannacollection1/baju-dokter-jaga-tenaga-medis-putih-s?src\u003dtopads",
+                "appUrl": "tokopedia://product/1010263608",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJd6AUfosHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndH_HNHAjFbm-srcHi6sJFHAnDUMVj9RosQR-BUst7HArXHpJh6_rR6_KNoA17HiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_ea_M2gHjNk3_-6qBja_M2gHjNkyfBHe72kgJxGgMHauMxsQ1N5Z325q1N2oA-6qBja_M2gHjNk3_-6qBja_M2sq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2o8JO1qpo68MD7_OzzH1NJZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z926uJuO_1zVP7N1e9BvzcoE_M2VHJY_Zsjibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?src\u003drecom_widget_bom_empty\u0026t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fhannacollection1%2Fbaju-dokter-jaga-tenaga-medis-putih-s%3Fsrc%3Dtopads\u0026ob\u003d%00\u0026management_type\u003d2\u0026page\u003d1\u0026dv\u003dandroid-4.01",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosJd6AUfosHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndH_HNHAjFbm-srcHi6sJFHAnDUMVj9RosQR-BUst7HArXHpJh6_rR6_KNoA17HiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_ea_M2gHjNk3_-6qBja_M2gHjNkyfBHe72kgJxGgMHauMxsQ1N5Z325q1N2oA-6qBja_M2gHjNk3_-6qBja_M2sq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2o8JO1qpo68MD7_OzzH1NJZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z926uJuO_1zVP7N1e9BvzcoE_M2VHJY_Zsjibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?dv\u003dandroid-4.01\u0026product_id\u003d1010263608\u0026t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026uid\u003d3660643\u0026ob\u003d%00\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fhannacollection1%2Fbaju-dokter-jaga-tenaga-medis-putih-s%3Fsrc%3Dtopads\u0026page\u003d1\u0026management_type\u003d2\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syh6AKaosypbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5H_n5gAJd6_eOos1WH_rf6Z77ysK7b3UayfyWysCx6AoigAehoMJfbM2FgaUDUMVj9RosQR-BUst7HArXHpJh6_rR6_KNoA17HiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_ea_M2gHjNk3_-6qBja_M2gHjNkyfBHe72kgJxGgMHauMxsQ1N5Z325q1N2oA-6qBja_M2gHjNk3_-6qBja_M2sq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBqzJ77_OzqqB21qRzqzOJa_BHFHJNkgRPHucrp3920PJOJ19B6uOVR_OzVHB2W3MW-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2o8JO1qpo68MD7_OzzH1NJZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z926uJuO_1zVP7N1e9BvzcoE_M2VHJY_Zsjibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?ob\u003d%00\u0026t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty\u0026management_type\u003d2",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/9/10/d1894565-1769-4b84-b2cf-b0a83bd416a6.jpg",
+                "price": "Rp110.000",
+                "priceInt": 110000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 8838482,
+                  "name": "Hanna Collection_1",
+                  "city": "Jakarta Barat",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2525,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 448",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 113,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 0,
+                "isTopads": true
+              },
+              {
+                "id": 1197731993,
+                "name": "Baju Jaga/Baju OK/Baju Jaga Malam Bordir - Navy, S",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/bajujagaid/baju-jaga-baju-ok-baju-jaga-malam-bordir-navy-s?src\u003dtopads",
+                "appUrl": "tokopedia://product/1197731993",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosHpo_UOHprDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndH_HNHAjFbm-srcHi6srOHmFiy3zwrfo5rM1i6seFoidaHpyNHAKp6_jao_jdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoIPoucr7_M2so1Ok1_VoqMPE_1z-q1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzzP1OkgpV68j1F_32SH1NEz_CoqMrhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW192vzcDa3_-uo1h91MW6qBu7_jzgoJOAHAz6Hj7O_VzCHJOkuMWozcWd_MOqQu2AZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19P6q_zN_92go1OJgR2vucWN_Bz0oJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEe_CHqB1a_M2g8jYJZ9x6uVud_1zVq3gzv_7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?ob\u003d%00\u0026dv\u003dandroid-4.01\u0026page\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbajujagaid%2Fbaju-jaga-baju-ok-baju-jaga-malam-bordir-navy-s%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosHpo_UOHprDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndH_HNHAjFbm-srcHi6srOHmFiy3zwrfo5rM1i6seFoidaHpyNHAKp6_jao_jdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoIPoucr7_M2so1Ok1_VoqMPE_1z-q1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzzP1OkgpV68j1F_32SH1NEz_CoqMrhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW192vzcDa3_-uo1h91MW6qBu7_jzgoJOAHAz6Hj7O_VzCHJOkuMWozcWd_MOqQu2AZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19P6q_zN_92go1OJgR2vucWN_Bz0oJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEe_CHqB1a_M2g8jYJZ9x6uVud_1zVq3gzv_7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEoZFiQSuWyMua9fVjrOYag9Ji6s1DUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?uid\u003d3660643\u0026src\u003drecom_widget_bom_empty\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbajujagaid%2Fbaju-jaga-baju-ok-baju-jaga-malam-bordir-navy-s%3Fsrc%3Dtopads\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1\u0026product_id\u003d1197731993\u0026ob\u003d%00\u0026management_type\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-4.01",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sypHp1ao_HRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5Hsn5Hp1ho_yaoi4po_JOosUf9pxsyf-jg3Vib_JOoA1WoACBoa7No_Psb_PiypKRgsUfg3Hfgu4hHAnF9pJFHAnibm-xgVYpyfYagZUEoAnfbsUposjF6AHN6_UO6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_9j7P7O1gpz6qMHO_32zH1OkgR2ozJB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVVO_32SH1NEz_CoqMrh_S2VHJOkgpV-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Oz8jYJqp-gHB1O_VPZq7Nku9z6zVj7_1HFoJda__uHuJJF_323q7OJqRx6Qu2W3jo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zP7N2oIBo8BjO_1zS8jY1qRB6ucD7Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92CHJhku_-6qBBE_7z-8JN1u9xozJu2gBJYvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstObm-XP3Oig9-wy3zp9R-BrZUEoZFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6_JdoS7?t\u003dandroid\u0026dv\u003dandroid-4.01\u0026ob\u003d%00\u0026management_type\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026src\u003drecom_widget_bom_empty\u0026page\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/9/20/3515626/3515626_8ccbdeab-1545-40e7-957c-7bc87f26ec6e_1000_1000",
+                "price": "Rp165.000",
+                "priceInt": 165000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 5349392,
+                  "name": "Baju Jaga",
+                  "city": "Jakarta Barat",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2525,
+                "labels": [
+                  {
+                    "title": "Grosir",
+                    "color": "#ffffff"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 205",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Grosir",
+                    "type": "lightGreen"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [
+                  {
+                    "price": 160000,
+                    "quantityMax": 2,
+                    "quantityMin": 2,
+                    "priceString": "Rp160.000"
+                  },
+                  {
+                    "price": 155000,
+                    "quantityMax": 4,
+                    "quantityMin": 3,
+                    "priceString": "Rp155.000"
+                  },
+                  {
+                    "price": 150000,
+                    "quantityMax": 10000,
+                    "quantityMin": 5,
+                    "priceString": "Rp150.000"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 80,
+                "ratingAverage": "5.0",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 0,
+                "isTopads": true
+              },
+              {
+                "id": 1215362235,
+                "name": "EVO PLUSMED Masker Surgical Face Mask - Hijau Limegreen",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+                "url": "https://www.tokopedia.com/duniamainan007/evo-plusmed-masker-surgical-face-mask-hijau-limegreen",
+                "appUrl": "tokopedia://product/1215362235",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_UaosJaHAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndH_HNHAjFbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHfoidhosrO6_Ud6_jpo_Jdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC6qjuR_92So1Nkz9Po8MrO_M2Vq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uH78JY1e_C68BBd_OzCHJNE39xvuJJhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWz9BqzVj7_M2S8jh9u_VozJV7_jzVoJN_HAz6HjN0_VP-o1OJZ_-6HjuN_BPZquB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__-6q_zd_M2sH1Y1Z_zvucWE_BzVoJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku9xHqB1a_M2CH7Nk1_Vo8MWE_OzV8jBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoaFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?page\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty\u0026is_search\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026management_type\u003d1\u0026keywords\u003drecom\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fduniamainan007%2Fevo-plusmed-masker-surgical-face-mask-hijau-limegreen%3Fsrc%3Dtopads",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_UaosJaHAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndH_HNHAjFbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHfoidhosrO6_Ud6_jpo_Jdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC6qjuR_92So1Nkz9Po8MrO_M2Vq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uH78JY1e_C68BBd_OzCHJNE39xvuJJhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWz9BqzVj7_M2S8jh9u_VozJV7_jzVoJN_HAz6HjN0_VP-o1OJZ_-6HjuN_BPZquB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__-6q_zd_M2sH1Y1Z_zvucWE_BzVoJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku9xHqB1a_M2CH7Nk1_Vo8MWE_OzV8jBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoaFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?product_id\u003d1215362235\u0026is_search\u003d1\u0026t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1\u0026keywords\u003drecom\u0026uid\u003d3660643\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fduniamainan007%2Fevo-plusmed-masker-surgical-face-mask-hijau-limegreen%3Fsrc%3Dtopads\u0026src\u003drecom_widget_bom_empty\u0026dv\u003dandroid-4.01\u0026management_type\u003d1",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aHsyhHsnpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5oa4hoi4ho_UaoMoMHm7p63UFb_zBHfHW6AjF6Z7OysHfgAujys1foM1XqSCSUiFiy3zwrfo5rM1i6sHfoidhosrO6_Ud6_jpo_Jdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC6qjuR_92So1Nkz9Po8MrO_M2Vq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uH78JY1e_C68BBd_OzCHJNE39xvuJJhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWz9BqzVj7_M2S8jh9u_VozJV7_jzVoJN_HAz6HjN0_VP-o1OJZ_-6HjuN_BPZquB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__-6q_zd_M2sH1Y1Z_zvucWE_BzVoJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku9xHqB1a_M2CH7Nk1_Vo8MWE_OzV8jBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6srDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?dv\u003dandroid-4.01\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026is_search\u003d1\u0026keywords\u003drecom\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/7/16/15226cf0-39b0-4e3c-8909-5b36d5db566e.jpg",
+                "price": "Rp 200.000",
+                "priceInt": 200000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 1,
+                "shop": {
+                  "id": 5615145,
+                  "name": "dunia mainan jkt",
+                  "city": "Jakarta Barat",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2520,
+                "labels": [],
+                "labelgroup": [],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 976,
+                "ratingAverage": "5.0",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 899,
+                "isTopads": true
+              },
+              {
+                "id": 1424399004,
+                "name": "Masker 3ply Earloop 3 ply medis bedah disposable face mask - Hitam - Alkindo HITAM",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+                "url": "https://www.tokopedia.com/autotrader/masker-3ply-earloop-3-ply-medis-bedah-disposable-face-mask-hitam-alkindo-hitam",
+                "appUrl": "tokopedia://product/1424399004",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosraoAHO6ArDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndH_HNHAjFbm-srcHi6srFHmFiy3zwrfo5rM1i6sHdHZdOosHdoprRosJpHpHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2ouVja_1z-8jO13_-ozJBE_uzgHJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32CP1NEgRPvzVVE_92VP7NEypV6qj7p_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMxoQuJa_7zgoJONH3h6uJVR_Vzz8JYJu9zvzczk3jHhq1Y1e9B6qMzt_323qOBWZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92vzJuO_Bzg8jYJypo68BBd_92o8jO2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepeO_7zsHJOJZ_o6zJuR_Ozo8JBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoaFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fautotrader%2Fmasker-3ply-earloop-3-ply-medis-bedah-disposable-face-mask-hitam-alkindo-hitam%3Fsrc%3Dtopads\u0026src\u003drecom_widget_bom_empty\u0026is_search\u003d1\u0026management_type\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026dv\u003dandroid-4.01\u0026keywords\u003drecom\u0026page\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosraoAHO6ArDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndH_HNHAjFbm-srcHi6srFHmFiy3zwrfo5rM1i6sHdHZdOosHdoprRosJpHpHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2ouVja_1z-8jO13_-ozJBE_uzgHJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32CP1NEgRPvzVVE_92VP7NEypV6qj7p_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMxoQuJa_7zgoJONH3h6uJVR_Vzz8JYJu9zvzczk3jHhq1Y1e9B6qMzt_323qOBWZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92vzJuO_Bzg8jYJypo68BBd_92o8jO2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepeO_7zsHJOJZ_o6zJuR_Ozo8JBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-sy9zwq3zpUs2QopJObAJRoAUDHs1aHV7DUMNwyfVXgcBjy9zB9fVjraUEoaFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?t\u003dandroid\u0026src\u003drecom_widget_bom_empty\u0026keywords\u003drecom\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fautotrader%2Fmasker-3ply-earloop-3-ply-medis-bedah-disposable-face-mask-hitam-alkindo-hitam%3Fsrc%3Dtopads\u0026uid\u003d3660643\u0026is_search\u003d1\u0026product_id\u003d1424399004\u0026dv\u003dandroid-4.01\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026page\u003d1",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syRHsepo_KRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_n5oa4pg_HF6AJO6m7Fo_zxb_zsg_rWyMoByZ7No_HfoMVxgMyR6A1XqSCSUiFiy3zwrfo5rM1i6sHdHZdOosHdoprRosJpHpHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2ouVja_1z-8jO13_-ozJBE_uzgHJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32CP1NEgRPvzVVE_92VP7NEypV6qj7p_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMxoQuJa_7zgoJONH3h6uJVR_Vzz8JYJu9zvzczk3jHhq1Y1e9B6qMzt_323qOBWZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92vzJuO_Bzg8jYJypo68BBd_92o8jO2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepeO_7zsHJOJZ_o6zJuR_Ozo8JBXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-szRgfqJxU8Bojbu-IupydHMrFZjeW6jVee_jhyjPfQAjaqfg5qOByoIoN33hA_OHpyjoOq7BhgVtRg1KOZpCDgI2t1MND3BtduuYePfVxQVuIHBC2yMhFQj-juOY1ZMOMZ_eWP9uO3BVs1pCCzfucqjuwPRuyocgc8chuy1P_rZ7h8IPdrJYfZ1OaqjFdQ1xoqjoe_px1Z92ju1o-QIVIesBkUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6srDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHR6ZFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026keywords\u003drecom\u0026t\u003dandroid\u0026dv\u003dandroid-4.01\u0026management_type\u003d1\u0026src\u003drecom_widget_bom_empty\u0026page\u003d1\u0026is_search\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/10/7/3e308158-054a-4ce7-bcea-95366aaff785.jpg",
+                "price": "Rp 29.999",
+                "priceInt": 29999,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 2961500,
+                  "name": "Auto Trader",
+                  "city": "Jakarta Pusat",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2520,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "gimmick",
+                    "title": "Produk Terbaru",
+                    "type": "textDarkOrange"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 534,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 179,
+                "isTopads": true
+              },
+              {
+                "id": 905121857,
+                "name": "Samsung Galaxy A21s 3/32 GB Garansi Resmi SEIN - Hitam",
+                "categoryBreadcrumbs": "Handphone \u0026 Tablet/Handphone/Android OS",
+                "url": "https://www.tokopedia.com/gudang-hp/samsung-galaxy-a21s-3-32-gb-garansi-resmi-sein-hitam",
+                "appUrl": "tokopedia://product/905121857",
+                "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3054\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbom_empty\u0026pid\u003d905121857\u0026pos\u003d3\u0026recommendation\u003dcluster_v2_recentview\u0026rectype\u003dcluster_v2_recentview\u0026redirect\u003dhttps://www.tokopedia.com/gudang-hp/samsung-galaxy-a21s-3-32-gb-garansi-resmi-sein-hitam?catid3054\u003d%26ref\u003dbom_empty_pa1_po3%26src\u003dr3cluster_v2_recentview\u0026tid\u003dfK4j5XWgZh9hwKRAmR4R-E1GNP8\u003d\u0026uid\u003d3660643\u0026unique_id\u003d\u0026utime\u003d1608139090\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-4.01",
+                "wishlistUrl": "",
+                "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/2608727/2608727_c02257f0-01a6-4644-8dc2-87f0be4d6908_800_800",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/2608727/2608727_c02257f0-01a6-4644-8dc2-87f0be4d6908_800_800",
+                "price": "Rp 2.253.000",
+                "priceInt": 2253000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 1,
+                "shop": {
+                  "id": 342169,
+                  "name": "Gudang-HP",
+                  "city": "Jakarta Pusat",
+                  "isGold": true,
+                  "isOfficial": true
+                },
+                "departmentId": 3054,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "offers",
+                    "title": "Tukar Tambah",
+                    "type": "lightGrey"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 438,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 10,
+                "isTopads": false
+              },
+              {
+                "id": 882336696,
+                "name": "EVO PLUSMED SURGICAL FACE MASK MASKER EVOPLUSMED 25 PCS - Orange",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+                "url": "https://www.tokopedia.com/bobotoysjkt/evo-plusmed-surgical-face-mask-masker-evoplusmed-25-pcs-orange",
+                "appUrl": "tokopedia://product/882336696",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_UpHAJOHpjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndH_HNHAjFbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHRHad7o_KhosKhosn7osyfomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_e7_S20H1YJz9x6uJ17_92-HJNke_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke9uvuVBd_BzooJNJ39x6uJ77_jzg8JN2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_S2oP1NJu_zouVj7_uzgP7NJ3_-6qBV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_jzSP1Y1Z92ozJjp_S2goJOkqpzoqjO2gBJYvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUstRbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UF9ZFiQBYsy3Njq3zxPcuwy3zpUstRbm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHprNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?src\u003drecom_widget_bom_empty\u0026t\u003dandroid\u0026dv\u003dandroid-4.01\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbobotoysjkt%2Fevo-plusmed-surgical-face-mask-masker-evoplusmed-25-pcs-orange%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026keywords\u003drecom\u0026page\u003d1\u0026management_type\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_UpHAJOHpjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndH_HNHAjFbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHRHad7o_KhosKhosn7osyfomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_e7_S20H1YJz9x6uJ17_92-HJNke_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke9uvuVBd_BzooJNJ39x6uJ77_jzg8JN2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_S2oP1NJu_zouVj7_uzgP7NJ3_-6qBV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_jzSP1Y1Z92ozJjp_S2goJOkqpzoqjO2gBJYvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUstRbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UF9ZFiQBYsy3Njq3zxPcuwy3zpUstRbm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHprNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?dv\u003dandroid-4.01\u0026t\u003dandroid\u0026uid\u003d3660643\u0026is_search\u003d1\u0026keywords\u003drecom\u0026page\u003d1\u0026product_id\u003d882336696\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026src\u003drecom_widget_bom_empty\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbobotoysjkt%2Fevo-plusmed-surgical-face-mask-masker-evoplusmed-25-pcs-orange%3Fsrc%3Dtopads",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aHpnho_HNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn5oa4hoi4R6A1NoArFH_K5opKO6_eRHAJd9p-socuMo3yfb_Jf6AJWoA17oZ7docuib_JpopVxocoBof-joV4hHAKF9pJF6AnXqSCSUiFiy3zwrfo5rM1i6sHRHad7o_KhosKhosn7osyfomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_e7_S20H1YJz9x6uJ17_92-HJNke_z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke9uvuVBd_BzooJNJ39x6uJ77_jzg8JN2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_S2oP1NJu_zouVj7_uzgP7NJ3_-6qBV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_jzSP1Y1Z92ozJjp_S2goJOkqpzoqjO2gBJYvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMoIPSgtZJxE1feW1jP9osKagpCGzm7EeuCC6_VizRgD6_-0gMY03uK7rRBgQJov1poieRu0Z9Vj3sPBZAubHchj8MxZQMhq3sxu9OCRy3VDu1ra1cBiQICXeMz99OzGQ3g-omOOP9uq13o_HJVIg1gkzuYRPuK7gjgdQVuxzOohb_VdPRxF_Rg-_9-k_AxWZJOkeOCv6Vz-8Mzue7BDr1Pm63tibm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUstRbm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEoaFircYpPVYxQcri6BDirfh5PIz2QMPwyS-5PRoBUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHprNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?dv\u003dandroid-4.01\u0026keywords\u003drecom\u0026page\u003d1\u0026t\u003dandroid\u0026management_type\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026is_search\u003d1\u0026src\u003drecom_widget_bom_empty",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/16/785947018/785947018_2c4ef5f6-1681-4545-84eb-1371a4ce7bd4_1080_1080.jpg",
+                "price": "Rp 198.000",
+                "priceInt": 198000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 1,
+                "shop": {
+                  "id": 2309017,
+                  "name": "bobotoysjkt",
+                  "city": "Kota Tangerang",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 2520,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 1222,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 333214,
+                "isTopads": true
+              },
+              {
+                "id": 399641301,
+                "name": "Sepeda Statis Terapi Kaki Sendi Tulang Lutut Stroke Mini Exercise Bike",
+                "categoryBreadcrumbs": "Olahraga/Gym \u0026 Fitness/Sepeda Statis",
+                "url": "https://www.tokopedia.com/tokobarbel/sepeda-statis-terapi-kaki-sendi-tulang-lutut-stroke-mini-exercise-bike",
+                "appUrl": "tokopedia://product/399641301",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHsjOHA1dH_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndH_HNHAjFbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUOHidNoprdo_e7H_JdosjRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqBBE_92SP7OkgRx6qMWR_uzzP7Y_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_Bz-P1Y1ypovzV1F_jzV8JYJ3_u68BV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2sP1Okz_-oqBJh_uzso1NJgRB617tNUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6srDUMNOQ3-BrBYxgIowrMuhUsthHmFiyfV79fBjraUE3pyabA17oiFpo_UO9ZFiQBYsy3Njq3zxPcuwy3zpUstRbm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHFopehbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?t\u003dandroid\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026keywords\u003drecom\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokobarbel%2Fsepeda-statis-terapi-kaki-sendi-tulang-lutut-stroke-mini-exercise-bike%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty\u0026page\u003d1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHsjOHA1dH_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndH_HNHAjFbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUOHidNoprdo_e7H_JdosjRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqBBE_92SP7OkgRx6qMWR_uzzP7Y_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_Bz-P1Y1ypovzV1F_jzV8JYJ3_u68BV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2sP1Okz_-oqBJh_uzso1NJgRB617tNUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6srDUMNOQ3-BrBYxgIowrMuhUsthHmFiyfV79fBjraUE3pyabA17oiFpo_UO9ZFiQBYsy3Njq3zxPcuwy3zpUstRbm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHFopehbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?src\u003drecom_widget_bom_empty\u0026uid\u003d3660643\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftokobarbel%2Fsepeda-statis-terapi-kaki-sendi-tulang-lutut-stroke-mini-exercise-bike%3Fsrc%3Dtopads\u0026dv\u003dandroid-4.01\u0026keywords\u003drecom\u0026is_search\u003d1\u0026management_type\u003d1\u0026product_id\u003d399641301\u0026page\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026t\u003dandroid",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sUNo_nO6AJRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yF6AJp6_nNHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn5HZ4hHi4hHpepH_JpHi4hHpepH_JpHBYxy_UdofuBgZ7O6_JNb_eOH_eWyMHp6Z7OgMHfo3-xgAgioAPwH_nFHV4hHAnFUiFiy3zwrfo5rM1i6sUOHidNoprdo_e7H_JdosjRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqBBE_92SP7OkgRx6qMWR_uzzP7Y_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_3OzHjYJ3_zo8_VD_BzCP7h119xvzVu7_7zjqB2AH3BvuJVN_M2jqJOkuMWgQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_Bz-P1Y1ypovzV1F_jzV8JYJ3_u68BV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2sP1Okz_-oqBJh_uzso1NJgRB617tNUiFiP9oBrBY2gmUEUsHfosnfoAHibm-pg9opq3YX9fBjUstiy7PfPMxUZI2_gmOZzOrf6A-SHJ2Jb_2C1JJNH3-IPMFNHMWMQfWg3Azp8uBDe7Y_Hf-AP3W-r3zqofuUo1DFQczEqV-XQV2q6Vuw1IPxy3huzp-eq3-DrcNmgVPwuJ2Wgjj7b9uOPu2zyOHFe1PBzM2V9RPO3AzMzSxDu3VI1RJWH9xR8ICvPjBorM2H6cOU_32A1J4duJBEgVuAZ3hhz7UNqiUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6srDUMNOQ3-BrBYxgIowrMuhUsthHmFiQBYsy3Njq3zxPcuwy3zpUstRbm-FQRo79fVDgaUE3a-pQcY7PcBXgOYirMYRrf1i9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpnRoAJDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?keywords\u003drecom\u0026management_type\u003d1\u0026sid\u003dcGvvhHHzSd-RGW682g0JD-%3AAPA91bGvl92kfokYX4syYlCOS3bCukIqdZ7eH5K0ldzhRnlZZ8U_PwaalUG2PiblpnBdW_TJmfI4-uuuZQcS0AGeFjE_wuX4fFxlUaGSq-1xwxpOvIMrjL8mHMjCPO8TIzdUCIlqGB9j\u0026dv\u003dandroid-4.01\u0026src\u003drecom_widget_bom_empty\u0026page\u003d1\u0026t\u003dandroid\u0026is_search\u003d1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/1/12/13431132/13431132_aa287eee-5919-4514-bc39-5fc65bad6b47_1000_1000",
+                "price": "Rp 313.313",
+                "priceInt": 313313,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 1,
+                "shop": {
+                  "id": 1570952,
+                  "name": "toko barbell",
+                  "city": "Jakarta Selatan",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 3525,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  },
+                  {
+                    "title": "Grosir",
+                    "color": "#ffffff"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Grosir",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 1,6rb",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                  }
+                ],
+                "wholesalePrice": [
+                  {
+                    "price": 308308,
+                    "quantityMax": 10000,
+                    "quantityMin": 2,
+                    "priceString": "Rp 308.308"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "countReview": 660,
+                "ratingAverage": "4.9",
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 463,
+                "isTopads": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,8 +1,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="180"
-        android:endColor="#e0e0e0"
-        android:centerColor="#e0e0e0"
-        android:startColor="#f2f2f2"/>
+        android:endColor="@color/Unify_N100"
+        android:centerColor="@color/Unify_N100"
+        android:startColor="@color/Unify_N50"/>
     <corners android:radius="@dimen/dp_8" />
 </shape>

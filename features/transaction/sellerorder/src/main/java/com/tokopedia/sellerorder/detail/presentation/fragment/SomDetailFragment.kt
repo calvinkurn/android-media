@@ -14,6 +14,8 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -36,6 +38,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -65,6 +68,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
@@ -76,6 +80,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INVOICE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
@@ -87,7 +92,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
@@ -96,8 +100,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RES
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
+import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
@@ -109,6 +115,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -126,10 +133,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
@@ -172,6 +177,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
+    private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
     private lateinit var somDetailAdapter: SomDetailAdapter
     private lateinit var somBottomSheetRejectOrderAdapter: SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectReasonsAdapter: SomBottomSheetRejectReasonsAdapter
@@ -250,12 +256,14 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getActivityPltPerformanceMonitoring()
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
             if (userRoles != null) {
                 somDetailViewModel.setUserRoles(userRoles)
             } else {
+                somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
                 checkUserRole()
             }
         }
@@ -268,6 +276,8 @@ class SomDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setupToolbar()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -345,6 +355,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observingDetail() {
         somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
+            somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     detailResponse = it.data.getSomDetail
@@ -354,6 +365,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
+                    stopLoadTimeMonitoring()
                 }
             }
         })
@@ -501,6 +513,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onUserAllowedToViewSOM() {
+        somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
     }
 
@@ -515,6 +528,9 @@ class SomDetailFragment : BaseDaggerFragment(),
         renderButtons()
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        rv_detail.addOneTimeGlobalLayoutListener {
+            stopLoadTimeMonitoring()
+        }
         somDetailAdapter.notifyDataSetChanged()
     }
 
@@ -559,23 +575,23 @@ class SomDetailFragment : BaseDaggerFragment(),
         detailResponse?.run {
             val dataShipping = SomDetailShipping(
                     shipment.name + " - " + shipment.productName,
-                    receiver.name,
-                    receiver.phone,
-                    receiver.street,
-                    detailResponse?.receiver?.district + ", " + receiver.city + " " + receiver.postal,
-                    receiver.province,
-                    flagOrderMeta.flagFreeShipping,
-                    bookingInfo.driver.photo,
-                    bookingInfo.driver.name,
-                    bookingInfo.driver.phone,
-                    dropshipper.name,
-                    dropshipper.phone,
-                    bookingInfo.driver.licenseNumber,
-                    bookingInfo.onlineBooking.bookingCode,
-                    bookingInfo.onlineBooking.state,
-                    bookingInfo.onlineBooking.message,
-                    bookingInfo.onlineBooking.messageArray,
-                    bookingInfo.onlineBooking.barcodeType,
+                    receiverName = receiver.name,
+                    receiverPhone = receiver.phone,
+                    receiverStreet = receiver.street,
+                    receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
+                    receiverProvince = receiver.province,
+                    isFreeShipping = flagOrderMeta.flagFreeShipping,
+                    driverPhoto = bookingInfo.driver.photo,
+                    driverName = bookingInfo.driver.name,
+                    driverPhone = bookingInfo.driver.phone,
+                    dropshipperName = dropshipper.name,
+                    dropshipperPhone = dropshipper.phone,
+                    driverLicense = bookingInfo.driver.licenseNumber,
+                    onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
+                    onlineBookingState = bookingInfo.onlineBooking.state,
+                    onlineBookingMsg = bookingInfo.onlineBooking.message,
+                    onlineBookingMsgArray = bookingInfo.onlineBooking.messageArray,
+                    onlineBookingType = bookingInfo.onlineBooking.barcodeType,
                     isRemoveAwb = onlineBooking.isRemoveInputAwb,
                     awb = shipment.awb,
                     awbTextColor = shipment.awbTextColor,
@@ -629,6 +645,8 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                            buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                         }
                     }
                 }
@@ -819,6 +837,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                 }
             }
         }
@@ -842,53 +861,6 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionRejectOrder() {
         somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
-    }
-
-    private fun showCancelOrderPenaltyBottomSheet() {
-        val bottomSheetPenalty = BottomSheetUnify()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_cancel_order_penalty, null).apply {
-            tf_cancel_notes?.apply {
-                setLabelStatic(true)
-                setMessage(getString(R.string.cancel_order_notes_max))
-                textFiedlLabelText.text = getString(R.string.cancel_order_notes_hint)
-                textFieldInput.hint = getString(R.string.cancel_order_notes_hint)
-            }
-            ticker_penalty_explanation?.apply {
-                setHtmlDescription(getString(R.string.cancel_order_penalty_warning_content))
-                closeButtonVisibility = View.GONE
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
-                    override fun onDismiss() {}
-                })
-            }
-            btn_cancel_order_canceled?.setOnClickListener { bottomSheetPenalty.dismiss() }
-            btn_cancel_order_confirmed?.setOnClickListener {
-                bottomSheetPenalty.dismiss()
-                val orderRejectRequest = SomRejectRequestParam(
-                        orderId = detailResponse?.orderId?.toString().orEmpty(),
-                        rCode = "0",
-                        reason = tf_cancel_notes?.textFieldInput?.text.toString()
-                )
-                if (checkReasonRejectIsNotEmpty(tf_cancel_notes?.textFieldInput?.text.toString())) {
-                    doRejectOrder(orderRejectRequest)
-                } else {
-                    showToasterError(getString(R.string.cancel_order_notes_empty_warning), bottomSheetPenalty.view)
-                }
-            }
-        }
-        bottomSheetPenalty.apply {
-            setTitle(TITLE_BATALKAN_PESANAN_PENALTY)
-            isFullpage = true
-            setChild(viewBottomSheet)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let {
-            bottomSheetPenalty.show(it, TAG_BOTTOMSHEET)
-        }
     }
 
     private fun checkReasonRejectIsNotEmpty(reason: String): Boolean {
@@ -988,10 +960,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         openWebview(awbUploadUrl)
     }
 
-    override fun onSeeInvoice(url: String) {
+    override fun onSeeInvoice(url: String, invoice: String) {
         SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
+            putExtra(PARAM_INVOICE, invoice)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
             putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
             startActivity(this)
@@ -1518,5 +1491,24 @@ class SomDetailFragment : BaseDaggerFragment(),
         somGlobalError?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(som_detail_toolbar)
+                som_detail_toolbar?.title = getString(R.string.title_som_detail)
+            }
+        }
+    }
+
+    private fun getActivityPltPerformanceMonitoring() {
+        somDetailLoadTimeMonitoring = (activity as? SomDetailActivity)?.somDetailLoadTimeMonitoring
+    }
+
+    private fun stopLoadTimeMonitoring() {
+        somDetailLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
 }

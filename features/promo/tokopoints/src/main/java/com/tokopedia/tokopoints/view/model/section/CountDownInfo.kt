@@ -14,7 +14,7 @@ data class CountDownInfo(
         val label: String? = null,
 
         @SerializedName("countdownUnix")
-        val countdownUnix: Long? = null,
+        var countdownUnix: Long? = null,
 
         @SerializedName("countdownStr")
         val countdownStr: String? = null,

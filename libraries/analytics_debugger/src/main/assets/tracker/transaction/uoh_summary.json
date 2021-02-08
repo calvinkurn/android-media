@@ -20,7 +20,7 @@
       "currentSite": "tokopediamarketplace",
       "item_list": "/order list - marketplace",
       "event": "view_item_list",
-      "userId": "",
+      "userId": "{{.*}}",
       "eventAction": "view order card marketplace",
       "sessionIris": "{{.*}}",
       "items": [

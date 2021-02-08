@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 
 /**
@@ -51,9 +50,5 @@ open class BsProductDetailInfoBaseAdapter(asyncDifferConfig: AsyncDifferConfig<P
         if (payloads.isNotEmpty()) {
             holder.bind(item, payloads)
         }
-    }
-
-    fun showLoading() {
-        submitList(listOf(ProductDetailInfoLoadingDataModel()))
     }
 }

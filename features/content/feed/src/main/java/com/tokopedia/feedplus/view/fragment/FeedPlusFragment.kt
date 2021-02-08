@@ -67,7 +67,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
@@ -134,7 +133,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
@@ -436,14 +434,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            voteResp.observe(lifecycleOwner, Observer {
-                when(it) {
-                    is Success -> onSuccessSendVote(it.data.rowNumber, it.data.optionId, it.data.voteModel)
-                    is Fail -> onErrorSendVote(it.throwable.localizedMessage)
-                }
-
-            })
-
             atcResp.observe(lifecycleOwner, Observer {
                 when(it) {
                     is Success -> {
@@ -644,7 +634,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed.visibility = View.GONE
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
-        TopAdsHeadlineActivityCounter.page = 0
+        TopAdsHeadlineActivityCounter.page = 1
     }
 
     override fun onDestroyView() {
@@ -655,6 +645,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (layoutManager != null) {
             layoutManager = null
         }
+        TopAdsHeadlineActivityCounter.page = 1
     }
 
     override fun onInfoClicked() {
@@ -991,7 +982,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
         dialog.setBtnOk(getString(R.string.button_delete))
-        dialog.setBtnCancel(getString(R.string.cancel))
+        dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         dialog.setOnOkClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
@@ -1710,35 +1701,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSendVote(rowNumber: Int, optionId: String,
-                                   voteStatisticDomainModel: VoteStatisticDomainModel) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        val (_, _, _, _, _, _, contentList) = newList[rowNumber]
-        for (basePostViewModel in contentList) {
-            if (basePostViewModel is PollContentViewModel) {
-                basePostViewModel.voted = true
-                val totalVoter: Int = voteStatisticDomainModel.totalParticipants.toIntOrZero()
-                basePostViewModel.totalVoterNumber = totalVoter
-                for (i in 0 until basePostViewModel.optionList.size) {
-                    val optionViewModel = basePostViewModel.optionList[i]
-
-                    optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                        PollContentOptionViewModel.SELECTED
-                    else
-                        PollContentOptionViewModel.UNSELECTED
-                    optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
-                }
-            }
-        }
-        adapter.updateList(newList)
-    }
-
-    private fun onErrorSendVote(message: String) {
-        view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-    }
-
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -1799,7 +1761,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        feedViewModel.doVote(rowNumber, pollId, optionId)
+
     }
 
     private fun onGoToLink(link: String) {

@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -26,12 +25,12 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
-import com.tokopedia.topchat.common.util.ChatHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.time.TimeHelper
 
 /**
  * @author : Steven 2019-08-07
@@ -49,8 +48,8 @@ class ChatItemListViewHolder(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
-    private val unreadSpanColor: Int = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
-    private val readSpanColor: Int = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
 
     private val menu = LongClickMenu()
 
@@ -272,7 +271,7 @@ class ChatItemListViewHolder(
     private fun bindTypingState() {
         message.setText(R.string.is_typing)
         message.setTypeface(null, ITALIC)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -286,7 +285,7 @@ class ChatItemListViewHolder(
         message.text = spanText
         message.setLines(2)
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {
@@ -325,7 +324,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTimeStamp(chat: ItemChatListPojo) {
-        time.text = ChatHelper.convertToRelativeDate(chat.lastReplyTimeStr)
+        time.text = TimeHelper.getRelativeTimeFromNow(chat.lastReplyTimeMillis)
     }
 
     private fun bindLabel(chat: ItemChatListPojo) {

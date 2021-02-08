@@ -30,7 +30,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQU
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.DepositAmount
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -104,7 +104,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     }
 
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
-        context?.run { TopAdsInsightTabAdapter(this) }
+        context?.run { TopAdsInsightTabAdapter() }
     }
 
     protected val currentStatisticsFragment: TopAdsDashboardStatisticFragment?
@@ -297,7 +297,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, 0, 0, response.data.size)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 

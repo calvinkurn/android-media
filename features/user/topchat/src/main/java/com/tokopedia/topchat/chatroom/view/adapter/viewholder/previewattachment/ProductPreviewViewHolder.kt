@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -81,7 +82,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     private fun applyStrokeTo(backgroundDrawable: Drawable?) {
         if (backgroundDrawable is GradientDrawable) {
             val strokeWidth = toDp(1)
-            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.grey_300))
+            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
         }
     }
 

@@ -105,6 +105,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               maxAutoplayWifi
               template
               isButtonVisible
+              businessWidgetPosition
             }
           }
         }

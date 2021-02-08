@@ -121,8 +121,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {
             for (journey in flightOrderDetailData.journeys) {
-                val webCheckInOpenTime = FlightDateUtil.stringToDate(journey.webCheckIn.startTime)
-                val webCheckInCloseTime = FlightDateUtil.stringToDate(journey.webCheckIn.endTime)
+                val webCheckInOpenTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.startTime)
+                val webCheckInCloseTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.endTime)
                 if (webCheckInOpenTime.before(today) && webCheckInCloseTime.after(today)) {
                     checkInAvailable = true
                     subtitle = journey.webCheckIn.subtitle

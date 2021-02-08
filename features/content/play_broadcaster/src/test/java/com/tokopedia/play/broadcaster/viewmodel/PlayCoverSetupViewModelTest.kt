@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.play.broadcaster.data.config.*
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStore
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
 import com.tokopedia.play.broadcaster.model.ModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockImageTransformer
@@ -28,7 +30,6 @@ import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.max
 
 /**
  * Created by jegul on 29/09/20
@@ -43,11 +44,12 @@ class PlayCoverSetupViewModelTest {
 
     private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
 
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var coverConfigStore: CoverConfigStore
 
-    private val uploadImageUseCase: UploadImageToRemoteUseCase = mockk(relaxed = true)
+    private val uploadImageUseCase: UploadImageToRemoteV2UseCase = mockk(relaxed = true)
     private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase = mockk(relaxed = true)
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
@@ -65,19 +67,20 @@ class PlayCoverSetupViewModelTest {
 
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = MockCoverDataStore(dispatcherProvider, uploadCoverTitleException)
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
 
         viewModel = PlayCoverSetupViewModel(
                 hydraConfigStore = HydraConfigStoreImpl(
                         channelConfigStore,
                         ProductConfigStoreImpl(),
-                        coverConfigStore
+                        coverConfigStore,
+                        BroadcastScheduleConfigStoreImpl()
                 ),
                 dispatcher = dispatcherProvider,
                 setupDataStore = mockSetupDataStore,
                 uploadImageUseCase = uploadImageUseCase,
                 getOriginalProductImageUseCase = getOriginalProductImageUseCase,
-                userSession = mockk(relaxed = true),
                 coverImageUtil = MockPlayCoverImageUtil(),
                 coverImageTransformer = MockImageTransformer()
         )

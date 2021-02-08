@@ -26,24 +26,26 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_weight="1"
             android:gravity="center_horizontal|start"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
             tools:text="Title" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end|right"
+            android:gravity="end"
             android:textColor="@color/Unify_G400"
             android:textSize="@dimen/sp_14"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
 
     </LinearLayout>
 

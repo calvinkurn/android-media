@@ -81,7 +81,7 @@ public interface DigitalBaseContract {
 
         String getClientNumber();
 
-        int getOrderId();
+        long getOrderId();
 
         String getZoneId();
 
@@ -127,6 +127,10 @@ public interface DigitalBaseContract {
     interface Presenter<T extends View> extends CustomerPresenter<T> {
 
         void onViewCreated();
+
+        void onClickPromoButton();
+
+        void onClickPromoDetail();
 
         void onReceivePromoCode(PromoData promoData);
 

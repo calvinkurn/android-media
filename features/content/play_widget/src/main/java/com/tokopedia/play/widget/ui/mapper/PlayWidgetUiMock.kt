@@ -133,7 +133,8 @@ object PlayWidgetUiMock {
             autoPlay = true,
             autoPlayAmount = 3,
             maxAutoPlayCellularDuration = 5,
-            maxAutoPlayWifiDuration = 10
+            maxAutoPlayWifiDuration = 10,
+            businessWidgetPosition = 0
     )
 
     private fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(

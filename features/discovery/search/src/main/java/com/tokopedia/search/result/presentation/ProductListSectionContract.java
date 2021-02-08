@@ -118,7 +118,7 @@ public interface ProductListSectionContract {
 
         void showMessageSuccessWishlistAction(boolean isWishlisted);
 
-        void showMessageFailedWishlistAction(boolean isWishlisited);
+        void showMessageFailedWishlistAction(boolean isWishlisted);
 
         String getPreviousKeyword();
 
@@ -236,6 +236,10 @@ public interface ProductListSectionContract {
         void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
+
+        boolean isBottomSheetFilterEnabled();
+
+        void onBottomSheetFilterDismissed();
 
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 

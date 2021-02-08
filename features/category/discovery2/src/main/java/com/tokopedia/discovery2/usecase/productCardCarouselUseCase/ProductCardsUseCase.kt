@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -35,7 +36,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.selectedFilters,
                             it.selectedSort,
                             parentComponentsItem?.data,
-                            productsLimit),
+                            productsLimit,
+                            componentId,
+                            pageEndPoint),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -60,7 +63,10 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.chipSelectionData,
                             component1.selectedFilters,
                             component1.selectedSort,
-                            parentComponentsItem?.data, productsLimit),
+                            parentComponentsItem?.data,
+                            productsLimit,
+                            componentId,
+                            pageEndPoint),
                     pageEndPoint,
                     component1.name)
 
@@ -91,7 +97,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             it.selectedFilters,
                             it.selectedSort,
                             parentComponentsItem?.data,
-                            productsLimit),
+                            productsLimit,
+                            componentId,
+                            pageEndPoint),
                     pageEndPoint,
                     it.name)
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
@@ -106,7 +114,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      selectedFilters: HashMap<String, String>?,
                                      selectedSort: HashMap<String, String>?,
                                      data: List<DataItem>?,
-                                     productsPerPage: Int): MutableMap<String, Any> {
+                                     productsPerPage: Int,
+                                     componentId: String,
+                                     pageEndPoint: String): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -114,7 +124,14 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         chipSelectionData?.let {
-            queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+            it.targetComponent?.split(",")?.forEach { targetId ->
+                if (componentId == ComponentNames.LoadMore.componentName) {
+                    val component = getComponent(componentId, pageEndPoint)
+                    if (targetId == component?.parentComponentId) {
+                        queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+                    }
+                } else if (targetId == componentId) queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+            }
         }
         selectedFilters?.let {
             for (map in it) {

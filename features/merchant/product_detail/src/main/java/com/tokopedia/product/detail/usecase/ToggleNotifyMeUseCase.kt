@@ -15,10 +15,10 @@ class ToggleNotifyMeUseCase @Inject constructor(private val rawQueries: Map<Stri
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
-    fun createParams(campaignId: Int, productId: Int, action: String, source: String) {
+    fun createParams(campaignId: Long, productId: Long, action: String, source: String) {
         val requestParams = RequestParams()
-        requestParams.putInt(ProductDetailCommonConstant.PARAM_TEASER_CAMPAIGN_ID, campaignId)
-        requestParams.putInt(ProductDetailCommonConstant.PARAM_TEASER_PRODUCT_ID, productId)
+        requestParams.putLong(ProductDetailCommonConstant.PARAM_TEASER_CAMPAIGN_ID, campaignId)
+        requestParams.putLong(ProductDetailCommonConstant.PARAM_TEASER_PRODUCT_ID, productId)
         requestParams.putString(ProductDetailCommonConstant.PARAM_TEASER_ACTION, action)
         requestParams.putString(ProductDetailCommonConstant.PARAM_TEASER_SOURCE, source)
 

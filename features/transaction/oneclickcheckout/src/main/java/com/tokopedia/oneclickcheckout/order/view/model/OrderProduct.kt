@@ -3,8 +3,8 @@ package com.tokopedia.oneclickcheckout.order.view.model
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
-        var parentId: Int = 0,
-        var productId: Int = 0,
+        var parentId: Long = 0,
+        var productId: Long = 0,
         var productName: String = "",
         var productPrice: Long = 0,
         var wholesalePrice: List<WholesalePrice> = arrayListOf(),

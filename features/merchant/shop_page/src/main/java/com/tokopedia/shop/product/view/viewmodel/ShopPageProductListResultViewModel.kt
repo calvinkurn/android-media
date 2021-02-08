@@ -76,8 +76,10 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val restrictionEngineData: LiveData<Result<RestrictValidateRestriction>>
         get() = _restrictionEngineData
 
+    private var shopSortList = mutableListOf<ShopProductSortModel>()
+
     fun getShop(shopId: String?, shopDomain: String? = "", isRefresh: Boolean = false) {
-        val id = shopId?.toIntOrNull() ?: 0
+        val id = shopId.toIntOrZero()
         if (id == 0 && shopDomain == "") return
         launchCatchError(block = {
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
@@ -212,6 +214,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             )
             etalaseResponse.await()?.let { etalase ->
                 sortResponse.await()?.let{sort ->
+                    shopSortList = sort
                     shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
                 }
             }
@@ -317,7 +320,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     }
 
     fun getSortNameById(sortId: String): String {
-        return (shopSortFilterData.value as? Success)?.data?.sortList?.firstOrNull {
+        return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
     }

@@ -9,13 +9,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
     view: View,
     private val listener: ProductViewHolderView
-): AbstractViewHolder<ProductViewModel>(view) {
+): AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -23,7 +23,7 @@ class ProductViewHolder(
         const val MAX_SHOWING_STOCK = 999_999
     }
 
-    override fun bind(product: ProductViewModel) {
+    override fun bind(product: ProductUiModel) {
         setTitleAndPrice(product)
         showProductStock(product)
 
@@ -39,13 +39,13 @@ class ProductViewHolder(
         setOnClickListeners(product)
     }
 
-    private fun setTitleAndPrice(product: ProductViewModel) {
+    private fun setTitleAndPrice(product: ProductUiModel) {
         itemView.textTitle.text = product.title
         val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
         itemView.textPrice.text = prices.joinToString(" - ")
     }
 
-    private fun showProductStock(product: ProductViewModel) {
+    private fun showProductStock(product: ProductUiModel) {
         product.stock?.run {
             itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
                 getNumberFormatted()
@@ -57,18 +57,18 @@ class ProductViewHolder(
         }
     }
 
-    private fun showProductLabel(product: ProductViewModel) {
+    private fun showProductLabel(product: ProductUiModel) {
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
         itemView.labelCampaign.showWithCondition(product.hasStockReserved)
     }
 
-    private fun showVariantLabel(product: ProductViewModel) {
+    private fun showVariantLabel(product: ProductUiModel) {
         itemView.labelVariant.showWithCondition(product.isVariant())
     }
 
-    private fun showProductButton(product: ProductViewModel) {
+    private fun showProductButton(product: ProductUiModel) {
         if(product.multiSelectActive) {
             itemView.btnContactCS.hide()
             itemView.btnEditPrice.hide()
@@ -82,16 +82,16 @@ class ProductViewHolder(
         }
     }
 
-    private fun showStockHintImage(product: ProductViewModel) {
+    private fun showStockHintImage(product: ProductUiModel) {
         itemView.imageStockInformation
             .showWithCondition(product.isEmpty() && product.isNotViolation())
     }
 
-    private fun showProductImage(product: ProductViewModel) {
+    private fun showProductImage(product: ProductUiModel) {
         loadImageFitCenter(itemView.context, itemView.imageProduct, product.imageUrl)
     }
 
-    private fun setOnClickListeners(product: ProductViewModel) {
+    private fun setOnClickListeners(product: ProductUiModel) {
         setOnItemClickListener(product)
         setQuickEditBtnListeners(product)
 
@@ -101,7 +101,7 @@ class ProductViewHolder(
         itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
     }
 
-    private fun setQuickEditBtnListeners(product: ProductViewModel) {
+    private fun setQuickEditBtnListeners(product: ProductUiModel) {
         if(product.isVariant()) {
             itemView.btnEditPrice.setOnClickListener { listener.onClickEditVariantPriceButton(product) }
             itemView.btnEditStock.setOnClickListener { listener.onClickEditVariantStockButton(product) }
@@ -111,7 +111,7 @@ class ProductViewHolder(
         }
     }
 
-    private fun setOnItemClickListener(product: ProductViewModel) {
+    private fun setOnItemClickListener(product: ProductUiModel) {
         itemView.setOnClickListener {
             if (product.multiSelectActive) {
                 toggleCheckBox()
@@ -122,12 +122,12 @@ class ProductViewHolder(
         }
     }
 
-    private fun showProductCheckBox(product: ProductViewModel) {
+    private fun showProductCheckBox(product: ProductUiModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
     }
 
-    private fun showProductTopAdsIcon(product: ProductViewModel) {
+    private fun showProductTopAdsIcon(product: ProductUiModel) {
         itemView.imageTopAds.showWithCondition(product.hasTopAds())
     }
 
@@ -140,7 +140,7 @@ class ProductViewHolder(
         listener.onClickProductCheckBox(isChecked, adapterPosition)
     }
 
-    private fun onClickProductItem(product: ProductViewModel) {
+    private fun onClickProductItem(product: ProductUiModel) {
         if(product.isNotViolation()) {
             listener.onClickProductItem(product)
         }
@@ -148,13 +148,13 @@ class ProductViewHolder(
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
-        fun onClickMoreOptionsButton(product: ProductViewModel)
-        fun onClickProductItem(product: ProductViewModel)
+        fun onClickMoreOptionsButton(product: ProductUiModel)
+        fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)
-        fun onClickEditPriceButton(product: ProductViewModel)
-        fun onClickEditStockButton(product: ProductViewModel)
-        fun onClickEditVariantPriceButton(product: ProductViewModel)
-        fun onClickEditVariantStockButton(product: ProductViewModel)
-        fun onClickContactCsButton(product: ProductViewModel)
+        fun onClickEditPriceButton(product: ProductUiModel)
+        fun onClickEditStockButton(product: ProductUiModel)
+        fun onClickEditVariantPriceButton(product: ProductUiModel)
+        fun onClickEditVariantStockButton(product: ProductUiModel)
+        fun onClickContactCsButton(product: ProductUiModel)
     }
 }

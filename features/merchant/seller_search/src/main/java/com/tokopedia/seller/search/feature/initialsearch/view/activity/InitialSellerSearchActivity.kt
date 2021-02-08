@@ -32,7 +32,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
+class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
         GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
         HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
 
@@ -82,6 +82,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         initView()
         initSearchBarView()
         observeSearchPlaceholder()
+        observeSearchKeyword()
     }
 
     private fun initInjector() {
@@ -94,6 +95,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
+        onQueryTextChangeListener("")
     }
 
     private fun initView() {
@@ -105,15 +107,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     }
 
     override fun onQueryTextChangeListener(keyword: String) {
-        if (keyword.isEmpty()) {
-            initialStateFragment?.historySearch(keyword)
-        } else {
-            if(keyword.length < MIN_CHARACTER_SEARCH) {
-                initialStateFragment?.onMinCharState()
-            } else {
-                suggestionFragment?.suggestionSearch(keyword)
-            }
-        }
+        viewModel.getTypingSearch(keyword)
     }
 
     override fun onClearTextBoxListener() {
@@ -152,14 +146,6 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         KeyboardHandler.DropKeyboard(this, searchBarView)
     }
 
-    override fun onDestroy() {
-        if (searchBarView?.compositeSubscription != null && searchBarView?.compositeSubscription?.hasSubscriptions() == true) {
-            searchBarView?.compositeSubscription?.unsubscribe()
-        }
-        searchBarView?.mHandler?.removeCallbacksAndMessages(null)
-        super.onDestroy()
-    }
-
     private fun setWhiteStatusBar() {
         window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -170,13 +156,31 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
 
     private fun observeSearchPlaceholder() {
         observe(viewModel.searchPlaceholder) {
-            val placeholder = when(it) {
+            val placeholder = when (it) {
                 is Success -> it.data
                 is Fail -> getString(R.string.placeholder_search_seller)
             }
             searchBarView?.setPlaceholder(placeholder)
         }
         viewModel.getSearchPlaceholder()
+    }
+
+    private fun observeSearchKeyword() {
+        observe(viewModel.searchKeyword) {
+            proceedSearchKeyword(it)
+        }
+    }
+
+    private fun proceedSearchKeyword(keyword: String) {
+        if (keyword.isEmpty()) {
+            initialStateFragment?.historySearch(keyword)
+        } else {
+            if (keyword.length < MIN_CHARACTER_SEARCH) {
+                initialStateFragment?.onMinCharState()
+            } else {
+                suggestionFragment?.suggestionSearch(keyword)
+            }
+        }
     }
 
     override fun startNetworkPerformanceMonitoring() {

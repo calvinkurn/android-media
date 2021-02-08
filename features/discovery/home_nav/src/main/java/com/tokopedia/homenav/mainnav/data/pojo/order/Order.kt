@@ -1,12 +1,31 @@
 package com.tokopedia.homenav.mainnav.data.pojo.order
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 data class Order(
-    val metadata: Metadata,
-    val orderUUID: String,
-    val searchableText: String,
-    val status: String,
-    val userID: String,
-    val verticalCategory: String,
-    val verticalID: String,
-    val verticalStatus: String
+        @SerializedName("metadata")
+        @Expose
+        val metadata: Metadata? = Metadata(),
+        @SerializedName("orderUUID")
+        @Expose
+        val orderUUID: String? = "",
+        @SerializedName("searchableText")
+        @Expose
+        val searchableText: String? = "",
+        @SerializedName("status")
+        @Expose
+        val status: String? = "",
+        @SerializedName("userID")
+        @Expose
+        val userID: String? = "",
+        @SerializedName("verticalCategory")
+        @Expose
+        val verticalCategory: String? = "",
+        @SerializedName("verticalID")
+        @Expose
+        val verticalID: String? = "",
+        @SerializedName("verticalStatus")
+        @Expose
+        val verticalStatus: String? = ""
 )

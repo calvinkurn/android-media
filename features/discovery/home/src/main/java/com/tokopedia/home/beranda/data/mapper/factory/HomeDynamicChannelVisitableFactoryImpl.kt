@@ -53,8 +53,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
+        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
+        private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
     }
 
@@ -67,7 +69,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return this
     }
 
-    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeDynamicChannelVisitableFactory {
+    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean, startPosition: Int): HomeDynamicChannelVisitableFactory {
         var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
         if ((homeChannelData?.dynamicHomeChannel == null
                         || homeChannelData?.dynamicHomeChannel?.channels == null
@@ -78,7 +80,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
         dynamicChannelList.forEachIndexed { index, channel ->
-            val position = index+1
+            val position = index+ 1 + startPosition
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
@@ -178,9 +180,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
+                    createBannerChannel(channel, position)
+                }
             }
         }
-
         if (addLoadingMore) {
             createDynamicChannelLoadingMore()
         }
@@ -349,6 +353,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS) {
                 channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
                 channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2) {
+                channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
+                        if (channel.header.name.isNotEmpty()) channel.header.name
+                        else VALUE_BANNER_DEFAULT
+                )
+                channel.setPosition(position)
             }
             else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
@@ -402,11 +412,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isCache = isCache
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                    RecommendationListTracking.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 
@@ -449,6 +454,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(BannerDataModel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition), isCache))
     }
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {

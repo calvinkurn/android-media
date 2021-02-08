@@ -133,4 +133,17 @@
 
     <string name="user_identification_default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
+    <string name="kyc_upload_retry" translatable="false">Coba Lagi</string>
+
+    <string name="kyc_failed_image">Failed Image</string>
+    <string name="kyc_upload_failed_reason_general_title" translatable="false">Ada gangguan di rumah Toped</string>
+    <string name="kyc_upload_failed_reason_general">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+
+    <string name="kyc_upload_failed_reason_bad_network_title" translatable="false">Koneksi internetmu terganggu!</string>
+    <string name="kyc_upload_failed_reason_bad_network">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    
+    <string name="kyc_desc_foto_ktp">Foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah">Verifikasi wajah</string>
+    <string name="kyc_desc_foto_ktp_result">Result foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah_result">Result verifikasi wajah</string>
 </resources>

@@ -227,4 +227,10 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun updateToolbarTitle(headerTitle: String?) {
         interactionListener?.updateToolbarTitle(headerTitle)
     }
+
+    override fun updateTotalPriceWithFintechAmount() {
+        if (mybillEgold.visibility == View.VISIBLE) {
+            presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked())
+        }
+    }
 }

@@ -1,19 +1,13 @@
 package com.tokopedia.entertainment.pdp.viewmodel
 
-import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
-import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
-import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
-import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.EventVerifyResponseV2
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -21,11 +15,9 @@ import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import junit.framework.Assert.*
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert
@@ -162,5 +154,29 @@ class EventPDPTicketViewModelTest {
         //then
         assertEquals(eventPDPTicketViewModel.error.value,error.message)
 
+    }
+
+    @Test
+    fun categoryData_setCategoryData_successSetCategoryData(){
+        //given
+        val categoryData = Category()
+
+        //when
+        eventPDPTicketViewModel.categoryData = categoryData
+
+        //then
+        assertEquals(eventPDPTicketViewModel.categoryData, categoryData)
+    }
+
+    @Test
+    fun listPdpTicket_setPdpData_successSetPDPData(){
+        //given
+        val listTicket = mutableListOf<EventPDPTicketModel>()
+
+        //then
+        eventPDPTicketViewModel.lists = listTicket
+
+        //when
+        assertEquals(eventPDPTicketViewModel.lists, listTicket)
     }
 }

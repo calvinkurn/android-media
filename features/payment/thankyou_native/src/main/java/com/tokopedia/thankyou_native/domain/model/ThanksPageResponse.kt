@@ -34,7 +34,9 @@ data class ThanksPageData(
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
-        val howToPay: String,
+        val howToPay: String?,
+        @SerializedName("how_to_pay_applink")
+        val howToPayAPP : String?,
         @SerializedName("whitelisted_rba")
         val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
@@ -74,7 +76,9 @@ data class ThanksPageData(
         @SerializedName("custom_data")
         val thanksCustomization: ThanksCustomization?,
         @SerializedName("config_flag")
-        val configFlag: String?
+        val configFlag: String?,
+        //created and used locally
+        var paymentMethodCount: Int
 ) : Parcelable
 
 data class PaymentDetail(

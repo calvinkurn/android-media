@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
@@ -34,17 +34,17 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
     override fun bind(element: ProductDetailInfoExpandableDataModel) {
         view.expandable_title_chevron?.titleText = element.title
         setupExpandableItem(element)
-        setupVideoItem(element.video, element.isShowable)
+        setupVideoItem(element.youtubeVideo, element.isShowable)
     }
 
-    private fun setupVideoItem(video: List<Video>, isShowable: Boolean) = with(view) {
-        horizontal_scroll_container.showWithCondition(isShowable && video.isNotEmpty())
+    private fun setupVideoItem(youtubeVideo: List<YoutubeVideo>, isShowable: Boolean) = with(view) {
+        horizontal_scroll_container.showWithCondition(isShowable && youtubeVideo.isNotEmpty())
         horizontal_view_container.removeAllViews()
-        video.forEachIndexed { index, it ->
+        youtubeVideo.forEachIndexed { index, it ->
             val layout = context.layoutInflater.inflate(R.layout.bs_item_product_detail_youtube_img, null)
             layout.img_youtube_item.loadImage(it.thumbnailUrl)
             layout.setOnClickListener {
-                listener.goToVideoPlayer(video.map { it.url }, index)
+                listener.goToVideoPlayer(youtubeVideo.map { it.url }, index)
             }
             horizontal_view_container.addView(layout)
         }

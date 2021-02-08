@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="horizontal"
     android:padding="@dimen/dp_16">
 
@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:ellipsize="end"
-        android:textColor="@color/n_700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"

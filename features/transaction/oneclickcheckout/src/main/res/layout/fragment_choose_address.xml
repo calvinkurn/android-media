@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/search_not_found"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/search_input_view" />
 

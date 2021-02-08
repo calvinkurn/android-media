@@ -100,9 +100,9 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
             radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
-            radioButton.setTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_12) /
+            radioButton.setTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_12) /
                     getResources().getDisplayMetrics().density);
-            radioButton.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_600));
+            radioButton.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
             radioGroup.addView(radioButton);
         }
         radioGroup.check(radioGroup.getChildAt(0).getId());

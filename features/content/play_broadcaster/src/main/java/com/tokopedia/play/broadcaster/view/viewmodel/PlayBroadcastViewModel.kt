@@ -90,6 +90,7 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
+    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -152,6 +153,7 @@ class PlayBroadcastViewModel @Inject constructor(
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
             setDurationConfig(configUiModel.durationConfig)
+            setScheduleConfig(configUiModel.scheduleConfig)
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
@@ -200,6 +202,7 @@ class PlayBroadcastViewModel @Inject constructor(
             setChannelInfo(channelInfo)
             setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
 
@@ -466,6 +469,10 @@ class PlayBroadcastViewModel @Inject constructor(
         getCurrentSetupDataStore().setFullCover(cover)
     }
 
+    private fun setBroadcastSchedule(schedule: BroadcastScheduleUiModel) {
+        getCurrentSetupDataStore().setBroadcastSchedule(schedule)
+    }
+
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
         hydraConfigStore.setIngestUrl(channelInfo.ingestUrl)
         hydraConfigStore.setTitle(channelInfo.title)
@@ -483,6 +490,12 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setDurationConfig(configModel: DurationConfigUiModel) {
         hydraConfigStore.setMaxDurationDesc(configModel.maxDurationDesc)
+    }
+
+    private fun setScheduleConfig(scheduleConfigModel: BroadcastScheduleConfigUiModel) {
+        hydraConfigStore.setMinScheduleDate(scheduleConfigModel.minimum)
+        hydraConfigStore.setMaxScheduleDate(scheduleConfigModel.maximum)
+        hydraConfigStore.setDefaultScheduleDate(scheduleConfigModel.default)
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {

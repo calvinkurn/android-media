@@ -23,6 +23,8 @@ interface DigitalCartMyBillsContract {
         fun updateToolbarTitle(headerTitle: String?)
 
         fun renderEgoldMoreInfo(title: String?, tooltip: String?, linkUrl: String?)
+
+        fun updateTotalPriceWithFintechAmount()
     }
 
     interface Presenter : DigitalBaseContract.Presenter<View> {
@@ -33,5 +35,7 @@ interface DigitalCartMyBillsContract {
         fun onEgoldCheckedListener(checked: Boolean)
 
         fun onEgoldMoreInfoClicked()
+
+        fun updateTotalPriceWithFintechAmount(checked: Boolean)
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 19/10/20
@@ -33,7 +34,7 @@ class PlayWidgetSampleAnalytic(
         Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, position: $channelPositionInList, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onImpressPlayWidget(view: PlayWidgetView, widgetPositionInList: Int) {
+    override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, widgetPositionInList: Int) {
         widgetPosition = widgetPositionInList
         Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
     }

@@ -340,18 +340,20 @@ public class ProductViewModelMapper {
                     data.getType(),
                     data.getPosition(),
                     data.getLayout(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout())
+                    convertToInspirationCarouselOptionViewModel(data)
             ));
         }
 
         return inspirationCarousel;
     }
 
-    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType, String layout) {
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(
+            SearchProductModel.InspirationCarouselData data
+    ) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
-        for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
-            int position = inspirationCarouselOptions.indexOf(opt) + 1;
+        for (SearchProductModel.InspirationCarouselOption opt : data.getInspirationCarouselOptions()) {
+            int position = data.getInspirationCarouselOptions().indexOf(opt) + 1;
             options.add(new InspirationCarouselViewModel.Option(
                     opt.getTitle(),
                     opt.getUrl(),
@@ -359,9 +361,11 @@ public class ProductViewModelMapper {
                     opt.getBannerImageUrl(),
                     opt.getBannerLinkUrl(),
                     opt.getBannerApplinkUrl(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType, layout),
-                    inspirationCarouselType,
-                    layout
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, data.getType(), data.getLayout()),
+                    data.getType(),
+                    data.getLayout(),
+                    data.getPosition(),
+                    data.getTitle()
             ));
         }
 

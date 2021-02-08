@@ -71,6 +71,7 @@ public interface LinkerConstants {
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";
     String USER_ID = "userId";
+    String MEDIUM = "medium";
     String EVENT_LOGIN_LABLE = "login";
     String EVENT_REGISTER_LABLE = "sign_up";
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";

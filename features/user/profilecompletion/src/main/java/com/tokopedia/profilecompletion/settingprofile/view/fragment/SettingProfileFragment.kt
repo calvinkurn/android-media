@@ -17,8 +17,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
@@ -107,7 +108,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.setTitle(getString(R.string.add_and_verify_phone))
         dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
         dialog.setOk(getString(R.string.title_add_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
+        dialog.setOkOnClickListner(View.OnClickListener {
+            goToAddPhone()
+            dialog.dismiss()
+        })
         dialog.setSecondary(getString(R.string.label_cancel))
         dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
@@ -210,7 +214,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
             else -> {
-                when(requestCode) {
+                when (requestCode) {
                     REQUEST_CODE_ADD_PHONE -> {
                         AddPhoneNumberTracker().viewPersonalDataPage(false)
                     }
@@ -291,8 +295,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfilePhoto(data: Intent?) {
         if (data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
 
@@ -394,12 +398,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
                     getString(R.string.message_email_setting_profile),
-                    false,
-                    View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
-                    }
-            )
+                    false
+            ) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+                startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
+            }
         } else {
             email.showFilled(
                     getString(R.string.subtitle_email_setting_profile),
@@ -407,11 +410,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     true,
                     View.OnClickListener {
-                        if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
+                        if (profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified) {
                             goToChangeEmail()
-                        } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
+                        } else if (profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
                             showVerifyEmailDialog()
-                        }else{
+                        } else {
                             showChangeEmailDialog()
                         }
                     }
@@ -524,7 +527,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
-    private fun goToChangeEmail(){
+    private fun goToChangeEmail() {
         val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
             appendPath(UrlSettingProfileConst.USER_PATH_URL)
             appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
@@ -545,11 +548,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            val MAX_SIZE = 2048
-            val builder = ImagePickerBuilder.getDefaultBuilder(context)
-            builder.maxFileSizeInKB = 2048
-            builder.imagePickerMultipleSelectionBuilder = null
-            val intent = ImagePickerActivity.getIntent(context, builder)
+            val ctx = context ?: return
+            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
+                maxFileSizeInKB = 2048
+            }
+            val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
     }

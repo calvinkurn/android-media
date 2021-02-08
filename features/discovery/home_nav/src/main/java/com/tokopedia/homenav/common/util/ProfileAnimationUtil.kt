@@ -17,14 +17,40 @@ fun TextView.animateProfileName(text: String, duration: Long = 300, completion: 
 }
 
 fun ImageView.animateProfileBadge(imageUrl: String, duration: Long = 300, completion: (() -> Unit)? = null) {
-    slideUpFromMiddle(duration) {
+    shrinkToCenter(duration) {
         loadImage(imageUrl)
-        slideUpFromBottom(duration) {
+        expandFromCenter(duration) {
             completion?.let {
                 it()
             }
         }
     }
+}
+
+fun View.shrinkToCenter(duration: Long = 300, visibility: Int = View.INVISIBLE, completion: (() -> Unit)? = null) {
+    animate()
+            .scaleX(0.3f)
+            .scaleY(0.3f)
+            .setDuration(duration)
+            .withEndAction {
+                this.visibility = visibility
+                completion?.let {
+                    it()
+                }
+            }
+}
+
+fun View.expandFromCenter(duration: Long = 300, completion: (() -> Unit)? = null) {
+    visibility = View.VISIBLE
+    animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(duration)
+            .withEndAction {
+                completion?.let {
+                    it()
+                }
+            }
 }
 
 fun View.slideUpFromMiddle(duration: Long = 300, visibility: Int = View.INVISIBLE, completion: (() -> Unit)? = null) {
@@ -38,6 +64,7 @@ fun View.slideUpFromMiddle(duration: Long = 300, visibility: Int = View.INVISIBL
                     it()
                 }
             }
+
 }
 
 fun View.slideUpFromBottom(duration: Long = 300, completion: (() -> Unit)? = null) {

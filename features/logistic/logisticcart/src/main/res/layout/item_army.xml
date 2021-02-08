@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground">
 
     <RelativeLayout
@@ -98,6 +98,6 @@
         android:layout_height="0.5dp"
         android:layout_below="@+id/rl_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </RelativeLayout>

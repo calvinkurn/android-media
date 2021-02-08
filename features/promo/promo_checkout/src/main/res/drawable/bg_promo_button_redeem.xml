@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <corners android:radius="@dimen/dp_8" />
-    <solid android:color="@color/white" />
-    <stroke android:width="@dimen/dp_1"  android:color="@color/promo_popup_negative_button_rounded_corner"/>
+    <solid android:color="@color/Unify_N0" />
+    <stroke android:width="@dimen/dp_1"  android:color="@color/Unify_N100"/>
 
 </shape>

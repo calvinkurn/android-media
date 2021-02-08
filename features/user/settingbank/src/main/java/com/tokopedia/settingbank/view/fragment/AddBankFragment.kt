@@ -28,7 +28,6 @@ import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.*
 import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
-import com.tokopedia.settingbank.view.widgets.CloseableBottomSheetFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
@@ -58,7 +57,6 @@ class AddBankFragment : BaseDaggerFragment() {
     private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
-    private lateinit var bankListBottomSheet: CloseableBottomSheetFragment
     private lateinit var confirmationDialog: AlertDialog
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
@@ -180,7 +178,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun startObservingViewModels() {
-        tNCViewModel.tncPopUpTemplate.observe(this, Observer {
+        tNCViewModel.tncPopUpTemplate.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
                 is OnTNCError -> showErrorOnUI(it.throwable, null)
@@ -190,7 +188,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
         })
 
-        textWatcherViewModel.textWatcherState.observe(this, Observer {
+        textWatcherViewModel.textWatcherState.observe(viewLifecycleOwner, Observer {
             if (isFragmentRestored) {
                 isFragmentRestored = false
                 return@Observer
@@ -204,7 +202,7 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-        checkAccountNumberViewModel.accountCheckState.observe(this, Observer {
+        checkAccountNumberViewModel.accountCheckState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OnCheckAccountError -> showErrorOnUI(it.throwable, null)
                 is OnAccountCheckSuccess -> {
@@ -216,7 +214,7 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-        accountHolderNameViewModel.textWatcherState.observe(this, Observer {
+        accountHolderNameViewModel.textWatcherState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OnAccountNameError -> showManualAccountNameError(it.error)
                 is OnAccountNameValidated -> {
@@ -227,7 +225,7 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-        addAccountViewModel.addAccountState.observe(this, Observer {
+        addAccountViewModel.addAccountState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OnAddBankRequestStarted -> {
                     progress_bar.visible()
@@ -300,12 +298,9 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun openBankListForSelection() {
-        bankListBottomSheet = CloseableBottomSheetFragment.newInstance(SelectBankFragment(),
-                true,
-                getString(R.string.sbank_choose_a_bank),
-                null,
-                CloseableBottomSheetFragment.STATE_FULL)
-        bankListBottomSheet.show(activity!!.supportFragmentManager, "")
+        activity?.let {
+            SelectBankFragment.showChooseBankBottomSheet(it, it.supportFragmentManager)
+        }
     }
 
     private fun showManualAccountNameError(error: String?) {
@@ -402,10 +397,6 @@ class AddBankFragment : BaseDaggerFragment() {
                 tncBottomSheet.show(templateData)
             }
         }
-    }
-
-    fun closeBottomSheet() {
-        bankListBottomSheet.dismiss()
     }
 
     fun onBankSelected(selectedBank: Bank) {

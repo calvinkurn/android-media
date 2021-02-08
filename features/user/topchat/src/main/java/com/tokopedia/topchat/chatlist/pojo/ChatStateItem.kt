@@ -9,7 +9,7 @@ data class ChatStateItem(
         @SerializedName("isSuccess")
         val isSuccess: Int = 0,
         @SerializedName("msgID")
-        val msgID: Int = 0
+        val msgID: Long = 0L
 ) {
     fun isSuccess(): Boolean {
         return isSuccess == 1

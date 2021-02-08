@@ -50,7 +50,7 @@ data class DataItem(
 	val statTotalCtr: String = "",
 
 	@field:SerializedName("group_price_daily")
-	val groupPriceDaily: Int = 0,
+	val groupPriceDaily: Long = 0,
 
 	@field:SerializedName("stat_total_sold")
 	val statTotalSold: String = "",
@@ -66,6 +66,5 @@ data class DataItem(
 
 	@field:SerializedName("stat_total_income")
 	val groupTotalIncome: String = ""
-
 
 )

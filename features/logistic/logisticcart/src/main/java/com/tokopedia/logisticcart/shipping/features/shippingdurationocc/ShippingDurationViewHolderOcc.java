@@ -88,14 +88,14 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.getErrorMessage())) {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
             tvPrice.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
             tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvError.setVisibility(View.GONE);
             tvPrice.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
             tvPrice.setVisibility(View.VISIBLE);
@@ -164,12 +164,12 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(R.color.white)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .spacingRes(R.dimen.dp_12)
                 .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
                 .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.label_shipping_show_case_finish)

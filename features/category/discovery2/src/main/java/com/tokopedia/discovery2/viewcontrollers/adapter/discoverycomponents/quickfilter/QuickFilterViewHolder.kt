@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
@@ -16,7 +15,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -36,26 +34,46 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            quickFilterViewModel.getDynamicFilterModelLiveData().observe(it, Observer { filterModel ->
+            quickFilterViewModel.getDynamicFilterModelLiveData().observe(it, { filterModel ->
                 if (filterModel != null) {
                     dynamicFilterModel = filterModel
                 }
             })
-            quickFilterViewModel.getSyncPageLiveData().observe(it, Observer { item ->
+            quickFilterViewModel.getSyncPageLiveData().observe(it, { item ->
                 if (item) {
                     (fragment as DiscoveryFragment).reSync()
                     quickFilterViewModel.fetchQuickFilters()
                 }
             })
-            quickFilterViewModel.getQuickFilterLiveData().observe(it, Observer { filters ->
-                setQuickFilters(filters)
+            quickFilterViewModel.productCountLiveData.observe(it, { count ->
+                if (!count.isNullOrEmpty()) {
+                    sortFilterBottomSheet.setResultCountText(count)
+                } else {
+                    sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
+                }
             })
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            quickFilterViewModel.getDynamicFilterModelLiveData().removeObservers(it)
+            quickFilterViewModel.getSyncPageLiveData().removeObservers(it)
+            quickFilterViewModel.productCountLiveData.removeObservers(it)
+        }
+    }
 
     private fun setQuickFilters(filters: ArrayList<Option>) {
+        if (quickFilterViewModel.components.data?.isEmpty() == true) return
+        val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
+        componentName = quickFilterViewModel.getTargetComponent()?.name
+        for (option in filters) {
+            sortFilterItems.add(createSortFilterItem(option))
+        }
         quickSortFilter.let {
+            it.sortFilterItems.removeAllViews()
+            it.addItem(sortFilterItems)
             if(!quickFilterViewModel.components.showFilter) {
                 it.filterType = SortFilter.TYPE_QUICK
                 it.dismissListener = {
@@ -64,16 +82,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             }
             it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
-            it.sortFilterItems.removeAllViews()
         }
-        val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
-        if (quickFilterViewModel.components.data?.isEmpty() == true) return
-        componentName = quickFilterViewModel.getTargetComponent()?.name
-
-        for (option in filters) {
-            sortFilterItems.add(createSortFilterItem(option))
-        }
-        quickSortFilter.addItem(sortFilterItems)
         refreshQuickFilter(filters)
     }
 
@@ -149,8 +158,16 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
+        quickFilterViewModel.filterProductsCount(mapParameter)
     }
 
-}
+    override fun onViewAttachedToWindow() {
+        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
+            setQuickFilters(filters)
+        })
+    }
 
+    override fun onViewDetachedToWindow() {
+        quickFilterViewModel.getQuickFilterLiveData().removeObservers(fragment.viewLifecycleOwner)
+    }
+}

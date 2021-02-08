@@ -59,7 +59,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
-    var productId = ""
     private var selected: ArrayList<KeywordDataItem>? = arrayListOf()
     var groupId = 0
     private var tvToolTipText: Typography? = null
@@ -95,7 +94,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         val productIds = arguments?.getString(PRODUCT_ID) ?: ""
         groupId = arguments?.getInt(GROUP_ID) ?: 0
-        viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
+        if (productIds.isNotEmpty()) {
+            viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
+        }else{
+            setEmptyView()
+            setEmptyLayout(true)
+            selected_info.text = String.format(getString(R.string.format_selected_keyword), 0)
+        }
     }
 
     private fun onKeywordSelected(pos: Int) {
@@ -306,7 +311,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))

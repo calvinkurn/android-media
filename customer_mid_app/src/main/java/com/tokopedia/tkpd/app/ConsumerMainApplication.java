@@ -31,6 +31,7 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -49,8 +50,10 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -119,6 +122,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
+        SplashScreenPerformanceTracker.isColdStart = true;
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -130,6 +134,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
@@ -283,10 +288,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        if (GlobalConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+        registerActivityLifecycleCallbacks(new AppAuthActivityLifecycleCallbacks());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+            }
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
 
@@ -341,7 +350,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePreCreateSequence() {
         initReact();
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
+
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
@@ -583,6 +592,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
+    }
+
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public Class<?> getDeeplinkClass() {

@@ -8,14 +8,14 @@ import androidx.lifecycle.LifecycleOwner
  */
 fun <LO: LifecycleOwner, T: Any> LO.lifecycleBound(
         creator: (LO) -> T,
-        onLifecycle: DefaultOnLifecycle<T>
+        onLifecycle: DefaultOnLifecycle<T>? = null
 ): LifecycleBoundDelegate<LO, T> {
     return LifecycleBoundDelegate(creator, onLifecycle)
 }
 
 fun <T: Any> Fragment.viewLifecycleBound(
         creator: (Fragment) -> T,
-        onLifecycle: DefaultOnLifecycle<T>
+        onLifecycle: DefaultOnLifecycle<T>? = null
 ): ViewLifecycleBoundDelegate<T> {
     return ViewLifecycleBoundDelegate(creator, onLifecycle)
 }

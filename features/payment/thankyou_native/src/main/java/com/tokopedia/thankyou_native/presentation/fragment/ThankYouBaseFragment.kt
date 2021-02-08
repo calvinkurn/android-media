@@ -24,6 +24,8 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
+import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
@@ -168,9 +170,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun refreshThanksPageData() {
         getLoadingView()?.visible()
         arguments?.let {
-            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
-                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
+            if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
+                thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
+                        it.getString(ARG_MERCHANT, ""))
             }
         }
     }
@@ -203,10 +205,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         getLoadingView()?.gone()
     }
 
-    fun openHowTOPay(thanksPageData: ThanksPageData) {
-        RouteManager.route(context, thanksPageData.howToPay)
-        thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
-                thanksPageData.paymentID.toString())
+    fun openHowToPay(thanksPageData: ThanksPageData) {
+        thanksPageData.howToPayAPP?.let {
+            RouteManager.route(context, thanksPageData.howToPayAPP)
+            thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
+        }
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,

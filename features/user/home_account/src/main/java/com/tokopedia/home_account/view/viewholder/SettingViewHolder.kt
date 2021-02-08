@@ -1,7 +1,5 @@
 package com.tokopedia.home_account.view.viewholder
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -20,7 +18,13 @@ import kotlinx.android.synthetic.main.home_account_expandable_layout.view.*
 
 class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
 
-    var rotationAngle = 0F
+    private var rotationAngle = 0F
+
+    var adapter: HomeAccountUserCommonAdapter? = null
+
+    fun refreshCommonAdapter(){
+        adapter?.notifyDataSetChanged()
+    }
 
     fun bind(setting: SettingDataView) {
         with(itemView) {
@@ -39,21 +43,27 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             }
             setupItemAdapter(itemView, setting)
         }
+        listener.onItemViewBinded(adapterPosition, itemView, setting)
     }
 
     private fun setupItemAdapter(itemView: View, setting: SettingDataView) {
-        val adapter = HomeAccountUserCommonAdapter(listener, CommonViewHolder.LAYOUT)
-        adapter.list = setting.items
+        adapter = HomeAccountUserCommonAdapter(listener, CommonViewHolder.LAYOUT)
+        adapter?.list = setting.items
         itemView.home_account_expandable_layout_rv?.adapter = adapter
         itemView.home_account_expandable_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_expandable_layout_rv?.context, LinearLayoutManager.VERTICAL, false)
         itemView.home_account_expandable_layout_rv?.isNestedScrollingEnabled = false
         expandCollapseItem(itemView, setting.isExpanded)
 
         itemView.setOnClickListener {
-            setting.isExpanded = !setting.isExpanded
-            rotationAngle = if (rotationAngle == 0F) 180F else 0F //toggle
-            itemView?.home_account_expandable_arrow?.animate()?.rotation(rotationAngle)?.setDuration(400)?.start()
-            expandCollapseItem(itemView, setting.isExpanded)
+            if(itemView.home_account_expandable_arrow.visibility == View.VISIBLE) {
+                setting.isExpanded = !setting.isExpanded
+                rotationAngle = if (rotationAngle == 0F) 180F else 0F //toggle
+                itemView?.home_account_expandable_arrow?.animate()?.rotation(rotationAngle)?.setDuration(400)?.start()
+                expandCollapseItem(itemView, setting.isExpanded)
+            }
+        }
+        adapter?.run {
+            listener.onCommonAdapterReady(adapterPosition,this)
         }
     }
 

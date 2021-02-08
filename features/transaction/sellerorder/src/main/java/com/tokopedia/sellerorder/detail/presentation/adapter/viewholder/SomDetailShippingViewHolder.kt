@@ -52,19 +52,68 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 } else {
                     item.dataObject.receiverPhone
                 }
-                tv_receiver_name.text = item.dataObject.receiverName
-                tv_receiver_number.text = numberPhone
-                tv_receiver_street.text = item.dataObject.receiverStreet
-                tv_receiver_district.text = item.dataObject.receiverDistrict
-                tv_receiver_province.text = item.dataObject.receiverProvince
 
-                shipping_address_copy.apply {
-                    setOnClickListener {
-                        actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
-                                "\n" + item.dataObject.receiverPhone +
-                                "\n" + item.dataObject.receiverStreet +
-                                "\n" + item.dataObject.receiverDistrict +
-                                "\n" + item.dataObject.receiverProvince))
+                with(item.dataObject) {
+                    tv_receiver_name.text = receiverName
+                    if (numberPhone.isNotBlank()) {
+                        tv_receiver_number.show()
+                        tv_receiver_number.text = numberPhone
+                    } else {
+                        tv_receiver_number.hide()
+                    }
+
+                    if (receiverStreet.isNotBlank()) {
+                        tv_receiver_street.show()
+                        tv_receiver_street.text = receiverStreet
+                    } else {
+                        tv_receiver_street.hide()
+                    }
+
+                    if (receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                        tv_receiver_district.show()
+                        tv_receiver_district.text = receiverDistrict
+                    } else {
+                        tv_receiver_district.hide()
+                    }
+
+                    if (receiverProvince.isNotBlank()) {
+                        tv_receiver_province.show()
+                        tv_receiver_province.text = receiverProvince
+                    } else {
+                        tv_receiver_province.hide()
+                    }
+
+                    shipping_address_copy.apply {
+                        setOnClickListener {
+
+                            val numberPhoneText = if (numberPhone.isNotBlank()) {
+                                "\n" + numberPhone
+                            } else ""
+
+                            val receiverStreetText = if (receiverStreet.isNotBlank()) {
+                                "\n" + receiverStreet
+                            } else {
+                                ""
+                            }
+
+                            val receiverDistrictText = if (receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                                "\n" + receiverDistrict
+                            } else {
+                                ""
+                            }
+
+                            val receiverProvinceText = if (receiverProvince.isNotBlank()) {
+                                "\n" + receiverProvince
+                            } else {
+                                ""
+                            }
+
+                            actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (receiverName +
+                                    numberPhoneText +
+                                    receiverStreetText +
+                                    receiverDistrictText +
+                                    receiverProvinceText))
+                        }
                     }
                 }
 
@@ -144,18 +193,23 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 // dropshipper
-                if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
-                    rl_drop_shipper.visibility = View.VISIBLE
+                if (item.dataObject.dropshipperName.isNotEmpty() || item.dataObject.dropshipperPhone.isNotEmpty()) {
+                    tv_som_dropshipper_label.visibility = View.VISIBLE
                     tv_som_dropshipper_name?.show()
                     val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                         item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                     } else {
                         item.dataObject.dropshipperPhone
                     }
-                    tv_som_dropshipper_name.text = item.dataObject.dropshipperName
-                    tv_dropshipper_number.text = numberPhoneDropShipper
+                    if (numberPhoneDropShipper.isNotBlank()) {
+                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                        tv_dropshipper_number.text = numberPhoneDropShipper
+                    } else {
+                        tv_dropshipper_number.hide()
+                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                    }
                 } else {
-                    rl_drop_shipper.visibility = View.GONE
+                    tv_som_dropshipper_label.visibility = View.GONE
                     tv_som_dropshipper_name?.hide()
                 }
             }
@@ -166,5 +220,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
     companion object {
         const val NUMBER_PHONE_SIX_TWO = "62"
         const val NUMBER_PHONE_ZERO = "0"
+        const val CONTAINS_COMMA = ","
     }
 }

@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <RelativeLayout
             android:id="@+id/rl_content"
@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/rl_search_address_container"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone"
@@ -62,7 +62,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="0sp"
                     android:text="@string/label_oops"
-                    android:textColor="@color/black_54"
+                    android:textColor="@color/Unify_N700_44"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
@@ -73,7 +73,7 @@
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="5sp"
                     android:text="@string/message_address_not_found"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 
@@ -89,7 +89,7 @@
                     android:paddingRight="27dp"
                     android:text="@string/label_button_change_search"
                     android:textAllCaps="false"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/Unify_N0"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 

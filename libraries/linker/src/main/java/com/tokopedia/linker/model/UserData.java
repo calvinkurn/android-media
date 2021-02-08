@@ -8,6 +8,7 @@ public class UserData {
     private boolean isFirstTimeUser;
     private String userId;
     private String name;
+    private String medium;
 
     public String getName() {
         return name;
@@ -57,4 +58,11 @@ public class UserData {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getMedium() {
+        return medium;
+    }
+
+    public void setMedium(String medium) {
+        this.medium = medium;
+    }
 }

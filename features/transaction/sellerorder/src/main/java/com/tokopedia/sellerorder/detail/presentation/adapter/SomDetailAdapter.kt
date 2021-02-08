@@ -32,7 +32,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
         fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
-        fun onSeeInvoice(invoiceUrl: String)
+        fun onSeeInvoice(invoiceUrl: String, invoice: String)
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(productId: Int)
         fun onCopiedAddress(address: String, str: String)

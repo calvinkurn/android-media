@@ -18,7 +18,6 @@ import javax.inject.Named
  * Created by fwidjaja on 10/11/20.
  */
 @Module
-@UohListScope
 class UohListModule (val context: Context) {
     @UohListScope
     @Provides

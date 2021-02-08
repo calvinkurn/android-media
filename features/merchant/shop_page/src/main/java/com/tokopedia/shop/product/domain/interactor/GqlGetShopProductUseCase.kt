@@ -14,15 +14,18 @@ class GqlGetShopProductUseCase (val gqlQuery: String,
 
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
+    var cacheTime = 0L
     val request by lazy {
         GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
     }
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
-
+        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD)
+        if (cacheTime != 0L) {
+            gqlCacheStrategyBuilder.setExpiryTime(cacheTime)
+        }
+        gqlUseCase.setCacheStrategy(gqlCacheStrategyBuilder.build())
         val gqlRequest = GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()

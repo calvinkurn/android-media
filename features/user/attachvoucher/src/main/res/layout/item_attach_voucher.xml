@@ -16,7 +16,8 @@
         android:background="@color/attach_voucher_transparent"
         android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:buttonTint="@color/Unify_N700_68"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"

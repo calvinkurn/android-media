@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -29,7 +30,8 @@ class ShopHomeItemImageColumnViewHolder(
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
         //avoid crash in ImageUnify when image url is returned as base64
         try {
-            ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+            if(ivMultipleColumn.context.isValidGlideContext())
+                ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
         } catch (e: Exception) {
             e.printStackTrace()
         }

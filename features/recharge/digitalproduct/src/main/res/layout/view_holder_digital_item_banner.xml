@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_3"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginBottom="@dimen/spacing_lvl1"
     android:background="?attr/selectableItemBackground"
-    card_view:cardElevation="@dimen/dp_2"
+    card_view:cardElevation="@dimen/spacing_lvl1"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -17,10 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1"
         tools:ignore="UselessParent">
 
         <LinearLayout
@@ -29,54 +29,55 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/TextView.Micro.Bold"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_voucher_code" />
+                android:text="@string/title_voucher_code"
+                card_view:typographyType="heading_6"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_voucher_code"
-                style="@style/TextView.Micro.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_3"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginEnd="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
-                android:paddingStart="@dimen/dp_5"
-                android:paddingLeft="@dimen/dp_5"
-                android:paddingEnd="@dimen/dp_5"
-                android:paddingRight="@dimen/dp_5"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
+                android:paddingStart="@dimen/spacing_lvl2"
+                android:paddingLeft="@dimen/spacing_lvl2"
+                android:paddingEnd="@dimen/spacing_lvl2"
+                android:paddingRight="@dimen/spacing_lvl2"
+                card_view:typographyType="heading_6"
                 tools:text="ANGGAKERENABIS" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10">
+                android:paddingEnd="@dimen/layout_lvl1"
+                android:paddingRight="@dimen/layout_lvl1">
 
-                <TextView
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_copy"
-                    style="@style/TextView.Micro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/digital_white_grey_button_rounded"
-                    android:padding="@dimen/dp_3"
-                    android:paddingStart="@dimen/dp_10"
-                    android:paddingLeft="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_10"
+                    android:padding="@dimen/spacing_lvl2"
+                    android:paddingStart="@dimen/layout_lvl1"
+                    android:paddingLeft="@dimen/layout_lvl1"
+                    android:paddingEnd="@dimen/layout_lvl1"
+                    android:paddingRight="@dimen/layout_lvl1"
+                    card_view:unifyButtonVariant="ghost"
+                    card_view:unifyButtonSize="micro"
+                    card_view:unifyButtonType="alternate"
                     android:text="@string/button_copy" />
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_desc_banner"
-            style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/digital_padding_8"
+            android:paddingTop="@dimen/layout_lvl1"
+            card_view:typographyType="body_3"
             tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
 
     </LinearLayout>

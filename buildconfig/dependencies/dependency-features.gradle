@@ -141,6 +141,7 @@ ext {
             review                          : ":features:merchant:review",
             sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
+            sellerAppWidget                 : ":features:merchant:seller_app_widget",
             sellerHome                      : ":features:merchant:seller_home",
             sellerHomeCommon                : ":features:merchant:seller_home_common",
             sellerMenu                      : ":features:merchant:seller_menu",
@@ -230,6 +231,8 @@ ext {
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             topchat                         : ":features:user:topchat",
+            inbox                           : ":features:user:inbox",
+            inboxCommon                     : ":features:user:inbox_common",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
@@ -247,6 +250,7 @@ ext {
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp",
+            travel_slice                    : ":features:travel:travel_slice",
             customer_mid_app                : ":customer_mid_app"
     ]
 }

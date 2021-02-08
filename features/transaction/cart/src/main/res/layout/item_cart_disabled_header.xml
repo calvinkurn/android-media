@@ -4,22 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:background="@color/Neutral_N0">
+    android:paddingRight="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_disabled_item_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_12"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        android:textColor="@color/Neutral_N700_96"
         tools:text="300 barang tidak dapat dibeli" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,9 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_12"
         android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
         android:text="@string/label_menu_cart_remove"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_5"
@@ -39,7 +38,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="#19000000"
+        android:background="@color/Unify_N700_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

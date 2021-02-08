@@ -1,7 +1,9 @@
 package com.tokopedia.flight.orderdetail.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by furqan on 14/10/2020
@@ -646,6 +648,7 @@ class OrderDetailCancellation(
             val refundedTime: String = ""
     )
 
+    @Parcelize
     class OrderDetailRefundDetail(
             @SerializedName("topInfo")
             @Expose
@@ -659,8 +662,9 @@ class OrderDetailCancellation(
             @SerializedName("notes")
             @Expose
             val notes: List<OrderDetailRefundKeyValue> = arrayListOf()
-    )
+    ) : Parcelable
 
+    @Parcelize
     class OrderDetailRefundKeyValue(
             @SerializedName("key")
             @Expose
@@ -668,8 +672,9 @@ class OrderDetailCancellation(
             @SerializedName("value")
             @Expose
             val value: String = ""
-    )
+    ) : Parcelable
 
+    @Parcelize
     class OrderDetailRefundTitleContent(
             @SerializedName("title")
             @Expose
@@ -677,5 +682,5 @@ class OrderDetailCancellation(
             @SerializedName("content")
             @Expose
             val content: List<OrderDetailRefundKeyValue> = arrayListOf()
-    )
+    ) : Parcelable
 }

@@ -64,6 +64,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -87,9 +89,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger

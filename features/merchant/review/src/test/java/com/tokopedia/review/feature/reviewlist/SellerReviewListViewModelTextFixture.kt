@@ -7,6 +7,7 @@ import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCas
 import com.tokopedia.review.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 
@@ -28,5 +29,6 @@ abstract class SellerReviewListViewModelTextFixture {
         MockKAnnotations.init(this)
         viewModel = SellerReviewListViewModel(CoroutineTestDispatchersProvider,
                 getProductRatingOverallUse, getReviewProductListUseCase)
+        mockkObject(GetProductRatingOverallUseCase)
     }
 }

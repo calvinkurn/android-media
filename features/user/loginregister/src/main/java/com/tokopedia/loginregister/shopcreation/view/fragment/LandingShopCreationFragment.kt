@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -314,7 +315,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

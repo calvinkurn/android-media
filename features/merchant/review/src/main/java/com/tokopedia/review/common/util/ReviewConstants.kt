@@ -16,7 +16,6 @@ object ReviewConstants {
     const val LAST_MONTH_VALUE = "30 Hari Terakhir"
     const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
     const val ALL_VALUE = "Semua"
-    const val ALL_RATING = "all"
 
     const val MOST_REVIEW_KEY = "review_count desc"
     const val HIGHEST_RATING_KEY = "rating_avg desc"
@@ -85,20 +84,15 @@ object ReviewConstants {
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
-    const val ARGS_RATING = "ARGS_RATING"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
-    const val PARAM_UTM_SOURCE = "utmSource"
+    const val PARAM_UTM_SOURCE = "utm_source"
     const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
-    const val REPUTATION_SCORE_EMPTY = 0
-
-    const val AB_TEST_KEY = "InboxUlasanRevamp2"
-    const val NEW_REVIEW_FLOW = "New Review Flow"
 
     const val REVIEW_PENDING_TRACE = "review_pending_trace"
     const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"

@@ -142,7 +142,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_send_grey_chat_common" />
+                    app:srcCompat="@drawable/ic_chat_common_send_grey" />
 
                 <EditText
                     android:id="@+id/new_comment"
@@ -153,6 +153,7 @@
                     android:layout_toStartOf="@+id/send_but"
                     android:background="@drawable/bg_rounded_chat_input"
                     android:hint="@string/chat_edit_text"
+                    android:textColorHint="@color/Unify_N700_96"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
                     android:paddingStart="@dimen/chatcommon_12dp"

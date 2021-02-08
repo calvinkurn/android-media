@@ -11,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginTop="@dimen/home_account_dp_46"
+        android:layout_marginTop="@dimen/home_account_dp_54"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="@dimen/home_account_dp_64"
         android:layout_height="@dimen/home_account_dp_64"
@@ -59,18 +59,16 @@
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
         tools:text="yoris.prayogo@tokopedia.com" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
+        app:icon_color_night_enable="@color/home_account_icon_dark"
+        app:icon_name="EDIT"
         android:id="@+id/account_user_item_profile_edit"
-        android:paddingLeft="@dimen/home_account_dp_20"
-        android:paddingTop="@dimen/home_account_dp_12"
-        android:paddingBottom="@dimen/home_account_dp_12"
         android:layout_marginRight="@dimen/home_account_dp_6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/home_account_dp_28"
+        android:layout_height="@dimen/home_account_dp_28"
         app:layout_constraintBottom_toBottomOf="@+id/account_user_item_profile_email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_name"
-        app:srcCompat="@drawable/ic_account_edit" />
+        app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_name" />
 
     <include
         android:id="@+id/home_account_profile_financial_section"

@@ -13,7 +13,7 @@
         android:layout_marginEnd="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_18"
         app:srcCompat="@drawable/ic_green_pointer"
-        android:tint="@color/ic_grey_color"
+        android:tint="@color/Unify_N200"
         android:contentDescription="@string/pointer"
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/dp_12"/>
@@ -38,7 +38,7 @@
         android:id="@+id/divider_district_recommendation"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/separator_color"
+        android:background="@color/Unify_N100"
         android:layout_marginBottom="@dimen/dp_10"/>
 
 </RelativeLayout>

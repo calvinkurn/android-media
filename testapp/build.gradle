@@ -45,6 +45,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
+        multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
         versionCode 299900000
@@ -62,9 +63,9 @@ android {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
-    implementation (project(rootProject.ext.features.sessioncommon))
-    implementation (project(rootProject.ext.libraries.remoteConfig))
-    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)

@@ -17,7 +17,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryGridListDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridListViewModel> {
+public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridListDataModel> {
 
     private static final String MARKETPLACE = "Marketplace";
     private static final String DIGITAL = "Digital";
@@ -54,7 +54,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
     }
 
     @Override
-    public void bind(CategoryGridListViewModel element) {
+    public void bind(CategoryGridListDataModel element) {
         titleTxt.setText(element.getTitle());
         rowModelList.addAll(element.getItemList());
         adapter.setData(rowModelList);

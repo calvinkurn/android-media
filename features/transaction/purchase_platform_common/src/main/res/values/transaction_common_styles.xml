@@ -12,28 +12,23 @@
     </style>
 
     <style name="TransactionToggleButton" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
-        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorSwitchThumbNormal">@color/Unify_N50</item>
     </style>
 
     <style name="TransactionCheckbox" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/tkpd_main_green</item>
-        <item name="android:textColorSecondary">#bfbfbf</item>
-    </style>
-
-    <style name="TransactionCheckboxDisabled" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">#bfbfbf</item>
-        <item name="android:textColorSecondary">#bfbfbf</item>
+        <item name="colorAccent">@color/Unify_G500</item>
+        <item name="android:textColorSecondary">@color/Unify_N150</item>
     </style>
 
     <style name="TransactionEditText" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/grey_300</item>
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
-        <item name="colorControlHighlight">@color/tkpd_main_green</item>
+        <item name="colorControlNormal">@color/Unify_N75</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorControlHighlight">@color/Unify_G500</item>
     </style>
 
     <style name="transactionTextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/black_56</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
@@ -50,36 +45,27 @@
     </style>
 
     <style name="TextSmallNormalBlack38" parent="TextSmallNormal">
-        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextSmallNormalBlack54" parent="TextSmallNormal">
-        <item name="android:textColor">@color/black_54</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextSmallNormalBlack70" parent="TextSmallNormal">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="TextSmallMedium" parent="TextSmall">
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextSmallMediumBlack38" parent="TextSmallMedium">
-        <item name="android:textColor">@color/black_38</item>
-    </style>
-
     <style name="TextSmallMediumBlack54" parent="TextSmallMedium">
-        <item name="android:textColor">@color/black_54</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextSmallMediumBlack70" parent="TextSmallMedium">
-        <item name="android:textColor">@color/black_70</item>
-    </style>
-
-    <style name="TextSmallError" parent="TextVerySmall">
-        <item name="android:textColor">@color/text_cart_item_error_red</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="TextMid">
@@ -91,31 +77,19 @@
     </style>
 
     <style name="TextMidNormalBlack38" parent="TextMidNormal">
-        <item name="android:textColor">@color/black_38</item>
-    </style>
-
-    <style name="TextMidNormalBlack54" parent="TextMidNormal">
-        <item name="android:textColor">@color/black_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextMidNormalBlack70" parent="TextMidNormal">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="TextMidMedium" parent="TextMid">
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextMidMediumBlack54" parent="TextMidMedium">
-        <item name="android:textColor">@color/black_54</item>
-    </style>
-
-    <style name="TextMidMediumBlack38" parent="TextMidMedium">
-        <item name="android:textColor">@color/black_38</item>
-    </style>
-
     <style name="TextMidMediumBlack70" parent="TextMidMedium">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
 </resources>

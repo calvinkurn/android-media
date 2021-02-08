@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
@@ -52,6 +53,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -110,6 +112,12 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun View.renderStockLabel(productCardModel: ProductCardModel) {
         textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             textViewStockLabel.text = productCardModel.stockBarLabel
+            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
+                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
+            } else {
+                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            }
         }
     }
 

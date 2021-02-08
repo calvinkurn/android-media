@@ -91,12 +91,16 @@ class ShopHomeAdapter(
     }
 
     fun setEtalaseTitleData() {
-        val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
-        visitables.add(etalaseTitleUiModel)
+        if(visitables.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
+            val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
+            visitables.add(etalaseTitleUiModel)
+        }
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
-        visitables.add(shopProductSortFilterUiModel)
+        if(visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
+            visitables.add(shopProductSortFilterUiModel)
+        }
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {

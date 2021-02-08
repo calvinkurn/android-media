@@ -29,11 +29,26 @@ class InspirationCarouselViewModel(
             val bannerApplinkUrl: String = "",
             val product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
-            val layout: String = ""
+            val layout: String = "",
+            val position: Int = 0,
+            val carouselTitle: String = ""
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
+        }
+
+        fun shouldAddBannerCard(): Boolean {
+            return bannerImageUrl.isNotEmpty() || title.isNotEmpty()
+        }
+
+        fun getBannerDataLayer(keyword: String): Any {
+            return DataLayer.mapOf(
+                "creative", carouselTitle,
+                "id", "0",
+                "name", "/search - $keyword",
+                "position", position
+            )
         }
 
         class Product(

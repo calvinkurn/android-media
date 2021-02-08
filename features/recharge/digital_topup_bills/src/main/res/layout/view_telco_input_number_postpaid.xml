@@ -17,35 +17,33 @@
             android:id="@+id/telco_enquiry_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/digital_btn_check_bill"
+            android:layout_margin="@dimen/layout_lvl1"
             android:enabled="true"
-            app:unifyButtonVariant="filled"
+            android:text="@string/digital_btn_check_bill"
+            android:visibility="visible"
             app:unifyButtonSize="large"
             app:unifyButtonType="transaction"
-            android:layout_margin="@dimen/layout_lvl1"
-            android:visibility="visible"/>
+            app:unifyButtonVariant="filled" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/telco_title_enquiry_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:text="@string/digital_title_details_bills"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingTop="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            app:typographyType="heading_5"
-            android:textColor="@color/Neutral_N700_96"/>
+            android:text="@string/digital_title_details_bills"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_5" />
 
         <LinearLayout
             android:id="@+id/telco_enquiry_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl2" />
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:orientation="vertical"
+            android:visibility="gone" />
 
     </LinearLayout>
 

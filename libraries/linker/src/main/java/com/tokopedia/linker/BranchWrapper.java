@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -46,7 +47,9 @@ public class BranchWrapper implements WrapperInterface {
         if(Branch.getInstance() == null) {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
-
+            if(GlobalConfig.isAllowDebuggingTools()) {
+                Branch.enableLogging();
+            }
         }
     }
 

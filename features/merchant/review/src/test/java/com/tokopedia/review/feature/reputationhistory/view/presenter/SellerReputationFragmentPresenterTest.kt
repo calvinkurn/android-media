@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.reputationhistory.view.presenter
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel
 import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain
 import com.tokopedia.review.feature.reputationhistory.util.NetworkStatus
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -37,6 +38,20 @@ class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterT
         testSubscriber.assertValue(expectedResponse)
         testSubscriber.assertCompleted()
         verifyReviewReputationUseCaseCalled()
+    }
+
+    @Test
+    fun `when loadMoreNetworkCall network status return false should not execute expected usecase`() {
+        presenter.formatDate(anyLong())
+        presenter.setStartDate(anyLong())
+        presenter.setEndDate(anyLong())
+        presenter.incrementPage()
+        presenter.networkStatus = NetworkStatus.NONETWORKCALL
+        presenter.loadMoreNetworkCall()
+
+        verify {
+            reviewReputationUseCase wasNot Called
+        }
     }
 
     @Test
@@ -108,6 +123,17 @@ class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterT
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()
         verifyReviewReputationMergeUseCaseCalled()
+    }
+
+    @Test
+    fun `when firstTimeNetworkCall2 network status return false should not execute expected usecase`() {
+        presenter.resetPage()
+        presenter.networkStatus = NetworkStatus.NONETWORKCALL
+        presenter.firstTimeNetworkCall2()
+
+        verify {
+            reviewReputationMergeUseCase wasNot Called
+        }
     }
 
     private fun verifyReviewReputationUseCaseCalled() {

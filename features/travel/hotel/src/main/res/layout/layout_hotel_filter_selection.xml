@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/hotel_12dp"
+        android:paddingEnd="@dimen/spacing_lvl1"
         android:clipToPadding="false"/>
 
 </LinearLayout>

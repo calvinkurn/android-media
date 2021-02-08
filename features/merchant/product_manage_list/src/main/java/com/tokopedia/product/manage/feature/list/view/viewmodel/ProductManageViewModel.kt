@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
@@ -25,7 +25,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToUiModels
 import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -85,7 +85,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _viewState
     val getProductVariantsResult: LiveData<Result<GetVariantResult>>
         get() = _getProductVariantsResult
-    val productListResult: LiveData<Result<List<ProductViewModel>>>
+    val productListResult: LiveData<Result<List<ProductUiModel>>>
         get() = _productListResult
     val productListFeaturedOnlyResult: LiveData<Result<Int>>
         get() = _productListFeaturedOnlyResult
@@ -120,7 +120,7 @@ class ProductManageViewModel @Inject constructor(
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
-    private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _productListResult = MutableLiveData<Result<List<ProductUiModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
@@ -137,7 +137,6 @@ class ProductManageViewModel @Inject constructor(
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
-    private val _chatBlastSeller = MutableLiveData<String>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -559,7 +558,7 @@ class ProductManageViewModel @Inject constructor(
 
     private fun showProductList(products: List<Product>?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToViewModels(products, isMultiSelectActive)
+        val productList = mapToUiModels(products, isMultiSelectActive)
         _productListResult.value = Success(productList)
     }
 

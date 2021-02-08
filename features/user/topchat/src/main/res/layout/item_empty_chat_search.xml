@@ -32,7 +32,7 @@
             android:layout_marginEnd="@dimen/dp_topchat_34"
             android:gravity="center"
             android:text="@string/title_empty_chat_search_result"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textStyle="bold"
             app:typographyType="heading_2"
             app:typographyWeight="bold" />
@@ -45,7 +45,7 @@
             android:layout_marginTop="@dimen/dp_topchat_12"
             android:gravity="center"
             android:text="@string/desc_empty_chat_search_result"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:textStyle="bold"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />

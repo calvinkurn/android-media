@@ -35,14 +35,14 @@ buildscript {
         classpath('net.sf.proguard:proguard-gradle:6.0') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         classpath 'com.google.firebase:perf-plugin:1.3.1'
         classpath "com.google.gms:google-services:4.3.3"
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.tokopedia.patch:gradle-plugin:0.0.1'
         classpath 'com.tokopedia.patch:auto-patch-plugin:0.0.1'
@@ -63,9 +63,11 @@ if (hasProperty('buildScan')) {
 apply from: 'buildproj.gradle'
 
 //Installing Git Hooks
-task installGitHooks(type: Copy) {
-    ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
-    Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+task installGitHooks {
+    doLast {
+        ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+        Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+    }
 }
 clean.dependsOn installGitHooks
 

@@ -2,7 +2,7 @@ package com.tokopedia.logisticCommon.data.query
 
 object KeroLogisticQuery {
 
-    val autoCompleteGeocode = """
+    val autoComplete = """
         query KeroMapsAutoComplete(${'$'}param: String!) {
           kero_maps_autocomplete(input: ${'$'}param) {
             error_code
@@ -98,4 +98,5 @@ object KeroLogisticQuery {
           }
         }
     """.trimIndent()
+
 }

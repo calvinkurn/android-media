@@ -31,6 +31,9 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 digitalCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
 
     override fun onSubcriptionCheckedListener(checked: Boolean) {
+        view.cartInfoData.attributes?.run {
+            digitalAnalytics.eventClickSubscription(checked, categoryName, operatorName, userSession?.userId ?: "")
+        }
         view.cartInfoData.crossSellingConfig?.run {
             view.renderMyBillsDescriptionView(if (checked) bodyContentAfter else bodyContentBefore)
         }
@@ -52,16 +55,15 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         view.renderMyBillsEgoldView(view.cartInfoData.attributes?.fintechProduct?.getOrNull(0))
     }
 
+    override fun renderBaseCart(cartDigitalInfoData: CartDigitalInfoData?) {
+        super.renderBaseCart(cartDigitalInfoData)
+
+        // Update total price based on fintech amount if already shown and checked
+        view.updateTotalPriceWithFintechAmount()
+    }
+
     override fun onEgoldCheckedListener(checked: Boolean) {
-        view.cartInfoData.attributes?.pricePlain?.let { pricePlain ->
-            var totalPrice = pricePlain
-            if (checked) {
-                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount
-                        ?: 0
-                totalPrice += egoldPrice
-            }
-            view.renderCheckoutView(totalPrice)
-        }
+        updateTotalPriceWithFintechAmount(checked)
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
@@ -100,5 +102,28 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.info?.run {
             view.renderEgoldMoreInfo(title, tooltipText, urlLink)
         }
+    }
+
+    override fun updateTotalPriceWithFintechAmount(checked: Boolean) {
+        view.cartInfoData.attributes?.run {
+            // Check fintech product type
+            if (fintechProduct?.getOrNull(0)?.transactionType == TRANSACTION_TYPE_PROTECTION) {
+                digitalAnalytics.eventClickProtection(checked, categoryName, operatorName, userSession?.userId ?: "")
+            } else {
+                digitalAnalytics.eventClickCrossSell(checked, categoryName, operatorName, userSession?.userId ?: "")
+            }
+
+            var totalPrice = pricePlain
+            if (checked) {
+                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount
+                        ?: 0
+                totalPrice += egoldPrice
+            }
+            view.renderCheckoutView(totalPrice)
+        }
+    }
+
+    companion object {
+        const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
     }
 }

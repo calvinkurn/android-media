@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -49,7 +50,9 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     }
 
     private fun getCarouselRemoteView(): RemoteViews {
-        val remoteView = RemoteViews(context.packageName, R.layout.cm_carousel_layout)
+        val remoteView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.packageName, R.layout.cm_carousel_layout)
+        else RemoteViews(context.packageName, R.layout.cm_carousel_layout_pre_dark_mode)
         val currentCarouselItem = baseNotificationModel.carouselList[baseNotificationModel.carouselIndex]
 
         if (!TextUtils.isEmpty(currentCarouselItem.text)) {

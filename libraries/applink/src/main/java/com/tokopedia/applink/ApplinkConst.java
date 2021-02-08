@@ -60,10 +60,13 @@ public interface ApplinkConst {
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
+    String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
+    String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
+    String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
@@ -154,6 +157,7 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
+    String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
     String OMS_ORDER_DETAIL = "tokopedia://order/";
     String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
@@ -177,6 +181,8 @@ public interface ApplinkConst {
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
+
+    String OVO_REGISTER_INIT = "tokopedia://global/ovo-reg-init";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
@@ -317,6 +323,7 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
     String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
+    String THANKYOU_PAGE_NATIVE = "tokopedia://payment/thankyou?payment_id={payment_id}&merchant={merchant_code}";
 
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
@@ -328,6 +335,8 @@ public interface ApplinkConst {
     String OCC = "tokopedia://occ";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
+
+    String ACCOUNT = "tokopedia://account";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -385,6 +394,7 @@ public interface ApplinkConst {
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
         String TOPADS_CREATE_ONBOARDING = "sellerapp://topads/creation-onboard";
         String TOPADS_HEADLINE_CREATE = "sellerapp://topads/headline-ad-creation";
+        String TOPADS_HEADLINE_EDIT = "sellerapp://topads/headline-ad-edit";
         String TOPADS_HEADLINE_DETAIL = "sellerapp://topads/headline-ad-detail";
         String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
@@ -406,6 +416,7 @@ public interface ApplinkConst {
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String CONTENT_CREATE_POST = "sellerapp://content/create_post";
+        String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
     }
 
     interface Query {
@@ -574,7 +585,7 @@ public interface ApplinkConst {
         }
     }
 
-    interface Navigation{
+    interface Navigation {
         String MAIN_NAV = "tokopedia://navigation/main";
     }
 }

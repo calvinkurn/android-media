@@ -19,7 +19,8 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
  */
 class SimilarProductRecommendationTypeFactoryImpl (
         private val recommendationListener: RecommendationListener,
-        private val recommendationErrorListener: RecommendationErrorListener
+        private val recommendationErrorListener: RecommendationErrorListener,
+        private val recommendationEmptyStateListener: RecommendationEmptyViewHolder.RecommendationEmptyStateListener
 ): BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
 
     override fun type(dataModel: ProductInfoDataModel): Int = -1
@@ -46,7 +47,7 @@ class SimilarProductRecommendationTypeFactoryImpl (
             LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
             SimilarProductLoadMoreViewHolder.LAYOUT -> SimilarProductLoadMoreViewHolder(view)
             RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
-            RecommendationEmptyDataModel.LAYOUT -> RecommendationEmptyViewHolder(view)
+            RecommendationEmptyDataModel.LAYOUT -> RecommendationEmptyViewHolder(view, recommendationEmptyStateListener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -19,6 +19,6 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product)
 
-    fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option)
+    fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselViewModel.Option)
 
 }

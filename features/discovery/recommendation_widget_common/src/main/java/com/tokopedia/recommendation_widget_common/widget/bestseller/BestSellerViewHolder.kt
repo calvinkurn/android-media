@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.model.RecommendationSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import kotlinx.android.synthetic.main.best_seller_view_holder.view.*
 
 /**
@@ -100,8 +101,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             }.toMutableList()
             if(element.seeMoreAppLink.isNotBlank()) recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
             recommendationAdapter.submitList(recommendationCarouselList)
+
             itemView.best_seller_recommendation_recycler_view.show()
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
+            itemView.best_seller_recommendation_recycler_view.layoutManager?.scrollToPosition(0)
         }
     }
 
@@ -126,10 +129,18 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+        if (item.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
+                CLASS_NAME,
+                item.clickUrl,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+        )
         bestSellerDataModel?.let { listener.onBestSellerClick(it, item, adapterPosition) }
     }
 
     override fun onProductImpression(item: RecommendationItem) {
+        if (item.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(CLASS_NAME, item.trackerImageUrl, item.productId.toString(), item.name, item.imageUrl)
         bestSellerDataModel?.let { listener.onBestSellerImpress(it, item, adapterPosition) }
     }
 
@@ -137,6 +148,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
 
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
+        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
     }
 
 }

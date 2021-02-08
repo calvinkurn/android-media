@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 /**
  * Created by Pika on 18/9/20.
  */
-@TopAdsCommonScope
 @Module
 class TopAdsCommonModule(val context: Context) {
 

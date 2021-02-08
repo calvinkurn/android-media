@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ManageAddressScope
 class ManageAddressModule  {
 
     @Provides

@@ -1,13 +1,9 @@
 package com.tokopedia.digital.product.view.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,14 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
@@ -52,7 +46,6 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -60,16 +53,11 @@ import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
-import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
-import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
-import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
-import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
-import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -77,7 +65,6 @@ import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.unifycomponents.Toaster;
@@ -85,14 +72,11 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -106,10 +90,10 @@ import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberAct
 
 /**
  * @author anggaprasetiyo on 4/25/17.
+ * Routing applink to add to cart use isFromWidget and button back will go back to caller page
  */
 public class DigitalProductFragment extends BaseDaggerFragment
-        implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
-        CheckPulsaBalanceView.ActionListener {
+        implements IProductDigitalView, BaseDigitalProductView.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -199,8 +183,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private String additionalETollLastUpdatedDate;
     private String additionalETollOperatorName;
 
-    private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
-
     private String rechargeParamFromSlice = "";
 
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
@@ -213,10 +195,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private DigitalAnalytics digitalAnalytics;
 
-    private USSDBroadcastReceiver ussdBroadcastReceiver;
-    private ShowCaseDialog showCaseDialog;
-    private int selectedSimIndex = 0;//start from 0
-    private boolean ussdInProgress = false;
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     private boolean isCouponApplied;
@@ -276,7 +254,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
-        if(rechargeParamFromSlice!=null || !rechargeParamFromSlice.isEmpty()){
+        if(rechargeParamFromSlice != null && !rechargeParamFromSlice.isEmpty()){
             digitalAnalytics.onOpenPageFromSlice();
             digitalAnalytics.onClickSliceRecharge(userSession.getUserId(), rechargeParamFromSlice);
         }
@@ -406,7 +384,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
             return false;
         });
 
-        selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
             TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     CLICK_PDP,
@@ -500,15 +477,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
-        CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
-        checkPulsaBalanceView.setActionListener(this);
-        checkPulsaBalanceView.renderData(selectedSim, ussdCode, phoneNumber, operatorErrorMsg, isSimActive, carrierName);
-        holderCheckBalance.addView(checkPulsaBalanceView);
-        startShowCaseUSSD();
-    }
-
-    @Override
     public void renderCheckETollBalance(String text, String buttonText) {
         if (TextUtils.isEmpty(additionalETollLastBalance)) {
             checkETollBalanceView.setVisibility(View.VISIBLE);
@@ -518,11 +486,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.showRemainingBalance(clientNumber, additionalETollLastBalance,
                     additionalETollLastUpdatedDate);
         }
-    }
-
-    @Override
-    public void removeCheckPulsaCards() {
-        holderCheckBalance.removeAllViews();
     }
 
     @Override
@@ -738,46 +701,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView) {
-        if (ussdInProgress) {
-            showToastMessage(getString(R.string.msg_ussd_please_wait));
-        } else {
-            selectedSimIndex = simPosition;
-            selectedCheckPulsaBalanceView = checkPulsaBalanceView;
-            Operator operator = presenter.getSelectedUssdOperator(simPosition);
-            String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
-            String carrierName = DeviceUtil.getOperatorName(getActivity(), simPosition);
-            if (carrierName != null && !presenter.isCarrierSignalsNotAvailable(carrierName)
-                    && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.clientNumberList.get(0).getValidation(),
-                    operator, phoneNumber)) {
-                presenter.storeUssdPhoneNumber(simPosition, "");
-            }
-//            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-//                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
-//            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
-//                @Override
-//                public void onPermissionDenied(@NotNull String permissionText) {
-//                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
-//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
-//                            getString(R.string.ussd_permission_denied_label));
-//                }
-//
-//                @Override
-//                public void onNeverAskAgain(@NotNull String permissionText) {
-//                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
-//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
-//                            getString(R.string.ussd_permission_denied_label));
-//                }
-//
-//                @Override
-//                public void onPermissionGranted() {
-//                    checkBalanceByUSSD(simPosition, ussdCode);
-//                }
-//            }, "");
-        }
-    }
-
-    @Override
     public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
@@ -927,11 +850,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         }
                     }
                 }
+                //handle back button from applink cart widget
                 if (isFromWidget) {
                     isFromWidget = false;
-                    presenter.processGetCategoryAndBannerData(
-                            categoryId, operatorId, productId, clientNumber);
-                    setMenuVisibility(true);
+                    closeView();
                 }
                 break;
             case REQUEST_CODE_CONTACT_PICKER:
@@ -1055,19 +977,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
         }
     }
 
-    public void checkBalanceByUSSD(int simPosition, String ussdCode) {
-        presenter.processToCheckBalance(null, simPosition, ussdCode);
-
-        digitalAnalytics.eventUssd(
-                categoryDataState.name,
-                String.format("%s - %s", DeviceUtil.getOperatorName(getActivity(), simPosition),
-                        presenter.getDeviceMobileNumber(simPosition)
-                )
-        );
-        digitalAnalytics.eventUssdAttempt(categoryDataState.name,
-                getString(R.string.ussd_permission_allowed_label));
-    }
-
     private void renderContactDataToClientNumber(ContactData contactData) {
         digitalProductView.renderClientNumber(contactData.getContactNumber());
     }
@@ -1148,160 +1057,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showMessageAlert(String message, String title) {
-        View view = getView();
-        if (view == null) {
-            return;
-        }
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        Dialog dialog = alertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-    @Override
-    public void showAccessibilityAlertDialog() {
-        View view = getView();
-        if (view == null) {
-            return;
-        }
-        AlertDialog.Builder accessibiltyDialog = new AlertDialog.Builder(getActivity());
-        accessibiltyDialog.setMessage(getActivity().getString(R.string.dialog_accessibility_service_on));
-        accessibiltyDialog.setPositiveButton("ALLOW", (dialogInterface, i) -> {
-            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivityForResult(intent, 0);
-        });
-        accessibiltyDialog.setNegativeButton("DENY", (dialogInterface, i) -> {
-
-        });
-        Dialog dialog = accessibiltyDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-    @Override
-    public void registerUssdReciever() {
-        if (selectedCheckPulsaBalanceView != null)
-            selectedCheckPulsaBalanceView.showCheckBalanceProgressbar();
-        if (ussdBroadcastReceiver == null) {
-            ussdBroadcastReceiver = new USSDBroadcastReceiver(this);
-            getActivity().registerReceiver(ussdBroadcastReceiver, new IntentFilter(
-                    USSDBroadcastReceiver.ACTION_GET_BALANCE_FROM_USSD
-            ));
-        }
-        Intent intent = new Intent(getActivity(), USSDAccessibilityService.class);
-        intent.putExtra(USSDAccessibilityService.KEY_START_SERVICE_FROM_APP, true);
-        getActivity().startService(intent);
-        ussdInProgress = true;
-    }
-
-    @Override
-    public void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim) {
-        if (getActivity() != null) {
-            ussdInProgress = false;
-            String number = "";
-            if (selectedCheckPulsaBalanceView != null) {
-                selectedCheckPulsaBalanceView.hideProgressbar();
-                number = selectedCheckPulsaBalanceView.getPhoneNumberText();
-            }
-            if (pulsaBalance != null && pulsaBalance.isSuccess()) {
-                pulsaBalance.setMobileNumber(number);
-                digitalAnalytics.eventUssdAttempt(categoryDataState.name, getString(R.string.status_success_label));
-                startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
-                        categoryDataState.clientNumberList.get(0).getValidation(),
-                        categoryId, categoryDataState.name, selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
-            } else {
-                showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                digitalAnalytics.eventUssdAttempt(categoryDataState.name, getString(R.string.status_failed_label) + getString(R.string.error_message_ussd_msg_not_parsed));
-            }
-        }
-    }
-
-    private void startShowCaseUSSD() {
-        final String showCaseTag = DigitalProductFragment.class.getName();
-        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
-        showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
-
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-        showCaseObjectList.add(new ShowCaseObject(
-                holderCheckBalance,
-                getString(R.string.title_showcase_ussd),
-                getString(R.string.message_showcase_ussd),
-                ShowCaseContentPosition.UNDEFINED,
-                com.tokopedia.design.R.color.tkpd_main_green));
-        showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
-    }
-
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .customView(R.layout.view_digital_showcase)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
-                .spacingRes(R.dimen.digital_spacing_show_case)
-                .arrowWidth(R.dimen.digital_arrow_width_show_case)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
-                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
-                .prevStringRes(R.string.digital_navigate_back_showcase)
-                .nextStringRes(com.tokopedia.showcase.R.string.next)
-                .finishStringRes(R.string.digital_navigate_done_showcase)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }
-
-    @Override
-    public void showPulsaBalanceError(String message) {
-        if (getActivity() != null) {
-            ussdInProgress = false;
-            if (selectedCheckPulsaBalanceView != null)
-                selectedCheckPulsaBalanceView.hideProgressbar();
-            showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
-        }
-    }
-
-    @Override
-    public void onReceivedUssdData(String result) {
-        presenter.processPulsaBalanceUssdResponse(result, selectedSimIndex);
-    }
-
-    @Override
-    public void onUssdDataError(String errorMessage) {
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        presenter.renderCheckPulsa();
-    }
-
-    @Override
     public void onDestroy() {
-        if (ussdBroadcastReceiver != null)
-            getActivity().unregisterReceiver(ussdBroadcastReceiver);
-        presenter.removeUssdTimerCallback();
-
         presenter.detachView();
-
         super.onDestroy();
     }
 
@@ -1376,44 +1133,20 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setElevation(10);
             containerPromo.setElevation(10);
 
-            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.color.white);
-            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.color.white);
-            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.color.white);
-            containerPromo.setBackgroundResource(com.tokopedia.design.R.color.white);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            holderProductDetail.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            containerPromo.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
-            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            holderCheckBalance.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
+            holderProductDetail.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
+            containerPromo.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
     }
 
     private View getTickerCouponApplied() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.view_digital_ticker_coupon_applied, null);
-
-        TickerView tickerView = view.findViewById(R.id.ticker_view);
-        setupTickerCouponApplied(tickerView);
-
         return view;
     }
-
-    private void setupTickerCouponApplied(TickerView tickerView) {
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(getString(R.string.digital_coupon_applied_ticker_message));
-        tickerView.setVisibility(View.INVISIBLE);
-        tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
-        tickerView.buildView();
-
-        tickerView.postDelayed(() -> {
-            tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
-            );
-            tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
-        }, DEFAULT_POST_DELAYED_VALUE);
-    }
-
 }

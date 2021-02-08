@@ -8,6 +8,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.common.LoadingDialog
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -15,7 +17,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@OtpScope
 @Module
 class OtpModule (val context: Context) {
 
@@ -42,4 +43,10 @@ class OtpModule (val context: Context) {
     @OtpScope
     @Provides
     fun provideLoadingDialog(): LoadingDialog = LoadingDialog(context)
+
+    @OtpScope
+    @Provides
+    fun provideRemoteConfig(): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 }

@@ -120,13 +120,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         KEY_USER_ID to userId))
     }
 
-    fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(event,
-                category,
-                action,
-                label)
-    }
-
     private fun removeCurrencyPrice(priceFormatted: String): String {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")
@@ -160,17 +153,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL
         )
-    }
-
-    fun eventClickDescriptionTabOnProductDescription(productId: String) {
-        val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION,
-                ""
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     companion object {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -42,7 +43,6 @@ import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidList
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
-import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,7 +57,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
-    private lateinit var mainContainer: TelcoNestedCoordinatorLayout
+    private lateinit var mainContainer: CoordinatorLayout
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -65,7 +65,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
-    private lateinit var rechargeProductFromSlice: String
+    private var rechargeProductFromSlice: String = ""
     private var traceStop = false
     private var operatorSelected: RechargePrefix? = null
         set(value) {
@@ -100,6 +100,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
         mainContainer = view.findViewById(R.id.telco_main_container)
         pageContainer = view.findViewById(R.id.telco_page_container)
+        appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
+        bannerImage = view.findViewById(R.id.telco_bg_img_banner)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
         buyWidget = view.findViewById(R.id.telco_buy_widget)
         tickerView = view.findViewById(R.id.telco_ticker_view)

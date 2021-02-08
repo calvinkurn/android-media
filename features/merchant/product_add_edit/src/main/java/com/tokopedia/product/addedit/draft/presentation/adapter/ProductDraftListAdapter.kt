@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
+import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductDraftFragment.Companion.FIRST_INDEX
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
 import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.draft.presentation.viewholder.ProductDraftListViewHolder
@@ -37,8 +38,10 @@ class ProductDraftListAdapter(
     }
 
     fun deleteDraft(position: Int) {
-        drafts.removeAt(position)
-        notifyItemRemoved(position)
+        if(position >= FIRST_INDEX && position < drafts.size) {
+            drafts.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     fun deleteAllDrafts() {

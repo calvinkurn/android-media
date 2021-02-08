@@ -87,7 +87,6 @@
         app:layout_constraintTop_toBottomOf="@+id/flightDetailPriceInfantLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/flightDetailPriceTotalLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_detail_bottom_sheet_tab_price_subtotal"

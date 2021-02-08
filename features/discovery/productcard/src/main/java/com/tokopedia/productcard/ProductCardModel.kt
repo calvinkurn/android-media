@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
@@ -40,6 +41,7 @@ data class ProductCardModel (
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
+        val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
         val addToCardText: String = "",
@@ -47,7 +49,8 @@ data class ProductCardModel (
         val isShopRatingYellow: Boolean = false,
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
-        val labelGroupVariantList: List<LabelGroupVariant> = listOf()
+        val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

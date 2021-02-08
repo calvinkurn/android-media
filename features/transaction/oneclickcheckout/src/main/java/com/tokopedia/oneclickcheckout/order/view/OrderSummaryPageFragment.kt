@@ -463,7 +463,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                     })
                                 }
 
-                                override fun onButtonContinueClicked(checkoutType: Int) {
+                                override fun onButtonContinueClicked() {
                                     viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
                                     orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
                                 }
@@ -511,7 +511,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         // first load
-        if (viewModel.orderProduct.productId == 0) {
+        if (viewModel.orderProduct.productId == 0L) {
             val productId = arguments?.getString(QUERY_PRODUCT_ID)
             if (productId.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
@@ -596,7 +596,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         3 -> layoutPayment
                         else -> null
                     }
-                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
+                    val color = context?.let { ctx ->
+                        ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    } ?: com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = color))
                 }
                 val coachMark = CoachMarkBuilder().build()
                 coachMark.enableSkip = true
@@ -1209,6 +1212,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
+        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId.toString(), "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
     }
 
     override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {

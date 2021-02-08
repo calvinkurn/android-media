@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -131,7 +130,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)

@@ -76,32 +76,20 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_new_address_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
-                android:lines="1"
-                android:textColor="@color/Unify_N700_96"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_new_address_receiver"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
-                android:paddingStart="@dimen/dp_4"
                 android:paddingEnd="@dimen/dp_16"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/btn_new_change_address"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tv_new_address_name"
-                app:layout_constraintTop_toTopOf="@+id/tv_new_address_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="reguler"
+                tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_new_address_detail"
@@ -351,6 +339,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_payment_cc_name" />
 
+            <!-- ImageUnify scaling issue -->
             <ImageView
                 android:id="@+id/iv_new_payment"
                 android:layout_width="@dimen/dp_30"

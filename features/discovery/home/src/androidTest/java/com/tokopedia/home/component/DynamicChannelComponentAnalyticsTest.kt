@@ -1,7 +1,9 @@
 package com.tokopedia.home.component
 
+import android.content.Context
 import android.util.Log
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -11,8 +13,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.viewpager.widget.ViewPager
@@ -30,11 +31,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginToAnUser
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifycomponents.ImageUnify
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -72,6 +76,7 @@ class DynamicChannelComponentAnalyticsTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
+            disableCoachMark()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
@@ -111,16 +116,29 @@ class DynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
-
+    private fun hideStickyLogin() {
+        val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+        if (layout.visibility == View.VISIBLE) {
+            layout.visibility = View.GONE
+        }
+    }
 
     private fun initTest() {
         clearUserSession()
         waitForData()
+        hideStickyLogin()
+    }
+
+    private fun disableCoachMark(){
+        val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(
+                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     private fun initTestWithLogin() {
         initTest()
         loginInstrumentationTestUser1()
+        loginToAnUser(activityRule.activity.application)
     }
 
     private fun waitForData() {

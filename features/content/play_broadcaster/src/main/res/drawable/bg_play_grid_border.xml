@@ -4,6 +4,6 @@
 
     <corners android:radius="@dimen/play_product_preview_radius"/>
     <stroke
-        android:color="@color/Neutral_N50"
+        android:color="@color/Unify_N50"
         android:width="@dimen/play_etalase_list_border_width"/>
 </shape>

@@ -54,10 +54,11 @@ class MultiLineGraphViewHolder(
     private var isMetricComparableByPeriodSelected: Boolean = false
     private var showAnimation: ValueAnimator? = null
     private var hideAnimation: ValueAnimator? = null
+    private var showEmptyState: Boolean = false
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
-        showAnimation?.cancel()
-        hideAnimation?.cancel()
+        showAnimation?.end()
+        hideAnimation?.end()
         this.element = element
 
         val data = element.data
@@ -69,6 +70,14 @@ class MultiLineGraphViewHolder(
     }
 
     override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
+        scrollMetricToPosition(position)
+        setOnMetricStateChanged(metric)
+        element?.let {
+            listener.sendMultiLineGraphMetricClick(it, metric)
+        }
+    }
+
+    private fun scrollMetricToPosition(position: Int) {
         itemView.rvShcGraphMetrics.post {
             val mPosition = if (position == 0 || metricsAdapter.itemCount.minus(1) == position) {
                 position
@@ -76,11 +85,6 @@ class MultiLineGraphViewHolder(
                 position.plus(1)
             }
             itemView.rvShcGraphMetrics?.smoothScrollToPosition(mPosition)
-        }
-
-        setOnMetricStateChanged(metric)
-        element?.let {
-            listener.sendMultiLineGraphMetricClick(it, metric)
         }
     }
 
@@ -168,7 +172,7 @@ class MultiLineGraphViewHolder(
                 it.gone()
             }
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
 
         setupTooltip(element)
@@ -181,12 +185,12 @@ class MultiLineGraphViewHolder(
                 tvShcMultiLineGraphTitle.text = title
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen8dp = context.resources.getDimension(R.dimen.layout_lvl1).toInt()
+                val dimen8dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, 0)
             } else {
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen16dp = context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                val dimen16dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
                 tvShcMultiLineGraphTitle.gone()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen16dp, dimen12dp, 0)
             }
@@ -201,7 +205,7 @@ class MultiLineGraphViewHolder(
             return
         }
 
-        val metric = metricItems.getOrNull(0)
+        val metric = lastSelectedMetric ?: metricItems.getOrNull(0)
         metric?.isSelected = true
 
         with(itemView) {
@@ -222,6 +226,9 @@ class MultiLineGraphViewHolder(
                 showLineGraph(listOf(metric))
             }
 
+            val metricPosition = metricItems.indexOf(metric)
+            scrollMetricToPosition(metricPosition)
+
             setupCta(element)
             setupTooltip(element)
 
@@ -231,17 +238,19 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    private fun setupEmptyState(element: MultiLineGraphWidgetUiModel) {
-        with(element.emptyState) {
-            itemView.tvLineGraphEmptyStateTitle.text = title
-            itemView.tvLineGraphEmptyStateDescription.text = description
-            itemView.tvShcMultiLineEmptyStateCta.text = ctaText
-            itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
-                if (RouteManager.route(itemView.context, appLink)) {
-                    listener.sendMultiLineGraphEmptyStateCtaClick(element)
+    private fun setupEmptyState() {
+        element?.let { element ->
+            with(element.emptyState) {
+                itemView.tvLineGraphEmptyStateTitle.text = title
+                itemView.tvLineGraphEmptyStateDescription.text = description
+                itemView.tvShcMultiLineEmptyStateCta.text = ctaText
+                itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                    if (RouteManager.route(itemView.context, appLink)) {
+                        listener.sendMultiLineGraphEmptyStateCtaClick(element)
+                    }
                 }
+                animateShowEmptyState()
             }
-            animateShowEmptyState()
         }
     }
 
@@ -309,21 +318,24 @@ class MultiLineGraphViewHolder(
     }
 
     private fun showLineGraph(metrics: List<MultiLineMetricUiModel>) {
+        showEmptyState = showEmpty(element, metrics)
         with(itemView.chartViewShcMultiLine) {
             val lineChartDataSets = getLineChartData(metrics)
             init(getLineGraphConfig(lineChartDataSets))
             setDataSets(*lineChartDataSets.toTypedArray())
             invalidateChart()
         }
-        element?.let { element ->
-            if (element.isShowEmpty && metrics.filter { it.isSelected }.all { it.isEmpty } &&
-                    element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                    element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()) {
-                setupEmptyState(element)
-            } else {
-                animateHideEmptyState()
-            }
+        if (showEmptyState) {
+            setupEmptyState()
+        } else {
+            animateHideEmptyState()
         }
+    }
+
+    private fun showEmpty(element: MultiLineGraphWidgetUiModel?, metrics: List<MultiLineMetricUiModel>): Boolean {
+        return element != null && element.isShowEmpty && metrics.filter { it.isSelected }.all { it.isEmpty } &&
+                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
+                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
     }
 
     private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
@@ -333,13 +345,13 @@ class MultiLineGraphViewHolder(
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
-            tooltipEnabled { true }
+            tooltipEnabled { !showEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -347,7 +359,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
@@ -522,7 +534,7 @@ class MultiLineGraphViewHolder(
         with(itemView) {
             chartViewShcMultiLine.gone()
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 
@@ -593,14 +605,14 @@ class MultiLineGraphViewHolder(
     }
 
     private fun animateShowEmptyState() {
-        if (hideAnimation?.isRunning == true) hideAnimation?.cancel()
+        if (hideAnimation?.isRunning == true) hideAnimation?.end()
         if (itemView.multiLineEmptyState?.isVisible == true) return
         itemView.multiLineEmptyState.show()
         showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
-        if (showAnimation?.isRunning == true) showAnimation?.cancel()
+        if (showAnimation?.isRunning == true) showAnimation?.end()
         if (itemView.multiLineEmptyState?.isVisible != true) return
         hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {

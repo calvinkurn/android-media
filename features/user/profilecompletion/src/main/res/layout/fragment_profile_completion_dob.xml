@@ -15,7 +15,7 @@
         android:textSize="@dimen/text_size_16"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:lineSpacingExtra="4sp"
         android:layout_gravity="center"/>
 
@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColorHint="@color/grey_hint"
+            android:textColorHint="@color/Unify_N100"
             android:theme="@style/Theme.TextInputLayout"
             android:hint="@string/profile_completion_date">
             <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColorHint="@color/grey_hint"
+            android:textColorHint="@color/Unify_N100"
             android:theme="@style/Theme.TextInputLayout"
             android:hint="@string/profile_completion_month">
             <AutoCompleteTextView
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:theme="@style/Theme.TextInputLayout"
-            android:textColorHint="@color/grey_hint"
+            android:textColorHint="@color/Unify_N100"
             android:hint="@string/profile_completion_year">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/year"

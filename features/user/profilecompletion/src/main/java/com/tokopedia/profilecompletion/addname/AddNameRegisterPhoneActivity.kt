@@ -1,7 +1,9 @@
 package com.tokopedia.profilecompletion.addname
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneFragment
 
@@ -19,6 +21,11 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
             bundle.putAll(intent.extras)
         }
         return AddNameRegisterPhoneFragment.createInstance(bundle)
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
 }

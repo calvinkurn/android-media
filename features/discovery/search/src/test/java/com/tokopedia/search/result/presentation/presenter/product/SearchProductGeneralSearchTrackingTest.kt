@@ -79,7 +79,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
     }
 
     private fun `Given View getQueryKey will return the keyword`() {
-        every { productListView.queryKey } returns keyword
+        every { productListView.queryKey } returns searchParameter[SearchApiConst.Q].toString()
     }
 
     private fun `Given user is logged in`() {
@@ -101,6 +101,30 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val actualGeneralSearchTrackingModel = generalSearchTrackingModelSlot.captured
 
         actualGeneralSearchTrackingModel shouldBe expectedGeneralSearchTrackingModel
+    }
+
+    @Test
+    fun `General Search Tracking should not sent when keyword is empty`() {
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = ""
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+        }
+
+        `Given Search Product Setup`(searchProductModel, "")
+
+        `When View is created`()
+
+        `Then verify general search tracking is not sent`()
+    }
+
+    private fun `Then verify general search tracking is not sent`() {
+        verify(exactly = 0) {
+            productListView.sendTrackingGTMEventSearchAttempt(any())
+        }
     }
 
     @Test

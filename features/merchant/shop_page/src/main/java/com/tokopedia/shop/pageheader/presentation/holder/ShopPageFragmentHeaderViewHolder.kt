@@ -57,6 +57,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
+        view.shop_page_follow_unfollow_button?.hide()
+        view.shop_page_follow_unfollow_button_old?.hide()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
         val shopLocation = shopPageHeaderDataModel.location
         if(shopLocation.isNotEmpty()){
@@ -120,7 +122,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun hideFollowButton(){
+    private fun hideFollowButton(){
         followButton.visibility = View.GONE
     }
 

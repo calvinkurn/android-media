@@ -14,6 +14,7 @@ public interface SearchEventTracking {
         String PROMO_CLICK = "promoClick";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
+        String CREATIVE = "creative";
     }
 
     interface Category {
@@ -66,6 +67,7 @@ public interface SearchEventTracking {
         String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_GRID_BANNER = "click lihat sekarang - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";

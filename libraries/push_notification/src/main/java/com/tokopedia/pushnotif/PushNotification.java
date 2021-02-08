@@ -4,12 +4,12 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.data.constant.Constant;
@@ -21,11 +21,9 @@ import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.util.NotificationTracker;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
@@ -48,7 +46,7 @@ public class PushNotification {
         if (isAllowToRender(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
-            logEvent(context, applinkNotificationModel, data,
+            PushNotificationAnalytics.logEvent(context, applinkNotificationModel, data,
                     "ApplinkNotificationHelper.allowToShow == true"
                             + "; id " + notificationId
                             + "; v " + Build.VERSION.SDK_INT
@@ -73,11 +71,16 @@ public class PushNotification {
                 NotificationTracker
                         .getInstance(context)
                         .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
+            } else {
+                NotificationTracker
+                        .getInstance(context)
+                        .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
             }
+            fetchSellerAppWidgetData(context, notificationId);
         } else {
             UserSessionInterface userSession = new UserSession(context);
             String loginId = userSession.getUserId();
-            logEvent(context, applinkNotificationModel, data,
+            PushNotificationAnalytics.logEventFromAll(context, data,
                     "ApplinkNotificationHelper.allowToShow == false"
                             + "; sam " + applinkNotificationModel.getToUserId().equals(loginId)
                             + "; loc " + ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode())
@@ -90,61 +93,36 @@ public class PushNotification {
         }
     }
 
+    private static void fetchSellerAppWidgetData(Context context, int notificationId) {
+        if (!GlobalConfig.isSellerApp()) return;
+
+        if (notificationId == Constant.NotificationId.CHAT) {
+            sendBroadcast(context, Constant.IntentFilter.GET_CHAT_SELLER_APP_WIDGET_DATA);
+        } else if (notificationId == Constant.NotificationId.SELLER) {
+            sendBroadcast(context, Constant.IntentFilter.GET_ORDER_SELLER_APP_WIDGET_DATA);
+        }
+    }
+
+    private static void sendBroadcast(Context context, String actionName) {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(actionName);
+            intent.setPackage(context.getPackageName());
+            context.sendBroadcast(intent);
+        } catch (Exception e) {
+            Timber.i(e);
+        }
+    }
+
     private static boolean isAllowToRender(Context context, ApplinkNotificationModel applinkNotificationModel) {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
-        Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
-        Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
-        Boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
+        boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
+        boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+        boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
 
         return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
-    }
-
-    private static void logEvent(Context context, ApplinkNotificationModel model, Bundle data, String message) {
-        try {
-            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = model.getToUserId();
-            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
-                executeCrashlyticLog(context, data,  message);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private static void executeCrashlyticLog(Context context, Bundle data, String message) {
-        if (!BuildConfig.DEBUG) {
-            String logMessage = generateLogMessage(context, data, message);
-            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
-            Timber.w(
-                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
-                    "PushNotification::notify(Context context, Bundle data)",
-                    logMessage
-            );
-        }
-    }
-
-    private static String generateLogMessage(Context context, Bundle data, String message) {
-        StringBuilder logMessage = new StringBuilder(message + " \n");
-        String fcmToken = getFcmTokenFromPref(context);
-        addLogLine(logMessage, "fcmToken", fcmToken);
-        addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp());
-        for (String key : data.keySet()) {
-            addLogLine(logMessage, key, data.get(key));
-        }
-        return logMessage.toString();
-    }
-
-    private static String getFcmTokenFromPref(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString("pref_fcm_token", "");
-    }
-
-    private static void addLogLine(StringBuilder stringBuilder, String key, Object value) {
-        stringBuilder.append(key);
-        stringBuilder.append(": ");
-        stringBuilder.append(value);
-        stringBuilder.append(", \n");
     }
 
     private static void notifyChatbot(Context context, ApplinkNotificationModel applinkNotificationModel, int notificationId, NotificationManagerCompat notificationManagerCompat) {

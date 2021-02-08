@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:background="@color/grey_100">
+    tools:background="@color/Unify_N50">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_label_chooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/digital_voucher_notes"
-        android:textSize="@dimen/sp_14"
+        android:textColor="@color/Unify_N700_32"
+        app:typographyType="body_2"
         android:visibility="gone"
         tools:text="@string/digital_common_prompt_phone"
         tools:visibility="visible"/>
@@ -22,23 +22,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_operator_product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/iv_arrow"
             android:layout_toStartOf="@+id/iv_arrow"
-            android:paddingTop="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_5"
-            android:textColor="@color/digital_voucher"
-            android:textSize="@dimen/sp_16"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_1"
             tools:text="Extra Combo 6GB"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/tv_operator_product_name"
-            android:background="@color/digital_grey"/>
+            android:background="@color/Unify_N300"/>
 
         <ImageView
             android:id="@+id/iv_arrow"
@@ -47,25 +47,25 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            app:srcCompat="@drawable/digital_arrow"
-            android:tint="@color/digital_voucher"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24"
+            android:tint="@color/Unify_N700_44"
             tools:ignore="ContentDescription"/>
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_error_chooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/dp_3"
+        android:paddingLeft="@dimen/spacing_lvl2"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/dp_3"
+        android:paddingStart="@dimen/spacing_lvl2"
         android:text="@string/digital_common_title_empty_stock"
-        android:textColor="@color/red_600"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/Unify_R600"
+        app:typographyType="body_3"
         android:visibility="gone"
         tools:visibility="visible"/>
 

@@ -15,6 +15,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -23,6 +24,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.assertj.core.api.Assertions
@@ -51,6 +53,7 @@ class PlayViewModelTest {
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
+    private val mockTrackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
@@ -87,9 +90,11 @@ class PlayViewModelTest {
                 mockGetIsLikeUseCase,
                 mockGetCartCountUseCase,
                 mockGetProductTagItemsUseCase,
+                mockTrackProductTagBroadcasterUseCase,
                 mockPlaySocket,
                 userSession,
                 dispatchers,
+                mockk(relaxed = true),
                 mockk(relaxed = true)
         )
 
