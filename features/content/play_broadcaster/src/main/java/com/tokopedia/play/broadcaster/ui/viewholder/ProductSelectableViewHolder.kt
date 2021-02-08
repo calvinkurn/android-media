@@ -35,7 +35,7 @@ class ProductSelectableViewHolder(
     private val cbSelected: CheckboxUnify = itemView.findViewById(R.id.cb_selected)
     private val tvProductName: TextView = itemView.findViewById(R.id.tv_product_name)
     private val tvProductAmount: TextView = itemView.findViewById(R.id.tv_product_amount)
-    private val lblEmptyStock: Label = itemView.findViewById(R.id.lbl_empty_stock)
+//    private val lblEmptyStock: Label = itemView.findViewById(R.id.lbl_empty_stock)
 
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
 
@@ -63,10 +63,10 @@ class ProductSelectableViewHolder(
             flImage.foreground = null
         }
 
-        lblEmptyStock.unlockFeature = true
-        lblEmptyStock.setLabelType(
-                "#${Integer.toHexString(MethodChecker.getColor(lblEmptyStock.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))}"
-        )
+//        lblEmptyStock.unlockFeature = true
+//        lblEmptyStock.setLabelType(
+//                "#${Integer.toHexString(MethodChecker.getColor(lblEmptyStock.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))}"
+//        )
     }
 
     fun bind(item: ProductContentUiModel) {
@@ -75,16 +75,17 @@ class ProductSelectableViewHolder(
         ivImage.compatTransitionName = item.transitionName
 
         tvProductName.text = item.name
+        tvProductAmount.text = getString(R.string.play_product_stock_amount, if (item.stock is StockAvailable) item.stock.stock else "-")
 
-        if (item.stock is StockAvailable) {
-            lblEmptyStock.gone()
-            cbSelected.isEnabled = true
-            tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock.stock)
-        } else {
-            lblEmptyStock.show()
-            cbSelected.isEnabled = false
-            tvProductAmount.text = getString(R.string.play_product_stock_amount, 0)
-        }
+//        if (item.stock is StockAvailable) {
+//            lblEmptyStock.gone()
+//            cbSelected.isEnabled = true
+//            tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock.stock)
+//        } else {
+//            lblEmptyStock.show()
+//            cbSelected.isEnabled = false
+//            tvProductAmount.text = getString(R.string.play_product_stock_amount, 0)
+//        }
 
         itemView.setOnClickListener {
             if (cbSelected.isEnabled) {

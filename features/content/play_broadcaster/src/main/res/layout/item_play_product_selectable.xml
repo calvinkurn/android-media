@@ -41,18 +41,18 @@
         app:unify_checkbox_type="type_white"
         />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/lbl_empty_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        android:text="@string/play_empty_stock"
-        app:layout_constraintBottom_toBottomOf="@id/fl_image"
-        app:layout_constraintStart_toStartOf="@id/fl_image"
-        tools:visibility="visible"
-        />
+<!--    <com.tokopedia.unifycomponents.Label-->
+<!--        android:id="@+id/lbl_empty_stock"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl3"-->
+<!--        android:layout_marginBottom="@dimen/spacing_lvl3"-->
+<!--        android:visibility="gone"-->
+<!--        android:text="@string/play_empty_stock"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/fl_image"-->
+<!--        app:layout_constraintStart_toStartOf="@id/fl_image"-->
+<!--        tools:visibility="visible"-->
+<!--        />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
