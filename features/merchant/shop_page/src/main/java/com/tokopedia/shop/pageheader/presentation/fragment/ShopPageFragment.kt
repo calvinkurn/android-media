@@ -583,7 +583,7 @@ class ShopPageFragment :
             }
         })
 
-        stickyLoginView?.loadContent()
+        stickyLoginView?.hide()
     }
 
     private fun getInitialData() {
@@ -913,6 +913,8 @@ class ShopPageFragment :
         shopPageHeaderDataModel?.let {
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
+
+        stickyLoginView?.loadContent()
     }
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
