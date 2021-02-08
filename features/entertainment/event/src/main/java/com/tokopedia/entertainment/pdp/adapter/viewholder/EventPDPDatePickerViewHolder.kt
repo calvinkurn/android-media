@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import kotlinx.android.synthetic.main.ent_pdp_form_date_picker_item.view.*
 import java.text.SimpleDateFormat
 
+@SuppressLint("ClickableViewAccessibility")
 class EventPDPDatePickerViewHolder(val view: View,
                                    val addOrRemoveData: (Int, String, String) -> Unit,
                                    val listener: OnClickFormListener
