@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
-data class DynamicLegoBannerDataModel(
+data class DynamicLegoBannerSixAutoDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
 ): HomeComponentVisitable {
@@ -13,7 +13,7 @@ data class DynamicLegoBannerDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is DynamicLegoBannerDataModel) {
+        return if (b is DynamicLegoBannerSixAutoDataModel) {
             channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }

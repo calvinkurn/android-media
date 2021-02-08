@@ -171,6 +171,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
+        return DynamicLegoBannerSixAutoViewHolder.LAYOUT
+    }
+
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
         return RecommendationListCarouselViewHolder.LAYOUT
     }
@@ -415,6 +419,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
             ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
             HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
+            DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
+                    DynamicLegoBannerSixAutoViewHolder(
+                            view,
+                            legoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

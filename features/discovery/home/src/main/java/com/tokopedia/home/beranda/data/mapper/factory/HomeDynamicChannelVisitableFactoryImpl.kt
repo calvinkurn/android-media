@@ -89,8 +89,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             channel = channel,
                             trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                             isCombined = true)
-                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO -> {
+                    createDynamicLegoBannerSixAutoComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)
@@ -253,6 +256,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 visitableList.size, channel) }
     }
 
+    private fun createDynamicLegoBannerSixAutoComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingDynamicLegoSixAutoBannerComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
     private fun createRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingRecommendationListCarouselComponent(
                 channel,
@@ -394,6 +407,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                                   isCache: Boolean,
                                                   verticalPosition: Int): Visitable<*> {
         val viewModel = DynamicLegoBannerDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
+        )
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
+        return viewModel
+    }
+
+    private fun mappingDynamicLegoSixAutoBannerComponent(channel: DynamicHomeChannel.Channels,
+                                                         isCache: Boolean,
+                                                         verticalPosition: Int): Visitable<*> {
+        val viewModel = DynamicLegoBannerSixAutoDataModel(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isCache = isCache
         )
