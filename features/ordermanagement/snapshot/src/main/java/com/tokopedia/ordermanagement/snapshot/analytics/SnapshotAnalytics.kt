@@ -7,9 +7,9 @@ import com.tokopedia.track.TrackAppUtils
  * Created by fwidjaja on 2/1/21.
  */
 object SnapshotAnalytics {
-    private const val CLICK_BOM = "openScreen"
-    private const val BOM_PRODUCT_SNAPSHOT_PAGE = "bom product snapshot page"
-    private const val CLICK_PRODUCT_NAME = "click product name"
+    private const val CLICK_BOM = "clickBOM"
+    private const val BOM_PRODUCT_SNAPSHOT_PAGE = "bom - product snapshot page"
+    private const val CLICK_PRODUCT_PAGE = "click product page"
     private const val CLICK_SHOP_PAGE = "click shop page"
     private const val CURRENT_SITE = "currentSite"
     private const val BUSINESS_UNIT = "businessUnit"
@@ -21,7 +21,7 @@ object SnapshotAnalytics {
 
     fun clickLihatHalamanProduk(productId: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_BOM,
-                BOM_PRODUCT_SNAPSHOT_PAGE, CLICK_PRODUCT_NAME, "")
+                BOM_PRODUCT_SNAPSHOT_PAGE, CLICK_PRODUCT_PAGE, "")
         event[CURRENT_SITE] = MAIN_APP_ANDROID
         event[USER_ID] = userId
         event[PRODUCT_ID] = productId

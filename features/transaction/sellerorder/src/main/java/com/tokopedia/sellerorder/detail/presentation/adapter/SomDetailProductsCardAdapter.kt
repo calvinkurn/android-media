@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import kotlinx.android.synthetic.main.detail_product_card_item.view.*

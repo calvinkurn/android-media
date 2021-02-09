@@ -57,7 +57,7 @@
     <string name="talk_title">Diskusi Produk</string>
 
     <string name="title_topchat">Chat</string>
-
+    <string name="title_inbox">Inbox</string>
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>

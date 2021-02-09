@@ -124,4 +124,6 @@
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
+
+    <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
 </resources>

@@ -27,6 +27,7 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
 
     interface ActionListener {
         fun onSnapshotImgClicked(position: Int)
+        fun onSnapshotShopClicked(shopId: Int)
     }
 
     fun setActionListener(fragment: SnapshotFragment) {

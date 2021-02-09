@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +29,7 @@ import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.di.DaggerSnapshotComponent
 import com.tokopedia.ordermanagement.snapshot.di.SnapshotModule
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.viewmodel.SnapshotViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -48,7 +48,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private lateinit var userSession: UserSession
     private var rv: RecyclerView? = null
     private var btnSnapshotToPdp: UnifyButton? = null
-    private var clShop: ConstraintLayout? = null
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
@@ -87,7 +86,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         rv = contentView.findViewById(R.id.rv_snapshot)
         srlSnapshot = contentView.findViewById(R.id.snapshot_swipe_to_refresh)
         btnSnapshotToPdp = contentView.findViewById(R.id.btn_snapshot_to_pdp)
-        clShop = contentView.findViewById(R.id.cl_shop)
         return contentView
     }
 
@@ -120,8 +118,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     }
 
     private fun initialLoad() {
-        if (arguments?.getString(PARAM_ORDER_ID) != null
-                && arguments?.getString(PARAM_ORDER_DETAIL_ID) != null) {
+        if (arguments?.getString(PARAM_ORDER_ID) != null && arguments?.getString(PARAM_ORDER_DETAIL_ID) != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             orderDetailId = arguments?.getString(PARAM_ORDER_DETAIL_ID).toString()
             val paramSnapshot = SnapshotParam(orderId = orderId, orderDetailId = orderDetailId)
@@ -149,33 +146,31 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
             layoutManager = LinearLayoutManager(activity)
             adapter = snapshotAdapter
         }
-        btnSnapshotToPdp?.text = getString(R.string.btn_snapshot_to_pdp_label)
-        btnSnapshotToPdp?.gone()
     }
 
     private fun observingData() {
+        println("++ observingData")
         snapshotAdapter.showLoader()
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    SnapshotIdlingResource.decrement()
                     refreshHandler?.finishRefresh()
                     responseSnapshot = result.data
                     snapshotAdapter.snapshotResponse = result.data
                     snapshotAdapter.showContent()
                     btnSnapshotToPdp?.apply {
                         visible()
+                        text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
+                            println("++ click lihat halaman produk")
                             RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
+                            userSession.userId?.let { userId ->
+                                SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
+                            }
                         }
                     }
 
-
-                    userSession.userId?.let { userId ->
-                        SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
-                        clShop?.setOnClickListener {
-                            SnapshotAnalytics.clickShopPage(result.data.shopSummary.shopId.toString(), userId)
-                        }
-                    }
                 }
                 is Fail -> {
                     showToaster(getString(R.string.snapshot_error_common), Toaster.TYPE_ERROR)
@@ -200,6 +195,17 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
             it.startActivity(ImagePreviewActivity.getCallingIntent(it,
                     strings,
                     null, position))
+        }
+    }
+
+    override fun onSnapshotShopClicked(shopId: Int) {
+        activity?.let {
+            println("++ click shop")
+            val applinkShop = ApplinkConst.SHOP.replace("{shop_id}", shopId.toString())
+            RouteManager.route(it, applinkShop)
+        }
+        userSession.userId?.let { userId ->
+            SnapshotAnalytics.clickShopPage(shopId.toString(), userId)
         }
     }
 

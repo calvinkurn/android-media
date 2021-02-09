@@ -6,12 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.*
+import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
 
 /**
  * Created by fwidjaja on 1/19/21.
  */
 class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPagerAdapter.BaseViewHolder<*>>() {
     var listImg = mutableListOf<String>()
+    private var actionListener: SnapshotAdapter.ActionListener? = null
+
+    fun setActionListener(mainActionListener: SnapshotAdapter.ActionListener) {
+        this.actionListener = mainActionListener
+    }
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
@@ -19,7 +25,7 @@ class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPage
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_img_view_pager_item, parent, false)
-        return SnapshotImageViewPagerItemViewHolder(view)
+        return SnapshotImageViewPagerItemViewHolder(view, actionListener)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {

@@ -7,6 +7,7 @@ import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.domain.SnapshotUseCase
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotDispatcherProvider
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,8 +23,10 @@ class SnapshotViewModel @Inject constructor(dispatcher: SnapshotDispatcherProvid
         get() = _snapshotResponse
 
     fun loadSnapshot(paramSnapshot: SnapshotParam) {
+        SnapshotIdlingResource.increment()
         launch {
             _snapshotResponse.value = snapshotUseCase.executeSuspend(paramSnapshot)
+            SnapshotIdlingResource.decrement()
         }
     }
 }
