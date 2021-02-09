@@ -96,14 +96,14 @@ open class CampaignStockViewModelTestFixture {
         every { userSession.isShopOwner } returns isShopOwner
     }
 
-    private fun onGetWarehouseId_thenReturn(locationList: List<ShopLocationResponse>) {
+    protected fun onGetWarehouseId_thenReturn(locationList: List<ShopLocationResponse>) {
         coEvery {
             getAdminInfoShopLocationUseCase.execute(any())
         } returns locationList
     }
 
-    companion object LocationType {
-        private const val MAIN_LOCATION = 1
-        private const val OTHER_LOCATION = 99
+    protected companion object LocationType {
+        const val MAIN_LOCATION = 1
+        const val OTHER_LOCATION = 99
     }
 }
