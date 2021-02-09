@@ -46,6 +46,7 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_NOTIF_SETTINGS = "click on notif settings"
             const val CLICK_FILTER_REQUEST = "click on filter request"
             const val CLICK_WIDGET_CTA = "click cta on notif"
+            const val CLICK_EXPAND_NOTIF = "click expand notif"
         }
     }
 
@@ -263,8 +264,28 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
+    fun trackExpandTimelineHistory(element: NotificationUiModel, role: Int?) {
+        if (role == null) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_EXPAND_NOTIF,
+                        eventLabel = getEventLabelNotifWidget(element),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId,
+                        userRole = getRoleString(role)
+                )
+        )
+    }
+
     private fun getEventLabel(notification: NotificationUiModel): String {
         return "notif_list - ${notification.templateKey} - ${notification.notifId}"
+    }
+
+    private fun getEventLabelNotifWidget(notification: NotificationUiModel): String {
+        return "${notification.templateKey} - ${notification.notifId}"
     }
 
     private fun getRoleString(@RoleType role: Int): String {

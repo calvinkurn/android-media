@@ -133,6 +133,12 @@ class WidgetNotificationViewHolder constructor(
         )
     }
 
+    private fun trackWhenExpanded(element: NotificationUiModel) {
+        if (element.isHistoryVisible) {
+            listener?.trackExpandTimelineHistory(element)
+        }
+    }
+
     private fun bindHistoryBtnClick(element: NotificationUiModel) {
         toggleHistoryBtn?.setOnClickListener {
             element.toggleHistoryVisibility()
@@ -140,6 +146,7 @@ class WidgetNotificationViewHolder constructor(
             bindProgressIndicatorVisibility(element)
             bindHistoryViewTextState(element)
             bindHistoryViewIconState(element)
+            trackWhenExpanded(element)
         }
     }
 
