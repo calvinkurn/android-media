@@ -151,8 +151,6 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
 
-    public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
-
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
 
@@ -172,6 +170,7 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
+    public static final String MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -241,4 +240,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
+
+    public static final String USE_PDP_FOR_OLD_NORMAL_CHECKOUT = "is_go_to_pdp_for_old_normal_checkout";
 }

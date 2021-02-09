@@ -6,6 +6,8 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotificationMarkAsSeenUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -71,4 +73,15 @@ import javax.inject.Named
     fun provideProductHighlight(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_ace_search_product)
 
+    @Provides
+    @NotificationScope
+    @Named(NotificationMarkAsSeenUseCase.MUTATION_MARK_AS_SEEN)
+    fun provideNotifMarkAsSeen(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, NotificationMarkAsSeenUseCase.query)
+
+    @Provides
+    @NotificationScope
+    @Named(NotifcenterDetailUseCase.QUERY_NOTIFCENTER_DETAIL_V3)
+    fun provideNotifcenterDetailV3(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, NotifcenterDetailUseCase.queryRes)
 }

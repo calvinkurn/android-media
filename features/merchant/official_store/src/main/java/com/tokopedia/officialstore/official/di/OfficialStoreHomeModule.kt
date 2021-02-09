@@ -21,7 +21,6 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [OfficialStoreHomeViewModelModule::class])
-@OfficialStoreHomeScope
 class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope

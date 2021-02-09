@@ -12,7 +12,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
-@SuggestionScope
 @Module(includes = [SuggestionInterceptorModule::class])
 class SuggestionOkHttpClientModule {
     @SuggestionScope

@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI
@@ -101,6 +102,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRO
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
@@ -246,7 +248,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(GENERAL_TEMPLATE) ||
                         it.startsWith(CAMERA_OCR) ||
                         it.startsWith(VOUCHER_GAME) ||
-                        it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART)
+                        it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) || it.startsWith(CHECKOUT_DIGITAL)
             }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))
@@ -436,6 +438,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
+            add(DFP({ it.startsWith(INBOX) }, DF_BASE, R.string.title_inbox))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DF_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DF_BASE, R.string.talk_title))

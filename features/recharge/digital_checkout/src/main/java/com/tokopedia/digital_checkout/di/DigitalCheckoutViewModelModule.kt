@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@DigitalCheckoutScope
 abstract class DigitalCheckoutViewModelModule {
 
     @DigitalCheckoutScope

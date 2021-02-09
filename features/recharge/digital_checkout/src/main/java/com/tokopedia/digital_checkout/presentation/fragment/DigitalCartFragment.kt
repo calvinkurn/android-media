@@ -28,7 +28,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_COUPON_ACTIVE
-import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_CODE
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -43,17 +42,16 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
-import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -67,7 +65,7 @@ import javax.inject.Inject
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutView.ActionListener {
+class DigitalCartFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -179,9 +177,14 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
-            digitalPromoTickerView.desc = getPromoData().description
-            digitalPromoTickerView.title = getPromoData().title
-            digitalPromoTickerView.state = getPromoData().state.mapToStatePromoCheckout()
+            digitalPromoBtnView.desc = getPromoData().description
+            if (getPromoData().description.isEmpty()) {
+                digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
+                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+            } else {
+                digitalPromoBtnView.title = getPromoData().title
+            }
+            digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
 
             if (getPromoData().state == TickerCheckoutView.State.FAILED ||
                     getPromoData().state == TickerCheckoutView.State.ACTIVE) {
@@ -211,12 +214,13 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
         }
 
+        cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes?.categoryName
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo ?: listOf())
 
         if (cartInfo.attributes?.isEnableVoucher == true) {
-            digitalPromoTickerView.visibility = View.VISIBLE
-        } else digitalPromoTickerView.visibility = View.GONE
+            digitalPromoBtnView.visibility = View.VISIBLE
+        } else digitalPromoBtnView.visibility = View.GONE
 
         cartInfo.attributes?.postPaidPopupAttribute?.let { postPaidPopupAttribute ->
             if (!digitalSubscriptionParams.isSubscribed && cartInfo.attributes?.postPaidPopupAttribute != null) {
@@ -278,11 +282,20 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun showPromoTicker() {
-        digitalPromoTickerView.state = TickerPromoStackingCheckoutView.State.EMPTY
-        digitalPromoTickerView.title = ""
-        digitalPromoTickerView.desc = ""
-        digitalPromoTickerView.actionListener = this
-        digitalPromoTickerView.visibility = View.VISIBLE
+        digitalPromoBtnView.state = ButtonPromoCheckoutView.State.ACTIVE
+        digitalPromoBtnView.setOnClickListener {
+            onClickUsePromo()
+        }
+
+        digitalPromoBtnView.setListenerChevronIcon {
+            if (digitalPromoBtnView.desc.isNotEmpty()) {
+                digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
+                onResetPromoDiscount()
+            } else {
+                onClickUsePromo()
+            }
+        }
+        digitalPromoBtnView.visibility = View.VISIBLE
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
@@ -314,6 +327,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
         if ((requestCode == REQUEST_CODE_PROMO_LIST || requestCode == REQUEST_CODE_PROMO_DETAIL) && resultCode == Activity.RESULT_OK) {
             if (data?.hasExtra(EXTRA_PROMO_DATA) == true) {
+                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 viewModel.applyPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
             }
 
@@ -361,7 +375,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
             if ((crossSellingConfig.bodyTitle ?: "").isNotEmpty()) {
                 subscriptionWidget.visibility = View.VISIBLE
-                myBillsSeperator.visibility = View.VISIBLE
 
                 btnCheckout.text = crossSellingConfig.checkoutButtonText
 
@@ -401,7 +414,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun renderFintechProductWidget(fintechProduct: FintechProduct?) {
         fintechProduct?.let {
             if (fintechProduct.info.title.isNotEmpty()) {
-                myBillsSeperator.visibility = View.VISIBLE
                 fintechProductWidget.setTitle(fintechProduct.info.title)
                 fintechProductWidget.setDescription(fintechProduct.info.subtitle)
                 fintechProductWidget.hasMoreInfo(true)
@@ -453,7 +465,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
     private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
         userInputPriceDigital?.let {
-            inputViewSeperator.visibility = View.VISIBLE
             inputPriceContainer.visibility = View.VISIBLE
 
             inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment
@@ -502,7 +513,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 ?: 0)
     }
 
-    override fun onClickUsePromo() {
+    private fun onClickUsePromo() {
         val attributes = getCartDigitalInfoData().attributes
         attributes?.let { attr ->
             digitalAnalytics.eventClickUseVoucher(getCategoryName())
@@ -512,47 +523,9 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         navigateToPromoListPage()
     }
 
-    override fun onResetPromoDiscount() {
+    private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
         viewModel.cancelVoucherCart()
-    }
-
-    override fun onClickDetailPromo() {
-        val attributes = getCartDigitalInfoData().attributes
-        attributes?.let { attr ->
-            digitalAnalytics.eventClickPromoButton(attr.categoryName ?: "",
-                    attr.operatorName ?: "", userSession.userId)
-        }
-        navigateToDetailPromoPage()
-    }
-
-    override fun onDisablePromoDiscount() {
-        digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart()
-    }
-
-    private fun navigateToDetailPromoPage() {
-        val intent: Intent
-        val promoCode: String = getPromoData().promoCode
-        if (promoCode.isNotEmpty()) {
-            val requestCode: Int
-            if (getPromoData().typePromo == PromoData.TYPE_VOUCHER) {
-                val couponActive = viewModel.cartDigitalInfoData.value?.attributes?.isCouponActive == 1
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-                intent.putExtra(EXTRA_PROMO_CODE, promoCode)
-                intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
-                requestCode = REQUEST_CODE_PROMO_LIST
-            } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
-                intent.putExtra(EXTRA_IS_USE, true)
-                intent.putExtra(EXTRA_KUPON_CODE, promoCode)
-                requestCode = REQUEST_CODE_PROMO_DETAIL
-            }
-            intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
-            startActivityForResult(intent, requestCode)
-        } else {
-            showToastMessage(getString(com.tokopedia.promocheckout.common.R.string.promo_none_applied))
-        }
     }
 
     private fun navigateToPromoListPage() {

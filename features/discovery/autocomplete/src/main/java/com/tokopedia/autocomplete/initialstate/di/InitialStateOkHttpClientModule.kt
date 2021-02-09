@@ -14,7 +14,6 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
-@InitialStateScope
 @Module(includes = [InitialStateInterceptorModule::class])
 class InitialStateOkHttpClientModule {
     @InitialStateScope

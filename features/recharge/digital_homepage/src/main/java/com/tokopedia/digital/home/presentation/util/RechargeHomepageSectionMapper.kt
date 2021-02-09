@@ -7,6 +7,7 @@ import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -73,11 +74,15 @@ object RechargeHomepageSectionMapper {
                             getReminderWidgetModel(it)
                         }
                     }
-                    SECTION_VIDEO_HIGHLIGHT-> RechargeHomepageVideoHighlightModel(it)
+                    SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
-                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
-                    SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
+                    SECTION_COUNTDOWN_SINGLE_BANNER -> {
+                        if (!isExpired(it)) {
+                            RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it), true)
+                        } else null
+                    }
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
                     SECTION_LEGO_BANNERS -> {
                         // Check if it is initial sections or not
@@ -88,7 +93,11 @@ object RechargeHomepageSectionMapper {
                         }
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
-                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                    SECTION_COUNTDOWN_PRODUCT_BANNER -> {
+                        if (!isExpired(it)) {
+                            RechargeHomepageProductBannerModel(it, mapSectionToChannel(it), true)
+                        } else null
+                    }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
                     else -> null
                 }
@@ -134,16 +143,27 @@ object RechargeHomepageSectionMapper {
                 }))
     }
 
-    fun setDynamicHeaderViewChannel(headerView: DynamicChannelHeaderView, section: RechargeHomepageSections.Section, listener: HeaderListener? = null) {
+    fun setDynamicHeaderViewChannel(headerView: DynamicChannelHeaderView, channelModel: ChannelModel?,
+                                    listener: HeaderListener? = null) {
         val headerListener = listener ?: object : HeaderListener {
-            override fun onSeeAllClick(link: String) { /* do nothing */ }
+            override fun onSeeAllClick(link: String) { /* do nothing */
+            }
 
-            override fun onChannelExpired(channelModel: ChannelModel) { /* do nothing */ }
+            override fun onChannelExpired(channelModel: ChannelModel) { /* do nothing */
+            }
         }
 
-        mapSectionToChannel(section)?.let { channel ->
-            headerView.setChannel(channel, headerListener)
+        channelModel?.let {
+            if (hasExpired(it)) headerListener.onChannelExpired(it)
+            else headerView.setChannel(it, headerListener)
         }
+    }
+
+    private fun hasExpired(channel: ChannelModel): Boolean {
+        val serverTime = Date(System.currentTimeMillis())
+        val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
+        serverTime.time = serverTime.time + channel.channelConfig.serverTimeOffset
+        return serverTime.after(expiredTime)
     }
 
     private fun mapSectionToChannel(section: RechargeHomepageSections.Section): ChannelModel? {
@@ -153,10 +173,23 @@ object RechargeHomepageSectionMapper {
 
             return ChannelModel(sectionId, sectionId,
                     channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
-                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond))
+                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond),
+                            enableTimeDiffMoreThan24h = true)
             )
         }
         return null
+    }
+
+    private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
+        section.items.firstOrNull()?.run {
+            if (dueDate.isNotEmpty()) {
+                val serverDateMillisecond = getServerTime(serverDate).time
+                val expiredTime = DateHelper.getExpiredTime(dueDate)
+                val serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond)
+                return isExpired(serverTimeOffset, expiredTime)
+            }
+        }
+        return false
     }
 
     private fun getServerTime(serverTimeString: String): Date {
