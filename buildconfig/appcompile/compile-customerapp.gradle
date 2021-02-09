@@ -227,6 +227,8 @@ include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
 include "features:user:home_account"
 include "features:user:seamless_login_common"
+include "features:user:inbox"
+include "features:user:inbox_common"
 
 include "features:user:vote"
 
