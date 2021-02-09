@@ -1,0 +1,99 @@
+{
+  "data": {
+    "type": "cart",
+    "id": "17211378-6-535ad5beb133b0d78f00eb5ac5c09f66",
+    "attributes": {
+      "user_id": 17211378,
+      "client_number": "",
+      "title": "Detail Pembelian",
+      "category_name": "Voucher Game",
+      "operator_name": "Pokemon Go Powered by Google Play",
+      "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_fa52cbc3-016e-4b04-ac8b-dbef10c2b923.png",
+      "price": "Rp 1.648.900",
+      "price_plain": 1648900,
+      "instant_checkout": false,
+      "need_otp": false,
+      "sms_state": "",
+      "voucher_autocode": "",
+      "user_input_price": null,
+      "main_info": [
+        {
+          "label": "Jenis Layanan",
+          "value": "Pokemon Go Powered by Google Play 14500 Pokecoins"
+        },
+        {
+          "label": "Harga",
+          "value": "Rp 1.648.900"
+        }
+      ],
+      "additional_info": [],
+      "enable_voucher": true,
+      "is_coupon_active": 1,
+      "autoapply": {
+        "success": false,
+        "Message": {
+          "state": "",
+          "color": "",
+          "text": ""
+        },
+        "code": "",
+        "is_coupon": 0,
+        "discount_amount": 0,
+        "discount_price": "Rp 0",
+        "discounted_amount": 1648900,
+        "discounted_price": "Rp 1.648.900",
+        "title_description": "",
+        "promo_code_id": 0,
+        "promo_id": 0,
+        "message_success": ""
+      },
+      "default_promo_dialog_tab": "voucher",
+      "cross_selling_type": 0,
+      "cross_selling_config": {
+        "is_skipable": true,
+        "is_checked": false,
+        "wording": {
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        },
+        "wording_is_subscribed": {
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        }
+      },
+      "pop_up": null,
+      "fintech_product": null,
+      "atc_source": "",
+      "admin_fee": "Rp 0",
+      "admin_fee_plain": 0,
+      "back_url": "",
+      "promo_service_id": "819380128012836"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "type": "category",
+          "id": "6"
+        }
+      },
+      "operator": {
+        "data": {
+          "type": "operator",
+          "id": "2616"
+        }
+      },
+      "product": {
+        "data": {
+          "type": "product",
+          "id": "8035"
+        }
+      }
+    }
+  }
+}
