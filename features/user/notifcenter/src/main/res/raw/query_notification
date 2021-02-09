@@ -16,6 +16,21 @@ query Notification($cursor: String) {
     inbox_counter{
       all{
         total_int
+        notifcenter_int
+        chat_int
+        talk_int
+      }
+      buyer{
+        total_int
+        notifcenter_int
+        chat_int
+        talk_int
+      }
+      seller{
+        total_int
+        notifcenter_int
+        chat_int
+        talk_int
       }
     }
     chat {
