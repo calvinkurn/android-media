@@ -5,9 +5,9 @@ import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
+import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -41,6 +41,7 @@ class PlayBottomSheetViewModelTest {
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
+    private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: ProductDetailVariantCommonResponse = modelBuilder.buildProductVariant()
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
@@ -64,7 +65,7 @@ class PlayBottomSheetViewModelTest {
 
     @Test
     fun `when get product variant is success, then it should show the un-clicked variant list`() {
-        val product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct())
+        val product = productModelBuilder.buildProductLine()
         val action = ProductAction.AddToCart
         val selectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(mockProductVariantResponse.data)
         val categoryVariants = VariantCommonMapper.processVariant(mockProductVariantResponse.data,
@@ -93,7 +94,7 @@ class PlayBottomSheetViewModelTest {
 
         val expectedModel = modelBuilder.buildCartUiModel(
                 action = ProductAction.AddToCart,
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 bottomInsetsType = BottomInsetsType.VariantSheet
         )
         val expectedResult = PlayResult.Success(
@@ -101,7 +102,7 @@ class PlayBottomSheetViewModelTest {
         )
 
         playBottomSheetViewModel.addToCart(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
                 type = BottomInsetsType.VariantSheet
         )
@@ -123,7 +124,7 @@ class PlayBottomSheetViewModelTest {
 
         val expectedModel = modelBuilder.buildCartUiModel(
                 action = ProductAction.AddToCart,
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 bottomInsetsType = BottomInsetsType.VariantSheet,
                 isSuccess = false,
                 errorMessage = "error message ",
@@ -134,7 +135,7 @@ class PlayBottomSheetViewModelTest {
         )
 
         playBottomSheetViewModel.addToCart(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
                 type = BottomInsetsType.VariantSheet
         )
