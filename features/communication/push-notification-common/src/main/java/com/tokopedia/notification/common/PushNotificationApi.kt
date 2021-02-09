@@ -23,17 +23,17 @@ open class PushNotificationAidlApi(
 
 enum class PushNotificationApi {
     INSTANCE;
-    private lateinit var notificationApi: PushNotificationAidlApi
+    private var notificationApi: PushNotificationAidlApi? = null
 
     fun bindService(
             context: Context,
             onAidlReceive: (tag: String, bundle: Bundle?) -> Unit = { _, _ -> },
             onAidlError: () -> Unit = {}
     ) {
-        if (::notificationApi.isInitialized) {
+        if (notificationApi == null) {
             notificationApi = PushNotificationAidlApi(onAidlReceive, onAidlError)
         }
 
-        notificationApi.bindService(context)
+        notificationApi?.bindService(context)
     }
 }
