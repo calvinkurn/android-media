@@ -174,7 +174,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         showLoading()
         var signResult = SignResult()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            signResult = signDataVerifyPushNotifExp(userSession.userId, userSession.deviceId)
+            signResult = signDataVerifyPushNotif(challengeCode, STATUS_EXPIRY)
         }
         viewModel.verifyPushNotifExp(challengeCode, signResult.signature, STATUS_EXPIRY)
     }
@@ -183,13 +183,6 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun signDataVerifyPushNotif(challangeCode: String, status: String): SignResult {
         val datetime = (System.currentTimeMillis() / 1000).toString()
         val data = challangeCode + status
-        return signData(data, datetime)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun signDataVerifyPushNotifExp(userId: String, deviceId: String): SignResult {
-        val datetime = (System.currentTimeMillis() / 1000).toString()
-        val data = userId + datetime + deviceId
         return signData(data, datetime)
     }
 
