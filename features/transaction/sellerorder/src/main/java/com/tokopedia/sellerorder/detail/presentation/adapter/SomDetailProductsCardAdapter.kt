@@ -24,7 +24,9 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
+        holder.itemView.setOnClickListener {
+            actionListener?.onClickProduct(listProducts[position].orderDetailId)
+        }
         holder.itemView.iv_product.loadImage(listProducts[position].thumbnail)
         holder.itemView.tv_product_name.text = listProducts[position].name
         holder.itemView.tv_product_desc.text = StringBuilder("${listProducts[position].quantity} x ${listProducts[position].priceText}")
