@@ -446,7 +446,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
             activity?.let {
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.Unify_N0), MethodChecker.getColor(activity, R.color.Unify_N0))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }

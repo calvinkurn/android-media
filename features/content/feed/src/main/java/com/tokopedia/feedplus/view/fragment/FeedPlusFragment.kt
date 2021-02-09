@@ -1015,7 +1015,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close)) }
+            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.design.R.string.label_close)) }
     }
 
     override fun onGoToLogin() {
@@ -1695,7 +1695,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorDeletePost(data : DeletePostViewModel) {
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                     feedViewModel.doDeletePost(data.id, data.rowNumber)
             })
         }
@@ -1741,7 +1741,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
         adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId)
             })
         }
