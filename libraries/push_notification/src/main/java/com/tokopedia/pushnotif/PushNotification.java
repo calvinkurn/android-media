@@ -42,7 +42,7 @@ public class PushNotification {
     private static Bundle aidlApiBundle;
 
     public static void init(Context context) {
-        PushNotificationApi.bindService(
+        PushNotificationApi.INSTANCE.bindService(
                 context,
                 (s, bundle) -> {
                     onAidlReceive(s, bundle);
