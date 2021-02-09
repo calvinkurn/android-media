@@ -106,14 +106,20 @@ public abstract class BaseActivity extends AppCompatActivity implements
             if (versionList.contains(GlobalConfig.VERSION_NAME)) return;
 
             Timber.w("P1#DISPLAY_GENERAL_INFO#'"+ className +"';message='" + message + "'");
-            showGeneralInfoSnackbar();
+            showGeneralInfoSnackbar(message);
 
         } catch(Exception e) { }
     }
 
     private void showGeneralInfoSnackbar(String message) {
         final Snackbar snackBar = SnackbarManager.make(this, message,
-                Snackbar.LENGTH_INDEFINITE);
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_dismiss, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //dismiss
+                    }
+                });
         snackBar.show();
     }
 

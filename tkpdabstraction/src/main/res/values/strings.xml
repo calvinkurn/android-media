@@ -36,6 +36,7 @@
     <string name="action_report">Laporkan</string>
     <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="action_check">Periksa</string>
+    <string name="action_dismiss">Tutup</string>
     <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
     <string name="server_error_problem">Masalah Server Error</string>
     <string name="application_version_text">"Versi Aplikasi: "</string>
