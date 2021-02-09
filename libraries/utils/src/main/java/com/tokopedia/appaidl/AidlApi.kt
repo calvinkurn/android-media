@@ -21,10 +21,12 @@ open class AidlApi(
                 // only receive the data in both of customerApp and sellerApp
                 if (intent?.action == CUSTOMER_APP || intent?.action == SELLER_APP) {
                     intent.action?.let {
+                        println("AIDL: broadcastReceiver (callback) -> onAidlReceive")
                         onAidlReceive(it, intent.extras)
 
                         // every data has received, unregister it
                         _context.unregisterReceiver(this)
+                        println("AIDL: broadcastReceiver (callback) -> unregisterReceiver")
                     }
                 }
             }
@@ -34,10 +36,13 @@ open class AidlApi(
     fun bindService(context: Context, tag: String = tagDefault(), serviceName: String) {
         // the serviceView is serviceConnection to register the receiver in activity and send the data
         stubService = AidlServiceConnection { service ->
+            println("AIDL: AidlServiceConnection (callback) -> stubService")
             context.registerReceiver(broadcastReceiver(context), IntentFilter().apply { addAction(tag) })
+            println("AIDL: AidlServiceConnection (callback) -> registerReceiver")
 
             // send the data once the serviceConnection is connected
             service?.send(tag)
+            println("AIDL: AidlServiceConnection (callback) -> service.send")
         }.also {
             /*
             * preparing the data would be send to another app using aidlRemoteService
@@ -45,8 +50,9 @@ open class AidlApi(
             *
             * componentTargetName() should be same with broadcastResult() on aidlRemoteService.
             * */
-            val intent = Intent().apply { component = ComponentName(componentTargetName(), serviceName) }
-            val success = context.bindService(intent, it, Context.BIND_AUTO_CREATE)
+            val success = context.bindService(Intent().apply {
+                component = ComponentName(componentTargetName(), serviceName)
+            }, it, Context.BIND_AUTO_CREATE)
 
             // handling error
             if (!success) onAidlError()

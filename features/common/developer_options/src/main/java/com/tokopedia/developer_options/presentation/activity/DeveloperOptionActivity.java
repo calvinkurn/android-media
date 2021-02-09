@@ -174,7 +174,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void bindAidlService() {
-        PushNotificationApi.INSTANCE.bindService(this,
+        PushNotificationApi.bindService(this,
                 (s, bundle) -> {
                     onAidlReceive(s, bundle);
                     return null;

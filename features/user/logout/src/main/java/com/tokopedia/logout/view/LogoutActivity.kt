@@ -176,7 +176,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         userSession.clearToken()
         userSession.logoutSession()
 
-        PushNotificationApi.INSTANCE.bindService(applicationContext)
+        PushNotificationApi.bindService(applicationContext)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {

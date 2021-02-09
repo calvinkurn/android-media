@@ -77,7 +77,7 @@ class CMPushNotificationManager : CoroutineScope {
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
 
-        PushNotificationApi.INSTANCE.bindService(
+        PushNotificationApi.bindService(
                 applicationContext,
                 ::onAidlReceive,
                 ::onAidlError

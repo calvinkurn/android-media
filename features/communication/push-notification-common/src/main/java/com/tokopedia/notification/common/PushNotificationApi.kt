@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.tokopedia.notification.common.service.PushNotificationService
 import com.tokopedia.appaidl.AidlApi
 
-open class PushNotificationAidlApi(
+open class PushNotificationApi(
         onAidlReceive: (tag: String, bundle: Bundle?) -> Unit,
         onAidlError: () -> Unit
 ) : AidlApi(onAidlReceive, onAidlError) {
@@ -19,21 +19,18 @@ open class PushNotificationAidlApi(
         )
     }
 
-}
+    companion object {
+        private var pushNotificationApi: PushNotificationApi? = null
 
-enum class PushNotificationApi {
-    INSTANCE;
-    private var notificationApi: PushNotificationAidlApi? = null
-
-    fun bindService(
-            context: Context,
-            onAidlReceive: (tag: String, bundle: Bundle?) -> Unit = { _, _ -> },
-            onAidlError: () -> Unit = {}
-    ) {
-        if (notificationApi == null) {
-            notificationApi = PushNotificationAidlApi(onAidlReceive, onAidlError)
+        @JvmStatic
+        fun bindService(
+                context: Context,
+                onAidlReceive: (tag: String, bundle: Bundle?) -> Unit = { _, _ -> },
+                onAidlError: () -> Unit = {}
+        ) {
+            pushNotificationApi = PushNotificationApi(onAidlReceive, onAidlError)
+            pushNotificationApi?.bindService(context)
         }
-
-        notificationApi?.bindService(context)
     }
+
 }
