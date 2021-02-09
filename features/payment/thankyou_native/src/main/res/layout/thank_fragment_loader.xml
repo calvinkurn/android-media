@@ -8,8 +8,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
-        android:layout_width="@dimen/dp_300"
-        android:layout_height="@dimen/dp_300"
+        android:layout_width="@dimen/thank_dp_300"
+        android:layout_height="@dimen/thank_dp_300"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         android:id="@+id/tvWaitForMinute"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/thank_wait_for_minute"
         android:textColor="@color/Unify_N700_96"
@@ -31,7 +31,7 @@
         android:id="@+id/tvProcessingPayment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/thank_processing_payment"
         android:textColor="@color/Unify_N700_68"
