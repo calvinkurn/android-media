@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -23,6 +24,7 @@ class CardViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
+        private const val GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW"
     }
 
     override fun bind(element: CardWidgetUiModel) {
@@ -82,9 +84,14 @@ class CardViewHolder(
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
-                    if (RouteManager.route(context, element.appLink)) {
-                        listener.sendCardClickTracking(element)
+                    if (element.appLink.startsWith(ApplinkConst.REPUTATION)) {
+                        val intent = RouteManager.getIntent(context, element.appLink)
+                        intent.putExtra(GO_TO_INBOX_REVIEW, true)
+                        context.startActivity(intent)
+                    } else {
+                        RouteManager.route(context, element.appLink)
                     }
+                    listener.sendCardClickTracking(element)
                 }
             }
         }
