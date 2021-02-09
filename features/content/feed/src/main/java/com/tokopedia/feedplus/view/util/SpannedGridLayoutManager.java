@@ -68,12 +68,12 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
     public SpannedGridLayoutManager(
             Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.SpannedGridLayoutManager, defStyleAttr, defStyleRes);
-        columns = a.getInt(R.styleable.SpannedGridLayoutManager_spanCount, 1);
-        parseAspectRatio(a.getString(R.styleable.SpannedGridLayoutManager_aspectRatio));
+                attrs, com.tokopedia.topads.sdk.R.styleable.SpannedGridLayoutManager, defStyleAttr, defStyleRes);
+        columns = a.getInt(com.tokopedia.topads.sdk.R.styleable.SpannedGridLayoutManager_spanCount, 1);
+        parseAspectRatio(a.getString(com.tokopedia.topads.sdk.R.styleable.SpannedGridLayoutManager_aspectRatio));
         // TODO use this!
         int orientation = a.getInt(
-                R.styleable.SpannedGridLayoutManager_android_orientation, RecyclerView.VERTICAL);
+                com.tokopedia.topads.sdk.R.styleable.SpannedGridLayoutManager_android_orientation, RecyclerView.VERTICAL);
         a.recycle();
         setAutoMeasureEnabled(true);
     }

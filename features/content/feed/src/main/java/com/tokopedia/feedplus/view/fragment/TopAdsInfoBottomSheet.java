@@ -31,7 +31,7 @@ public class TopAdsInfoBottomSheet {
         TopAdsInfoBottomSheet frag = new TopAdsInfoBottomSheet();
         frag.dialog = new BottomSheetDialog(context);
         frag.dialog.setContentView(R.layout.promoted_info_dialog);
-        frag.closeButton = frag.dialog.findViewById(R.id.close_but);
+        frag.closeButton = frag.dialog.findViewById(com.tokopedia.topads.sdk.R.id.close_but);
         frag.moreButton = frag.dialog.findViewById(R.id.more);
         frag.setView(context);
         return frag;
@@ -40,7 +40,7 @@ public class TopAdsInfoBottomSheet {
     public void setView(final Context context) {
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-            FrameLayout frameLayout = dialog.findViewById(R.id.design_bottom_sheet);
+            FrameLayout frameLayout = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (frameLayout != null) {
                 BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                 behavior.setHideable(false);
