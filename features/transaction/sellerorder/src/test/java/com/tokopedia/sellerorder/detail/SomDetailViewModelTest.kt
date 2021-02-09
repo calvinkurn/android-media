@@ -73,7 +73,7 @@ class SomDetailViewModelTest {
                 somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
                 somRejectCancelOrderUseCase)
 
-        val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
+        val product1 = SomDetailOrder.Data.GetSomDetail.Products("123")
         listProducts = arrayListOf(product1).toMutableList()
 
         listMsg = arrayListOf("msg1")
@@ -88,14 +88,14 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail(123)))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123)
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test

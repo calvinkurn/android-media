@@ -113,7 +113,7 @@ class SomListViewModelTest {
             shippingList = mutableSetOf(12)
             orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
-            nextOrderId = 123456
+            nextOrderId = 123456L
         }
         viewModel.updateGetOrderListParams(newParams)
     }
@@ -543,7 +543,7 @@ class SomListViewModelTest {
     fun getOrderList_shouldSuccess() {
         coEvery {
             somListGetOrderListUseCase.executeOnBackground()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
@@ -560,7 +560,7 @@ class SomListViewModelTest {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.executeOnBackground()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
@@ -594,7 +594,7 @@ class SomListViewModelTest {
 
         coEvery {
             somListGetOrderListUseCase.executeOnBackground()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         viewModel.refreshSelectedOrder(invoice)
 

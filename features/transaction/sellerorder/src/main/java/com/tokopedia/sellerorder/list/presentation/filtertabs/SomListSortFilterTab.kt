@@ -146,13 +146,6 @@ class SomListSortFilterTab(
         }
     }
 
-    fun decrementOrderCount() {
-        selectedTab?.run {
-            amount -= 1
-            filterItems.find { it.title.contains(status) }?.title = composeTabTitle(status, amount)
-        }
-    }
-
     fun addCounter(n: Int) {
         selectedCount += n
         updateCounter(selectedCount)

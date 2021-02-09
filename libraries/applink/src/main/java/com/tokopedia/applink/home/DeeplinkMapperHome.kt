@@ -5,7 +5,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperHome {
 
@@ -81,6 +84,20 @@ object DeeplinkMapperHome {
         return when {
             uri.pathSegments.size > 0 -> ApplinkConsInternalHome.EXPLORE + uri.path
             else -> ApplinkConsInternalHome.EXPLORE
+        }
+    }
+
+    fun getRegisteredInboxNavigation(): String {
+        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX
+        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        return if (useNewInbox && useNewNav) {
+            ApplinkConstInternalMarketplace.INBOX
+        } else {
+            ApplinkConsInternalHome.HOME_INBOX
         }
     }
 }

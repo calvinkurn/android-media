@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -46,7 +47,7 @@ class SomDetailViewModel @Inject constructor(
 
     fun loadDetailOrder(orderId: String) {
         launchCatchError(block = {
-            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toIntOrNull() ?: 0)
+            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
             somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)
             _orderDetailResult.postValue(somGetOrderDetail)

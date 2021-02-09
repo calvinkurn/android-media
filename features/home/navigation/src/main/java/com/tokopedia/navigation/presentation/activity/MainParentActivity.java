@@ -192,6 +192,7 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+    private boolean useNewInbox = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -224,6 +225,7 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
+        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -241,6 +243,12 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
         SubmitDeviceUtil.scheduleWorker(this, false);
+    }
+
+    private void initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isRollanceTestingUsingNavigationRevamp();
     }
 
     private void installDFonBackground() {
@@ -717,9 +725,13 @@ public class MainParentActivity extends BaseActivity implements
                 return;
 
             if (fragment instanceof AllNotificationListener && notification != null) {
+                int totalInbox = notification.getTotalInbox();
+                if (useNewInbox) {
+                    totalInbox = notification.totalNewInbox;
+                }
                 ((AllNotificationListener) fragment).onNotificationChanged(
                         notification.getTotalNotif(),
-                        notification.getTotalInbox(),
+                        totalInbox,
                         notification.getTotalCart());
             }
 

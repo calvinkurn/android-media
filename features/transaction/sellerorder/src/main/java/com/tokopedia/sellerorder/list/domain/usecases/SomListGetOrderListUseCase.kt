@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SomListGetOrderListUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: OrderListMapper
-) : BaseGraphqlUseCase<Pair<Int, List<SomListOrderUiModel>>>(gqlRepository) {
+) : BaseGraphqlUseCase<Pair<String, List<SomListOrderUiModel>>>(gqlRepository) {
 
     private fun getSearchKeyword(): String {
         params.parameters[PARAM_INPUT]?.let { input ->
@@ -29,11 +29,11 @@ class SomListGetOrderListUseCase @Inject constructor(
         return ""
     }
 
-    override suspend fun executeOnBackground(): Pair<Int, List<SomListOrderUiModel>> {
+    override suspend fun executeOnBackground(): Pair<String, List<SomListOrderUiModel>> {
         return executeOnBackground(false)
     }
 
-    override suspend fun executeOnBackground(useCache: Boolean): Pair<Int, List<SomListOrderUiModel>> {
+    override suspend fun executeOnBackground(useCache: Boolean): Pair<String, List<SomListOrderUiModel>> {
         val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)

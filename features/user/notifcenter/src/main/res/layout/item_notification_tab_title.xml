@@ -12,13 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/notif_sp_14"
-        android:textColor="@color/Neutral_N300"
+        android:textColor="@color/Unify_N300"
         android:lineSpacingExtra="@dimen/notif_sp_4"
         android:gravity="center_horizontal"
         tools:text="Update (99+)"
         android:textStyle="bold"/>
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/circle"
         android:layout_width="@dimen/notif_dp_8"
         android:layout_height="@dimen/notif_dp_8"
