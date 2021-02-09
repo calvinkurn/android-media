@@ -25,12 +25,16 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -145,7 +149,7 @@ class DynamicChannelComponentAnalyticsTest {
     private fun initTest() {
         clearUserSession()
         waitForData()
-        hideStickyLogin()
+//        hideStickyLogin()
     }
 
     private fun disableCoachMark(){
@@ -330,12 +334,22 @@ class DynamicChannelComponentAnalyticsTest {
             is ReminderWidgetViewHolder -> {
                 val holderName = "ReminderWidgetViewHolder"
                 logTestMessage("VH $holderName")
+                val rc = (homeRecyclerView.adapter as HomeRecycleAdapter)
+                val list = rc.currentList.get(i)
+                val rw = list as ReminderWidgetModel
+                logTestMessage("VRW ${rw.source.type}")
                 if(isReminderWidgetClose){
-                    clickClosedReminderWidgetSalam(holderName)
-                    clickClosedReminderWidgetRecharge(holderName)
+                    if(rw.source.equals(ReminderEnum.SALAM)) {
+                        clickClosedReminderWidgetSalam(holderName)
+                    } else {
+                        clickClosedReminderWidgetRecharge(holderName)
+                    }
                 } else {
-                    clickReminderWidgetSalam(holderName)
-                    clickReminderWidgetRecharge(holderName)
+                    if(rw.source.equals(ReminderEnum.SALAM)) {
+                        clickReminderWidgetSalam(holderName)
+                    } else {
+                        clickReminderWidgetRecharge(holderName)
+                    }
                 }
             }
         }
@@ -548,8 +562,8 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun clickReminderWidgetRecharge(viewComponent: String){
         try {
-            Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), isDisplayed(),
-                    withText("Bayar Sekarang")),0)).perform(ViewActions.click())
+            Espresso.onView(allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), isDisplayed(),
+                    withText("Bayar Sekarang"))).perform(ViewActions.click())
             logTestMessage("Click SUCCESS Recharge atc $viewComponent")
         } catch (e: PerformException) {
             e.printStackTrace()

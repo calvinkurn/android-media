@@ -2736,6 +2736,10 @@
                     }
                 },
                 {
+                    "id": 74104,
+                    "layout": "dg_bills"
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",
@@ -2912,7 +2916,8 @@
                         "attribution": "",
                         "gradient_color": ["#FFFFFF"]
                     }
-                }, {
+                },
+                {
                     "id": 17771,
                     "group_id": 149,
                     "galaxy_attribution": "",
@@ -3059,10 +3064,7 @@
                     "id": 74103,
                     "layout": "salam_todo"
                 },
-                {
-                    "id": 74104,
-                    "layout": "dg_bills"
-                },
+
                 {
                     "id": 34036,
                     "group_id": 37,
