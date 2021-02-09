@@ -195,7 +195,7 @@ class CMPushNotificationManager : CoroutineScope {
         aidlApiBundle?.let { aidlBundle ->
 
             /*
-            * getting the smart push notification data such as:
+            * getting the smart push notification data from payload such as:
             * mainAppPriority
             * sellerAppPriority
             * advanceTarget
@@ -207,14 +207,10 @@ class CMPushNotificationManager : CoroutineScope {
                 renderPushNotification(notification)
             }, {
                 // set cancelled notification if isn't notified
-                PayloadConverter.convertToBaseModel(notification).apply {
-                    type = CMConstant.NotificationType.DROP_NOTIFICATION
-                }.also {
-                    PushController(applicationContext).handleNotificationBundle(it)
-                }
+                PushController(applicationContext).cancelPushNotification(notification)
             })
 
-        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL
+        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
     }
 
     private fun renderPushNotification(bundle: Bundle) {

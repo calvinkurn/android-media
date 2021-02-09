@@ -185,6 +185,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                 });
     }
 
+    // TODO: deleted
     private String userSessionData(Bundle data) {
         String message = "";
         message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN) + "\n";
@@ -196,6 +197,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         return message;
     }
 
+    // TODO: deleted
     private void onAidlReceive(String tag, Bundle data) {
         String message = "";
         if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
@@ -211,6 +213,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    // TODO: deleted
     private void onAidlError() {
         Toast.makeText(this, "dev-opt: onAidlError", Toast.LENGTH_LONG).show();
     }

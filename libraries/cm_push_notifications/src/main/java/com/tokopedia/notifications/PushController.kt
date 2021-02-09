@@ -39,7 +39,7 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel, isAmplification: Boolean = false) {
+    private fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel, isAmplification: Boolean = false) {
         launchCatchError(
                 block = {
                     if (isAmplification) baseNotificationModel.isAmplification = true
@@ -74,6 +74,14 @@ class PushController(val context: Context) : CoroutineScope {
         } catch (e: Exception) {
             Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        }
+    }
+
+    fun cancelPushNotification(bundle: Bundle) {
+        PayloadConverter.convertToBaseModel(bundle).apply {
+            type = CMConstant.NotificationType.DROP_NOTIFICATION
+        }.also {
+            handleNotificationBundle(it)
         }
     }
 
