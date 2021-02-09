@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -17,10 +16,7 @@ import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActi
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_BERANDA
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
@@ -238,19 +234,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
+        topAdsDashboardPresenter.getStatistic(startDate ?: Date(), endDate
+                ?: Date(), selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
                 ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            remove(END_DATE_BERANDA)
-            remove(START_DATE_BERANDA)
-            remove(DATE_RANGE_BERANDA)
-            commit()
-        }
     }
 
     override fun onAttach(context: Context) {

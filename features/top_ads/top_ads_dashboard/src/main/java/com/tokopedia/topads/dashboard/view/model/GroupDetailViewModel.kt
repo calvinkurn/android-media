@@ -25,9 +25,7 @@ import com.tokopedia.topads.dashboard.data.model.StatsData
 import com.tokopedia.topads.dashboard.data.raw.STATS_URL
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.presenter.StatsList
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import timber.log.Timber
 import java.lang.reflect.Type
@@ -58,8 +56,7 @@ class GroupDetailViewModel @Inject constructor(
                             endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
         val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()
@@ -153,11 +150,9 @@ class GroupDetailViewModel @Inject constructor(
                 val response = restResponse?.getData() as DataResponse<StatsData>
                 val dataStatistic = response.data.topadsDashboardStatistics.data
                 onSuccesGetStatisticsInfo(dataStatistic)
-
             }
         })
     }
-
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
         topAdsGetGroupListUseCase.setParamsForKeyWord(search)
@@ -188,11 +183,9 @@ class GroupDetailViewModel @Inject constructor(
                 R.raw.gql_query_group_action))
         val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
         topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
-            override fun onNext(t: Map<Type, RestResponse>?) {
-            }
+            override fun onNext(t: Map<Type, RestResponse>?) {}
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()

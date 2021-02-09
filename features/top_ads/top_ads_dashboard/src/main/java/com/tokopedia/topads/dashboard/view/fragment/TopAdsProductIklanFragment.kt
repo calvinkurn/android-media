@@ -24,10 +24,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProduc
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.AdStatusResponse
@@ -229,18 +226,12 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun fetchNextPage(page: Int) {
         topAdsDashboardPresenter.getGroupProductData(page, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+                null, format.format(startDate ?: Date()), format.format(endDate
+                ?: Date()), this::onSuccessResult, this::onEmptyResult)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            remove(END_DATE_PRODUCT)
-            remove(START_DATE_PRODUCT)
-            remove(DATE_RANGE_PRODUK)
-            commit()
-        }
         if (datePickerSheet != null) {
             datePickerSheet?.dismissDialog()
             datePickerSheet = null

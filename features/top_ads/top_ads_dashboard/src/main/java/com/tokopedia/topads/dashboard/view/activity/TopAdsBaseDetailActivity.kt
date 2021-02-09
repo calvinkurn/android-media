@@ -17,16 +17,16 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVE
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
-import com.tokopedia.topads.dashboard.view.fragment.*
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.stats.*
 import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
-
 import java.util.*
 
-abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.ActionListener, FetchDate{
+abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.ActionListener, FetchDate {
 
     internal var startDate: Date? = null
     internal var endDate: Date? = null
@@ -38,6 +38,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
     val topAdsTabAdapter: TopAdsTabAdapter? by lazy {
         this.run { TopAdsTabAdapter(this) }
     }
+
     private fun initTabLayouTitles() {
         topAdsTabAdapter?.setSummary(null, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
     }
@@ -56,7 +57,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
         this.run { TopAdsStatisticPagerAdapter(this, supportFragmentManager, fragmentList) }
     }
 
-     val currentStatisticsFragment: TopAdsDashStatisticFragment?
+    val currentStatisticsFragment: TopAdsDashStatisticFragment?
         get() = pagerAdapter?.instantiateItem(statsGraphPager, topAdsTabAdapter?.selectedTabPosition
                 ?: 0) as? TopAdsDashStatisticFragment
 
@@ -166,7 +167,8 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
             0 -> currentDate.text = getString(R.string.topads_dash_hari_ini)
             2 -> currentDate.text = getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
-                val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
+                val text = Utils.outputFormat.format(startDate
+                        ?: Date()) + " - " + Utils.outputFormat.format(endDate ?: Date())
                 currentDate.text = text
             }
         }
@@ -202,11 +204,11 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
     }
 
     override fun getStartDate(): String {
-        return Utils.format.format(startDate)
+        return Utils.format.format(startDate ?: Date())
     }
 
     override fun getEndDate(): String {
-        return Utils.format.format(endDate)
+        return Utils.format.format(endDate ?: Date())
     }
 
 
