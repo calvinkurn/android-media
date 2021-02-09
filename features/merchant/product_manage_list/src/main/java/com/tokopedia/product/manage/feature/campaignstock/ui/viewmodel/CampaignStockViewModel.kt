@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper.mapProductManageOwnerAccess
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
+import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
@@ -32,7 +33,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 class CampaignStockViewModel @Inject constructor(
@@ -62,6 +62,7 @@ class CampaignStockViewModel @Inject constructor(
     private var currentNonVariantStock: Int = 0
     private var currentNonVariantStatus = ProductStatus.INACTIVE
 
+    private var variantList: List<ProductVariant> = emptyList()
     private var editVariantResult: EditVariantResult = EditVariantResult()
     private val mProductManageAccess = MutableLiveData<ProductManageAccess>()
     private val mShowSaveBtn = MutableLiveData<Boolean>()
@@ -323,11 +324,9 @@ class CampaignStockViewModel @Inject constructor(
         otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId)
 
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
-        val stock = stockAllocationData.summary.sellableStock.toIntOrZero()
-        val status = ProductStatus.valueOf(otherCampaignStockData.status.toUpperCase(Locale.ROOT))
+        nonVariantStock = stockAllocationData.summary.sellableStock.toIntOrZero()
+        nonVariantStatus = otherCampaignStockData.status
 
-        nonVariantStock = stock
-        nonVariantStatus = status
         currentNonVariantStock = nonVariantStock
         currentNonVariantStatus = nonVariantStatus
 
@@ -374,6 +373,7 @@ class CampaignStockViewModel @Inject constructor(
         ).also {
             val variantsEditResult = ProductManageVariantMapper.mapVariantsToEditResult(productId, it)
             editVariantResult = variantsEditResult
+            variantList = variantsEditResult.variants
         }
 
         mProductManageAccess.postValue(productManageAccess.await())
@@ -409,28 +409,22 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     private fun shouldEditVariantStatus(): Boolean {
-        (mGetStockAllocationLiveData.value as? Success<StockAllocationResult>)?.data?.run {
-            val variantStockAllocation = this as? VariantStockAllocationResult
-            variantStockAllocation?.getVariantResult?.variants?.forEachIndexed { index, variant ->
-                val inputStatus = editVariantResult.variants[index].status
-                val currentStatus = variant.status
-                if(inputStatus != currentStatus) {
-                    return true
-                }
+        variantList.forEachIndexed { index, variant ->
+            val inputStatus = editVariantResult.variants[index].status
+            val currentStatus = variant.status
+            if (inputStatus != currentStatus) {
+                return true
             }
         }
         return false
     }
 
     private fun shouldEditVariantStock(): Boolean {
-        (mGetStockAllocationLiveData.value as? Success<StockAllocationResult>)?.data?.run {
-            val variantStockAllocation = this as? VariantStockAllocationResult
-            variantStockAllocation?.getVariantResult?.variants?.forEachIndexed { index, variant ->
-                val inputStock = editVariantResult.variants[index].stock
-                val currentStock = variant.stock
-                if(inputStock != currentStock) {
-                    return true
-                }
+        variantList.forEachIndexed { index, variant ->
+            val inputStock = editVariantResult.variants[index].stock
+            val currentStock = variant.stock
+            if (inputStock != currentStock) {
+                return true
             }
         }
         return false
