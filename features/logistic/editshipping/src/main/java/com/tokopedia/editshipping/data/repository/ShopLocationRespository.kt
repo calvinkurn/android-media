@@ -37,7 +37,7 @@ class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepos
         return gql.getResponse(request)
     }
 
-    suspend fun saveShippingEditor(shopId: Int, activatedSpId: String, featureId: String): SaveShippingEditorResponse {
+    suspend fun saveShippingEditor(shopId: Int, activatedSpId: String, featureId: String?): SaveShippingEditorResponse {
         val param  = mapOf("input" to mapOf(
                 "shop_id" to shopId,
                 "activated_sp_id" to activatedSpId,

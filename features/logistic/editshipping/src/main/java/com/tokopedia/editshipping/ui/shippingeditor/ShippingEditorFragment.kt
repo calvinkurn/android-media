@@ -337,8 +337,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         } else if (data.state == 4) {
             openBottomSheetValidateBOData(data)
         } else {
-            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data.featureId.toString())
+            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
         }
+    }
+
+    private fun convertFeatureIdToString(featureId: List<Int>?): String? {
+        return featureId?.joinToString()?.replace(" ", "")
     }
 
     private fun openBottomSheetWarehouseInactive(ctx: Context, data: List<WarehousesModel>, shipperName: String) {
@@ -432,7 +436,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
 
         btnNonaktifkanValidationBO?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data.featureId.toString())
+            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
             bottomSheetBOValidation?.dismiss()
         }
         btnAktifkanValidateBO?.setOnClickListener {
@@ -488,7 +492,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 }
                 btnSecondaryVertical?.text = getString(R.string.button_save)
                 btnSecondaryVertical?.setOnClickListener {
-                    viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data?.featureId.toString())
+                    viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
                     bottomSheetCourierInactive?.dismiss()
                 }
                 btnVerticalLayout?.visible()
@@ -504,7 +508,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 }
                 btnSecondaryHorizontal?.text = getString(R.string.button_activate)
                 btnSecondaryHorizontal?.setOnClickListener {
-                    viewModel.saveShippingData(userSession.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data?.featureId.toString())
+                    viewModel.saveShippingData(userSession.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
                     bottomSheetCourierInactive?.dismiss()
                 }
                 tickerChargeBoCourierInactive?.apply {
