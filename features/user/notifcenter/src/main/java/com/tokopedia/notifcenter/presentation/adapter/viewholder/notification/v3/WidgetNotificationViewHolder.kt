@@ -60,7 +60,6 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun initRecyclerView() {
-        if (!enableTrackHistory) return
         historyTimeLine?.apply {
             setHasFixedSize(true)
             itemAnimator = null
@@ -95,16 +94,10 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindHistoryBox(element: NotificationUiModel) {
-        if (enableTrackHistory) {
-            bindTrackHistory(element)
-            bindTimeLineVisibility(element)
-            bindProgressIndicator(element)
-            bindHistoryBtn(element)
-        } else {
-            historyTimeLine?.hide()
-            progressIndicator?.hide()
-            toggleHistoryBtn?.hide()
-        }
+        bindTrackHistory(element)
+        bindTimeLineVisibility(element)
+        bindProgressIndicator(element)
+        bindHistoryBtn(element)
     }
 
     private fun bindHistoryBtn(element: NotificationUiModel) {
@@ -247,8 +240,6 @@ class WidgetNotificationViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_notification_widget_order_history
-
-        private const val enableTrackHistory = false
     }
 }
 
