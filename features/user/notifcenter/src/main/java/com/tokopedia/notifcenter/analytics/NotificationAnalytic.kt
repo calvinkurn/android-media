@@ -255,7 +255,7 @@ class NotificationAnalytic @Inject constructor(
                         event = Event.CLICK_NOTIF_CENTER,
                         eventCategory = EventCategory.NOTIFCENTER,
                         eventAction = "${EventAction.CLICK_WIDGET_CTA} - ${element.widgetCtaText}",
-                        eventLabel = getEventLabel(element),
+                        eventLabel = getEventLabelNotifWidget(element),
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId,
