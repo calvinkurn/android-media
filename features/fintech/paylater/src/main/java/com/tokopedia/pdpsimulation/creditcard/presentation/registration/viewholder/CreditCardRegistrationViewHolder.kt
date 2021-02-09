@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.creditcard.domain.model.BankCardListItem
@@ -16,10 +17,7 @@ class CreditCardRegistrationViewHolder(val view: View) : RecyclerView.ViewHolder
 
     fun bindData(bankData: BankCardListItem) {
         view.apply {
-            ImageHandler.loadImage(context,
-                    ivPartnerLogo,
-                    bankData.bankLogoUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            ivPartnerLogo.loadImage(bankData.bankLogoUrl ?: "")
             tvTitlePaymentPartner.text = bankData.bankName
             if (bankData.bankPdpInfo.isNullOrEmpty()) {
                 tvDescription.text = "Lihat pilihan kartu"

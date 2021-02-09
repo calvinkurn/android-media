@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -24,11 +25,10 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
         if (context.isDarkMode())
             imageUrl = simulationDataItem.imgDarkUrl
         else imageUrl = simulationDataItem.imgLightUrl
+
         if (!imageUrl.isNullOrEmpty())
-            ImageHandler.loadImage(context,
-                    ivPayLaterPartner,
-                    imageUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            ivPayLaterPartner.loadImage(imageUrl)
+
         if (showBackGround)
             recommendationView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         return recommendationView

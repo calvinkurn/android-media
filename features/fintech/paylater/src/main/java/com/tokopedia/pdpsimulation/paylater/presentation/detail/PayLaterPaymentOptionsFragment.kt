@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
@@ -83,10 +84,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else responseData?.partnerImgLightUrl
 
         if (!imageUrl.isNullOrEmpty())
-            ImageHandler.loadImage(context,
-                    ivPaylaterPartner,
-                    imageUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            ivPaylaterPartner.loadImage(imageUrl)
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {

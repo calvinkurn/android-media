@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
@@ -31,10 +32,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 imageUrl = payLaterItemProductData.partnerImgDarkUrl
             else imageUrl = payLaterItemProductData.partnerImgLightUrl
             if (!imageUrl.isNullOrEmpty())
-                ImageHandler.loadImage(context,
-                        ivPartnerLogo,
-                        imageUrl,
-                        com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                ivPartnerLogo.loadImage(imageUrl)
 
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.creditcard.domain.model.SimulationBank
@@ -18,12 +19,9 @@ class CreditCardBankInfoViewHolder(val view: View) : RecyclerView.ViewHolder(vie
         val duration = bankData.availableDurationList?.joinToString(separator = ", ")
         view.apply {
             ivBank.maxWidth = 40.dpToPx(context.resources.displayMetrics)
-            ImageHandler.loadImage(context,
-                    ivBank,
-                    bankData.bankImageUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            ivBank.loadImage(bankData.bankImageUrl ?: "")
             setLabelData(this, bankData.transactionBenefits)
-            tvInstallments.text = "Cicilan ${duration} bulan"
+            tvInstallments.text = context.getString(R.string.credit_card_simulation_card_header, duration)
         }
     }
 

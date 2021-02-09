@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardItem
@@ -19,10 +20,7 @@ class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         view.apply {
             tvCreditCardName.text = creditCardItem.cardName
             tvBankName.text = creditCardBankName ?: ""
-            ImageHandler.loadImage(context,
-                    ivCreditCard,
-                    creditCardItem.cardImageUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+            ivCreditCard.loadImage(creditCardItem.cardImageUrl?: "")
             setLabelData(this, creditCardItem.specialLabel)
             if (creditCardItem.isSpecialOffer == true) {
                 creditCardLayout.background = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.shadow_np)
