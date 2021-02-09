@@ -12,8 +12,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.viewpager.widget.ViewPager
@@ -34,6 +33,7 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -63,6 +63,11 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN = "tracker/home/recom_feed_product_login.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "tracker/home/reminder_widget_recharge_close.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
+
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
 
 /**
@@ -92,7 +97,7 @@ class DynamicChannelComponentAnalyticsTest {
     fun testDCHomeNotLogin() {
         initTest()
 
-        doActivityTest()
+        doActivityTest(false)
 
         doHomeCassavaTest()
 
@@ -105,9 +110,22 @@ class DynamicChannelComponentAnalyticsTest {
     fun testDCHomeLogin() {
         initTestWithLogin()
 
-        doActivityTest()
+        doActivityTest(false)
 
         doHomeCassavaLoginTest()
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testDCHomeReminderWidgetClosen() {
+        initTestWithLogin()
+
+        doActivityTest(true)
+
+        doHomeCassavaReminderWidgetCloseTest()
 
         onFinishTest()
 
@@ -140,12 +158,12 @@ class DynamicChannelComponentAnalyticsTest {
         Thread.sleep(5000)
     }
 
-    private fun doActivityTest() {
+    private fun doActivityTest(isReminderWidgetClose: Boolean) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
-            checkProductOnDynamicChannel(homeRecyclerView, i)
+            checkProductOnDynamicChannel(homeRecyclerView, i, isReminderWidgetClose)
         }
         activityRule.activity.finish()
         logTestMessage("Done UI Test")
@@ -189,6 +207,10 @@ class DynamicChannelComponentAnalyticsTest {
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN),
                 hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE),
+                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM),
+                hasAllSuccess())
     }
 
     private fun doHomeCassavaLoginTest() {
@@ -196,6 +218,13 @@ class DynamicChannelComponentAnalyticsTest {
 
         //worked
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN),
+                hasAllSuccess())
+    }
+
+    private fun doHomeCassavaReminderWidgetCloseTest() {
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE),
+                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE),
                 hasAllSuccess())
     }
 
@@ -208,7 +237,7 @@ class DynamicChannelComponentAnalyticsTest {
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
     }
 
-    private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
+    private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int, isReminderWidgetClose: Boolean) {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
             is TickerViewHolder -> {
@@ -287,6 +316,17 @@ class DynamicChannelComponentAnalyticsTest {
                 val holderName = "DynamicIconSectionViewHolder"
                 logTestMessage("VH $holderName")
                 clickSingleItemOnRecyclerView(viewholder.itemView, R.id.list, holderName)
+            }
+            is ReminderWidgetViewHolder -> {
+                val holderName = "ReminderWidgetViewHolder"
+                logTestMessage("VH $holderName")
+                if(isReminderWidgetClose){
+                    clickClosedReminderWidgetSalam(holderName)
+                    clickClosedReminderWidgetRecharge(holderName)
+                } else {
+                    clickReminderWidgetSalam(holderName)
+                    clickReminderWidgetRecharge(holderName)
+                }
             }
         }
     }
@@ -484,6 +524,51 @@ class DynamicChannelComponentAnalyticsTest {
             logTestMessage("Click FAILED recom tab pos "  + 0)
         }
     }
+
+    private fun clickReminderWidgetSalam(viewComponent: String){
+        try {
+            Espresso.onView(allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), isDisplayed(),
+                    withText("Berbagi Sekarang"))).perform(ViewActions.click())
+            logTestMessage("Click SUCCESS Salam atc $viewComponent")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED Salam atc $viewComponent")
+        }
+    }
+
+    private fun clickReminderWidgetRecharge(viewComponent: String){
+        try {
+            Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), isDisplayed(),
+                    withText("Bayar Sekarang")),0)).perform(ViewActions.click())
+            logTestMessage("Click SUCCESS Recharge atc $viewComponent")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED Recharge atc $viewComponent")
+        }
+    }
+
+    private fun clickClosedReminderWidgetSalam(viewComponent: String){
+        try {
+              Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(allOf(withId(R.id.ic_close_reminder_recommendation),
+                      isDisplayed()),0)).perform(ViewActions.click())
+              logTestMessage ("Click close Salam SUCCESS atc $viewComponent")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click close Salam FAILED atc $viewComponent")
+        }
+    }
+
+    private fun clickClosedReminderWidgetRecharge(viewComponent: String){
+        try {
+            Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(allOf(withId(R.id.ic_close_reminder_recommendation),
+                    isDisplayed()),0)).perform(ViewActions.click())
+            logTestMessage ("Click close Recharge SUCCESS atc $viewComponent")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click close Recharge FAILED atc $viewComponent")
+        }
+    }
+
 
     private fun logTestMessage(message: String) {
         TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)

@@ -3056,6 +3056,14 @@
                     }
                 },
                 {
+                    "id": 74103,
+                    "layout": "salam_todo"
+                },
+                {
+                    "id": 74104,
+                    "layout": "dg_bills"
+                },
+                {
                     "id": 34036,
                     "group_id": 37,
                     "galaxy_attribution": "PG",
