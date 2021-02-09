@@ -44,6 +44,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.feedComponent)
@@ -110,6 +112,7 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.productShare)
+    implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.pushNotification)
