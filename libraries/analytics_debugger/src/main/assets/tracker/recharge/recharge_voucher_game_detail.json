@@ -23,25 +23,11 @@
       "eventLabel": "{{.* - .*}}"
     },
     {
-      "eventCategory": "digital - native",
-      "currentSite": "tokopediadigital",
-      "event": "add_to_cart",
-      "eventAction": "click beli",
-      "sessionIris":"{{.*}}",
-      "items": [
-        {
-          "cart_id": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
-        }
-      ],
-      "eventLabel": "{{.* - .*}}"
+      "eventCategory": "digital - homepage",
+      "event": "clickHomepage",
+      "eventAction": "click info button on operator page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ]
 }
