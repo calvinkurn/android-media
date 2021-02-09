@@ -12,24 +12,17 @@ class AidlServiceConnection(
 
     private var service: AppApi? = null
 
-    init {
-        println("AIDL: AidlServiceConnection -> init")
-    }
-
     override fun onServiceConnected(componentName: ComponentName?, boundService: IBinder?) {
         try {
-            println("AIDL: onServiceConnected -> service.asInterface")
             service = AppApi.Stub.asInterface(boundService)
             getData(service)
-        } catch (e: RemoteException) {
-            println("AIDL: onServiceConnected -> ${e.printStackTrace()}")
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     override fun onServiceDisconnected(componentName: ComponentName?) {
         service = null
-        println("AIDL: onServiceDisconnected -> null")
     }
 
 }
