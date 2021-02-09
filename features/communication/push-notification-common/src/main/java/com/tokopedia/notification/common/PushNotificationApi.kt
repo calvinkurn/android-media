@@ -10,12 +10,10 @@ open class PushNotificationApi(
         onAidlError: () -> Unit
 ) : AidlApi(onAidlReceive, onAidlError) {
 
-    private val notificationService = "com.tokopedia.notification.common.service.PushNotificationService"
-
     fun bindService(context: Context) {
         bindService(
                 context = context,
-                serviceName = PushNotificationService::class.java.canonicalName?: notificationService
+                serviceName = PushNotificationService::class.java.name
         )
     }
 
