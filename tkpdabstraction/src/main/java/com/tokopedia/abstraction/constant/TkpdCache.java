@@ -21,14 +21,4 @@ public class TkpdCache {
         public static final String STATUS2 = "STATUS";
         public static final String MESSAGE = "message";
     }
-
-    public static class SellerInAppReview {
-        public static final String PREFERENCE_NAME = "CACHE_SELLER_IN_APP_REVIEW";
-        public static final String KEY_HAS_ADDED_PRODUCT = "KEY_SIR_HAS_ADDED_PRODUCT";
-        public static final String KEY_HAS_POSTED_FEED = "KEY_SIR_HAS_POSTED_FEED";
-        public static final String KEY_CHATS_REPLIED_TO = "KEY_SIR_CHATS_REPLIED_TO";
-        public static final String KEY_HAS_OPENED_REVIEW = "KEY_SIR_HAS_OPENED_REVIEW";
-        public static final String KEY_LAST_REVIEW_ASKED = "KEY_SIR_LAST_REVIEW_ASKED";
-        public static final String KEY_IS_ALLOW_APP_REVIEW_DEBUGGING = "KEY_SIR_IS_ALLOW_APP_REVIEW_DEBUGGING";
-    }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.sellerreview.common
 
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import javax.inject.Inject
 
@@ -15,6 +14,6 @@ class SellerAppReviewRemoteConfig @Inject constructor(
 ) {
 
     fun isSellerReviewEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.SELLERAPP_IN_APP_REVIEW, false)
+        return remoteConfig.getBoolean(Const.RemoteConfigKey.SELLERAPP_IN_APP_REVIEW, false)
     }
 }

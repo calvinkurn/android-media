@@ -1,8 +1,7 @@
 package com.tokopedia.developer_options.utils
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.constant.TkpdCache
+import android.content.SharedPreferences
 
 /**
  * Created By @ilhamsuaib on 04/02/21
@@ -11,17 +10,29 @@ import com.tokopedia.abstraction.constant.TkpdCache
 class SellerInAppReview {
 
     companion object {
+        private const val PREFERENCE_NAME = "CACHE_SELLER_IN_APP_REVIEW"
+        private const val KEY_IS_ALLOW_APP_REVIEW_DEBUGGING = "KEY_SIR_IS_ALLOW_APP_REVIEW_DEBUGGING"
+
         @JvmStatic
         fun setSellerAppReviewDebuggingEnabled(context: Context, boolean: Boolean) {
-            val cacheHandler = LocalCacheHandler(context, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, boolean)
-            cacheHandler.applyEditor()
+            val spe = getSharedPrefEditor(context)
+            spe.putBoolean(KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, boolean)
+            spe.apply()
         }
 
         @JvmStatic
         fun getSellerAppReviewDebuggingEnabled(context: Context): Boolean {
-            val cacheHandler = LocalCacheHandler(context, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            return cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, false)
+            val sp = getSharedPref(context)
+            return sp.getBoolean(KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, false)
+        }
+
+        private fun getSharedPref(context: Context): SharedPreferences {
+            return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+        }
+
+        private fun getSharedPrefEditor(context: Context): SharedPreferences.Editor {
+            val pref = getSharedPref(context)
+            return pref.edit()
         }
     }
 }

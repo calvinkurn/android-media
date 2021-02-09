@@ -16,4 +16,18 @@ object Const {
 
     const val IMG_REQUEST_FEEDBACK = "https://images.tokopedia.net/img/android/merchant/seller_review/img_sir_req_feedback.png"
     const val IMG_THANK_YOU = "https://images.tokopedia.net/img/android/merchant/seller_review/img_sir_thank_you.png"
+
+    object SharedPrefKey {
+        const val PREFERENCE_NAME = "CACHE_SELLER_IN_APP_REVIEW"
+        const val KEY_HAS_ADDED_PRODUCT = "KEY_SIR_HAS_ADDED_PRODUCT"
+        const val KEY_HAS_POSTED_FEED = "KEY_SIR_HAS_POSTED_FEED"
+        const val KEY_CHATS_REPLIED_TO = "KEY_SIR_CHATS_REPLIED_TO"
+        const val KEY_HAS_OPENED_REVIEW = "KEY_SIR_HAS_OPENED_REVIEW"
+        const val KEY_LAST_REVIEW_ASKED = "KEY_SIR_LAST_REVIEW_ASKED"
+        const val KEY_IS_ALLOW_APP_REVIEW_DEBUGGING = "KEY_SIR_IS_ALLOW_APP_REVIEW_DEBUGGING"
+    }
+
+    object RemoteConfigKey {
+        const val SELLERAPP_IN_APP_REVIEW = "android_sellerapp_seller_inapp_review"
+    }
 }

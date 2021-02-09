@@ -7,7 +7,6 @@ import android.os.Build
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.constant.TkpdCache
 import java.util.*
 
 /**
@@ -18,9 +17,9 @@ object SellerReviewUtils {
 
     fun saveFlagHasOpenedReviewApp(context: Context?, userId: String) {
         context?.let {
-            val localCacheHandler = LocalCacheHandler(it, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            localCacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, userId), true)
-            localCacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED, userId), Date().time)
+            val localCacheHandler = LocalCacheHandler(it, Const.SharedPrefKey.PREFERENCE_NAME)
+            localCacheHandler.putBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_OPENED_REVIEW, userId), true)
+            localCacheHandler.putLong(getUniqueKey(Const.SharedPrefKey.KEY_LAST_REVIEW_ASKED, userId), Date().time)
             localCacheHandler.applyEditor()
         }
     }

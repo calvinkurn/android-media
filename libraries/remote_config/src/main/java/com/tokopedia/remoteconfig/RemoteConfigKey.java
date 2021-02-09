@@ -241,6 +241,4 @@ public class RemoteConfigKey {
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
 
     public static final String USE_PDP_FOR_OLD_NORMAL_CHECKOUT = "is_go_to_pdp_for_old_normal_checkout";
-
-    public static final String SELLERAPP_IN_APP_REVIEW = "android_sellerapp_seller_inapp_review";
 }

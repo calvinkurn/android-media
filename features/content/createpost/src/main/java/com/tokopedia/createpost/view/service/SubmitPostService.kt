@@ -7,9 +7,7 @@ import android.content.Intent
 import android.text.TextUtils
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -23,6 +21,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
+import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -49,6 +48,9 @@ class SubmitPostService : JobIntentService() {
 
     @Inject
     lateinit var twitterManager: TwitterManager
+
+    @Inject
+    lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
 
     private var notificationManager: SubmitPostNotificationManager? = null
 
@@ -205,8 +207,6 @@ class SubmitPostService : JobIntentService() {
 
 
     private fun addFlagOnCreatePostSuccess() {
-        val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-        cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED + userSession.userId, true)
-        cacheHandler.applyEditor()
+        sellerAppReviewHelper.savePostFeedFlag()
     }
 }

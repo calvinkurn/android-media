@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
@@ -30,7 +28,7 @@ import kotlin.math.absoluteValue
 
 @SellerHomeScope
 class SellerReviewHelper @Inject constructor(
-        private val cacheHandler: LocalCacheHandler,
+        private val cacheHandler: SellerReviewCacheHandler,
         private val userSession: UserSessionInterface,
         private val remoteConfig: SellerAppReviewRemoteConfig,
         private val dispatchers: CoroutineDispatchers
@@ -56,10 +54,10 @@ class SellerReviewHelper @Inject constructor(
 
         try {
             delay(QUOTA_CHECK_DELAY)
-            val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
-            val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
-            val hasReplied5Chats = cacheHandler.getStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), emptySet()).size >= 5
-            val hasOpenedReview = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), false)
+            val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_ADDED_PRODUCT), false)
+            val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_POSTED_FEED), false)
+            val hasReplied5Chats = cacheHandler.getStringSet(getUniqueKey(Const.SharedPrefKey.KEY_CHATS_REPLIED_TO), emptySet()).size >= 5
+            val hasOpenedReview = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_OPENED_REVIEW), false)
             val allowPopupShown = canShowPopup()
 
             withContext(dispatchers.main) {
@@ -77,7 +75,7 @@ class SellerReviewHelper @Inject constructor(
      * */
     private fun canShowPopup(): Boolean {
         val isAllowDebuggingTools = GlobalConfig.isAllowDebuggingTools()
-        val appReviewDebugEnabled = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, false)
+        val appReviewDebugEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, false)
         return !isAllowDebuggingTools || appReviewDebugEnabled
     }
 
@@ -154,7 +152,7 @@ class SellerReviewHelper @Inject constructor(
      * @return true if the in-app review pop-up never seen for the last 30 days
      * */
     private fun getAskReviewStatus(): Boolean {
-        val lastReviewAsked = cacheHandler.getLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), Date().time)
+        val lastReviewAsked = cacheHandler.getLong(getUniqueKey(Const.SharedPrefKey.KEY_LAST_REVIEW_ASKED), Date().time)
         val daysDiff = getDateDiffInDays(Date(lastReviewAsked), Date())
         return daysDiff.absoluteValue > 30
     }
@@ -181,12 +179,12 @@ class SellerReviewHelper @Inject constructor(
     private suspend fun resetQuotaCheck() {
         withContext(dispatchers.io) {
             try {
-                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
-                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
-                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), true)
-                cacheHandler.putStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), mutableSetOf())
+                cacheHandler.putBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_ADDED_PRODUCT), false)
+                cacheHandler.putBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_POSTED_FEED), false)
+                cacheHandler.putBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_OPENED_REVIEW), true)
+                cacheHandler.putStringSet(getUniqueKey(Const.SharedPrefKey.KEY_CHATS_REPLIED_TO), mutableSetOf())
                 val todayMillis = Date().time
-                cacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), todayMillis)
+                cacheHandler.putLong(getUniqueKey(Const.SharedPrefKey.KEY_LAST_REVIEW_ASKED), todayMillis)
                 cacheHandler.applyEditor()
             } catch (e: Exception) {
                 Timber.w(e)
