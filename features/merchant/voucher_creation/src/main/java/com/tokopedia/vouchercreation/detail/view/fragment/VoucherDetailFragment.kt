@@ -403,6 +403,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 shareVoucherBottomSheet = when(result) {
                     is Success -> {
                         val broadCastMetaData = result.data
+                        viewModel.setBroadCastChatUrl(broadCastMetaData.url)
                         setupShareBottomSheet(broadCastMetaData.quota, broadCastMetaData.url)
                     }
                     is Fail -> {
@@ -422,8 +423,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     }
 
     private fun setupShareBottomSheet(quota: Int = 0, url: String = ""): ShareVoucherBottomSheet? {
-        val isBroadCastChatPossible = viewModel.isBroadCastChatPossible(url)
-        return ShareVoucherBottomSheet.createInstance(isBroadCastChatPossible, quota)
+        val isBroadCastUrlValid = viewModel.isBroadCastChatUrlValid(url)
+        val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
+        shareVoucherBottomSheet.setIsBroadCastChatUrlValid(isBroadCastUrlValid)
+        shareVoucherBottomSheet.setBroadCastChatQuota(quota)
+        return shareVoucherBottomSheet
     }
 
     private fun showLoadingState() {
@@ -437,7 +441,13 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         if (!isAdded) return
         shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
                     context?.run {
-                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId, userSession.shopId)
+                        shopBasicData?.shareVoucher(
+                                context = this,
+                                socmedType = socmedType,
+                                voucher = voucher,
+                                userId = userSession.userId,
+                                shopId = userSession.shopId,
+                                broadCastChatUrl = viewModel.getBroadCastChatUrl())
                     }
                 }
         shareVoucherBottomSheet?.show(childFragmentManager)

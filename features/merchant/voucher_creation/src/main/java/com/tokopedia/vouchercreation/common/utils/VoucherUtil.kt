@@ -66,19 +66,20 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
                                      @SocmedType socmedType: Int,
                                      voucher: VoucherUiModel,
                                      userId: String,
-                                     shopId: String) {
+                                     shopId: String,
+                                     broadCastChatUrl: String) {
     val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
     val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
         type = LinkerData.MERCHANT_VOUCHER
         uri = shareUrl
         id = voucher.id.toString()
-        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId.toString()).orEmpty()
+        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
     })
     LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     linkerShareData?.url?.let {
-                        shareVoucherByType(context, socmedType, voucher, shopName, it)
+                        shareVoucherByType(context, socmedType, voucher, shopName, it, broadCastChatUrl)
                     }
                 }
 
@@ -97,7 +98,8 @@ private fun shareVoucherByType(context: Context,
                                @SocmedType socmedType: Int,
                                voucher: VoucherUiModel,
                                shopName: String,
-                               shareUrl: String) {
+                               shareUrl: String,
+                               broadCastChatUrl: String) {
     val shareMessage =
             if (voucher.isPublic) {
                 StringBuilder().apply {
@@ -121,7 +123,7 @@ private fun shareVoucherByType(context: Context,
             }
     when(socmedType) {
         SocmedType.BROADCAST -> {
-            SharingUtil.shareToBroadCastChat()
+            SharingUtil.shareToBroadCastChat(context, broadCastChatUrl)
         }
         SocmedType.COPY_LINK -> {
             SharingUtil.copyTextToClipboard(context, VoucherDetailFragment.COPY_PROMO_CODE_LABEL, shareMessage)

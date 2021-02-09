@@ -27,6 +27,8 @@ class VoucherDetailViewModel @Inject constructor(
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase) : BaseViewModel(dispatchers.main) {
 
+    private var broadCastChatUrl: String = ""
+
     private val mVoucherIdLiveData = MutableLiveData<Int>()
 
     private val _broadCastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
@@ -96,7 +98,15 @@ class VoucherDetailViewModel @Inject constructor(
         })
     }
 
-    fun isBroadCastChatPossible(url: String): Boolean {
+    fun isBroadCastChatUrlValid(url: String): Boolean {
         return url.isNotBlank()
+    }
+
+    fun setBroadCastChatUrl(url: String) {
+        this.broadCastChatUrl = url
+    }
+
+    fun getBroadCastChatUrl(): String {
+        return broadCastChatUrl
     }
 }

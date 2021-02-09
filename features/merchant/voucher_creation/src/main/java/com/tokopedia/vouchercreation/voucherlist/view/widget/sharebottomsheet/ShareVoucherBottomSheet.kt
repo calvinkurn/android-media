@@ -26,19 +26,10 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
-        @JvmStatic
-        fun createInstance(isBroadCastChatPossible: Boolean, quota: Int): ShareVoucherBottomSheet {
-            return ShareVoucherBottomSheet().apply {
-                this.isBroadCastChatPossible = isBroadCastChatPossible
-                this.quota = quota
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-            }
-        }
-
         const val TAG = "ShareVoucherBottomSheet"
     }
 
-    private var isBroadCastChatPossible = false
+    private var isBroadCastChatUrlValid = false
 
     private var quota = 0
 
@@ -59,6 +50,14 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
+    }
+
+    fun setIsBroadCastChatUrlValid(isBroadCastChatUrlValid: Boolean) {
+        this.isBroadCastChatUrlValid = isBroadCastChatUrlValid
+    }
+
+    fun setBroadCastChatQuota(quota: Int) {
+        this.quota = quota
     }
 
     private fun initBottomSheet() {
@@ -89,8 +88,8 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
     private fun getSocmedList(): List<ShareVoucherUiModel> {
         val socmedList = mutableListOf<ShareVoucherUiModel>()
-        if (isBroadCastChatPossible) {
-            socmedList.add(ShareVoucherUiModel(R.drawable.ic_mvc_broadcast_chat, context?.getString(R.string.mvc_broadcast_chat).toBlankOrString(), SocmedType.BROADCAST))
+        if (isBroadCastChatUrlValid) {
+            socmedList.add(ShareVoucherUiModel(R.drawable.ic_mvc_broadcast_chat, context?.getString(R.string.mvc_broadcast_chat_tkpd).toBlankOrString(), SocmedType.BROADCAST, quota))
         }
         socmedList.addAll(
                 listOf(

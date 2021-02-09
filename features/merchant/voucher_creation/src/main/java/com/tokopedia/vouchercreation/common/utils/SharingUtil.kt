@@ -14,6 +14,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.activity.BroadCastChatWebViewActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -78,8 +80,9 @@ object SharingUtil {
         }
     }
 
-    fun shareToBroadCastChat() {
-
+    fun shareToBroadCastChat(context: Context, broadCastUrl: String) {
+        val broadCastChatIntent = BroadCastChatWebViewActivity.createNewIntent(context, broadCastUrl, context.getString(R.string.mvc_broadcast_chat))
+        context.startActivity(broadCastChatIntent)
     }
 
     fun shareToSocialMedia(socmed: Socmed,
@@ -98,7 +101,7 @@ object SharingUtil {
                         val fileName = String.format(FILE_NAME_FORMAT, System.currentTimeMillis().toString())
                         val internalFile = resource.getSavedImageDirFile(context, fileName)
                         val contentUri = FileProvider.getUriForFile(context, AUTHORITY, internalFile)
-                        when(socmed) {
+                        when (socmed) {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
@@ -201,8 +204,7 @@ object SharingUtil {
                 }
             }
             context.startActivity(shareIntent)
-        }
-        else {
+        } else {
             // This block is reserved to handle unavailability of the socmed app.
             // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
         }
@@ -225,8 +227,7 @@ object SharingUtil {
                 }
             }
             context.startActivity(shareIntent)
-        }
-        else {
+        } else {
             // This block is reserved to handle unavailability of the socmed app.
             // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
         }
