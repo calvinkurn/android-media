@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -64,7 +65,7 @@ object PlayUiMapper {
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
             id = partner.id.toLongOrZero(),
-            name = partner.name,
+            name = MethodChecker.fromHtml(partner.name).toString(),
             type = PartnerType.getTypeByValue(partner.type),
             isFollowed = true,
             isFollowable = false
