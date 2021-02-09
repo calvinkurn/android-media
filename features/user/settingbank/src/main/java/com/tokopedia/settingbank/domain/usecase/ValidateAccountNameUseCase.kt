@@ -14,14 +14,14 @@ class ValidateAccountNameUseCase @Inject constructor(): UseCase<AccountNameValid
 
     fun validateAccountHolderNameLength(accountHolderName: String,
                                         onComplete: (AccountNameValidationResult) -> Unit) {
-        useCaseRequestParams = RequestParams().apply {
+        val requestParams = RequestParams().apply {
             putString(ARG_NAME, accountHolderName)
         }
         execute({
             onComplete(it)
         }, {
             it.printStackTrace()
-        }, useCaseRequestParams)
+        }, requestParams)
     }
 
 

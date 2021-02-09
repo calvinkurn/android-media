@@ -2,7 +2,6 @@ package com.tokopedia.settingbank.view.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.domain.model.KYCInfo
 import com.tokopedia.settingbank.domain.model.TemplateData
@@ -16,12 +15,12 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRepository,
-                                               private val termsAndConditionUseCase: TermsAndConditionUseCase,
-                                               private val getUserBankAccountUseCase: GetUserBankAccountUseCase,
-                                               private val deleteBankAccountUseCase: DeleteBankAccountUseCase,
-                                               private val kyCInfoUseCase: KyCInfoUseCase,
-                                               dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class SettingBankViewModel @Inject constructor(
+        private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase>,
+        private val getUserBankAccountUseCase: dagger.Lazy<GetUserBankAccountUseCase>,
+        private val deleteBankAccountUseCase: dagger.Lazy<DeleteBankAccountUseCase>,
+        private val kyCInfoUseCase: KyCInfoUseCase,
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
 
     val termsAndConditionLiveData = MutableLiveData<Result<TemplateData>>()
@@ -34,7 +33,7 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
     val addBankAccountStateLiveData = MutableLiveData<Boolean>()
 
     fun loadUserAddedBankList() {
-        getUserBankAccountUseCase.getUserBankAccountList({
+        getUserBankAccountUseCase.get().getUserBankAccountList({
             bankAccountListLiveData.postValue(Success(it))
         }, {
             addBankAccountStateLiveData.postValue(it)
@@ -44,15 +43,15 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
     }
 
     fun deleteBankAccount(bankAccount: BankAccount) {
-        /*deleteBankAccountUseCase.deleteBankAccount(bankAccount, {
+        deleteBankAccountUseCase.get().deleteBankAccount(bankAccount, {
             deleteBankAccountLiveData.postValue(Success(it))
         }, {
             deleteBankAccountLiveData.postValue(Fail(it))
-        })*/
+        })
     }
 
     fun loadTermsAndCondition() {
-        termsAndConditionUseCase.getTermsAndCondition({
+        termsAndConditionUseCase.get().getTermsAndCondition({
             termsAndConditionLiveData.postValue(Success(it))
         }, {
             termsAndConditionLiveData.postValue(Fail(it))
@@ -60,7 +59,7 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
     }
 
     fun loadTermsAndConditionNotes() {
-        termsAndConditionUseCase.getNotes({
+        termsAndConditionUseCase.get().getNotes({
             tncNotesLiveData.postValue(Success(it))
         }, {
             tncNotesLiveData.postValue(Fail(it))
@@ -76,9 +75,9 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
     }
 
     override fun onCleared() {
-        termsAndConditionUseCase.cancelJobs()
-        getUserBankAccountUseCase.cancelJobs()
-        deleteBankAccountUseCase.cancelJobs()
+        termsAndConditionUseCase.get().cancelJobs()
+        getUserBankAccountUseCase.get().cancelJobs()
+        deleteBankAccountUseCase.get().cancelJobs()
         kyCInfoUseCase.cancelJobs()
         super.onCleared()
     }

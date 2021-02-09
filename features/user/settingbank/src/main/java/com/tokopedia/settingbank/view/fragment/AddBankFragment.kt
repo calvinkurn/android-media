@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -26,20 +27,23 @@ import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.*
 import com.tokopedia.settingbank.util.AddBankAccountException
+import com.tokopedia.settingbank.util.SettingBankTextWatcher
+import com.tokopedia.settingbank.util.TextWatcherListener
+import com.tokopedia.settingbank.util.getBankTypeFromAbbreviation
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
-import com.tokopedia.settingbank.view.viewModel.BankNumberTextWatcherViewModel
 import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
 import javax.inject.Inject
 
 
-class AddBankFragment : BaseDaggerFragment() {
+class AddBankFragment : BaseDaggerFragment(), TextWatcherListener {
 
 
     private val REQUEST_OTP: Int = 103
@@ -55,7 +59,6 @@ class AddBankFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var textWatcherViewModel: BankNumberTextWatcherViewModel
     private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
@@ -107,7 +110,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        textWatcherViewModel = viewModelProvider.get(BankNumberTextWatcherViewModel::class.java)
         addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
     }
 
@@ -119,7 +121,7 @@ class AddBankFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setDownArrowBankName()
         setRestoredFragmentState()
-        etBankAccountNumber.addTextChangedListener(textWatcherViewModel.getTextWatcher())
+        etBankAccountNumber.addTextChangedListener(SettingBankTextWatcher(this))
         setTncText()
         startObservingViewModels()
         setBankName()
@@ -127,9 +129,7 @@ class AddBankFragment : BaseDaggerFragment() {
         btnPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         setAccountNumberInputFilter()
-        if (::bank.isInitialized) {
-            textWatcherViewModel.onBankSelected(bank)
-        } else {
+        if (!::bank.isInitialized) {
             openBankListForSelection()
         }
     }
@@ -164,7 +164,13 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun unregisterObserver() {
-        textWatcherViewModel.textWatcherState.removeObservers(this)
+        addAccountViewModel.apply {
+            addBankAccountLiveData.removeObservers(viewLifecycleOwner)
+            termsAndConditionLiveData.removeObservers(viewLifecycleOwner)
+            validateAccountNumberStateLiveData.removeObservers(viewLifecycleOwner)
+            accountCheckState.removeObservers(viewLifecycleOwner)
+            accountNameValidationResult.removeObservers(viewLifecycleOwner)
+        }
     }
 
     private fun setDownArrowBankName() {
@@ -173,16 +179,16 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun startObservingViewModels() {
-        textWatcherViewModel.textWatcherState.observe(viewLifecycleOwner, Observer {
+        addAccountViewModel.validateAccountNumberStateLiveData.observe(viewLifecycleOwner, Observer {
             if (isFragmentRestored) {
                 isFragmentRestored = false
                 return@Observer
             }
             when (it) {
                 is OnNOBankSelected -> setAccountNumberError(getString(R.string.sbank_select_bank))
-                is OnTextChanged -> {
+                is ValidateAccountNumberSuccess -> {
                     setAccountNumberError(null)
-                    onTextChange(it)
+                    onValidateAccountNumber(it)
                 }
             }
         })
@@ -309,7 +315,7 @@ class AddBankFragment : BaseDaggerFragment() {
         wrapperManualAccountHolderName.error = error
     }
 
-    private fun onTextChange(onTextChanged: OnTextChanged) {
+    private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
         btnPeriksa.isEnabled = onTextChanged.isCheckEnable
         add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
         if (onTextChanged.clearAccountHolderName) {
@@ -403,7 +409,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
     fun onBankSelected(selectedBank: Bank) {
         bank = selectedBank
-        textWatcherViewModel.onBankSelected(bank)
         notifyAccountNumberWatcher()
         hideAccountHolderName()
         setBankName()
@@ -413,7 +418,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun setAccountNumberInputFilter() {
         if (::bank.isInitialized) {
             val abbreviation = bank.abbreviation?.let { it } ?: ""
-            val bankAccountNumberCount = textWatcherViewModel.getBankTypeFromAbbreviation(abbreviation)
+            val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
             val filterArray = arrayOfNulls<InputFilter>(1)
             filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
             etBankAccountNumber.filters = filterArray
@@ -511,6 +516,10 @@ class AddBankFragment : BaseDaggerFragment() {
         const val ARG_OUT_ACCOUNT_NUMBER = "ARG_OUT_ACCOUNT_NUMBER"
         const val ARG_OUT_ACCOUNT_HOLDER_NAME = "ARG_OUT_ACCOUNT_HOLDER_NAME"
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
+    }
+
+    override fun onTextChanged(str: String) {
+        addAccountViewModel.validateAccountNumber(bank, str)
     }
 
 }

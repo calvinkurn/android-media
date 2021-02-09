@@ -29,11 +29,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(BankNumberTextWatcherViewModel::class)
-    internal abstract fun addAccountNumberTextWatcherViewModel(viewModel: BankNumberTextWatcherViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(AddAccountViewModel::class)
     internal abstract fun addAddAccountViewModel(viewModel: AddAccountViewModel): ViewModel
 
