@@ -72,7 +72,7 @@ data class RechargeGetCart(
         @Expose
         val mainnInfo: List<Attribute> = listOf(),
 
-        @SerializedName("additionalInfo")
+        @SerializedName("additional_info")
         @Expose
         val additionalInfo: List<AdditionalInfo> = listOf(),
 

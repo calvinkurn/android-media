@@ -1,5 +1,5 @@
 {
-  "readme": "Digital checkout",
+  "readme": "Digital checkout with subscription (user already subscribed) & fintech product (proteksi tagihan)",
   "mode": "exact",
   "query": [
     {
@@ -47,39 +47,6 @@
       ]
     },
     {
-      "event": "checkout_progress",
-      "eventCategory": "digital - checkout",
-      "eventAction": "click proceed to payment",
-      "eventLabel": "{{.* - .*}}",
-      "checkout_step": "2",
-      "checkout_option": "click payment option button",
-      "currentSite": "tokopediadigital",
-      "sessionIris": "{{.*}}",
-      "items": [
-        {
-          "cart_id": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
-        }
-      ]
-    },
-    {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"tick auto debit",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
-    },
-    {
       "event":"clickCheckout",
       "eventCategory":"digital - checkout page",
       "eventAction":"tick cross sell",
@@ -98,16 +65,6 @@
       "currentSite":"tokopediadigital",
       "sessionIris": "{{.+}}",
       "userId":"{{.+}}"
-    },
-    {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"untick auto debit",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
     },
     {
       "event":"clickCheckout",
