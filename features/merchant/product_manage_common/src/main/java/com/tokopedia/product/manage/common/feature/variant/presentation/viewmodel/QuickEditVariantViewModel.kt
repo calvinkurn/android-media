@@ -163,7 +163,7 @@ class QuickEditVariantViewModel @Inject constructor(
 
     private fun setShowStockInfo() {
         val isAllStockEmpty = editVariantResult?.isAllStockEmpty() == true
-        val showStockInfo = _showStockInfo.value == true
+        val showStockInfo = _showStockInfo.value
         val shouldShow = !isAllStockEmpty
 
         if(showStockInfo != shouldShow) {
