@@ -75,7 +75,6 @@
             app:layout_constraintTop_toTopOf="@id/shopWidgetImageViewShopAvatar"
             app:layout_constraintLeft_toRightOf="@id/shopWidgetImageViewShopBadge"
             app:layout_constraintRight_toLeftOf="@id/shopWidgetButtonSeeShop"
-            app:layout_constraintBottom_toTopOf="@id/shopWidgetTextViewShopLocation"
             tools:text="Putri Cabe"/>
 
         <com.tokopedia.unifyprinciples.Typography
