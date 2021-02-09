@@ -3,15 +3,16 @@ package com.tokopedia.gamification.giftbox.presentation.views
 import android.animation.*
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
@@ -24,6 +25,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecorat
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import kotlin.math.min
 
 open class RewardContainerDaily @JvmOverloads constructor(
@@ -43,8 +45,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
     var userSession: UserSession? = null
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
-    private var milliSecondsPerInch = 2f
     var isTablet = false
+    var cancelAutoScroll = false
 
     open fun getLayoutId() = R.layout.view_reward_container_daily
 
@@ -69,20 +71,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
         this.layoutParams = lp
         rvCoupons.alpha = 0f
         rvCoupons.hasFixedSize()
-        val layoutManager = object : LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
-            override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
-                val linearSmoothScroller: LinearSmoothScroller =
-                        object : LinearSmoothScroller(context) {
 
-                            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                                return milliSecondsPerInch / displayMetrics.density
-                            }
-                        }
-
-                linearSmoothScroller.targetPosition = position
-                startSmoothScroll(linearSmoothScroller)
-            }
-        }
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         layoutManager.isItemPrefetchEnabled = true
         rvCoupons.layoutManager = layoutManager
 
@@ -93,6 +83,25 @@ open class RewardContainerDaily @JvmOverloads constructor(
         }
         if (listItemWidthInTablet == null) {
             listItemWidthInTablet = 0f
+        }
+
+        if (sourceType == RewardContainer.RewardSourceType.DAILY) {
+            rvCoupons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && !cancelAutoScroll && canAutoScroll()) {
+                        performRvScrollAnimation(false)
+                    }
+                }
+            })
+
+            rvCoupons.setOnTouchListener { _, event ->
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN,
+                    MotionEvent.ACTION_MOVE -> cancelAutoScroll = true
+                }
+                false
+            }
         }
 
         rvCoupons.addItemDecoration(CouponItemDecoration(isTablet,
@@ -112,20 +121,39 @@ open class RewardContainerDaily @JvmOverloads constructor(
     open fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
         val anim2 = rvCouponsAnimations()
         anim2.addListener(onEnd = {
-            if (couponList.size > 1) {
-                val baseDuration = 1000
-                val maxDuration = 5000
-                var scrollDistance = 0
-                val animDuration = min((couponList.size - 1) * baseDuration, maxDuration)
-                if (isTablet) {
-                    scrollDistance = (couponList.size - 1) * context.resources.getDimension(R.dimen.gami_rv_coupons_width).toInt()
-                } else {
-                    scrollDistance = (couponList.size - 1) * rvCoupons.width
-                }
-                rvCoupons.smoothScrollBy(scrollDistance, 0, CubicBezierInterpolator(0.63f, 0.01f, 0.29f, 1f), animDuration)
+            if (canAutoScroll()) {
+                val delay = 700L
+                val handler = Handler()
+                handler.postDelayed({
+                    performRvScrollAnimation(true)
+                }, delay)
+
             }
         })
         return anim2
+    }
+
+    private fun canAutoScroll():Boolean{
+        return couponList.size > 1
+    }
+
+    private fun performRvScrollAnimation(toEnd: Boolean) {
+        try {
+            val baseDuration = 7000
+            val maxDuration = 35000
+            var scrollDistance = 0
+            val animDuration = min((couponList.size - 1) * baseDuration, maxDuration)
+            if (isTablet) {
+                scrollDistance = (couponList.size - 1) * context.resources.getDimension(R.dimen.gami_rv_coupons_width).toInt()
+            } else {
+                scrollDistance = (couponList.size - 1) * rvCoupons.width
+            }
+            scrollDistance = if (toEnd) scrollDistance else -scrollDistance
+            rvCoupons.smoothScrollBy(scrollDistance, 0, null, animDuration)
+        }catch (th:Throwable){
+            Timber.e(th)
+        }
+
     }
 
     fun rvCouponsAnimations(): Animator {
