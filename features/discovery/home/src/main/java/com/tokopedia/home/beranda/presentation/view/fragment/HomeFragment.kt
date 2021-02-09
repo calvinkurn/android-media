@@ -2169,10 +2169,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height = 0
+            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             if (isNavOld()) {
                 if (oldToolbar != null) {
-                    height = oldToolbar?.height?:0
+                    height = oldToolbar?.height?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     oldToolbar?.let {
                         if (!it.isShadowApplied()) {
                             height += resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -2181,7 +2181,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             } else if (isNavRevamp()) {
                 navToolbar?.let {
-                    height = navToolbar?.height?:0
+                    height = navToolbar?.height?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     height += resources.getDimensionPixelSize(R.dimen.dp_8)
                 }
             }
