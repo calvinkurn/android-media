@@ -116,7 +116,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeIsRoleEligible()
-        observeIsOrderShopAdmin()
         fetchSellerAppWidget()
     }
 
@@ -387,18 +386,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
                         finish()
                     }
-                }
-            }
-            // TODO: Add logic when admin info request fails. Still asking PM. For now we will only preserve current user session value
-        }
-    }
-
-    private fun observeIsOrderShopAdmin() {
-        homeViewModel.isOrderShopAdmin.observe(this) { isOrderShopAdmin ->
-            this.isOrderShopAdmin = isOrderShopAdmin
-            if (!isOrderShopAdmin) {
-                sahBottomNav.run {
-                    setBadge(0, FragmentType.ORDER, View.INVISIBLE)
                 }
             }
         }

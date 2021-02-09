@@ -42,10 +42,6 @@ class SellerHomeActivityViewModel @Inject constructor(
     val isRoleEligible: LiveData<Result<Boolean>>
         get() = _isRoleEligible
 
-    private val _isOrderShopAdmin = MutableLiveData<Boolean>()
-    val isOrderShopAdmin: LiveData<Boolean>
-        get() = _isOrderShopAdmin
-
     fun getNotifications() = executeCall(_notifications) {
         val notificationUiModelDeferred = async {
             getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
@@ -94,7 +90,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     private suspend fun getIsRoleChatAdmin(): Boolean {
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
-                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_REPLY)
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_LIST)
                 authorizeAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
