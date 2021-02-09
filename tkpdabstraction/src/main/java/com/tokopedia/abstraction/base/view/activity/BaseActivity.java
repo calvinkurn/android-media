@@ -103,7 +103,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             if (!GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment)) return;
 
             List<String> versionList = Arrays.asList(versions.split(","));
-            if (versionList.contains(GlobalConfig.VERSION_NAME)) return;
+            if (!versionList.contains(GlobalConfig.VERSION_NAME)) return;
 
             Timber.w("P1#DISPLAY_GENERAL_INFO#'"+ className +"';message='" + message + "'");
             showGeneralInfoSnackbar(message);
