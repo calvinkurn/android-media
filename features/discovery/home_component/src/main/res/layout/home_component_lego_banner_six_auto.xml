@@ -20,6 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gridHolder"
         android:layout_marginTop="@dimen/dp_8"
+        android:background="#E5E7E9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +37,7 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/recycleList"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/recycleList"
             />
 
@@ -44,9 +45,9 @@
             android:id="@+id/recycleList"
             app:layout_constraintHorizontal_weight="2"
             android:paddingStart="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

@@ -20,7 +20,7 @@
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/image"
