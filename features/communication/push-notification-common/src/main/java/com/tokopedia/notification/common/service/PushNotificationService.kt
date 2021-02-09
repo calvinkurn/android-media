@@ -9,7 +9,7 @@ import com.tokopedia.notification.common.data.UserKey.USER_ID
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.appaidl.service.AidlRemoteService
 
-class PushNotificationService: AidlRemoteService() {
+class PushNotificationService : AidlRemoteService() {
 
     private val userSession by lazy { UserSession(applicationContext) }
 

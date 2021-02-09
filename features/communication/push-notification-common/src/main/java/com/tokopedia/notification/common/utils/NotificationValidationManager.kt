@@ -66,9 +66,7 @@ class NotificationValidationManager(
     fun validate(bundle: Bundle?, notify: ValidationCallback) {
         validate(bundle, {
             notify.isRenderable()
-        }, {
-            // no-op, notifier haven't cancel tracker
-        })
+        }, {} /* no-op, notifier haven't cancel tracker */)
     }
 
     interface ValidationCallback {
