@@ -4,7 +4,6 @@ import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -53,7 +52,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -172,9 +170,11 @@ class ProductManageViewModel @Inject constructor(
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
 
+    private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
     private var warehouseId: String = ""
+    private var totalProductCount = 0
 
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
@@ -335,7 +335,11 @@ class ProductManageViewModel @Inject constructor(
                     .tabs
             }
 
-            _productFiltersTab.apply { value = Success(mapToFilterTabResult(response)) }
+            _productFiltersTab.apply {
+                val data = mapToFilterTabResult(response)
+                totalProductCount = data.totalProductCount
+                value = Success(data)
+            }
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
@@ -346,7 +350,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun getProductManageAccess() {
         launchCatchError(block = {
-            val access = withContext(dispatchers.io) {
+            access = withContext(dispatchers.io) {
                 if(userSessionInterface.isShopOwner) {
                     ProductManageAccessMapper.mapProductManageOwnerAccess()
                 } else {
@@ -355,8 +359,7 @@ class ProductManageViewModel @Inject constructor(
                     ProductManageAccessMapper.mapToProductManageAccess(response)
                 }
             }
-
-            _productManageAccess.value = Success(access)
+            access?.let { _productManageAccess.value = Success(it) }
         }) {
             _productManageAccess.value = Fail(it)
         }
@@ -545,9 +548,8 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun showHideOptionsMenu() {
-        val access = _productManageAccess.value as? Success<ProductManageAccess>
-        val showAddMenu = access?.data?.addProduct ?: false
-        val showEtalaseMenu = access?.data?.etalaseList ?: false
+        val showAddMenu = getAccess().addProduct
+        val showEtalaseMenu = getAccess().etalaseList
         _showAddProductOptionsMenu.value = showAddMenu
         _showEtalaseOptionsMenu.value = showEtalaseMenu
     }
@@ -557,26 +559,24 @@ class ProductManageViewModel @Inject constructor(
         _selectedFilterAndSort.value = filterOptionWrapper
     }
 
-    fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
-        selectedFilter?.let {
-            _selectedFilterAndSort.value = if (_selectedFilterAndSort.value != null) {
-                _selectedFilterAndSort.value?.let { filters ->
-                    val list = arrayListOf<Boolean>()
-                    list.addAll(filters.filterShownState)
-                    list[list.size - 1] = true
+    fun setSelectedFilter(selectedFilter: List<FilterOption>) {
+        val selectedFilterAndSort = _selectedFilterAndSort.value
 
-                    var selectedFilterCount = countSelectedFilter(selectedFilter)
-                    _selectedFilterAndSort.value?.sortOption?.let { selectedFilterCount++ }
+        _selectedFilterAndSort.value = if (selectedFilterAndSort != null) {
+            val list = arrayListOf<Boolean>()
+            list.addAll(selectedFilterAndSort.filterShownState)
+            list[list.size - 1] = true
 
-                    filters.copy(
-                        filterOptions = selectedFilter,
-                        filterShownState = list,
-                        selectedFilterCount = selectedFilterCount
-                    )
-                }
-            } else {
-                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
-            }
+            var selectedFilterCount = countSelectedFilter(selectedFilter)
+            selectedFilterAndSort.sortOption?.let { selectedFilterCount++ }
+
+            selectedFilterAndSort.copy(
+                filterOptions = selectedFilter,
+                filterShownState = list,
+                selectedFilterCount = selectedFilterCount
+            )
+        } else {
+            FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
         }
     }
 
@@ -586,10 +586,7 @@ class ProductManageViewModel @Inject constructor(
         )
     }
 
-    fun getTotalProductCount(): Int {
-       return (_productFiltersTab.value as? Success<GetFilterTabResult>)
-           ?.data?.totalProductCount.orZero()
-    }
+    fun getTotalProductCount(): Int = totalProductCount
 
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
@@ -715,8 +712,7 @@ class ProductManageViewModel @Inject constructor(
 
     private fun showProductList(products: List<Product>?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productManageAccess = (_productManageAccess.value as? Success)?.data
-        val productList = mapToUiModels(products, productManageAccess, isMultiSelectActive)
+        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive)
         _productListResult.value = Success(productList)
     }
 
@@ -729,8 +725,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private fun getAccess(): ProductManageAccess {
-        return (_productManageAccess.value as? Success<ProductManageAccess>)?.data
-            ?: ProductManageAccessMapper.mapProductManageOwnerAccess()
+        return access ?: ProductManageAccessMapper.mapDefaultProductManageAccess()
     }
 
     private suspend fun getWarehouseId(shopId: String): String {

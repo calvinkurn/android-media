@@ -58,4 +58,23 @@ object ProductManageAccessMapper {
             broadcastChat = true
         )
     }
+
+    fun mapDefaultProductManageAccess(): ProductManageAccess {
+        return ProductManageAccess(
+            addProduct = false,
+            editProduct = false,
+            etalaseList = false,
+            multiSelect = false,
+            editPrice = false,
+            editStock = false,
+            duplicateProduct = false,
+            setStockReminder = false,
+            deleteProduct = false,
+            setTopAds = false,
+            setCashBack = false,
+            setFeatured = false,
+            productList = false,
+            broadcastChat = false
+        )
+    }
 }
