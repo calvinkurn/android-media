@@ -50,7 +50,13 @@ class DigitalCartActivityTest {
     fun testDefaultCartView() {
         //Setup intent cart page & launch activity
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        setUpMockResponse()
+        validateCartInfoOnUi()
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_DEFAULT_CART),
+                hasAllSuccess())
+    }
 
+    private fun setUpMockResponse() {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_DG_CHECKOUT_GET_CART,
@@ -75,7 +81,9 @@ class DigitalCartActivityTest {
                 Uri.parse("tokopedia-android-internal://digital/cart/baru")
         )
         mActivityRule.launchActivity(intent)
+    }
 
+    private fun validateCartInfoOnUi() {
         //Info Cart Detail
         Thread.sleep(2000)
         onView(withId(R.id.productTitle)).check(matches(withText("Angsuran Kredit")))
@@ -120,13 +128,6 @@ class DigitalCartActivityTest {
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
 
         Thread.sleep(1000)
-
-        onView(withId(R.id.btnCheckout)).check(matches(isDisplayed()))
-        onView(withId(R.id.btnCheckout)).perform(click())
-
-        Thread.sleep(1000)
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_DEFAULT_CART),
-                hasAllSuccess())
     }
 
     @After

@@ -25,7 +25,16 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -84,4 +93,6 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }

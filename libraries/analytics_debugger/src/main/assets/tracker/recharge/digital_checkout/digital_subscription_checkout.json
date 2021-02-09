@@ -49,32 +49,12 @@
     {
       "event":"clickCheckout",
       "eventCategory":"digital - checkout page",
-      "eventAction":"tick cross sell",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
-    },
-    {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
       "eventAction":"tick protection",
       "eventLabel":"{{.+ - .+}}",
       "businessUnit":"recharge",
       "currentSite":"tokopediadigital",
       "sessionIris": "{{.+}}",
       "userId":"{{.+}}"
-    },
-    {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"untick cross sell",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
     },
     {
       "event":"clickCheckout",
