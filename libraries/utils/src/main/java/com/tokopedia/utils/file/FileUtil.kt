@@ -83,6 +83,7 @@ object FileUtil {
             fos.close()
             true
         } catch (e: Throwable) {
+            System.gc()
             false
         }
     }
