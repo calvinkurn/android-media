@@ -1216,6 +1216,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         showCommonToaster(view, message)
                     }
                 }
+                data.hasExtra(SomConsts.RESULT_REFRESH_ORDER) -> {
+                    if (data.getBooleanExtra(SomConsts.RESULT_REFRESH_ORDER, false)) {
+                        onActionCompleted()
+                    }
+                }
             }
         }
     }
