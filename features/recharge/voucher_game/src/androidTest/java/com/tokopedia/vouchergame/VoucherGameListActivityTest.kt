@@ -75,7 +75,7 @@ class VoucherGameListActivityTest{
         Thread.sleep(3000)
         if(bannerCount() > 0){
             Espresso.onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(1, ViewActions.click()))
+                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, ViewActions.click()))
         }
     }
 

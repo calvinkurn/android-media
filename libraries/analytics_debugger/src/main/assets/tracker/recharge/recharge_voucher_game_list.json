@@ -3,6 +3,22 @@
   "mode": "exact",
   "query": [
     {
+      "digitalCategoryId": "{{.*}}",
+      "businessUnit": "recharge",
+      "clientId": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "screenName": "/digital/voucher game",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "networkSpeed": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "isLoggedInStatus": "{{true|false}}",
+      "eventName": "openScreen",
+      "shopId": "{{.*}}",
+      "category": "{{.*}}",
+      "event": "openScreen"
+    },
+    {
       "promotions": [
         {
           "creative_name": "{{.*}}",
