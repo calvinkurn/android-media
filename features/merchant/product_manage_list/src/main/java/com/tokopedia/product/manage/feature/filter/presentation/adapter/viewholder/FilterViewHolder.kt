@@ -45,17 +45,28 @@ class FilterViewHolder(view: View,
 
     override fun bind(element: FilterUiModel) {
         headerWidget.bind(element.title)
-        if(!element.isChipsShown) {
-            hideChips()
-        } else {
-            showChips()
-        }
+        setChipsShown(element.isChipsShown)
         headerWidget.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
         headerWidget.arrow.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
+        initAdapter(element)
+        seeAllWidget.setOnClickListener {
+            seeAllListener.onSeeAll(element)
+        }
+    }
+
+    private fun setChipsShown(isChipsShown: Boolean) {
+        if(isChipsShown) {
+            showChips()
+        } else {
+            hideChips()
+        }
+    }
+
+    private fun initAdapter(element: FilterUiModel) {
         adapter = when(element.title) {
             ProductManageFilterMapper.SORT_HEADER -> {
                 ChipsAdapter(chipClickListener, false, element.title)
@@ -67,9 +78,6 @@ class FilterViewHolder(view: View,
         }
         recyclerView.adapter = adapter
         adapter?.setData(element)
-        seeAllWidget.setOnClickListener {
-            seeAllListener.onSeeAll(element)
-        }
     }
 
     private fun hideChips() {

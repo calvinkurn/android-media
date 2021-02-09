@@ -170,7 +170,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
-                initSomListLoadTimeMonitoring()
+                if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
+                    initSomListLoadTimeMonitoring()
+                }
                 UpdateShopActiveService.startService(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
@@ -249,7 +251,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             val pageType = page.type
 
             when (pageType) {
-                FragmentType.ORDER -> lastSomTab = page
+                FragmentType.ORDER -> {
+                    initSomListLoadTimeMonitoring()
+                    lastSomTab = page
+                }
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 
@@ -420,6 +425,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             DeepLinkHandler.handleAppLink(intent) {
                 if (it.type == FragmentType.HOME) {
                     initPerformanceMonitoringSellerHome()
+                } else if (it.type == FragmentType.ORDER) {
+                    initSomListLoadTimeMonitoring()
                 }
             }
         }
