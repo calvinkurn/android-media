@@ -1052,8 +1052,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 isEnabled = true
                 isRefreshing = true
             }
-            viewModel.refreshSelectedOrder(selectedOrder.orderResi)
             loadFilters(showShimmer = false, loadOrders = false)
+            viewModel.refreshSelectedOrder(selectedOrder.orderResi)
         }
     }
 

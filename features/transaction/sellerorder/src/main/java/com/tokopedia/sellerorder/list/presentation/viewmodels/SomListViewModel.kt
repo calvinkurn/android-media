@@ -51,6 +51,7 @@ class SomListViewModel @Inject constructor(
     private var retryCount = 0
 
     private var getOrderListJob: Job? = null
+    private var getFiltersJob: Job? = null
 
     private val _tickerResult = MutableLiveData<Result<List<TickerData>>>()
     val tickerResult: LiveData<Result<List<TickerData>>>
@@ -171,7 +172,7 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        launchCatchError(block = {
+        getFiltersJob = launchCatchError(block = {
             _filterResult.postValue(somListGetFilterListUseCase.execute().apply { data.refreshOrder = refreshOrders })
         }, onError = {
             _filterResult.postValue(Fail(it))
@@ -208,6 +209,7 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()
+            getFiltersJob?.join()
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
