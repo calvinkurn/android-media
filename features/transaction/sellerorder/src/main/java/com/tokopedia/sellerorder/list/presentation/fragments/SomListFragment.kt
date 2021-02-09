@@ -841,7 +841,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     val rejectOrderResponse = it.data.rejectOrder
                     if (rejectOrderResponse.success == 1) {
                         handleRejectOrderResult(rejectOrderResponse)
-                        onActionCompleted()
                     } else {
                         showToasterError(view, rejectOrderResponse.message.first(), canRetry = false)
                     }
