@@ -63,7 +63,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
                          private val bannerComponentListener: BannerComponentListener,
-                         private val dynamicIconComponentListener: DynamicIconComponentListener
+                         private val dynamicIconComponentListener: DynamicIconComponentListener,
+                         private val legoSixAutoListener: Lego6AutoBannerListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -422,7 +423,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerSixAutoViewHolder(
                             view,
-                            legoListener,
+                            legoSixAutoListener,
                             homeComponentListener,
                             parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
