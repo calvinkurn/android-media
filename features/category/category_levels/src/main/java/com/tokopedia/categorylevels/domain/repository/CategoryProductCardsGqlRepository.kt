@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import java.util.HashMap
 import javax.inject.Inject
 
 class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -27,15 +26,17 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        val filters = getComponent(componentId, pageEndPoint)?.selectedFilters
         val recommendationData =
-                recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), filters))
+                recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
         return mapRecommendationToDiscoveryResponse(componentId, recommendationData)
     }
 
-    private fun createRequestParams(page: String, componentId: String, filters: HashMap<String, String>?): GetRecommendationRequestParam {
+    private fun createRequestParams(page: String, componentId: String, component: ComponentsItem?): GetRecommendationRequestParam {
         var queryParam =""
-        filters?.forEach {
+        component?.selectedFilters?.forEach {
+            queryParam = queryParam.plus("&${it.key}=${it.value}")
+        }
+        component?.selectedSort?.forEach {
             queryParam = queryParam.plus("&${it.key}=${it.value}")
         }
         return GetRecommendationRequestParam(

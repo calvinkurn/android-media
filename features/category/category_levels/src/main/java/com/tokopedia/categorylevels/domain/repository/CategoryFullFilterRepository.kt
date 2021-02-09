@@ -14,32 +14,34 @@ class CategoryFullFilterRepository @Inject constructor() : BaseRepository(), Fil
 
     override suspend fun getFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): DynamicFilterModel? {
         getRecommendationFilterChips.setParams(pageName = "clp_full_filter", xSource = "category")
-        return mapFilters(getRecommendationFilterChips.executeOnBackground().filterChip)
+        return mapFilters(getRecommendationFilterChips.executeOnBackground())
     }
 
-    private fun mapFilters(recommendationFilters: List<RecommendationFilterChipsEntity.RecommendationFilterChip>): DynamicFilterModel {
+    private fun mapFilters(recommendationChips: RecommendationFilterChipsEntity.FilterAndSort): DynamicFilterModel {
         val filters = arrayListOf<Filter>()
-        recommendationFilters.forEach { filter ->
-            val options = arrayListOf<Option>()
-            filter.options.forEach { option ->
-                options.add(Option(
-                        name = option.name,
-                        iconUrl = option.icon,
-                        key = option.key,
-                        value = option.value,
-                        isPopular = option.isPopular,
-                        inputType = option.inputType))
+        val sort = arrayListOf<Sort>()
+        recommendationChips.filterChip.forEach { filter ->
+            if (!filter.options.isNullOrEmpty()) {
+                val options = arrayListOf<Option>()
+                filter.options.forEach { option ->
+                    options.add(Option(
+                            name = option.name,
+                            iconUrl = option.icon,
+                            key = option.key,
+                            value = option.value,
+                            isPopular = option.isPopular,
+                            inputType = option.inputType))
+                }
+                filters.add(Filter(
+                        title = filter.title,
+                        options = options,
+                        templateName = filter.templateName
+                ))
             }
-            filters.add(Filter(
-                    title = filter.title,
-                    options = options,
-                    templateName = filter.templateName
-            ))
         }
-        filters.forEach {
-            if (it.options.isNullOrEmpty())
-                filters.remove(it)
+        recommendationChips.sortChip.forEach {
+            sort.add(Sort(it.name,it.key,it.value, it.inputType))
         }
-        return DynamicFilterModel(data = DataValue(filter = filters as List<Filter>, sort = arrayListOf()))
+        return DynamicFilterModel(data = DataValue(filter = filters as List<Filter>, sort = sort))
     }
 }
