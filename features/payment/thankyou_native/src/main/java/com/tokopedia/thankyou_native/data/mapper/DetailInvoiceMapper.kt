@@ -44,7 +44,6 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr, true))
         }
         val totalPriceStr = CurrencyFormatHelper.convertToRupiah(totalPrice.toString())
-        //CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false)
         visitableList.add(InvoiceSummery(totalPriceStr, totalItemCount, invoiceSummaryMapList))
     }
 
@@ -129,7 +128,6 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     discountFromMerchant,
                     if (totalProductProtectionForShop > 0.0)
                         CurrencyFormatHelper.convertToRupiah(totalProductProtectionForShop.toString())
-                        ///CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,false)
                     else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
                     shippingInfo,
