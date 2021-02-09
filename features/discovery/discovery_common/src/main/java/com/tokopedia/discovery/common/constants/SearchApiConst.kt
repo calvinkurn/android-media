@@ -48,7 +48,6 @@ class SearchApiConst {
         const val PAGE_SIZE = "page_size"
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
-        const val KEYWORDS = "keywords"
         const val HINT = "hint"
         const val ACTIVE_TAB = "st"
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from

@@ -1038,26 +1038,6 @@ public class TopAdsGtmTracker {
         }
     }
 
-//    public static void eventTopAdsHeadlineProductView(String prouctId, String shopID, String keyword, int index, String userId) {
-//        Analytics tracker = getTracker();
-//        Map<String, Object> map = DataLayer.mapOf(
-//                "event", "promoView",
-//                "eventCategory", "topads headline",
-//                "eventAction", "impression - topads headline banner",
-//                "eventLabel", shopID+", "+ prouctId+ ", " + keyword,
-//                "ecommerce", DataLayer.mapOf(
-//                        "promoView", DataLayer.mapOf(
-//                                "promotions", DataLayer.listOf(
-//                                        DataLayer.mapOf(
-//                                                "id", prouctId,
-//                                                "name", "/search - headline",
-//                                                "creative", keyword,
-//                                                "position", index + 1))
-//                        )),
-//                "userId",userId
-//        );
-//        tracker.sendEnhanceEcommerceEvent(map);
-//    }
 
     public static void eventTopAdsHeadlineShopView(int index, CpmData cpm, String keyword, String userId) {
         Analytics tracker = getTracker();
