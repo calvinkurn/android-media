@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class DynamicIconComponentDataModel(
         val id: String,
         val isCache: Boolean,
+        val type: Int,
         val dynamicIconComponent: DynamicIconComponent
 ) : HomeComponentVisitable, ImpressHolder(){
     override fun visitableId(): String {

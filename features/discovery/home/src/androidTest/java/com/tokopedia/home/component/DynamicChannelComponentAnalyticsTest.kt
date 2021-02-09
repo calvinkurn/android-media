@@ -3,6 +3,7 @@ package com.tokopedia.home.component
 import android.content.Context
 import android.util.Log
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -36,7 +37,9 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginToAnUser
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifycomponents.ImageUnify
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -132,11 +135,17 @@ class DynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
-
+    private fun hideStickyLogin() {
+        val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+        if (layout.visibility == View.VISIBLE) {
+            layout.visibility = View.GONE
+        }
+    }
 
     private fun initTest() {
         clearUserSession()
         waitForData()
+        hideStickyLogin()
     }
 
     private fun disableCoachMark(){
@@ -148,6 +157,7 @@ class DynamicChannelComponentAnalyticsTest {
     private fun initTestWithLogin() {
         initTest()
         loginInstrumentationTestUser1()
+        loginToAnUser(activityRule.activity.application)
     }
 
     private fun waitForData() {

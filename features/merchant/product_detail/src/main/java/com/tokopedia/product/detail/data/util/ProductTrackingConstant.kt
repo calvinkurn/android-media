@@ -185,12 +185,14 @@ object ProductTrackingConstant {
         const val CLICK_FULLSCREEN_VIDEO = "click - fullscreen on video"
         const val CLICK_INTERACTION_VIDEO = "click - video on product image"
         const val CLICK_MUTE_VIDEO = "click - mute on video"
+
+        const val CLICK_CHECK_CART = "click - cek keranjang"
     }
 
 
     object Label {
         const val EMPTY_LABEL = ""
-        const val PDP = "pdp"
+        const val PDP = "PDP"
         const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"

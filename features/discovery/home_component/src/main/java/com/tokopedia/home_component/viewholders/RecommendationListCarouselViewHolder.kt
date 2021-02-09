@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -142,14 +141,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
-                launch {
-                    try {
-                        setHeightBasedOnProductCardMaxHeight(tempDataList)
-                    }
-                    catch (throwable: Throwable) {
-                        throwable.printStackTrace()
-                    }
-                }
                 adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
@@ -158,15 +149,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             }
         }
-    }
-
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
     }
 
     suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
@@ -213,7 +195,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationListViewHolder(
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
-            val isCacheData: Boolean
+            val isCacheData: Boolean,
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -256,17 +238,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
-                            recommendation.recommendationApplink
-                    )
-                }
-            } else if(recommendation is HomeRecommendationListSeeMoreData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener?.onRecommendationCarouselGridImpression(
-                            recommendation.channel,
-                            null,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            true
+                            recommendation.recommendationApplink,
+                            recommendation.parentPosition
                     )
                 }
             }

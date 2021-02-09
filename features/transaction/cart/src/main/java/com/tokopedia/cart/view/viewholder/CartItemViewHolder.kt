@@ -44,12 +44,14 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
+@SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(itemView: View,
                                      private val compositeSubscription: CompositeSubscription,
                                      private var actionListener: CartItemAdapter.ActionListener?) : RecyclerView.ViewHolder(itemView) {
@@ -124,6 +126,13 @@ class CartItemViewHolder constructor(itemView: View,
         llShopNoteSection = itemView.findViewById(R.id.ll_shop_note_section)
         layoutProductInfo = itemView.findViewById(R.id.layout_product_info)
 
+        setNoteTouchListener()
+
+        initTextWatcherDebouncer(compositeSubscription)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setNoteTouchListener() {
         etRemark.setOnTouchListener { view, event ->
             if (view.id == R.id.et_remark) {
                 view.parent.requestDisallowInterceptTouchEvent(true)
@@ -133,8 +142,6 @@ class CartItemViewHolder constructor(itemView: View,
             }
             false
         }
-
-        initTextWatcherDebouncer(compositeSubscription)
     }
 
     fun clear() {
@@ -158,7 +165,7 @@ class CartItemViewHolder constructor(itemView: View,
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        Timber.d(e)
                     }
 
                     override fun onNext(quantity: QuantityWrapper) {
@@ -264,7 +271,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderImage(data: CartItemHolderData) {
         data.cartItemData?.originData?.productImage?.let {
-            ivProductImage.setImageUrl(it)
+            ivProductImage.loadImage(it)
         }
         ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
