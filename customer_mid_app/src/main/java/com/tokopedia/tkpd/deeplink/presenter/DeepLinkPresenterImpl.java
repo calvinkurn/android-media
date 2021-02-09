@@ -277,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openTravelHomepage(linkSegment, uriData, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.NATIVE_THANK_YOU:
+                    openNativeThankYouPage(linkSegment, defaultBundle);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -286,6 +290,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             if (!keepActivityOn && context != null) {
                 context.finish();
             }
+        }
+    }
+
+    private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {
+        if (linkSegment.size() == 4) {
+            String merchantCode = linkSegment.get(2);
+            String paymentID = linkSegment.get(3);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.THANKYOU_PAGE_NATIVE,
+                    paymentID, merchantCode);
+            intent.putExtras(defaultBundle);
+            viewListener.goToPage(intent);
         }
     }
 

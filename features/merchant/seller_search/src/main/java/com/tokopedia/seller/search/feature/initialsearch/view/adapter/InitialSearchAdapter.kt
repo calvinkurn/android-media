@@ -1,16 +1,19 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.adapter
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 
 class InitialSearchAdapter(initialSearchAdapterTypeFactory: InitialSearchAdapterTypeFactory):
         BaseAdapter<InitialSearchAdapterTypeFactory>(initialSearchAdapterTypeFactory) {
 
-    fun addAll(list: List<ItemInitialSearchUiModel>) {
+    fun addAll(list: List<BaseInitialSearchSeller>) {
+        val callBack = InitialSearchDiffUtil(visitables, list)
+        val diffResult = DiffUtil.calculateDiff(callBack)
         visitables.addAll(list)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun removeHistory(position: Int) {

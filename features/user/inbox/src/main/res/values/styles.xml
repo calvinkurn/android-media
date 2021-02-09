@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BadgeCounter">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/layout_lvl2</item>
+        <item name="android:minWidth">@dimen/layout_lvl2</item>
+        <item name="android:paddingStart">@dimen/spacing_lvl1</item>
+        <item name="android:paddingEnd">@dimen/spacing_lvl1</item>
+        <item name="android:background">@drawable/bg_inbox_red_dot</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textColor">@color/Neutral_N0</item>
+        <item name="android:visibility">gone</item>
+        <item name="typographyType">small</item>
+        <item name="typographyWeight">bold</item>
+    </style>
+</resources>
