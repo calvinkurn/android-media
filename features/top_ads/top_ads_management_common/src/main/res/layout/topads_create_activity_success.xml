@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_ilustration"
         android:layout_width="0dp"
@@ -33,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_ilustration"
-        app:typographyType="heading_2" />
+        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
@@ -44,25 +43,23 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:gravity="center"
         android:text="@string/pantau_terus_performa_iklan_produkmu_di_dashboard_topads"
-        app:layout_constraintBottom_toTopOf="@+id/btn_go_to_dashboard"
+        app:layout_constraintBottom_toTopOf="@+id/goToDashboard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_go_to_dashboard"
-        android:layout_width="0dp"
+        android:id="@+id/goToDashboard"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/lihat_performa_iklan"
-        app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
-
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        app:unifyButtonType="main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
