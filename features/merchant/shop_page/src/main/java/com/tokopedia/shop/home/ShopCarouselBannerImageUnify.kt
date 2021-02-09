@@ -258,6 +258,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     }
 
     fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false) {
+        if(!context.isValidGlideContext()) return
         this.post {
             heightRatio?.let {
                 configHeightRatio(it)
