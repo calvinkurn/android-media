@@ -1,5 +1,7 @@
 package com.tokopedia.chat_common.data
 
+import java.io.Serializable
+
 /**
  * @author by yfsx on 08/05/18.
  */
@@ -31,7 +33,7 @@ constructor(
         var message: String,
         var source: String,
         val replyId: String = ""
-) {
+): Serializable {
 
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
