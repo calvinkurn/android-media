@@ -95,7 +95,7 @@ class PlayActivity : BaseActivity(),
         get() = intent?.data?.lastPathSegment.orEmpty()
 
     private val activeFragment: PlayFragment?
-        get() = try { supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()] } catch (e: Throwable) { null }
+        get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()

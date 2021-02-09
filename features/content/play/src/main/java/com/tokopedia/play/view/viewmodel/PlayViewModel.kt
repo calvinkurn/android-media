@@ -235,10 +235,18 @@ class PlayViewModel @Inject constructor(
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
-            _observablePinned.value = getPinnedModel(
-                    pinnedMessage = _observablePinnedMessage.value,
-                    pinnedProduct = _observablePinnedProduct.value,
-            )
+            if (it is PlayResult.Success) {
+                val pinnedProduct = _observablePinnedProduct.value
+                if (pinnedProduct != null) {
+                    val newPinnedProduct = pinnedProduct.copy(
+                            productTags = pinnedProduct.productTags.setContent(
+                                    productList = it.data.productList,
+                                    voucherList = it.data.voucherList
+                            )
+                    )
+                    _observablePinnedProduct.value = newPinnedProduct
+                }
+            }
         }
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
