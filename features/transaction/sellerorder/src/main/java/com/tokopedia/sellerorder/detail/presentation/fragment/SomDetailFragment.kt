@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
@@ -1391,12 +1392,11 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProduct(orderDetailId: Int) {
-//        startActivity(RouteManager.getIntent(
-//                activity,
-//                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-//                productId.toString()))
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
-        startActivity(RouteManager.getIntent(activity, appLinkSnapShot))
+        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
+        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
+        startActivity(intent)
+        SomAnalytics.clickProductNameToSnapshot(detailResponse?.statusText.orEmpty(), userSession.userId.orEmpty())
     }
 
     override fun onRefresh(view: View?) {
