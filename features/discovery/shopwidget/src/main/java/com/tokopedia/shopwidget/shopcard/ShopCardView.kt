@@ -4,7 +4,9 @@ import android.content.Context
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -85,14 +87,14 @@ class ShopCardView: BaseCustomView {
 
     private fun initShopName(shopCardModel: ShopCardModel) {
         shopWidgetTextViewShopName?.text = MethodChecker.fromHtml(shopCardModel.name)
-        shopWidgetTextViewShopName?.setShopNameTopMargin(shopCardModel)
+
+        setShopNameTopMargin(shopCardModel)
     }
 
-    private fun View.setShopNameTopMargin(shopCardModel: ShopCardModel) {
+    private fun setShopNameTopMargin(shopCardModel: ShopCardModel) {
         val isShopReputationVisible = shopCardModel.reputationImageUri.isNotEmpty()
-        val topMargin = if (isShopReputationVisible) 0 else 5.toPx()
-        val layoutParams = this.layoutParams as? MarginLayoutParams
-        layoutParams?.setMargins(layoutParams.leftMargin, topMargin, layoutParams.rightMargin, layoutParams.bottomMargin)
+        val topMarginDp = if (isShopReputationVisible) 0 else 5
+        setViewMargins(R.id.shopWidgetTextViewShopName, ConstraintSet.TOP, topMarginDp)
     }
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
@@ -277,6 +279,25 @@ class ShopCardView: BaseCustomView {
 
     private fun hideShopStatus() {
         shopWidgetConstraintLayoutShopStatus?.gone()
+    }
+
+    private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
+        applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
+            val marginPixel = marginDp.toPx()
+            constraintSet.setMargin(viewId, anchor, marginPixel)
+        }
+    }
+
+    private fun applyConstraintSetToConstraintLayoutShopCard(
+            configureConstraintSet: (constraintSet: ConstraintSet) -> Unit
+    ) {
+        shopWidgetConstraintLayoutShopCard?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
+        }
     }
 
     fun getMaxCardElevation() = shopWidgetCardViewShopCard?.maxCardElevation ?: 0f
