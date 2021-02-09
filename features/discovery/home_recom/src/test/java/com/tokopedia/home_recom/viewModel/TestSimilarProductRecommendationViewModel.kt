@@ -59,6 +59,18 @@ class TestSimilarProductRecommendationViewModel {
     }
 
     @Test
+    fun `get success data from network with default page`(){
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(
+                queryParam = "", productId =  "", pageName = "")
+        Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isSuccess())
+    }
+
+    @Test
     fun `get error timeout data from network`(){
         val slot = slot<Subscriber<SingleProductRecommendationEntity.RecommendationData>>()
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
@@ -160,7 +172,7 @@ class TestSimilarProductRecommendationViewModel {
 
     @Test
     fun `get success quick filter click`(){
-        coEvery { getRecommendationFilterChips.executeOnBackground(any()) } returns RecommendationFilterChipsEntity.FilterAndSort()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() }  returns SingleProductRecommendationEntity.RecommendationData(
                 recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
@@ -232,7 +244,9 @@ class TestSimilarProductRecommendationViewModel {
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation(
+
+                ))
         ) andThen SingleProductRecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "", "")
@@ -299,6 +313,71 @@ class TestSimilarProductRecommendationViewModel {
         )
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
+    }
+
+    @Test
+    fun `get selected sort null`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = true)))),
+                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = false))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(1, "" , "", "")
+        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+    }
+
+    @Test
+    fun `get selected filter null`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Penawaran", options = listOf(RecommendationFilterChipsEntity.Option(name = "Official Store", key = "os", value = "true", isActivated = false)))),
+                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(1, "" , "", "")
+        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+    }
+
+    @Test
+    fun `get selected filter key duplicate`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Lokasi", options = listOf(RecommendationFilterChipsEntity.Option(name = "Jabodetabek", key = "city_ids", value = "123", isActivated = true), RecommendationFilterChipsEntity.Option(name = "Surabaya", key = "city_ids", value = "1233", isActivated = true)))),
+                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(1, "" , "", "")
+        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+    }
+
+    @Test
+    fun `get selected filter error`(){
+        val filterChip = RecommendationFilterChipsEntity.FilterAndSort(
+                filterChip = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Lokasi", options = listOf(RecommendationFilterChipsEntity.Option(name = "Jabodetabek", key = "city_ids", value = "123", isActivated = true), RecommendationFilterChipsEntity.Option(name = "Surabaya", key = "city_ids", value = "1233", isActivated = true)))),
+                sortChip = listOf(RecommendationFilterChipsEntity.RecommendationSortChip(name = "Terlaris", key = "terlaris", value = "true", isSelected = true))
+        )
+        coEvery { getRecommendationFilterChips.executeOnBackground() } throws Exception()
+        every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
+                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
+        )
+        viewModel.getSimilarProductRecommendation(1, "" , "", "")
+        assert(viewModel.getSelectedSortFilter().isNotEmpty())
+    }
+
+    @Test
+    fun `get selected filter empty`(){
+        assert(viewModel.getSelectedSortFilter().size == 1)
     }
 
     @Test

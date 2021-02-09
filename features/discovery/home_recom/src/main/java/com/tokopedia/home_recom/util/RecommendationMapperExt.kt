@@ -141,21 +141,25 @@ fun List<RecommendationFilterChipsEntity.RecommendationSortChip>.toSort(): List<
     }
 }
 
-fun List<Filter>.getCountSelected(): Int{
+fun List<Option>.getCountSelected(): Int{
     var selectedCount = 0
-    forEach {
-        it.options.forEach { opt ->
-            selectedCount += if(opt.inputState == "true") 1 else 0
-        }
+    forEach { opt ->
+        selectedCount += if(opt.inputState == "true") 1 else 0
     }
     return selectedCount
+}
+
+fun List<Filter>.getOptions(): List<Option>{
+    val list = mutableListOf<Option>()
+    forEach { list.addAll(it.options) }
+    return list
 }
 
 fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getSelectedOption(): List<RecommendationFilterChipsEntity.Option>{
     val listOption = mutableListOf<RecommendationFilterChipsEntity.Option>()
     forEach {
         it.options.forEach { opt ->
-            if(opt.isActivated) listOption.add(opt)
+            if(opt.isActivated || opt.inputType == "true") listOption.add(opt)
         }
     }
     return listOption
@@ -169,4 +173,20 @@ fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getOption(): 
         }
     }
     return listOption
+}
+
+fun Map<String, String>.isActivated(key: String, value: String): Boolean{
+    return if(key in this.keys){
+        // check if separator #
+        val separator = if(this[key]?.contains("#") == true){
+            "#"
+        } else {
+            null
+        }
+
+        val values = separator?.let { this[key]?.split(it) } ?: listOf(this[key])
+        values.indexOf(value) != -1
+    } else {
+        false
+    }
 }
