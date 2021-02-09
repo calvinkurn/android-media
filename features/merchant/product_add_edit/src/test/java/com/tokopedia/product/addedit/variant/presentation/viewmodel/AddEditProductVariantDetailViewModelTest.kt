@@ -4,12 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Test
@@ -336,5 +338,54 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(validateVariantPriceInputResult.headerPosition == 0)
         assert(validateProductVariantStockInputResult.headerPosition == 0)
         assert(generateVariantDetailInputModelResult.headerPosition == 0)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, min stock limit will be 0 if all conditions met`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns true
+        viewModel.productInputModel.value = ProductInputModel(productId = 1)
+
+        viewModel.setupMultiLocationValue()
+
+        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
+        assert(actualProductStockLimit == 0)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, non multi location shop stock limit will be default`() {
+        every { userSession.isMultiLocationShop } returns false
+        every { userSession.isShopAdmin } returns true
+        viewModel.productInputModel.value = ProductInputModel(productId = 1)
+
+        viewModel.setupMultiLocationValue()
+
+        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
+        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, multiloc shop, non shop admin or shop owner stock limit will be default`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopAdmin } returns false
+        viewModel.productInputModel.value = ProductInputModel(productId = 1)
+
+        viewModel.setupMultiLocationValue()
+
+        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
+        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, not editing mode stock limit will be default`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns true
+        viewModel.productInputModel.value = ProductInputModel(productId = 0)
+
+        viewModel.setupMultiLocationValue()
+
+        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
+        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
     }
 }

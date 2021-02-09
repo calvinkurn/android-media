@@ -1125,6 +1125,7 @@ class AddEditProductDetailViewModelTest {
         val addMessage = "add"
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
         every { provider.getAddProductMultiLocationMessage() } returns addMessage
 
         viewModel.isEditing = false
@@ -1139,8 +1140,6 @@ class AddEditProductDetailViewModelTest {
     fun `when either is shop admin or shop owner and not has multi location shop, stock message should be empty`() {
         every { userSession.isShopAdmin } returns true
         every { userSession.isShopOwner } returns false
-
-        viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage.isEmpty())
     }
