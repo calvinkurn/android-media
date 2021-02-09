@@ -123,7 +123,7 @@ class DigitalCartActivityTest {
         onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 10.000"))).check(matches(isDisplayed()))
 
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Pembayaran")))
+        onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
 

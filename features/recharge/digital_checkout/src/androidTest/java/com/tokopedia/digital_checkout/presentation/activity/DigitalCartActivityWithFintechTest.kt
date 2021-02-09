@@ -202,12 +202,12 @@ class DigitalCartActivityWithFintechTest {
         Thread.sleep(1000)
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(AllOf.allOf(withId(R.id.relativeLayoutUsePromoGlobal))).perform(click())
+        onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
     }
 
     private fun validatePaymentPrice() {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Pembayaran")))
+        onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
     }

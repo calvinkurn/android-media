@@ -162,21 +162,7 @@ class DigitalCartViewModel @Inject constructor(
         val responseCartData: ResponseCartData = lala.data as ResponseCartData
         val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
 
-        analytics.eventAddToCart(mappedCartData, source)
-        analytics.eventCheckout(mappedCartData)
-
-        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
-
-        if (mappedCartData.isNeedOtp) {
-            _isNeedOtp.postValue(userSession.phoneNumber)
-        } else {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
-            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
-            _cartDigitalInfoData.postValue(mappedCartData)
-            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
-        }
+        mapDataSuccessCart(source, mappedCartData)
     }
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
@@ -213,20 +199,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(false)
 
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            analytics.eventAddToCart(mappedCartData, source)
-            analytics.eventCheckout(mappedCartData)
-
-            requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
-
-            if (mappedCartData.isNeedOtp) {
-                _isNeedOtp.postValue(userSession.phoneNumber)
-            } else {
-                _showContentCheckout.postValue(true)
-                _showLoading.postValue(false)
-                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
-                _cartDigitalInfoData.postValue(mappedCartData)
-                _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-            }
+            mapDataSuccessCart(source, mappedCartData)
         }
     }
 
@@ -238,6 +211,23 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
+    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
+        analytics.eventAddToCart(mappedCartData, source)
+        analytics.eventCheckout(mappedCartData)
+
+        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
+
+        if (mappedCartData.isNeedOtp) {
+            _isNeedOtp.postValue(userSession.phoneNumber)
+        } else {
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
+            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
+            _cartDigitalInfoData.postValue(mappedCartData)
+            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
+        }
+    }
 
     private fun getSubscriberOtp(digitalCheckoutPassData: DigitalCheckoutPassData,
                                  errorNotLoginMessage: String = ""): Subscriber<Map<Type, RestResponse>> {
