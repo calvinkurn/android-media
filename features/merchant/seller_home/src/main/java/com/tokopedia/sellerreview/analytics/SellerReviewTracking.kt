@@ -1,11 +1,7 @@
 package com.tokopedia.sellerreview.analytics
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -15,12 +11,7 @@ import javax.inject.Inject
 
 //data layer : https://mynakama.tokopedia.com/datatracker/requestdetail/350
 
-@SellerHomeScope
-class SellerReviewTracking @Inject constructor(@ApplicationContext context: Context) {
-
-    private val userSession: UserSessionInterface by lazy {
-        UserSession(context)
-    }
+class SellerReviewTracking @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun sendClickDismissBottomSheetEvent(pageName: String) {
         val map = createMap(TrackingConstant.Event.CLICK_SELLER_REVIEW, TrackingConstant.Action.CLICK_CLOSE_POP_UP, pageName)
