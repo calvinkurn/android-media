@@ -85,6 +85,14 @@ class ShopCardView: BaseCustomView {
 
     private fun initShopName(shopCardModel: ShopCardModel) {
         shopWidgetTextViewShopName?.text = MethodChecker.fromHtml(shopCardModel.name)
+        shopWidgetTextViewShopName?.setShopNameTopMargin(shopCardModel)
+    }
+
+    private fun View.setShopNameTopMargin(shopCardModel: ShopCardModel) {
+        val isShopReputationVisible = shopCardModel.reputationImageUri.isNotEmpty()
+        val topMargin = if (isShopReputationVisible) 0 else 5.toPx()
+        val layoutParams = this.layoutParams as? MarginLayoutParams
+        layoutParams?.setMargins(layoutParams.leftMargin, topMargin, layoutParams.rightMargin, layoutParams.bottomMargin)
     }
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
