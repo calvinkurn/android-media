@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,6 +123,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.discovery.common.constants.SearchApiConst.KEYWORDS;
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
@@ -699,11 +699,6 @@ public class ProductListFragment
     public void onProductImpressed(ProductItemViewModel item) {
         if (presenter == null) return;
 
-        Uri uri = Uri.parse(item.getTopadsClickUrl());
-        String keyword = uri.getQueryParameter("keywords");
-
-        TopAdsGtmTracker.eventTopAdsHeadlineProductView(item.getProductID(), item.getShopID(), keyword, item.getPosition(), getUserId());
-        Log.d("Naveen", "Keyword is" +keyword);
         presenter.onProductImpressed(item);
     }
 
@@ -1345,7 +1340,7 @@ public class ProductListFragment
 
     private void trackBannerAdsClicked(int position, String applink, CpmData data) {
         Uri uri = Uri.parse(data.getAdClickUrl());
-        String keyword = uri.getQueryParameter("keywords");
+        String keyword = uri.getQueryParameter(KEYWORDS);
         String shopId = data.getApplinks().substring(applink.lastIndexOf("/") + 1);
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(shopId, position, keyword, data, getUserId());
@@ -1362,7 +1357,6 @@ public class ProductListFragment
         String keyword = uri.getQueryParameter("keywords");
 
         String shopId = data.getApplinks().substring(data.getApplinks().lastIndexOf("/") + 1);
-        Log.d("Naveen", "Keyword is" +keyword);
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(shopId, position, data, keyword, getUserId());
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
