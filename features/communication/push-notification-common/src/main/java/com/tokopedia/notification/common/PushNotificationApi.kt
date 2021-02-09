@@ -10,8 +10,9 @@ open class PushNotificationApi(
         onAidlError: () -> Unit
 ) : AidlApi(onAidlReceive, onAidlError) {
 
+    private val notificationService = "com.tokopedia.notification.common.service.PushNotificationService"
+
     fun bindService(context: Context) {
-        val notificationService = "com.tokopedia.notification.common.service.PushNotificationService"
         bindService(
                 context = context,
                 serviceName = PushNotificationService::class.java.canonicalName?: notificationService
@@ -27,7 +28,10 @@ open class PushNotificationApi(
                 onAidlReceive: (tag: String, bundle: Bundle?) -> Unit = { _, _ -> },
                 onAidlError: () -> Unit = {}
         ) {
-            notificationApi = PushNotificationApi(onAidlReceive, onAidlError)
+            if (notificationApi == null) {
+                notificationApi = PushNotificationApi(onAidlReceive, onAidlError)
+            }
+
             notificationApi?.bindService(context)
         }
     }

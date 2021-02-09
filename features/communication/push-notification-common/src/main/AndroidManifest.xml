@@ -5,7 +5,8 @@
 
     <application>
         <service
-            android:name="com.tokopedia.notification.common.service.PushNotificationService" />
+            android:name="com.tokopedia.notification.common.service.PushNotificationService"
+            android:exported="true" />
     </application>
 
 </manifest>
