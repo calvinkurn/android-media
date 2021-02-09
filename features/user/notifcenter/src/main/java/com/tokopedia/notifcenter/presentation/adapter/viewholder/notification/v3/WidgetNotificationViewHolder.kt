@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,7 +39,9 @@ class WidgetNotificationViewHolder constructor(
     private val widgetDescSingle: Typography? = itemView?.findViewById(R.id.tp_widget_desc_single)
     private val widgetCta: Typography? = itemView?.findViewById(R.id.tp_cta)
     private val message: Typography? = itemView?.findViewById(R.id.tp_message)
-    private val progressIndicator: Group? = itemView?.findViewById(
+    private val parentIndicatorMark: ImageView? = itemView?.findViewById(R.id.iv_mark_seen)
+    private val parentIndicatorLine: View? = itemView?.findViewById(R.id.view_bottom_line)
+    private val parentProgressIndicator: Group? = itemView?.findViewById(
             R.id.group_progress_indicator
     )
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
@@ -96,7 +100,8 @@ class WidgetNotificationViewHolder constructor(
     private fun bindHistoryBox(element: NotificationUiModel) {
         bindTrackHistory(element)
         bindTimeLineVisibility(element)
-        bindProgressIndicator(element)
+        bindProgressIndicatorVisibility(element)
+        bindProgressIndicatorColor(element)
         bindHistoryBtn(element)
     }
 
@@ -132,7 +137,7 @@ class WidgetNotificationViewHolder constructor(
         toggleHistoryBtn?.setOnClickListener {
             element.toggleHistoryVisibility()
             bindTimeLineVisibility(element)
-            bindProgressIndicator(element)
+            bindProgressIndicatorVisibility(element)
             bindHistoryViewTextState(element)
             bindHistoryViewIconState(element)
         }
@@ -146,12 +151,26 @@ class WidgetNotificationViewHolder constructor(
         }
     }
 
-    private fun bindProgressIndicator(element: NotificationUiModel) {
+    private fun bindProgressIndicatorVisibility(element: NotificationUiModel) {
         if (element.isHistoryVisible) {
-            progressIndicator?.show()
+            parentProgressIndicator?.show()
         } else {
-            progressIndicator?.hide()
+            parentProgressIndicator?.hide()
         }
+    }
+
+    private fun bindProgressIndicatorColor(element: NotificationUiModel) {
+        @DrawableRes val icon: Int
+        @ColorRes val lineColor: Int
+        if (element.isLastJourney) {
+            icon = R.drawable.ic_notifcenter_success_mark
+            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_G400
+        } else {
+            icon = R.drawable.ic_notifcenter_on_progress_mark
+            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_N100
+        }
+        parentIndicatorMark?.setImageResource(icon)
+        parentIndicatorLine?.setBackgroundResource(lineColor)
     }
 
     private fun bindThumbnailHeight(element: NotificationUiModel) {
@@ -249,6 +268,7 @@ class WidgetNotificationViewHolder constructor(
 class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>() {
 
     private var histories: List<TrackHistory> = emptyList()
+    private var isLastJourney = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeLineViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(
@@ -264,11 +284,12 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>() {
     override fun onBindViewHolder(holder: TimeLineViewHolder, position: Int) {
         val isLastItem = isLastItem(position)
         val isFirstItem = isFirstItem(position)
-        holder.bind(histories[position], isFirstItem, isLastItem)
+        holder.bind(histories[position], isFirstItem, isLastItem, isLastJourney)
     }
 
     fun updateHistories(element: NotificationUiModel) {
         histories = element.trackHistory
+        isLastJourney = element.isLastJourney
         notifyDataSetChanged()
     }
 
@@ -293,10 +314,15 @@ class TimeLineViewHolder constructor(
     private val bottomLine: View? = itemView.findViewById(R.id.view_bottom_line)
     private val topLine: View? = itemView.findViewById(R.id.view_top_line)
 
-    fun bind(trackHistory: TrackHistory, isFirstItem: Boolean, isLastItem: Boolean) {
+    fun bind(
+            trackHistory: TrackHistory,
+            isFirstItem: Boolean,
+            isLastItem: Boolean,
+            isLastJourney: Boolean
+    ) {
         bindTitle(trackHistory)
         bindDesc(trackHistory)
-        bindTopLine(isFirstItem)
+        bindTopLine(isFirstItem, isLastJourney)
         bindBottomLine(isLastItem)
     }
 
@@ -308,8 +334,8 @@ class TimeLineViewHolder constructor(
         desc?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
     }
 
-    private fun bindTopLine(isFirstItem: Boolean) {
-        if (isFirstItem) {
+    private fun bindTopLine(isFirstItem: Boolean, lastJourney: Boolean) {
+        if (isFirstItem && !lastJourney) {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_N100)
         } else {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_G400)
