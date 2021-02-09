@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.fragment
+package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.R
 
 import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
+import com.tokopedia.analyticsdebugger.debugger.ui.fragment.BaseAnalyticsDebuggerFragment
 import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
 
 class AnalyticsDebuggerFragment : BaseAnalyticsDebuggerFragment(), AnalyticsDebugger.View {

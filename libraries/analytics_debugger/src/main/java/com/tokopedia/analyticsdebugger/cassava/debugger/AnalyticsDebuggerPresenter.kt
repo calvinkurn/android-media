@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.presenter
+package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
@@ -9,9 +9,6 @@ import com.tokopedia.usecase.RequestParams
 
 import rx.Subscriber
 
-/**
- * @author okasurya on 5/16/18.
- */
 class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
                                  private val deleteGtmLogUseCase: DeleteGtmLogUseCase) : AnalyticsDebugger.Presenter {
     private var view: AnalyticsDebugger.View? = null

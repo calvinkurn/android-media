@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.fragment
+package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -21,9 +21,6 @@ import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewMo
 
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.DATA_DETAIL
 
-/**
- * @author okasurya on 5/17/18.
- */
 class AnalyticsDebuggerDetailFragment : TkpdBaseV4Fragment() {
     private var textName: TextView? = null
     private var textTimestamp: TextView? = null

@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.ui.fragment.AnalyticsDebuggerFragment
+import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerFragment
 
 class AnalyticsDebuggerActivity : AppCompatActivity() {
 
