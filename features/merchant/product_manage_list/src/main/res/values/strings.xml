@@ -295,6 +295,7 @@
     <string name="content_desc_checkBoxSelect">checkbox produk</string>
     <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
     <string name="message_loading_progress_dialog">Loading</string>
+    <string name="checklist_filter_see_all_product_manage">Checklist Filter</string>
     <string name="bottom_sheet_stock_location_title">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
     <string name="bottom_sheet_stock_location_description">Halaman ini menampilkan stok di lokasi utama saja</string>
     <string name="bottom_sheet_stock_location_primary_cta">Saya Mengerti</string>

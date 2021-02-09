@@ -115,7 +115,7 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/topads_arrow_down" />
+                    android:src="@drawable/ic_dropdown_arrow" />
             </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography

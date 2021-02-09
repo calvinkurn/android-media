@@ -200,6 +200,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
         return mutableMapOf(
+                SOURCE to bundle?.getString(SOURCE, ""),
+                COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),

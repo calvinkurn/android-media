@@ -277,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openTravelHomepage(linkSegment, uriData, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.NATIVE_THANK_YOU:
+                    openNativeThankYouPage(linkSegment, defaultBundle);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -286,6 +290,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             if (!keepActivityOn && context != null) {
                 context.finish();
             }
+        }
+    }
+
+    private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {
+        if (linkSegment.size() == 4) {
+            String merchantCode = linkSegment.get(2);
+            String paymentID = linkSegment.get(3);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.THANKYOU_PAGE_NATIVE,
+                    paymentID, merchantCode);
+            intent.putExtras(defaultBundle);
+            viewListener.goToPage(intent);
         }
     }
 
@@ -813,6 +828,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
             customDimension.put("utmSource", utmSource);
             customDimension.put("utmMedium", utmMedium);
+
+            Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
+            if (xClid != null && xClid instanceof String) {
+                String xClid_  = (String)xClid;
+                customDimension.put(AppEventTracking.GTM.X_CLID,xClid_);
+            }
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();

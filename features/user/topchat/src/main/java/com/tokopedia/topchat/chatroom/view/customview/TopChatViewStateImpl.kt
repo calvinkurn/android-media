@@ -95,6 +95,7 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+    override fun useDefaultReplyWatcher(): Boolean = false
 
     override fun initView() {
         super.initView()
@@ -205,8 +206,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun clearAttachmentPreview() {
-        hideProductPreviewLayout()
+        attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
+        hideProductPreviewLayout()
     }
 
     override fun hideProductPreviewLayout() {
@@ -233,7 +235,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onSetCustomMessage(customMessage: String) {
-        replyEditText.setText(customMessage)
+        if (customMessage.isNotEmpty()) {
+            replyEditText.setText(customMessage)
+        }
     }
 
     override fun getAdapter(): TopChatRoomAdapter {

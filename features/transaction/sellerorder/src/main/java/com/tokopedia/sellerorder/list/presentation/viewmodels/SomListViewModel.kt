@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -182,12 +183,11 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun getFilters() {
+    fun getFilters(refreshOrders: Boolean) {
         launchCatchError(block = {
-            val filterResult = somListGetFilterListUseCase.execute()
             getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
-                _filterResult.postValue(filterResult)
+                _filterResult.postValue(somListGetFilterListUseCase.execute().apply { data.refreshOrder = refreshOrders })
             }
         }, onError = {
             _filterResult.postValue(Fail(it))
@@ -213,7 +213,7 @@ class SomListViewModel @Inject constructor(
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()
             getAdminPermissionJob?.join()
-            getOrderListParams.nextOrderId = result.first
+            getOrderListParams.nextOrderId = result.first.toLongOrZero()
             if (_canShowOrderData.value == true) {
                 _orderListResult.postValue(Success(result.second))
             }
@@ -273,10 +273,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun resetNextOrderId() {
-        getOrderListParams.nextOrderId = 0
+        getOrderListParams.nextOrderId = 0L
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
 
     fun getDataOrderListParams() = getOrderListParams
 

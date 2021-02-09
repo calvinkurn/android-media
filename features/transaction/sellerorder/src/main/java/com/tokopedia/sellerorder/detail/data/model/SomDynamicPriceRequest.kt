@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class SomDynamicPriceRequest(
         @Expose
         @SerializedName("order_id")
-        val order_id: Int = 0,
+        val order_id: Long = 0,
         @Expose
         @SerializedName("lang")
         val lang: String = "id",
