@@ -10,8 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.di.QUERY_GET_BANK_LIST
-import com.tokopedia.settingbank.domain.Bank
-import com.tokopedia.settingbank.domain.GetBankListResponse
+import com.tokopedia.settingbank.domain.model.Bank
+import com.tokopedia.settingbank.domain.model.GetBankListResponse
 import com.tokopedia.settingbank.view.viewState.*
 import kotlinx.coroutines.*
 import javax.inject.Inject

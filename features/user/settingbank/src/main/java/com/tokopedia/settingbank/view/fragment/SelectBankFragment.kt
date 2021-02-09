@@ -14,8 +14,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.Bank
-import com.tokopedia.settingbank.domain.SettingBankErrorHandler
+import com.tokopedia.settingbank.domain.model.Bank
+import com.tokopedia.settingbank.domain.model.SettingBankErrorHandler
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.view.adapter.BankListAdapter

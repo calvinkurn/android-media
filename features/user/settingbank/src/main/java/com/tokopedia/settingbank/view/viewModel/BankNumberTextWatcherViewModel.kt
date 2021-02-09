@@ -4,7 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.settingbank.domain.Bank
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.util.BankAccountNumber
 import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError

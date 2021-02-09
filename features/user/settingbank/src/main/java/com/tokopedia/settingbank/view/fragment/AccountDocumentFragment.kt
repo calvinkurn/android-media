@@ -20,10 +20,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
-import com.tokopedia.settingbank.domain.AddBankRequest
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.SettingBankErrorHandler
-import com.tokopedia.settingbank.domain.UploadDocumentPojo
+import com.tokopedia.settingbank.domain.model.AddBankRequest
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.SettingBankErrorHandler
+import com.tokopedia.settingbank.domain.model.UploadDocumentPojo
 import com.tokopedia.settingbank.util.AccountConfirmationType
 import com.tokopedia.settingbank.util.ImageUtils
 import com.tokopedia.settingbank.view.activity.SettingBankActivity

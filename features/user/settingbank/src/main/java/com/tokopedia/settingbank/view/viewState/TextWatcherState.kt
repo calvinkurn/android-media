@@ -8,8 +8,8 @@ data class OnTextChanged(val isCheckEnable: Boolean,
 object OnNOBankSelected : TextWatcherState()
 
 
-sealed class AccountNameTextWatcherState
-data class OnAccountNameValidated(val name: String) : AccountNameTextWatcherState()
-data class OnAccountNameError(val error: String) : AccountNameTextWatcherState()
+sealed class AccountNameValidationResult
+data class OnAccountNameValidated(val name: String) : AccountNameValidationResult()
+ object OnAccountValidationFailed : AccountNameValidationResult()
 
 

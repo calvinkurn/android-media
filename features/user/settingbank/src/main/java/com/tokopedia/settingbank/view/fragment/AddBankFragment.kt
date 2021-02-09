@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.*
@@ -23,12 +24,16 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
-import com.tokopedia.settingbank.domain.*
+import com.tokopedia.settingbank.domain.model.*
+import com.tokopedia.settingbank.util.AddBankAccountException
 import com.tokopedia.settingbank.view.activity.AddBankActivity
-import com.tokopedia.settingbank.view.viewModel.*
+import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
+import com.tokopedia.settingbank.view.viewModel.BankNumberTextWatcherViewModel
 import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
 import javax.inject.Inject
@@ -50,10 +55,7 @@ class AddBankFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var tNCViewModel: SettingBankTNCViewModel
-    private lateinit var checkAccountNumberViewModel: CheckAccountNumberViewModel
     private lateinit var textWatcherViewModel: BankNumberTextWatcherViewModel
-    private lateinit var accountHolderNameViewModel: AccountHolderNameViewModel
     private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
@@ -105,10 +107,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
         textWatcherViewModel = viewModelProvider.get(BankNumberTextWatcherViewModel::class.java)
-        checkAccountNumberViewModel = viewModelProvider.get(CheckAccountNumberViewModel::class.java)
-        accountHolderNameViewModel = viewModelProvider.get(AccountHolderNameViewModel::class.java)
         addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
     }
 
@@ -165,11 +164,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun unregisterObserver() {
-        tNCViewModel.tncPopUpTemplate.removeObservers(this)
         textWatcherViewModel.textWatcherState.removeObservers(this)
-        checkAccountNumberViewModel.accountCheckState.removeObservers(this)
-        accountHolderNameViewModel.textWatcherState.removeObservers(this)
-        addAccountViewModel.addAccountState.removeObservers(this)
     }
 
     private fun setDownArrowBankName() {
@@ -178,16 +173,6 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun startObservingViewModels() {
-        tNCViewModel.tncPopUpTemplate.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
-                is OnTNCError -> showErrorOnUI(it.throwable, null)
-                null -> {
-                }
-            }
-
-        })
-
         textWatcherViewModel.textWatcherState.observe(viewLifecycleOwner, Observer {
             if (isFragmentRestored) {
                 isFragmentRestored = false
@@ -202,21 +187,11 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-        checkAccountNumberViewModel.accountCheckState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is OnCheckAccountError -> showErrorOnUI(it.throwable, null)
-                is OnAccountCheckSuccess -> {
-                    onAccountCheckSuccess(it.accountHolderName)
-                }
-                is OnErrorInAccountNumber -> {
-                    setAccountNumberError(it.errorMessage)
-                }
-            }
-        })
 
-        accountHolderNameViewModel.textWatcherState.observe(viewLifecycleOwner, Observer {
+        addAccountViewModel.accountNameValidationResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OnAccountNameError -> showManualAccountNameError(it.error)
+                is OnAccountValidationFailed -> showManualAccountNameError(
+                        getString(R.string.sbank_name_char_limit_error))
                 is OnAccountNameValidated -> {
                     builder.setAccountName(it.name, true)
                     showManualAccountNameError(null)
@@ -225,41 +200,67 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-        addAccountViewModel.addAccountState.observe(viewLifecycleOwner, Observer {
+        addAccountViewModel.addBankAccountLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OnAddBankRequestStarted -> {
-                    progress_bar.visible()
+                is Success -> {
+                    onBankSuccessfullyAdded(it.data)
                 }
-                is OnAddBankRequestEnded -> {
-                    progress_bar.gone()
+                is Fail -> {
+                    showError(it.throwable) { requestAddBankAccount() }
                 }
-                is OnSuccessfullyAdded -> {
-                    onBankSuccessfullyAdded(it.addBankResponse)
-                }
-                is OnAccountAddingError -> {
-                    showErrorOnUI(it.throwable) { requestAddBankAccount() }
-                }
+            }
+            progress_bar.gone()
+        })
 
+        addAccountViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    openTNCBottomSheet(it.data)
+                }
+                is Fail -> {
+                    showError(it.throwable, null)
+                }
+            }
+        })
+
+
+        addAccountViewModel.accountCheckState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is OnCheckAccountError -> showError(it.throwable, null)
+                is OnAccountCheckSuccess -> {
+                    onAccountCheckSuccess(it.accountHolderName)
+                }
+                is OnErrorInAccountNumber -> {
+                    setAccountNumberError(it.errorMessage)
+                }
             }
         })
     }
 
-    private fun showErrorOnUI(throwable: Throwable, retry: (() -> Unit)?) {
-        context?.let { context ->
-            view?.let { view ->
-                retry?.let {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
-                } ?: run {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
 
+    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let { context ->
+            if (throwable is AddBankAccountException) {
+                showErrorOnUI(context, throwable.errorMessage, retry)
+            } else {
+                val errorMessage = SettingBankErrorHandler.getErrorMessage(context, throwable)
+                showErrorOnUI(context, errorMessage, retry)
             }
         }
-
     }
+
+    private fun showErrorOnUI(context: Context, message: String, retry: (() -> Unit)?) {
+        view?.let { view ->
+            retry?.let {
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() }).show()
+            } ?: run {
+                Toaster.build(view, message,
+                        Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            }
+        }
+    }
+
 
     private fun onBankSuccessfullyAdded(addBankResponse: AddBankResponse) {
         val intent = Intent()
@@ -280,18 +281,19 @@ class AddBankFragment : BaseDaggerFragment() {
             val request = builder.build()
             if (request.isManual) {
                 bankSettingAnalytics.eventOnManualNameSimpanClick()
-                accountHolderNameViewModel.onValidateAccountName(etManualAccountHolderName.text.toString())
+                addAccountViewModel.validateManualAccountName(etManualAccountHolderName.text.toString())
             } else {
                 bankSettingAnalytics.eventOnAutoNameSimpanClick()
                 openPinVerification()
             }
-        }catch (e : Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     private fun checkAccountNumber() {
         if (::bank.isInitialized) {
             bankSettingAnalytics.eventOnPericsaButtonClick()
-            checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
+            addAccountViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
         } else {
             openBankListForSelection()
         }
@@ -382,7 +384,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun loadTncForAddBank() {
         bankSettingAnalytics.eventOnTermsAndConditionClick()
-        tNCViewModel.loadTNCPopUpTemplate()
+        addAccountViewModel.loadTermsAndCondition()
     }
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
@@ -484,6 +486,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun requestAddBankAccount() {
         try {
+            progress_bar.visible()
             addAccountViewModel.addBank(builder.build())
         } catch (e: Exception) {
         }

@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank.domain
+package com.tokopedia.settingbank.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank.domain
+package com.tokopedia.settingbank.domain.model
 
 data class UploadDocumentPojo(
         val acc_id: Long,
