@@ -16,6 +16,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.data.createDefaultAccess
 import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.data.createOptionResponse
@@ -31,7 +32,8 @@ import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedPr
 import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -40,6 +42,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.BROADCAST_CHAT
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.DELETE_PRODUCT
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.DUPLICATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.EDIT_PRICE
@@ -54,6 +57,8 @@ import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageVie
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.LocationType.MAIN_LOCATION
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.LocationType.OTHER_LOCATION
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.ProductStatusConstant.STATUS_ACTIVE
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.ProductStatusConstant.STATUS_INACTIVE
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.AUTO_ADS
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.MANUAL_ADS
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.UNKNOWN_ADS
@@ -118,17 +123,16 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when editProduct success should return edit product success result`() {
+    fun `when edit stock and status success should return edit stock result success`() {
         runBlocking {
             val productId = "0"
             val stock = 0
             val productName = "Amazing Product"
             val status = ProductStatus.ACTIVE
-            val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-            ProductUpdateV3Data(isSuccess = true)
-            )
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true))
 
-            onEditStock_thenReturn(ProductStockWarehouse())
+            onEditStock_thenReturn(ProductStockWarehouse(status = STATUS_ACTIVE))
             onEditStatus_thenReturn(productUpdateV3Response)
 
             viewModel.editStock(productId, productName, stock, status)
@@ -138,6 +142,52 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             verifyEditStockUseCaseCalled()
             verifyEditStatusUseCaseCalled()
             viewModel.editStockResult.verifySuccessEquals(expectedEditStockResult)
+        }
+    }
+
+    @Test
+    fun `when edit stock success should NOT call edit status and return edit stock result success`() {
+        runBlocking {
+            val productId = "0"
+            val stock = 0
+            val productName = "Amazing Product"
+            val status = ProductStatus.INACTIVE
+
+            onEditStock_thenReturn(ProductStockWarehouse(status = STATUS_INACTIVE))
+
+            viewModel.editStock(productId, productName, stock)
+
+            val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
+
+            verifyEditStockUseCaseCalled()
+            verifyEditStatusUseCaseNotCalled()
+
+            viewModel.editStockResult
+                .verifySuccessEquals(expectedEditStockResult)
+        }
+    }
+
+    @Test
+    fun `when edit status success should NOT call edit stock and return edit stock result success`() {
+        runBlocking {
+            val productId = "0"
+            val stock = null
+            val productName = "Amazing Product"
+            val status = ProductStatus.INACTIVE
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true))
+
+            onEditStatus_thenReturn(productUpdateV3Response)
+
+            viewModel.editStock(productId, productName, status = status)
+
+            val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
+
+            verifyEditStatusUseCaseCalled()
+            verifyEditStockUseCaseNotCalled()
+
+            viewModel.editStockResult
+                .verifySuccessEquals(expectedEditStockResult)
         }
     }
 
@@ -184,7 +234,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when editProduct fail should return edit product fail result`() {
+    fun `when edit stock and status fail should return edit status result fail`() {
         runBlocking {
             val productId = "0"
             val stock = 0
@@ -192,14 +242,17 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val status = ProductStatus.ACTIVE
             val error = NetworkErrorException()
 
+            onEditStatus_thenReturn(error)
             onEditStock_thenReturn(error)
 
             viewModel.editStock(productId, productName, stock, status)
 
             val expectedEditStockResult = Fail(EditStockResult(productName, productId, stock, status, error))
 
-            verifyEditStockUseCaseCalled()
-            viewModel.editStockResult.verifyErrorEquals(expectedEditStockResult)
+            verifyEditStatusUseCaseCalled()
+
+            viewModel.editStockResult
+                .verifyErrorEquals(expectedEditStockResult)
         }
     }
 
@@ -348,7 +401,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductUiModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
+                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo, access = createDefaultAccess()))
             val expectedProductList = Success(productViewModelList)
 
             verifyGetWarehouseIdCalled()
@@ -360,6 +413,121 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 .verifyValueEquals(false)
 
             verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `given after get product list when getFeaturedProductCount should NOT call getWarehouseId again`() {
+        runBlocking {
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse(1, MAIN_LOCATION),
+                ShopLocationResponse(2, OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId)
+            viewModel.getFeaturedProductCount(shopId)
+
+            verifyGetWarehouseIdCalledOnce()
+        }
+    }
+
+    @Test
+    fun `given main location not found when get product list should set live data success`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse(2, OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(createProductUiModel(
+                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo, access = createDefaultAccess()))
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showStockTicker
+                .verifyValueEquals(false)
+
+            verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `given multi location shop when getProductList more than once should set showStockTicker TRUE`() {
+        runBlocking {
+            val isMultiLocationShop = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse(1, MAIN_LOCATION),
+                ShopLocationResponse(2, OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+
+            viewModel.getProductList(shopId)
+            viewModel.getProductList(shopId)
+
+            viewModel.showStockTicker
+                .verifyValueEquals(true)
+        }
+    }
+
+    @Test
+    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker FALSE`() {
+        runBlocking {
+            val isMultiLocationShop = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse(1, MAIN_LOCATION),
+                ShopLocationResponse(2, OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+
+            viewModel.getProductList(shopId)
+            viewModel.hideStockTicker()
+            viewModel.getProductList(shopId)
+
+            viewModel.showStockTicker
+                .verifyValueEquals(false)
         }
     }
 
@@ -415,6 +583,46 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `given isShopOwner TRUE when getProductList should map shop owner access into product list`() {
+        runBlocking {
+            val isShopOwner = true
+
+            val shopId = "1500"
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse(1, MAIN_LOCATION),
+                ShopLocationResponse(2, OTHER_LOCATION)
+            )
+
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsShopOwner_thenReturn(isShopOwner)
+
+            viewModel.getProductManageAccess()
+            viewModel.getProductList(shopId)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(createProductUiModel(
+                name = "Tolak Angin Madu",
+                minPrice = minPrice,
+                maxPrice = maxPrice,
+                topAds = topAdsInfo,
+                access = createShopOwnerAccess()
+            ))
+            val expectedProductList = Success(productViewModelList)
+
+            viewModel.productListResult
+                .verifyValueEquals(expectedProductList)
+        }
+    }
+
+    @Test
     fun `get product list should fail with exception`() {
         runBlocking {
             val exception = NullPointerException()
@@ -437,7 +645,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `get filters tab should map response to filter tab result`() {
+    fun `when get filters tab once should map response into ShowFilterTab`() {
         val tabs = listOf(Tab(id = "ACTIVE", name = "Active", value = "10"))
         val productListMetaData = ProductListMetaData(tabs = tabs)
         val productListMeta = ProductListMetaWrapper(productListMetaData = productListMetaData)
@@ -453,6 +661,29 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         val filterTabList = listOf(Active(10))
         val expectedResult = Success(ShowFilterTab(filterTabList, 10))
+
+        viewModel.productFiltersTab
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get filters tab more than once should map response into UpdateFilterTab`() {
+        val tabs = listOf(Tab(id = "ACTIVE", name = "Active", value = "10"))
+        val productListMetaData = ProductListMetaData(tabs = tabs)
+        val productListMeta = ProductListMetaWrapper(productListMetaData = productListMetaData)
+        val productListMetaResponse = ProductListMetaResponse(productListMeta)
+
+        val filterList = listOf(CashBackOnly, FeaturedOnly)
+        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
+
+        onGetFiltersTab_thenReturn(productListMetaResponse)
+
+        viewModel.setFilterOptionWrapper(filterOptions)
+        viewModel.getFiltersTab()
+        viewModel.getFiltersTab()
+
+        val filterTabList = listOf(Active(10))
+        val expectedResult = Success(UpdateFilterTab(filterTabList, 10))
 
         viewModel.productFiltersTab
             .verifySuccessEquals(expectedResult)
@@ -719,10 +950,31 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when edit variant stock success should set live data value success`() {
+    fun `when edit variant stock success should NOT call edit status and set live data value success`() {
+        runBlocking {
+            val editStock = true
+            val result = createEditVariantResult(editStock = editStock)
+
+            onEditStock_thenReturn(ProductStockWarehouse())
+
+            viewModel.editVariantsStock(result)
+
+            val expectedResult = Success(result)
+
+            verifyEditVariantStatusUseCaseNotCalled()
+            verifyEditStockUseCaseCalled()
+
+            viewModel.editVariantStockResult
+                .verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when edit variant status success should NOT call edit stock and set live data value success`() {
+        val editStatus = true
         val data = ProductUpdateV3Data(isSuccess = true)
         val response = ProductUpdateV3Response(data)
-        val result = createEditVariantResult()
+        val result = createEditVariantResult(editStatus = editStatus)
 
         onEditProductVariant_thenReturn(response)
 
@@ -730,17 +982,42 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         val expectedResult = Success(result)
 
+        verifyEditVariantStatusUseCaseCalled()
+        verifyEditStockUseCaseNotCalled()
+
         viewModel.editVariantStockResult
             .verifySuccessEquals(expectedResult)
     }
 
     @Test
-    fun `when edit variant stock NOT success should set live data value fail`() {
+    fun `when edit variant stock and status success should set live data value success`() {
+        runBlocking {
+            val data = ProductUpdateV3Data(isSuccess = true)
+            val response = ProductUpdateV3Response(data)
+            val result = createEditVariantResult(editStock = true, editStatus = true)
+
+            onEditProductVariant_thenReturn(response)
+            onEditStock_thenReturn(ProductStockWarehouse())
+
+            viewModel.editVariantsStock(result)
+
+            val expectedResult = Success(result)
+
+            verifyEditVariantStatusUseCaseCalled()
+            verifyEditStockUseCaseCalled()
+
+            viewModel.editVariantStockResult
+                .verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when edit variant status error should set live data value fail`() {
         val errorMessage = "can't edit product :("
         val headerResponse = ProductUpdateV3Header(errorMessage = arrayListOf(errorMessage))
         val data = ProductUpdateV3Data(isSuccess = false, header = headerResponse)
         val response = ProductUpdateV3Response(data)
-        val result = createEditVariantResult()
+        val result = createEditVariantResult(editStatus = true)
 
         onEditProductVariant_thenReturn(response)
 
@@ -754,17 +1031,19 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     @Test
     fun `when edit variant stock error should set live data value fail`() {
-        val error = NullPointerException()
-        val result = createEditVariantResult()
+        runBlocking {
+            val error = NullPointerException()
+            val result = createEditVariantResult(editStock = true)
 
-        onEditProductVariant_thenReturn(error)
+            onEditStock_thenReturn(error)
 
-        viewModel.editVariantsStock(result)
+            viewModel.editVariantsStock(result)
 
-        val expectedResult = Fail(error)
+            val expectedResult = Fail(error)
 
-        viewModel.editVariantStockResult
-            .verifyErrorEquals(expectedResult)
+            viewModel.editVariantStockResult
+                .verifyErrorEquals(expectedResult)
+        }
     }
 
     @Test
@@ -843,8 +1122,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductVariants(productId)
 
             val productVariants = listOf(
-                createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
-                createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
+                createProductVariant(name = "Biru | M", combination = listOf(0, 1), access = createDefaultAccess()),
+                createProductVariant(name = "Hijau | S", combination = listOf(1, 0), access = createDefaultAccess())
             )
             val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
@@ -993,7 +1272,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         testGetProductManageAccess(
             accessList = listOf(Access(EDIT_STOCK)),
-            expectedProductManageAccess = createProductManageAccess(editProduct = true)
+            expectedProductManageAccess = createProductManageAccess(editStock = true)
         )
 
         testGetProductManageAccess(
@@ -1034,6 +1313,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         testGetProductManageAccess(
             accessList = listOf(Access(PRODUCT_LIST)),
             expectedProductManageAccess = createProductManageAccess(productList = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(BROADCAST_CHAT)),
+            expectedProductManageAccess = createProductManageAccess(broadCastChat = true)
         )
 
         testGetProductManageAccess(
@@ -1137,6 +1421,14 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             .verifyValueEquals(false)
     }
 
+    @Test
+    fun `when hideStockTicker should set showStockTicker false`() {
+        viewModel.hideStockTicker()
+
+        viewModel.showStockTicker
+            .verifyValueEquals(false)
+    }
+
     private fun testGetProductManageAccess(
         accessList: List<Access>,
         expectedProductManageAccess: ProductManageAccess
@@ -1220,6 +1512,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private suspend fun onEditStatus_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
         coEvery { editStatusUseCase.executeOnBackground() } returns productUpdateV3Response
+    }
+
+    private suspend fun onEditStatus_thenReturn(error: Throwable) {
+        coEvery { editStatusUseCase.executeOnBackground() } throws error
     }
 
     private suspend fun onDeleteProduct_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
@@ -1340,6 +1636,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coVerify { editStatusUseCase.executeOnBackground() }
     }
 
+    private fun verifyEditStatusUseCaseNotCalled() {
+        coVerify(exactly = 0) { editStatusUseCase.executeOnBackground() }
+    }
+
     private fun verifyDeleteProductUseCaseCalled() {
         coVerify { deleteProductUseCase.executeOnBackground() }
     }
@@ -1360,8 +1660,24 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coVerify { getAdminInfoShopLocationUseCase.execute(any()) }
     }
 
+    private fun verifyGetWarehouseIdCalledOnce() {
+        coVerify(exactly = 1) { getAdminInfoShopLocationUseCase.execute(any()) }
+    }
+
     private fun verifyEditStockUseCaseCalled() {
         coVerify { editStockUseCase.execute(any()) }
+    }
+
+    private fun verifyEditStockUseCaseNotCalled() {
+        coVerify(exactly = 0) { editStockUseCase.execute(any()) }
+    }
+
+    private fun verifyEditVariantStatusUseCaseCalled() {
+        coVerify { editProductVariantUseCase.execute(any()) }
+    }
+
+    private fun verifyEditVariantStatusUseCaseNotCalled() {
+        coVerify(exactly = 0) { editProductVariantUseCase.execute(any()) }
     }
 
     private fun verifySetFeaturedProductResponseEquals(expectedResponse: Success<SetFeaturedProductResult>) {
@@ -1400,7 +1716,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         setTopAds: Boolean = false,
         setCashBack: Boolean = false,
         setFeatured: Boolean = false,
-        productList: Boolean = false
+        productList: Boolean = false,
+        broadCastChat: Boolean = false
     ): ProductManageAccess {
         return ProductManageAccess(
             addProduct,
@@ -1415,7 +1732,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             setTopAds,
             setCashBack,
             setFeatured,
-            productList
+            productList,
+            broadCastChat
         )
     }
 
@@ -1433,6 +1751,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         const val SET_CASHBACK = "116"
         const val SET_FEATURED = "113"
         const val PRODUCT_LIST = "100"
+        const val BROADCAST_CHAT = "115"
     }
 
     private object TopAdsCategory {
@@ -1444,5 +1763,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     private object LocationType {
         const val MAIN_LOCATION = 1
         const val OTHER_LOCATION = 99
+    }
+
+    private object ProductStatusConstant {
+        const val STATUS_ACTIVE = 1
+        const val STATUS_INACTIVE = 3
     }
 }

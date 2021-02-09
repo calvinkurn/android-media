@@ -76,7 +76,9 @@ fun createEditVariantResult(
         productName: String = "Produk",
         variants: List<ProductVariant> = emptyList(),
         selections: List<Selection> = emptyList(),
-        sizeCharts: List<Picture> = emptyList()
+        sizeCharts: List<Picture> = emptyList(),
+        editStock: Boolean = false,
+        editStatus: Boolean = false
 ): EditVariantResult {
-    return EditVariantResult(productId, productName, variants, selections, sizeCharts)
+    return EditVariantResult(productId, productName, variants, selections, sizeCharts, editStock, editStatus)
 }
