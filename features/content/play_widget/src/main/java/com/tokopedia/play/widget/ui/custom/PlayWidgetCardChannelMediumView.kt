@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -112,7 +113,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
-        tvAuthor.text = model.partner.name
+        tvAuthor.text = MethodChecker.fromHtml(model.partner.name)
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView

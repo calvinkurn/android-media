@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -87,7 +88,7 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
 
-        tvAuthor.text = model.partner.name
+        tvAuthor.text = MethodChecker.fromHtml(model.partner.name)
         tvTitle.text = model.title
         tvTotalView.text = model.totalView
 
