@@ -137,6 +137,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             chatFilter?.onRoleChanged(isTabSeller())
             webSocket.onRoleChanged(role)
             loadInitialData()
+            setupSellerBroadcast()
         }
     }
 
@@ -289,9 +290,12 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
-        setupSellerBroadcastButton()
-        viewModel.loadChatBlastSellerMetaData()
+        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) {
+            broadCastButton.hide()
+        } else {
+            setupSellerBroadcastButton()
+            viewModel.loadChatBlastSellerMetaData()
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
