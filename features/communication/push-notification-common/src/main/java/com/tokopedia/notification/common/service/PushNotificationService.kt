@@ -7,7 +7,7 @@ import com.tokopedia.notification.common.data.UserKey.NAME
 import com.tokopedia.notification.common.data.UserKey.EMAIL
 import com.tokopedia.notification.common.data.UserKey.USER_ID
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.aidl.service.AidlRemoteService
+import com.tokopedia.appaidl.service.AidlRemoteService
 
 class PushNotificationService: AidlRemoteService() {
 

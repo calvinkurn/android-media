@@ -3,7 +3,7 @@ package com.tokopedia.notification.common
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.notification.common.service.PushNotificationService
-import com.tokopedia.utils.aidl.AidlApi
+import com.tokopedia.appaidl.AidlApi
 
 open class PushNotificationApi(
         onAidlReceive: (tag: String, bundle: Bundle?) -> Unit,

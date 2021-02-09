@@ -1,4 +1,4 @@
-package com.tokopedia.utils.aidl.data
+package com.tokopedia.appaidl.data
 
 import com.tokopedia.config.GlobalConfig
 

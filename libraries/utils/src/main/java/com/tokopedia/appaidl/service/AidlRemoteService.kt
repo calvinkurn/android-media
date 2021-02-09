@@ -1,10 +1,10 @@
-package com.tokopedia.utils.aidl.service
+package com.tokopedia.appaidl.service
 
 import android.app.Service
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.appaidl.AppApi
-import com.tokopedia.utils.aidl.data.componentTargetName
+import com.tokopedia.appaidl.data.componentTargetName
 
 abstract class AidlRemoteService: Service() {
 
