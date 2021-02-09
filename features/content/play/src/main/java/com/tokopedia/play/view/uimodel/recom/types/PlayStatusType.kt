@@ -15,6 +15,9 @@ enum class PlayStatusType(val value: String) {
     val isBanned: Boolean
         get() = this == Banned
 
+    val isActive: Boolean
+        get() = this == Active
+
     companion object {
 
         private val values = values()

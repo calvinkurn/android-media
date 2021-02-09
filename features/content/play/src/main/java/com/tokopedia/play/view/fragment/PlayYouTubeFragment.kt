@@ -21,8 +21,8 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.PiPMode
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.YouTube
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -203,15 +203,15 @@ class PlayYouTubeFragment @Inject constructor(
 
     //region OnStateChanged
     private fun youtubeViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         when {
             isFreezeOrBanned -> {
-                youtubeView.release()
+                youtubeView.safeRelease()
                 youtubeView.hide()
             }
-            videoPlayer is YouTube -> {
+            videoPlayer is PlayVideoPlayerUiModel.YouTube -> {
                 youtubeView.setYouTubeId(videoPlayer.youtubeId)
                 youtubeView.show()
             }

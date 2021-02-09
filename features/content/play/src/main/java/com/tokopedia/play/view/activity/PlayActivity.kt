@@ -35,7 +35,12 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL]
+ * Query parameters:
+ * - source_type: String
+ * - source_id: String
+ *
+ * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
 class PlayActivity : BaseActivity(),
         PlayNewChannelInteractor,
@@ -45,9 +50,6 @@ class PlayActivity : BaseActivity(),
         SwipeContainerViewComponent.Listener,
         PlayOrientationListener,
         PlayFullscreenManager {
-
-    @Inject
-    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -86,8 +88,11 @@ class PlayActivity : BaseActivity(),
         FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
     }
 
+    /**
+     * Applink
+     */
     private val startChannelId: String
-        get() = intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty()
+        get() = intent?.data?.lastPathSegment.orEmpty()
 
     private val activeFragment: PlayFragment?
         get() = try { supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()] } catch (e: Throwable) { null }
@@ -100,15 +105,13 @@ class PlayActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
-        val channelId = intent?.data?.lastPathSegment
-        intent.putExtra(PLAY_KEY_CHANNEL_ID, channelId)
+        setupIntentExtra()
 
         onExitFullscreen()
 
-        setupViewModel(channelId)
+        setupViewModel()
         setupPage()
         setupObserve()
-
 //        setupView(channelId)
     }
 
@@ -145,7 +148,6 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onEnterPiPMode() {
-        lifecycle.removeObserver(playLifecycleObserver)
         onBackPressed(isSystemBack = false)
     }
 
@@ -207,20 +209,17 @@ class PlayActivity : BaseActivity(),
 //        return getPlayFragment(channelId)
 //    }
 
-    private fun setupViewModel(channelId: String?) {
-        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras
-                ?: Bundle()) {
+    private fun setupViewModel() {
+        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
             override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                 return playParentViewModelFactory.create(handle) as T
             }
         }
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
-
     }
 
     private fun setupPage() {
         setupOrientation()
-        lifecycle.addObserver(playLifecycleObserver)
     }
 
     private fun setupOrientation() {
@@ -302,6 +301,10 @@ class PlayActivity : BaseActivity(),
         } else {
             fragmentErrorView.hide()
         }
+    }
+
+    private fun setupIntentExtra() {
+        intent.putExtra(PLAY_KEY_CHANNEL_ID, startChannelId)
     }
 
     companion object {

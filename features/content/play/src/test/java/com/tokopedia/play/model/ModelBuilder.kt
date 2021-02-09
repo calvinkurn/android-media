@@ -923,38 +923,6 @@ class ModelBuilder {
     /**
      * UI Model
      */
-    fun buildStateHelperUiModel(
-        shouldShowPinned: Boolean = true,
-        channelType: PlayChannelType = PlayChannelType.Live,
-        videoPlayer: VideoPlayerUiModel = YouTube("absbrb"),
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap(),
-        screenOrientation: ScreenOrientation = ScreenOrientation.Portrait,
-        videoOrientation: VideoOrientation = VideoOrientation.Vertical,
-        videoState: PlayVideoState = PlayVideoState.Playing
-    ) = StateHelperUiModel(
-            shouldShowPinned = shouldShowPinned,
-            channelType = channelType,
-            videoPlayer = videoPlayer,
-            bottomInsets = bottomInsets,
-            screenOrientation = screenOrientation,
-            videoOrientation = videoOrientation,
-            videoState = videoState
-    )
-
-//    fun buildChannelInfoUiModel(
-//            id: String = "1230",
-//            title: String = "Channel live",
-//            description: String = "Ini Channel live",
-//            partnerId: Long = 123151,
-//            partnerType: PartnerType = PartnerType.Admin,
-//            moderatorName: String = "Lisa",
-//            contentId: Int = 1412,
-//            contentType: Int = 2,
-//            likeType: Int = 1,
-//            isShowCart: Boolean = true
-//    ) = ChannelInfoUiModel(id, title, description, partnerId, partnerType,
-//            moderatorName, contentId, contentType, likeType, isShowCart)
-
     fun buildVideoPropertyUiModel(
             state: PlayViewerVideoState = PlayViewerVideoState.Play
     ) = VideoPropertyUiModel(state = state)

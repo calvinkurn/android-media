@@ -57,7 +57,13 @@ class PlayParentViewModel constructor(
         get() = _observableChannelIdsResult
     private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
 
-    private var mNextKey: ChannelDetailNextKey = ChannelDetailNextKey.ChannelId(handle[PLAY_KEY_CHANNEL_ID] ?: error("Channel ID must be provided"))
+    private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
+            channelId = handle[PLAY_KEY_CHANNEL_ID] ?: error("Channel ID must be provided"),
+            sourceType = GetChannelDetailsWithRecomUseCase.SourceType.getBySource(
+                    sourceType = handle[KEY_SOURCE_TYPE] ?: "",
+                    sourceId = handle[KEY_SOURCE_ID]
+            )
+    )
 
     init {
         loadNextPage()
@@ -73,22 +79,22 @@ class PlayParentViewModel constructor(
     }
 
     fun loadNextPage() {
-        getChannelDetailsWithRecom(mNextKey)
+        val nextKey = mNextKey
+        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor && nextKey.cursor.isEmpty()) return
+
+        getChannelDetailsWithRecom(nextKey)
     }
 
-    private fun getChannelDetailsWithRecom(nextKey: ChannelDetailNextKey) {
+    private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
         _observableChannelIdsResult.value = PageResult.Loading(playChannelStateStorage.getChannelList())
 
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 val response = getChannelDetailsWithRecomUseCase.apply {
-                    params = when (nextKey) {
-                        is ChannelDetailNextKey.ChannelId -> GetChannelDetailsWithRecomUseCase.createParamsWithChannelId(nextKey.channelId)
-                        is ChannelDetailNextKey.Cursor -> GetChannelDetailsWithRecomUseCase.createParamsWithCursor(nextKey.cursor)
-                    }
+                    params = GetChannelDetailsWithRecomUseCase.createParams(nextKey)
                 }.executeOnBackground()
 
-                mNextKey = ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
+                mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
 
                 playChannelMapper.map(response).forEach {
                     playChannelStateStorage.setData(it.id, it)
@@ -107,9 +113,9 @@ class PlayParentViewModel constructor(
         })
     }
 
-    sealed class ChannelDetailNextKey {
+    companion object {
 
-        data class ChannelId(val channelId: String) : ChannelDetailNextKey()
-        data class Cursor(val cursor: String) : ChannelDetailNextKey()
+        private const val KEY_SOURCE_TYPE = "source_type"
+        private const val KEY_SOURCE_ID = "source_id"
     }
 }

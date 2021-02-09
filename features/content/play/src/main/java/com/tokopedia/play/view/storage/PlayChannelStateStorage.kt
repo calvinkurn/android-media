@@ -20,6 +20,7 @@ class PlayChannelStateStorage {
 
 data class PlayChannelData(
         val id: String,
+        val channelInfo: PlayChannelInfoUiModel,
         val partnerInfo: PlayPartnerInfoUiModel,
         val likeInfo: PlayLikeInfoUiModel,
         val totalViewInfo: PlayTotalViewUiModel,

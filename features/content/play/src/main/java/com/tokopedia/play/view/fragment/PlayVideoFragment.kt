@@ -28,12 +28,11 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -65,7 +64,6 @@ class PlayVideoFragment @Inject constructor(
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
-    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
@@ -109,13 +107,12 @@ class PlayVideoFragment @Inject constructor(
         }
 
         override fun onFailedEnterPiPMode(error: FloatingWindowException) {
-
         }
 
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
             isEnterPiPAfterPermission = true
 
-            val videoPlayer = playViewModel.videoPlayer as? General ?: return
+            val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
             if (playViewModel.pipMode == PiPMode.WatchInPip) {
@@ -205,7 +202,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onEnterPiPMode(pipMode: PiPMode) {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
-        if (videoMeta.videoPlayer !is General) return
+        if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
         PlayViewerPiPCoordinator(
                 context = requireContext(),
@@ -238,7 +235,6 @@ class PlayVideoFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
         observePiPEvent()
@@ -296,12 +292,6 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeOneTapOnboarding() {
-        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) onboardingView.showAnimated()
-        })
-    }
-
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             if (::containerVideo.isInitialized) {
@@ -313,10 +303,6 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                onboardingView.hide()
-            }
-
             videoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }
@@ -345,13 +331,13 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
             videoView.setPlayer(null)
             videoView.hide()
-        } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
+        } else if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
     }
     //endregion
 

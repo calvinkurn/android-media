@@ -17,10 +17,10 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 ): UseCase<ChannelDetailsWithRecomResponse>() {
 
     private val query = """
-          query GetPlayChannelDetailWithRecom(${'$'}channelId: String, ${'$'}cursor: String){
+          query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String){
               playGetChannelDetailsWithRecom(req: {
-                originID: ${'$'}channelId,
-                cursor: ${'$'}cursor
+                originID: ${'$'}$PARAM_CHANNEL_ID,
+                cursor: ${'$'}$PARAM_CURSOR
               }) {
                 meta {
                   cursor
@@ -126,15 +126,88 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
         }
     }
 
+    sealed class ChannelDetailNextKey {
+
+        data class ChannelId(val channelId: String, val sourceType: SourceType) : ChannelDetailNextKey()
+        data class Cursor(val cursor: String) : ChannelDetailNextKey()
+    }
+
+    sealed class SourceType {
+
+        abstract val key: String
+
+        data class Shop(val sourceId: String) : SourceType() {
+            override val key: String = SOURCE_TYPE_SHOP
+        }
+        object Home : SourceType() {
+            override val key: String = SOURCE_TYPE_HOME
+        }
+        object Feeds : SourceType() {
+            override val key: String = SOURCE_TYPE_FEEDS
+        }
+        object DiscoveryPage : SourceType() {
+            override val key: String = SOURCE_TYPE_DISCOVERY_PAGE
+        }
+        object CLP : SourceType() {
+            override val key: String = SOURCE_TYPE_CLP
+        }
+        object PlayHome : SourceType() {
+            override val key: String = SOURCE_TYPE_PLAY_HOME
+        }
+        object Unknown : SourceType() {
+            override val key: String = ""
+        }
+
+        companion object {
+
+            private const val SOURCE_TYPE_SHOP = "SHOP"
+            private const val SOURCE_TYPE_HOME = "HOME"
+            private const val SOURCE_TYPE_FEEDS = "FEEDS"
+            private const val SOURCE_TYPE_DISCOVERY_PAGE = "DISCOPAGE"
+            private const val SOURCE_TYPE_CLP = "CLP"
+            private const val SOURCE_TYPE_PLAY_HOME = "PLAY_HOME"
+
+            fun getBySource(sourceType: String, sourceId: String? = null): SourceType {
+                return when (sourceType) {
+                    SOURCE_TYPE_SHOP -> {
+                        requireNotNull(sourceId)
+                        Shop(sourceId)
+                    }
+                    SOURCE_TYPE_HOME -> Home
+                    SOURCE_TYPE_FEEDS -> Feeds
+                    SOURCE_TYPE_DISCOVERY_PAGE -> DiscoveryPage
+                    SOURCE_TYPE_CLP -> CLP
+                    SOURCE_TYPE_PLAY_HOME -> PlayHome
+                    else -> Unknown
+                }
+            }
+        }
+    }
+
     companion object {
         private const val PARAM_CHANNEL_ID = "channelId"
+        private const val PARAM_SOURCE_TYPE = "sourceType"
+        private const val PARAM_SOURCE_ID = "sourceId"
         private const val PARAM_CURSOR = "cursor"
 
-        fun createParamsWithChannelId(channelId: String): Map<String, Any> = mapOf(
-                PARAM_CHANNEL_ID to channelId
-        )
+        fun createParams(nextKey: ChannelDetailNextKey): Map<String, Any> {
+            return when (nextKey) {
+                is ChannelDetailNextKey.ChannelId -> createParamsWithChannelId(
+                        nextKey.channelId,
+                        nextKey.sourceType
+                )
+                is ChannelDetailNextKey.Cursor -> createParamsWithCursor(nextKey.cursor)
+            }
+        }
 
-        fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(
+        private fun createParamsWithChannelId(channelId: String, sourceType: SourceType): Map<String, Any> = mutableMapOf(
+                PARAM_CHANNEL_ID to channelId,
+                PARAM_SOURCE_TYPE to sourceType.key
+        ).apply {
+            if (sourceType is SourceType.Shop) put(PARAM_SOURCE_ID, sourceType.sourceId)
+        }
+
+        private fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(
                 PARAM_CURSOR to cursor
         )
     }
