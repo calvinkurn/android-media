@@ -11,10 +11,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import kotlinx.android.synthetic.main.activity_inactive_phone_succcess_page.*
+import javax.inject.Inject
 
 class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
 
+    lateinit var tracker: InactivePhoneTracker
     lateinit var userDataTemp: UserDataTemporary
 
     override fun getLayoutRes(): Int = R.layout.activity_inactive_phone_succcess_page
@@ -38,9 +41,11 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        tracker = InactivePhoneTracker()
         userDataTemp = UserDataTemporary(this)
 
         btnGotoHome?.setOnClickListener {
+            tracker.clickOnButtonGotoHome()
             userDataTemp.delete()
             gotoHome()
         }

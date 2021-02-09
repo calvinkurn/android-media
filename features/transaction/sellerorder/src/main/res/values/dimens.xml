@@ -9,17 +9,12 @@
     <dimen name="waiting_order_recycler_margin_top">10dp</dimen>
 
     <!--  new som list  -->
-    <dimen name="som_list_search_bar_margin_top">4dp</dimen>
-    <dimen name="som_list_sort_filter_margin_top">12dp</dimen>
     <dimen name="som_list_sort_filter_horizontal_padding">14dp</dimen>
+    <dimen name="som_list_sort_filter_padding_top">14.5dp</dimen>
     <dimen name="som_list_sort_filter_shimmer_width">86dp</dimen>
     <dimen name="som_list_sort_filter_shimmer_height">32dp</dimen>
-    <dimen name="som_list_order_product_image_width">280dp</dimen>
-    <dimen name="som_list_order_product_image_height">210dp</dimen>
     <dimen name="som_list_product_image_size">50dp</dimen>
     <dimen name="som_list_order_item_padding_top">6dp</dimen>
     <dimen name="som_list_order_item_padding_right_left_bottom">12dp</dimen>
-    <dimen name="som_list_sort_filter_shimmer_margin_top">4dp</dimen>
-    <dimen name="som_list_sort_filter_shimmer_margin_start">10dp</dimen>
     <dimen name="btn_show_order_height">40dp</dimen>
 </resources>

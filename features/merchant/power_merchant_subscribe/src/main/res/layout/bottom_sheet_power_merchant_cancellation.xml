@@ -13,7 +13,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTitle"
             android:text="@string/pm_label_bottom_sheet_cancel_header"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +24,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textDescription"
             android:text="@string/pm_label_bottom_sheet_cancel_desc"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl5"
@@ -45,7 +45,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textPowerMerchant"
             android:text="@string/power_merchant_shop_benefit"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -71,7 +71,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTopAds"
             android:text="@string/power_merchant_top_ads_benefit"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -97,7 +97,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textCost"
             android:text="@string/power_merchant_cost_benefit"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -123,7 +123,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textBroadcastChat"
             android:text="@string/power_merchant_broadcast_benefit"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -150,7 +150,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textFreeShipping"
             android:text="@string/power_merchant_free_shipping"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -166,7 +166,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textBottomDescription"
             android:text="@string/pm_label_bs_cancel_desc_2"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
