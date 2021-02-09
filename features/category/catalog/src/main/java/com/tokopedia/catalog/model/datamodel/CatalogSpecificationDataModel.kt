@@ -2,10 +2,10 @@ package com.tokopedia.catalog.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
-import com.tokopedia.catalog.model.raw.CatalogResponse
+import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 
 data class CatalogSpecificationDataModel (val name : String = "" , val type : String = "",
-                                          val specificationsList : ArrayList<CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component.Specification> )
+                                          val specificationsList : ArrayList<SpecificationsComponentData> )
     : BaseCatalogDataModel {
 
     override fun name(): String = name

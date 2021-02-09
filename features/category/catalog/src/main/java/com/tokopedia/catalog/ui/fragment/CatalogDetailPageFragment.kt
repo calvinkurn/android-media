@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.catalog.R
@@ -19,11 +21,12 @@ import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogResponse
+import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.SpecificationsComponentData
+import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -43,12 +46,12 @@ class CatalogDetailPageFragment : Fragment(),
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
 
-    private var catalogId: String = ""
-    private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
-    private lateinit var fragment: CatalogGalleryFragment
-    private lateinit var catalogResponseData: CatalogResponse.CatalogResponseData
-    private var listener: Listener? = null
+    private var catalogUiUpdater: CatalogUiUpdater? = CatalogUiUpdater(mutableMapOf())
 
+    private var catalogId: String = ""
+    private lateinit var fragment: CatalogGalleryFragment
+
+    private var rvCatalog: RecyclerView? = null
     private val adapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
 
     private val catalogDetailAdapter by lazy {
@@ -60,8 +63,6 @@ class CatalogDetailPageFragment : Fragment(),
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val LEFT = "left"
-        private const val RIGHT = "right"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -92,6 +93,8 @@ class CatalogDetailPageFragment : Fragment(),
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
         }
+
+        setupRecyclerView(view)
         setObservers()
     }
 
@@ -100,10 +103,14 @@ class CatalogDetailPageFragment : Fragment(),
             when (it) {
                 is Success -> {
                     catalog_layout.show()
-                    catalogResponseData = it.data
-                    setUI(catalogResponseData)
+
+                    // TODO Change
+                    catalogUiUpdater?.updateProductInfo(it.data.listOfComponents[0] as CatalogInfoDataModel)
+                    catalogUiUpdater?.updateSpecifications(it.data.listOfComponents[1] as CatalogSpecificationDataModel)
+                    updateUi()
                 }
                 is Fail -> {
+
                 }
             }
 
@@ -111,38 +118,42 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     fun setListener(listener: Listener) {
-        this.listener = listener
+
     }
 
-    private fun setUI(catalogResponseData: CatalogResponse.CatalogResponseData) {
+    private fun updateUi() {
+        val newData = catalogUiUpdater?.mapOfData?.values?.toList()
+        submitList(newData ?: listOf())
+    }
 
-        val listOfDataModel = arrayListOf<BaseCatalogDataModel>()
-        val categoryInfoDataModel = CatalogInfoDataModel("product_info", "product_info",
-                catalogResponseData.catalogGetDetailModular.basicInfo.name,
-                catalogResponseData.catalogGetDetailModular.basicInfo.brand,
-                catalogResponseData.catalogGetDetailModular.basicInfo.tag,
-                "${catalogResponseData.catalogGetDetailModular.basicInfo.marketPrice[0].minFmt} - ${catalogResponseData.catalogGetDetailModular.basicInfo.marketPrice[0].maxFmt} ",
-                catalogResponseData.catalogGetDetailModular.basicInfo.description
-        )
+    fun submitList(visitables: List<BaseCatalogDataModel>) {
+        catalogDetailAdapter.submitList(visitables)
+    }
 
-//        val catalogSpecificationsDataModel = CatalogSpecificationDataModel("specifications",
-//                "specifications", catalogResponseData.catalogGetDetailModular.basicInfo.components[0] )
-//
+    private fun setupRecyclerView(view: View) {
+        rvCatalog = view.findViewById(R.id.catalog_detail_rv)
+        rvCatalog?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        rvCatalog?.itemAnimator = null
+        rvCatalog?.adapter = catalogDetailAdapter
+    }
 
-        catalog_detail_rv.adapter = catalogDetailAdapter
+    private fun setUIProductInfo() {
+
+    }
+
+    private fun setUISpecificationsRV() {
+
     }
 
     private fun viewMoreSpecifications() {
         CatalogDetailPageAnalytics.trackEventClickSpecification()
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
-                catalogResponseData.catalogGetDetailModular.basicInfo.description,
-                arrayListOf())
+                catalogUiUpdater?.productInfoMap?.description ?: "",
+                catalogUiUpdater?.specificationsMap?.specificationsList ?: arrayListOf<SpecificationsComponentData>()
+        )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
 
-    private fun showImage(currentItem: Int) {
-        context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogImage))
-    }
 
     fun onBackPress() {
         if (::fragment.isInitialized && fragment.isAdded) {
@@ -165,7 +176,22 @@ class CatalogDetailPageFragment : Fragment(),
                 .build()
     }
 
+    private fun showImage(catalogImage: CatalogImage, currentItem: Int) {
+        catalogUiUpdater?.run {
+            productInfoMap?.let {
+                if(catalogUiUpdater?.productInfoMap?.images?.isNotEmpty() == true){
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogUiUpdater!!.productInfoMap!!.images))
+                }
+            }
+        }
+    }
+
+
     interface Listener {
         fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String)
+    }
+
+    override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
+        showImage(catalogImage,position)
     }
 }

@@ -2,16 +2,16 @@ package com.tokopedia.catalog.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification
+import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.utils.view.DoubleTextView
 import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment.*
 
@@ -25,7 +25,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
 
-        fun newInstance(type: Int, description: String?, specifications: ArrayList<Specification>?): CatalogSpecsAndDetailFragment {
+        fun newInstance(type: Int, description: String?, specifications: ArrayList<SpecificationsComponentData>?): CatalogSpecsAndDetailFragment {
             return CatalogSpecsAndDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(TYPE, type)
@@ -44,7 +44,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var description: String? = null
-        var specifications: ArrayList<Specification>? = null
+        var specifications: ArrayList<SpecificationsComponentData>? = null
 
         if (arguments != null) {
             type = arguments!!.getInt(TYPE, 0)
@@ -60,7 +60,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         }
     }
 
-    private fun setSpecificationView(specifications: ArrayList<Specification>) {
+    private fun setSpecificationView(specifications: ArrayList<SpecificationsComponentData>) {
         linear_layout.removeAllViews()
         for(specs in specifications){
             val headerView = TextView(context)
@@ -69,7 +69,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             headerView.typeface = Typeface.DEFAULT_BOLD
             headerView.setTextColor(MethodChecker.getColor(context,R.color.catalog_grey_796))
             linear_layout.addView(headerView)
-            for(row in specs.row){
+            for(row in specs.specificationsRow){
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.setTopText(MethodChecker.fromHtml(row.key).toString())
                 doubleTextView.setTopTextSize(14.0f)

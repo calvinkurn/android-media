@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -199,7 +200,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeData() {
-        viewModel.mProductList.observe(this, Observer {
+        viewModel.mProductList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -235,7 +236,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-        viewModel.mProductCount.observe(this, Observer {
+        viewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
@@ -246,7 +247,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-        viewModel.getDynamicFilterData().observe(this, Observer {
+        viewModel.getDynamicFilterData().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -259,7 +260,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         })
 
 
-        viewModel.mQuickFilterModel.observe(this, Observer {
+        viewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {

@@ -1,41 +1,59 @@
 package com.tokopedia.catalog.model.raw
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class CatalogResponse (
+        @SerializedName( "data")
         val data: CatalogResponseData
 ) {
     data class CatalogResponseData (
+            @SerializedName( "catalogGetDetailModular")
             val catalogGetDetailModular: CatalogGetDetailModular
     ){
         data class CatalogGetDetailModular (
+                @SerializedName( "header")
                 val header: Header,
+                @SerializedName( "basicInfo")
                 val basicInfo: BasicInfo
         )
         {
             data class Header (
+                    @SerializedName( "code")
                     val code: Long,
+                    @SerializedName( "message")
                     val message: String
             )
 
             data class BasicInfo (
+                    @SerializedName( "id")
                     val id: String,
 
                     @SerializedName( "departmentId")
                     val departmentID: String,
 
+                    @SerializedName( "name")
                     val name: String,
+                    @SerializedName( "brand")
                     val brand: String,
+                    @SerializedName( "tag")
                     val tag: String,
+                    @SerializedName( "description")
                     val description: String,
+                    @SerializedName( "url")
                     val url: String,
 
                     @SerializedName( "mobileUrl")
                     val mobileURL: String,
 
-                    val catalogImage: List<CatalogImage>,
+                    @SerializedName( "catalogImage")
+                    val catalogImage: ArrayList<CatalogImage>,
+                    @SerializedName( "marketPrice")
                     val marketPrice: List<MarketPrice>,
+                    @SerializedName( "longDescription")
                     val longDescription: List<LongDescription>,
+                    @SerializedName( "components")
                     val components: List<Component>
             ){
 
@@ -48,7 +66,9 @@ data class CatalogResponse (
                 )
 
                 data class MarketPrice (
+                        @SerializedName( "min")
                         val min: Long,
+                        @SerializedName( "max")
                         val max: Long,
 
                         @SerializedName( "min_fmt")
@@ -57,22 +77,23 @@ data class CatalogResponse (
                         @SerializedName( "max_fmt")
                         val maxFmt: String,
 
+                        @SerializedName( "date")
                         val date: String,
+                        @SerializedName( "name")
                         val name: String
                 )
 
-                data class CatalogImage (
-                        @SerializedName( "imageUrl")
-                        val imageURL: String,
-
-                        val isPrimary: Boolean
-                )
 
                 data class Component (
+                        @SerializedName( "id")
                         val id: Long,
+                        @SerializedName( "name")
                         val name: String,
+                        @SerializedName( "type")
                         val type: String,
+                        @SerializedName( "sticky")
                         val sticky: Boolean,
+                        @SerializedName( "data")
                         val data: List<ComponentData>
                 ){
 
@@ -81,3 +102,12 @@ data class CatalogResponse (
         }
     }
 }
+
+@Parcelize
+data class CatalogImage (
+        @SerializedName( "imageUrl")
+        val imageURL: String,
+        @SerializedName( "isPrimary")
+        val isPrimary: Boolean
+): Parcelable
+

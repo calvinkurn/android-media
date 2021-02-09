@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.listener
 
+import com.tokopedia.catalog.model.raw.CatalogImage
+
 interface CatalogDetailListener {
 
     /**
@@ -10,7 +12,7 @@ interface CatalogDetailListener {
     /**
      * CatalogImageViewHolder
      */
-
+    fun onProductImageClick(catalogImage : CatalogImage, position: Int)
 
     /**
      * CatalogSpecificationViewHolder

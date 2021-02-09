@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
+import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.ui.fragment.CatalogGalleryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 

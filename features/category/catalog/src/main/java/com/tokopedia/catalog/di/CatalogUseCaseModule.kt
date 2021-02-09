@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.common_category.usecase.*
-import com.tokopedia.catalog.usecase.GetProductCatalogOneUseCase
+import com.tokopedia.catalog.usecase.CatalogDetailUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -42,8 +42,8 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): GetProductCatalogOneUseCase {
-        return GetProductCatalogOneUseCase(catalogDetailRepository)
+    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): CatalogDetailUseCase {
+        return CatalogDetailUseCase(catalogDetailRepository)
     }
 
     @CatalogScope

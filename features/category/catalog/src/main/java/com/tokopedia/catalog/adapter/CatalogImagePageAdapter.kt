@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
+import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_catalog_image.view.*
+import kotlinx.android.synthetic.main.item_catalog_gallery_image.view.*
 
-class CatalogImageAdapter(val list: List<CatalogImage>, val listener: Listener?) : PagerAdapter(){
+class CatalogImagePageAdapter(val list: List<CatalogImage>, val listener: Listener?)
+    : PagerAdapter(){
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
@@ -18,7 +19,7 @@ class CatalogImageAdapter(val list: List<CatalogImage>, val listener: Listener?)
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(container.context).inflate(
-                R.layout.item_catalog_image,
+                CatalogImageViewHolder.LAYOUT,
                 container,
                 false
         )
@@ -36,13 +37,13 @@ class CatalogImageAdapter(val list: List<CatalogImage>, val listener: Listener?)
     class CatalogImageViewHolder(val itemView: View, val listener: Listener?) {
 
         fun bind(model: CatalogImage) {
-            itemView.image.loadImage(model.imageUrl)
+            itemView.image.loadImage(model.imageURL)
             itemView.setOnClickListener {
                 listener?.onImageClick()
             }
         }
         companion object{
-            val LAYOUT = R.layout.item_catalog_image
+            val LAYOUT = R.layout.item_catalog_gallery_image
         }
     }
 

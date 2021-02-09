@@ -1,7 +1,26 @@
 package com.tokopedia.catalog.model.util
 
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
 
-class CatalogUiUpdater(private val mapOfData: Map<String, BaseCatalogDataModel>) {
+class CatalogUiUpdater(var mapOfData: MutableMap<String, BaseCatalogDataModel>) {
 
+    val productInfoMap: CatalogInfoDataModel?
+        get() = mapOfData[CatalogConstant.CATALOG_INFO] as? CatalogInfoDataModel
+
+    val specificationsMap: CatalogSpecificationDataModel?
+        get() = mapOfData[CatalogConstant.CATALOG_SPECIFICATION] as? CatalogSpecificationDataModel
+
+    fun updateProductInfo(catalogInfoDataModel: CatalogInfoDataModel){
+        updateData(CatalogConstant.CATALOG_INFO,catalogInfoDataModel)
+    }
+
+    fun updateSpecifications(specificationDataModel: CatalogSpecificationDataModel){
+        updateData(CatalogConstant.CATALOG_SPECIFICATION,specificationDataModel)
+    }
+
+    private fun updateData(key: String, baseCatalogDataModel: BaseCatalogDataModel) {
+        mapOfData[key] = baseCatalogDataModel
+    }
 }

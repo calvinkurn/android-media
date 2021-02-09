@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:text="Spesifikasi"
+        android:text="@string/catalog_spesification"
         app:typographyType="heading_4"
         android:textColor="@color/Unify_N700_96"
         />
@@ -44,9 +44,20 @@
         app:layout_constraintStart_toStartOf="@id/catalog_specification_rv"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        tools:text="Lihat Selengkapnya"
+        android:text="Lihat Selengkapnya"
         app:typographyType="body_3"
         android:textColor="@color/Unify_G500"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:background="@color/catalog_grey_line"
         />
 
 

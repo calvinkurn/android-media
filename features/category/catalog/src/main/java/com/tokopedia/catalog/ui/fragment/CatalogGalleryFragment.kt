@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogGalleyRecyclerViewAdapter
-import com.tokopedia.catalog.adapter.CatalogImageAdapter
+import com.tokopedia.catalog.adapter.CatalogImagePageAdapter
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
+import com.tokopedia.catalog.model.raw.CatalogImage
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
 class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.Listener {
@@ -49,7 +49,7 @@ class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.List
         }
 
         if (catalogImages != null) {
-            val catalogImageAdapter = CatalogImageAdapter(catalogImages!!, null)
+            val catalogImageAdapter = CatalogImagePageAdapter(catalogImages!!, null)
             var previousPosition: Int = -1
             view_pager_intermediary.adapter = catalogImageAdapter
             view_pager_intermediary.setCurrentItem(currentImage, true)

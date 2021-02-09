@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 
 class CatalogDetailAdapter (asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val listener : CatalogDetailListener,
-                            private val catalogAdapterTypeFactory: AdapterTypeFactory)
+                            private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
@@ -32,4 +34,9 @@ class CatalogDetailAdapter (asyncDifferConfig: AsyncDifferConfig<BaseCatalogData
         holder.bind(item)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (position < 0 || position >= currentList.size) {
+            HideViewHolder.LAYOUT
+        } else currentList[position]?.type(catalogAdapterTypeFactory) ?: HideViewHolder.LAYOUT
+    }
 }

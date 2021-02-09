@@ -14,7 +14,7 @@ import android.widget.ImageView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
-import com.tokopedia.catalog.model.ProductCatalogResponse
+import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
@@ -23,7 +23,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
     companion object {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
-        fun newInstance(description: String, specifications: ArrayList<ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification>): CatalogSpecsAndDetailBottomSheet {
+        fun newInstance(description: String, specifications: ArrayList<SpecificationsComponentData>): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(DESCRIPTION, description)
@@ -36,7 +36,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_bottomsheet_catalog_specifications, container, false)
         var description: String? = null
-        var specifications: ArrayList<ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification>? = null
+        var specifications: ArrayList<SpecificationsComponentData>? = null
         if(arguments!=null){
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)

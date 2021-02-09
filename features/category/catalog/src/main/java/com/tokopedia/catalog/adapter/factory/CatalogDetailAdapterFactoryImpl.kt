@@ -3,9 +3,7 @@ package com.tokopedia.catalog.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.catalog.adapter.CatalogImageAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.datamodel.CatalogImageDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
 import com.tokopedia.catalog.viewholder.CatalogInfoViewHolder
@@ -21,9 +19,6 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
         return CatalogSpecificationsContainerViewHolder.LAYOUT
     }
 
-    override fun type(data: CatalogImageDataModel): Int {
-        return CatalogImageAdapter.CatalogImageViewHolder.LAYOUT
-    }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){

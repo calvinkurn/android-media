@@ -4,14 +4,14 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
+import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_catalog_gallery_view.view.*
+import kotlinx.android.synthetic.main.item_catalog_gallery_bottom_image_view.view.*
 
 class CatalogGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, val listener: Listener?, var selectedPosition:Int) :  RecyclerView.Adapter<CatalogGalleyRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(View.inflate(parent.context, R.layout.item_catalog_gallery_view, null))
+        return ViewHolder(View.inflate(parent.context, R.layout.item_catalog_gallery_bottom_image_view, null))
     }
 
     override fun getItemCount(): Int  = list.size
@@ -31,7 +31,7 @@ class CatalogGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, val li
             } else {
                 itemView.image.alpha = 0.5F
             }
-            itemView.image.loadImage(model.imageUrl)
+            itemView.image.loadImage(model.imageURL)
             itemView.setOnClickListener {
                 listener?.onImageClick(adapterPosition)
             }
