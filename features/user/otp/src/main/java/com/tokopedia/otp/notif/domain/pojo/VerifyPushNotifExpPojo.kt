@@ -20,6 +20,9 @@ data class VerifyPushNotifExpData(
         @SerializedName("is_expire")
         @Expose
         var isExpire: Boolean = false,
+        @SerializedName("is_trusted")
+        @Expose
+        var isTrusted: Boolean = false,
         @SerializedName("error_message")
         @Expose
         var errorMessage: String = "",

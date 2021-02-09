@@ -145,8 +145,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun onSuccessVerifyPushNotifExp(): (VerifyPushNotifExpData) -> Unit {
         return { verifyPushNotifExpData ->
             dismissLoading()
-            if(verifyPushNotifExpData.isExpire &&
-                    verifyPushNotifExpData.imglink.isNotEmpty() &&
+            if(verifyPushNotifExpData.imglink.isNotEmpty() &&
                     verifyPushNotifExpData.messageTitle.isNotEmpty() &&
                     verifyPushNotifExpData.messageBody.isNotEmpty() &&
                     verifyPushNotifExpData.ctaType.isNotEmpty()) {

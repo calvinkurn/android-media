@@ -15,6 +15,7 @@ object VerifyPushNotifExpQuery {
             VerifyPushnotifExpiration(challengeCode: $challengeCode, signature: $signature, status: $status) {
                 is_success
                 is_expire
+                is_trusted
                 error_message
                 image_link
                 title
