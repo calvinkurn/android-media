@@ -272,6 +272,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
+    // InboxActivity
+    @JvmField
+    val INBOX = "$INTERNAL_MARKETPLACE/inbox"
+
     // DashboardActivity
     @JvmField
     val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
