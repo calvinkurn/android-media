@@ -11,7 +11,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 
-abstract class QuickEditVariantViewModelTestFixture {
+open class QuickEditVariantViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
