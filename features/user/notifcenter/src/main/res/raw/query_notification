@@ -20,6 +20,8 @@ query Notification($cursor: String) {
     }
     chat {
       unreads
+      unreadsSeller
+      unreadsUser
     }
     resolutionAs {
       buyer
