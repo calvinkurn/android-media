@@ -2,7 +2,10 @@ package com.tokopedia.topchat.chatroom.view.fragment
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -17,6 +20,7 @@ import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,6 +34,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
@@ -79,6 +84,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
@@ -190,6 +196,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var rv: RecyclerView? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
+
+    private var broadcastReceiver: BroadcastReceiver? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -1787,6 +1795,58 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
         )
+    }
+
+    private fun registerUploadImageReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == UploadImageChatService.BROADCAST_UPLOAD_IMAGE) {
+                    when (intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0)) {
+                        TkpdState.ProductService.STATUS_DONE -> onSuccessUploadImageWS(intent)
+                        TkpdState.ProductService.STATUS_ERROR -> onErrorUploadImageWS(intent)
+                    }
+                }
+            }
+        }
+
+        activity?.let {
+            val intentFilters = IntentFilter().apply {
+                addAction(UploadImageChatService.BROADCAST_UPLOAD_IMAGE)
+            }
+            broadcastReceiver?.let { receiver ->
+                LocalBroadcastManager.getInstance(it).registerReceiver(receiver, intentFilters)
+            }
+        }
+    }
+
+    private fun onSuccessUploadImageWS(intent: Intent) {
+        val uploadId = intent.getStringExtra(UploadImageChatService.UPLOAD_ID)?: ""
+        val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
+        presenter.sendImageByWebSocket(uploadId, image)
+    }
+
+    private fun onErrorUploadImageWS(intent: Intent) {
+        val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
+        val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
+        onErrorUploadImage(errorMessage, image)
+    }
+
+    private fun unregisterUploadImageReceiver() {
+        activity?.let {
+            broadcastReceiver?.let { receiver ->
+                LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerUploadImageReceiver()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterUploadImageReceiver()
     }
 
     companion object {

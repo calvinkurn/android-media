@@ -1,8 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
-import android.os.Bundle
-import android.os.Handler
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -47,8 +45,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.service.UploadImageReceiver
-import com.tokopedia.topchat.chatroom.service.UploadImageServiceReceiver
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -109,7 +105,7 @@ class TopChatRoomPresenter @Inject constructor(
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
-        TopChatContract.Presenter, CoroutineScope, UploadImageReceiver {
+        TopChatContract.Presenter, CoroutineScope {
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
@@ -123,14 +119,11 @@ class TopChatRoomPresenter @Inject constructor(
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
 
-    private var uploadImageServiceReceiver: UploadImageServiceReceiver
-
     init {
         mSubscription = CompositeSubscription()
         compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
-        uploadImageServiceReceiver = UploadImageServiceReceiver(Handler(), this)
     }
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
@@ -341,21 +334,10 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         processDummyMessage(image)
-        UploadImageChatService.enqueueWork(view.context, uploadImageServiceReceiver, image)
+        UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
     }
 
-    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
-        when (networkMode) {
-            MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
-            MODE_API -> sendImageByApi(uploadId, image)
-        }
-    }
-
-    private fun onErrorUploadImage(errorMessage: String, image: ImageUploadViewModel) {
-        view?.onErrorUploadImage(errorMessage, image)
-    }
-
-    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
+    fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
         val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
         sendMessageWebSocket(requestParams)
     }
@@ -797,22 +779,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
-
-    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-        if(resultCode == UploadImageChatService.SHOW_RESULT) {
-            resultData?.let {
-                val result = it.getBoolean(UploadImageChatService.IS_SUCCESS)
-                val image = it.getSerializable(UploadImageChatService.IMAGE) as ImageUploadViewModel
-                if(result) {
-                    val uploadId = it.getString(UploadImageChatService.UPLOAD_ID).toString()
-                    onSuccessUploadImage(uploadId, image)
-                } else {
-                    val errorMessage = it.getString(UploadImageChatService.ERROR_MESSAGE).toString()
-                    onErrorUploadImage(errorMessage, image)
-                }
-            }
-        }
-    }
 
     companion object {
         const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
