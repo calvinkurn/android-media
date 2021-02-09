@@ -44,7 +44,7 @@ fun createProductUiModel(
     isChecked: Boolean = false,
     hasStockReserved: Boolean = false,
     topAds: TopAdsInfo? = null,
-    access: ProductManageAccess? = null
+    access: ProductManageAccess? = createShopOwnerAccess()
 ): ProductUiModel {
     return ProductUiModel(
         id,
