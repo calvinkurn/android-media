@@ -3,26 +3,23 @@ package com.tokopedia.sellerreview.common
 import android.content.Context
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerreview.view.bottomsheet.BaseBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 
 /**
@@ -35,8 +32,9 @@ import kotlin.math.absoluteValue
 class SellerReviewHelper @Inject constructor(
         private val cacheHandler: LocalCacheHandler,
         private val userSession: UserSessionInterface,
-        private val remoteConfig: SellerAppReviewRemoteConfig
-) : CoroutineScope {
+        private val remoteConfig: SellerAppReviewRemoteConfig,
+        private val dispatchers: CoroutineDispatchers
+) {
 
     companion object {
         private const val QUOTA_CHECK_DELAY = 1000L
@@ -47,19 +45,16 @@ class SellerReviewHelper @Inject constructor(
     private val handler by lazy { Handler() }
     private var popupAlreadyShown = false
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
-
     /**
      * We want to show in app review bottom sheet when
      * the seller has done one of the 3 journeys (added product, posted feed or replied 5 chats)
      * and never seen the bottom sheet before within last 30 days
      * */
-    fun checkForReview(context: Context, fm: FragmentManager) {
+    suspend fun checkForReview(context: Context, fm: FragmentManager) {
         val isEnabled = remoteConfig.isSellerReviewEnabled()
         if (!isEnabled || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
-        launchCatchError(block = {
+        try {
             delay(QUOTA_CHECK_DELAY)
             val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
             val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
@@ -67,14 +62,14 @@ class SellerReviewHelper @Inject constructor(
             val hasOpenedReview = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), false)
             val allowPopupShown = canShowPopup()
 
-            withContext(Dispatchers.Main) {
+            withContext(dispatchers.main) {
                 if (allowPopupShown && (getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
                     showInAppReviewBottomSheet(context, fm)
                 }
             }
-        }, onError = {
-            Timber.w(it)
-        })
+        } catch (e: Exception) {
+            Timber.w(e)
+        }
     }
 
     /**
@@ -86,7 +81,7 @@ class SellerReviewHelper @Inject constructor(
         return !isAllowDebuggingTools || appReviewDebugEnabled
     }
 
-    private fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
+    private suspend fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
         if (fm.isStateSaved || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
@@ -183,18 +178,20 @@ class SellerReviewHelper @Inject constructor(
         return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS).toInt()
     }
 
-    private fun resetQuotaCheck() {
-        launchCatchError(block = {
-            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
-            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
-            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), true)
-            cacheHandler.putStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), mutableSetOf())
-            val todayMillis = Date().time
-            cacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), todayMillis)
-            cacheHandler.applyEditor()
-        }, onError = {
-            Timber.w(it)
-        })
+    private suspend fun resetQuotaCheck() {
+        withContext(dispatchers.io) {
+            try {
+                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
+                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
+                cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), true)
+                cacheHandler.putStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), mutableSetOf())
+                val todayMillis = Date().time
+                cacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), todayMillis)
+                cacheHandler.applyEditor()
+            } catch (e: Exception) {
+                Timber.w(e)
+            }
+        }
     }
 
     private fun getUniqueKey(key: String): String {

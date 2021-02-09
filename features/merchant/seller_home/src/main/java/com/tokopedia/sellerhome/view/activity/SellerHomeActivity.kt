@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -50,6 +51,8 @@ import com.tokopedia.sellerreview.common.SellerReviewHelper
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
@@ -444,7 +447,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun checkForSellerAppReview(pageType: Int) {
         if (pageType == FragmentType.HOME) {
-            sellerReviewHelper.checkForReview(this, supportFragmentManager)
+            lifecycleScope.launch(Dispatchers.IO) {
+                sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
+            }
         }
     }
 }
