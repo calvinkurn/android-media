@@ -26,7 +26,8 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
         private val sellerAdminUseCase: SellerAdminUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -91,7 +92,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
                 val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_LIST)
-                authorizeAccessUseCase.execute(requestParams)
+                authorizeChatAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
             }
@@ -102,7 +103,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
                 val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                authorizeAccessUseCase.execute(requestParams)
+                authorizeOrderAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
             }

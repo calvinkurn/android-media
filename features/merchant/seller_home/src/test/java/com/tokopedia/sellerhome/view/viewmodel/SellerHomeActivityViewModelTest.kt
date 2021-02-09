@@ -14,7 +14,6 @@ import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +30,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.ArgumentMatchers.anyInt
 
 /**
  * Created By @ilhamsuaib on 24/03/20
@@ -53,7 +51,10 @@ class SellerHomeActivityViewModelTest {
     lateinit var sellerAdminUseCase: SellerAdminUseCase
 
     @RelaxedMockK
-    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
+    lateinit var authorizeChatAccessUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
+    lateinit var authorizeOrderAccessUseCase: AuthorizeAccessUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -70,7 +71,8 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, sellerAdminUseCase, authorizeAccessUseCase, coroutineTestRule.dispatchers)
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase,
+                sellerAdminUseCase, authorizeChatAccessUseCase, authorizeOrderAccessUseCase, coroutineTestRule.dispatchers)
 
     @Test
     fun `get notifications then returns success result`() {
@@ -81,6 +83,8 @@ class SellerHomeActivityViewModelTest {
         coEvery {
             getNotificationUseCase.executeOnBackground()
         } returns notifications
+        everyCheckChatRolePermissionThenReturn(true)
+        everyCheckOrderRolePermissionThenReturn(true)
 
         val viewModel = createViewModel()
         runBlocking {
@@ -112,6 +116,107 @@ class SellerHomeActivityViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         assert(viewModel.notifications.value is Fail)
+    }
+
+    @Test
+    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = runBlocking {
+        val notifications = NotificationUiModel(5, 5,
+                NotificationSellerOrderStatusUiModel(5, 5))
+
+        coEvery {
+            getNotificationUseCase.executeOnBackground()
+        } returns notifications
+        userIsShopAdmin()
+        everyShopIdIsExist()
+        everyCheckChatRolePermissionThenReturn(false)
+        everyCheckOrderRolePermissionThenReturn(true)
+
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
+
+        coVerify {
+            getNotificationUseCase.executeOnBackground()
+        }
+        verifyCheckAdminOrderPermissionIsCalled()
+
+        val expectedNotification = notifications.copy(chat = 0)
+        assertNotificationDataEquals(Success(expectedNotification))
+    }
+
+    @Test
+    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = runBlocking {
+        val notifications = NotificationUiModel(5, 5,
+                NotificationSellerOrderStatusUiModel(5, 5))
+
+        coEvery {
+            getNotificationUseCase.executeOnBackground()
+        } returns notifications
+        userIsShopAdmin()
+        everyShopIdIsExist()
+        everyCheckChatRolePermissionThenReturn(false)
+        everyCheckOrderRolePermissionThenReturn(true)
+
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
+
+        coVerify {
+            getNotificationUseCase.executeOnBackground()
+        }
+        verifyCheckAdminOrderPermissionIsCalled()
+
+        val expectedNotification = notifications.copy(
+                sellerOrderStatus = notifications.sellerOrderStatus.copy(
+                        newOrder = 0,
+                        readyToShip = 0
+                )
+        )
+        assertNotificationDataEquals(Success(expectedNotification))
+    }
+
+    @Test
+    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = runBlocking {
+        val notifications = NotificationUiModel(5, 5,
+                NotificationSellerOrderStatusUiModel(5, 5))
+
+        coEvery {
+            getNotificationUseCase.executeOnBackground()
+        } returns notifications
+        userIsShopAdmin()
+        everyShopIdIsExist()
+        everyCheckChatRolePermissionThenReturn(true)
+        everyCheckOrderRolePermissionThenReturn(true)
+
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
+
+        coVerify {
+            getNotificationUseCase.executeOnBackground()
+        }
+        verifyCheckAdminOrderPermissionIsCalled()
+        assertNotificationDataEquals(Success(notifications))
+    }
+
+    @Test
+    fun `get notifications success but check role is fail, should make the notifications result also fail`() = runBlocking {
+        val notifications = NotificationUiModel(5, 5,
+                NotificationSellerOrderStatusUiModel(5, 5))
+        val throwable = MessageErrorException()
+
+        coEvery {
+            getNotificationUseCase.executeOnBackground()
+        } returns notifications
+        userIsShopAdmin()
+        everyShopIdIsExist()
+        everyCheckOrderRolePermissionThenThrow(throwable)
+
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
+
+        coVerify {
+            getNotificationUseCase.executeOnBackground()
+        }
+        verifyCheckAdminOrderPermissionIsCalled()
+        assertNotificationDataEquals(Fail(throwable))
     }
 
     @Test
@@ -232,8 +337,7 @@ class SellerHomeActivityViewModelTest {
         val adminData = AdminDataResponse()
 
         everyGetAdminTypeThenReturn(adminData)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -247,8 +351,7 @@ class SellerHomeActivityViewModelTest {
         val throwable = MessageErrorException("")
 
         everyGetAdminTypeThenThrow(throwable)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -271,8 +374,7 @@ class SellerHomeActivityViewModelTest {
         )
 
         everyGetAdminTypeThenReturn(adminData)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -297,8 +399,7 @@ class SellerHomeActivityViewModelTest {
         )
 
         everyGetAdminTypeThenReturn(adminData)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -323,8 +424,7 @@ class SellerHomeActivityViewModelTest {
         )
 
         everyGetAdminTypeThenReturn(adminData)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -350,8 +450,7 @@ class SellerHomeActivityViewModelTest {
         )
 
         everyGetAdminTypeThenReturn(adminData)
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
@@ -362,43 +461,12 @@ class SellerHomeActivityViewModelTest {
     @Test
     fun `when get admin type is fail, will not update user session value`() {
         everyGetAdminTypeThenThrow(MessageErrorException())
-        everyCheckOrderRolePermissionThenReturn(true)
-        userIsNotShopOwnerOrLocationAdmin()
+        userIsShopAdmin()
 
         mViewModel.getAdminInfo()
 
         verifyGetAdminTypeIsCalled()
         verifyUserSessionValueIsNotUpdated()
-    }
-
-    @Test
-    fun `success check permission will change order eligibility value`() {
-        val isRoleEligible = true
-        everyGetAdminTypeThenReturn(AdminDataResponse())
-        everyCheckOrderRolePermissionThenReturn(isRoleEligible)
-        userIsNotShopOwnerOrLocationAdmin()
-
-        mViewModel.getAdminInfo()
-
-        verifyCheckAdminOrderPermissionIsCalled()
-
-        assert(mViewModel.isOrderShopAdmin.value == isRoleEligible)
-    }
-
-
-    @Test
-    fun `fail check permission will not change order eligibility value`() {
-        everyGetAdminTypeThenReturn(AdminDataResponse())
-        everyCheckOrderRolePermissionThenThrow(MessageErrorException())
-        userIsNotShopOwnerOrLocationAdmin()
-
-        val isRoleEligible = mViewModel.isOrderShopAdmin.value
-
-        mViewModel.getAdminInfo()
-
-        verifyCheckAdminOrderPermissionIsCalled()
-
-        assert(mViewModel.isOrderShopAdmin.value == isRoleEligible)
     }
 
     @Test
@@ -453,25 +521,40 @@ class SellerHomeActivityViewModelTest {
         } throws exception
     }
 
+    private fun everyCheckChatRolePermissionThenReturn(isRoleEligible: Boolean) {
+        coEvery {
+            authorizeChatAccessUseCase.execute(any())
+        } returns isRoleEligible
+    }
+
     private fun everyCheckOrderRolePermissionThenReturn(isRoleEligible: Boolean) {
         coEvery {
-            authorizeAccessUseCase.execute(any())
+            authorizeOrderAccessUseCase.execute(any())
         } returns isRoleEligible
     }
 
     private fun everyCheckOrderRolePermissionThenThrow(exception: Exception) {
         coEvery {
-            authorizeAccessUseCase.execute(any())
+            authorizeOrderAccessUseCase.execute(any())
         } throws exception
     }
 
-    private fun userIsNotShopOwnerOrLocationAdmin() {
+    private fun userIsShopAdmin() {
         coEvery {
             userSession.isShopOwner
         } returns false
         coEvery {
+            userSession.isShopAdmin
+        } returns true
+        coEvery {
             userSession.isLocationAdmin
         } returns false
+    }
+
+    private fun everyShopIdIsExist() {
+        coEvery {
+            userSession.shopId
+        } returns "1"
     }
 
     private fun verifyGetAdminTypeIsCalled() {
@@ -482,7 +565,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsCalled() {
         coVerify {
-            authorizeAccessUseCase.execute(any())
+            authorizeChatAccessUseCase.execute(any())
         }
     }
 
@@ -494,7 +577,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsNotCalled() {
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(any())
+            authorizeChatAccessUseCase.execute(any())
         }
     }
 
@@ -518,5 +601,9 @@ class SellerHomeActivityViewModelTest {
                 setIsMultiLocationShop(anyBoolean())
             }
         }
+    }
+
+    private fun assertNotificationDataEquals(expectedNotification: Result<NotificationUiModel>) {
+        assertEquals(expectedNotification, mViewModel.notifications.value)
     }
 }
