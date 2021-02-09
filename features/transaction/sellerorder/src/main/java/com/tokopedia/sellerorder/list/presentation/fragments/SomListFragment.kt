@@ -1546,7 +1546,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 commonToaster = Toaster.build(
                         it,
                         message,
-                        Toaster.LENGTH_INDEFINITE,
+                        Toaster.LENGTH_SHORT,
                         toasterType,
                         getString(R.string.som_list_button_ok))
                 commonToaster?.show()
