@@ -173,7 +173,7 @@ class SellerReviewHelper @Inject constructor(
      */
     private fun getDateDiffInDays(date1: Date, date2: Date): Int {
         val diffInMillis = date2.time - date1.time
-        return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS).toInt()
+        return TimeUnit.DAYS.convert(diffInMillis.absoluteValue, TimeUnit.MILLISECONDS).toInt()
     }
 
     private suspend fun resetQuotaCheck() {
