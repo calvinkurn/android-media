@@ -30,7 +30,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         val filters = getComponent(componentId, pageEndPoint)?.selectedFilters
         val recommendationData =
                 recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), filters))
-        return mapRecommendationToDiscoveryResponse(recommendationData)
+        return mapRecommendationToDiscoveryResponse(componentId, recommendationData)
     }
 
     private fun createRequestParams(page: String, componentId: String, filters: HashMap<String, String>?): GetRecommendationRequestParam {
@@ -48,11 +48,12 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         )
     }
 
-    private fun mapRecommendationToDiscoveryResponse(recommendationData: List<RecommendationWidget>): ArrayList<ComponentsItem> {
+    private fun mapRecommendationToDiscoveryResponse(componentId: String, recommendationData: List<RecommendationWidget>): ArrayList<ComponentsItem> {
         val components = arrayListOf<ComponentsItem>()
         recommendationData[0].recommendationItemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             componentsItem.position = index
+            componentsItem.parentComponentId = componentId
             componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
             val dataItems = mutableListOf<DataItem>()
             val dataItem = DataItem()
