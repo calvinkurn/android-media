@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckoutmarketplace.occ
+package com.tokopedia.promocheckoutmarketplace
 
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
@@ -9,10 +9,12 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.interceptor.PromoCheckoutMarketplaceInterceptor
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity
-import com.tokopedia.promocheckoutmarketplace.promoCheckoutPage
-import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -24,13 +26,16 @@ import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
-class PromoOccTrackingTest {
+abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
 
-    companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/promo_checkout_marketplace_one_click_checkout.json"
-    }
+    abstract fun getAnalyticsValidatorQueryFileName(): String
+
+    abstract fun getPageSource(): Int
+
+    abstract fun getStateParam(): String
+
+    abstract fun getCartTypeParam(): String
 
     @get:Rule
     val activityRule = ActivityTestRule(PromoCheckoutActivity::class.java, false, false)
@@ -38,7 +43,7 @@ class PromoOccTrackingTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
-    private val interceptor = PromoOccInterceptor()
+    private val interceptor = PromoCheckoutMarketplaceInterceptor()
     private var idlingResource: IdlingResource? = null
 
     @Before
@@ -46,15 +51,15 @@ class PromoOccTrackingTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
 
         GraphqlClient.reInitRetrofitWithInterceptors(listOf(interceptor), context)
-        interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_empty_response.json"
-        interceptor.customValidateUsePromoRevampResponsePath = "occ/validate_use_promo_revamp_success_response.json"
+        interceptor.customCouponListRecommendationResponsePath = "promo/coupon_list_recommendation_empty_response.json"
+        interceptor.customValidateUsePromoRevampResponsePath = "promo/validate_use_promo_revamp_success_response.json"
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         idlingResource = PromoCheckoutIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
-        activityRule.launchActivity(generateOccPromoIntent())
+        activityRule.launchActivity(generatePromoIntent())
     }
 
     @After
@@ -64,18 +69,17 @@ class PromoOccTrackingTest {
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
-    @Test
-    fun performPromoTrackingActions() {
+    fun performPromoAnalyticsActions() {
         promoCheckoutPage {
 
             // to ensure empty promo list UI is shown
             pullSwipeRefresh()
 
-            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"
+            interceptor.customCouponListRecommendationResponsePath = "promo/coupon_list_recommendation_ineligible_response.json"
 
             pullSwipeRefresh()
 
-            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_response.json"
+            interceptor.customCouponListRecommendationResponsePath = "promo/coupon_list_recommendation_response.json"
 
             pullSwipeRefresh()
 
@@ -85,7 +89,7 @@ class PromoOccTrackingTest {
             // Deselect promo
             clickPromoWithTitle("Cashback Rp25.000")
 
-            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_with_input_code_response.json"
+            interceptor.customCouponListRecommendationResponsePath = "promo/coupon_list_recommendation_with_input_code_response.json"
 
             typePromoCode("TESTCODE")
 
@@ -104,13 +108,13 @@ class PromoOccTrackingTest {
             // to ensure promo successfully applied
             Thread.sleep(1000)
 
-            assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+            assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, getAnalyticsValidatorQueryFileName()), hasAllSuccess())
         }
     }
 
-    private fun generateOccPromoIntent(): Intent {
+    private fun generatePromoIntent(): Intent {
         return Intent().apply {
-            putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
+            putExtra(ARGS_PAGE_SOURCE, getPageSource())
             putExtra(ARGS_PROMO_REQUEST, PromoRequest().apply {
                 orders = listOf(Order().apply {
                     shopId = 1
@@ -121,8 +125,8 @@ class PromoOccTrackingTest {
                     spId = 1
                     isInsurancePrice = 1
                 })
-                state = CheckoutConstant.PARAM_CHECKOUT
-                cartType = CheckoutConstant.PARAM_OCC
+                state = getStateParam()
+                cartType = getCartTypeParam()
                 codes = ArrayList()
             })
             putExtra(ARGS_VALIDATE_USE_REQUEST, ValidateUsePromoRequest().apply {
@@ -133,8 +137,8 @@ class PromoOccTrackingTest {
                     shippingId = 1
                     spId = 1
                 })
-                state = CheckoutConstant.PARAM_CHECKOUT
-                cartType = CheckoutConstant.PARAM_OCC
+                state = getStateParam()
+                cartType = getCartTypeParam()
                 codes = mutableListOf()
                 skipApply = 0
                 isSuggested = 0
