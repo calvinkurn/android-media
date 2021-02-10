@@ -197,6 +197,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
             addDataToGyroRecommendationView(it)
         })
+
         thanksPageDataViewModel.topTickerLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {

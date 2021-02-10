@@ -21,7 +21,7 @@ class TopTickerUseCase @Inject constructor() : UseCase<ThankPageTopTickerData>()
             onSuccess(it)
         }, {
             onFail(it)
-        })
+        }, useCaseRequestParams)
     }
 
     override suspend fun executeOnBackground(): ThankPageTopTickerData {
