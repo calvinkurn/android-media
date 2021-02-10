@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -207,10 +206,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         observeLiveData()
     }
 
-    private fun setupShareBottomSheet(quota: Int = 0, url: String = ""): ShareVoucherBottomSheet {
-        val isBroadCastUrlValid = mViewModel.isBroadCastChatUrlValid(url)
+    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet {
         val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
-        shareVoucherBottomSheet.setIsBroadCastChatUrlValid(isBroadCastUrlValid)
+        shareVoucherBottomSheet.setBroadCastChatStatus(status)
         shareVoucherBottomSheet.setBroadCastChatQuota(quota)
         return shareVoucherBottomSheet
     }
@@ -630,8 +628,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                         socmedType = socmedType,
                         voucher = voucher,
                         userId = userSession.userId,
-                        shopId = userSession.shopId,
-                        broadCastChatUrl = mViewModel.getBroadCastChatUrl())
+                        shopId = userSession.shopId)
             }
         }
         shareVoucherBottomSheet?.show(childFragmentManager)
@@ -1119,8 +1116,10 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             shareVoucherBottomSheet = when (result) {
                 is Success -> {
                     val broadCastMetaData = result.data
-                    mViewModel.setBroadCastChatUrl(broadCastMetaData.url)
-                    setupShareBottomSheet(broadCastMetaData.quota, broadCastMetaData.url)
+                    setupShareBottomSheet(
+                            status = broadCastMetaData.status,
+                            quota = broadCastMetaData.quota
+                    )
                 }
                 is Fail -> {
                     setupShareBottomSheet()

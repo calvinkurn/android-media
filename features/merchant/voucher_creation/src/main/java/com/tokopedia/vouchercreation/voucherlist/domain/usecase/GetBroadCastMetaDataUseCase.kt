@@ -34,7 +34,7 @@ class GetBroadCastMetaDataUseCase @Inject constructor(
             query GetBroadCastMetaData {
               chatBlastSellerMetadata {
                 quota
-                url
+                status
               }
             }
         """.trimIndent()

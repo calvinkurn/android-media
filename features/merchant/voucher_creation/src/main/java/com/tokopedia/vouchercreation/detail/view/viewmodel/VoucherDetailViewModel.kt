@@ -97,16 +97,4 @@ class VoucherDetailViewModel @Inject constructor(
             _broadCastMetaData.value = Fail(it)
         })
     }
-
-    fun isBroadCastChatUrlValid(url: String): Boolean {
-        return url.isNotBlank()
-    }
-
-    fun setBroadCastChatUrl(url: String) {
-        this.broadCastChatUrl = url
-    }
-
-    fun getBroadCastChatUrl(): String {
-        return broadCastChatUrl
-    }
 }

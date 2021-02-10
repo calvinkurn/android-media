@@ -403,8 +403,10 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 shareVoucherBottomSheet = when(result) {
                     is Success -> {
                         val broadCastMetaData = result.data
-                        viewModel.setBroadCastChatUrl(broadCastMetaData.url)
-                        setupShareBottomSheet(broadCastMetaData.quota, broadCastMetaData.url)
+                        setupShareBottomSheet(
+                                status = broadCastMetaData.status,
+                                quota = broadCastMetaData.quota
+                        )
                     }
                     is Fail -> {
                         setupShareBottomSheet()
@@ -422,10 +424,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         }
     }
 
-    private fun setupShareBottomSheet(quota: Int = 0, url: String = ""): ShareVoucherBottomSheet? {
-        val isBroadCastUrlValid = viewModel.isBroadCastChatUrlValid(url)
+    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet? {
         val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
-        shareVoucherBottomSheet.setIsBroadCastChatUrlValid(isBroadCastUrlValid)
+        shareVoucherBottomSheet.setBroadCastChatStatus(status)
         shareVoucherBottomSheet.setBroadCastChatQuota(quota)
         return shareVoucherBottomSheet
     }
@@ -446,8 +447,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                                 socmedType = socmedType,
                                 voucher = voucher,
                                 userId = userSession.userId,
-                                shopId = userSession.shopId,
-                                broadCastChatUrl = viewModel.getBroadCastChatUrl())
+                                shopId = userSession.shopId)
                     }
                 }
         shareVoucherBottomSheet?.show(childFragmentManager)

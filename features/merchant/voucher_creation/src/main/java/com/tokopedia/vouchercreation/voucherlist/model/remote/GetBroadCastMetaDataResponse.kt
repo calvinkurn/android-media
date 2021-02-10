@@ -10,6 +10,6 @@ data class GetBroadCastMetaDataResponse(
 data class ChatBlastSellerMetadata(
         @SerializedName("quota")
         val quota: Int = 0,
-        @SerializedName("url")
-        val url: String = ""
+        @SerializedName("status")
+        val status: Int = 0
 )

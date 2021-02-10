@@ -40,8 +40,6 @@ class VoucherListViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private var broadCastChatUrl: String = ""
-
     private var showBroadCastChatTicker: Boolean = true
 
     private val bcTickerExpirationPeriod = 3 // months
@@ -213,18 +211,6 @@ class VoucherListViewModel @Inject constructor(
         }, onError = {
             _broadCastMetaData.value = Fail(it)
         })
-    }
-
-    fun isBroadCastChatUrlValid(url: String): Boolean {
-        return url.isNotBlank()
-    }
-
-    fun setBroadCastChatUrl(url: String) {
-        this.broadCastChatUrl = url
-    }
-
-    fun getBroadCastChatUrl(): String {
-        return broadCastChatUrl
     }
 
     fun setShowBroadCastChatTicker(showBroadCastChatTicker: Boolean) {
