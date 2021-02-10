@@ -358,9 +358,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
@@ -370,9 +368,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 if (!task.isSuccessful() || task.getResult() == null) {
                     try {
                         sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (IOException e) {}
                 } else {
                     fcmManager.get().onNewToken(task.getResult().getToken());
                 }

@@ -533,9 +533,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
@@ -545,9 +543,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 if (!task.isSuccessful() || task.getResult() == null) {
                     try {
                         sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (IOException e) {}
                 } else {
                     fcmManager.onNewToken(task.getResult().getToken());
                 }
