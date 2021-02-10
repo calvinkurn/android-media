@@ -193,7 +193,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                 }
 
                 if(broadcastChat) {
-                   add( SellerFeatureUiModel.BroadcastChatProductManageUiModel(product))
+                   add(SellerFeatureUiModel.BroadcastChatProductManageUiModel(product))
                 }
             }
         }
