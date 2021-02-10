@@ -5,14 +5,12 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -45,8 +43,8 @@ import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
-import com.tokopedia.statistic.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -74,9 +72,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
+        private const val PAGE_SOURCE = "page_surce"
 
-        fun newInstance(): StatisticFragment {
-            return StatisticFragment()
+        fun newInstance(pageSource: String): StatisticFragment {
+            return StatisticFragment().apply {
+                arguments = Bundle().apply {
+                    putString(PAGE_SOURCE, pageSource)
+                }
+            }
         }
     }
 
@@ -98,10 +101,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
-    private var tabItems = emptyList<Pair<String, String>>()
+    private var pageSource: String = Const.PageSource.SHOP_INSIGHT
     private var isFirstLoad = true
     private var isErrorToastShown = false
-    private var canSelectTabEnabled = false
 
     private var isPltMonitoringCompleted = false
     private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
@@ -115,10 +117,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        pageSource = getPageSourceFromArgs()
         coroutineScope.launch {
             startLayoutNetworkPerformanceMonitoring()
-            mViewModel.getWidgetLayout()
+            mViewModel.getWidgetLayout(pageSource)
         }
     }
 
@@ -132,8 +134,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         hideTooltipIfExist()
         setupView()
-
-        mViewModel.setDateFilter(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        setDefaultDynamicParameter()
 
         observeWidgetLayoutLiveData()
         observeUserRole()
@@ -151,7 +152,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onResume() {
         super.onResume()
         if (!isFirstLoad) {
-            view?.appBarStc?.gone()
             reloadPage()
         }
         if (userVisibleHint)
@@ -297,19 +297,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
     private fun setupView() = view?.run {
-        (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(headerStcStatistic)
-            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            activity.supportActionBar?.title = activity.getString(R.string.stc_shop_statistic)
-        }
-
         setDefaultRange()
         setupRecyclerView()
-
-        tabLayoutStc.customTabMode = TabLayout.MODE_SCROLLABLE
-        tabLayoutStc.tabLayout.setOnTabSelectedListener {
-            setOnTabSelected()
-        }
 
         swipeRefreshStc.setOnRefreshListener {
             reloadPage()
@@ -318,6 +307,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         globalErrorStc.setActionClickListener {
             reloadPage()
         }
+    }
+
+    private fun setDefaultDynamicParameter() {
+        mViewModel.setDateFilter(pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
     }
 
     private fun getRegularMerchantStatus(): Boolean {
@@ -335,7 +328,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setHeaderSubTitle(subTitle: String) {
-        view?.headerStcStatistic?.headerSubTitle = subTitle
+        (activity as? FragmentListener)?.setHeaderSubTitle(subTitle)
     }
 
     private fun setupRecyclerView() = view?.run {
@@ -352,20 +345,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
 
             setOnScrollVertically {
-                showTabLayout()
-                selectTabOnScrolling()
                 requestVisibleWidgetsData()
             }
         }
 
         with(recyclerView) {
             layoutManager = mLayoutManager
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    canSelectTabEnabled = newState == RecyclerView.SCROLL_STATE_IDLE
-                }
-            })
-
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
     }
@@ -455,7 +440,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateFilter(startDate, endDate, item.getDateFilterType())
+        mViewModel.setDateFilter(pageSource, startDate, endDate, item.getDateFilterType())
         adapter.data.forEach {
             if (it !is TickerWidgetUiModel) {
                 it.isLoaded = false
@@ -481,39 +466,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun showTabLayout() = view?.run {
-        val firstVisibleIndex: Int = mLayoutManager.findFirstVisibleItemPosition()
-        var shouldShowTabLayout = firstVisibleIndex > 0
-        try {
-            val firstVisibleWidget = adapter.data[0]
-            val isTickerWidget = firstVisibleWidget is TickerWidgetUiModel
-            if (isTickerWidget) {
-                shouldShowTabLayout = firstVisibleIndex > 1
-            }
-        } catch (i: IndexOutOfBoundsException) {
-        }
-
-        if (shouldShowTabLayout) {
-            appBarStc.visible()
-        } else {
-            appBarStc.gone()
-        }
-    }
-
-    private fun selectTabOnScrolling() {
-        val firstVisible: Int = mLayoutManager.findFirstCompletelyVisibleItemPosition()
-        if (firstVisible == RecyclerView.NO_POSITION) return
-
-        val mostTopVisibleWidget: BaseWidgetUiModel<*> = adapter.data[firstVisible]
-        val widgetPair: Pair<String, String> = Pair(mostTopVisibleWidget.title, mostTopVisibleWidget.dataKey)
-        val tabPair: Pair<String, String> = tabItems.firstOrNull {
-            it.second == widgetPair.second || it.second == widgetPair.first
-        } ?: return
-        val tabIndex: Int = tabItems.map { it.first }.distinct().indexOfFirst { it == tabPair.first }
-        val tab = view?.tabLayoutStc?.tabLayout?.getTabAt(tabIndex)
-        tab?.select()
-    }
-
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView.visible()
         view?.globalErrorStc?.gone()
@@ -525,8 +477,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         adapter.data.clear()
         super.renderList(mWidgetList)
 
-        setupTabItems()
-
         if (isFirstLoad) {
             recyclerView.post {
                 requestVisibleWidgetsData()
@@ -535,53 +485,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         } else {
             requestVisibleWidgetsData()
         }
-
-        showTabLayout()
-    }
-
-    private fun setupTabItems() = view?.run {
-        tabLayoutStc.tabLayout.removeAllTabs()
-        var sectionTitle = ""
-
-        tabItems = adapter.data.filter { it !is TickerWidgetUiModel }
-                .map {
-                    return@map if (it.widgetType == WidgetType.SECTION) {
-                        tabLayoutStc.addNewTab(it.title)
-                        sectionTitle = it.title
-                        Pair(it.title, it.title)
-                    } else {
-                        Pair(sectionTitle, it.dataKey)
-                    }
-                }
-        selectTabOnScrolling()
-    }
-
-    private fun setOnTabSelected() = view?.run {
-        if (!canSelectTabEnabled) return@run
-
-        val selectedTabIndex = tabLayoutStc.tabLayout.selectedTabPosition
-        val tabTitle: String = try {
-            tabItems.map { it.first }.distinct()[selectedTabIndex]
-        } catch (e: IndexOutOfBoundsException) {
-            ""
-        }
-
-        val adapterIndex: Int = adapter.data.indexOfFirst { it.title == tabTitle }
-
-        if (adapterIndex != RecyclerView.NO_POSITION) {
-            val tabLayoutHeight: Int = if (selectedTabIndex != 0) tabLayoutStc.height else 0
-            val widgetPosition: Int = if (selectedTabIndex != 0) adapterIndex else 0
-            mLayoutManager.scrollToPositionWithOffset(widgetPosition, tabLayoutHeight)
-            recyclerView.post {
-                requestVisibleWidgetsData()
-            }
-        }
-
-        if (selectedTabIndex == 0) {
-            appBarStc.gone()
-        }
-
-        StatisticTracker.sendSelectSectionTabEvent(tabTitle)
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
@@ -611,12 +514,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        Toaster.make(this, context.getString(R.string.stc_failed_to_get_information),
-                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.stc_reload),
-                View.OnClickListener {
-                    reloadPageOrLoadDataOfErrorWidget()
-                }
-        )
+        Toaster.build(this, context.getString(R.string.stc_failed_to_get_information),
+                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.stc_reload)) {
+            reloadPageOrLoadDataOfErrorWidget()
+        }.show()
 
         Handler().postDelayed({
             isErrorToastShown = false
@@ -657,7 +558,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         swipeRefreshStc.isRefreshing = isAdapterNotEmpty
 
         globalErrorStc.gone()
-        mViewModel.getWidgetLayout()
+        mViewModel.getWidgetLayout(pageSource)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) = view?.run {
@@ -827,5 +728,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
         }
+    }
+
+    private fun getPageSourceFromArgs(): String {
+        return arguments?.getString(PAGE_SOURCE) ?: pageSource
     }
 }

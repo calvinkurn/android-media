@@ -26,4 +26,6 @@
     <string name="stc_per_day_fmt">Per Hari (%1$s)</string>
     <string name="stc_per_week_fmt">Per Minggu (%1$s)</string>
     <string name="stc_per_month_fmt">Per Bulan (%1$s)</string>
+    <string name="stc_shop">Toko</string>
+    <string name="stc_buyer">Pembeli</string>
 </resources>

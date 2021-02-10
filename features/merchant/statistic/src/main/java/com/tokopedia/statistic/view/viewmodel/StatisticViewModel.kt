@@ -3,13 +3,13 @@ package com.tokopedia.statistic.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,7 +41,6 @@ class StatisticViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
-        private const val STATISTIC_PAGE_NAME = "shop-insight"
         private const val DATE_FORMAT = "dd-MM-yyyy"
         private const val TICKER_PAGE_NAME = "seller-statistic"
     }
@@ -84,21 +83,21 @@ class StatisticViewModel @Inject constructor(
 
     private var dynamicParameter = DynamicParameterModel()
 
-    fun setDateFilter(startDate: Date, endDate: Date, filterType: String) {
+    fun setDateFilter(pageSource: String, startDate: Date, endDate: Date, filterType: String) {
         val startDateFmt = DateTimeUtil.format(startDate.time, DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, DATE_FORMAT)
         this.dynamicParameter = DynamicParameterModel(
                 startDate = startDateFmt,
                 endDate = endDateFmt,
-                pageSource = STATISTIC_PAGE_NAME,
+                pageSource = pageSource,
                 dateType = filterType
         )
     }
 
-    fun getWidgetLayout() {
-        launchCatchError(block = {
+    fun getWidgetLayout(pageSource: String) {
+        launchCatchError(context = dispatcher.io, block = {
             val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(dispatcher.io) {
-                getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, STATISTIC_PAGE_NAME)
+                getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, pageSource)
                 return@withContext getLayoutUseCase.get().executeOnBackground()
             })
             _widgetLayout.postValue(result)

@@ -11,7 +11,11 @@ import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceList
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.view.fragment.StatisticFragment
+import com.tokopedia.statistic.view.viewhelper.FragmentListener
+import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
+import kotlinx.android.synthetic.main.activity_stc_statistic.*
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -19,9 +23,16 @@ import com.tokopedia.statistic.view.fragment.StatisticFragment
 
 // Internal applink : ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 
-class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener {
+class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformanceMonitoringListener {
 
-    private val statisticFragment by lazy { StatisticFragment.newInstance() }
+    private val shopStatistic by lazy {
+        StatisticFragment.newInstance(Const.PageSource.SHOP_INSIGHT)
+    }
+    private val buyerStatistic by lazy {
+        StatisticFragment.newInstance(Const.PageSource.BUYER_INSIGHT)
+    }
+    private var viewPagerAdapter: StatisticViewPagerAdapter? = null
+
     val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
@@ -32,7 +43,8 @@ class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stc_statistic)
 
-        showFragment()
+        initVar()
+        setupView()
         setWhiteStatusBar()
     }
 
@@ -49,13 +61,33 @@ class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener
         pltListener?.stopMonitoring()
     }
 
-    private fun showFragment() {
-        val containerViewId = R.id.parent_view_stc
-        val isFragmentNotAttachedYet = supportFragmentManager.findFragmentById(containerViewId) == null
-        if (isFragmentNotAttachedYet) {
-            supportFragmentManager.beginTransaction()
-                    .replace(containerViewId, statisticFragment)
-                    .commit()
+    override fun setHeaderSubTitle(subTitle: String) {
+        headerStcStatistic.headerSubTitle = subTitle
+    }
+
+    private fun initVar() {
+        val shopTitle = getString(R.string.stc_shop)
+        val buyerTitle = getString(R.string.stc_buyer)
+        viewPagerAdapter = StatisticViewPagerAdapter(supportFragmentManager).apply {
+            addFragment(shopStatistic, shopTitle)
+            addFragment(buyerStatistic, buyerTitle)
+        }
+    }
+
+    private fun setupView() {
+        setSupportActionBar(headerStcStatistic)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.stc_shop_statistic)
+
+        setupViewPager()
+    }
+
+    private fun setupViewPager() {
+        viewPagerAdapter?.let {
+            it.titles.forEach { title -> tabStatistic.addNewTab(title) }
+            viewPagerStatistic.adapter = it
+            tabStatistic.setupWithViewPager(viewPagerStatistic)
+            viewPagerStatistic.offscreenPageLimit = it.titles.size
         }
     }
 
