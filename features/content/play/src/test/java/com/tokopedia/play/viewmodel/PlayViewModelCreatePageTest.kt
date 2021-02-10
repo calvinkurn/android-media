@@ -25,6 +25,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.LikeSource
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -63,6 +64,7 @@ class PlayViewModelCreatePageTest {
     private val likeBuilder = PlayLikeModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
+    private val statusInfoBuilder = PlayStatusInfoModelBuilder()
 
     @Before
     fun setUp() {
@@ -308,6 +310,43 @@ class PlayViewModelCreatePageTest {
             createPage(channelData)
         } thenVerify {
             pinnedResult
+                    .isEqualTo(expectedModel)
+        }
+    }
+
+    @Test
+    fun `given channel data is set, when page is created, then status info value should be the same as in channel data`() {
+        val statusType = PlayStatusType.Active
+        val bannedTitle = "Anda di banned"
+        val freezeTitle = "Channel ini dibekukan"
+
+        val channelData = channelDataBuilder.buildChannelData(
+                statusInfo = statusInfoBuilder.build(
+                        statusType = statusType,
+                        bannedModel = statusInfoBuilder.buildBannedModel(
+                                title = bannedTitle,
+                        ),
+                        freezeModel = statusInfoBuilder.buildFreezeModel(
+                                title = freezeTitle
+                        )
+                )
+        )
+
+        val expectedModel = statusInfoBuilder.build(
+                statusType = statusType,
+                bannedModel = statusInfoBuilder.buildBannedModel(
+                        title = bannedTitle,
+                ),
+                freezeModel = statusInfoBuilder.buildFreezeModel(
+                        title = freezeTitle
+                )
+        )
+
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            statusInfoResult
                     .isEqualTo(expectedModel)
         }
     }

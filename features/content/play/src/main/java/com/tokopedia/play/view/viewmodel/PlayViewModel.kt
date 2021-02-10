@@ -807,10 +807,7 @@ class PlayViewModel @Inject constructor(
 
                 val newPartnerInfo = PlayPartnerInfoUiModel.Complete(
                         basicInfo = partnerBasicInfo,
-                        followInfo = PlayPartnerFollowInfoUiModel(
-                                isFollowable = userSession.shopId != shopInfo.shopCore.shopId,
-                                isFollowed = shopInfo.favoriteData.alreadyFavorited == 1
-                        )
+                        followInfo = playUiModelMapper.mapPartnerInfo(shopInfo)
                 )
 
                 _observablePartnerInfo.value = newPartnerInfo

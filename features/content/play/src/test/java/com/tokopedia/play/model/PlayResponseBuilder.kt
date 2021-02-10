@@ -2,6 +2,7 @@ package com.tokopedia.play.model
 
 import com.google.gson.Gson
 import com.tokopedia.play.data.ReportSummaries
+import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 
 /**
@@ -301,6 +302,28 @@ class PlayResponseBuilder {
       }
     """.trimIndent()
 
+    private val partnerInfoResponse = """
+        {
+          "shopInfoByID": {
+            "result": [
+              {
+                "shopCore": {
+                  "name": "Bearhug-Id",
+                  "shopID": "8377836"
+                },
+                "favoriteData": {
+                  "totalFavorite": 3619,
+                  "alreadyFavorited": 0
+                }
+              }
+            ],
+            "error": {
+              "message": ""
+            }
+          }
+        }
+    """.trimIndent()
+
     fun buildReportSummariesResponse(): ReportSummaries {
         return gson.fromJson(reportSummariesResponse, ReportSummaries.Response::class.java).reportSummaries
     }
@@ -309,5 +332,7 @@ class PlayResponseBuilder {
         return gson.fromJson(channelJsonWithRecomResponse, ChannelDetailsWithRecomResponse::class.java)
     }
 
-
+    fun buildPartnerInfoResponse(): ShopInfo {
+        return gson.fromJson(partnerInfoResponse, ShopInfo.Response::class.java).result.data.first()
+    }
 }

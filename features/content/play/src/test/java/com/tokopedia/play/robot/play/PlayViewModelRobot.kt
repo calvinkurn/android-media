@@ -1,8 +1,10 @@
 package com.tokopedia.play.robot.play
 
 import com.tokopedia.play.data.ReportSummaries
+import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
@@ -10,14 +12,14 @@ import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 
 /**
@@ -30,7 +32,7 @@ class PlayViewModelRobot(
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         getChannelStatusUseCase: GetChannelStatusUseCase,
         getSocketCredentialUseCase: GetSocketCredentialUseCase,
-        getPartnerInfoUseCase: GetPartnerInfoUseCase,
+        private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         getCartCountUseCase: GetCartCountUseCase,
@@ -40,7 +42,7 @@ class PlayViewModelRobot(
         playSocket: PlaySocket,
         playSocketToModelMapper: PlaySocketToModelMapper,
         playUiModelMapper: PlayUiModelMapper,
-        userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         dispatchers: CoroutineDispatcherProvider,
         pageMonitoring: PlayPltPerformanceCallback,
         remoteConfig: RemoteConfig
@@ -88,6 +90,14 @@ class PlayViewModelRobot(
     fun setMockResponseIsLike(response: Boolean) {
         coEvery { getIsLikeUseCase.executeOnBackground() } returns response
     }
+
+    fun setMockPartnerInfoResponse(response: ShopInfo) {
+        coEvery { getPartnerInfoUseCase.executeOnBackground() } returns response
+    }
+
+    fun setMockUserId(userId: String) {
+        every { userSession.userId } returns userId
+    }
 }
 
 fun givenPlayViewModelRobot(
@@ -106,7 +116,7 @@ fun givenPlayViewModelRobot(
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
         playSocket: PlaySocket = mockk(relaxed = true),
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
-        playUiModelMapper: PlayUiModelMapper = mockk(relaxed = true),
+        playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
         dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider,
         pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),

@@ -17,4 +17,12 @@ class PlayPartnerInfoResult(
 
         return this
     }
+
+    fun isNotEqualTo(expected: PlayPartnerInfoUiModel): PlayPartnerInfoResult {
+        Assertions
+                .assertThat(result)
+                .isNotEqualTo(expected)
+
+        return this
+    }
 }
