@@ -20,7 +20,8 @@ object SnapshotAnalytics {
     private const val PRODUCT_ID = "productId"
     private const val SHOP_ID = "shopId"
     private const val MAIN_APP_ANDROID = "main app android"
-    private const val SELLER_APP_ANDROID = "seller app android"
+    private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
+    private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
     private const val MARKETPLACE = "marketplace"
 
     fun clickLihatHalamanProduk(productId: String, userId: String) {
@@ -49,9 +50,9 @@ object SnapshotAnalytics {
         val event = TrackAppUtils.gtmData(CLICK_SOM, SOM_PRODUCT_SNAPSHOT_PAGE,
                 CLICK_PRODUCT_PAGE, "")
         if(GlobalConfig.isSellerApp()) {
-            event[CURRENT_SITE] = SELLER_APP_ANDROID
+            event[CURRENT_SITE] = SELLER_APP_ANDROID_SOM
         } else {
-            event[CURRENT_SITE] = MAIN_APP_ANDROID
+            event[CURRENT_SITE] = MAIN_APP_ANDROID_SOM
         }
         event[USER_ID] = userId
         event[PRODUCT_ID] = productId
@@ -63,9 +64,9 @@ object SnapshotAnalytics {
         val event = TrackAppUtils.gtmData(CLICK_SOM, SOM_PRODUCT_SNAPSHOT_PAGE,
                 CLICK_SHOP_PAGE, "")
         if(GlobalConfig.isSellerApp()) {
-            event[CURRENT_SITE] = SELLER_APP_ANDROID
+            event[CURRENT_SITE] = SELLER_APP_ANDROID_SOM
         } else {
-            event[CURRENT_SITE] = MAIN_APP_ANDROID
+            event[CURRENT_SITE] = MAIN_APP_ANDROID_SOM
         }
         event[USER_ID] = userId
         event[SHOP_ID] = shopId
