@@ -274,7 +274,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     }
 
     private fun hideStickyLogin() {
-        UiThreadStatement.runOnUiThread {
+        activityRule.runOnUiThread {
             val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
             if (layout.visibility == View.VISIBLE) {
                 layout.visibility = View.GONE
