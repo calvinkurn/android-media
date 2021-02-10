@@ -8,7 +8,7 @@
       "clientId": "{{.+}}",
       "appsflyerId": "{{.+}}",
       "screenName": "/digital/voucher game",
-      "userId": "{{.+}}",
+      "userId": "{{.*}}",
       "sessionIris": "{{.+}}",
       "networkSpeed": "{{.*}}",
       "currentSite": "tokopediadigital",
