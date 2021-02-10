@@ -879,10 +879,12 @@ class ShopPageFragment :
             avatar = shopPageP1Data.shopAvatar
         }
         new_navigation_toolbar?.run{
-            setupSearchbar(
-                    hints =  listOf(HintData(placeholder = getString(
+            val searchBarHintText = MethodChecker.fromHtml(getString(
                     R.string.shop_product_search_hint_2,
-                    shopPageHeaderDataModel?.shopName.orEmpty()))),
+                    shopPageHeaderDataModel?.shopName.orEmpty())
+            ).toString()
+            setupSearchbar(
+                    hints =  listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
                         redirectToShopSearchProduct()
                     }
