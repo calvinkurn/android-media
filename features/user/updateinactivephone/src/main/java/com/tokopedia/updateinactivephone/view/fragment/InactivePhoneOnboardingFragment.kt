@@ -21,6 +21,7 @@ import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +37,9 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userDataTemp: UserDataTemporary
+
+    @Inject
+    lateinit var tracker: InactivePhoneTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,6 +83,8 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext?.setOnClickListener {
+            tracker.clickOnNextButtonOnboarding()
+
             showLoading()
             viewModel.phoneValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail())
         }

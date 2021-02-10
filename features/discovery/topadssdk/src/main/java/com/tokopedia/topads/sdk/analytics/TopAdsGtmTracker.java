@@ -1037,4 +1037,72 @@ public class TopAdsGtmTracker {
             return 0;
         }
     }
+
+
+    public static void eventTopAdsHeadlineShopView(int index, CpmData cpm, String keyword, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "topads headline",
+                "eventAction", "impression - topads headline banner",
+                "eventLabel", cpm.getCpm().getCpmShop().getId() +", "+ cpm.getId()+ ", " + keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void eventTopAdsHeadlineProductClick(int index, String keyword, CpmData cpm, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "Headline Ads on SRP",
+                "eventAction", "click - product topads headline",
+                "eventLabel", cpm.getCpm().getCpmShop().getId() +", "+cpm.getId()+", "+ cpm.getCpm().getPromotedText(),
+                "businessUnit", "TopAds",
+                "creative_slot", index,
+                "item_list","{}",
+                "currentSite", "tokopediamarketplace",
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline product",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void eventTopAdsHeadlineShopClick(int index, String keyword, CpmData cpm, String userId) {
+        Analytics tracker = getTracker();
+        Map<String, Object> map = DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "topads headline",
+                "eventAction", "click - shop topads headline",
+                "eventLabel", cpm.getCpm().getCpmShop().getId() +", "+cpm.getId()+", "+ keyword,
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", cpm.getId(),
+                                                "name", "/search - headline",
+                                                "creative", cpm.getRedirect(),
+                                                "position", index + 1))
+                        )),
+                "userId",userId
+        );
+        tracker.sendEnhanceEcommerceEvent(map);
+    }
 }
