@@ -210,12 +210,9 @@ class SellerHomeNavigator(
 
         hideAllPages(transaction)
 
-        if (fragmentByTag == null && !selectedFragment.isAdded) {
-            transaction.add(R.id.sahContainer, selectedFragment, tag)
-        } else {
-            transaction.show(selectedFragment)
-        }
-        transaction.commit()
+        transaction
+                .show(selectedFragment)
+                .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
