@@ -166,11 +166,17 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private fun setupEditText(view: View) {
         talkEditTemplateEditText = view.findViewById(R.id.talkEditTemplateEditText)
         if (isEditMode) {
-            talkEditTemplateEditText?.apply {
-                post {
-                    setText(templateText)
-                }
+            talkEditTemplateEditText?.post {
+                talkEditTemplateEditText?.setText(templateText)
             }
+        } else {
+            talkEditTemplateEditText?.post {
+                talkEditTemplateEditText?.setHint(R.string.template_list_add_template_placeholder)
+                talkEditTemplateEditText?.setText("")
+            }
+        }
+        talkEditTemplateEditText?.post {
+            talkEditTemplateEditText?.requestFocus()
         }
     }
 }

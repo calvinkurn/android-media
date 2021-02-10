@@ -164,5 +164,6 @@
     <string name="template_list_rearrange_toaster_fail">Urutan template diskusi gagal diubah. Coba ubah lagi, ya.</string>
     <string name="template_delete_toaster_fail">Template diskusi gagal dihapus.</string>
     <string name="template_list_delete">Hapus</string>
+    <string name="template_list_add_template_placeholder">Buat template barumu di sini\n\nContoh:\nHalo, barang ini ready ya silakan order</string>
 
 </resources>
