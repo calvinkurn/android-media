@@ -55,6 +55,7 @@
         app:srcCompat="@drawable/talk_ic_kebab" />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/reply_product_header_bottom_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"

@@ -3,11 +3,12 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
@@ -90,7 +91,8 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             setOnClickListener(null)
             if(isSellerView) {
                 val constraintSet = ConstraintSet()
-                val constraintLayout = talkReplyProductHeaderConstraintLayout
+                val constraintLayout = itemView.talkReplyProductHeaderConstraintLayout
+                constraintSet.clone(constraintLayout)
                 constraintSet.clear(replyProductHeaderName.id, ConstraintSet.BOTTOM)
                 constraintSet.applyTo(constraintLayout)
             }
