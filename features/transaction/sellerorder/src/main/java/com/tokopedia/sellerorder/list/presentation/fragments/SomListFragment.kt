@@ -274,6 +274,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
     override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this)
     override fun getRecyclerViewResourceId() = R.id.rvSomList
+    override fun getRecyclerView(view: View?) = view?.findViewById<RecyclerView>(recyclerViewResourceId)
     override fun getScreenName(): String = ""
     override fun initInjector() = inject()
     override fun onDismiss() {}
