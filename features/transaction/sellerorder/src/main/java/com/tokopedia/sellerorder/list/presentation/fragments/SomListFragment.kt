@@ -818,11 +818,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             rvSomList.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
             }
-            rvSomList?.post {
-                when (result) {
-                    is Success -> renderOrderList(result.data)
-                    is Fail -> showGlobalError(result.throwable)
-                }
+            when (result) {
+                is Success -> renderOrderList(result.data)
+                is Fail -> showGlobalError(result.throwable)
             }
         })
     }
