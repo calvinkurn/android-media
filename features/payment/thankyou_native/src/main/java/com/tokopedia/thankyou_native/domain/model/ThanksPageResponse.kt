@@ -379,6 +379,10 @@ data class ConfigFlag(
         val isThanksWidgetEnabled : Boolean
 )
 
+data class Tickers(
+        @SerializedName("tickers")
+        val tickerDataList : List<ThankPageTopTickerData>?
+)
 data class ThankPageTopTickerData(
         @SerializedName("ticker_title")
         val tickerTitle : String?,
