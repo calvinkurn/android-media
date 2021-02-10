@@ -14,11 +14,7 @@ import java.util.HashMap
 
 class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): DynamicLegoBannerListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        if (channelModel.isLegoSixAuto()) {
-            LegoBannerTracking.sendLegoBannerSixAutoClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
-        } else {
-            LegoBannerTracking.sendLegoBannerSixClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
-        }
+        LegoBannerTracking.sendLegoBannerSixClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)
@@ -39,11 +35,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        if (channelModel.isLegoSixAuto()) {
-            LegoBannerTracking.sendLegoBannerSixAutoClick(channelModel, channelGrid, position)
-        } else {
-            LegoBannerTracking.sendLegoBannerSixClick(channelModel, channelGrid, position)
-        }
+        LegoBannerTracking.sendLegoBannerSixClick(channelModel, channelGrid, position)
         RouteManager.route(context,
                 if (channelGrid.applink.isNotEmpty())
                     channelGrid.applink else channelGrid.url)
@@ -76,19 +68,11 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-        if (channelModel.isLegoSixAuto()) {
-            homeCategoryListener.putEEToIris(
-                    LegoBannerTracking.getLegoBannerSixImageImpression(
-                            channelModel, parentPosition, isToIris = true, isAuto = true
-                    ) as HashMap<String, Any>
-            )
-        } else {
-            homeCategoryListener.putEEToIris(
-                    LegoBannerTracking.getLegoBannerSixImageImpression(
-                            channelModel, parentPosition, isToIris = true, isAuto = false
-                    ) as HashMap<String, Any>
-            )
-        }
+        homeCategoryListener.putEEToIris(
+                LegoBannerTracking.getLegoBannerSixImageImpression(
+                        channelModel, parentPosition, isToIris = true
+                ) as HashMap<String, Any>
+        )
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
@@ -109,9 +93,5 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
 
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
 
-    }
-
-    private fun ChannelModel.isLegoSixAuto(): Boolean {
-        return this.channelConfig.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO
     }
 }

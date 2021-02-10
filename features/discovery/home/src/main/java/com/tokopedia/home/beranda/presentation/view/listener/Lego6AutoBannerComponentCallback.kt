@@ -24,6 +24,11 @@ class Lego6AutoBannerComponentCallback(val context: Context?, val homeCategoryLi
 
     }
 
+    override fun onTallImageClicked(channelModel: ChannelModel, parentPosition: Int) {
+        LegoBannerTracking.sendLegoBannerTallSixAutoClick(channelModel, parentPosition)
+        RouteManager.route(context, channelModel.channelBanner.applink)
+    }
+
     override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         LegoBannerTracking.sendLegoBannerSixAutoClick(channelModel, channelGrid, position)
         RouteManager.route(context, channelGrid.applink)

@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -41,7 +42,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
         private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
-        private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s"
+        private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s - %s"
 
         private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
@@ -338,7 +339,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO) {
-                channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), channel.header.name)
+                channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), "individual_grid", channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE ||
@@ -428,7 +429,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                    LegoBannerTracking.convertLegoSixAutoBannerDataLayerForCombination(channel, verticalPosition))
         }
         return viewModel
     }

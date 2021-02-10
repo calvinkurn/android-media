@@ -65,6 +65,9 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
                 }
                 itemView.item_lego_auto_image.setImageUrl(url = element.channelModel.channelBanner.imageUrl)
             }
+            itemView.item_lego_auto_image.setOnClickListener {
+                legoSixAutoListener?.onTallImageClicked(element.channelModel, adapterPosition)
+            }
         }
         if (element.channelModel.channelGrids.isNotEmpty()) {
             val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
@@ -85,14 +88,12 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
 
             recyclerView.itemAnimator = null
             if (recyclerView.adapter == null) {
-                val adapter = LegoItemAdapter(
-                        legoSixAutoListener,
-                        element.channelModel)
+                val adapter = LegoItemAdapter(legoSixAutoListener)
                 recyclerView.adapter = adapter
-                adapter.setItems(element.channelModel.channelGrids, isCacheData, adapterPosition)
+                adapter.setItems(element.channelModel.channelGrids, isCacheData, adapterPosition, element.channelModel)
             } else {
                 val adapter = recyclerView.adapter as? LegoItemAdapter
-                adapter?.setItems(element.channelModel.channelGrids, isCacheData, adapterPosition)
+                adapter?.setItems(element.channelModel.channelGrids, isCacheData, adapterPosition, element.channelModel)
             }
         }
     }
@@ -103,23 +104,24 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
         }
     }
 
-    class LegoItemAdapter(private val listener: Lego6AutoBannerListener?,
-                          private val channel: ChannelModel
+    class LegoItemAdapter(private val listener: Lego6AutoBannerListener?
     ) : RecyclerView.Adapter<LegoItemViewHolder>() {
         var grids: List<ChannelGrid> = listOf()
         var isCacheData: Boolean = true
         var parentPosition: Int = -1
+        var channel: ChannelModel? = null
         companion object{
             private val LEGO_SQUARE = R.layout.layout_dynamic_lego_item_with_label
         }
 
-        fun setItems(grids: List<ChannelGrid>, isCacheData: Boolean, parentPosition: Int) {
+        fun setItems(grids: List<ChannelGrid>, isCacheData: Boolean, parentPosition: Int, channelModel: ChannelModel) {
+            this.isCacheData = isCacheData
+            this.parentPosition = parentPosition
+            this.channel = channelModel
             if (this.grids != grids) {
                 this.grids = grids
                 notifyDataSetChanged()
             }
-            this.isCacheData = isCacheData
-            this.parentPosition = parentPosition
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
@@ -147,15 +149,19 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
             }
             holder.label.text = grid.label
             if (!isCacheData) {
-                holder.itemView.addOnImpressionListener(channel) {
-                    listener?.onLegoItemImpressed(channel, grid, position, adapterPosition)
+                channel?.let {
+                    holder.itemView.addOnImpressionListener(it) {
+                        listener?.onLegoItemImpressed(it, grid, position, adapterPosition)
+                    }
                 }
             }
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
             holder.imageView.setOnClickListener {
-                listener?.onLegoItemClicked(channel, grid, position, parentPosition)
+                channel?.let {
+                    listener?.onLegoItemClicked(it, grid, position, parentPosition)
+                }
             }
         }
 

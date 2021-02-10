@@ -13,6 +13,8 @@ interface Lego6AutoBannerListener {
 
     fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 
+    fun onTallImageClicked(channelModel: ChannelModel, parentPosition: Int)
+
     fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 
     fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int)
