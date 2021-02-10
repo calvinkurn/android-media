@@ -149,13 +149,14 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 is Success -> {
                     uploadButton?.isEnabled = true
                     when(retakeActionCode) {
-                        NOT_RETAKE, RETAKE_FACE -> {
+                        NOT_RETAKE -> {
                             //if liveness, upload the files immediately
                             if(!isKycSelfie) {
                                 uploadKycFiles()
                             }
                         }
                         RETAKE_KTP -> { goToLivenessOrSelfie() }
+                        RETAKE_FACE -> { uploadKycFiles() }
                     }
                 }
                 is Fail -> {
@@ -407,17 +408,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 retakeActionCode = RETAKE_FACE
                 if(!isKycSelfie) {
                     stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
-                    if(isUsingEncrypt()) {
-                        kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
-                    } else {
-                        uploadKycFiles()
-                    }
                 } else {
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
-                    if(isUsingEncrypt()) {
-                        kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
-                    }
-                    setKycSelfieView()
+                }
+                if(isUsingEncrypt()) {
+                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
+                } else {
+                    uploadKycFiles()
                 }
             }
             else -> {

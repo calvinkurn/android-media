@@ -41,8 +41,8 @@ class KycUploadViewModel @Inject constructor(
                 var finalKtp = ktpPath
                 var finalFace = facePath
                 if(isUsingEncrypt) {
-                    finalKtp = decryptImage(ktpPath, isKtpImage = true)
-                    finalFace = decryptImage(facePath, isKtpImage = false)
+                    ivKtp?.let { finalKtp = decryptImage(ktpPath, isKtpImage = true) }
+                    ivFace?.let { finalFace = decryptImage(facePath, isKtpImage = false) }
                 }
                 val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                 _kycResponse.postValue(Success(kycUploadResult))
