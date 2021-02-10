@@ -50,8 +50,8 @@
 
         <com.tokopedia.notifcenter.widget.OrderThumbnailImageView
             android:id="@+id/iv_product_thumbnail"
-            android:layout_width="@dimen/notif_dp_38"
-            android:layout_height="@dimen/notif_dp_38"
+            android:layout_width="@dimen/notif_dp_46"
+            android:layout_height="@dimen/notif_dp_46"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
