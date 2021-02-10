@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
@@ -36,7 +37,7 @@ class HomeDataMapper(
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
     }
 
-    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
+    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
@@ -52,12 +53,17 @@ class HomeDataMapper(
                 .addHomeHeaderOvo()
                 .addAtfComponentVisitable(processingAtf)
 
-        if (!processingDynamicChannel && !isCache) {
+        if (!processingDynamicChannel && !isLoadingAtf) {
             factory.addDynamicChannelVisitable(firstPage, true)
                     .build()
         }
 
         BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf, processingDynamicChannel)
+        val mutableVisitableList = factory.build().toMutableList()
+        if (addShimmeringChannel && mutableVisitableList.size > 1) {
+            mutableVisitableList.add(ShimmeringChannelDataModel("0"))
+            mutableVisitableList.add(ShimmeringChannelDataModel("1"))
+        }
+        return HomeDataModel(homeData.homeFlag, mutableVisitableList, isCache, firstPage, processingAtf, processingDynamicChannel)
     }
 }

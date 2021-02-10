@@ -23,7 +23,7 @@ class BannerChannelImageViewHolder(itemView: View): CircularViewHolder(itemView)
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
     override fun bind(item: CircularModel, listener: CircularListener) {
-        itemView.findViewById<ImageUnify>(R.id.image_banner_homepage).setImageUrl(url = item.url)
+        itemView.findViewById<ImageUnify>(R.id.image_banner_homepage).setImageUrl(url = item.url, heightRatio = 1/3f)
         itemView.findViewById<ImageUnify>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
     }
 }

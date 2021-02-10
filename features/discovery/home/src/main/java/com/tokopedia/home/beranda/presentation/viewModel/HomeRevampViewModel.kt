@@ -901,7 +901,7 @@ open class HomeRevampViewModel @Inject constructor(
                     _isRequestNetworkLiveData.postValue(Event(false))
                     takeTicker = false
                 }
-                if (it.list.isEmpty()) {
+                if (it.list.size == 1) {
                     val initialHomeDataModel = HomeDataModel(list = listOf(
                             HomeHeaderOvoDataModel(),
                             HomeInitialShimmerDataModel()
@@ -951,6 +951,15 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>()))
                 } else if (onRefreshState) {
+                    if (homeDataModel?.list?.size?:0 > 1) {
+                        _isRequestNetworkLiveData.postValue(Event(false))
+                        takeTicker = false
+                    }
+                    if (homeDataModel?.list?.size?:0 > 1) {
+                        homeDataModel?.let {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
+                    }
                     refreshHomeData()
                 }
             }

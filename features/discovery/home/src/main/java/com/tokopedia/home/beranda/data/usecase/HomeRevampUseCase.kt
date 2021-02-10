@@ -28,8 +28,13 @@ class HomeRevampUseCase @Inject constructor(
         }
     }
 
-    fun getHomeCachedData(): HomeDataModel? =
-            homeDataMapper.mapToHomeRevampViewModel(HomeData(atfData = homeRepository.getHomeCachedAtfData(), isProcessingDynamicChannel = true), true)
+    fun getHomeCachedData(): HomeDataModel? = homeDataMapper.mapToHomeRevampViewModel(HomeData(
+            atfData = homeRepository.getHomeCachedAtfData(),
+            isProcessingDynamicChannel = true),
+            isCache = true,
+            addShimmeringChannel = true,
+            isLoadingAtf = true
+    )
 
     suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
 

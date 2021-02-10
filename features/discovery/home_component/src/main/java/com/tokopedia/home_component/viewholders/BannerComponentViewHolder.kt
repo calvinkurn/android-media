@@ -29,7 +29,8 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
-                                private val homeComponentListener: HomeComponentListener?
+                                private val homeComponentListener: HomeComponentListener?,
+                                private val parentRecyclerViewPool: RecyclerView.RecycledViewPool?
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         CircularListener, CoroutineScope {
@@ -73,6 +74,8 @@ class BannerComponentViewHolder(itemView: View,
                 resumeAutoScroll()
             }
         })
+
+        parentRecyclerViewPool?.let { rvBanner.setRecycledViewPool(parentRecyclerViewPool) }
     }
 
     override fun bind(element: BannerDataModel) {
