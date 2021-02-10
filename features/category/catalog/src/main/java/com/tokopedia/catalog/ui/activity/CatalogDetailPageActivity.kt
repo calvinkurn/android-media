@@ -46,11 +46,7 @@ class CatalogDetailPageActivity : BaseActivity(),
     private var filters: ArrayList<Filter> = ArrayList()
 
     companion object {
-        private const val STATE_GRID = 1
-        private const val STATE_LIST = 2
-        private const val STATE_BIG = 3
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
-        private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         private const val ORDER_BY = "ob"
         @JvmStatic

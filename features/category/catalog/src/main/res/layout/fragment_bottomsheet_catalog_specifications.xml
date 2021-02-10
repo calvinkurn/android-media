@@ -21,6 +21,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close_x_black" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/close_button"
+            app:layout_constraintStart_toEndOf="@id/close_button"
+            app:layout_constraintBottom_toBottomOf="@id/close_button"
+            app:typographyType="heading_3"
+            android:paddingTop="@dimen/dp_16"
+            android:text="Detail produk"
+            />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,15 +46,15 @@
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_4"
                 app:tabBackground="@color/white"
-                app:tabIndicatorColor="@color/tkpd_main_green"
+                app:tabIndicatorColor="@color/Unify_G500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/tkpd_main_green"
+                app:tabSelectedTextColor="@color/Unify_G500"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@color/unify_N700_44" />
+                app:tabTextColor="@color/Unify_N700_68" />
 
 
-            <androidx.viewpager.widget.ViewPager
+            <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager_specs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

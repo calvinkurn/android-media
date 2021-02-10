@@ -51,13 +51,13 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogId: String = ""
     private lateinit var fragment: CatalogGalleryFragment
 
-    private var rvCatalog: RecyclerView? = null
-    private val adapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
+    private var catalogPageRecyclerView: RecyclerView? = null
+    private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
 
     private val catalogDetailAdapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
                 .build()
-        CatalogDetailAdapter(asyncDifferConfig, this, adapterFactory
+        CatalogDetailAdapter(asyncDifferConfig, this, catalogAdapterFactory
         )
     }
 
@@ -126,23 +126,17 @@ class CatalogDetailPageFragment : Fragment(),
         submitList(newData ?: listOf())
     }
 
-    fun submitList(visitables: List<BaseCatalogDataModel>) {
+    private fun submitList(visitables: List<BaseCatalogDataModel>) {
         catalogDetailAdapter.submitList(visitables)
     }
 
     private fun setupRecyclerView(view: View) {
-        rvCatalog = view.findViewById(R.id.catalog_detail_rv)
-        rvCatalog?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-        rvCatalog?.itemAnimator = null
-        rvCatalog?.adapter = catalogDetailAdapter
-    }
-
-    private fun setUIProductInfo() {
-
-    }
-
-    private fun setUISpecificationsRV() {
-
+        catalogPageRecyclerView = view.findViewById(R.id.catalog_detail_rv)
+        catalogPageRecyclerView?.apply {
+            layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+            itemAnimator = null
+            adapter = catalogDetailAdapter
+        }
     }
 
     private fun viewMoreSpecifications() {
@@ -193,5 +187,9 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(catalogImage,position)
+    }
+
+    override fun onViewMoreSpecificationsClick() {
+        viewMoreSpecifications()
     }
 }

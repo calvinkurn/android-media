@@ -1,7 +1,9 @@
 package com.tokopedia.catalog.ui.bottomsheet
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.fragment.app.Fragment
@@ -11,11 +13,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
 import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
     var list: ArrayList<Fragment> = ArrayList()
@@ -42,17 +49,44 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
         }
         val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
-        val viewPager = view?.findViewById<ViewPager>(R.id.view_pager_specs)
+        val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
-        val adapter = CatalogDetailsAndSpecsPagerAdapter(childFragmentManager, context, list)
-        viewPager?.adapter = adapter
-        tabLayout?.setupWithViewPager(viewPager)
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
+
+        activity?.let {
+            val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
+            viewPager?.adapter = adapter
+            if(tabLayout != null && viewPager != null){
+                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+
+                }.attach()
+            }
+            tabLayout?.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    tab?.position?.let { adapter.setUnSelectView(tabLayout,it) }
+                }
+
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.position?.let { adapter.setOnSelectView(tabLayout,it) }
+                }
+
+            })
+        }
         closeButton?.setOnClickListener {
             dismiss()
         }
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setCustomTabText(context,tab_layout_specs)
+        view_pager_specs.setCurrentItem(1)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -67,6 +101,28 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
         }
 
         return bottomSheetDialog
+    }
+
+    private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){
+        if(context != null && tabLayout != null){
+            val tabOne = Typography(context)
+            tabOne.apply {
+                text = context.getString(R.string.catalog_description)
+                setType(Typography.HEADING_5)
+                gravity = Gravity.CENTER
+                setTextColor(MethodChecker.getColor(context,R.color.catalog_N700_44))
+            }
+
+            val tabTwo = Typography(context)
+            tabTwo.apply {
+                text = context.getString(R.string.catalog_spesification)
+                setType(Typography.HEADING_5)
+                gravity = Gravity.CENTER
+                setTextColor(MethodChecker.getColor(context,R.color.catalog_N700_44))
+            }
+            tabLayout.getTabAt(0)?.customView = tabOne
+            tabLayout.getTabAt(1)?.customView = tabTwo
+        }
     }
 
 }

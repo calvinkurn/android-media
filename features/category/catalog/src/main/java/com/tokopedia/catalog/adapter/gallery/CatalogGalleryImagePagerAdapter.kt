@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.adapter
+package com.tokopedia.catalog.adapter.gallery
 
 import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_catalog_gallery_image.view.*
 
-class CatalogImagePageAdapter(val list: List<CatalogImage>, val listener: Listener?)
+class CatalogGalleryImagePagerAdapter(val list: List<CatalogImage>, val listener: Listener?)
     : PagerAdapter(){
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`

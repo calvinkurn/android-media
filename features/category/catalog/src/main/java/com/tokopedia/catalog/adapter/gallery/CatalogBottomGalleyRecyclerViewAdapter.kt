@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.adapter
+package com.tokopedia.catalog.adapter.gallery
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
@@ -8,7 +8,7 @@ import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_catalog_gallery_bottom_image_view.view.*
 
-class CatalogGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, val listener: Listener?, var selectedPosition:Int) :  RecyclerView.Adapter<CatalogGalleyRecyclerViewAdapter.ViewHolder>() {
+class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, val listener: Listener?, var selectedPosition:Int) :  RecyclerView.Adapter<CatalogBottomGalleyRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(parent.context, R.layout.item_catalog_gallery_bottom_image_view, null))

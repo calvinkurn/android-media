@@ -9,9 +9,9 @@ import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_catalog_image.view.*
 
-class CatalogImageViewAdapter(val list: ArrayList<CatalogImage>,
-                              val listener: CatalogDetailListener?)
-    :  RecyclerView.Adapter<CatalogImageViewAdapter.ViewHolder>() {
+class CatalogImagesAdapter(val list: ArrayList<CatalogImage>,
+                           val listener: CatalogDetailListener?)
+    :  RecyclerView.Adapter<CatalogImagesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(parent.context, R.layout.item_catalog_image, null))

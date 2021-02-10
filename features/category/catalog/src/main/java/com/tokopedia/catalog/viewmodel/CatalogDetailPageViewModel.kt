@@ -15,23 +15,20 @@ import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(var catalogDetailUseCase: CatalogDetailUseCase) : ViewModel() {
 
-    private val catalogResponseData = MutableLiveData<Result<CatalogDetailDataModel>>()
+    private val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
 
     fun getProductCatalog(catalogId: String) {
         viewModelScope.launchCatchError(
                 block = {
-                    val response = catalogDetailUseCase.getCatalogDetail(catalogId)
-                    response.let {
-                        catalogResponseData.value = Success(it)
-                    }
+                    catalogDetailUseCase.getCatalogDetail(catalogId,catalogDetailDataModel)
                 },
                 onError = {
-                    catalogResponseData.value = Fail(it)
+                    catalogDetailDataModel.value = Fail(it)
                 }
         )
     }
 
     fun getCatalogResponseData(): MutableLiveData<Result<CatalogDetailDataModel>> {
-        return catalogResponseData
+        return catalogDetailDataModel
     }
 }

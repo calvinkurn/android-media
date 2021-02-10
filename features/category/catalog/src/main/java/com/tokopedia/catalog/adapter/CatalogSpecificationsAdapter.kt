@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_catalog_specification.view.*
 
 class CatalogSpecificationsAdapter (val list : ArrayList<SpecificationsComponentData>,
-                                    val catalogDetailListener: CatalogDetailListener)
+                                    private val catalogDetailListener: CatalogDetailListener)
     : RecyclerView.Adapter<CatalogSpecificationsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

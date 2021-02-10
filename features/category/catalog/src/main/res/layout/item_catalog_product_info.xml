@@ -49,7 +49,6 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         tools:text="iPhone 12 - 64GB"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
         />
 
     <View
@@ -94,7 +93,6 @@
         app:typographyType="heading_4"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textColor="@color/Unify_N700_96"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -123,7 +121,6 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -140,7 +137,6 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         tools:text="@string/lorem"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

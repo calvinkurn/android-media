@@ -124,6 +124,13 @@ public class DoubleTextView extends LinearLayout {
         }
     }
 
+    public void setBottomLinearLayoutWeight(float layoutWeight){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.weight = layoutWeight;
+        llBottomTextView.setLayoutParams(params);
+    }
+
     public void setBottomTextBackgroundColor(int s) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.bottomTextView.getBackground().mutate().setTint(s);

@@ -22,7 +22,7 @@ interface CatalogDetailListener {
     /**
      * CatalogSpecificationsContainerViewHolder
      */
-
+    fun onViewMoreSpecificationsClick()
 
     /**
      * CatalogVideoViewHolder
