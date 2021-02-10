@@ -44,6 +44,7 @@ object SomAnalytics {
     private const val BUSINESS_UNIT_MARKETPLACE = "marketplace"
     private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
     private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
+    private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
