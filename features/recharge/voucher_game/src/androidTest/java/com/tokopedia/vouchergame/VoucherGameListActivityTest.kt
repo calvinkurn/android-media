@@ -25,6 +25,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
 import androidx.test.espresso.Espresso.pressBackUnconditionally
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 
 import org.junit.After
 import org.junit.Before
@@ -53,6 +54,7 @@ class VoucherGameListActivityTest{
                     InstrumentationMockHelper.getRawString(targetContext, R.raw.mock_response_recharge_catalog_operator),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         val intent: Intent = VoucherGameListActivity.newInstance(targetContext, "6", "4")
         mActivityRule.launchActivity(intent)
         intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))

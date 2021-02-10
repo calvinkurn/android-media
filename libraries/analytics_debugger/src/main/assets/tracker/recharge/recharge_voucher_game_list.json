@@ -5,10 +5,10 @@
     {
       "digitalCategoryId": "{{.+}}",
       "businessUnit": "recharge",
-      "clientId": "{{.*}}",
+      "clientId": "{{.+}}",
       "appsflyerId": "{{.*}}",
       "screenName": "/digital/voucher game",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "sessionIris": "{{.+}}",
       "networkSpeed": "{{.*}}",
       "currentSite": "tokopediadigital",
