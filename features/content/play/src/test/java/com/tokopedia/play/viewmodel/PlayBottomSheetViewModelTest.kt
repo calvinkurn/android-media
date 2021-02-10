@@ -20,6 +20,9 @@ import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
@@ -48,6 +51,7 @@ class PlayBottomSheetViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatchers.main)
         playBottomSheetViewModel = PlayBottomSheetViewModel(
                 mockGetProductVariantUseCase,
                 mockPostAddToCartUseCase,
@@ -60,7 +64,7 @@ class PlayBottomSheetViewModelTest {
 
     @After
     fun tearDown() {
-
+        Dispatchers.resetMain()
     }
 
     @Test

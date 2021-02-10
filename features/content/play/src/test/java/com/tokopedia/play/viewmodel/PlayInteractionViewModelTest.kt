@@ -22,7 +22,11 @@ import io.mockk.coEvery
 import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,6 +51,7 @@ class PlayInteractionViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatchers.main)
         playInteractionViewModel = PlayInteractionViewModel(
                 mockPostLikeUseCase,
                 mockPostFollowPartnerUseCase,
@@ -54,6 +59,11 @@ class PlayInteractionViewModelTest {
                 dispatchers,
                 mockPlayPreference
         )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
