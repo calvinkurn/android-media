@@ -14,6 +14,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.viewpager.widget.ViewPager
@@ -117,9 +118,11 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     private fun hideStickyLogin() {
-        val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
-        if (layout.visibility == View.VISIBLE) {
-            layout.visibility = View.GONE
+        UiThreadStatement.runOnUiThread {
+            val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+            if (layout.visibility == View.VISIBLE) {
+                layout.visibility = View.GONE
+            }
         }
     }
 
