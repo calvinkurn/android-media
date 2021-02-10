@@ -29,7 +29,6 @@ import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.model.result.PageResultState
-import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
 
@@ -238,10 +237,12 @@ class PlayActivity : BaseActivity(),
                     if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
                 }
                 is PageResultState.Fail -> {
+                    pageMonitoring.invalidate()
                     ivLoading.hide()
                     if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
                 is PageResultState.Success -> {
+                    pageMonitoring.startRenderPerformanceMonitoring()
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }

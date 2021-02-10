@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
@@ -25,6 +26,7 @@ class PlayParentViewModel constructor(
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
+        private val pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
@@ -33,6 +35,7 @@ class PlayParentViewModel constructor(
             private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
             private val dispatchers: CoroutineDispatcherProvider,
             private val userSession: UserSessionInterface,
+            private val pageMonitoring: PlayPltPerformanceCallback,
     ) {
 
         fun create(handle: SavedStateHandle): PlayParentViewModel {
@@ -42,7 +45,8 @@ class PlayParentViewModel constructor(
                     getChannelDetailsWithRecomUseCase,
                     playChannelMapper,
                     dispatchers,
-                    userSession
+                    userSession,
+                    pageMonitoring,
             )
         }
     }
@@ -66,6 +70,7 @@ class PlayParentViewModel constructor(
     )
 
     init {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
         loadNextPage()
     }
 
