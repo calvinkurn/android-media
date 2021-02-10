@@ -5,11 +5,17 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
@@ -104,16 +110,157 @@ class HomeDynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
+//    @Test
+//    fun testComponentBUWidget() {
+//        initTest()
+//
+//        doActivityTest(NewBusinessViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+//            clickOnBusinessWidgetSection(viewHolder)
+//        }
+//
+//        getAssertBUWiddet(gtmLogDBSource, context)
+//
+//        onFinishTest()
+//
+//        addDebugEnd()
+//    }
+
     @Test
     fun testComponentLegoBanner() {
         initTest()
-
-        doActivityTest(listOf(DynamicLegoBannerViewHolder::class.simpleName!!,
-                Lego4AutoBannerViewHolder::class.simpleName!!)) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTest(
+                listOf(
+                        DynamicLegoBannerViewHolder::class.simpleName!!,
+                        Lego4AutoBannerViewHolder::class.simpleName!!)
+        ){ viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnLegoBannerSection(viewHolder, i)
         }
 
         getAssertLegoBanner(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testRecommendationFeedBanner() {
+        initTest()
+
+        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnRecommendationFeedSection(viewHolder)
+        }
+
+        getAssertRecommendationFeedBanner(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+//    @Test
+//    fun testRecommendationFeedTab() {
+//        initTest()
+//
+//        login()
+//
+//        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+//            clickOnRecommendationFeedSection(viewHolder)
+//        }
+//
+//        getAssertRecommendationFeedTab(gtmLogDBSource, context)
+//
+//        onFinishTest()
+//
+//        addDebugEnd()
+//    }
+
+    @Test
+    fun testRecommendationFeedProductLogin() {
+        initTest()
+
+        login()
+
+        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnRecommendationFeedSection(viewHolder)
+        }
+
+        getAssertRecommendationFeedProductLogin(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testOpenScreenHomepage() {
+        initTest()
+
+        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnRecommendationFeedSection(viewHolder)
+        }
+
+        getAssertHomepageScreen(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testHPB() {
+        initTest()
+
+        doActivityTest(BannerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickHPBSection(viewHolder)
+        }
+
+        getAssertHPB(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testTicker() {
+        initTest()
+
+        doActivityTest(TickerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnTickerSection(viewHolder)
+        }
+
+        getAssertTicker(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testRecommendationFeedProductNonLogin() {
+        initTest()
+
+        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnRecommendationFeedSection(viewHolder)
+        }
+
+        getAssertRecommendationFeedProductNonLogin(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testComponentCategoryWidget() {
+        initTest()
+
+        doActivityTest(CategoryWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnCategoryWidgetSection(viewHolder, i)
+        }
+
+        getAssertCategoryWidget(gtmLogDBSource, context)
 
         onFinishTest()
 
@@ -127,9 +274,11 @@ class HomeDynamicChannelComponentAnalyticsTest {
     }
 
     private fun hideStickyLogin() {
-        val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
-        if (layout.visibility == View.VISIBLE) {
-            layout.visibility = View.GONE
+        UiThreadStatement.runOnUiThread {
+            val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+            if (layout.visibility == View.VISIBLE) {
+                layout.visibility = View.GONE
+            }
         }
     }
 
@@ -163,6 +312,11 @@ class HomeDynamicChannelComponentAnalyticsTest {
         activityRule.activity.finish()
         logTestMessage("Done UI Test")
         waitForLoadCassavaAssert()
+    }
+
+    private fun login() {
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {

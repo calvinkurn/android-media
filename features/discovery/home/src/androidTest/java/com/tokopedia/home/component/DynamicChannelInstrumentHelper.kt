@@ -9,16 +9,20 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.searchbar.navigation_component.NavConstant
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.AllOf
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/home/homescreen.json"
@@ -49,6 +53,9 @@ fun disableCoachMark(context: Context){
 fun waitForData() {
     Thread.sleep(3000)
 }
+fun waitForPopularKeywordData() {
+    Thread.sleep(1000)
+}
 
 fun waitForLoadCassavaAssert() {
     Thread.sleep(2000)
@@ -72,16 +79,8 @@ fun clickOnProductHighlightItem() {
 
 fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaPopularKeyword()
+    waitForPopularKeywordData()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_keyword, itemPosition)
-}
-
-private fun clickLihatSemuaPopularKeyword() {
-    try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
-                .perform(ViewActions.click())
-    } catch (e: PerformException) {
-        e.printStackTrace()
-    }
 }
 
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -100,6 +99,38 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
     clickSingleItemOnRecyclerView(R.id.recycleList)
 }
 
+fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
+    waitForData()
+    clickRecommendationFeedTab()
+    CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+}
+
+fun clickOnCategoryWidgetSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickSingleItemOnRecyclerView(R.id.recycleList)
+}
+
+fun clickOnBusinessWidgetSection(viewHolder: RecyclerView.ViewHolder) {
+    clickBUWidgetTab()
+    clickSingleItemOnRecyclerView(R.id.recycler_view)
+}
+
+fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
+    clickTickerItem(viewHolder.itemView)
+}
+
+fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
+    clickHomeBannerItemAndViewAll(viewHolder.itemView)
+}
+
+private fun clickRecommendationFeedTab() {
+    try {
+        Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(0))
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
 private fun clickOnMixTopCTA(view: View) {
     val childView = view
     val bannerButton = childView.findViewById<View>(R.id.banner_button)
@@ -113,6 +144,67 @@ private fun clickOnMixTopCTA(view: View) {
     }
 }
 
+private fun clickLihatSemuaPopularKeyword() {
+    try {
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
+                .perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
+private fun clickBUWidgetTab() {
+    try {
+        Espresso.onView(ViewMatchers.withId(R.id.tab_layout)).perform(selectTabAtPosition(1))
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
+private fun clickTickerItem(view: View) {
+    val childView = view
+    val textApplink = childView.findViewById<View>(R.id.ticker_description)
+    val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
+    if (textApplink.visibility == View.VISIBLE) {
+        try {
+            Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed())).perform(ViewActions.click())
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+    if (closeButton.visibility == View.VISIBLE) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+                    .perform(ViewActions.click())
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+private fun clickHomeBannerItemAndViewAll(view: View) {
+    val childView = view
+    val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
+
+    //banner item click
+    val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
+    val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
+    try {
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
+                .perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+    //see all promo button click
+    if (seeAllButton.visibility == View.VISIBLE) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.see_more_label)))
+                    .perform(ViewActions.click())
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
 
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int) {
     val childView = view
@@ -145,11 +237,6 @@ fun getAssertCategoryWidget(gtmLogDBSource: GtmLogDBSource, context: Context) {
     assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
             hasAllSuccess())
 //    -> impression intermitten missing
-}
-
-fun getAssertRecommendationFeedTab(gtmLogDBSource: GtmLogDBSource, context: Context) {
-    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
-            hasAllSuccess())
 }
 
 fun getAssertBUWiddet(gtmLogDBSource: GtmLogDBSource, context: Context) {
@@ -229,6 +316,11 @@ fun getAssertRecommendationFeedProductLogin(gtmLogDBSource: GtmLogDBSource, cont
             hasAllSuccess())
 }
 
+fun getAssertRecommendationFeedTab(gtmLogDBSource: GtmLogDBSource, context: Context) {
+    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
+            hasAllSuccess())
+}
+
 //==================================== end of cassava validator ================================
 
 private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
@@ -255,4 +347,22 @@ private fun clickOnViewChild(viewId: Int) = object: ViewAction {
 
     override fun perform(uiController: UiController, view: View)
             = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+}
+
+private fun selectTabAtPosition(tabIndex: Int): ViewAction {
+    return object : ViewAction {
+        override fun getDescription() = "with tab at index $tabIndex"
+
+        override fun getConstraints() = AllOf.allOf(ViewMatchers.isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
+
+        override fun perform(uiController: UiController, view: View) {
+            val tabLayout = view as TabLayout
+            val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
+                    ?: throw PerformException.Builder()
+                            .withCause(Throwable("No tab at index $tabIndex"))
+                            .build()
+
+            tabAtIndex.select()
+        }
+    }
 }
