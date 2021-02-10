@@ -106,7 +106,7 @@
         </activity>
 
         <activity android:name=".presentation.activity.ImageQualitySettingActivity"
-            android:label="@string/screentitle_tkpd_pay_setting"
+            android:label="@string/image_quality_setting_screen"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
