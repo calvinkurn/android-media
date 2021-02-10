@@ -223,9 +223,7 @@ class ShopPageViewModel @Inject constructor(
     fun checkShopRequestModerateStatus() {
         launchCatchError(dispatcherProvider.io, {
             val shopModerateRequestStatusUseCase = shopModerateRequestStatusUseCase.get()
-            val shopModerateRequestStatusResponse = withContext(dispatcherProvider.io) {
-                shopModerateRequestStatusUseCase.executeOnBackground()
-            }
+            val shopModerateRequestStatusResponse = shopModerateRequestStatusUseCase.executeOnBackground()
             _shopModerateRequestStatus.postValue(Success(shopModerateRequestStatusResponse))
         }) {
             _shopModerateRequestStatus.postValue(Fail(it))
@@ -237,9 +235,7 @@ class ShopPageViewModel @Inject constructor(
             val shopUnmoderateUseCase = shopRequestUnmoderateUseCase.get().apply {
                 params = ShopRequestUnmoderateUseCase.createRequestParams(shopId, optionValue)
             }
-            val shopUnmoderateResponse = withContext(dispatcherProvider.io) {
-                shopUnmoderateUseCase.executeOnBackground()
-            }
+            val shopUnmoderateResponse = shopUnmoderateUseCase.executeOnBackground()
             _shopUnmoderateData.postValue(Success(shopUnmoderateResponse))
 
         }) {
