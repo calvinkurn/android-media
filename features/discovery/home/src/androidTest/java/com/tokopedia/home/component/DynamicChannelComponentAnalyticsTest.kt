@@ -104,7 +104,7 @@ class DynamicChannelComponentAnalyticsTest {
     fun testDCHomeNotLogin() {
         initTest()
 
-        doActivityTest(false)
+        doActivityTest(isReminderWidgetClose = false)
 
         doHomeCassavaTest()
 
@@ -117,7 +117,7 @@ class DynamicChannelComponentAnalyticsTest {
     fun testDCHomeLogin() {
         initTestWithLogin()
 
-        doActivityTest(false)
+        doActivityTest(isReminderWidgetClose = false)
 
         doHomeCassavaLoginTest()
 
@@ -130,7 +130,7 @@ class DynamicChannelComponentAnalyticsTest {
     fun testDCHomeReminderWidgetClosen() {
         initTestWithLogin()
 
-        doActivityTest(true)
+        doActivityTest(isReminderWidgetClose = true)
 
         doHomeCassavaReminderWidgetCloseTest()
 
@@ -140,9 +140,11 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     private fun hideStickyLogin() {
-        val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
-        if (layout.visibility == View.VISIBLE) {
-            layout.visibility = View.GONE
+        activityRule.runOnUiThread {
+            val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+            if (layout.visibility == View.VISIBLE) {
+                layout.visibility = View.GONE
+            }
         }
     }
 
