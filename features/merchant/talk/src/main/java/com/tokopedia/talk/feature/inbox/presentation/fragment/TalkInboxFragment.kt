@@ -439,7 +439,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun selectUnreadFilterFromCardSA() {
         if(GlobalConfig.isSellerApp()) {
             val tab = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
-            if (tab == FILTER_PARAM) {
+            if (tab == FILTER_UNREAD) {
                 getFilterList().forEach {
                     if (it.title == getString(R.string.inbox_unread)) {
                         it.selectUnreadFilter()
