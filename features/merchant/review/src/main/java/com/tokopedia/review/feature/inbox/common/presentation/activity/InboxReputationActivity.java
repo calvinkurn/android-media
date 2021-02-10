@@ -73,6 +73,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
+    private static final String SELLER_INBOX_REVIEW_TAB = "inbox-ulasan";
     public static String tickerTitle;
 
     private ViewPager viewPager;
@@ -114,7 +115,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         setupStatusBar();
         clearCacheIfFromNotification();
         initView();
-        setupTabViewpager();
+        setupTabViewpager(tab);
         openBuyerReview();
     }
 
@@ -135,7 +136,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
     }
 
-    private void setupTabViewpager() {
+    private void setupTabViewpager(String tab) {
         indicator.setCustomTabMode(TabLayout.MODE_SCROLLABLE);
         indicator.setCustomTabGravity(TabLayout.GRAVITY_FILL);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
@@ -160,7 +161,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         viewPager.setAdapter(sectionAdapter);
 
         if (GlobalConfig.isSellerApp()) {
-            if(goToInboxReview) {
+            if(tab.equals(SELLER_INBOX_REVIEW_TAB)) {
                 viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
             }
         }

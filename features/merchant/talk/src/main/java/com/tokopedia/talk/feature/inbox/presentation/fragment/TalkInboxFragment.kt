@@ -433,24 +433,41 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
+    private fun selectUnreadFilter() {
+        getFilterList().forEach {
+            if (it.title == getString(R.string.inbox_unread)) {
+                it.selectUnreadFilter()
+                return
+            }
+        }
+    }
+
     private fun getFilterList(): ArrayList<SortFilterItem> {
         val readFilter = SortFilterItem(getString(R.string.inbox_read))
         val unreadFilter = SortFilterItem(getString(R.string.inbox_unread))
-        readFilter.listener = {
-            readFilter.toggle()
-            selectFilter(TalkInboxFilter.TalkInboxReadFilter())
-            if (readFilter.type == ChipsUnify.TYPE_SELECTED) {
-                unreadFilter.type = ChipsUnify.TYPE_NORMAL
-            }
-        }
-        unreadFilter.listener = {
-            unreadFilter.toggle()
-            selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
-            if (unreadFilter.type == ChipsUnify.TYPE_SELECTED) {
-                readFilter.type = ChipsUnify.TYPE_NORMAL
-            }
-        }
+        readFilter.selectReadFilter()
+        unreadFilter.selectUnreadFilter()
         return arrayListOf(unreadFilter, readFilter)
+    }
+
+    private fun SortFilterItem.selectReadFilter() {
+        listener = {
+            toggle()
+            selectFilter(TalkInboxFilter.TalkInboxReadFilter())
+            if (type == ChipsUnify.TYPE_SELECTED) {
+                type = ChipsUnify.TYPE_NORMAL
+            }
+        }
+    }
+
+    private fun SortFilterItem.selectUnreadFilter() {
+        listener = {
+            toggle()
+            selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
+            if (type == ChipsUnify.TYPE_SELECTED) {
+                type = ChipsUnify.TYPE_NORMAL
+            }
+        }
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
