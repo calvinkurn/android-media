@@ -42,7 +42,7 @@ open class RecommendationCardView : ProductCardView {
     override fun init(attrs: AttributeSet?) {
         super.init(attrs)
 
-        ratingContainer = findViewById(R.id.rating_review_container)
+        ratingContainer = findViewById(com.tokopedia.topads.sdk.R.id.rating_review_container)
     }
 
     fun setRecommendationModel(item: RecommendationItem, trackingListener: TrackingListener) {
