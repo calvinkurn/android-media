@@ -1541,7 +1541,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
+
         userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+        // requested as old flow (from old order list)
+        UohAnalytics.orderDetailOpenScreenEvent(userSession.isLoggedIn)
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
