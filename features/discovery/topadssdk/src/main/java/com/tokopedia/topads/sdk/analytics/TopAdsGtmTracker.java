@@ -1082,7 +1082,7 @@ public class TopAdsGtmTracker {
                         )),
                 "userId",userId
         );
-        tracker.sendGeneralEvent(map);
+        tracker.sendEnhanceEcommerceEvent(map);
     }
 
     public static void eventTopAdsHeadlineShopClick(int index, String keyword, CpmData cpm, String userId) {
