@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
@@ -30,10 +29,9 @@ import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationCon
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplySettingsStatusWidget
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplyStatisticsWidget
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,10 +45,8 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     private var talkSmartReplySubtitle: Typography? = null
     private var talkSmartReplyStatisticsWidget: TalkSmartReplyStatisticsWidget? = null
-    private var talkIsSmartReplyOnLabel: Label? = null
-    private var talkSmartReplySettingsDescription: Typography? = null
-    private var talkStockSubtitleChevron: IconUnify? = null
     private var talkSmartReplySettingsLoading: View? = null
+    private var talkSmartReplySettingsStatusWidget: TalkSmartReplySettingsStatusWidget? = null
 
     override fun getScreenName(): String {
         return ""
@@ -80,7 +76,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         showLoading()
         observeSmartReplyData()
-        setDescriptionText()
         setToolbarTitle()
         setupOnBackPressed()
         onFragmentResult()
@@ -113,7 +108,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun updateIsSmartReplyOnLabel(isActive: Boolean) {
-        talkStockSubtitleChevron?.setOnClickListener {
+        talkSmartReplySettingsStatusWidget?.setOnClickListener {
             val cacheManagerId = putDataIntoCacheManager()
             if(cacheManagerId.isNullOrEmpty()) {
                 return@setOnClickListener
@@ -123,21 +118,13 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
             NavigationController.navigate(this, destination)
         }
         if(isActive) {
-            talkIsSmartReplyOnLabel?.apply {
-                setLabel(getString(R.string.smart_reply_active_label))
-                setLabelType(Label.GENERAL_LIGHT_GREEN)
-            }
+            talkSmartReplySettingsStatusWidget?.setActiveLabel()
             return
         }
-        talkIsSmartReplyOnLabel?.apply {
-            setLabel(getString(R.string.smart_reply_inactive_label))
-            setLabelType(Label.GENERAL_LIGHT_GREY)
-        }
+        talkSmartReplySettingsStatusWidget?.setInactiveLabel()
     }
 
-    private fun setDescriptionText() {
-        talkSmartReplySettingsDescription?.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_settings_description)).spannedString }
-    }
+
 
     private fun setToolbarTitle() {
         val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
@@ -201,9 +188,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     private fun bindViewReferences(view: View) {
         talkSmartReplySubtitle = view.findViewById(R.id.talkSmartReplySubtitle)
         talkSmartReplyStatisticsWidget = view.findViewById(R.id.talkSmartReplyStatisticsWidget)
-        talkIsSmartReplyOnLabel = view.findViewById(R.id.talkIsSmartReplyOnLabel)
-        talkSmartReplySettingsDescription = view.findViewById(R.id.talkSmartReplySettingsDescription)
-        talkStockSubtitleChevron = view.findViewById(R.id.talkStockSubtitleChevron)
+        talkSmartReplySettingsStatusWidget = view.findViewById(R.id.talkSmartReplySettingsStatusWidget)
         talkSmartReplySettingsLoading = view.findViewById(R.id.talkSmartReplySettingsLoading)
     }
 
