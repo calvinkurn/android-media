@@ -41,6 +41,7 @@ object SomAnalytics {
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
+    private const val BUSINESS_UNIT_MARKETPLACE = "marketplace"
     private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
     private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
 
@@ -70,7 +71,7 @@ object SomAnalytics {
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
                 TrackAppUtils.EVENT_ACTION to CLICK_PRODUCT_NAME,
                 TrackAppUtils.EVENT_LABEL to statusOrderName,
-                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_MARKETPLACE,
                 CUSTOM_DIMENSION_USER_ID to userId
         )
 
