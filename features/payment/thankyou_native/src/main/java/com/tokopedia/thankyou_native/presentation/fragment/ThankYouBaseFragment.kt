@@ -40,7 +40,6 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDi
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -181,7 +180,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
     private fun getTopTickerData() {
         thanksPageDataViewModel.getThanksPageTicker(thanksPageData.configList)
     }
@@ -214,10 +212,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             tickerTitle = data.tickerTitle
             setTextDescription(data.tickerDescription ?: "")
             closeButtonVisibility = View.GONE
-            tickerType = if(data.ticketType == TICKER_WARNING){
-                Ticker.TYPE_WARNING
-            }else
-                Ticker.TYPE_INFORMATION
+            tickerType = when(data.ticketType) {
+                TICKER_WARNING -> Ticker.TYPE_WARNING
+                TICKER_INFO -> Ticker.TYPE_INFORMATION
+                TICKER_ERROR -> Ticker.TYPE_ERROR
+                else -> Ticker.TYPE_INFORMATION
+            }
         }
     }
 
@@ -402,6 +402,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     companion object {
         const val TICKER_WARNING = "Warning"
+        const val TICKER_INFO = "Info"
+        const val TICKER_ERROR = "Error"
+
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
     }
 }
