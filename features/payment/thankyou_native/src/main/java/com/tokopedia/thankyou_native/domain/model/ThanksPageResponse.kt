@@ -381,7 +381,7 @@ data class ConfigFlag(
 
 data class Tickers(
         @SerializedName("tickers")
-        val tickerDataList : List<ThankPageTopTickerData>?
+        val tickerDataListStr : String?
 )
 data class ThankPageTopTickerData(
         @SerializedName("ticker_title")

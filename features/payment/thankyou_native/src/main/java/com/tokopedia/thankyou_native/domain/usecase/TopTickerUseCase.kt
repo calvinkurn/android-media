@@ -29,8 +29,10 @@ class TopTickerUseCase @Inject constructor() : UseCase<ThankPageTopTickerData>()
         val configList = useCaseRequestParams.getString(PARAM_THANKS_PAGE_DATA, null)
                 ?: throw NullPointerException()
         val tickers = Gson().fromJson<Tickers>(configList, Tickers::class.java)
-        if (!tickers.tickerDataList.isNullOrEmpty()) {
-            return tickers.tickerDataList[0]
+        val listType = object : TypeToken<List<ThankPageTopTickerData>>() {}.type
+        val topTickerDataList = Gson().fromJson<List<ThankPageTopTickerData>>(tickers.tickerDataListStr?:"[]", listType)
+        if (topTickerDataList.isNotEmpty()) {
+            return topTickerDataList[0]
         } else
             throw NullPointerException()
     }
