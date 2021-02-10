@@ -16,6 +16,9 @@ const val HEADER_ECT = "ect"
 const val LOW_QUALITY = "3g"
 const val HIGH_QUALITY = "4g"
 
+// leave as high quality if users networkState have unexpected state.
+const val UNDEFINED = "4g"
+
 // the key of connection type
 const val HIGH_QUALITY_SETTINGS = 1 // 4g / wifi
 const val LOW_QUALITY_SETTINGS = 2 // 2g / 3g

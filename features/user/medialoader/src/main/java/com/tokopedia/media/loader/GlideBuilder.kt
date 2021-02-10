@@ -17,7 +17,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
@@ -26,7 +25,6 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
-import com.tokopedia.media.loader.utils.AttributeUtils
 import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
 import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
@@ -109,7 +107,7 @@ object GlideBuilder {
                         return
                     }
 
-                    source = Loader.glideUrl(source)
+                    source = Loader.urlBuilder(source)
                     performanceMonitoring = PerformanceTracker.track(source, context)
                 }
 

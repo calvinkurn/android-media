@@ -7,6 +7,9 @@ import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import android.net.NetworkInfo
 import android.os.Build
 import android.telephony.TelephonyManager
+import com.tokopedia.media.common.data.HIGH_QUALITY
+import com.tokopedia.media.common.data.LOW_QUALITY
+import com.tokopedia.media.common.data.UNDEFINED
 import com.tokopedia.media.common.state.Fast
 import com.tokopedia.media.common.state.Low
 import com.tokopedia.media.common.state.NetworkState
@@ -14,15 +17,11 @@ import com.tokopedia.media.common.state.Undefined
 
 object NetworkManager {
 
-    private const val low = "2g"
-    private const val fast = "4g"
-    private const val undefined = "undefined"
-
     fun state(context: Context): String {
         return when (networkState(context)) {
-            Low -> low
-            Fast -> fast
-            else -> undefined
+            Low -> LOW_QUALITY
+            Fast -> HIGH_QUALITY
+            else -> UNDEFINED
         }
     }
 
