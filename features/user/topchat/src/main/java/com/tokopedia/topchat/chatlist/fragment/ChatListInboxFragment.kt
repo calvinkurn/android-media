@@ -116,7 +116,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private lateinit var broadCastButton: FloatingActionButton
+    private var broadCastButton: FloatingActionButton? = null
     private var containerListener: InboxFragmentContainer? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -291,7 +291,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) {
-            broadCastButton.hide()
+            broadCastButton?.hide()
         } else {
             setupSellerBroadcastButton()
             viewModel.loadChatBlastSellerMetaData()
@@ -306,14 +306,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         viewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
             when (visibility) {
                 true -> {
-                    broadCastButton.show()
+                    broadCastButton?.show()
                 }
-                false -> broadCastButton.hide()
+                false -> broadCastButton?.hide()
             }
         })
         viewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
-            broadCastButton.setOnClickListener {
+            broadCastButton?.setOnClickListener {
                 if (isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
                     val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
