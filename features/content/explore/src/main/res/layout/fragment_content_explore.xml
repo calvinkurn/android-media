@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -13,15 +13,6 @@
         android:background="@color/transparent"
         android:visibility="gone"
         app:elevation="0dp">
-
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_inspiration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-8dp"
-            android:fitsSystemWindows="true"
-            android:visibility="gone"
-            app:siv_search_hint="@string/search_your_inspiration" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/explore_category_rv"

@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@DealsScope
 abstract class DealsViewModelModule {
 
     @DealsScope

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.shouldBe
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.slot
@@ -12,6 +13,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemViewModel>()
+    private var suggestedRelatedKeyword = ""
+    private val suggestedRelatedKeywordSlot = slot<String>()
 
     @Test
     fun `Handle onProductImpressed with null ProductItemViewModel (degenerate cases)`() {
@@ -85,16 +88,26 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given className from view`()
 
         `When handle product impressed`(productItemViewModel)
+        `When getting suggestedRelatedKeyword`()
 
         `Then verify interaction for product impression`(productItemViewModel)
+        `Then verify relatedKeyword`()
+    }
+
+    private fun `When getting suggestedRelatedKeyword`() {
+        productListPresenter.suggestedRelatedKeyword
     }
 
     private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel)
+            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot))
         }
 
         confirmVerified(productListView)
+    }
+
+    private fun `Then verify relatedKeyword`() {
+        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     @Test
@@ -114,8 +127,10 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given className from view`()
 
         `When handle product impressed`(productItemViewModel)
+        `When getting suggestedRelatedKeyword`()
 
         `Then verify interaction for Organic Ads product impression`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify interaction for Organic Ads product impression`(productItemViewModel: ProductItemViewModel) {
@@ -131,7 +146,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel))
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
         }
 
         confirmVerified(productListView)

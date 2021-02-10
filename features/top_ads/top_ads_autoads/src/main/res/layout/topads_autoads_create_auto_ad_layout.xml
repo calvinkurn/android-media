@@ -71,9 +71,9 @@
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
         android:orientation="vertical"
+        android:padding="@dimen/dp_16"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        android:padding="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_range_text">
@@ -128,13 +128,13 @@
                 android:id="@+id/budgetEditText"
                 style="@style/TextInputLayout"
                 android:layout_width="0dp"
-                android:inputType="number"
                 android:layout_marginTop="@dimen/dp_24"
                 android:maxLines="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/range_start"
                 app:layout_constraintWidth_percent=".70"
-                app:prefix="Rp "/>
+                app:prefix="Rp "
+                app:text_field_input_type="number" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/error_text"
@@ -172,9 +172,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
-        app:fbType="group"
         android:textAllCaps="false"
         android:visibility="visible"
+        app:fbType="group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -193,11 +193,23 @@
         android:layout_marginEnd="16dp"
         android:enabled="false"
         android:text="@string/iklankan"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toTopOf="@+id/info_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_cancel"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:text="@string/topads_common_cancel_btn"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_submit"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_text"

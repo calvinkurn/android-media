@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
  * Created by fwidjaja on 2019-08-28.
  */
 
-@SomScope
 @Module
 class SomModule {
 

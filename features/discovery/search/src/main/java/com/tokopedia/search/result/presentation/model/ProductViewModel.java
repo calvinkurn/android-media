@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductViewModel implements Parcelable {
 
     private List<ProductItemViewModel> productList = new ArrayList<>();
-    private String additionalParams;
+    private String additionalParams = "";
     private String autocompleteApplink;
     private String responseCode;
     private String keywordProcess;
