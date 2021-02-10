@@ -1,4 +1,4 @@
-package com.tokopedia.cart.journey.simple
+package com.tokopedia.cart.journey.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.GridLayoutManager
