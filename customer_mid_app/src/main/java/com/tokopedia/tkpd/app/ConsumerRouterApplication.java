@@ -417,7 +417,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private Boolean isOldGcmUpdate() {
-        return getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE, false);
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     @Override

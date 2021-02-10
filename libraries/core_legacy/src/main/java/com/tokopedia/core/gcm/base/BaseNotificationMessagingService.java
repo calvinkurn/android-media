@@ -136,6 +136,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     }
 
     private Boolean isOldGcmUpdate() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
+        return remoteConfig.getBoolean(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
     }
 }

@@ -515,7 +515,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private Boolean isOldGcmUpdate() {
-        return getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE, false);
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     private void injectGcmUpdateComponent() {
