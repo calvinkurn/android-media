@@ -29,7 +29,7 @@ class CouponDetailUseCase @Inject constructor(@Named(GET_COUPON_DETAIL) val cata
         val map = gqlWrapper.getResponse(Map::class.java, queryBuilder.toString(), emptyMap())
         val gson = Gson()
         val json = gson.toJsonTree(map).asJsonObject
-        val couponMap = HashMap<String,GetCouponDetail>()
+        val couponMap = HashMap<String, GetCouponDetail>()
         json.entrySet().iterator().forEach {
             couponMap[it.key] = (gson.fromJson(it.value, GetCouponDetail::class.java))
         }

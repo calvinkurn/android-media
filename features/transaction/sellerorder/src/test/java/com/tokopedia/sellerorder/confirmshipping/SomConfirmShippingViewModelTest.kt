@@ -50,9 +50,9 @@ class SomConfirmShippingViewModelTest {
 
         listMsg = listOf("Ok1", "Ok2", "Ok3")
 
-        val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 123)
-        val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 456)
-        val courier3 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 789)
+        val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "123")
+        val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "456")
+        val courier3 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "789")
         listCourier = listOf(courier1, courier2, courier3)
     }
 
@@ -114,7 +114,7 @@ class SomConfirmShippingViewModelTest {
 
         //then
         assert(somConfirmShippingViewModel.courierListResult.value is Success)
-        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == 123)
+        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == "123")
     }
 
     @Test

@@ -11,7 +11,7 @@
     <string name="play_etalase_product_amount">%d Produk</string>
     <string name="play_etalase_detail_header">%s (%d)</string>
 
-    <string name="play_product_stock_amount">Stok: %d</string>
+    <string name="play_product_stock_amount">Stok: %s</string>
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
     <string name="play_empty_stock">Stok Habis</string>
     <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
