@@ -39,8 +39,6 @@ class SellerHomeNavigator(
     private var currentSelectedPage: Int? = null
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
 
-    private val handler = Handler()
-
     init {
         initFragments()
     }
@@ -182,7 +180,7 @@ class SellerHomeNavigator(
             it?.let {
                 val tag = it::class.java.canonicalName
                 val fragmentToBeAdded = fm.findFragmentByTag(tag) ?: it
-                transaction.add(R.id.sahContainer, fragmentToBeAdded, tag)
+                transaction.add(R.id.sahContainer, it, tag)
 
                 if(fragmentToBeAdded != selectedPage) {
                     try {
@@ -196,27 +194,28 @@ class SellerHomeNavigator(
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
-        handler.post {
-            val tag = fragment::class.java.canonicalName
-            val fragmentByTag = fm.findFragmentByTag(tag)
-            val selectedFragment = fragmentByTag ?: fragment
-            val currentState = selectedFragment.lifecycle.currentState
-            val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
+        val tag = fragment::class.java.canonicalName
+        val fragmentByTag = fm.findFragmentByTag(tag)
+        val selectedFragment = fragmentByTag ?: fragment
+        val currentState = selectedFragment.lifecycle.currentState
+        val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-            if(isFragmentNotResumed) {
-                try {
-                    transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
-                } catch (e: Exception) {
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
-                }
+        if(isFragmentNotResumed) {
+            try {
+                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
+            } catch (e: Exception) {
+                SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
             }
-
-            hideAllPages(transaction)
-
-            transaction
-                    .show(selectedFragment)
-                    .commit()
         }
+
+        hideAllPages(transaction)
+
+        if (fragmentByTag == null) {
+            transaction.add(R.id.sahContainer, selectedFragment, tag)
+        } else {
+            transaction.show(selectedFragment)
+        }
+        transaction.commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
