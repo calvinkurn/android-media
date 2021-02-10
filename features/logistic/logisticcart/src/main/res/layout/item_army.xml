@@ -41,6 +41,20 @@
         </FrameLayout>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title_extra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/img_check"
+            android:layout_toEndOf="@id/fl_image_container"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:lineSpacingExtra="4sp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Bebas Ongkir (2 - 4 hari)" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

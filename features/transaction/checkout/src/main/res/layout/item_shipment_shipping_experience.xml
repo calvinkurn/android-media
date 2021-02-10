@@ -47,14 +47,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon_shipping_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:icon_color_night_enable="@color/Unify_G500"
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_name="COURIER"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/checkout_module_ic_shipping_logo" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_choose_shipping"

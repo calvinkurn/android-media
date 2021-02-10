@@ -68,10 +68,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_16"
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_N700_44"
-        app:layout_constraintEnd_toEndOf="@+id/tv_shop_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_shop"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop"
         app:typographyType="small"
@@ -155,10 +156,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_free_shipping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@id/lbl_cashback"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
         tools:ignore="ContentDescription" />

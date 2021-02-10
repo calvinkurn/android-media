@@ -81,6 +81,12 @@
                 android:foregroundGravity="center_vertical"
                 app:flexWrap="wrap">
 
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iu_image_fulfill"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
+                    android:layout_marginEnd="@dimen/spacing_lvl2"/>
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_fulfill_district"
                     android:layout_width="wrap_content"

@@ -6,7 +6,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.Group
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -233,7 +232,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {
-                ImageHandler.LoadImage(it, product.freeOngkirImg)
+                it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
         } else {
