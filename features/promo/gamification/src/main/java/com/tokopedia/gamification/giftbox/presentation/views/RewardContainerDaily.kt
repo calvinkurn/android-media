@@ -219,7 +219,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
         var hasPoints = false
         var hasCoupons = false
 
-        val list = rewardEntity.couponDetailResponse?.couponMap?.values
+        val list = rewardEntity.couponDetailResponse?.couponDetailList
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()
