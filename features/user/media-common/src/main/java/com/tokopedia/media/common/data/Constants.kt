@@ -20,5 +20,5 @@ const val HIGH_QUALITY = "4g"
 const val UNDEFINED = "4g"
 
 // the key of connection type
-const val HIGH_QUALITY_SETTINGS = 1 // 4g / wifi
-const val LOW_QUALITY_SETTINGS = 2 // 2g / 3g
+const val LOW_QUALITY_SETTINGS = 1 // 2g / 3g
+const val HIGH_QUALITY_SETTINGS = 2 // 4g / wifi
