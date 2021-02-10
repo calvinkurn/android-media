@@ -10,15 +10,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.talk.feature.sellersettings.settings.presentation.widget.TalkSettingsOption
 
 class TalkSettingsFragment : Fragment() {
 
@@ -28,12 +24,8 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private var navigation: String = ""
-    private var talkSettingsTemplateText: Typography? = null
-    private var talkSettingsTemplateLabel: Label? = null
-    private var talkSettingsTemplateChevron: IconUnify? = null
-    private var talkSettingsSmartReplyText: Typography? = null
-    private var talkSettingsSmartReplyLabel: Label? = null
-    private var talkSettingsSmartReplyChevron: IconUnify? = null
+    private var talkSettingsTemplateOption: TalkSettingsOption? = null
+    private var talkSettingsSmartReplyOption: TalkSettingsOption? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,16 +60,10 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun setNavigation() {
-        talkSettingsTemplateText?.setOnClickListener {
+        talkSettingsTemplateOption?.setOnClickListener {
             goToTemplate()
         }
-        talkSettingsTemplateChevron?.setOnClickListener {
-            goToTemplate()
-        }
-        talkSettingsSmartReplyText?.setOnClickListener {
-            goToSmartReply()
-        }
-        talkSettingsSmartReplyChevron?.setOnClickListener {
+        talkSettingsSmartReplyOption?.setOnClickListener {
             goToSmartReply()
         }
     }
@@ -113,12 +99,12 @@ class TalkSettingsFragment : Fragment() {
 
     private fun showLabel() {
         if (!GlobalConfig.isSellerApp()) {
-            talkSettingsTemplateLabel?.show()
-            talkSettingsSmartReplyLabel?.show()
+            talkSettingsTemplateOption?.showLabel()
+            talkSettingsSmartReplyOption?.showLabel()
             return
         }
-        talkSettingsTemplateLabel?.hide()
-        talkSettingsSmartReplyLabel?.hide()
+        talkSettingsTemplateOption?.hideLabel()
+        talkSettingsSmartReplyOption?.hideLabel()
     }
 
     private fun getSmartReplyApplink(): String {
@@ -138,12 +124,8 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun bindViewReferences(view: View) {
-        talkSettingsTemplateText = view.findViewById(R.id.talkSettingsTemplateText)
-        talkSettingsTemplateLabel = view.findViewById(R.id.talkSettingsTemplateLabel)
-        talkSettingsTemplateChevron = view.findViewById(R.id.talkSettingsTemplateChevron)
-        talkSettingsSmartReplyText = view.findViewById(R.id.talkSettingsSmartReplyText)
-        talkSettingsSmartReplyLabel = view.findViewById(R.id.talkSettingsSmartReplyLabel)
-        talkSettingsSmartReplyChevron = view.findViewById(R.id.talkSettingsSmartReplyChevron)
+        talkSettingsTemplateOption = view.findViewById(R.id.talkSettingsTemplateOption)
+        talkSettingsSmartReplyOption = view.findViewById(R.id.talkSettingsSmartReplyOption)
     }
 
 }

@@ -16,7 +16,6 @@ class TalkTemplateListViewHolder(private val view: View, private val talkTemplat
     fun bind(template: String) {
         view.apply {
             findViews()
-            talkTemplateLayout?.setBackgroundResource(R.drawable.bg_talk_template)
             talkTemplate?.text = template
             talkEditTemplateIcon?.setOnClickListener {
                 talkTemplateListListener.onEditClicked(template, adapterPosition)
