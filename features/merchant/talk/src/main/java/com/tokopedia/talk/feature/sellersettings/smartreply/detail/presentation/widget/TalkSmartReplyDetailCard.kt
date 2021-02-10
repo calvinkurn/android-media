@@ -28,7 +28,7 @@ class TalkSmartReplyDetailCard : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_smart_reply_detail_card, this)
+        View.inflate(context, R.layout.widget_talk_smart_reply_detail_card, this)
         bindViews()
     }
 
