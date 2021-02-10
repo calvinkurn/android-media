@@ -78,7 +78,7 @@ class DigitalCartActivityTest {
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
             putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
         }.setData(
-                Uri.parse("tokopedia-android-internal://digital/cart/baru")
+                Uri.parse("tokopedia-android-internal://digital/checkout")
         )
         mActivityRule.launchActivity(intent)
     }
