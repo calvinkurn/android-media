@@ -210,7 +210,7 @@ class SellerHomeNavigator(
 
         hideAllPages(transaction)
 
-        if (fragmentByTag == null) {
+        if (fragmentByTag == null && !selectedFragment.isAdded) {
             transaction.add(R.id.sahContainer, selectedFragment, tag)
         } else {
             transaction.show(selectedFragment)
