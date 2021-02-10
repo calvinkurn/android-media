@@ -6,8 +6,10 @@ import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
@@ -43,6 +45,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     indicator.apply {
                         visible()
                         setIndicator(productImages.size)
+                        activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                        inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
                     }
                     val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
@@ -109,7 +113,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             }
 
             val productName = itemView.findViewById<Typography>(R.id.snapshot_product_name)
-            productName.text = item.dataObject.orderDetail.productName
+            productName.text = MethodChecker.fromHtml(item.dataObject.orderDetail.productName)
 
             val shopLogo = itemView.findViewById<ImageView>(R.id.snapshot_shop_logo)
             ImageHandler.loadImageCircle2(itemView.context, shopLogo, item.dataObject.shopImagePrimaryUrl)
@@ -230,7 +234,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             val productDesc = item.dataObject.orderDetail.productDesc
             if (productDesc.isNotEmpty()) {
                 desc.visible()
-                desc.text = item.dataObject.orderDetail.productDesc
+                desc.text = MethodChecker.fromHtml(productDesc)
             } else {
                 desc.gone()
             }
