@@ -5,18 +5,23 @@ package com.tokopedia.recommendation_widget_common.presentation
  */
 
 import android.content.Context
+import androidx.cardview.widget.CardView
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardView
+import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 @Deprecated("RecommendationCardView replaced with ProductCardView v2")
