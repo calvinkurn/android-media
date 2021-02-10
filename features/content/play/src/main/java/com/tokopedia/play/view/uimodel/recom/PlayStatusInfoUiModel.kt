@@ -9,7 +9,7 @@ data class PlayStatusInfoUiModel(
         val statusType: PlayStatusType,
         val bannedModel: PlayBannedUiModel,
         val freezeModel: PlayFreezeUiModel,
-        val shouldAutoSwipe: Boolean,
+        val shouldAutoSwipeOnFreeze: Boolean,
 )
 
 data class PlayBannedUiModel(

@@ -411,7 +411,7 @@ class PlayFragment @Inject constructor(
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 
-                if (it.shouldAutoSwipe) doAutoSwipe()
+                if (it.shouldAutoSwipeOnFreeze) doAutoSwipe()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)

@@ -49,7 +49,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
-        private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
@@ -670,7 +669,7 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                                    shouldAutoSwipe = true,
+                                    shouldAutoSwipeOnFreeze = true,
                                     statusType = playSocketToModelMapper.mapStatus(
                                             isBanned = result.isBanned && result.userId.isNotEmpty()
                                                     && result.userId.equals(userSession.userId, true)))
@@ -914,11 +913,6 @@ class PlayViewModel @Inject constructor(
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
         getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
         getReportSummariesUseCase.executeOnBackground()
-    }
-
-    private suspend fun getTotalLikes(channelId: String): TotalLike = withContext(dispatchers.io) {
-        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
-        getTotalLikeUseCase.executeOnBackground()
     }
 
     private suspend fun getIsLiked(likeParamInfo: PlayLikeParamInfoUiModel) = withContext(dispatchers.io) {
