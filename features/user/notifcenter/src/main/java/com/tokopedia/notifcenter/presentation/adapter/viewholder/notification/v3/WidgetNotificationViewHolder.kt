@@ -47,8 +47,8 @@ class WidgetNotificationViewHolder constructor(
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
     private val historyAdapter: HistoryAdapter = HistoryAdapter()
 
-    private val height_38 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_38)
-    private val height_50 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_50)
+    private val height_46 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_46)
+    private val height_58 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_58)
     private val margin_4 = itemView?.context?.resources?.getDimension(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_4
     )
@@ -183,9 +183,9 @@ class WidgetNotificationViewHolder constructor(
     private fun bindThumbnailHeight(element: NotificationUiModel) {
         val thumbLp = thumbnail?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
         val height = if (element.isMultiLineWidget()) {
-            height_50
+            height_58
         } else {
-            height_38
+            height_46
         } ?: return
         thumbLp.height = height.toInt()
         thumbnail.layoutParams = thumbLp
