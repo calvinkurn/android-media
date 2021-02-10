@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/imgEmpty"
             android:src="@drawable/bg_notif_empty_state"
             android:layout_width="@dimen/notif_dp_280"
@@ -34,7 +35,7 @@
             app:typographyWeight="bold"
             android:layout_marginBottom="@dimen/notif_dp_16"
             android:layout_marginTop="@dimen/notif_dp_8"
-            android:textColor="@color/chorcoal_black"/>
+            android:textColor="@color/Unify_N700"/>
 
     </LinearLayout>
 

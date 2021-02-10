@@ -63,6 +63,10 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
         return R.layout.activity_review_gallery
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.activity_review_gallery_parent_view
+    }
+
     companion object {
 
         private val EXTRA_PRODUCT_ID = "product_id"
