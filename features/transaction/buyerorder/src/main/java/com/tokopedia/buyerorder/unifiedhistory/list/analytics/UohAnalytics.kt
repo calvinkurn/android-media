@@ -98,6 +98,7 @@ object UohAnalytics {
     private const val CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click selesai on bottom sheet finish transaction"
     private const val CLICK_AJUKAN_KOMPLAIN_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click ajukan komplain on bottom sheet finish transaction"
     private const val CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL = "click kirim on bottom sheet send email "
+    private const val TRUE = "true"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -487,11 +488,11 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
     }
 
-    fun orderDetailOpenScreenEvent(isLoggedInStatus: Boolean) {
+    fun orderDetailOpenScreenEvent() {
         val bundle = Bundle().apply {
             putString(EVENT, OPEN_SCREEN)
             putString(SCREEN_NAME, ORDER_DETAIL)
-            putString(IS_LOGGED_IN_STATUS, isLoggedInStatus.toString())
+            putString(IS_LOGGED_IN_STATUS, TRUE)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, bundle)
     }
