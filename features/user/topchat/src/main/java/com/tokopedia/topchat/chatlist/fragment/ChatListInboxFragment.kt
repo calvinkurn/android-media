@@ -223,6 +223,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             initView(it)
             setUpRecyclerView(it)
             setupObserver()
+            setupSellerBroadcastButtonObserver()
             setupSellerBroadcast()
             setupChatSellerBannedStatus()
             setupEmptyModel()
@@ -293,7 +294,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) {
             broadCastButton?.hide()
         } else {
-            setupSellerBroadcastButton()
             viewModel.loadChatBlastSellerMetaData()
         }
     }
@@ -302,7 +302,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
-    private fun setupSellerBroadcastButton() {
+    private fun setupSellerBroadcastButtonObserver() {
         viewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
             when (visibility) {
                 true -> {
