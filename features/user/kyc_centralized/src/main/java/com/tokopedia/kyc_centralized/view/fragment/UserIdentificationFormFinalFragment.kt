@@ -259,7 +259,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setKycUploadResultView(data: KycData) {
         if(data.isSuccessRegister) {
-            deleteTmpFile()
+            deleteTmpFile(deleteKtp = true, deleteFace = true)
             activity?.setResult(Activity.RESULT_OK)
             stepperListener?.finishPage()
         } else {
@@ -275,17 +275,17 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                         KYCConstant.KTP_RETAKE -> {
                             imageKtp = KycUrl.KTP_VERIF_FAIL
                             colorKtp = null
-                            setKtpUploadButtonListener()
+                            setKtpRetakeButtonListener()
                         }
                         KYCConstant.FACE_RETAKE -> {
                             imageFace = KycUrl.FACE_VERIF_FAIL
                             colorFace = null
-                            setFaceUploadButtonListener()
+                            setFaceRetakeButtonListener()
                         }
                     }
                 }
                 if (listRetake.size == 2) {
-                    setKtpFaceUploadButtonListener()
+                    setKtpFaceRetakeButtonListener()
                 }
             }
             setResultViews(imageKtp, imageFace, data.app.title, data.app.subtitle, colorKtp, colorFace, data.app.button, data.listMessage)
@@ -296,14 +296,15 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    private fun setKtpUploadButtonListener() {
+    private fun setKtpRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeKtpFinalFormPage()
+            deleteTmpFile(deleteKtp = true, deleteFace = false)
             openCameraView(UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP, KYCConstant.REQUEST_CODE_CAMERA_KTP)
         }
     }
 
-    private fun setFaceUploadButtonListener() {
+    private fun setFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeSelfieFinalFormPage()
             goToLivenessOrSelfie()
@@ -311,6 +312,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun goToLivenessOrSelfie() {
+        deleteTmpFile(deleteKtp = false, deleteFace = true)
         if(!isKycSelfie) {
             openLivenessView()
         } else {
@@ -318,9 +320,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    private fun setKtpFaceUploadButtonListener() {
+    private fun setKtpFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeKtpSelfieFinalFormPage()
+            deleteTmpFile(deleteKtp = true, deleteFace = true)
             openCameraView(UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP, KYCConstant.REQUEST_CODE_CAMERA_KTP)
         }
     }
@@ -526,9 +529,9 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    fun deleteTmpFile() {
-        FileUtil.deleteFile(stepperModel?.ktpFile)
-        FileUtil.deleteFile(stepperModel?.faceFile)
+    fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
+        if(deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
+        if(deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
     }
 
     private fun isUsingEncrypt(): Boolean {
