@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import timber.log.Timber
 
 /**
  * Created by Lukas on 08/10/20.
@@ -183,8 +184,12 @@ fun Map<String, String>.isActivated(key: String, value: String): Boolean{
         } else {
             null
         }
-
-        val values = separator?.let { this[key]?.split(it) } ?: listOf(this[key])
+        val values = mutableListOf<String>()
+        separator?.let {
+            values.addAll(this[key]?.split(it) ?: listOf())
+        }
+        if(values.isEmpty()) values.add(value)
+        Timber.tag("LUKAS").e("IsActivated: " + values + " in " + value + " is " + (values.indexOf(value) != -1))
         values.indexOf(value) != -1
     } else {
         false

@@ -386,7 +386,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
+        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
@@ -478,7 +478,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
+        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, source, productId)
         filterSortBottomSheet = null
         val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
         val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
