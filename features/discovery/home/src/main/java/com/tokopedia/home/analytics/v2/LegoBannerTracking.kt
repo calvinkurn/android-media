@@ -149,7 +149,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
-
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -172,7 +172,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
-
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -193,6 +193,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
                 .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -320,6 +321,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                         "id", String.format(ID_LEGO_6_AUTO_IMAGE, channels.id, channels.banner.id, channels.persoType, channels.categoryID),
                         "name", tallBannerPromoName,
                         "creative", channels.banner.attribution,
+                        "creative_url", "",
                         "position", "1")
         )
         return list

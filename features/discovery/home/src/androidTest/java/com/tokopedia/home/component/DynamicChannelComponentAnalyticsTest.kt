@@ -48,7 +48,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
+private const val TAG = "DynamicChannelComponentAnalyticsTest"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/home/homescreen.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER = "tracker/home/ticker.json"
@@ -65,7 +65,6 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN = "tracker/home/recom_feed_product_login.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
-private const val TAG = "DynamicChannelComponentAnalyticsTest"
 
 /**
  * @author by yoasfs on 07/07/20
@@ -296,6 +295,12 @@ class DynamicChannelComponentAnalyticsTest {
                 val holderName = "DynamicIconSectionViewHolder"
                 logTestMessage("VH $holderName")
                 clickSingleItemOnRecyclerView(viewholder.itemView, R.id.list, holderName)
+            }
+            is DynamicLegoBannerSixAutoViewHolder -> {
+                val holderName = "LegoBannerSixAutoViewHolder"
+                logTestMessage("VH $holderName")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
             }
         }
     }
