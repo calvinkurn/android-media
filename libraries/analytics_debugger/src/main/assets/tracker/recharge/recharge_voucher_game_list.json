@@ -15,7 +15,7 @@
       "isLoggedInStatus": "{{true|false}}",
       "eventName": "openScreen",
       "shopId": "{{.+}}",
-      "category": "{{.*}}",
+      "category": "Voucher Game",
       "event": "openScreen"
     },
     {
