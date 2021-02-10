@@ -20,7 +20,7 @@ class ProductShippingHeaderViewHolder(view: View) : AbstractViewHolder<ProductSh
 
     private val txtShippingFrom: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_header_from)
     private val txtShippingTo: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_header_to)
-    private val labelFreeOngkir: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.label_pdp_shipping_bo)
+    private val txtFreeOngkirPrice: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price)
     private val txtFreeOngkirEstimation: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_estimation)
     private val txtWeight: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_weight)
     private val imgFreeOngkir: ImageView? = itemView.findViewById(R.id.img_pdp_shipping_bo)
@@ -36,7 +36,7 @@ class ProductShippingHeaderViewHolder(view: View) : AbstractViewHolder<ProductSh
     }
 
     private fun renderBo(freeOngkir: Boolean, freeOngkirEstimation: String) = with(itemView) {
-        labelFreeOngkir?.showWithCondition(freeOngkir)
+        txtFreeOngkirPrice?.showWithCondition(freeOngkir)
         imgFreeOngkir?.showWithCondition(freeOngkir)
         txtFreeOngkirEstimation?.shouldShowWithAction(freeOngkirEstimation.isNotEmpty()) {
             txtFreeOngkirEstimation.text = freeOngkirEstimation

@@ -128,8 +128,8 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
             rv?.addItemDecoration(ProductSeparatorItemDecoration(requireContext()))
         }
         val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
-                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
+
         adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl())
 
         rv?.adapter = adapter
