@@ -184,6 +184,7 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
         return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
+                profileResponse.profileRevampWording, profileResponse.isRecom,
                 profileResponse.profileId, profileResponse.status, profileResponse.enable,
                 profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
                 mapShipment(profileResponse.shipment))
