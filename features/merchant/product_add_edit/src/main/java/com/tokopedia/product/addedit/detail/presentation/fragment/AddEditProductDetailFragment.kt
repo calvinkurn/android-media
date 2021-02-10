@@ -263,7 +263,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -848,12 +848,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     productCategoryLayout?.show()
-                    productCategoryRecListView?.show()
-                    val selectedCategory = ArrayList<ListItemUnify>()
-                    val selectedCategoryItemUnify = ListItemUnify(categoryName, "")
-                    selectedCategoryItemUnify.isBold = false
-                    selectedCategory.add(selectedCategoryItemUnify)
-                    productCategoryRecListView?.setData(selectedCategory)
+                    productCategoryRecListView?.setToDisplayText(categoryName, requireContext())
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
@@ -1139,12 +1134,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product category
         if (detailInputModel.categoryName.isNotBlank()) {
             productCategoryLayout?.show()
-            productCategoryRecListView?.show()
-            val selectedCategory = ArrayList<ListItemUnify>()
-            val listItemUnify = ListItemUnify(detailInputModel.categoryName, "")
-            listItemUnify.isBold = false
-            selectedCategory.add(listItemUnify)
-            productCategoryRecListView?.setData(selectedCategory)
+            productCategoryRecListView?.setToDisplayText(detailInputModel.categoryName, requireContext())
             productCategoryId = detailInputModel.categoryId
         }
 
@@ -1195,6 +1185,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             productConditions.forEachIndexed { index, listItemUnify ->
+                listItemUnify.setTextColorToUnify(requireContext())
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     productConditionListView?.setSelected(productConditions, index) {
                         if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
@@ -1526,7 +1517,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
         submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
     }
 
     private fun disableSubmitButton() {
@@ -1660,6 +1651,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             items.forEachIndexed { position, listItemUnify ->
+                listItemUnify.setTextColorToUnify(requireContext())
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     if (viewModel.isAdding) {
                         ProductAddMainTracking.clickProductCategoryRecom(shopId)

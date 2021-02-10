@@ -7,6 +7,7 @@ import com.tokopedia.globalerror.GlobalError
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
@@ -115,6 +116,9 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         adapter = AddEditProductCategoryAdapter(this, resultCategories)
         rvCategory.adapter = adapter
         rvCategory.layoutManager = LinearLayoutManager(context)
+
+        // set bg color programatically, to reduce overdraw
+        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     private fun observer() {
