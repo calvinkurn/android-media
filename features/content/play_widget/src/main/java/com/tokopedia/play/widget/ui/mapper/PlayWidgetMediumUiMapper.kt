@@ -1,11 +1,11 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -16,7 +16,8 @@ import javax.inject.Inject
 class PlayWidgetMediumUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
         private val videoMapper: PlayWidgetVideoMapper,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val htmlTextTransformer: HtmlTextTransformer
 ) : PlayWidgetMapper {
 
     override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel {
@@ -115,6 +116,6 @@ class PlayWidgetMediumUiMapper @Inject constructor(
 
     private fun mapWidgetPartnerInfo(partner: PlayWidgetItemPartner) = PlayWidgetPartnerUiModel(
             id = partner.id,
-            name = MethodChecker.fromHtml(partner.name).toString()
+            name = htmlTextTransformer.transform(partner.name)
     )
 }

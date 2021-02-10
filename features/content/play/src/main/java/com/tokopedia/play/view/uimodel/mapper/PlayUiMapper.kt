@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -9,11 +8,13 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import javax.inject.Inject
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-object PlayUiMapper {
+class PlayUiMapper @Inject constructor(private val htmlTextTransformer: HtmlTextTransformer) {
 
     fun createCompleteInfoModel(
             channel: Channel,
@@ -71,7 +72,7 @@ object PlayUiMapper {
             isFollowable = false
     )
 
-    private fun parsePartnerName(partnerName: String) = MethodChecker.fromHtml(partnerName).toString()
+    private fun parsePartnerName(partnerName: String) = htmlTextTransformer.transform(partnerName)
 
     private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
             contentId = feedInfo.contentId,
