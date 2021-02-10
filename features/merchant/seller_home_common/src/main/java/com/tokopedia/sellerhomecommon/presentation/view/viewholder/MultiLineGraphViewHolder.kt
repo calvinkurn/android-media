@@ -493,11 +493,12 @@ class MultiLineGraphViewHolder(
                 return emptyList()
             }
 
-            val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
-            isMetricComparableByPeriodSelected = isComparableByPeriod
             if (metric.linePeriod.lastPeriod.isNotEmpty()) {
+                isMetricComparableByPeriodSelected = true
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
+            } else {
+                isMetricComparableByPeriodSelected = false
             }
         } else {
             isMetricComparableByPeriodSelected = false
