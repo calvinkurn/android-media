@@ -59,6 +59,7 @@ fun givenParentViewModelRobot(
         playChannelMapper: PlayChannelDetailsWithRecomMapper = PlayChannelDetailsWithRecomMapper(),
         dispatchers: TestCoroutineDispatchersProvider = TestCoroutineDispatchersProvider,
         userSession: UserSessionInterface = mockk(relaxed = true),
+        fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
             savedStateHandle = savedStateHandle,
@@ -67,7 +68,7 @@ fun givenParentViewModelRobot(
             playChannelMapper = playChannelMapper,
             dispatchers = dispatchers,
             userSession = userSession
-    )
+    ).apply(fn)
 }
 
 infix fun PlayParentViewModelRobot.andWhen(

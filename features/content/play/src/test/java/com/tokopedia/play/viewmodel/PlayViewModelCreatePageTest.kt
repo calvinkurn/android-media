@@ -12,6 +12,9 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.*
+import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.play.givenPlayViewModelRobot
+import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
@@ -48,23 +51,6 @@ class PlayViewModelCreatePageTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val mockPlayVideo: PlayVideoWrapper.Builder = mockk(relaxed = true)
-    private val mockPlayVideoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true)
-    private val mockPlayChannelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory = mockk(relaxed = true)
-    private val mockPlayVideoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true)
-    private val mockGetChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true)
-    private val mockGetSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true)
-    private val mockGetPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
-    private val mockGetReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true)
-    private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
-    private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
-    private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
-    private val mockTrackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
-    private val mockTrackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true)
-    private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
-    private val mockPlaySocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true)
-    private val mockPlayUiModelMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val pinnedBuilder = PlayPinnedModelBuilder()
@@ -78,34 +64,9 @@ class PlayViewModelCreatePageTest {
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
 
-    private lateinit var playViewModel: PlayViewModel
-
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatchers.main)
-
-        playViewModel = PlayViewModel(
-                mockPlayVideo,
-                mockPlayVideoStateProcessorFactory,
-                mockPlayChannelStateProcessorFactory,
-                mockPlayVideoBufferGovernorFactory,
-                mockGetChannelStatusUseCase,
-                mockGetSocketCredentialUseCase,
-                mockGetPartnerInfoUseCase,
-                mockGetReportSummariesUseCase,
-                mockGetIsLikeUseCase,
-                mockGetCartCountUseCase,
-                mockGetProductTagItemsUseCase,
-                mockTrackProductTagBroadcasterUseCase,
-                mockTrackVisitChannelBroadcasterUseCase,
-                mockPlaySocket,
-                mockPlaySocketToModelMapper,
-                mockPlayUiModelMapper,
-                userSession,
-                dispatchers,
-                mockk(relaxed = true),
-                mockk(relaxed = true)
-        )
     }
 
     @After
@@ -131,13 +92,14 @@ class PlayViewModelCreatePageTest {
                 orientation = videoOrientation
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableVideoMeta.getOrAwaitValue().videoStream
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            videoMetaResult
+                    .videoStream
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -162,13 +124,13 @@ class PlayViewModelCreatePageTest {
                 source = LikeSource.Storage
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableLikeStatusInfo.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            likeStatusResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -185,13 +147,13 @@ class PlayViewModelCreatePageTest {
                 totalView = totalView
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableTotalViews.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            totalViewResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -215,13 +177,13 @@ class PlayViewModelCreatePageTest {
                 followInfo = partnerInfoBuilder.buildPlayPartnerFollowInfo(isFollowed = isFollowed)
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observablePartnerInfo.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            partnerInfoResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -241,13 +203,13 @@ class PlayViewModelCreatePageTest {
                 count = itemInCartCount
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableCartInfo.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            cartInfoResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -260,13 +222,13 @@ class PlayViewModelCreatePageTest {
 
         val expectedModel = quickReplyBuilder.build(quickReplyList)
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableQuickReply.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            quickReplyResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -286,13 +248,13 @@ class PlayViewModelCreatePageTest {
                 shouldShow = shouldShowShare
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableShareInfo.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            shareInfoResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -312,13 +274,13 @@ class PlayViewModelCreatePageTest {
                 backgroundUrl = backgroundUrl
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observableChannelInfo.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            channelInfoResult
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
@@ -341,12 +303,12 @@ class PlayViewModelCreatePageTest {
                 title = pinnedMessage
         )
 
-        playViewModel.createPage(channelData)
-
-        val actualModel = playViewModel.observablePinned.getOrAwaitValue()
-
-        Assertions
-                .assertThat(actualModel)
-                .isEqualTo(expectedModel)
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            pinnedResult
+                    .isEqualTo(expectedModel)
+        }
     }
 }
