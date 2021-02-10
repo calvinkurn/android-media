@@ -1,4 +1,4 @@
-package com.tokopedia.cart.journey.simple
+package com.tokopedia.cart.journey.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,7 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class CartTrackingTest {
+class CartAnalyticsTest {
 
     @get:Rule
     var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
@@ -33,7 +33,7 @@ class CartTrackingTest {
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
@@ -44,10 +44,13 @@ class CartTrackingTest {
 
         cartPage {
             waitForData()
-        } buy {
+            clickBuyButton()
+        } validateAnalytics  {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
 
+        // Prevent glide crash
+        Thread.sleep(2000)
     }
 
     @After
