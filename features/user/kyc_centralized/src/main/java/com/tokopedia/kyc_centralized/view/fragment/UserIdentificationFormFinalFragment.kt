@@ -82,6 +82,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private lateinit var remoteConfig: RemoteConfig
 
+    private var retakeActionCode = NOT_RETAKE
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -146,9 +148,14 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
-                    //if liveness, upload the files immediately
-                    if(!isKycSelfie) {
-                        uploadKycFiles()
+                    when(retakeActionCode) {
+                        NOT_RETAKE, RETAKE_FACE -> {
+                            //if liveness, upload the files immediately
+                            if(!isKycSelfie) {
+                                uploadKycFiles()
+                            }
+                        }
+                        RETAKE_KTP -> { goToLivenessOrSelfie() }
                     }
                 }
                 is Fail -> {
@@ -198,11 +205,9 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun encryptImage() {
-        context?.let {
-            if(ImageEncryptionUtil.isUsingEncrypt(it)) {
-                uploadButton?.isEnabled = false
-                kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull())
-            }
+        if(isUsingEncrypt()) {
+            uploadButton?.isEnabled = false
+            kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
         }
     }
 
@@ -213,12 +218,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             setKycSelfieView()
         } else {
             //if not using encryption, send immediately, else wait for encrypt and show loading
-            context?.let {
-                if(!ImageEncryptionUtil.isUsingEncrypt(it)) {
-                    uploadKycFiles()
-                } else {
-                    showLoading()
-                }
+            if(!isUsingEncrypt()) {
+                uploadKycFiles()
+            } else {
+                showLoading()
             }
         }
         if (activity is UserIdentificationFormActivity) {
@@ -233,9 +236,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             if(isSocketTimeoutException) {
                 isSocketTimeoutException = false
             }
-            context?.let {ctx ->
-                kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), ImageEncryptionUtil.isUsingEncrypt(ctx))
-            }
+            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), isUsingEncrypt())
         }
     }
 
@@ -394,15 +395,28 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun retakeAction(requestCode: Int, data: Intent) {
         when (requestCode) {
             KYCConstant.REQUEST_CODE_CAMERA_KTP -> {
+                retakeActionCode = RETAKE_KTP
                 stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
-                goToLivenessOrSelfie()
+                if(isUsingEncrypt()) {
+                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), isKtpImage = true)
+                } else {
+                    goToLivenessOrSelfie()
+                }
             }
             KYCConstant.REQUEST_CODE_CAMERA_FACE -> {
+                retakeActionCode = RETAKE_FACE
                 if(!isKycSelfie) {
                     stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
-                    uploadKycFiles()
+                    if(isUsingEncrypt()) {
+                        kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
+                    } else {
+                        uploadKycFiles()
+                    }
                 } else {
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
+                    if(isUsingEncrypt()) {
+                        kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
+                    }
                     setKycSelfieView()
                 }
             }
@@ -520,8 +534,19 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         FileUtil.deleteFile(stepperModel?.faceFile)
     }
 
+    private fun isUsingEncrypt(): Boolean {
+        context?.let {
+            return ImageEncryptionUtil.isUsingEncrypt(it)
+        }
+        return false
+    }
+
     companion object {
         private var projectId = 0
+        private const val NOT_RETAKE = 0
+        private const val RETAKE_KTP = 1
+        private const val RETAKE_FACE = 2
+
         fun createInstance(projectid: Int): Fragment {
             val fragment = UserIdentificationFormFinalFragment()
             projectId = projectid

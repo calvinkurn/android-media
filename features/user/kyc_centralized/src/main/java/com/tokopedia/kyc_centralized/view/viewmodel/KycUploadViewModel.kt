@@ -19,6 +19,7 @@ import java.io.FileOutputStream
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
+import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
 class KycUploadViewModel @Inject constructor(
@@ -40,8 +41,8 @@ class KycUploadViewModel @Inject constructor(
                 var finalKtp = ktpPath
                 var finalFace = facePath
                 if(isUsingEncrypt) {
-                    finalKtp = decryptImage(ktpPath)
-                    finalFace = decryptImage(facePath)
+                    finalKtp = decryptImage(ktpPath, isKtpImage = true)
+                    finalFace = decryptImage(facePath, isKtpImage = false)
                 }
                 val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                 _kycResponse.postValue(Success(kycUploadResult))
@@ -52,7 +53,7 @@ class KycUploadViewModel @Inject constructor(
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    fun encryptImage(originalFilePath: String) {
+    fun encryptImage(originalFilePath: String, isKtpImage: Boolean) {
         launchCatchError(block = {
             withContext(dispatcher.io()) {
                 Log.d("ENCRYPT-START", "${System.currentTimeMillis()}")
@@ -60,6 +61,12 @@ class KycUploadViewModel @Inject constructor(
                 val fis = FileInputStream(originalFilePath)
                 val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
                 aes.init(Cipher.ENCRYPT_MODE, ImageEncryptionUtil.getKey())
+                //save the IV for decrypt
+                if(isKtpImage) {
+                    ivKtp = aes.iv
+                } else {
+                    ivFace = aes.iv
+                }
 
                 val fs = FileOutputStream(File(encryptedImagePath))
                 val out = CipherOutputStream(fs, aes)
@@ -84,25 +91,42 @@ class KycUploadViewModel @Inject constructor(
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    private fun decryptImage(originalFilePath: String): String {
+    private fun decryptImage(originalFilePath: String, isKtpImage: Boolean): String {
         Log.d("DECRYPT-START", "${System.currentTimeMillis()}")
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val fis = FileInputStream(originalFilePath)
         val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
-        aes.init(Cipher.DECRYPT_MODE, ImageEncryptionUtil.getKey())
-        val out = CipherInputStream(fis, aes)
+        //Get the right IV
+        val tempIv: ByteArray? = if(isKtpImage) {
+            ivKtp
+        } else {
+            ivFace
+        }
+        val spec = GCMParameterSpec(ImageEncryptionUtil.IV_SIZE, tempIv)
+        aes.init(Cipher.DECRYPT_MODE, ImageEncryptionUtil.getKey(), spec)
 
+        val out = CipherInputStream(fis, aes)
         File(decryptedFilePath).outputStream().use {
             out.copyTo(it)
         }
 
-        //Delete encrypted file
+        //Delete encrypted file and IV
         ImageEncryptionUtil.deleteFile(originalFilePath)
+        if(isKtpImage) {
+            ivKtp = null
+        } else {
+            ivFace = null
+        }
 
         val createdFile = ImageEncryptionUtil.renameImageToOriginalFileName(decryptedFilePath)
         Log.d("DECRYPT-END", "${System.currentTimeMillis()}")
         Log.d("RESULT-DECRYPT", createdFile)
 
         return createdFile
+    }
+
+    companion object {
+        private var ivKtp: ByteArray? = null
+        private var ivFace: ByteArray? = null
     }
 }

@@ -10,8 +10,9 @@ import javax.crypto.spec.SecretKeySpec
 
 object ImageEncryptionUtil {
     private const val TEMP_IMAGE_TAG = "temp_"
-    private var salt = "r5u8x/A?D(G+KbPe"
-    const val ALGORITHM = "AES"
+    private var salt = "A%D*G-KaPdRgUkXp2s5v8y/B?E(H+MbQ"
+    const val ALGORITHM = "AES/GCM/NoPadding"
+    const val IV_SIZE = 128
 
     fun getKey(): SecretKey? {
         var secretKey: SecretKey? = null
