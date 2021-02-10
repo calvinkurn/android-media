@@ -50,11 +50,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import kotlin.test.assertEquals
 
 class LoginEmailPhoneViewModelTest {
 
