@@ -313,7 +313,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_shop_statistic),
+                        resources.getString(R.string.setting_menu_statistic),
                         null,
                         ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
                         eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC,
