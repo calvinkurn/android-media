@@ -13,30 +13,15 @@ query Notification($cursor: String) {
       ticket
       review
     }
-    inbox_counter{
-      all{
-        total_int
-        notifcenter_int
-        chat_int
-        talk_int
-      }
-      buyer{
-        total_int
-        notifcenter_int
-        chat_int
-        talk_int
-      }
-      seller{
-        total_int
-        notifcenter_int
-        chat_int
-        talk_int
-      }
-    }
     chat {
       unreads
       unreadsSeller
       unreadsUser
+    }
+    inbox_counter{
+      all{
+        total_int
+      }
     }
     resolutionAs {
       buyer
