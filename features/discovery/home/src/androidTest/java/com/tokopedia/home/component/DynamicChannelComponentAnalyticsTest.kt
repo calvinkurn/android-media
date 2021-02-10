@@ -149,7 +149,7 @@ class DynamicChannelComponentAnalyticsTest {
     private fun initTest() {
         clearUserSession()
         waitForData()
-//        hideStickyLogin()
+        hideStickyLogin()
     }
 
     private fun disableCoachMark(){
