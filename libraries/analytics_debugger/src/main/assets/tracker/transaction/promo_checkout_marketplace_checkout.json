@@ -1,10 +1,10 @@
 {
-  "readme": "Promo Checkout Marketplace - One Click Checkout Funnel",
+  "readme": "Promo Checkout Marketplace - Checkout Funnel",
   "mode": "exact",
   "query": [
     {
       "eventAction": "view available promo list",
-      "eventCategory": "order summary",
+      "eventCategory": "courier selection",
       "event": "view_item",
       "sessionIris": "{{.*}}",
       "eventLabel": "eligible promo",
@@ -23,7 +23,7 @@
     },
     {
       "eventAction": "view available promo list",
-      "eventCategory": "order summary",
+      "eventCategory": "courier selection",
       "event": "view_item",
       "sessionIris": "{{.*}}",
       "eventLabel": "ineligible product",
@@ -42,58 +42,58 @@
     },
     {
       "eventAction": "view available promo list",
-      "eventCategory": "order summary",
-      "event": "viewCheckoutExpressIris",
+      "eventCategory": "courier selection",
+      "event": "viewCourierIris",
       "sessionIris": "{{.*}}",
       "eventLabel": "no promo"
     },
     {
       "eventAction": "select kupon",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
       "eventAction": "deselect kupon",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
       "eventAction": "select promo",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
       "eventAction": "deselect promo",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
       "eventAction": "click terapkan promo",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
       "eventAction": "click pilih promo recommendation",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "",
       "promoCode": "{{.+}}"
     },
     {
       "eventAction": "click pakai promo",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{success - (?:0|1)}}",
       "promoCode": "{{.+}}"
