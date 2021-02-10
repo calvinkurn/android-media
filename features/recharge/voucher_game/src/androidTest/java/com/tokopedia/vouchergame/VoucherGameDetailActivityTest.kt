@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -67,8 +66,6 @@ class VoucherGameDetailActivityTest{
                     .actionOnItemAtPosition<VoucherGameListViewHolder>(0, ViewActions.click()))
             Thread.sleep(3000)
             Espresso.onView(ViewMatchers.withId(R.id.checkout_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            Thread.sleep(2000)
-            Espresso.onView(ViewMatchers.withId(R.id.btn_recharge_checkout_next)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
         }
     }
 
