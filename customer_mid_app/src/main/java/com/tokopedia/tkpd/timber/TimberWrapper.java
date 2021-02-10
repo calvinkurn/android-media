@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.model.ScalyrConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-import static com.tokopedia.keys.Keys.SCALYR_TOKEN_CUSTOMERAPP;
+import static com.tokopedia.config.GlobalConfig.CONSUMER_PRO_APPLICATION;
 
 /**
  * Wrap for timber library
@@ -110,6 +111,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN_CUSTOMERAPP, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }

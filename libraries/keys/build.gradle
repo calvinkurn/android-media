@@ -13,4 +13,5 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
