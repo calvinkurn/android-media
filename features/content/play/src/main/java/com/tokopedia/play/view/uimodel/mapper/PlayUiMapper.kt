@@ -30,11 +30,11 @@ object PlayUiMapper {
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
-                    channel.partner.name,
+                    parsePartnerName(channel.partner.name),
                     channel.pinnedMessage
             ),
             pinnedProduct = mapPinnedProduct(
-                    channel.partner.name,
+                    parsePartnerName(channel.partner.name),
                     channel.configuration),
             quickReply = mapQuickReply(channel.quickReplies),
             totalView = mapTotalViews(channel.stats.view.formatted),
@@ -65,11 +65,13 @@ object PlayUiMapper {
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
             id = partner.id.toLongOrZero(),
-            name = MethodChecker.fromHtml(partner.name).toString(),
+            name = parsePartnerName(partner.name),
             type = PartnerType.getTypeByValue(partner.type),
             isFollowed = true,
             isFollowable = false
     )
+
+    private fun parsePartnerName(partnerName: String) = MethodChecker.fromHtml(partnerName).toString()
 
     private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
             contentId = feedInfo.contentId,
