@@ -100,7 +100,7 @@ data class ProductInfoP2Data(
         @Expose
         var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
 
-        @SerializedName("restrictionInfo")
+        @SerializedName("ratesEstimate")
         @Expose
         var ratesEstimate: List<P2RatesEstimate> = listOf()
 ) {

@@ -50,7 +50,7 @@ data class P2RatesEstimateData(
         @Expose
         val etaText: String = "",
 
-        @SerializedName("eTAText")
+        @SerializedName("errors")
         @Expose
         val p2RatesError: List<P2RatesError> = listOf()
 )
