@@ -10,14 +10,44 @@
       "recommendations": [],
       "promos": [
         {
-          "id": 2249,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/31/66931192/66931192_47ab468a-3d82-4207-80eb-6938fa47094f.jpg",
+          "id": 2300,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/8/66931192/66931192_1238da0c-6c45-472f-9117-a8ab574c9f16.jpg",
           "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
           "status": 1,
-          "title": "[TOPED] Cashback hingga Rp250.000 untuk transaksi Top Up, Tagihan, Travel, Entertainment.",
-          "subtitle": "Kode promo: {TOPED}",
-          "promo_code": "TOPED"
+          "title": "[DGTOPED] Top Up, Tagihan, Travel, Hiburan cashback hingga Rp500rb.",
+          "subtitle": "Kode Promo: {DGTOPED}",
+          "promo_code": "DGTOPED"
+        },
+        {
+          "id": 2780,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/19/42484317/42484317_e990d99f-56f1-4f0b-ab75-df71b018b2d6.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-diskon-7",
+          "status": 1,
+          "title": "[DGMASTERCARD] Ada diskon 10% hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan",
+          "subtitle": "Kode Promo: {DGMASTERCARD}",
+          "promo_code": "DGMASTERCARD"
+        },
+        {
+          "id": 2800,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/10/42484317/42484317_846a1ac4-4e09-4afc-a85f-6c9d6ba3dc01.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-16",
+          "status": 1,
+          "title": "[DGSHOPPING]. Bayar Tagihan Dapat Kupon Belanja di Official Store",
+          "subtitle": "Kode Promo: (DGSHOPPING}",
+          "promo_code": "DGSHOPPING"
+        },
+        {
+          "id": 2832,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/10/34631992/34631992_d970f2e6-9b81-482b-879a-dba0463b521e.png",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-google-play-3/",
+          "status": 1,
+          "title": "[Google Play] Beli kode voucher Google Play, dapat bonus in-game item One Punch Man.",
+          "subtitle": "",
+          "promo_code": ""
         },
         {
           "id": 2706,
@@ -50,14 +80,14 @@
           "promo_code": "COBATOPUP"
         },
         {
-          "id": 2780,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/19/42484317/42484317_e990d99f-56f1-4f0b-ab75-df71b018b2d6.jpg",
+          "id": 2530,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/1/34631992/34631992_019a144f-05b4-4626-8672-6df9d0365557.jpg",
           "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-diskon-7",
+          "img_url": "https://www.tokopedia.com/promo/digital-google-play-1/",
           "status": 1,
-          "title": "[DGMASTERCARD] Ada diskon 10% hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan",
-          "subtitle": "Kode Promo: {DGMASTERCARD}",
-          "promo_code": "DGMASTERCARD"
+          "title": "[GOOGLENEW4] Beli Kode Voucher Google Play, cashback 50%. Kuota Terbatas.",
+          "subtitle": "Kode promo: {GOOGLENEW4}",
+          "promo_code": "GOOGLENEW4"
         },
         {
           "id": 2810,
@@ -91,20 +121,12 @@
           "app_link": ""
         },
         {
-          "id": 1847,
-          "title": "DG X PG",
-          "img_url": "https://ecs7.tokopedia.net/img/attachment/2019/11/27/44945993/44945993_0030b066-e977-4d91-9da9-63b5a38d9e4f.png",
-          "link_url": "https://www.tokopedia.com/p/gaming",
+          "id": 2828,
+          "title": "Google New User - Feb",
+          "img_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/8/66301108/66301108_05631e60-f2ea-4392-b987-c9527a4ebb69.jpg",
+          "link_url": "https://www.tokopedia.com/promo/digital-google-play-1/",
           "promo_code": "",
-          "app_link": "tokopedia://category/2099?categoryName=gaming"
-        },
-        {
-          "id": 2095,
-          "title": "DCB Voucher Game",
-          "img_url": "https://ecs7.tokopedia.net/img/attachment/2020/3/17/44945993/44945993_612ef495-ea48-40f2-8dbf-12e24abcd0ee.jpg",
-          "link_url": "https://www.tokopedia.com/discovery/digital-voucher-game-2",
-          "promo_code": "",
-          "app_link": "tokopedia://discovery/digital-voucher-game-2"
+          "app_link": "https://www.tokopedia.com/promo/digital-google-play-1/"
         }
       ],
       "express_checkout": false
