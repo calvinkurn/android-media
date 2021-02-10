@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class ProductCardView extends BaseCustomView {
     protected TextView textPrice;
     protected TextView textDiscount;
     protected TextView textSlashedPrice;
-    protected ImpressedImageView imageView;
+    protected AppCompatImageView imageView;
     protected View topAdsIcon;
     protected View wishlistButton;
     protected ImageView ratingView;
@@ -174,7 +174,7 @@ public class ProductCardView extends BaseCustomView {
         textLocation.setText(location);
     }
 
-    public ImpressedImageView getImageView() {
+    public ImageView getImageView() {
         return imageView;
     }
 
