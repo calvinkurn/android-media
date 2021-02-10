@@ -209,6 +209,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun setTopTickerData(data: ThankPageTopTickerData) {
         getTopTickerView()?.apply {
+            visible()
             tickerTitle = data.tickerTitle
             setTextDescription(data.tickerDescription ?: "")
             closeButtonVisibility = View.GONE
