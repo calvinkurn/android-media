@@ -423,10 +423,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun setAlamatWatcher(): TextWatcher {
         return object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                //no-op
-            }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //no-op
             }
@@ -460,6 +456,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
 
+            override fun afterTextChanged(s: Editable?) {
+                //no-op
+            }
         }
     }
 
