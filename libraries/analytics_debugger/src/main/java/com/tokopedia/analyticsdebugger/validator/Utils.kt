@@ -43,7 +43,7 @@ object Utils {
 
     fun getTimeStampFormat(ts: Long?): String {
         if (ts == null) return ""
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd-MM HH:mm:ss.SSS", Locale.getDefault())
         return dateFormat.format(Date(ts))
     }
 

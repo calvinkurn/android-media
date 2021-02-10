@@ -6,12 +6,12 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.AnalyticsSource
+import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
 import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
 import com.tokopedia.config.GlobalConfig

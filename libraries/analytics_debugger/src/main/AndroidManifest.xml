@@ -38,7 +38,7 @@
             android:exported="true"/>
 
         <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
+            android:name=".cassava.debugger.AnalyticsDebuggerActivity"
             android:exported="true"
             android:label="Analytics Debugger"
             android:launchMode="singleTask"
@@ -65,9 +65,6 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
-            android:theme="@style/Theme.Green" />
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tokopedia.analyticsdebugger.AnalyticsSource
+import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
 
 /**
  * @author okasurya on 5/14/18.
@@ -32,5 +33,13 @@ class GtmLogDB {
     @ColumnInfo(name = "source")
     @AnalyticsSource
     var source: String? = null
+}
+
+fun GtmLogDB.toUiClass(): AnalyticsDebuggerViewModel {
+    return AnalyticsDebuggerViewModel(
+            id = this.id,
+            name = this.name,
+            category = this.category
+    )
 }
 

@@ -148,7 +148,6 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     companion object {
-
         val TAG = BaseAnalyticsDebuggerFragment::class.java.simpleName
     }
 }
