@@ -41,8 +41,8 @@ object SomAnalytics {
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
-    private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
-    private const val CURRENT_SITE_TOKOPEDIA_MAIN_APP = "main app android"
+    private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
+    private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -75,9 +75,9 @@ object SomAnalytics {
         )
 
         if (GlobalConfig.isSellerApp()) {
-            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER)
+            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to SELLER_APP_ANDROID_SOM)
         } else {
-            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MAIN_APP)
+            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to MAIN_APP_ANDROID_SOM)
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
