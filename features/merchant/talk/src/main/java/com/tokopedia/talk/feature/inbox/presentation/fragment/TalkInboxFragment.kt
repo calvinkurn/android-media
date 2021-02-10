@@ -65,6 +65,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     companion object {
         const val TAB_PARAM = "tab_param"
+        const val FILTER_PARAM = "filter"
+        const val FILTER_UNREAD = "unread"
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
@@ -246,6 +248,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initSortFilter()
+        selectUnreadFilterFromCardSA()
         initErrorPage()
         initSortFilter()
     }
@@ -433,11 +436,16 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
-    private fun selectUnreadFilter() {
-        getFilterList().forEach {
-            if (it.title == getString(R.string.inbox_unread)) {
-                it.selectUnreadFilter()
-                return
+    private fun selectUnreadFilterFromCardSA() {
+        if(GlobalConfig.isSellerApp()) {
+            val tab = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
+            if (tab == FILTER_PARAM) {
+                getFilterList().forEach {
+                    if (it.title == getString(R.string.inbox_unread)) {
+                        it.selectUnreadFilter()
+                        return
+                    }
+                }
             }
         }
     }
