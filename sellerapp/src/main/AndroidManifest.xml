@@ -97,7 +97,8 @@
             android:value="@string/appsflyer_key_sa" />
         <meta-data
             android:name="APP_ID"
-            android:value="@string/moengage_key_sa" />
+            android:value="@string/moengage_key_sa"
+            tools:replace="android:value" />
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="50d42520ce58b3168a5a721995812a72"/>
