@@ -5,7 +5,7 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -16,9 +16,10 @@ import javax.inject.Inject
 class PlayWidgetMediumUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
         private val videoMapper: PlayWidgetVideoMapper,
-        private val userSession: UserSessionInterface,
-        private val htmlTextTransformer: HtmlTextTransformer
+        private val userSession: UserSessionInterface
 ) : PlayWidgetMapper {
+
+    private val htmlTextTransformer = DefaultHtmlTextTransformer()
 
     override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
