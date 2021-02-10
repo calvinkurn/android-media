@@ -32,6 +32,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
@@ -173,7 +175,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
 
-    var videoTrackerData : Pair<Long,Long>? = null
+    var videoTrackerData: Pair<Long, Long>? = null
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -190,7 +192,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
-    private var alreadyHitRecom:MutableList<String> = mutableListOf()
+    private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -269,6 +271,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         data?.let {
             getDynamicProductInfoP1 = it
         }
+    }
+
+    fun getP2RatesEstimateByProductId(): P2RatesEstimateData? {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        var result: P2RatesEstimateData? = null
+        p2Data.value?.ratesEstimate?.forEach {
+            if (productId in it.listfProductId) result = it.p2RatesData
+        }
+        return result
     }
 
     /**
@@ -615,7 +626,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int){
+    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
@@ -766,7 +777,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton ?: false
+        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton
+                ?: false
     }
 
     private fun assignTradeinParams() {
@@ -781,7 +793,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
             tradeInParams.weight = it.basic.weight
-            if(it.data.getImagePath().isNotEmpty()) {
+            if (it.data.getImagePath().isNotEmpty()) {
                 tradeInParams.productImage = it.data.getImagePath()[0]
             } else {
                 tradeInParams.productImage = it.data.getFirstProductImage()
@@ -804,14 +816,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
-        return async(dispatcher.io)  {
+        return async(dispatcher.io) {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.get().executeOnBackground()
         }
     }
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
-        return async(dispatcher.io)  {
+        return async(dispatcher.io) {
             getProductInfoP2DataUseCase.get().executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession, generatePdpSessionWithDeviceId()), forceRefresh)
         }
     }

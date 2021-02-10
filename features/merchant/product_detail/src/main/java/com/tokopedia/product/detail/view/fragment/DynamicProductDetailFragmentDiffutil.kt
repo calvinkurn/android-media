@@ -1266,6 +1266,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
+        pdpUiUpdater?.updateShipmentData(viewModel.getP2RatesEstimateByProductId())
 
         /*
             If the p2 data is empty, dont update the button
@@ -1680,6 +1681,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         viewModel.getDynamicProductInfoP1?.basic?.shopID.toIntOrZero(),
                         it.vouchers, viewModel.getDynamicProductInfoP1)
             }
+        }
+
+        if (it.ratesEstimate.isEmpty()) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.SHIPMENT)
+        } else {
+            pdpUiUpdater?.updateShipmentData(viewModel.getP2RatesEstimateByProductId())
         }
 
         if (it.upcomingCampaigns.values.isEmpty()) {

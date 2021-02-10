@@ -13,6 +13,9 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError.Companion.ERROR_CODE_PRODUCT_ID_NOT_FOUND
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -103,6 +106,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
+
+    val shipmentData: ProductShipmentDataModel?
+        get() = mapOfData[ProductDetailConstant.SHIPMENT] as? ProductShipmentDataModel
 
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
@@ -543,6 +549,12 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     fun updateTopAdsImageData(data: ArrayList<TopAdsImageViewModel>) {
         updateData(ProductDetailConstant.KEY_TOP_ADS) {
             topAdsImageData?.data = data
+        }
+    }
+
+    fun updateShipmentData(data: P2RatesEstimateData?) {
+        updateData(ProductDetailConstant.SHIPMENT) {
+            shipmentData?.rates = data ?: P2RatesEstimateData(p2RatesError = listOf(P2RatesError(errorCode = ERROR_CODE_PRODUCT_ID_NOT_FOUND)))
         }
     }
 

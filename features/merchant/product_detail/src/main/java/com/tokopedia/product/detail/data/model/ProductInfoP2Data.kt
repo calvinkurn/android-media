@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculatio
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
@@ -97,7 +98,11 @@ data class ProductInfoP2Data(
 
         @SerializedName("restrictionInfo")
         @Expose
-        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse()
+        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+
+        @SerializedName("restrictionInfo")
+        @Expose
+        var ratesEstimate: List<P2RatesEstimate> = listOf()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

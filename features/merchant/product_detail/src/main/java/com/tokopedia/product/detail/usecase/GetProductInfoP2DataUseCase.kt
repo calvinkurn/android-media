@@ -341,7 +341,25 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
-        }
+            ratesEstimate{
+              warehouseID
+              products
+              data {
+                totalService
+                isSupportInstantCourier
+                destination
+                icon
+                title
+                subtitle
+                eTAText
+                errors{
+                  Code
+                  Message
+                  DevMessage       
+                }
+              }
+            }
+          }
     }""".trimIndent()
     }
 
@@ -400,6 +418,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE } ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
+            p2UiData.ratesEstimate = ratesEstimate
             p2UiData.restrictionInfo = restrictionInfo
         }
         return p2UiData

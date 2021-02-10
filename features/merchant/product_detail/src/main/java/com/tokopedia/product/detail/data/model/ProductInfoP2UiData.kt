@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -28,9 +29,10 @@ data class ProductInfoP2UiData(
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var validateTradeIn: ValidateTradeIn = ValidateTradeIn(),
         var cartRedirection: Map<String, CartTypeData> = mapOf(),
-        var nearestWarehouseInfo: Map<String,WarehouseInfo> = mapOf(),
+        var nearestWarehouseInfo: Map<String, WarehouseInfo> = mapOf(),
         var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
         var vouchers: List<MerchantVoucherViewModel> = listOf(),
         var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
         var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
-        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse())
+        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+        var ratesEstimate: List<P2RatesEstimate> = listOf())
