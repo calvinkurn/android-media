@@ -174,9 +174,9 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         showLoading()
         var signResult = SignResult()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            signResult = signDataVerifyPushNotif(challengeCode, STATUS_EXPIRY)
+            signResult = signDataVerifyPushNotif(challengeCode, STATUS_CHECK)
         }
-        viewModel.verifyPushNotifExp(challengeCode, signResult.signature, STATUS_EXPIRY)
+        viewModel.verifyPushNotifExp(challengeCode, signResult.signature, STATUS_CHECK)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -280,8 +280,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         const val STATUS_APPROVE = "approve"
         const val STATUS_REJECT = "reject"
-        const val STATUS_VERIFY = "verify"
-        const val STATUS_EXPIRY = "expiry"
+        const val STATUS_CHECK = "check"
 
         private const val KEY_PARAM_DEVICE_NAME = "device_name"
         private const val KEY_PARAM_LOCATION = "location"
