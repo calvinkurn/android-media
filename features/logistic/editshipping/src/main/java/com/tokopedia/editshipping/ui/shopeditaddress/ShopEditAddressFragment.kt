@@ -78,6 +78,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var tvPinpointText: Typography? = null
     private var btnSave: UnifyButton? = null
     private var helperShopDetail: Typography? = null
+    private var txtShopLocationWatcher: Typography? = null
 
     private var mapView: MapView? = null
     private var btnOpenMap: UnifyButton? = null
@@ -126,6 +127,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
                     val address = data?.getParcelableExtra<DistrictRecommendationAddress>(RESULT_INTENT_DISTRICT_RECOMMENDATION)
                     etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
+                    etZipCode?.setText("")
 
                     if (address?.zipCodes != null) {
                         zipCodes = ArrayList(address.zipCodes)
@@ -205,6 +207,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
         btnSave = view?.findViewById(R.id.btn_save_warehouse)
         helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
+        txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
 
         mapView = view?.findViewById(R.id.map_view_detail)
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
@@ -373,6 +376,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun setViewListener() {
+        etShopLocation?.apply {
+            addTextChangedListener(setShopLocationWatcher())
+        }
+
         etKotaKecamatan?.apply {
             addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
             setOnClickListener {
@@ -392,6 +399,25 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         etShopDetail?.apply {
             addTextChangedListener(setAlamatWatcher())
+        }
+    }
+
+    private fun setShopLocationWatcher(): TextWatcher {
+        return object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val strLength = s.toString().length
+                var info = "$strLength/25"
+                txtShopLocationWatcher?.text = info
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                //no-op
+            }
+
         }
     }
 
