@@ -527,7 +527,11 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                 .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT, product?.isVariant()?.toString())
                 .build()
                 .toString()
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT, arrayListOf(firstAppLink))
+
+        val chatBlastUrl = Uri.parse(BROADCAST_CHAT_CREATE).buildUpon().appendQueryParameter(PRODUCT_ID, productId).build().toString()
+        val secondAppLink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, chatBlastUrl)
+
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
