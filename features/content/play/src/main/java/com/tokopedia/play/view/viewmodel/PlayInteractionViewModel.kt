@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -34,7 +35,7 @@ class PlayInteractionViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
         private val playPreference: PlayPreference,
-) : PlayBaseViewModel(dispatchers.main) {
+) : ViewModel() {
 
     private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
     val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
@@ -66,7 +67,7 @@ class PlayInteractionViewModel @Inject constructor(
     }
 
     fun doLikeUnlike(likeParamInfo: PlayLikeParamInfoUiModel, shouldLike: Boolean) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 postLikeUseCase.params = PostLikeUseCase.createParam(
                         contentId = likeParamInfo.contentId.toIntOrZero(),
@@ -80,7 +81,7 @@ class PlayInteractionViewModel @Inject constructor(
     }
 
     fun doFollow(shopId: Long, action: PartnerFollowAction) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 postFollowPartnerUseCase.params = PostFollowPartnerUseCase.createParam(shopId.toString(), action)
                 postFollowPartnerUseCase.executeOnBackground()
