@@ -5,7 +5,7 @@ import com.tokopedia.localizationchooseaddress.ui.ChooseAddressBottomSheet
 import dagger.Component
 
 @ChooseAddressScope
-@Component(modules = [ChooseAddressViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [ChooseAddressModule::class, ChooseAddressViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface ChooseAddressComponent  {
     fun inject(fragment: ChooseAddressBottomSheet)
 }

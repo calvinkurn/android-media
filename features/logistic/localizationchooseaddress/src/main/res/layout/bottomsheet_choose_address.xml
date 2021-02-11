@@ -43,7 +43,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/no_address"
+            android:id="@+id/no_address_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/dp_14"
@@ -83,19 +83,19 @@
                 android:text="Kamu belum memiliki alamat"
                 app:layout_constraintTop_toBottomOf="@id/txt_add_address"
                 app:layout_constraintStart_toStartOf="@id/txt_add_address"
-                app:layout_constraintEnd_toStartOf="@id/btn_chevron_login"/>
+                app:layout_constraintEnd_toStartOf="@id/btn_chevron_add"/>
 
 
             <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/btn_chevron_login"
+                android:id="@+id/btn_chevron_add"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginTop="@dimen/dp_18"
                 android:layout_marginBottom="@dimen/dp_18"
                 android:layout_marginEnd="@dimen/unify_space_24"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/txt_login"
-                app:layout_constraintBottom_toBottomOf="@id/txt_login_info"
+                app:layout_constraintTop_toTopOf="@id/txt_add_address"
+                app:layout_constraintBottom_toBottomOf="@id/txt_add_address_info"
                 app:icon_name="CHEVRON_RIGHT"
                 tools:ignore="ContentDescription" />
 
