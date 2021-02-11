@@ -67,9 +67,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     fun testPageLoadTimePerformance() {
         onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         val datasource = checkDataSource()
-        if (isCacheDataSource(datasource)) {
-            savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
-        }
+        savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
 
         activityRule.activity.finishAndRemoveTask()
     }
