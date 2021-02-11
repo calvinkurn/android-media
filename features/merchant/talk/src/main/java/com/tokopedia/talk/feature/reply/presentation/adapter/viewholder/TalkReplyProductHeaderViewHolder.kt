@@ -40,7 +40,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
     }
 
     private fun setKebabClickListener(isSellerView: Boolean) {
-        if(isSellerView) {
+        if (isSellerView) {
             itemView.replyProductHeaderKebab.apply {
                 setOnClickListener {
                     talkReplyProductHeaderListener.onKebabClicked()
@@ -53,11 +53,11 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
     }
 
     private fun setStock(isSellerView: Boolean, stockValue: Int, stockText: String) {
-        if(isSellerView) {
+        if (isSellerView) {
             itemView.replyProductStock.apply {
                 text = stockText
                 show()
-                if(stockValue < STOCK_THRESHOLD) {
+                if (stockValue < STOCK_THRESHOLD) {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                     return
                 }
@@ -70,7 +70,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
 
     private fun setImage(imageUrl: String) {
         itemView.replyProductHeaderImage.apply {
-            if(imageUrl.isNotBlank()) {
+            if (imageUrl.isNotBlank()) {
                 loadImage(imageUrl)
                 return
             }
@@ -81,7 +81,14 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
 
     private fun setProductName(productName: String, isSellerView: Boolean) {
         itemView.replyProductHeaderName.apply {
-            if(productName.isNotBlank()) {
+            if (isSellerView) {
+                val constraintSet = ConstraintSet()
+                val constraintLayout = itemView.talkReplyProductHeaderConstraintLayout
+                constraintSet.clone(constraintLayout)
+                constraintSet.clear(R.id.replyProductHeaderName, ConstraintSet.BOTTOM)
+                constraintSet.applyTo(constraintLayout)
+            }
+            if (productName.isNotBlank()) {
                 text = productName
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 return
@@ -89,13 +96,6 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             text = getString(R.string.reply_product_deleted)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             setOnClickListener(null)
-            if(isSellerView) {
-                val constraintSet = ConstraintSet()
-                val constraintLayout = itemView.talkReplyProductHeaderConstraintLayout
-                constraintSet.clone(constraintLayout)
-                constraintSet.clear(replyProductHeaderName.id, ConstraintSet.BOTTOM)
-                constraintSet.applyTo(constraintLayout)
-            }
         }
     }
 }
