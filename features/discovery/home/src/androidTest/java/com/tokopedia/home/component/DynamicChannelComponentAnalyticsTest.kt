@@ -54,7 +54,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
+private const val TAG = "DynamicChannelComponentAnalyticsTest"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/home/homescreen.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER = "tracker/home/ticker.json"
@@ -75,8 +75,6 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "tracker/home/reminder_widget_recharge_close.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
-
-private const val TAG = "DynamicChannelComponentAnalyticsTest"
 
 /**
  * @author by yoasfs on 07/07/20
@@ -354,6 +352,12 @@ class DynamicChannelComponentAnalyticsTest {
                         clickReminderWidgetRecharge(holderName)
                     }
                 }
+            }
+            is DynamicLegoBannerSixAutoViewHolder -> {
+                val holderName = "LegoBannerSixAutoViewHolder"
+                logTestMessage("VH $holderName")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
             }
         }
     }
