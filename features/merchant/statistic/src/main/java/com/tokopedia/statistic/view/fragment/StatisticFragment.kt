@@ -73,7 +73,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
-        private const val STATISTIC_PAGE = "statistic_page"
+        private const val STATISTIC_PAGE = "statistic_page_source"
 
         fun newInstance(page: StatisticPageUiModel): StatisticFragment {
             return StatisticFragment().apply {

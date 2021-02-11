@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
@@ -41,7 +43,15 @@ class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformance
 
         initVar()
         setupView()
+        setupViewPager()
+        handleAppLink(intent)
+
         setWhiteStatusBar()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleAppLink(intent)
     }
 
     override fun startNetworkPerformanceMonitoring() {
@@ -77,16 +87,30 @@ class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformance
         setSupportActionBar(headerStcStatistic)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.stc_shop_statistic)
-
-        setupViewPager()
     }
 
     private fun setupViewPager() {
         viewPagerAdapter?.let {
-            it.titles.forEach { title -> tabStatistic.addNewTab(title) }
+            setupTabs()
             viewPagerStatistic.adapter = it
             tabStatistic.setupWithViewPager(viewPagerStatistic)
             viewPagerStatistic.offscreenPageLimit = it.titles.size
+        }
+    }
+
+    private fun setupTabs() {
+        viewPagerAdapter?.let { adapter ->
+            adapter.titles.forEach { title ->
+                tabStatistic.addNewTab(title)
+            }
+        }
+    }
+
+    private fun handleAppLink(intent: Intent?) {
+        StatisticAppLinkHandler.handleAppLink(intent) { page ->
+            val tabIndex = pages.indexOfFirst { it.pageSource == page }
+            val tab = tabStatistic.tabLayout.getTabAt(tabIndex)
+            tab?.select()
         }
     }
 
