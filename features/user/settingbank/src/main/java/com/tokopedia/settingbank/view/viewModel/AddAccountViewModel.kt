@@ -7,7 +7,6 @@ import com.tokopedia.settingbank.domain.model.AddBankResponse
 import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.settingbank.domain.usecase.*
-import com.tokopedia.settingbank.util.BankAccountNumber
 import com.tokopedia.settingbank.view.viewState.AccountCheckState
 import com.tokopedia.settingbank.view.viewState.AccountNameValidationResult
 import com.tokopedia.settingbank.view.viewState.ValidateAccountNumberState

@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ValidateAccountNumberUseCase @Inject constructor() : UseCase<ValidateAccountNumberState>() {
 
     private val BANK = "Bank"
-    private val ACCOUNT_NUMBER = "Bank"
+    private val ACCOUNT_NUMBER = "ACCOUNT_NUMBER"
 
 
     fun onTextChanged(bank: Bank?,
@@ -37,7 +37,6 @@ class ValidateAccountNumberUseCase @Inject constructor() : UseCase<ValidateAccou
         val accountNumber = useCaseRequestParams.getString(ACCOUNT_NUMBER, "")
         return validateAccountNumber(bank, accountNumber)
     }
-
 
     private fun validateAccountNumber(bank: Bank, numberStr: String): ValidateAccountNumberState {
         val abbreviation = bank.abbreviation ?: ""
