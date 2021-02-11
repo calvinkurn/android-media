@@ -87,7 +87,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
 
     private fun savePLTPerformanceResultData(tag: String, datasource: String) {
         var performanceData = activityRule.activity.getPltPerformanceResultData()
-        if (isCacheDataSource(datasource)) {
+        if (!isCacheDataSource(datasource)) {
             performanceData = PltPerformanceData()
         }
         performanceData?.let {
