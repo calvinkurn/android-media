@@ -19,6 +19,7 @@ object SnapshotAnalytics {
     private const val USER_ID = "userId"
     private const val PRODUCT_ID = "productId"
     private const val SHOP_ID = "shopId"
+    private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     private const val MAIN_APP_ANDROID = "main app android"
     private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
     private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
@@ -29,7 +30,7 @@ object SnapshotAnalytics {
     fun clickLihatHalamanProduk(productId: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_BOM,
                 BOM_PRODUCT_SNAPSHOT_PAGE, CLICK_PRODUCT_PAGE, "")
-        event[CURRENT_SITE] = MAIN_APP_ANDROID
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[PRODUCT_ID] = productId
         event[BUSINESS_UNIT] = MARKETPLACE
@@ -40,7 +41,7 @@ object SnapshotAnalytics {
     fun clickShopPage(shopId: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_BOM,
                 BOM_PRODUCT_SNAPSHOT_PAGE, CLICK_SHOP_PAGE, "")
-        event[CURRENT_SITE] = MAIN_APP_ANDROID
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[SHOP_ID] = shopId
         event[BUSINESS_UNIT] = MARKETPLACE

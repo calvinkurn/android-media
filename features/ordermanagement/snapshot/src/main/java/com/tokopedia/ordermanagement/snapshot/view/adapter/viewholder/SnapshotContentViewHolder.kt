@@ -113,7 +113,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             }
 
             val productName = itemView.findViewById<Typography>(R.id.snapshot_product_name)
-            productName.text = MethodChecker.fromHtml(item.dataObject.orderDetail.productName)
+            productName.text = MethodChecker.fromHtmlPreserveLineBreak(item.dataObject.orderDetail.productName)
 
             val shopLogo = itemView.findViewById<ImageView>(R.id.snapshot_shop_logo)
             ImageHandler.loadImageCircle2(itemView.context, shopLogo, item.dataObject.shopImagePrimaryUrl)
@@ -234,7 +234,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             val productDesc = item.dataObject.orderDetail.productDesc
             if (productDesc.isNotEmpty()) {
                 desc.visible()
-                desc.text = MethodChecker.fromHtml(productDesc)
+                desc.text = MethodChecker.fromHtmlPreserveLineBreak(productDesc)
             } else {
                 desc.gone()
             }
