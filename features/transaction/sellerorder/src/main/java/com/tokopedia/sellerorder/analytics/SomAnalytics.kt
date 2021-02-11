@@ -41,8 +41,6 @@ object SomAnalytics {
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
-    private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
-    private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
     private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
     private const val BUSINESS_UNIT_SOM = "Seller Order Management"
     private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
