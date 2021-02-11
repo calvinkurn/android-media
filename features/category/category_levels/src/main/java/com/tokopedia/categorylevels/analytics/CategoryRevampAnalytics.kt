@@ -160,6 +160,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
                 label = "$label&${map.key}-${map.value}"
             }
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                label = "$label&${map.key}-${map.value}"
+            }
             productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -193,6 +196,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[LIST] = productCardItemList
                 var label = ""
                 getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                    label = "$label&${map.key}-${map.value}"
+                }
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
                     label = "$label&${map.key}-${map.value}"
                 }
                 productMap[FIELD_DIMENSION_61] = label.removePrefix("&")

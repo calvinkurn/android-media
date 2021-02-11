@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 
 const val RPC_FILTER_KEY = "rpc_"
 const val DEFAULT_SORT_ID = "23"
-const val DEFAULT_SORT_KEY = "ob"
+const val SORT_KEY = "ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
@@ -153,6 +153,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
+        setSelectedSort(components.filterController.getParameter())
         reloadData()
     }
 
@@ -161,8 +162,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         components.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
     }
 
-    private fun setSelectedSort(selectedSortMapParameter: Map<String, String>) {
-        selectedSort.putAll(selectedSortMapParameter)
+    private fun setSelectedSort(mapParameter: Map<String, String>) {
+        if(mapParameter.containsKey(SORT_KEY))
+            selectedSort[SORT_KEY] = mapParameter[SORT_KEY] ?: error("")
     }
 
     private fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
@@ -182,12 +184,12 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if(!components.searchParameter.contains(DEFAULT_SORT_KEY))
-            components.searchParameter.set(DEFAULT_SORT_KEY, DEFAULT_SORT_ID)
+        if(!components.searchParameter.contains(SORT_KEY))
+            components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        setSelectedSort(applySortFilterModel.selectedSortMapParameter)
+        setSelectedSort(applySortFilterModel.mapParameter)
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
         setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
         reloadData()
@@ -198,7 +200,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getSelectedFilterCount() : Int {
-        return if(!components.searchParameter.contains(DEFAULT_SORT_KEY) || components.searchParameter.get(DEFAULT_SORT_KEY) == DEFAULT_SORT_ID) {
+        return if(!components.searchParameter.contains(SORT_KEY) || components.searchParameter.get(SORT_KEY) == DEFAULT_SORT_ID) {
             components.filterController.filterViewStateSet.size
         } else {
             components.filterController.filterViewStateSet.size + 1
