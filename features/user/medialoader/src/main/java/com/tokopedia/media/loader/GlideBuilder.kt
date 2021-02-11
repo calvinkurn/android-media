@@ -18,6 +18,8 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
+import com.tokopedia.media.common.data.PARAM_BLURHASH
+import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.common.Properties
@@ -25,20 +27,10 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
-import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
-import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 
 object GlideBuilder {
-
-    private val blurHashRandom = listOf(
-            "A4ADcRuO_2y?",
-            "A9K{0B#R3WyY",
-            "AHHUnD~V^ia~",
-            "A2N+X[~qv]IU",
-            "ABP?2U~X5J^~"
-    )
 
     private val exceptionBlurring = listOf(
             "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -123,10 +115,12 @@ object GlideBuilder {
                         placeholder(placeHolder)
                     } else {
                         if (!isCircular || !imageExcludeList(source)) {
-                            blurHash(source) { hash ->
-                                val bitmapHash = BitmapDrawable(context.resources, blurring(hash))
-                                thumbnail(thumbnailLoader(context, bitmapHash))
-                                placeholder(bitmapHash)
+                            if (source is String) {
+                                blurHash(source) { hash ->
+                                    val bitmapHash = BitmapDrawable(context.resources, blurring(hash))
+                                    thumbnail(thumbnailLoader(context, bitmapHash))
+                                    placeholder(bitmapHash)
+                                }
                             }
                         } else {
                             placeholder(R.drawable.ic_media_default_placeholder)
@@ -161,15 +155,9 @@ object GlideBuilder {
         return if (source is GlideUrl) exceptionBlurring.contains(source.toStringUrl()) else false
     }
 
-    private fun blurHash(url: Any?, blurHash: (String?) -> Unit) {
-        if (url is GlideUrl) {
-            val hash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
-            if (!hash.isNullOrEmpty()) {
-                blurHash(hash)
-            } else {
-                blurHash(blurHashRandom.random())
-            }
-        }
+    private fun blurHash(url: String, blurHash: (String?) -> Unit) {
+        val hash = url.toUri()?.getQueryParameter(PARAM_BLURHASH)
+        blurHash(hash)
     }
 
     private fun blurring(blurHash: String?): Bitmap? {
