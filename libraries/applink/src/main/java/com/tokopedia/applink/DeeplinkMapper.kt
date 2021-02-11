@@ -207,7 +207,6 @@ object DeeplinkMapper {
             if (uri.getQueryParameter(paramFilter)?.isNotBlank() == true) {
                 return Uri.parse(deepLinkInternal)
                         .buildUpon()
-                        .clearQuery()
                         .appendQueryParameter(paramFilter, uri.getQueryParameter(paramFilter))
                         .build().toString()
             }
