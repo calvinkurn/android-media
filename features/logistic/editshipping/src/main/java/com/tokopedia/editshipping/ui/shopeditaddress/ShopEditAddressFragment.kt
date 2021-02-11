@@ -245,6 +245,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     val long = it.data.longitude.toDouble()
                     adjustMap(lat, long)
                     detailAddressHelper = it.data.formattedAddress
+                    val addressDetailUser = etShopDetail?.text.toString()
+                    checkValidateAddressDetail(detailAddressHelper, addressDetailUser)
                 }
                 is Fail -> Timber.d(it.throwable)
             }
@@ -294,6 +296,18 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         })
 
+    }
+
+    private fun checkValidateAddressDetail(addressHelper: String, userAddress: String) {
+        val normalizeAddressHelper = normalize(addressHelper)
+        val normalizeUserAddress = normalize(userAddress)
+        if (validatorAddress(normalizeAddressHelper, normalizeUserAddress)) {
+            validate = true
+            helperShopDetail?.text = ""
+        } else {
+            validate = false
+            helperShopDetail?.text = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+        }
     }
 
     private fun checkCouriersCoverage(isCoverage: Boolean) {
@@ -429,30 +443,16 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    var helper = ""
                     val strLength = s.toString().length
-                    var addressDetailUser = ""
                     when {
                         strLength < 20 -> {
                             validate = false
-                            helper = "Min. 20 Karakter. Harap tulis alamatmu lebih lengkap."
+                            helperShopDetail?.text = "Min. 20 Karakter. Harap tulis alamatmu lebih lengkap."
                         }
                         else -> {
-                            addressDetailUser = normalize(s.toString())
-                            detailAddressHelper = normalize(detailAddressHelper)
-                            if (validatorAddress(detailAddressHelper, addressDetailUser)) {
-                                validate = true
-                                helper = ""
-                            } else {
-                                validate = false
-                                helper = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
-
-                            }
+                            checkValidateAddressDetail(s.toString(), detailAddressHelper)
                         }
-
                     }
-                    helperShopDetail?.text = helper
-
                 }
             }
 
