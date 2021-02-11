@@ -145,7 +145,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     open fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
                 flightSearchPassDataModel.departureDate
         )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
