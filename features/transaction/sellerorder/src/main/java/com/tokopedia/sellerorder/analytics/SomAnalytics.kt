@@ -77,9 +77,9 @@ object SomAnalytics {
         )
 
         if (GlobalConfig.isSellerApp()) {
-            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to SELLER_APP_ANDROID_SOM)
+            event[CUSTOM_DIMENSION_CURRENT_SITE] = SELLER_APP_ANDROID_SOM
         } else {
-            event.plus(CUSTOM_DIMENSION_CURRENT_SITE to MAIN_APP_ANDROID_SOM)
+            event[CUSTOM_DIMENSION_CURRENT_SITE] = MAIN_APP_ANDROID_SOM
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(event.toMap())
     }
