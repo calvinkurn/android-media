@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,7 +9,13 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -20,14 +27,25 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomC
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View {
+class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View,
+PopularCityAdapter.ActionListener {
 
     private var mToken: Token? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var tvMessage: TextView? = null
     private var analytics: ActionListener? = null
+    private var llDiscomPopularCity: LinearLayout? = null
+    private var rvChipsPopularCity: RecyclerView? = null
+    private var popularCityAdapter: PopularCityAdapter? = null
+    private var rlCurrLocation: RelativeLayout? = null
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
 
     @Inject
     lateinit var addressMapper: AddressMapper
@@ -55,12 +73,16 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
         arguments?.let {
             mToken = it.getParcelable(ARGUMENT_DATA_TOKEN)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_district_recommendation, container, false)
         tvMessage = view.findViewById(R.id.tv_message)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        llDiscomPopularCity = view.findViewById(R.id.ll_discom_popular_city)
+        rvChipsPopularCity = view.findViewById(R.id.rv_discom_chips_popular_city)
+        rlCurrLocation = view.findViewById(R.id.rl_discom_current_location)
         return view
     }
 
@@ -74,6 +96,13 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
         swipeRefreshLayout!!.isEnabled = false
+
+        rlCurrLocation?.setOnClickListener {
+            if (AddNewAddressUtils.isGpsEnabled(it.context)) {
+                requestLocation()
+            }
+        }
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     override fun getSearchInputViewResourceId(): Int {
@@ -113,6 +142,10 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     }
 
     override fun onItemClicked(address: Address) {
+        setBackAddressResult(address)
+    }
+
+    private fun setBackAddressResult(address: Address) {
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
@@ -145,6 +178,11 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
+
+        llDiscomPopularCity?.visibility = View.GONE
+        tvMessage!!.text = getString(R.string.message_advice_search_address)
+        setMessageSection(true)
+
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
             loadData(page)
@@ -165,13 +203,65 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     }
 
     private fun showInitialLoadMessage() {
-        tvMessage!!.text = getString(R.string.message_advice_search_address)
-        setMessageSection(true)
+        setMessageSection(false)
+
+        // please hide on seller side
+        val cityList = resources.getStringArray(R.array.cityList)
+        val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+
+        llDiscomPopularCity?.visibility = View.VISIBLE
+        rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+        popularCityAdapter = PopularCityAdapter(context, this)
+        popularCityAdapter?.cityList = cityList.toMutableList()
+
+        rvChipsPopularCity?.apply {
+            val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+            layoutManager = chipsLayoutManager
+            adapter = popularCityAdapter
+            dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+        }
     }
 
     private fun setMessageSection(active: Boolean) {
         tvMessage!!.visibility = if (active) View.VISIBLE else View.GONE
-        swipeRefreshLayout!!.visibility = if (active) View.GONE else View.VISIBLE
+        swipeRefreshLayout!!.visibility = if (active) View.VISIBLE else View.GONE
+    }
+
+    fun requestLocation() {
+        activity?.let {
+            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            // fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG)  }
+                            permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                        }
+
+                        @SuppressLint("MissingPermission")
+                        override fun onPermissionGranted() {
+                            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                                if (data != null) {
+                                    println("++ lat = ${data.latitude}, long = ${data.longitude}")
+                                    // moveMap(getLatLng(data.latitude, data.longitude), PinpointMapFragment.ZOOM_LEVEL)
+                                }
+                            }
+                        }
+
+                    }, it.getString(R.string.rationale_need_location))
+            println("++ masuk requestLocation")
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
     interface ActionListener {
@@ -204,5 +294,9 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
             }
         }
 
+    }
+
+    override fun onCityChipClicked(city: String) {
+        searchInputView.searchText = city
     }
 }
