@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.analytics
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
