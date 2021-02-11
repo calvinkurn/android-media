@@ -260,7 +260,7 @@ class PlayFragment @Inject constructor(
      * @return true means the onBackPressed() has been handled by this fragment
      */
     fun onBackPressed(): Boolean {
-        val isHandled = playViewModel.onBackPressed()
+        val isHandled = playViewModel.goBack()
         return when {
             isHandled -> isHandled
             else -> false

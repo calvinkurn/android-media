@@ -30,6 +30,8 @@ import io.mockk.mockk
 /**
  * Created by jegul on 10/02/21
  */
+typealias RobotWithValue<T> = Pair<PlayViewModelRobot, T>
+
 class PlayViewModelRobot(
         playVideoBuilder: PlayVideoWrapper.Builder,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
@@ -131,6 +133,8 @@ class PlayViewModelRobot(
     fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: ProductLineUiModel = productTagBuilder.buildProductLine()) {
         viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
     }
+
+    fun goBack() = viewModel.goBack()
 }
 
 fun givenPlayViewModelRobot(
@@ -178,10 +182,10 @@ fun givenPlayViewModelRobot(
     ).apply(fn)
 }
 
-infix fun PlayViewModelRobot.andWhen(
-        fn: PlayViewModelRobot.() -> Unit
-): PlayViewModelRobot {
-    return apply(fn)
+infix fun <T> PlayViewModelRobot.andWhen(
+        fn: PlayViewModelRobot.() -> T
+): RobotWithValue<T> {
+    return Pair(this, run(fn))
 }
 
 infix fun PlayViewModelRobot.andThen(
@@ -190,9 +194,22 @@ infix fun PlayViewModelRobot.andThen(
     return apply(fn)
 }
 
+infix fun <T> RobotWithValue<T>.andThen(
+        fn: PlayViewModelRobot.(T) -> Unit
+): PlayViewModelRobot {
+    return first.apply { fn(second) }
+}
+
 infix fun PlayViewModelRobot.thenVerify(
         fn: PlayViewModelRobotResult.() -> Unit
 ): PlayViewModelRobot {
     PlayViewModelRobotResult(viewModel).apply { fn() }
     return this
+}
+
+infix fun <T> RobotWithValue<T>.thenVerify(
+        fn: PlayViewModelRobotResult.(T) -> Unit
+): PlayViewModelRobot {
+    PlayViewModelRobotResult(first.viewModel).apply { fn(second) }
+    return first
 }

@@ -3,9 +3,7 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.*
-import com.tokopedia.play.robot.play.andWhen
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.Dispatchers
@@ -106,6 +104,77 @@ class PlayViewModelInsetsTest {
             bottomInsetsResult
                     .variantBottomSheet
                     .isShown()
+        }
+    }
+
+    @Test
+    fun `given keyboard is shown, when back button is pressed, then keyboard should be hidden and back will be consumed`() {
+        val channelData = channelDataBuilder.buildChannelData(
+                channelInfo = channelInfoBuilder.buildChannelInfo(
+                        channelType = PlayChannelType.Live
+                )
+        )
+
+        givenPlayViewModelRobot {
+            createPage(channelData)
+            showKeyboard()
+        } thenVerify {
+            bottomInsetsResult
+                    .keyboard.isShown()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            bottomInsetsResult
+                    .keyboard
+                    .isHidden()
+
+            result.isTrue()
+        }
+    }
+
+    @Test
+    fun `given product bottom sheet is shown, when back button is pressed, then product bottom sheet should be hidden and back will be consumed`() {
+        givenPlayViewModelRobot {
+            showProductBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .productBottomSheet.isShown()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            bottomInsetsResult
+                    .productBottomSheet
+                    .isHidden()
+
+            result.isTrue()
+        }
+    }
+
+    @Test
+    fun `given variant bottom sheet is shown, when back button is pressed, then variant bottom sheet should be hidden and back will be consumed`() {
+        givenPlayViewModelRobot {
+            showVariantBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .variantBottomSheet.isShown()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            bottomInsetsResult
+                    .variantBottomSheet
+                    .isHidden()
+
+            result.isTrue()
+        }
+    }
+
+    @Test
+    fun `given no bottom insets are shown, when back button is pressed, then back will not be consumed`() {
+        givenPlayViewModelRobot (
+        ) andWhen {
+            goBack()
+        } thenVerify { result ->
+            result.isFalse()
         }
     }
 }

@@ -577,7 +577,11 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    fun onBackPressed(): Boolean {
+    /**
+     * @return true means that back has been consumed/handled
+     * false means that back is allowed
+     */
+    fun goBack(): Boolean {
         val shownBottomSheets = observableBottomInsetsState.value
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
