@@ -45,6 +45,9 @@ class PlayViewModelRobotResult(
     val statusInfoResult: PlayStatusInfoResult
         get() = PlayStatusInfoResult(viewModel.observableStatusInfo.getOrAwaitValue())
 
+    val bottomInsetsResult: PlayBottomInsetsResult
+        get() = PlayBottomInsetsResult(viewModel.observableBottomInsetsState.getOrAwaitValue())
+
     /**
      * Field
      */

@@ -6,6 +6,7 @@ import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -13,6 +14,8 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
@@ -49,6 +52,8 @@ class PlayViewModelRobot(
         pageMonitoring: PlayPltPerformanceCallback,
         remoteConfig: RemoteConfig
 ) {
+
+    private val productTagBuilder = PlayProductTagsModelBuilder()
 
     val viewModel: PlayViewModel
 
@@ -115,6 +120,18 @@ class PlayViewModelRobot(
 
     fun updateCartCountFromNetwork() {
         viewModel.updateBadgeCart()
+    }
+
+    fun showKeyboard(keyboardHeight: Int = 50) {
+        viewModel.onKeyboardShown(keyboardHeight)
+    }
+
+    fun showProductBottomSheet(bottomSheetHeight: Int = 50) {
+        viewModel.onShowProductSheet(bottomSheetHeight)
+    }
+
+    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: ProductLineUiModel = productTagBuilder.buildProductLine()) {
+        viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
     }
 }
 
