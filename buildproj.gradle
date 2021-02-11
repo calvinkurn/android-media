@@ -77,6 +77,8 @@ subprojects {
                 substitute module('androidx.lifecycle:lifecycle-runtime') with module("androidx.lifecycle:lifecycle-runtime:${lifeCycleVersion}")
                 substitute module('androidx.lifecycle:lifecycle-viewmodel') with module("androidx.lifecycle:lifecycle-viewmodel:${lifeCycleVersion}")
                 substitute module('androidx.lifecycle:lifecycle-livedata-core') with module("androidx.lifecycle:lifecycle-livedata-core:${lifeCycleVersion}")
+                substitute module('androidx.fragment:fragment') with module("androidx.fragment:fragment:1.1.0")
+                substitute module('androidx.lifecycle:lifecycle-service') with module("androidx.lifecycle:lifecycle-service:2.2.0")
                 substitute module('com.google.android.material:material') with module("com.google.android.material:material:${materialVersion}")
                 substitute module('androidx.constraintlayout:constraintlayout') with module("androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}")
                 substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
