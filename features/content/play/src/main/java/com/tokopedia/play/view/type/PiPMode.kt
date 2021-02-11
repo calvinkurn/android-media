@@ -7,5 +7,8 @@ enum class PiPMode {
 
     WatchInPip,
     BrowsingOtherPage,
-    StopPip,
+    StopPip;
+
+    val isInPiP: Boolean
+        get() = this != StopPip
 }

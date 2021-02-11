@@ -108,6 +108,64 @@ class PlayViewModelInsetsTest {
     }
 
     @Test
+    fun `given keyboard is shown, when hide keyboard, then keyboard should be hidden`() {
+        val channelData = channelDataBuilder.buildChannelData(
+                channelInfo = channelInfoBuilder.buildChannelInfo(
+                        channelType = PlayChannelType.Live
+                )
+        )
+
+        givenPlayViewModelRobot {
+            createPage(channelData)
+            showKeyboard()
+        } thenVerify {
+            bottomInsetsResult
+                    .keyboard
+                    .isShown()
+        } andWhen {
+            hideKeyboard()
+        } thenVerify {
+            bottomInsetsResult
+                    .keyboard
+                    .isHidden()
+        }
+    }
+
+    @Test
+    fun `given product bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showProductBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .productBottomSheet
+                    .isShown()
+        } andWhen {
+            hideProductBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .productBottomSheet
+                    .isHidden()
+        }
+    }
+
+    @Test
+    fun `given variant bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showVariantBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .variantBottomSheet
+                    .isShown()
+        } andWhen {
+            hideVariantBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .variantBottomSheet
+                    .isHidden()
+        }
+    }
+
+    @Test
     fun `given keyboard is shown, when back button is pressed, then keyboard should be hidden and back will be consumed`() {
         val channelData = channelDataBuilder.buildChannelData(
                 channelInfo = channelInfoBuilder.buildChannelInfo(

@@ -231,7 +231,7 @@ class PlayVideoFragment @Inject constructor(
      * Video View Component DataSource
      */
     override fun isInPiPMode(): Boolean {
-        return playViewModel.isInPiPMode
+        return playViewModel.pipMode.isInPiP
     }
 
     private fun initAnalytic() {

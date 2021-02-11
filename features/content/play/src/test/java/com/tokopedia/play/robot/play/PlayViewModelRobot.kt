@@ -33,7 +33,7 @@ import io.mockk.mockk
 typealias RobotWithValue<T> = Pair<PlayViewModelRobot, T>
 
 class PlayViewModelRobot(
-        playVideoBuilder: PlayVideoWrapper.Builder,
+        private val playVideoBuilder: PlayVideoWrapper.Builder,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
         channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
@@ -126,15 +126,33 @@ class PlayViewModelRobot(
         viewModel.onKeyboardShown(keyboardHeight)
     }
 
+    fun hideKeyboard() {
+        viewModel.onKeyboardHidden()
+    }
+
     fun showProductBottomSheet(bottomSheetHeight: Int = 50) {
         viewModel.onShowProductSheet(bottomSheetHeight)
+    }
+
+    fun hideProductBottomSheet() {
+        viewModel.onHideProductSheet()
     }
 
     fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: ProductLineUiModel = productTagBuilder.buildProductLine()) {
         viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
     }
 
+    fun hideVariantBottomSheet() {
+        viewModel.onHideVariantSheet()
+    }
+
     fun goBack() = viewModel.goBack()
+
+    fun setMockPlayer(player: PlayVideoWrapper) {
+        every { playVideoBuilder.build() } returns player
+    }
+
+    fun getVideoPlayer() = viewModel.getVideoPlayer()
 }
 
 fun givenPlayViewModelRobot(

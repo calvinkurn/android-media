@@ -185,11 +185,6 @@ class PlayViewModel @Inject constructor(
     val pipMode: PiPMode
         get() = _observableEventPiP.value?.peekContent() ?: PiPMode.StopPip
 
-    val isInPiPMode: Boolean
-        get() {
-            val pipValue = _observableEventPiP.value
-            return pipValue != null && pipValue.peekContent() != PiPMode.StopPip
-        }
     val isPiPAllowed: Boolean
         get() {
             return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_PIP, true)
@@ -330,7 +325,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
-        if (!isInPiPMode) stopPlayer()
+        if (!pipMode.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         channelStateProcessor.removeStateListener(channelStateListener)
