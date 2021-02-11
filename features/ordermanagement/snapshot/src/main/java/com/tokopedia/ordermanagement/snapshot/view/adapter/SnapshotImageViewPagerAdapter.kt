@@ -11,7 +11,7 @@ import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
 /**
  * Created by fwidjaja on 1/19/21.
  */
-class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPagerAdapter.BaseViewHolder<*>>() {
+class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPagerItemViewHolder>() {
     var listImg = mutableListOf<String>()
     private var actionListener: SnapshotAdapter.ActionListener? = null
 
@@ -23,18 +23,14 @@ class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPage
         abstract fun bind(item: T, position: Int)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnapshotImageViewPagerItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_img_view_pager_item, parent, false)
         return SnapshotImageViewPagerItemViewHolder(view, actionListener)
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+    override fun onBindViewHolder(holder: SnapshotImageViewPagerItemViewHolder, position: Int) {
         val img = listImg[position]
-        when (holder) {
-            is SnapshotImageViewPagerItemViewHolder-> {
-                holder.bind(img, holder.adapterPosition)
-            }
-        }
+        holder.bind(img, holder.adapterPosition)
     }
 
     override fun getItemCount(): Int = listImg.size
