@@ -1,4 +1,4 @@
-package com.tokopedia.play.viewmodel
+package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.helper.ClassBuilder
@@ -132,6 +132,35 @@ class PlayViewModelUpdatePageTest {
         } thenVerify {
             partnerInfoResult
                     .isEqualTo(expectedModel)
+        }
+    }
+
+    @Test
+    fun `given cart should be shown, when update badge cart count, then cart info should be updated`() {
+        val cartInfo = cartInfoBuilder.buildCompleteData(
+                shouldShow = true,
+                count = 5
+        )
+
+        val channelData = channelDataBuilder.buildChannelData(
+                cartInfo = cartInfo
+        )
+
+        val mockCartCount = 7
+
+        givenPlayViewModelRobot {
+            setMockCartCountResponse(mockCartCount)
+        } andWhen {
+            createPage(channelData)
+        } thenVerify {
+            cartInfoResult
+                    .isEqualTo(cartInfo)
+        } andThen {
+            updateCartCountFromNetwork()
+        } thenVerify {
+                cartInfoResult
+                        .isNotEqualTo(cartInfo)
+                        .isEqualTo(cartInfo.copy(count = mockCartCount))
         }
     }
 }

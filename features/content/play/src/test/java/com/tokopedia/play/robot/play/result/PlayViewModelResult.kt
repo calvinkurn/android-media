@@ -2,6 +2,7 @@ package com.tokopedia.play.robot.play.result
 
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.robot.RobotResult
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 
 /**
@@ -61,4 +62,10 @@ class PlayViewModelRobotResult(
 
     val likeParamInfoFieldResult: PlayLikeInfoResult.LikeParamResult
         get() = PlayLikeInfoResult.LikeParamResult(viewModel.likeParamInfo)
+
+    val lastCompleteChannelDataFieldResult: PlayChannelDataResult
+        get() = PlayChannelDataResult(viewModel.latestCompleteChannelData)
+
+    val pipModeFieldResult: PlayPiPModeResult
+        get() = PlayPiPModeResult(viewModel.pipMode)
 }

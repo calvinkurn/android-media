@@ -335,4 +335,21 @@ class PlayResponseBuilder {
     fun buildPartnerInfoResponse(): ShopInfo {
         return gson.fromJson(partnerInfoResponse, ShopInfo.Response::class.java).result.data.first()
     }
+
+    fun buildCustomReportSummariesReponse(totalLike: String, totalView: String): ReportSummaries {
+        return ReportSummaries(
+                listOf(
+                        ReportSummaries.Data(
+                                ReportSummaries.Channel(
+                                        ReportSummaries.Metric(
+                                                totalLike = totalLike,
+                                                totalLikeFmt = totalLike,
+                                                totalView = totalView,
+                                                totalViewFmt = totalView
+                                        )
+                                )
+                        )
+                )
+        )
+    }
 }

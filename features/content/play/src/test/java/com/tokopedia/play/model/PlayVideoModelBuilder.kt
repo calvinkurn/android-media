@@ -15,7 +15,7 @@ import io.mockk.mockk
 class PlayVideoModelBuilder {
 
     fun buildVideoMeta(
-            videoPlayer: PlayVideoPlayerUiModel = buildCompleteGeneralVideoPlayer(),
+            videoPlayer: PlayVideoPlayerUiModel = buildYouTubeVideoPlayer(),
             videoStream: PlayVideoStreamUiModel = buildVideoStream()
     ) = PlayVideoMetaInfoUiModel(
             videoPlayer = videoPlayer,
