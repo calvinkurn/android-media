@@ -151,9 +151,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onResume() {
         super.onResume()
-        if (!isFirstLoad) {
-            reloadPage()
-        }
         if (userVisibleHint)
             StatisticTracker.sendScreen(screenName)
     }
