@@ -37,10 +37,12 @@ class PlayVideoWrapper private constructor(
 ) {
 
     class Builder(
-            private val context: Context
+            context: Context
     ) {
 
-        private var mExoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
+        private val mContext = context.applicationContext
+
+        private var mExoPlayerCreator: ExoPlayerCreator? = null
 
         fun setExoPlayerCreator(exoPlayerCreator: ExoPlayerCreator): Builder {
             mExoPlayerCreator = exoPlayerCreator
@@ -48,7 +50,7 @@ class PlayVideoWrapper private constructor(
         }
 
         fun build(): PlayVideoWrapper {
-            return PlayVideoWrapper(context, mExoPlayerCreator)
+            return PlayVideoWrapper(mContext, mExoPlayerCreator ?: DefaultExoPlayerCreator(mContext))
         }
     }
 

@@ -10,5 +10,6 @@ data class PiPInfoUiModel(
         val channelId: String,
         val partnerId: Long?,
         val channelType: PlayChannelType,
-        val videoOrientation: VideoOrientation
+        val videoOrientation: VideoOrientation,
+        val stopOnClose: Boolean
 )

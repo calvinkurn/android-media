@@ -20,15 +20,14 @@ import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
-import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
-import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -57,12 +56,12 @@ class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         dispatchers: CoroutineDispatcherProvider,
         private val pipAnalytic: PlayPiPAnalytic
-) : TkpdBaseV4Fragment(), PlayFragmentContract {
+) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.immediate + job)
 
-    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
@@ -126,6 +125,8 @@ class PlayVideoFragment @Inject constructor(
         }
     }
 
+    private lateinit var piPCoordinator: PlayViewerPiPCoordinator
+
     private val cornerRadius = 16f.dpToPx()
 
     private lateinit var playViewModel: PlayViewModel
@@ -158,7 +159,12 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if (!isEnterPiPAfterPermission) playViewModel.stopPiP()
+        if (!isEnterPiPAfterPermission) {
+            if (::piPCoordinator.isInitialized) {
+                piPCoordinator.view.setPauseOnDetached(false)
+            }
+            playViewModel.stopPiP()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -204,18 +210,28 @@ class PlayVideoFragment @Inject constructor(
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
-        PlayViewerPiPCoordinator(
+        piPCoordinator = PlayViewerPiPCoordinator(
                 context = requireContext(),
+                videoPlayer = playViewModel.getVideoPlayer(),
                 videoOrientation = playViewModel.videoOrientation,
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoOrientation = playViewModel.videoOrientation,
+                        stopOnClose = pipMode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
-        ).startPip()
+        )
+        piPCoordinator.startPip()
+    }
+
+    /**
+     * Video View Component DataSource
+     */
+    override fun isInPiPMode(): Boolean {
+        return playViewModel.isInPiPMode
     }
 
     private fun initAnalytic() {
@@ -253,6 +269,7 @@ class PlayVideoFragment @Inject constructor(
 
     private fun removePiP() {
         pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
+        videoViewOnStateChanged()
     }
 
     //region observe

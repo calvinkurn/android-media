@@ -152,12 +152,14 @@ class PlayViewModel @Inject constructor(
 
             val videoMetaInfo = _observableVideoMeta.value ?: channelData.videoMetaInfo
             val newVideoPlayer = when (val videoPlayer = videoMetaInfo.videoPlayer) {
-                is PlayVideoPlayerUiModel.General.Complete -> videoPlayer.copy(lastMillis = playVideoPlayer.getCurrentPosition())
+                is PlayVideoPlayerUiModel.General -> videoPlayer.updateParams(
+                        newParams = videoPlayer.params.copy(
+                                lastMillis = playVideoPlayer.getCurrentPosition()
+                        )
+                )
                 else -> videoPlayer
             }
-            val newVideoMeta = videoMetaInfo.copy(
-                    videoPlayer = newVideoPlayer
-            )
+            val newVideoMeta = videoMetaInfo.copy(videoPlayer = newVideoPlayer)
 
             val pinnedMessage = _observablePinnedMessage.value ?: channelData.pinnedInfo.pinnedMessage
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
@@ -466,7 +468,7 @@ class PlayViewModel @Inject constructor(
         startVideoWithUrlString(
                 urlString = videoPlayer.params.videoUrl,
                 bufferControl = videoPlayer.params.buffer,
-                lastPosition = if (channelType.isVod && videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoPlayer.lastMillis else null
+                lastPosition = if (channelType.isVod) videoPlayer.params.lastMillis else null
         )
         playVideoPlayer.setRepeatMode(shouldRepeat = false)
     }
@@ -508,9 +510,9 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
     }
 
-    fun defocusPage() {
+    fun defocusPage(shouldPauseVideo: Boolean) {
         stopJob()
-        defocusVideoPlayer()
+        defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
     }
 
@@ -521,8 +523,8 @@ class PlayViewModel @Inject constructor(
         playVideoPlayer.resume()
     }
 
-    private fun defocusVideoPlayer() {
-        playVideoPlayer.pause(preventLoadingBuffer = true)
+    private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
+        if (shouldPauseVideo) playVideoPlayer.pause(preventLoadingBuffer = true)
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
@@ -593,6 +595,8 @@ class PlayViewModel @Inject constructor(
         val cartInfo = _observableCartInfo.value
         if (cartInfo != null) updateCartInfo(cartInfo)
     }
+
+    fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
         viewModelScope.launchCatchError(block = {

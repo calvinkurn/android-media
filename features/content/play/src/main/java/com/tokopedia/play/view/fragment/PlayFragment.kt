@@ -282,7 +282,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage()
+        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.isInPiPMode && activity?.isFinishing == true))
     }
 
     private fun invalidateVideoTopBounds(

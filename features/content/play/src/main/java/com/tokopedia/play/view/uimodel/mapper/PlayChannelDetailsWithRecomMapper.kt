@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class PlayChannelDetailsWithRecomMapper @Inject constructor() {
 
-    fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
+    fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
@@ -28,7 +28,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor() {
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
-                    videoMetaInfo = mapVideoMeta(it.video),
+                    videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title)
             )
         }
@@ -120,17 +120,19 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor() {
 
     private fun mapVideoMeta(
             videoResponse: ChannelDetailsWithRecomResponse.Video,
+            channelId: String,
+            extraParams: ExtraParams
     ) = PlayVideoMetaInfoUiModel(
-            videoPlayer = mapVideoPlayer(videoResponse),
+            videoPlayer = mapVideoPlayer(videoResponse, channelId, extraParams),
             videoStream = mapVideoStream(videoResponse)
     )
 
-    private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video) = when (videoResponse.type) {
+    private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video, channelId: String, extraParams: ExtraParams) = when (videoResponse.type) {
         "live", "vod" -> PlayVideoPlayerUiModel.General.Incomplete(
                 params = PlayGeneralVideoPlayerParams(
                         videoUrl = videoResponse.streamSource,
-//                        videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                         buffer = mapVideoBufferControl(videoResponse.bufferControl),
+                        lastMillis = if (channelId == extraParams.channelId && videoResponse.type == "vod") extraParams.videoStartMillis else null
                 )
         )
         "youtube" -> PlayVideoPlayerUiModel.YouTube(videoResponse.streamSource)
@@ -191,4 +193,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor() {
     companion object {
         private const val MS_PER_SECOND = 1000
     }
+
+    data class ExtraParams(
+            val channelId: String?,
+            val videoStartMillis: Long?
+    )
 }
