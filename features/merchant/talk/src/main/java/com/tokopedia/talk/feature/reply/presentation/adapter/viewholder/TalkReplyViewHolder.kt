@@ -36,10 +36,11 @@ class TalkReplyViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_talk_reply
         const val IN_VIEWHOLDER = true
+        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
-        if(isMarkNotFraud) {
+        if (isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
             threadListener.onDismissUnmaskCard(commentId)
@@ -62,7 +63,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
-        if(userThumbNail.isNotEmpty()) {
+        if (userThumbNail.isNotEmpty()) {
             itemView.replyProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
@@ -76,8 +77,8 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
-        if(userName.isNotEmpty()) {
-            itemView.replyDisplayName.apply{
+        if (userName.isNotEmpty()) {
+            itemView.replyDisplayName.apply {
                 text = HtmlCompat.fromHtml(userName, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId, isSeller, shopId)
@@ -90,7 +91,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showDate(date: String) {
-        if(date.isNotEmpty()) {
+        if (date.isNotEmpty()) {
             itemView.replyDate.apply {
                 text = addBulletPointToDate(date)
                 show()
@@ -100,7 +101,7 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion :Boolean) = with(itemView){
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion: Boolean) = with(itemView) {
         when {
             isSeller -> {
                 replySellerLabel.text = context.getString(R.string.reading_seller_label)
@@ -123,15 +124,15 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showAnswer(answer: String, isMasked: Boolean, isSeller: Boolean, maskedContent: String, allowUnmask: Boolean) {
-        if(isMasked) {
+        if (isMasked) {
             itemView.replyMessage.apply {
-                text = if(allowUnmask || isSeller) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
+                text = if (allowUnmask || isSeller) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 show()
             }
             return
         }
-        if(answer.isNotEmpty()) {
+        if (answer.isNotEmpty()) {
             itemView.replyMessage.apply {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 text = HtmlLinkHelper(context, answer).spannedString
@@ -167,7 +168,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
-        if(attachedProducts.isNotEmpty()) {
+        if (attachedProducts.isNotEmpty()) {
             val attachedProductAdapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
             attachedProducts.add(0, AttachedProduct())
             attachedProductAdapter.setData(attachedProducts)
@@ -181,7 +182,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
-        if(allowReport || allowDelete){
+        if (allowReport || allowDelete) {
             itemView.replyKebab.apply {
                 setOnClickListener {
                     onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
@@ -217,6 +218,15 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showSmartReplyLabel(isAutoReplied: Boolean) {
-        itemView.replySmartReplyLabel.showWithCondition(isAutoReplied)
+        itemView.replySmartReplyLabel.apply {
+            unlockFeature = UNLOCK_UNIFY_LABEL
+            fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            showWithCondition(isAutoReplied)
+        }
+    }
+
+    private fun getColorString(color: Int): String {
+        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }

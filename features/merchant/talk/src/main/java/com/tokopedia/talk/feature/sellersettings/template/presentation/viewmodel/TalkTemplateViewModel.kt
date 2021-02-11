@@ -51,7 +51,7 @@ class TalkTemplateViewModel @Inject constructor(
             enableTemplateUseCase.setParams(isEnable)
             val response = enableTemplateUseCase.executeOnBackground()
             if(response.chatToggleTemplate.success.isMutationSuccess()) {
-                _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
+                _templateMutation.postValue(if(isEnable) TalkTemplateMutationResults.TemplateActivateSuccess else TalkTemplateMutationResults.TemplateDeactivateSuccess)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
             }

@@ -6,4 +6,6 @@ sealed class TalkTemplateMutationResults {
     object DeleteTemplateFailed: TalkTemplateMutationResults()
     object MutationFailed: TalkTemplateMutationResults()
     object RearrangeTemplateFailed: TalkTemplateMutationResults()
+    object TemplateActivateSuccess: TalkTemplateMutationResults()
+    object TemplateDeactivateSuccess: TalkTemplateMutationResults()
 }

@@ -117,6 +117,12 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun observeTemplateMutation() {
         viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
             when (it) {
+                TalkTemplateMutationResults.TemplateActivateSuccess -> {
+                    showToaster(getString(R.string.template_list_success_activate_template), false)
+                }
+                TalkTemplateMutationResults.TemplateDeactivateSuccess -> {
+                    showToaster(getString(R.string.template_list_success_deactivate_template), false)
+                }
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     showToaster(getString(R.string.template_list_success_add_template), false)
                 }
