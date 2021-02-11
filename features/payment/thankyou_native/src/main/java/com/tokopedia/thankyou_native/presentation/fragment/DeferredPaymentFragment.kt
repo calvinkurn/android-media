@@ -112,7 +112,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
-        tvSeePaymentMethods.setOnClickListener { openHowTOPay(thanksPageData) }
+        tvSeePaymentMethods.setOnClickListener { openHowToPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
         tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
     }

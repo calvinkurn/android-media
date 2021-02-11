@@ -19,7 +19,7 @@ data class SomListOrderListResponse(
         data class OrderList(
                 @SerializedName("cursor_order_id")
                 @Expose
-                val cursorOrderId: Int = 0,
+                val cursorOrderId: String = "0",
                 @SerializedName("list")
                 @Expose
                 val list: List<Order> = listOf()

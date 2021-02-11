@@ -10,6 +10,10 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -38,6 +42,10 @@ import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmComponent;
+import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -52,6 +60,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
+import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
+import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
@@ -77,10 +87,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
 import timber.log.Timber;
 
+import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
@@ -102,6 +116,11 @@ public abstract class SellerRouterApplication extends MainApplication implements
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
     protected CacheManager cacheManager;
+
+    private DaggerGcmUpdateComponent.Builder daggerGcmUpdateBuilder;
+    private GcmUpdateComponent gcmUpdateComponent;
+    @Inject
+    Lazy<FirebaseMessagingManager> fcmManager;
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
 
@@ -286,8 +305,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-        sessionRefresh.gcmUpdate();
+        String accessToken = accessTokenRefresh.refreshToken();
+        doRelogin(accessToken);
     }
 
     @Override
@@ -332,10 +351,30 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.gcmUpdate();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if(isOldGcmUpdate()) {
+                sessionRefresh.gcmUpdate();
+            } else {
+                if(gcmUpdateComponent == null) {
+                    injectGcmUpdateComponent();
+                }
+                newGcmUpdate(sessionRefresh);
+            }
+        } catch (IOException e) {}
+    }
+
+    private void newGcmUpdate(SessionRefresh sessionRefresh) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    try {
+                        sessionRefresh.gcmUpdate();
+                    } catch (IOException e) {}
+                } else {
+                    fcmManager.get().onNewToken(task.getResult().getToken());
+                }
+            }
+        });
     }
 
     @Override
@@ -412,16 +451,13 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType) {
+    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
-        if (getBooleanRemoteConfig(SomConsts.ENABLE_NEW_SOM, true)) {
-            return SomListFragment.newInstance(bundle);
-        } else {
-            return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
-        }
+        bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
+        return SomListFragment.newInstance(bundle);
     }
 
     @NotNull
@@ -473,5 +509,26 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
+    }
+
+    private void injectGcmUpdateComponent() {
+        if(!isOldGcmUpdate()) {
+            if(daggerGcmUpdateBuilder == null) {
+                FcmComponent fcmComponent = DaggerFcmComponent.builder()
+                        .fcmModule(new FcmModule(this))
+                        .build();
+
+                daggerGcmUpdateBuilder = DaggerGcmUpdateComponent.builder()
+                        .fcmComponent(fcmComponent);
+            }
+            if(gcmUpdateComponent == null) {
+                gcmUpdateComponent = daggerGcmUpdateBuilder.build();
+            }
+            gcmUpdateComponent.inject(this);
+        }
     }
 }

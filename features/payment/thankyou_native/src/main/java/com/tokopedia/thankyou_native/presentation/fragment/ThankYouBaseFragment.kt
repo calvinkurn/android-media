@@ -238,10 +238,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         getLoadingView()?.gone()
     }
 
-    fun openHowTOPay(thanksPageData: ThanksPageData) {
-        RouteManager.route(context, thanksPageData.howToPay)
-        thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
-                thanksPageData.paymentID.toString())
+    fun openHowToPay(thanksPageData: ThanksPageData) {
+        thanksPageData.howToPayAPP?.let {
+            RouteManager.route(context, thanksPageData.howToPayAPP)
+            thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
+        }
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,

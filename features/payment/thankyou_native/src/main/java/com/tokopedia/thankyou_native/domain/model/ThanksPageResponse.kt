@@ -34,7 +34,9 @@ data class ThanksPageData(
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
-        val howToPay: String,
+        val howToPay: String?,
+        @SerializedName("how_to_pay_applink")
+        val howToPayAPP : String?,
         @SerializedName("whitelisted_rba")
         val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
