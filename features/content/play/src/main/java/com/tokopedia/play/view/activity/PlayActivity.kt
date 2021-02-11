@@ -237,10 +237,12 @@ class PlayActivity : BaseActivity(),
                     if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
                 }
                 is PageResultState.Fail -> {
+                    pageMonitoring.invalidate()
                     ivLoading.hide()
                     if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
                 is PageResultState.Success -> {
+                    pageMonitoring.startRenderPerformanceMonitoring()
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }

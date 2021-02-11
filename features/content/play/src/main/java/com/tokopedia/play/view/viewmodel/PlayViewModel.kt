@@ -60,12 +60,9 @@ class PlayViewModel @Inject constructor(
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val pageMonitoring: PlayPltPerformanceCallback,
         private val remoteConfig: RemoteConfig
 ) : ViewModel() {
 
-    val observableChannelErrorEvent: LiveData<Event<Boolean>>
-        get() = _observableChannelErrorEvent
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
@@ -203,7 +200,6 @@ class PlayViewModel @Inject constructor(
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
-    private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -1006,8 +1002,6 @@ class PlayViewModel @Inject constructor(
     //endregion
 
     companion object {
-        private const val MAX_RETRY_CHANNEL_INFO = 3
-
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
     }
 }
