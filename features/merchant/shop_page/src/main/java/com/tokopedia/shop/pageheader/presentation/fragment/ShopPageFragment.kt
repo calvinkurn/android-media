@@ -413,6 +413,13 @@ class ShopPageFragment :
                         )
                     }
                 }
+                is Fail -> {
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${it.throwable.message}';"
+                    )
+                }
             }
         })
 
