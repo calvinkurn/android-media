@@ -49,7 +49,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
-        private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
@@ -61,12 +60,9 @@ class PlayViewModel @Inject constructor(
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val pageMonitoring: PlayPltPerformanceCallback,
         private val remoteConfig: RemoteConfig
-) : PlayBaseViewModel(dispatchers.main) {
+) : ViewModel() {
 
-    val observableChannelErrorEvent: LiveData<Event<Boolean>>
-        get() = _observableChannelErrorEvent
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
@@ -204,7 +200,6 @@ class PlayViewModel @Inject constructor(
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
-    private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -235,10 +230,18 @@ class PlayViewModel @Inject constructor(
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
-            _observablePinned.value = getPinnedModel(
-                    pinnedMessage = _observablePinnedMessage.value,
-                    pinnedProduct = _observablePinnedProduct.value,
-            )
+            if (it is PlayResult.Success) {
+                val pinnedProduct = _observablePinnedProduct.value
+                if (pinnedProduct != null) {
+                    val newPinnedProduct = pinnedProduct.copy(
+                            productTags = pinnedProduct.productTags.setContent(
+                                    productList = it.data.productList,
+                                    voucherList = it.data.voucherList
+                            )
+                    )
+                    _observablePinnedProduct.value = newPinnedProduct
+                }
+            }
         }
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
@@ -255,7 +258,7 @@ class PlayViewModel @Inject constructor(
 
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
-            scope.launch(dispatchers.immediate) {
+            viewModelScope.launch(dispatchers.immediate) {
                 _observableVideoProperty.value = VideoPropertyUiModel(state)
             }
         }
@@ -263,7 +266,7 @@ class PlayViewModel @Inject constructor(
 
     private val channelStateListener = object : PlayViewerChannelStateListener {
         override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
-            scope.launch(dispatchers.immediate) {
+            viewModelScope.launch(dispatchers.immediate) {
                 val value = _observableStatusInfo.value
                 value?.let { _observableStatusInfo.value = if (shouldFreeze) it.copy(statusType = PlayStatusType.Freeze) else it }
             }
@@ -272,7 +275,7 @@ class PlayViewModel @Inject constructor(
 
     private val videoManagerListener = object : PlayVideoWrapper.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
-            scope.launch(dispatchers.immediate) {
+            viewModelScope.launch(dispatchers.immediate) {
                 val newVidPlayer = when (val vidPlayer = videoPlayer) {
                     is PlayVideoPlayerUiModel.General.Incomplete -> vidPlayer.setPlayer(player)
                     is PlayVideoPlayerUiModel.General.Complete -> vidPlayer.copy(exoPlayer = player)
@@ -293,9 +296,9 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    private val videoStateProcessor = videoStateProcessorFactory.create(playVideoPlayer, scope) { channelType }
-    private val channelStateProcessor = channelStateProcessorFactory.create(scope) { channelType }
-    private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
+    private val videoStateProcessor = videoStateProcessorFactory.create(playVideoPlayer, viewModelScope) { channelType }
+    private val channelStateProcessor = channelStateProcessorFactory.create(viewModelScope) { channelType }
+    private val videoBufferGovernor = videoBufferGovernorFactory.create(viewModelScope)
 
     init {
         videoStateProcessor.addStateListener(videoStateListener)
@@ -604,7 +607,7 @@ class PlayViewModel @Inject constructor(
     fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val socketCredential = withContext(dispatchers.io) {
                 return@withContext getSocketCredentialUseCase.executeOnBackground()
             }
@@ -625,7 +628,7 @@ class PlayViewModel @Inject constructor(
         playSocket.gcToken = socketCredential.gcToken
         playSocket.settings = socketCredential.setting
         playSocket.connect(onMessageReceived = { response ->
-            scope.launch {
+            viewModelScope.launch {
                 val result = withContext(dispatchers.io) {
                     val socketMapper = PlaySocketMapper(response)
                     socketMapper.mapping()
@@ -664,7 +667,7 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                                    shouldAutoSwipe = true,
+                                    shouldAutoSwipeOnFreeze = true,
                                     statusType = playSocketToModelMapper.mapStatus(
                                             isBanned = result.isBanned && result.userId.isNotEmpty()
                                                     && result.userId.equals(userSession.userId, true)))
@@ -802,10 +805,7 @@ class PlayViewModel @Inject constructor(
 
                 val newPartnerInfo = PlayPartnerInfoUiModel.Complete(
                         basicInfo = partnerBasicInfo,
-                        followInfo = PlayPartnerFollowInfoUiModel(
-                                isFollowable = userSession.shopId != shopInfo.shopCore.shopId,
-                                isFollowed = shopInfo.favoriteData.alreadyFavorited == 1
-                        )
+                        followInfo = playUiModelMapper.mapPartnerInfo(shopInfo)
                 )
 
                 _observablePartnerInfo.value = newPartnerInfo
@@ -910,11 +910,6 @@ class PlayViewModel @Inject constructor(
         getReportSummariesUseCase.executeOnBackground()
     }
 
-    private suspend fun getTotalLikes(channelId: String): TotalLike = withContext(dispatchers.io) {
-        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
-        getTotalLikeUseCase.executeOnBackground()
-    }
-
     private suspend fun getIsLiked(likeParamInfo: PlayLikeParamInfoUiModel) = withContext(dispatchers.io) {
         getIsLikeUseCase.params = GetIsLikeUseCase.createParam(
                 contentId = likeParamInfo.contentId.toIntOrZero(),
@@ -962,7 +957,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun trackProductTag(channelId: String, productList: List<PlayProductUiModel>) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 val productIds = productList.mapNotNull { product -> if (product is ProductLineUiModel) product.id else null }
                 trackProductTagBroadcasterUseCase.params = TrackProductTagBroadcasterUseCase.createParams(channelId, productIds)
@@ -973,7 +968,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun trackVisitChannel(channelId: String) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 trackVisitChannelBroadcasterUseCase.params = TrackVisitChannelBroadcasterUseCase.createParams(channelId)
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
@@ -1009,8 +1004,6 @@ class PlayViewModel @Inject constructor(
     //endregion
 
     companion object {
-        private const val MAX_RETRY_CHANNEL_INFO = 3
-
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
     }
 }

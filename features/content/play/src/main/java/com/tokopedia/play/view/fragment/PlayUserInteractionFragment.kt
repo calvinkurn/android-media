@@ -50,7 +50,6 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -160,6 +159,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var mMaxTopChatMode: Int? = null
     private var toasterBottomMargin = 0
+
+    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     /**
      * Animation
@@ -529,14 +530,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeChannelInfo() {
         playViewModel.observableChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            triggerStartMonitoring()
             statsInfoViewOnStateChanged(channelType = it.channelType)
             videoControlViewOnStateChanged(channelType = it.channelType)
             sendChatViewOnStateChanged(channelType = it.channelType)
             chatListViewOnStateChanged(channelType = it.channelType)
         })
-//        playViewModel.observableLatestChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-//            triggerStartMonitoring()
-//        })
     }
 
     private fun observeQuickReply() {
@@ -750,8 +749,6 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         }
     }
-
-    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     private fun triggerStartMonitoring() {
         playFragment.startRenderMonitoring()

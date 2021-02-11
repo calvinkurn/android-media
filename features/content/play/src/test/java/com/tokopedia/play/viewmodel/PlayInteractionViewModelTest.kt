@@ -7,12 +7,12 @@ import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
-import com.tokopedia.play.model.ModelBuilder
+import com.tokopedia.play.model.PlayLikeModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.view.uimodel.FeedInfoUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,7 +22,11 @@ import io.mockk.coEvery
 import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,20 +42,28 @@ class PlayInteractionViewModelTest {
     private val mockPostLikeUseCase: PostLikeUseCase = mockk(relaxed = true)
     private val mockPostFollowPartnerUseCase: PostFollowPartnerUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockPlayPreference: PlayPreference = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
-    private val modelBuilder = ModelBuilder()
+    private val likeModelBuilder = PlayLikeModelBuilder()
 
     private lateinit var playInteractionViewModel: PlayInteractionViewModel
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatchers.main)
         playInteractionViewModel = PlayInteractionViewModel(
                 mockPostLikeUseCase,
                 mockPostFollowPartnerUseCase,
                 userSession,
-                dispatchers
+                dispatchers,
+                mockPlayPreference
         )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -243,23 +255,19 @@ class PlayInteractionViewModelTest {
 
     @Test
     fun `test do like post call like use case`() {
-        val feedInfoUiModel = FeedInfoUiModel(
-                contentId = "123",
-                contentType = 3,
-                likeType = 2
-        )
+        val likeParamUiModel = likeModelBuilder.buildParam()
         val shouldLike = true
 
         playInteractionViewModel.doLikeUnlike(
-                feedInfoUiModel,
+                likeParamUiModel,
                 shouldLike = shouldLike
         )
 
         coVerifySequence {
             mockPostLikeUseCase.params = PostLikeUseCase.createParam(
-                    feedInfoUiModel.contentId.toIntOrZero(),
-                    feedInfoUiModel.contentType,
-                    feedInfoUiModel.likeType,
+                    likeParamUiModel.contentId.toIntOrZero(),
+                    likeParamUiModel.contentType,
+                    likeParamUiModel.likeType,
                     shouldLike
             )
             mockPostLikeUseCase.executeOnBackground()

@@ -22,3 +22,8 @@ data class PlayProductTagsBasicInfoUiModel(
         val bottomSheetTitle: String,
         val partnerId: Long,
 )
+
+fun PlayProductTagsUiModel.setContent(
+        productList: List<PlayProductUiModel> = emptyList(),
+        voucherList: List<PlayVoucherUiModel> = emptyList()
+) = PlayProductTagsUiModel.Complete(basicInfo, productList, voucherList)

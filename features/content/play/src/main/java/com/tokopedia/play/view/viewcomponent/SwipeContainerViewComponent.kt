@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.play.util.findCurrentFragment
 import com.tokopedia.play.view.adapter.SwipeContainerStateAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -16,7 +17,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 class SwipeContainerViewComponent(
         container: ViewGroup,
         @IdRes rootId: Int,
-        fragmentManager: FragmentManager,
+        private val fragmentManager: FragmentManager,
         lifecycle: Lifecycle,
         dataSource: DataSource,
         listener: Listener
@@ -52,8 +53,8 @@ class SwipeContainerViewComponent(
         isLoading = false
     }
 
-    fun getCurrentPos(): Int {
-        return vpFragment.currentItem
+    fun getActiveFragment(): Fragment? {
+        return vpFragment.findCurrentFragment(fragmentManager)
     }
 
     fun refocusFragment() {
@@ -81,6 +82,10 @@ class SwipeContainerViewComponent(
         val recyclerView = vpFragment.getChildAt(0) as RecyclerView
         if (isSmoothScroll) recyclerView.smoothScrollToPosition(position)
         else recyclerView.scrollToPosition(position)
+    }
+
+    private fun getCurrentPos(): Int {
+        return vpFragment.currentItem
     }
 
     interface DataSource {

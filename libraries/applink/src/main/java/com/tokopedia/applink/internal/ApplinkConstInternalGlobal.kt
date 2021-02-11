@@ -525,9 +525,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
 
+    // OvoFinalPageActivity
+    // tokopedia-android-internal://global/ovo-final-page
+    @JvmField
+    val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
+
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init
     @JvmField
     val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
-
 }
