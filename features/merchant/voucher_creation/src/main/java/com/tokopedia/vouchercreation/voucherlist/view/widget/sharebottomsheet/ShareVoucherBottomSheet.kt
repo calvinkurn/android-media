@@ -27,8 +27,6 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
         }
 
         const val TAG = "ShareVoucherBottomSheet"
-
-        private const val ELIGIBLE_STATUS = 1
     }
 
     private var broadCastChatStatus = 0
@@ -90,9 +88,15 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
     private fun getSocmedList(): List<ShareVoucherUiModel> {
         val socmedList = mutableListOf<ShareVoucherUiModel>()
-        if (broadCastChatStatus == ELIGIBLE_STATUS) {
-            socmedList.add(ShareVoucherUiModel(R.drawable.ic_mvc_broadcast_chat, context?.getString(R.string.mvc_broadcast_chat_tkpd).toBlankOrString(), SocmedType.BROADCAST, broadCastChatQuota))
-        }
+        socmedList.add(
+                ShareVoucherUiModel(
+                        R.drawable.ic_mvc_broadcast_chat,
+                        context?.getString(R.string.mvc_broadcast_chat_tkpd).toBlankOrString(),
+                        SocmedType.BROADCAST,
+                        broadCastChatStatus,
+                        broadCastChatQuota
+                )
+        )
         socmedList.addAll(
                 listOf(
                         ShareVoucherUiModel(R.drawable.ic_mvc_link, context?.getString(R.string.mvc_copy_link).toBlankOrString(), SocmedType.COPY_LINK),

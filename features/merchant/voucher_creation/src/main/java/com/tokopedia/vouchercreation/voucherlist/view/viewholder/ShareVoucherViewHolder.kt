@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.ELIGIBLE_STATUS
 import com.tokopedia.vouchercreation.voucherlist.model.ui.ShareVoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_share_voucher.view.*
 
@@ -39,7 +40,7 @@ class ShareVoucherViewHolder(
             tvMvcSocmed.text = element.socmedName
             icMvcSocmed.loadImageDrawable(element.icon)
 
-            if (element.quota > 0) {
+            if (element.status == ELIGIBLE_STATUS && element.quota > 0) {
                 // replace %s wit the number of quota
                 val quotaText = String.format(
                         itemView.context.getString(R.string.mvc_broadcast_chat_quota).toBlankOrString(),
