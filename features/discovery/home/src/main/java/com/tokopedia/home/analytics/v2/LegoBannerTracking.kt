@@ -14,6 +14,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
 object LegoBannerTracking : BaseTrackerConst() {
     private const val CLICK_ON_LEGO_3 = "lego banner 3 image click"
     private const val CLICK_ON_LEGO_4 = "lego banner 4 image click"
+    private const val CLICK_ON_LEGO_2 = "lego banner 2 image click"
     private const val CLICK_ON_LEGO_6 = "lego banner click"
     private const val CLICK_ON_LEGO_6_AUTO = "lego banner 6 auto click"
 
@@ -26,6 +27,7 @@ object LegoBannerTracking : BaseTrackerConst() {
 
     private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
     private const val LEGO_BANNER_3_IMAGE_NAME = "lego banner 3 image"
+    private const val LEGO_BANNER_2_IMAGE_NAME = "lego banner 2 image"
     private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
     private const val LEGO_BANNER_6_AUTO_IMAGE_NAME = "lego banner 6 auto"
 
@@ -41,6 +43,10 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendUserId("")
                 .appendCustomKeyValue(Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObjects))
                 .build()
+    }
+
+    fun sendLegoBannerTwoClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
+        getTracker().sendEnhanceEcommerceEvent(getLegoBannerTwoClick(channelModel, channelGrid, position, userId))
     }
 
     fun sendLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
@@ -177,6 +183,29 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .build()
     }
 
+    private fun getLegoBannerTwoClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) : Map<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        return trackerBuilder.constructBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_ON_LEGO_2,
+                eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
+                promotions = listOf(channelGrid.convertToHomePromotionModel(channelModel, position)))
+                .appendChannelId(channelModel.id)
+                .appendAffinity(channelModel.trackingAttributionModel.persona)
+                .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
+                .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendCampaignCode(
+                        if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
+                        else channelModel.trackingAttributionModel.campaignCode)
+
+                .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
+                .appendUserId(userId)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .build()
+    }
+
     private fun getLegoBannerTallSixAutoClick(channelModel: ChannelModel, parentPosition: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         val legoSixClickActionName = CLICK_ON_LEGO_6_AUTO
@@ -287,6 +316,28 @@ object LegoBannerTracking : BaseTrackerConst() {
                     )
                 })
                 .appendChannelId(channel.id)
+                .build()
+    }
+
+    fun getLegoBannerTwoImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false, userId: String): Map<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        return trackerBuilder.constructBasicPromotionView(
+                event = if (isToIris) Event.PROMO_VIEW_IRIS else PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_2_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_6_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                })
+                .appendChannelId(channel.id)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendUserId(userId)
                 .build()
     }
 

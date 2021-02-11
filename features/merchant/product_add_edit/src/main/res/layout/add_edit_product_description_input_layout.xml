@@ -18,6 +18,7 @@
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/textFieldDescription"
         android:contentDescription="@string/content_desc_textFieldDescription"
+        android:theme="@style/TextDarkMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"

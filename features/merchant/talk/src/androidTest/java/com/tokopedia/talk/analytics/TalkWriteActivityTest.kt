@@ -46,7 +46,7 @@ class TalkWriteActivityTest {
         }
 
         override fun getActivityIntent(): Intent {
-            return TalkWriteActivity.createIntent(targetContext, PRODUCT_ID_VALUE.toIntOrZero(), false, "")
+            return TalkWriteActivity.createIntent(targetContext, PRODUCT_ID_VALUE, false, "")
         }
 
         override fun afterActivityLaunched() {
