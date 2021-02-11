@@ -6,7 +6,7 @@
     android:background="@color/Unify_N0"
     android:paddingBottom="@dimen/spacing_lvl4">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icFlightPassengerAdult"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerAdultDesc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerAdultLabel"
-        app:srcCompat="@drawable/ic_flight_passenger" />
+        app:icon_name="USER" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightPassengerAdultLabel"
@@ -65,7 +65,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerAdultDesc" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icFlightPassengerChild"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
@@ -74,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerChildDesc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerChildLabel"
-        app:srcCompat="@drawable/ic_flight_child" />
+        app:icon_name="CHILD" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightPassengerChildLabel"
@@ -124,15 +124,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerChildDesc" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icFlightPassengerInfant"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerInfantDesc"
         app:layout_constraintLeft_toLeftOf="@+id/icFlightPassengerChild"
         app:layout_constraintRight_toRightOf="@+id/icFlightPassengerChild"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerInfantLabel"
-        app:srcCompat="@drawable/ic_flight_infant" />
+        app:icon_name="INFANT" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightPassengerInfantLabel"

@@ -73,10 +73,10 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/flight_circle_red_fill" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:layout_width="@dimen/layout_lvl3"
                     android:layout_height="@dimen/layout_lvl3"
-                    app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24" />
+                    app:icon_name="CHEVRON_RIGHT" />
 
             </LinearLayout>
 

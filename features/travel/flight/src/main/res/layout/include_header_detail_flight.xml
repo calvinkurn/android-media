@@ -129,11 +129,11 @@
             app:typographyWeight="bold"
             tools:text="323088926194" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/copy_pnr"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            app:srcCompat="@drawable/flight_ic_copy_order" />
+            app:icon_name="COPY" />
     </LinearLayout>
 
     <View

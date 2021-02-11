@@ -62,11 +62,11 @@
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_arrow_right_grey" />
+        app:icon_name="CHEVRON_RIGHT" />
 
 </RelativeLayout>
