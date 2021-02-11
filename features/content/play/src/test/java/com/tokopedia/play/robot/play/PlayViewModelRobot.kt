@@ -49,7 +49,6 @@ class PlayViewModelRobot(
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         dispatchers: CoroutineDispatcherProvider,
-        pageMonitoring: PlayPltPerformanceCallback,
         remoteConfig: RemoteConfig
 ) {
 
@@ -77,7 +76,6 @@ class PlayViewModelRobot(
                 playUiModelMapper,
                 userSession,
                 dispatchers,
-                pageMonitoring,
                 remoteConfig
         )
     }
@@ -154,7 +152,6 @@ fun givenPlayViewModelRobot(
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
         dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider,
-        pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
@@ -177,7 +174,6 @@ fun givenPlayViewModelRobot(
             playUiModelMapper = playUiModelMapper,
             userSession = userSession,
             dispatchers = dispatchers,
-            pageMonitoring = pageMonitoring,
             remoteConfig = remoteConfig
     ).apply(fn)
 }

@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.PlayResponseBuilder
 import com.tokopedia.play.robot.parent.andWhen
@@ -31,7 +32,8 @@ class PlayParentViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val responseBuilder = PlayResponseBuilder()
-    private val mapper = PlayChannelDetailsWithRecomMapper()
+    private val classBuilder = ClassBuilder()
+    private val mapper = classBuilder.getPlayChannelDetailsRecomMapper()
 
     private val dispatcher = TestCoroutineDispatchersProvider
 
@@ -94,7 +96,7 @@ class PlayParentViewModelTest {
         val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
         coEvery { mockUseCase.executeOnBackground() } returns mockResponse
 
-        val mappedData = mapper.map(mockResponse)
+        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
 
         givenParentViewModelRobot(
                 getChannelDetailsWithRecomUseCase = mockUseCase
@@ -126,7 +128,7 @@ class PlayParentViewModelTest {
         val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
         coEvery { mockUseCase.executeOnBackground() } returns mockResponse
 
-        val mappedData = mapper.map(mockResponse)
+        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
         val oldData = mappedData.first()
 
         val newData: PlayChannelData = mockk(relaxed = true)

@@ -22,4 +22,14 @@ class ClassBuilder {
             chatMapper = chatMapper,
             channelStatusMapper = channelStatusMapper
     )
+
+    fun getPlayChannelDetailsRecomMapper() = PlayChannelDetailsWithRecomMapper()
+
+    fun getMapperExtraParams(
+            channelId: String? = null,
+            videoStartMillis: Long? = null
+    ) = PlayChannelDetailsWithRecomMapper.ExtraParams(
+            channelId = channelId,
+            videoStartMillis = videoStartMillis
+    )
 }

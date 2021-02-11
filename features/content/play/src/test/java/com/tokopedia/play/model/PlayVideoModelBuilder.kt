@@ -36,8 +36,9 @@ class PlayVideoModelBuilder {
 
     fun buildGeneralVideoPlayerParams(
             videoUrl: String = "https://www.tokopedia.com",
-            buffer: PlayBufferControl = PlayBufferControl()
-    ) = PlayGeneralVideoPlayerParams(videoUrl = videoUrl, buffer = buffer)
+            buffer: PlayBufferControl = PlayBufferControl(),
+            lastMillis: Long? = null
+    ) = PlayGeneralVideoPlayerParams(videoUrl = videoUrl, buffer = buffer, lastMillis = lastMillis)
 
     fun buildIncompleteGeneralVideoPlayer(
             params: PlayGeneralVideoPlayerParams = buildGeneralVideoPlayerParams()
@@ -46,10 +47,8 @@ class PlayVideoModelBuilder {
     fun buildCompleteGeneralVideoPlayer(
             params: PlayGeneralVideoPlayerParams = buildGeneralVideoPlayerParams(),
             exoPlayer: ExoPlayer = mockk(relaxed = true),
-            lastMillis: Long? = null
     ) = PlayVideoPlayerUiModel.General.Complete(
             params = params,
             exoPlayer = exoPlayer,
-            lastMillis = lastMillis
     )
 }

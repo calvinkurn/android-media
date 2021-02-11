@@ -6,6 +6,7 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
@@ -28,12 +29,14 @@ class PlayParentViewModelRobot(
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: TestCoroutineDispatchersProvider,
         private val userSession: UserSessionInterface,
+        pageMonitoring: PlayPltPerformanceCallback,
 ) {
 
     val viewModel: PlayParentViewModel
 
     init {
         every { savedStateHandle.get<String>(any()) } returns "123"
+        every { savedStateHandle.get<Long>("start_vod_millis") } returns 123L
 
         viewModel = PlayParentViewModel(
                 handle = savedStateHandle,
@@ -41,7 +44,8 @@ class PlayParentViewModelRobot(
                 getChannelDetailsWithRecomUseCase = getChannelDetailsWithRecomUseCase,
                 playChannelMapper = playChannelMapper,
                 dispatchers = dispatchers,
-                userSession = userSession
+                userSession = userSession,
+                pageMonitoring = pageMonitoring,
         )
     }
 
@@ -59,6 +63,7 @@ fun givenParentViewModelRobot(
         playChannelMapper: PlayChannelDetailsWithRecomMapper = PlayChannelDetailsWithRecomMapper(),
         dispatchers: TestCoroutineDispatchersProvider = TestCoroutineDispatchersProvider,
         userSession: UserSessionInterface = mockk(relaxed = true),
+        pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
         fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
@@ -67,7 +72,8 @@ fun givenParentViewModelRobot(
             getChannelDetailsWithRecomUseCase = getChannelDetailsWithRecomUseCase,
             playChannelMapper = playChannelMapper,
             dispatchers = dispatchers,
-            userSession = userSession
+            userSession = userSession,
+            pageMonitoring = pageMonitoring
     ).apply(fn)
 }
 
