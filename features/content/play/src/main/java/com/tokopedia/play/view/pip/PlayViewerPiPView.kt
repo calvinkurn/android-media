@@ -136,6 +136,8 @@ class PlayViewerPiPView : ConstraintLayout {
                 removePiP()
                 val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .putExtra(EXTRA_PLAY_START_VOD_MILLIS, mVideoPlayer.getCurrentPosition())
+
                 context.startActivity(intent)
             }
         }
@@ -172,5 +174,10 @@ class PlayViewerPiPView : ConstraintLayout {
                 channelType = pipInfo.channelType,
                 durationInSecond = durationPiPAttachedInSeconds
         )
+    }
+
+    companion object {
+
+        private const val EXTRA_PLAY_START_VOD_MILLIS = "start_vod_millis"
     }
 }

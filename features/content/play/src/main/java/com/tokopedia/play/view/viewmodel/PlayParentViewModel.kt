@@ -61,8 +61,14 @@ class PlayParentViewModel constructor(
         get() = _observableChannelIdsResult
     private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
 
+    private val mStartingChannelId: String?
+        get() = handle[PLAY_KEY_CHANNEL_ID]
+
+    private val mVideoStartMillis: Long?
+        get() = handle[KEY_START_MILLIS]
+
     private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
-            channelId = handle[PLAY_KEY_CHANNEL_ID] ?: error("Channel ID must be provided"),
+            channelId = mStartingChannelId ?: error("Channel ID must be provided"),
             sourceType = GetChannelDetailsWithRecomUseCase.SourceType.getBySource(
                     sourceType = handle[KEY_SOURCE_TYPE] ?: "",
                     sourceId = handle[KEY_SOURCE_ID]
@@ -101,7 +107,7 @@ class PlayParentViewModel constructor(
 
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
 
-                playChannelMapper.map(response).forEach {
+                playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(channelId = mStartingChannelId, videoStartMillis = mVideoStartMillis)).forEach {
                     playChannelStateStorage.setData(it.id, it)
                 }
             }
@@ -122,5 +128,7 @@ class PlayParentViewModel constructor(
 
         private const val KEY_SOURCE_TYPE = "source_type"
         private const val KEY_SOURCE_ID = "source_id"
+
+        private const val KEY_START_MILLIS = "start_vod_millis"
     }
 }
