@@ -34,6 +34,7 @@ object DigitalCheckoutMapper {
                         description = it.messageSuccess ?: "",
                         promoCode = it.code ?: "",
                         typePromo = it.isCoupon,
+                        amount = it.discountAmount.toInt(),
                         state = TickerCheckoutView.State.ACTIVE)
             }
         }

@@ -177,6 +177,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
+            viewModel.applyPromoData(it)
             digitalPromoBtnView.desc = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
@@ -186,9 +187,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
             }
             digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
 
-            if (getPromoData().state == TickerCheckoutView.State.FAILED ||
-                    getPromoData().state == TickerCheckoutView.State.ACTIVE) {
-                cartDetailInfoAdapter.isExpanded = true
+            when (getPromoData().state) {
+                TickerCheckoutView.State.ACTIVE -> {
+                    cartDetailInfoAdapter.isExpanded = true
+                    digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                }
+                TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
             }
         })
     }
@@ -327,8 +331,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         if ((requestCode == REQUEST_CODE_PROMO_LIST || requestCode == REQUEST_CODE_PROMO_DETAIL) && resultCode == Activity.RESULT_OK) {
             if (data?.hasExtra(EXTRA_PROMO_DATA) == true) {
-                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
-                viewModel.applyPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
+                viewModel.setPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
             }
 
         } else if (requestCode == REQUEST_CODE_OTP) {
