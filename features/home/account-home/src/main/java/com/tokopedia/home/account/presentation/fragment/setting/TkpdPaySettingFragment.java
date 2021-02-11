@@ -82,8 +82,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
         WalletModel walletModel = walletPref.retrieveWallet();
         if (walletModel != null) {
-            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID,
-                    walletModel.getText()));
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID, walletModel.getText()));
         }
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,

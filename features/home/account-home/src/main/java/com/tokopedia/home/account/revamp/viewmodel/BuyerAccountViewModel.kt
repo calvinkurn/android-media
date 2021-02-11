@@ -80,6 +80,7 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private fun saveLocallyAttributes(accountDataModel: AccountDataModel) {
+        saveLocallyWallet(accountDataModel)
         savePhoneVerified(accountDataModel)
         saveIsAffiliateStatus(accountDataModel)
         saveDebitInstantData(accountDataModel)
@@ -147,6 +148,12 @@ class BuyerAccountViewModel @Inject constructor (
 
     private fun getBuyerWalletBalance(): WalletModel {
         return getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+    }
+
+    private fun saveLocallyWallet(accountDataModel: AccountDataModel) {
+        if (accountDataModel.profile != null) {
+            walletPref.saveWallet(accountDataModel.wallet)
+        }
     }
 
     private fun savePhoneVerified(accountDataModel: AccountDataModel) {
