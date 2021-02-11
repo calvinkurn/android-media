@@ -45,6 +45,7 @@ object SomAnalytics {
     private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
     private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
     private const val BUSINESS_UNIT_SOM = "Seller Order Management"
+    private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -67,21 +68,16 @@ object SomAnalytics {
     }
 
     fun clickProductNameToSnapshot(statusOrderName: String, userId: String) {
-        val event = mutableMapOf(
+        val event = mapOf(
                 TrackAppUtils.EVENT to CLICK_SOM,
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
                 TrackAppUtils.EVENT_ACTION to CLICK_PRODUCT_NAME,
                 TrackAppUtils.EVENT_LABEL to statusOrderName,
                 CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_SOM,
+                CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 CUSTOM_DIMENSION_USER_ID to userId
         )
-
-        if (GlobalConfig.isSellerApp()) {
-            event[CUSTOM_DIMENSION_CURRENT_SITE] = SELLER_APP_ANDROID_SOM
-        } else {
-            event[CUSTOM_DIMENSION_CURRENT_SITE] = MAIN_APP_ANDROID_SOM
-        }
-        TrackApp.getInstance().gtm.sendGeneralEvent(event.toMap())
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
     fun eventClickChatOnHeaderDetail(statusOrderCode: String, statusOrderName: String) {
