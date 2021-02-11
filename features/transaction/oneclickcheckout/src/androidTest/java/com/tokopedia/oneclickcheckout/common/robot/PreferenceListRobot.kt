@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.common.robot
 import android.view.View
 import android.widget.ImageView
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -187,6 +188,18 @@ class PreferenceListBottomSheetRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 view.findViewById<View>(R.id.layout_new_preference_card).callOnClick()
+            }
+        }))
+    }
+
+    fun assertProfile(position: Int, func: (View) -> Unit) {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "assert profile"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                func(view)
             }
         }))
     }
