@@ -1,9 +1,9 @@
 package com.tokopedia.home.beranda.data.usecase
 
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -28,13 +28,17 @@ class HomeRevampUseCase @Inject constructor(
         }
     }
 
-    fun getHomeCachedData(): HomeDataModel? = homeDataMapper.mapToHomeRevampViewModel(HomeData(
-            atfData = homeRepository.getHomeCachedAtfData(),
-            isProcessingDynamicChannel = true),
-            isCache = true,
-            addShimmeringChannel = true,
-            isLoadingAtf = true
-    )
+    fun getHomeCachedData(): HomeDataModel? {
+        val defaultFlag = HomeFlag()
+        defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
+        return homeDataMapper.mapToHomeRevampViewModel(HomeData(
+                atfData = homeRepository.getHomeCachedAtfData(),
+                isProcessingDynamicChannel = true, homeFlag = defaultFlag),
+                isCache = true,
+                addShimmeringChannel = true,
+                isLoadingAtf = true
+        )
+    }
 
     suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
 
