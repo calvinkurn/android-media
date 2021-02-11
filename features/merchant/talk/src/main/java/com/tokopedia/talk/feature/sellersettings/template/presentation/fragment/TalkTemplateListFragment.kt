@@ -146,9 +146,13 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                         return@Observer
                     }
                     renderList(it.data.buyerTemplate.templates, it.data.buyerTemplate.isEnable)
+                    showButton()
                 }
                 is Fail -> {
-
+                    showToasterWithAction(getString(R.string.template_list_fail_load_template_list), true, View.OnClickListener {
+                        getTemplateList()
+                    })
+                    hideButton()
                 }
             }
         })
@@ -201,6 +205,19 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun setupAddTemplateButton() {
         talkTemplateListAddButton?.setOnClickListener {
             goToAdd()
+        }
+    }
+
+    private fun showToasterWithAction(message: String, isError: Boolean, action: View.OnClickListener) {
+        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        view?.let {
+            this.toaster = Toaster.build(it, message, Snackbar.LENGTH_LONG, toasterType, getString(R.string.talk_retry), action)
+            toaster?.let { toaster ->
+                if (toaster.isShownOrQueued) {
+                    return
+                }
+                toaster.show()
+            }
         }
     }
 
@@ -261,6 +278,14 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun hideLoading() {
         talkTemplateListLoading?.hide()
+    }
+
+    private fun hideButton() {
+        talkTemplateListAddButton?.hide()
+    }
+
+    private fun showButton() {
+        talkTemplateListAddButton?.show()
     }
 
     private fun bindViewReferences(view: View) {
