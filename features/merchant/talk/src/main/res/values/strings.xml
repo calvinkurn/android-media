@@ -112,6 +112,8 @@
     <string name="inbox_problem_empty_subtitle">Tetap pantau terus isi diskusimu, ya!</string>
     <string name="inbox_unresponded_empty_title">Yay, semua diskusi sudah direspon</string>
     <string name="inbox_unresponded_empty_subtitle">Gercep balas diskusi, pembeli jadi makin yakin dan hepi!</string>
+    <string name="inbox_autoreplied_empty_title">Belum ada diskusi yang dibalas otomatis</string>
+    <string name="inbox_autoreplied_empty_subtitle">Yuk, cobain Smart Reply supaya bisa balas diskusi lebih cepat.</string>
     <string name="inbox_auto_replied">Dibalas Otomatis</string>
     <string name="inbox_coach_mark_filter_title">Cek filter baru diskusi di sini</string>
     <string name="inbox_coach_mark_filter_subtitle">Ada diskusi yang belum dibalas dan terlewat? Nggak perlu khawatir, kamu bisa langsung cari dengan filter Belum Direspon.</string>
@@ -168,5 +170,6 @@
     <string name="template_list_delete">Hapus</string>
     <string name="template_list_add_template_placeholder">Buat template barumu di sini\n\nContoh:\nHalo, barang ini ready ya silakan order</string>
     <string name="template_list_fail_load_template_list">Wah, internet putus. Cek paket data atau WiFi-mu, ya. </string>
+    <string name="template_list_add_edit_template_limit">Template diskusi melebihi batas maks. karakter.</string>
 
 </resources>

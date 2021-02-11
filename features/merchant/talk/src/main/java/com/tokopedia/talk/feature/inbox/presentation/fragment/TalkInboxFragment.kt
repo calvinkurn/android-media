@@ -72,6 +72,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
         const val EMPTY_SELLER_PROBLEM = "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
+        const val EMPTY_SELLER_AUTOREPLIED = "https://images.tokopedia.net/img/android/talk/talk_inbox_empty_autoreplied.png"
         const val KEY_SHOW_COACH_MARK = "showCoachMark"
         private const val DISCUSSION_PREF = "discussion.pref"
         const val COACH_MARK_INITIAL_VALUE = true
@@ -316,6 +317,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                     }
                                     is TalkInboxFilter.TalkInboxProblemFilter -> {
                                         showEmptySeller(EMPTY_SELLER_PROBLEM, getString(R.string.inbox_problem_empty), getString(R.string.inbox_problem_empty_subtitle))
+                                    }
+                                    is TalkInboxFilter.TalkInboxAutorepliedFilter -> {
+                                        showEmptySeller(EMPTY_SELLER_AUTOREPLIED, getString(R.string.inbox_autoreplied_empty_title), getString(R.string.inbox_autoreplied_empty_subtitle))
                                     }
                                 }
                                 return@Observer

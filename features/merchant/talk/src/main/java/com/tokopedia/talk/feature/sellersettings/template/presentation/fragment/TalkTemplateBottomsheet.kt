@@ -2,6 +2,8 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.core.content.ContextCompat
@@ -28,6 +30,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
         const val REQUEST_KEY = "talk_template_request"
         const val KEY_TEMPLATE = "template"
         const val BOLD_REOURCE = "RobotoBold.ttf"
+        const val TEXT_LIMIT = 200
         fun createNewInstance(context: Context, title: String): TalkTemplateBottomsheet {
             return TalkTemplateBottomsheet().apply {
                 val view = View.inflate(context, R.layout.fragment_talk_edit_template, null)
@@ -114,7 +117,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     }
 
     private fun showToaster(successMessage: String) {
-        view?.let {
+        parentFragment?.view?.let {
             this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
             toaster?.show()
         }
@@ -165,18 +168,35 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private fun setupEditText(view: View) {
         talkEditTemplateEditText = view.findViewById(R.id.talkEditTemplateEditText)
-        if (isEditMode) {
-            talkEditTemplateEditText?.post {
-                talkEditTemplateEditText?.setText(templateText)
+        talkEditTemplateEditText?.apply {
+            if (isEditMode) {
+                post {
+                    setText(templateText)
+                }
+            } else {
+                post {
+                    setHint(R.string.template_list_add_template_placeholder)
+                    setText("")
+                }
             }
-        } else {
-            talkEditTemplateEditText?.post {
-                talkEditTemplateEditText?.setHint(R.string.template_list_add_template_placeholder)
-                talkEditTemplateEditText?.setText("")
+            post {
+                requestFocus()
+                addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if(s?.length == TEXT_LIMIT) {
+                            showToaster(getString(R.string.template_list_add_edit_template_limit))
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        // No Op
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        // No Op
+                    }
+                })
             }
-        }
-        talkEditTemplateEditText?.post {
-            talkEditTemplateEditText?.requestFocus()
         }
     }
 }

@@ -13,6 +13,7 @@
         android:minHeight="@dimen/layout_lvl9"
         android:gravity="top"
         android:background="@null"
+        android:maxLength="200"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.UnifyButton
