@@ -54,7 +54,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics, {
-        exclude group: "com.google.android.gms"
+        exclude group: "com.google.android.gms", module: "play-services-basement"
+        exclude group: "com.google.android.gms", module: "play-services-tasks"
     }
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.testDependencies.junit
