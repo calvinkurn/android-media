@@ -232,7 +232,7 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     }
 
     private fun observeCombinedResponse() {
-        productManageFilterViewModel.filterOptionsResponse.observe(this, Observer {
+        productManageFilterViewModel.filterOptionsResponse.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
@@ -283,7 +283,7 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     }
 
     private fun observeFilterData() {
-        productManageFilterViewModel.filterData.observe(this, Observer {
+        productManageFilterViewModel.filterData.observe(viewLifecycleOwner, Observer {
             if (needToPostponeActivityResult) {
                 postponedActivityResult?.run()
             }

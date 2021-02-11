@@ -1,15 +1,16 @@
 package com.tokopedia.explore.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
+import com.tokopedia.explore.view.uimodel.ExploreImageViewModel;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 
 /**
@@ -22,7 +23,8 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
     public static final int LAYOUT = R.layout.item_explore_image;
 
     private final ContentExploreContract.View listener;
-    private ImageView image, badge;
+    private final ImageView image;
+    private final ImageView badge;
 
     public ExploreImageViewHolder(View itemView, ContentExploreContract.View listener) {
         super(itemView);
@@ -43,9 +45,7 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
             badge.setVisibility(View.GONE);
         }
 
-        ViewExtKt.addOnImpressionListener(itemView, element.getImpressHolder(), () -> {
-            listener.onAffiliateTrack(element.getTrackingViewModelList(), false);
-        });
+        ViewExtKt.addOnImpressionListener(itemView, element.getImpressHolder(), () -> listener.onAffiliateTrack(element.getTrackingViewModelList(), false));
 
         image.setOnClickListener(v -> {
             listener.goToKolPostDetail(element.getPostId(), element.getUserName(), element.getTrackingViewModelList().get(0).getRecomId());
