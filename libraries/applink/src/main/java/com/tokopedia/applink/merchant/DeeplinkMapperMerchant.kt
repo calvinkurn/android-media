@@ -40,6 +40,7 @@ object DeeplinkMapperMerchant {
                 if (parsedUri.getQueryParameter(PARAM_SELLER_TAB)?.isNotBlank() == true) {
                     return Uri.parse(ApplinkConstInternalMarketplace.INBOX_REPUTATION)
                             .buildUpon()
+                            .clearQuery()
                             .appendQueryParameter(PARAM_SELLER_TAB, parsedUri.getQueryParameter(PARAM_SELLER_TAB))
                             .build().toString()
                 }
