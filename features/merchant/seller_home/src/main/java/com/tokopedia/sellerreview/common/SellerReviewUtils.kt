@@ -40,8 +40,10 @@ object SellerReviewUtils {
 
     fun dismissSoftKeyboard(fragment: Fragment) {
         fragment.activity?.run {
-            val imm: InputMethodManager? = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            imm?.hideSoftInputFromWindow(fragment.view?.rootView?.windowToken, 0)
+            fragment.view?.rootView?.windowToken?.let {
+                val imm: InputMethodManager? = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                imm?.hideSoftInputFromWindow(fragment.view?.rootView?.windowToken, 0)
+            }
         }
     }
 }

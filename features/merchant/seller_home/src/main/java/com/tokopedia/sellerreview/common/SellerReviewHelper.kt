@@ -38,6 +38,8 @@ class SellerReviewHelper @Inject constructor(
         private const val QUOTA_CHECK_DELAY = 1000L
         private const val POPUP_DELAY = 500L
         private const val SELLER_APP_ON_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.tokopedia.sellerapp"
+        private const val MIN_STARS_TO_RATE_ON_PLAYSTORE = 4
+        private const val REVIEW_PERIOD_IN_DAYS = 30
     }
 
     private val handler by lazy { Handler() }
@@ -101,7 +103,7 @@ class SellerReviewHelper @Inject constructor(
     }
 
     private fun setOnRatingSubmitted(context: Context, fm: FragmentManager, rating: Int) {
-        if (rating >= 4) {
+        if (rating >= MIN_STARS_TO_RATE_ON_PLAYSTORE) {
             rateOnPlayStore(context, fm)
         } else {
             handler.postDelayed({
@@ -154,7 +156,7 @@ class SellerReviewHelper @Inject constructor(
     private fun getAskReviewStatus(): Boolean {
         val lastReviewAsked = cacheHandler.getLong(getUniqueKey(Const.SharedPrefKey.KEY_LAST_REVIEW_ASKED), Date().time)
         val daysDiff = getDateDiffInDays(Date(lastReviewAsked), Date())
-        return daysDiff.absoluteValue > 30
+        return daysDiff.absoluteValue > REVIEW_PERIOD_IN_DAYS
     }
 
     private fun rateOnPlayStore(context: Context, fm: FragmentManager) {
