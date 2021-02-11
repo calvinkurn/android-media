@@ -91,7 +91,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
-    private var btnClose: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
 
@@ -120,9 +119,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
             } else {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
         initInjector()
@@ -153,7 +152,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         setContentView(R.layout.activity_top_pay_payment_module)
         tvTitle = findViewById(R.id.tv_title)
         btnBack = findViewById(R.id.btn_back)
-        btnClose = findViewById(R.id.btn_close)
         scroogeWebView = findViewById(R.id.scrooge_webview)
         progressBar = findViewById(R.id.progressbar)
         progressDialog = ProgressDialog(this)
@@ -186,7 +184,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         btnBack?.visibility = View.VISIBLE
         btnBack?.setOnClickListener { onBackPressed() }
-        btnClose?.setOnClickListener { callbackPaymentCanceled() }
     }
 
     private fun setActionVar() {

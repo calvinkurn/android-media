@@ -36,7 +36,7 @@
             app:typographyType="heading_2"
             app:typographyWeight="bold"
             android:text="@string/play_product_empty_title"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"

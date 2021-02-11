@@ -15,14 +15,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
@@ -117,9 +117,9 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private fun fetchNextPage(page: Int) {
         val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupProductData(resources, page, PRODUCTS_WITHOUT_GROUP,
-                searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onSuccessResult, ::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(page, PRODUCTS_WITHOUT_GROUP, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                startDate, endDate, ::onSuccessResult, ::onEmptyResult)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,7 +149,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TopAdsDashboardConstant.EDIT_WITHOUT_GROUP_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK)
                 fetchData()
         }
     }
@@ -205,7 +205,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
-        topAdsDashboardPresenter.getGroupList(resources, search, ::onSuccessGroupList)
+        topAdsDashboardPresenter.getGroupList(search, ::onSuccessGroupList)
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
@@ -214,7 +214,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         recyclerviewScrollListener.updateStateAfterGetData()
         list.forEach {
             groupList.add(MovetoGroupItemViewModel(it))
-            groupIds.add(it.groupId.toString())
+            groupIds.add(it.groupId)
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
@@ -257,7 +257,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if(activity != null && isAdded) {
+                if (activity != null && isAdded) {
                     if (!deleteCancel)
                         topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
                     SingleDelGroupId = ""
@@ -315,7 +315,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         if (adIds.isNotEmpty()) {
             val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
             val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-            topAdsDashboardPresenter.getProductStats(resources, startDate, endDate, adIds, ::OnSuccessStats)
+            topAdsDashboardPresenter.getProductStats(resources, startDate, endDate, adIds, groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId()
+                    ?: 0, ::OnSuccessStats)
         }
         (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(totalCount)
         setFilterCount()
@@ -341,8 +342,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupProductData(resources, 1, PRODUCTS_WITHOUT_GROUP,
-                searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onSuccessResult, ::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(1, PRODUCTS_WITHOUT_GROUP, searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                startDate, endDate, ::onSuccessResult, ::onEmptyResult)
     }
 }

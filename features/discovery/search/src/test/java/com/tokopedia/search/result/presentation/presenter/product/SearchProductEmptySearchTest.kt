@@ -1,5 +1,8 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -11,13 +14,14 @@ import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
-private val emptySearchModel = "searchproduct/emptysearch/empty-search.json"
+private const val emptySearchProductModelJSON = "searchproduct/emptysearch/empty-search.json"
 
 internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `test empty search by keyword`() {
         `Given search product API will return empty product`()
+        `Given recommendation API will return recommendation list`()
 
         `When load data`()
 
@@ -26,11 +30,22 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Given search product API will return empty product`() {
-        val searchProductModel = emptySearchModel.jsonToObject<SearchProductModel>()
+        val searchProductModel = emptySearchProductModelJSON.jsonToObject<SearchProductModel>()
         every {
             searchProductFirstPageUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
+    }
+
+    private fun `Given recommendation API will return recommendation list`() {
+        every { recommendationUseCase.execute(any(), any()) } answers {
+            val recommendationEntity = "searchproduct/emptysearchrecommendation/empty-search-recommendation.json".jsonToObject<RecommendationEntity>()
+            val recommendationDataList = recommendationEntity.productRecommendationWidget?.data
+                    ?: listOf()
+            val recommendationWidgetList = RecommendationEntityMapper().call(recommendationDataList)
+
+            secondArg<Subscriber<List<RecommendationWidget>>>().complete(recommendationWidgetList)
         }
     }
 
@@ -63,6 +78,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     @Test
     fun `test empty search by filter`() {
         `Given search product API will return empty product`()
+        `Given recommendation API will return recommendation list`()
         `Given view has filter active`()
 
         `When load data`()

@@ -9,7 +9,7 @@
         android:id="@+id/tv_waiting_payment_order_header_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2" />
 
     <androidx.recyclerview.widget.RecyclerView

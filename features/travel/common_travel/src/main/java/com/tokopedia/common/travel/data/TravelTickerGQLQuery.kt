@@ -5,20 +5,20 @@ package com.tokopedia.common.travel.data
  */
 object TravelTickerGQLQuery {
     val TRAVEL_TICKER = """
-        query travelTicker(${'$'}did:String!,${'$'}instanceName:String!,${'$'}tickerPage:String!){
-            travelTicker(did:${'$'}did,instanceName:${'$'}instanceName,tickerPage:${'$'}tickerPage) {
-              Title
-              Message
-              URL
-              Type
-              Status
-              EndTime
-              StartTime
-              Instances
-              Device
-              Page
-              IsPeriod
-            }
+        query TravelGetTicker(${'$'}tickerRequest: TravelTickerRequest!) {
+          TravelGetTicker(input: ${'$'}tickerRequest)  {
+           title
+            message
+            url
+            Type
+            Status
+            EndTime
+            StartTime
+            Instance
+            Device
+            Page
+            IsPeriod
+          }
         }
     """.trimIndent()
 }

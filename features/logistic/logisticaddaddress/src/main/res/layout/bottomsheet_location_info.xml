@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottomsheet_location_info"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:paddingLeft="@dimen/dp_16"

@@ -8,14 +8,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.data.model.ShowcaseItem
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetShopShowCasesUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -24,13 +25,19 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
@@ -40,7 +47,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
         private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopShowCasesUseCase: GetShopShowCasesUseCase
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -155,9 +163,17 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
-    private val mShopShowCases = MutableLiveData<Result<List<ShowcaseItem>>>()
-    val shopShowCases: LiveData<Result<List<ShowcaseItem>>>
+    private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
+
+    var specificationList: List<SpecificationInputModel> = emptyList()
+    private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
+    val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
+        get() = mAnnotationCategoryData
+    private val mSpecificationText = MutableLiveData<String>()
+    val specificationText: LiveData<String>
+        get() = mSpecificationText
 
     private fun isInputValid(): Boolean {
 
@@ -337,6 +353,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
+        if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
+            val errorMessage = provider.getMinOrderExceedLimitQuantityErrorMessage()
+            errorMessage?.let { orderQuantityMessage = it }
+            mIsOrderQuantityInputError.value = true
+            return
+        }
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigIntegerOrNull().orZero()
             if (productMinOrder > productStock) {
@@ -346,6 +368,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                 return
             }
         }
+
         orderQuantityMessage = ""
         mIsOrderQuantityInputError.value = false
     }
@@ -405,7 +428,7 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param originalImageUrl is the list of product photo paths that returned from the image picker which contains all the original image path (it doesn't contain image path of any added or edited image)
      * @param editted is the list of image edit status any image added and edited will have true value
      **/
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>): DetailInputModel {
+    fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>, editted: MutableList<Boolean>): DetailInputModel {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
         }.filterIndexed { index, _ -> !editted[index] }
@@ -453,10 +476,57 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun getShopShowCasesUseCase() {
         launchCatchError(block = {
             mShopShowCases.value = Success(withContext(Dispatchers.IO) {
-                getShopShowCasesUseCase.executeOnBackground()
+                val response = getShopEtalaseUseCase.executeOnBackground()
+                response.shopShowcases.result
             })
         }, onError = {
             mShopShowCases.value = Fail(it)
         })
+    }
+
+    fun getAnnotationCategory(categoryId: String, productId: String) {
+        launchCatchError(block = {
+            mAnnotationCategoryData.value = Success(withContext(Dispatchers.IO) {
+                delay(DEBOUNCE_DELAY_MILLIS)
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            })
+        }, onError = {
+            mAnnotationCategoryData.value = Fail(it)
+        })
+    }
+
+    fun updateSpecification(specificationList: List<SpecificationInputModel>) {
+        this.specificationList = specificationList
+        updateSpecificationText(specificationList)
+    }
+
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
+            }
+        }
+
+        updateSpecification(result)
+    }
+
+    fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
+        val specificationNames = specificationList.map { it.data }
+        mSpecificationText.value = if (specificationNames.isEmpty()) {
+            provider.getProductSpecificationTips()
+        } else {
+            val result = specificationNames.take(MAX_SPECIFICATION_COUNTER).joinToString(", ")
+            if (specificationNames.size > MAX_SPECIFICATION_COUNTER) {
+                result + provider.getProductSpecificationCounter(specificationNames.size - MAX_SPECIFICATION_COUNTER)
+            } else {
+                result
+            }
+        }
     }
 }

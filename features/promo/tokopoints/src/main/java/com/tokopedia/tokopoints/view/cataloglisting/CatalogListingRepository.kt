@@ -14,11 +14,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @TokoPointScope
-class CatalogListingRepository @Inject constructor(@Named(TP_GQL_TOKOPOINT_DETAIL) private val tp_gql_tokopoint_detail: String,
-                                                   @Named(TP_GQL_CATALOG_FILTER) private val tp_gql_catalog_filter: String,
-                                                   @Named(TP_GQL_LUCKY_EGG_DETAILS) private val tp_lucky_egg_detail: String,
-                                                   @Named(TP_GQL_CURRENT_POINTS) private val tp_gql_current_Point: String, map: Map<String, String>) : CatalogPurchaseRedeemptionRepository(map) {
-
+class CatalogListingRepository @Inject constructor(@Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL) private val tp_gql_tokopoint_detail: String,
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_FILTER) private val tp_gql_catalog_filter: String,
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_LUCKY_EGG_DETAILS) private val tp_lucky_egg_detail: String,
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS) private val tp_gql_current_Point: String, map: Map<String, String>)
+    : CatalogPurchaseRedeemptionRepository(map) {
 
     @Inject
     lateinit var mGetHomePageData: MultiRequestGraphqlUseCase

@@ -14,7 +14,6 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -23,6 +22,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -46,6 +46,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation rootProject.ext.unifyDependencies.datepicker
 }
 
 project.ext {

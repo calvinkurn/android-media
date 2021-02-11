@@ -1,0 +1,51 @@
+ query {
+   status
+   profile {
+     name
+     full_name
+     completion
+     user_id
+     profilePicture
+     phone_verified
+   }
+   tokopoints {
+     status {
+       tier {
+         id
+         name
+         nameDesc
+         imageURL
+         eggImageURL
+         eggImageHomepageURL
+         backgroundImgURL
+         backgroundImgURLMobile
+       }
+       points {
+         reward
+         rewardStr
+         loyalty
+         loyaltyStr
+       }
+     }
+   }
+   vcc_user_status {
+       status
+       redirection_url
+       message_header
+       message_body
+       message_button_name
+       message_url
+       icon
+       title
+       body
+   }
+   openDebitSettings {
+       data {
+         redirectURL
+       }
+    }
+    balance {
+            buyer_usable
+            seller_usable
+    }
+ }

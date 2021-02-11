@@ -92,7 +92,7 @@ class DealCategoryViewModel @Inject constructor(
         return {
             if (page == 1) {
                 val categoryLayout = if (it.eventSearch.brands.isNotEmpty()
-                        && it.eventSearch.products.isNotEmpty()) {
+                        || it.eventSearch.products.isNotEmpty()) {
                     mapCategoryLayout.mapCategoryLayout(it, page, category)
                 } else {
                     mapCategoryLayout.getEmptyLayout(isFilter)

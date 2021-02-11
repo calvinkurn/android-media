@@ -6,9 +6,11 @@ import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShimmerViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
@@ -44,6 +46,11 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     }
 
     @Override
+    public int type(BannerProductShimmerViewModel viewModel) {
+        return BannerProductShimmerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == BannerShopViewHolder.LAYOUT) {
@@ -52,6 +59,8 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
             holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
             holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
+        } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
+            holder = new BannerProductShimmerViewHolder(view);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

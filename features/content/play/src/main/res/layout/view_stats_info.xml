@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_stats_info"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_stats_info"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="horizontal"
+    >
 
     <include
         android:id="@+id/live_badge"
@@ -13,9 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         />
 
@@ -23,11 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:background="@drawable/bg_play_stats_info_view_badge"
-        app:layout_constraintBottom_toBottomOf="@id/live_badge"
-        app:layout_constraintStart_toEndOf="@id/live_badge"
-        app:layout_constraintTop_toTopOf="@id/live_badge"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

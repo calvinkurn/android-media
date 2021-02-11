@@ -755,7 +755,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getDepartureTerm(): String = flightBookingParam.departureTerm
     fun getReturnTerm(): String = flightBookingParam.returnTerm
     fun getDepartureDate(): String = flightBookingParam.departureDate
-    fun getDepartureJourney(): FlightDetailModel = flightDetailModels[0]
+    fun getDepartureJourney(): FlightDetailModel? = flightDetailModels.firstOrNull()
     fun getReturnJourney(): FlightDetailModel? = if (flightDetailModels.size > 1) flightDetailModels[1] else null
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId

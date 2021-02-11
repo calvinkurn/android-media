@@ -18,6 +18,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
@@ -25,6 +26,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewM
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -71,6 +73,7 @@ class FeedPlusTypeFactoryImpl(
     private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
     private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
+    private val topAdsHeadlineListener: TopAdsHeadlineViewHolder.TopAdsHeadlineListener
 
     init {
         this.kolPostListener = context
@@ -90,6 +93,7 @@ class FeedPlusTypeFactoryImpl(
         this.retryViewHolderListener = context
         this.emptyFeedViewHolderListener = context
         this.topAdsBannerListener = context
+        this.topAdsHeadlineListener = context
     }
 
     override fun type(emptyModel: EmptyModel): Int {
@@ -118,6 +122,10 @@ class FeedPlusTypeFactoryImpl(
 
     override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
         return TopadsShopViewHolder.LAYOUT
+    }
+
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
@@ -165,6 +173,8 @@ class FeedPlusTypeFactoryImpl(
             viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
         } else if (type == TopadsShopViewHolder.LAYOUT) {
             viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
+        } else if (type == TopAdsHeadlineViewHolder.LAYOUT) {
+            viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
         } else if (type == OnboardingViewHolder.LAYOUT){
             viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
         } else if (type == TopAdsBannerViewHolder.LAYOUT){

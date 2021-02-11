@@ -22,13 +22,13 @@ class ProductProfile {
     val url: String = ""
     @SerializedName("price_int")
     @Expose
-    val priceInt: Int = 0
+    val priceInt: Long = 0
     @SerializedName("category_breadcrumb")
     @Expose
     val category: String = ""
     @SerializedName("category_id")
     @Expose
-    val categoryId: Int = 0
+    val categoryId: Long = 0
     @SerializedName("variant")
     @Expose
     val variant: List<AttachmentVariant>? = listOf()
@@ -40,7 +40,7 @@ class ProductProfile {
     val priceBefore: String = ""
     @SerializedName("shop_id")
     @Expose
-    val shopId: Int = 0
+    val shopId: Long = 0
     @SerializedName("free_ongkir")
     @Expose
     val freeShipping: FreeShipping = FreeShipping()
@@ -67,5 +67,5 @@ class ProductProfile {
     val isPreOrder: Boolean = false
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Int = 0
+    val campaignId: Long = 0
 }

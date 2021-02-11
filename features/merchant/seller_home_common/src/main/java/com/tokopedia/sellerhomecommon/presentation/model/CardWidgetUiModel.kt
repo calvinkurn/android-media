@@ -20,10 +20,15 @@ data class CardWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<CardDataUiModel> {
+        return CardWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }

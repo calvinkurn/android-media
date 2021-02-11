@@ -18,6 +18,9 @@
     <dimen name="product_card_text_view_product_name_height">36dp</dimen>
     <dimen name="product_card_flashsale_text_view_product_name_margin_bottom">4dp</dimen>
 
+    <dimen name="product_card_label_variant_margin_top">4dp</dimen>
+    <dimen name="product_card_label_variant_height">20dp</dimen>
+
     <dimen name="product_card_label_discount_margin_top">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
     <dimen name="product_card_flashsale_label_discount_margin_bottom">4dp</dimen>
@@ -30,7 +33,7 @@
     <dimen name="product_card_label_price_margin_top">4dp</dimen>
     <dimen name="product_card_label_price_height">20dp</dimen>
 
-    <dimen name="product_card_text_view_price_margin_top">4dp</dimen>
+    <dimen name="product_card_text_view_price_margin_top">2dp</dimen>
     <dimen name="product_card_text_view_price_height">20dp</dimen>
     <dimen name="product_card_flashsale_text_view_price_margin_bottom">8dp</dimen>
     <dimen name="product_card_flashsale_text_view_price_gone_margin_bottom">0dp</dimen>
@@ -73,6 +76,8 @@
 
     <dimen name="product_card_button_add_to_cart_margin_top">8dp</dimen>
     <dimen name="product_card_button_add_to_cart_height">32dp</dimen>
+    <dimen name="product_card_button_notify_me_margin_top">8dp</dimen>
+    <dimen name="product_card_button_notify_me_height">32dp</dimen>
 
 
     <dimen name="product_card_flashsale_width">136dp</dimen>
@@ -91,5 +96,8 @@
     <dimen name="product_card_flashsale_label_margintop">2dp</dimen>
 
     <dimen name="product_card_label_campaign_height">20dp</dimen>
+
+    <dimen name="product_card_label_best_seller_height">20dp</dimen>
+    <dimen name="product_card_label_best_seller_margintop">8dp</dimen>
 
 </resources>

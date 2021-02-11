@@ -14,7 +14,7 @@ import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,9 +30,9 @@ public abstract class BaseDigitalPresenter<T extends CustomerView> extends BaseD
     private final String IDN_CALLING_CODE_WITH_PLUS = "+62";
 
     private LocalCacheHandler localCacheHandlerLastClientNumber;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
-    public BaseDigitalPresenter(LocalCacheHandler localCacheHandlerLastClientNumber, UserSession userSession) {
+    public BaseDigitalPresenter(LocalCacheHandler localCacheHandlerLastClientNumber, UserSessionInterface userSession) {
         this.localCacheHandlerLastClientNumber = localCacheHandlerLastClientNumber;
         this.userSession = userSession;
     }

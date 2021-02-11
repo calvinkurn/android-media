@@ -7,6 +7,7 @@ import com.tokopedia.checkout.view.ShipmentPresenter;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by Irfan Khoirul on 31/10/18.
@@ -39,7 +40,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        Timber.d(e);
         if (isReloadData) {
             view.setHasRunningApiCall(false);
             view.hideLoading();
@@ -74,7 +75,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.showToastError(cartShipmentAddressFormData.getErrorMessage());
             }
         } else {
-            if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+            if (cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);

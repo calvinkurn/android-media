@@ -72,7 +72,7 @@ object VariantMapper {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
-                productID = newData?.productId.toString(),
+                productID = newData?.productId ?: "",
                 sku = newData?.sku ?: "",
                 minOrder = newData?.getFinalMinOrder() ?: 0,
                 status = if (newData?.isBuyable == true) {
@@ -90,8 +90,8 @@ object VariantMapper {
                 originalPrice = newData?.campaign?.originalPrice?.toInt() ?: 0,
                 discountedPrice = newData?.campaign?.discountedPrice?.toInt() ?: 0,
                 startDate = newData?.campaign?.startDate ?: "",
-                endDate = newData?.campaign?.endDateUnix.toString() toDate "yyyy-MM-dd HH:mm:ss",
-                endDateUnix = newData?.campaign?.endDateUnix.toString(),
+                endDate = newData?.campaign?.endDateUnix toDate "yyyy-MM-dd HH:mm:ss",
+                endDateUnix = newData?.campaign?.endDateUnix ?: "",
                 stock = newData?.campaign?.stock ?: 0,
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
                 appLinks = newData?.campaign?.applinks ?: "",
@@ -107,7 +107,7 @@ object VariantMapper {
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
                     ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = (newData.productId + System.nanoTime()).toString()
+                id = (newData.productId + System.nanoTime())
             }
 
             copyOfOldMedia?.add(0, newMedia)

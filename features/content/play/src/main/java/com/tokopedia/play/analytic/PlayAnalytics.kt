@@ -320,6 +320,26 @@ object PlayAnalytics {
         )
     }
 
+    /**
+     * User click copy link
+     */
+    fun clickCopyLink(channelId: String, channelType: PlayChannelType, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "click on button share link",
+                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    /**
+     * Private methods
+     */
     private fun convertProductsToListOfObject(listOfProducts: List<ProductLineUiModel>): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->

@@ -13,7 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
  * @return true if it is successfully find the matching native page and launch the activity
  * Example: https://www.tokopedia.com will launch MainParentActivity and will return true.
  */
-object RouteManagerKt{
+object RouteManagerKt {
     /**
      * Route http url to native page if possible.
      * Will return true for successful routing.
@@ -85,11 +85,16 @@ object RouteManagerKt{
                 return RouteManager.route(activity, url)
             }
             DeepLinkChecker.ORDER_LIST -> {
-                RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
-                return true
+                return RouteManager.route(activity, url)
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)
+            }
+            DeepLinkChecker.NATIVE_THANK_YOU -> {
+                val merchantCode = getLinkSegment(url)[2]
+                val paymentId = getLinkSegment(url)[3]
+                return RouteManager.route(activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
+                        paymentId, merchantCode)
             }
         }
         return false

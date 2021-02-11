@@ -15,9 +15,8 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel.Companion.THRESHOLD_VIEW_COUNT
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
-import java.text.ParseException
 import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
@@ -44,9 +43,9 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductViewModel =
+    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductUiModel =
             with(shopProduct) {
-                ShopProductViewModel().also {
+                ShopProductUiModel().also {
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr
@@ -89,17 +88,17 @@ object ShopPageProductListMapper {
                 }
             }
 
-    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
-        return LabelGroupViewModel(
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
+        return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
                 type = labelGroup.type
         )
     }
 
-    fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductViewModel =
+    fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductUiModel =
             with(shopFeaturedProduct) {
-                ShopProductViewModel().also {
+                ShopProductUiModel().also {
                     it.id = productId.toString()
                     it.name = name
                     it.displayedPrice = price
@@ -156,45 +155,45 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
+    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel): ProductCardModel {
         val totalReview = try {
-            NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
+            NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
         } catch (ignored: Exception) {
             0
         }
 
-        val discountPercentage = if (shopProductViewModel.discountPercentage == "0") {
+        val discountPercentage = if (shopProductUiModel.discountPercentage == "0") {
             ""
         } else {
-            "${shopProductViewModel.discountPercentage}%"
+            "${shopProductUiModel.discountPercentage}%"
         }
 
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon ?: "")
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
 
         return ProductCardModel(
-                productImageUrl = shopProductViewModel.imageUrl ?: "",
-                productName = shopProductViewModel.name ?: "",
-                discountPercentage = discountPercentage.takeIf { !shopProductViewModel.hideGimmick } ?: "",
-                slashedPrice = shopProductViewModel.originalPrice.orEmpty().takeIf { !shopProductViewModel.hideGimmick } ?: "",
-                formattedPrice = shopProductViewModel.displayedPrice ?: "",
-                ratingCount = shopProductViewModel.rating.toInt(),
+                productImageUrl = shopProductUiModel.imageUrl ?: "",
+                productName = shopProductUiModel.name ?: "",
+                discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
+                slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
+                formattedPrice = shopProductUiModel.displayedPrice ?: "",
+                ratingCount = shopProductUiModel.rating.toInt(),
                 reviewCount = totalReview,
                 freeOngkir = freeOngkirObject,
-                labelGroupList = shopProductViewModel.labelGroupList.map {
+                labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = true,
-                pdpViewCount = shopProductViewModel.pdpViewCount,
-                stockBarLabel = shopProductViewModel.stockLabel,
-                stockBarPercentage = shopProductViewModel.stockBarPercentage
+                pdpViewCount = shopProductUiModel.pdpViewCount,
+                stockBarLabel = shopProductUiModel.stockLabel,
+                stockBarPercentage = shopProductUiModel.stockBarPercentage
         )
     }
 
-    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+    private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
-                position = labelGroupViewModel.position,
-                title = labelGroupViewModel.title,
-                type = labelGroupViewModel.type
+                position = labelGroupUiModel.position,
+                title = labelGroupUiModel.title,
+                type = labelGroupUiModel.type
         )
     }
 }

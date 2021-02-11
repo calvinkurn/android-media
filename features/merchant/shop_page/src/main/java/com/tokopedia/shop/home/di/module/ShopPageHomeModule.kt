@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
@@ -22,8 +23,8 @@ import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_CAMPAIGN_NOTIFY_ME
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_NPL_CAMPAIGN_TNC
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -40,7 +41,6 @@ import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 
-@ShopPageHomeScope
 @Module(includes = [ShopPageHomeViewModelModule::class, PlayWidgetModule::class])
 class ShopPageHomeModule {
 
@@ -310,8 +310,8 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
-        return CoroutineDispatcherProviderImpl
+    fun getCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @ShopPageHomeScope
@@ -371,8 +371,9 @@ class ShopPageHomeModule {
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
     }
 
 

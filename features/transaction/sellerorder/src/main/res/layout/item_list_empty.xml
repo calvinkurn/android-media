@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSomListEmptyStateIllustration"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@id/somEmptyStateContainer"
+        app:layout_constraintDimensionRatio="1.334"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/somEmptyStateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivSomListEmptyStateIllustration">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvEmptyStateTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="34dp"
+            android:gravity="center"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toTopOf="@id/tvEmptyStateDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            tools:text="Belum ada pesanan, nih" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvEmptyStateDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toTopOf="@id/btnEmptyState"
+            app:layout_constraintTop_toBottomOf="@id/tvEmptyStateTitle"
+            app:typographyType="body_2"
+            tools:text="Tetap semangat, rejeki nggak akan pergi \nasal kamu terus berusaha." />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnEmptyState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvEmptyStateDescription"
+            tools:text="Mulai Beriklan"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

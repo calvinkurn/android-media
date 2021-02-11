@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.quickedit.stock
 
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import junit.framework.TestCase.assertEquals
 import org.junit.Test

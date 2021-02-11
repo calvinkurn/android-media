@@ -13,5 +13,5 @@
         android:clickable="true"
         android:focusable="true"
         app:unifyImageButtonVariant="image"
-        tools:srcCompat="@drawable/ic_custom_top_chat_widget" />
+        tools:srcCompat="@drawable/tanya" />
 </androidx.cardview.widget.CardView>

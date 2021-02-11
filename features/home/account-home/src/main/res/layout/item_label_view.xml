@@ -8,19 +8,25 @@
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/labelview"
-        style="@style/LabelLayout"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:background="@color/Unify_N0"
         app:lv_image_width="@dimen/dp_24"
         app:lv_image_margin_right="@dimen/dp_16"
         app:lv_title="@string/app_name"
         app:lv_title_text_size="@dimen/sp_14"
-        app:lv_sub_title_text_size="@dimen/sp_14"/>
+        app:lv_sub_title_text_size="@dimen/sp_14"
+        app:lv_title_color="@color/Unify_N700_96"
+        app:lv_sub_title_color="@color/Unify_N700_44"/>
 
     <View
         android:id="@+id/separator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_list_separator"/>
+        android:background="@drawable/bg_list_separator_account_home"/>
 
 </LinearLayout>

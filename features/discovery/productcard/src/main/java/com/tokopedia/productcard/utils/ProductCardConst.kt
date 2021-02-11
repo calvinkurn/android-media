@@ -21,6 +21,7 @@ internal const val LABEL_GIMMICK = "gimmick"
 internal const val LABEL_INTEGRITY = "integrity"
 internal const val LABEL_SHIPPING = "shipping"
 internal const val LABEL_CAMPAIGN = "campaign"
+internal const val LABEL_BEST_SELLER = "best_seller"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
@@ -37,3 +38,9 @@ internal const val ROBOTO_REGULAR = "RobotoRegular.ttf"
 
 internal const val OPEN_BOLD_TAG = "<b>"
 internal const val CLOSE_BOLD_TAG = "</b>"
+
+internal const val TYPE_VARIANT_COLOR = "colour"
+internal const val TYPE_VARIANT_SIZE = "size"
+internal const val TYPE_VARIANT_CUSTOM = "custom"
+
+internal const val LABEL_VARIANT_TAG = "label_variant_tag"

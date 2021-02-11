@@ -14,7 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.empty_state.EmptyStateUnify;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -72,11 +72,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
 
         rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
-        tvAddressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
-        tvAddressName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
-        tvRecipientName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
-        tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
-        tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
+        tvAddressStatus = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_status);
+        tvAddressName = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_name);
+        tvRecipientName = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_name);
+        tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_address);
+        tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_phone);
         tabUnifyTradeInAddress = itemView.findViewById(R.id.tab_unify_trade_in_address);
         layoutAddressNormal = itemView.findViewById(R.id.layout_address_normal);
         layoutAddressDropOff = itemView.findViewById(R.id.layout_address_drop_off);

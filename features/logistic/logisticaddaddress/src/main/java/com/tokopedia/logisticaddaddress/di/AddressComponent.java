@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
 
 import dagger.Component;
 

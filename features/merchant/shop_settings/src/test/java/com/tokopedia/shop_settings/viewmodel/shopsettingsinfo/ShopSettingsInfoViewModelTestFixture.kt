@@ -8,7 +8,7 @@ import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
-import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,13 +44,13 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 getShopStatusUseCase,
                 updateShopScheduleUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
 
         shopScheduleViewModel = ShopScheduleViewModel(
                 updateShopScheduleUseCase,
                 getShopBasicDataUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -61,11 +61,5 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     protected fun verifySuccessCheckOsMerchantTypeCalled(shopId: Int) {
         verify { CheckOfficialStoreTypeUseCase.createRequestParam(shopId) }
         coVerify { checkOsMerchantUseCase.executeOnBackground() }
-    }
-
-    protected fun verifyUnsubscribeUseCase() {
-        coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { getShopStatusUseCase.unsubscribe() }
-        coVerify { updateShopScheduleUseCase.unsubscribe() }
     }
 }

@@ -69,7 +69,6 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     override fun stopPush() {
         mApsaraLivePusher.stopPush()
-        mTimerDuration?.stop()
     }
 
     override fun switchCamera() {

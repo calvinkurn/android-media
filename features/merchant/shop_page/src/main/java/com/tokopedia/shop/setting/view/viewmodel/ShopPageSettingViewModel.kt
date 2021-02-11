@@ -2,18 +2,10 @@ package com.tokopedia.shop.setting.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,8 +16,8 @@ import javax.inject.Inject
 class ShopPageSettingViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider
-) : BaseViewModel(dispatcherProvider.main()) {
+        private val dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
 
@@ -35,7 +27,7 @@ class ShopPageSettingViewModel @Inject constructor(
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopInfo = withContext(dispatcherProvider.io()) {
+            val shopInfo = withContext(dispatcherProvider.io) {
                 getShopInfo(id, shopDomain, isRefresh)
             }
             shopInfoResp.postValue(Success(shopInfo))

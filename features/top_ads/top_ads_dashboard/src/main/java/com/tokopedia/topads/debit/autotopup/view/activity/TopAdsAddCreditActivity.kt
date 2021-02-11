@@ -87,7 +87,8 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         sheet?.show(supportFragmentManager, creditResponse, true, 0)
         sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
         sheet?.onSaved = { pos ->
-            chooseCredit(pos)
+            if (creditResponse?.credit?.isNotEmpty() == true)
+                chooseCredit(pos)
         }
         sheet?.setOnDismissListener {
             finish()

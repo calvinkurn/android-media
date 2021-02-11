@@ -4,7 +4,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.*
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 
 class OrderSummaryPageViewModelTestHelper {

@@ -13,7 +13,8 @@ import kotlin.reflect.KProperty
 class ViewComponentDelegate<VC: IViewComponent>(
         owner: LifecycleOwner,
         isEagerInit: Boolean,
-        private val viewComponentCreator: (container: ViewGroup) -> VC
+        private val viewComponentCreator: (container: ViewGroup) -> VC,
+        private val throwIfFailedCreation: Boolean = false
 ) : ReadOnlyProperty<LifecycleOwner, VC> {
 
     private var viewComponent: VC? = null
@@ -85,7 +86,11 @@ class ViewComponentDelegate<VC: IViewComponent>(
 
         @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
         fun onCreate() {
-            getOrCreateValue(owner)
+            try {
+                getOrCreateValue(owner)
+            } catch (e: Throwable) {
+                if (throwIfFailedCreation) throw e
+            }
         }
 
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

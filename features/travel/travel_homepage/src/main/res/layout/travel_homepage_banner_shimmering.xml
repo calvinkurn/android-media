@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <FrameLayout
         android:id="@+id/container_background"
@@ -18,14 +18,14 @@
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_dynamic_background_height"
-            android:background="@color/tkpd_main_green" />
+            android:background="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/overlay_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_dynamic_background_height"
             android:alpha="0.32"
-            android:background="#31353B"
+            android:background="@color/Unify_N700"
             android:scaleType="centerCrop" />
 
         <View
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/travel_homepage_dp_20"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_background" />

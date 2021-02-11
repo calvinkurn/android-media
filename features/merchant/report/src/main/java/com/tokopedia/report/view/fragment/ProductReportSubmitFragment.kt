@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
@@ -105,7 +107,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
-                        Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
+                        Snackbar.LENGTH_LONG, getString(com.tokopedia.resources.common.R.string.general_label_ok), View.OnClickListener {})
             }
         } else {
             sendResult()
@@ -124,7 +126,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
-                    Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
+                    Snackbar.LENGTH_LONG, getString(com.tokopedia.resources.common.R.string.general_label_ok), View.OnClickListener {})
         }
     }
 
@@ -156,19 +158,13 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private fun openPhotoPicker(photoType: String, maxPick: Int){
         this.photoTypeSelected = photoType
         context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.report_choose_picture),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            arrayListOf(), null, -1, maxPick
-                    ))
-
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(maxPick = maxPick).apply {
+                        title = getString(R.string.report_choose_picture)
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -177,8 +173,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_CODE_IMAGE){
             if (resultCode == Activity.RESULT_OK && data != null){
                 tracking.eventReportAddPhotoOK(adapter.trackingReasonLabel)
-                val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+                if (imageUrlOrPathList.size > 0) {
                     photoTypeSelected?.let {
                         adapter.updatePhotoForType(it, imageUrlOrPathList)
                     }

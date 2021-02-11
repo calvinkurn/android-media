@@ -21,6 +21,7 @@ import org.junit.runners.JUnit4
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.location_picker.model.response.Location
 import junit.framework.Assert.assertEquals
 
 @RunWith(JUnit4::class)
@@ -167,5 +168,24 @@ class DealsCategoryViewModelTest {
         viewModel.shimmeringCategory()
         //then
         assertEquals(viewModel.observableDealsCategoryLayout.value,layouts)
+    }
+
+    @Test
+    fun getCategoryBrandData_fetchSuccessUpdateChips_dealsCategoryShouldContainsData() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
+        // given
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
+        // when
+        viewModel.updateChips(Location(), "12", true)
+
+        // then
+        assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
     }
 }

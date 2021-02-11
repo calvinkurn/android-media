@@ -5,22 +5,18 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.statistic.common.coroutine.DispatchersProvider
-import com.tokopedia.statistic.common.coroutine.DispatchersProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 09/06/20
  */
 
-@StatisticScope
 @Module
 class StatisticModule {
 
@@ -38,5 +34,5 @@ class StatisticModule {
 
     @StatisticScope
     @Provides
-    fun provideCoroutineDispatcher(): DispatchersProvider = DispatchersProviderImpl
+    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

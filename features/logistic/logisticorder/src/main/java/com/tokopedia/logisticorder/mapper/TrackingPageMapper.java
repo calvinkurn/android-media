@@ -1,9 +1,9 @@
 package com.tokopedia.logisticorder.mapper;
 
-import com.tokopedia.logisticdata.data.entity.trackingshipment.Detail;
-import com.tokopedia.logisticdata.data.entity.trackingshipment.Page;
-import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
-import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
+import com.tokopedia.logisticCommon.data.entity.trackingshipment.Detail;
+import com.tokopedia.logisticCommon.data.entity.trackingshipment.Page;
+import com.tokopedia.logisticCommon.data.entity.trackingshipment.TrackOrder;
+import com.tokopedia.logisticCommon.data.entity.trackingshipment.TrackingResponse;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingHistoryUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
@@ -88,6 +88,11 @@ public class TrackingPageMapper implements ITrackingPageMapper {
                 model.setAdditionalInfoList(listAdditionalInfo);
             }
         }
+
+        model.setTrackingUrl(
+                detailOrder == null || order.getDetail().getTrackingUrl() == null ?
+                        "" : order.getDetail().getTrackingUrl()
+        );
 
         return model;
     }

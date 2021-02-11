@@ -1,7 +1,7 @@
 package com.tokopedia.chat_common.domain
 
 import com.google.gson.JsonObject
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT

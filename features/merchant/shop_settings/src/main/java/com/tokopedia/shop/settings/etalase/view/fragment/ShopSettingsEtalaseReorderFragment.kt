@@ -62,7 +62,7 @@ class ShopSettingsEtalaseReorderFragment :
 
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
         shopSettingEtalaseListReorderPresenter.attachView(this)
@@ -76,7 +76,7 @@ class ShopSettingsEtalaseReorderFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_etalase_reorder_list, container, false)
         recyclerViewDefault = view.findViewById(R.id.recyclerViewDefault)
-        recyclerViewDefault!!.adapter = adapterDefault
+        recyclerViewDefault?.adapter = adapterDefault
         return view
     }
 
@@ -85,10 +85,10 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopEtalaseModelsDefault = arguments!!.getParcelableArrayList(EXTRA_DEFAULT_ETALASE_LIST)
-        shopEtalaseModels = arguments!!.getParcelableArrayList(EXTRA_ETALASE_LIST)
+        shopEtalaseModelsDefault = arguments?.getParcelableArrayList(EXTRA_DEFAULT_ETALASE_LIST)
+        shopEtalaseModels = arguments?.getParcelableArrayList(EXTRA_ETALASE_LIST)
         super.onCreate(savedInstanceState)
-        GraphqlClient.init(context!!)
+        GraphqlClient.init(requireContext())
         adapterDefault = ShopEtalaseReorderAdapter(ShopEtalaseReorderFactory(null,null))
     }
 
@@ -101,14 +101,14 @@ class ShopSettingsEtalaseReorderFragment :
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper!!.attachToRecyclerView(recyclerView)
+        itemTouchHelper?.attachToRecyclerView(recyclerView)
 
-        if (shopEtalaseModelsDefault == null || shopEtalaseModelsDefault!!.size == 0) {
-            recyclerViewDefault!!.visibility = View.GONE
+        if (shopEtalaseModelsDefault == null || shopEtalaseModelsDefault?.size == 0) {
+            recyclerViewDefault?.visibility = View.GONE
         } else {
-            adapterDefault!!.clearAllElements()
-            adapterDefault!!.addElement(shopEtalaseModelsDefault)
-            recyclerViewDefault!!.visibility = View.VISIBLE
+            adapterDefault?.clearAllElements()
+            adapterDefault?.addElement(shopEtalaseModelsDefault)
+            recyclerViewDefault?.visibility = View.VISIBLE
             if (isIdlePowerMerchant()) {
                 addIdlePowerMerchantTicker()
             }
@@ -129,7 +129,7 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     override fun loadData(page: Int) {
-        renderList(shopEtalaseModels!!, false)
+        renderList(shopEtalaseModels ?: arrayListOf(), false)
     }
 
     override fun getAdapterTypeFactory(): ShopEtalaseReorderFactory {
@@ -154,7 +154,7 @@ class ShopSettingsEtalaseReorderFragment :
             Toaster.make(it, getString(R.string.etalase_success_reorder), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
                     getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
         }
-        listener!!.onSuccessReorderEtalase()
+        listener?.onSuccessReorderEtalase()
     }
 
     override fun onErrorReorderShopEtalase(throwable: Throwable) {
@@ -170,17 +170,17 @@ class ShopSettingsEtalaseReorderFragment :
         if (progressDialog == null) {
             progressDialog = ProgressDialog(activity)
         }
-        if (!progressDialog!!.isShowing) {
-            progressDialog!!.setMessage(message)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.setMessage(message)
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.show()
         }
     }
 
     fun hideSubmitLoading() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
-            progressDialog!!.dismiss()
+        if (progressDialog != null && progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
             progressDialog = null
         }
     }
@@ -195,7 +195,7 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        itemTouchHelper!!.startDrag(viewHolder)
+        itemTouchHelper?.startDrag(viewHolder)
     }
 
     override fun onAttachActivity(context: Context) {

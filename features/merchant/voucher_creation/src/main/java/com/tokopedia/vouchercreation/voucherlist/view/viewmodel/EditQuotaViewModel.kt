@@ -8,14 +8,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.UpdateQuotaUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EditQuotaViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val updateQuotaUseCase: UpdateQuotaUseCase): BaseViewModel(dispatchers.main) {
+    private val dispatchers: CoroutineDispatchers,
+    private val updateQuotaUseCase: UpdateQuotaUseCase): BaseViewModel(dispatchers.main) {
 
     private val mQuotaLiveData = MutableLiveData<Pair<Int, Int>>()
 

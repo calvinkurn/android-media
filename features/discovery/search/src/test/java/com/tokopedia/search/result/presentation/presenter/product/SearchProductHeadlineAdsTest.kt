@@ -6,6 +6,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.Cpm
@@ -57,16 +58,12 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify CPM at the top of list`() {
         visitableList.first().shouldBeInstanceOf<CpmViewModel>()
-
-        for (i in 1 until visitableList.size) {
-            visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
-        }
     }
 
     @Test
     fun `Additional headline ads in page 1`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition14JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 15
+        val additionalCpmIndex = 16
         val expectedCpmPosition = 14
         val expectedAdditionalCpmLayout = 2
 
@@ -81,12 +78,10 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex: Int) {
         visitableList.first().shouldBeInstanceOf<CpmViewModel>()
+        visitableList[additionalCpmIndex - 1].shouldBeInstanceOf<SeparatorViewModel>()
         visitableList[additionalCpmIndex].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[additionalCpmIndex + 1].shouldBeInstanceOf<SeparatorViewModel>()
 
-        visitableList.forEachIndexed { index, visitable ->
-            if (index != 0 && index != additionalCpmIndex)
-                visitable.shouldBeInstanceOf<ProductItemViewModel>()
-        }
     }
 
     private fun `Then verify CPM data`(additionalCpmIndex: Int, expectedAdditionalCpmPosition: Int, expectedAdditionalCpmLayout: Int) {
@@ -104,7 +99,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     @Test
     fun `Additional headline ads in page 2`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition24JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 25
+        val additionalCpmIndex = 26
         val expectedCpmPosition = 24
         val expectedAdditionalCpmLayout = 2
 

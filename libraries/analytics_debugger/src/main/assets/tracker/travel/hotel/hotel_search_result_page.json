@@ -117,19 +117,6 @@
     {
       "event": "clickHotel",
       "eventCategory": "digital - native",
-      "eventAction": "user click sort",
-      "eventLabel": "{{hotel - .+}}",
-      "screenName": "/hotel/searchresult",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.+}}",
-      "sessionIris": "{{.+}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    },
-    {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
       "eventAction": "click quick filter on search result page",
       "eventLabel": "{{hotel - .+ - .+}}",
       "screenName": "/hotel/searchresult",

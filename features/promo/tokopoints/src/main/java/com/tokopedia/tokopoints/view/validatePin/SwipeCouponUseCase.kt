@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON
+import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.Companion.TP_GQL_SWIPE_COUPON
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

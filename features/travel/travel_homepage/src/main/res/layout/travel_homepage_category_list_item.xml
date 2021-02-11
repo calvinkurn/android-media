@@ -24,5 +24,5 @@
         android:paddingRight="@dimen/spacing_lvl1"
         app:typographyType="small"
         tools:text="Travel and Entertainment"
-        android:textColor="@color/Neutral_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 </LinearLayout>

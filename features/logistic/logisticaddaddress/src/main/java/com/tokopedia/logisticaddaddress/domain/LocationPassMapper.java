@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.domain;
 
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 
 import java.util.HashMap;
 

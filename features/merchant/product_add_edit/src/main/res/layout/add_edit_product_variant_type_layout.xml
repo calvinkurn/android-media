@@ -12,7 +12,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/label_variant_type"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -22,7 +22,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/body_3"
         android:text="@string/label_variant_type_desc"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3" />
 
     <androidx.recyclerview.widget.RecyclerView

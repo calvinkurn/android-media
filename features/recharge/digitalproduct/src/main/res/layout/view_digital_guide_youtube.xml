@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/video_thumbnail_main_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/digital_youtube_thumbnail_height"
+    android:layout_height="@dimen/digital_dimen_180"
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -11,7 +11,7 @@
         android:id="@+id/youtube_thumbnail_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/digital_youtube_thumbnail_height"
+        android:minHeight="@dimen/digital_dimen_180"
         android:tint="@color/cardview_shadow_start_color" />
 
     <View

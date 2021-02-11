@@ -20,12 +20,13 @@ private const val emptyLocalSearchRecommendationPage1JSON = "searchproduct/local
 
 internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPresenterTestFixtures() {
 
+    private val navsource = "clp"
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
     private val searchProductPageId = "1234"
     private val keyword = "asus"
     private val searchParameter = mapOf(
             SearchApiConst.Q to keyword,
-            SearchApiConst.NAVSOURCE to "campaign",
+            SearchApiConst.NAVSOURCE to navsource,
             SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
             SearchApiConst.SRP_PAGE_ID to searchProductPageId
     )
@@ -76,7 +77,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
             parameters[SearchApiConst.SOURCE] shouldBe SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
             parameters[SearchApiConst.DEVICE] shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
-            parameters[SearchApiConst.NAVSOURCE] shouldBe SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN
+            parameters[SearchApiConst.NAVSOURCE] shouldBe navsource
             parameters[SearchApiConst.SRP_PAGE_TITLE] shouldBe searchProductPageTitle
             parameters[SearchApiConst.SRP_PAGE_ID] shouldBe searchProductPageId
             parameters[SearchApiConst.START] shouldBe expectedStart[index].toString()

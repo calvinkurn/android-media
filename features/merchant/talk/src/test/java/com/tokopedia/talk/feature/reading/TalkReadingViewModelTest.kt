@@ -6,9 +6,9 @@ import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDa
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
-import com.tokopedia.talk.util.verifyErrorEquals
-import com.tokopedia.talk.util.verifySuccessEquals
-import com.tokopedia.talk.util.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -22,17 +22,22 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
     @Test
     fun `when getDiscussionAggregate should execute expected use case and get expected data`() {
         val response = DiscussionAggregateResponse()
+        val readingListResponse = DiscussionDataResponseWrapper()
         val productId = "15267029"
         val shopId = "480749"
 
         onGetDiscussionAggregate_thenReturn(response)
+        onGetDiscussionData_thenReturn(readingListResponse)
 
         viewModel.getDiscussionAggregate(productId, shopId)
 
         val expectedResponse = Success(response)
+        val expectedReadingListResponse = Success(readingListResponse)
 
         verifyGetDiscussionAggregateUseCaseExecuted()
+        verifyGetDiscussionDataUseCaseExecuted()
         verifyDiscussionAggregateEquals(expectedResponse)
+        verifyDiscussionDataEquals(expectedReadingListResponse)
     }
 
     @Test

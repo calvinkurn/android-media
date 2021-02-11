@@ -20,7 +20,7 @@ object PlayWidgetUiMock {
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
             actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-            actionWebLink = "www.tokopedia.com/play/channels",
+            isActionVisible = true,
             config = getPlayWidgetConfigUiModel(),
             items = getSampleSmallCardData(),
             useHeader = true
@@ -30,7 +30,7 @@ object PlayWidgetUiMock {
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
             actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-            actionWebLink = "www.tokopedia.com/play/channels",
+            isActionVisible = true,
             background = getPlayWidgetBackgroundUiModel(),
             config = getPlayWidgetConfigUiModel(),
             items = getSampleMediumCardData()
@@ -111,7 +111,14 @@ object PlayWidgetUiMock {
             hasPromo = cardItemTypeRandom.nextBoolean(),
             activeReminder = cardItemTypeRandom.nextBoolean(),
             partner = PlayWidgetPartnerUiModel("123", "Google"),
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasAction = true,
+            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+            share = PlayWidgetShareUiModel(
+                    "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+                    isShow = true
+            ),
+            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734"
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
@@ -127,7 +134,8 @@ object PlayWidgetUiMock {
             autoPlay = true,
             autoPlayAmount = 3,
             maxAutoPlayCellularDuration = 5,
-            maxAutoPlayWifiDuration = 10
+            maxAutoPlayWifiDuration = 10,
+            businessWidgetPosition = 0
     )
 
     private fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(

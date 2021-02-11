@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/Neutral_N0"
+  android:scrollbars="none"
+  tools:ignore="MissingDefaultResource">
+  
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_lvl0"
+    android:paddingBottom="@dimen/layout_lvl4">
+  
+    <com.tokopedia.unifycomponents.ImageUnify
+      android:id="@+id/imgHeader"
+      android:layout_width="@dimen/updateinactivephone_280dp"
+      android:layout_height="@dimen/updateinactivephone_210dp"
+      android:layout_marginTop="@dimen/layout_lvl4"
+      android:padding="@dimen/layout_lvl1"
+      android:scaleType="fitCenter"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"/>
+  
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/txtTitle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/spacing_lvl5"
+      android:layout_marginStart="@dimen/spacing_lvl6"
+      android:layout_marginEnd="@dimen/spacing_lvl6"
+      android:textAlignment="center"
+      android:text="@string/text_title_id_card"
+      app:typographyType="heading_2"
+      app:typographyWeight="bold"
+      app:layout_constraintTop_toBottomOf="@+id/imgHeader"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"/>
+  
+    <LinearLayout
+      android:id="@+id/layoutDescription"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/spacing_lvl3"
+      android:layout_marginStart="@dimen/spacing_lvl4"
+      android:layout_marginEnd="@dimen/spacing_lvl4"
+      android:orientation="vertical"
+      app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"/>
+  
+    <LinearLayout
+      android:id="@+id/labelProtected"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_marginTop="@dimen/layout_lvl4"
+      android:layout_marginStart="@dimen/spacing_lvl4"
+      android:layout_marginEnd="@dimen/spacing_lvl4"
+      app:layout_constraintTop_toBottomOf="@+id/layoutDescription"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent">
+    
+      <ImageView
+        android:id="@+id/imgIconVerified"
+        android:layout_width="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/spacing_lvl4"
+        app:srcCompat="@drawable/ic_shield_inactive_phone"
+        app:layout_constraintTop_toBottomOf="@+id/textDescription"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+    
+      <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_onboarding_protected"
+        android:textColor="@color/dark_N200"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@+id/imgIconVerified"
+        app:layout_constraintLeft_toRightOf="@+id/imgIconVerified"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imgIconVerified"/>
+  
+    </LinearLayout>
+  
+    <com.tokopedia.unifycomponents.UnifyButton
+      android:id="@+id/btnNext"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_lvl4"
+      android:text="@string/text_title_id_card"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/labelProtected"/>
+    
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

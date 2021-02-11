@@ -51,6 +51,11 @@ public class HomeApp extends BaseMainApplication implements NetworkRouter, Abstr
     }
 
     @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+
+    }
+
+    @Override
     public void showForceLogoutTokenDialog(String response) {
 
     }

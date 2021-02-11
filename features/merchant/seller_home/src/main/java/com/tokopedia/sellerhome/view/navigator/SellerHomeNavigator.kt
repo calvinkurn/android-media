@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -11,6 +12,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -23,6 +25,10 @@ class SellerHomeNavigator(
     private val userSession: UserSessionInterface
 ) {
 
+    companion object {
+        private const val ERROR_NAVIGATOR = "Error when using navigator."
+    }
+
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
     private var chatFragment: Fragment? = null
@@ -32,6 +38,8 @@ class SellerHomeNavigator(
     @FragmentType
     private var currentSelectedPage: Int? = null
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
+
+    private val handler = Handler()
 
     init {
         initFragments()
@@ -159,7 +167,7 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "")
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -173,13 +181,14 @@ class SellerHomeNavigator(
         pages.keys.forEach {
             it?.let {
                 val tag = it::class.java.canonicalName
-                transaction.add(R.id.sahContainer, it, tag)
+                val fragmentToBeAdded = fm.findFragmentByTag(tag) ?: it
+                transaction.add(R.id.sahContainer, fragmentToBeAdded, tag)
 
-                if(it != selectedPage) {
+                if(fragmentToBeAdded != selectedPage) {
                     try {
-                        transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
+                        transaction.setMaxLifecycle(fragmentToBeAdded, Lifecycle.State.CREATED)
+                    } catch (e: Exception) {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
                     }
                 }
             }
@@ -187,25 +196,27 @@ class SellerHomeNavigator(
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
-        val tag = fragment::class.java.canonicalName
-        val fragmentByTag = fm.findFragmentByTag(tag)
-        val selectedFragment = fragmentByTag ?: fragment
-        val currentState = selectedFragment.lifecycle.currentState
-        val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
+        handler.post {
+            val tag = fragment::class.java.canonicalName
+            val fragmentByTag = fm.findFragmentByTag(tag)
+            val selectedFragment = fragmentByTag ?: fragment
+            val currentState = selectedFragment.lifecycle.currentState
+            val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed) {
-            try {
-                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
-            } catch (e: Exception) {
-                e.printStackTrace()
+            if(isFragmentNotResumed) {
+                try {
+                    transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
+                } catch (e: Exception) {
+                    SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
+                }
             }
+
+            hideAllPages(transaction)
+
+            transaction
+                    .show(selectedFragment)
+                    .commit()
         }
-
-        hideAllPages(transaction)
-
-        transaction
-            .show(selectedFragment)
-            .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
@@ -252,7 +263,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch)
         return somListFragment
     }
 

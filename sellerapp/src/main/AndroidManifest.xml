@@ -63,7 +63,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -107,6 +107,14 @@
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="GJPFWEGF6PLIR6Y7EIBONHPG4"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="0II3AMNFRMI3N0G0EO8D1RJZKR40KCEYTW8Y31BBGZTBCHQDI0"
+            tools:replace="android:value" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -258,6 +266,18 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.sellerapp.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
     </application>
 </manifest>

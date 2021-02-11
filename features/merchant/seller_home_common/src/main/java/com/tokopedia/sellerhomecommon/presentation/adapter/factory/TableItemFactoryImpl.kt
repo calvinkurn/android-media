@@ -13,7 +13,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
  * Created By @ilhamsuaib on 01/07/20
  */
 
-class TableItemFactoryImpl : BaseAdapterTypeFactory(), TableItemFactory {
+class TableItemFactoryImpl(private val listener: TableColumnHtmlViewHolder.Listener) : BaseAdapterTypeFactory(), TableItemFactory {
 
     override fun type(header: TableHeaderUiModel): Int = TableHeaderColumnViewHolder.RES_LAYOUT
 
@@ -30,7 +30,7 @@ class TableItemFactoryImpl : BaseAdapterTypeFactory(), TableItemFactory {
             TableHeaderColumnViewHolder.RES_LAYOUT -> TableHeaderColumnViewHolder(parent)
             TableColumnTextViewHolder.RES_LAYOUT -> TableColumnTextViewHolder(parent)
             TableColumnImageViewHolder.RES_LAYOUT -> TableColumnImageViewHolder(parent)
-            TableColumnHtmlViewHolder.RES_LAYOUT -> TableColumnHtmlViewHolder(parent)
+            TableColumnHtmlViewHolder.RES_LAYOUT -> TableColumnHtmlViewHolder(parent, listener)
             TableItemDividerViewHolder.RES_LAYOUT -> TableItemDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

@@ -1,8 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.power_merchant.subscribe.verification.verifyErrorEquals
-import com.tokopedia.power_merchant.subscribe.verification.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.shop.common.data.source.cloud.model.ShopFreeShippingStatus
 import com.tokopedia.usecase.coroutines.Fail

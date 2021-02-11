@@ -6,7 +6,6 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
@@ -25,6 +24,7 @@ import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearch
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_flight_search_form.view.*
 import java.util.*
 import javax.inject.Inject
@@ -236,7 +236,8 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
+        Toaster.build(mChildView, getString(resourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)).show()
     }
 
     interface Listener {

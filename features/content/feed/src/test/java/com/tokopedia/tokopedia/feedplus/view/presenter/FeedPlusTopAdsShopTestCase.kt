@@ -44,7 +44,7 @@ class FeedPlusTopAdsShopTestCase {
         feedViewModel = spyk(FeedViewModel(baseDispatcher, mockk(), mockk(),
                 mockk(), mockk(), mockk(),
                 mockk(), mockk(), mockk(),
-                mockk(), mockk(), trackAffiliateClickUseCase, mockk(), sendTopAdsUseCase, mockk()))
+                mockk(), trackAffiliateClickUseCase, mockk(), sendTopAdsUseCase, mockk()))
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 

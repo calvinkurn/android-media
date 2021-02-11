@@ -521,15 +521,6 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
-                keyword
-        );
-    }
-
     public static void trackMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
                 SearchEventTracking.MOENGAGE.KEYWORD, query,
@@ -706,6 +697,26 @@ public class SearchTracking {
                                         "promotions", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()])
                                         )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventClickInspirationCarouselGridBanner(
+            String type, String keyword, Object bannerData, String userId
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_GRID_BANNER,
+                        EVENT_LABEL, type + " - " + keyword,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, SEARCH,
+                        USER_ID, userId,
+                        ECOMMERCE, DataLayer.mapOf(
+                                SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(bannerData)
                                 )
                         )
                 )

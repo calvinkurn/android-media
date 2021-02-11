@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
-import com.tokopedia.report.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.cancel
 import rx.Subscriber
 import java.io.File
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class ProductReportSubmitViewModel @Inject constructor(private val useCase: SubmitReportUseCase,
                                                        private val uploaderUseCase: UploaderUseCase,
-                                                       dispatcher: CoroutineDispatcherProvider): BaseViewModel(dispatcher.io()){
+                                                       dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io){
 
     companion object {
         private const val SOURCE_ID = "OfQTGl"

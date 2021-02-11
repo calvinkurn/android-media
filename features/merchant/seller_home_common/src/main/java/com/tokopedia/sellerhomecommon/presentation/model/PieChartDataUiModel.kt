@@ -9,7 +9,11 @@ class PieChartDataUiModel(
         override var error: String = "",
         val data: PieChartUiModel = PieChartUiModel(),
         override var isFromCache: Boolean = false
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && data.item.all { it.value == 0 }
+    }
+}
 
 data class PieChartUiModel(
         val item: List<PieChartItemUiModel> = emptyList(),

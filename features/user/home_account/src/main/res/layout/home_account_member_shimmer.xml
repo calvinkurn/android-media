@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:orientation="vertical"
+    android:id="@+id/home_account_expandable_layout_container"
+    android:layout_marginBottom="@dimen/home_account_dp_9"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/home_account_expandable_layout_title"
+        android:layout_width="@dimen/home_account_dp_80"
+        android:layout_height="@dimen/home_account_shimmer_text_title_height"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_expandable_layout_title"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/home_account_dp_14"
+        app:corners="12"
+
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_account_dp_54"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

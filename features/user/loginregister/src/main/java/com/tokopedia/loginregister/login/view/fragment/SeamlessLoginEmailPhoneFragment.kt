@@ -14,6 +14,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -74,8 +75,9 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     override fun setLoginSuccessSellerApp() {
         if(redirectAppLinks?.isNotEmpty() == true){
             view?.run {
-                if (context.applicationContext is LoginRouter) {
-                    (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+                (context.applicationContext as? LoginRouter)?.let {
+                    it.setOnboardingStatus(true)
+                    SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
                 }
                 SellerMigrationRedirectionUtil().startRedirectionActivities(context, redirectAppLinks.orEmpty())
                 activity?.finish()

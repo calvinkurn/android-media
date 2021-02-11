@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.ActivatePowerMerchantUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.power_merchant.subscribe.domain.interactor.ValidatePowerMerchantUseCase
 import com.tokopedia.power_merchant.subscribe.domain.model.ValidatePowerMerchantResponse
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult

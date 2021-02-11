@@ -18,5 +18,6 @@ interface HomeRecommendationTypeFactory {
     fun type(dataModel: RecommendationCarouselItemDataModel): Int
     fun type(dataModel: TitleDataModel): Int
     fun type(dataModel: RecommendationErrorDataModel): Int
+    fun type(dataModel: RecommendationEmptyDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -2,8 +2,10 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.text.TextUtils
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
+import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
@@ -23,6 +25,7 @@ import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
@@ -36,6 +39,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationSellerReviewDetail
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
@@ -57,12 +61,17 @@ import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSa
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomAllOrderAppLink
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomCancellationRequestAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomCancelledAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomDoneAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -73,9 +82,11 @@ import com.tokopedia.config.GlobalConfig
  */
 object DeeplinkMapper {
 
+    const val MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_switch_to_webview"
+    const val SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_switch_to_webview"
+
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
-
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -93,19 +104,60 @@ object DeeplinkMapper {
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
-                return createAppendDeeplinkWithQuery(tempDeeplink, query)
+                createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
-                return createAppendDeeplinkWithQuery(tempDeeplink, query)
+                createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
                 getRegisteredNavigationFromInternalTokopedia(context, uri, deeplink)
             }
             else -> deeplink
         }
-        return mappedDeepLink
+        return switchToWebviewIfNeeded(context, mappedDeepLink, deeplink)
+    }
+
+    private fun switchToWebviewIfNeeded(context: Context, mappedLink: String, originalLink: String) : String {
+        try {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            var webviewSwitchConfig = ""
+
+            if (GlobalConfig.isSellerApp()) {
+                webviewSwitchConfig = remoteConfig.getString(SELLERAPP_SWITCH_TO_WEBVIEW)
+            } else {
+                webviewSwitchConfig = remoteConfig.getString(MAINAPP_SWITCH_TO_WEBVIEW)
+            }
+
+            if (TextUtils.isEmpty(webviewSwitchConfig)) return mappedLink
+
+            val configJSON = JSONObject(webviewSwitchConfig)
+
+            val link = if (!TextUtils.isEmpty(mappedLink)) mappedLink else originalLink
+            val uri = Uri.parse(link)
+            val trimmedDeeplink = trimDeeplink(uri, link)
+
+            val switchData = configJSON.optJSONObject(trimmedDeeplink)
+
+            if (switchData == null) return mappedLink
+
+            val environment = switchData.optString("environment")
+            val versions = switchData.optString("versions")
+            val weblink = switchData.optString("weblink")
+
+            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return mappedLink
+            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return mappedLink
+
+            val versionList = versions.split(",")
+            if (GlobalConfig.VERSION_NAME !in versionList) return mappedLink
+
+            val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
+
+            Timber.w("P1#WEBVIEW_SWITCH#'$link';url='$weblink'")
+
+            return createAppendDeeplinkWithQuery(webviewApplink, uri.query)
+        } catch (e: Exception) { return mappedLink }
     }
 
     private fun getRegisteredNavigationOrderHistory(uri: Uri?): String {
@@ -220,14 +272,19 @@ object DeeplinkMapper {
                     targetDeeplink = { _, _, deeplink -> getRegisteredNavigationHome(deeplink) }),
             DLP(logic = { _, _, deeplink -> GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) },
                     targetDeeplink = { _, _, _ -> ApplinkConstInternalSellerapp.SELLER_HOME }),
-            DLP.startWith(ApplinkConst.INBOX, ApplinkConsInternalHome.HOME_INBOX),
+            DLP(logic = { _, _, deeplink -> DeeplinkMapperMerchant.isProductDetailPageDeeplink(deeplink) },
+                    targetDeeplink = { _, _, deeplink -> DeeplinkMapperMerchant.getRegisteredProductDetail(deeplink) }),
+            DLP(logic = { _, _, deeplink -> DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(deeplink) },
+                    targetDeeplink = { _, _, deeplink -> DeeplinkMapperMerchant.getRegisteredProductDetailAffiliate(deeplink) }),
+            DLP.startWith(ApplinkConst.INBOX) { _, _, _ -> DeeplinkMapperHome.getRegisteredInboxNavigation() },
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
             DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) },
                     targetDeeplink = { _, _, deeplink -> getChatbotDeeplink(deeplink) }),
-            DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) },
-                    targetDeeplink = { _, _, deeplink -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink) }),
+            DLP(logic = { _, uri, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(uri) },
+                    targetDeeplink = { _, uri, _ -> AppLinkMapperSellerHome.getTopChatAppLink(uri) }),
             DLP(logic = {_, uri, _ -> (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW) }, targetDeeplink = { _, uri, _ -> getRegisteredNavigationProductDetailReview(uri) }),
+            DLP.startWith(ApplinkConst.ACCOUNT) {ctx, _, deeplink-> DeeplinkMapperAccount.getAccountInternalApplink(ctx, deeplink)},
             DLP.exact(ApplinkConst.BELANJA_ORDER) { ctx, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { ctx, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
@@ -238,6 +295,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.EVENTS_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.DEALS_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.FLIGHT_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
+            DLP.exact(ApplinkConst.TRAIN_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink)},
             DLP.exact(ApplinkConst.GIFT_CARDS_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.INSURANCE_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.MODAL_TOKO_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
@@ -253,10 +311,11 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.PURCHASE_HISTORY) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.ORDER_HISTORY) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.OMS_ORDER_DETAIL) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
+            DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
             DLP.exact(ApplinkConst.TRAVEL_AND_ENTERTAINMENT_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
-            DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
-            DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.DIGITAL) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
+            DLP.startWith(ApplinkConst.RECHARGE) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink -> getRegisteredNavigationSearch(deeplink) },
             DLP.startWith(ApplinkConst.CART) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.CHECKOUT) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
@@ -276,6 +335,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
+            DLP.startWith(ApplinkConst.SELLER_REVIEW) { _,_, deeplink -> getRegisteredNavigationSellerReviewDetail(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink -> getRegisteredNavigationRecommendation(deeplink) },
@@ -305,8 +365,8 @@ object DeeplinkMapper {
                     targetDeeplink = { _, _, deeplink -> getRegisteredNavigationProductTalk(deeplink) }),
             DLP(logic = { _, _, deeplink -> isShopTalkDeeplink(deeplink) },
                     targetDeeplink = { _, _, deeplink -> getRegisteredNavigationShopTalk(deeplink) }),
-            DLP.startWith(ApplinkConst.SELLER_NEW_ORDER) { _, _, deeplink -> getSomNewOrderAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP) { _, _, deeplink -> getSomReadyToShipAppLink(deeplink) },
+            DLP.startWith(ApplinkConst.SELLER_NEW_ORDER) { _, uri, _ -> getSomNewOrderAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP) { _, uri, _ -> getSomReadyToShipAppLink(uri) },
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_DELIVERED) { _, _, deeplink -> getRegisteredNavigationMainAppSellerDelivered() },
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP) { _, _, deeplink -> getRegisteredNavigationMainAppSellerWaitingPickup() },
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_AWB) { _, _, deeplink -> getRegisteredNavigationMainAppSellerWaitingAwb() },
@@ -314,12 +374,13 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE) { _, _, deeplink -> getRegisteredNavigationMainAppSellerAwbChange() },
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_RETUR) { _, _, deeplink -> getRegisteredNavigationMainAppSellerRetur() },
             DLP.startWith(ApplinkConst.SELLER_PURCHASE_COMPLAINT) { _, _, deeplink -> getRegisteredNavigationMainAppSellerComplaint() },
-            DLP.startWith(ApplinkConst.SELLER_HISTORY) { _, _, deeplink -> getRegisteredNavigationMainAppSellerHistory() },
-            DLP.startWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) { _, _, deeplink -> getSomShippedAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.SELLER_SHIPMENT) { _, _, deeplink -> getSomReadyToShipAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.SELLER_PURCHASE_FINISHED) { _, _, deeplink -> getSomDoneAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELED) { _, _, deeplink -> getSomCancelledAppLink(deeplink) },
-            DLP.startWith(ApplinkConst.SELLER_STATUS) { _, _, deeplink -> getSomShippedAppLink(deeplink) },
+            DLP.startWith(ApplinkConst.SELLER_HISTORY) { _, uri, _ -> getSomAllOrderAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) { _, uri, _ -> getSomShippedAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_SHIPMENT) { _, uri, _ -> getSomReadyToShipAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_FINISHED) { _, uri, _ -> getSomDoneAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELED) { _, uri, _ -> getSomCancelledAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST) { _, uri, _ -> getSomCancellationRequestAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _ -> getSomShippedAppLink(uri) },
             DLP.startWithPattern(ApplinkConst.FEED_DETAILS) { _, _, deeplink -> getRegisteredFeed(deeplink) },
             DLP.startWithPattern(ApplinkConst.INTEREST_PICK) { _, _, deeplink -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP(logic = { _, uri, _ -> uri.host == Uri.parse(ApplinkConst.FEED).host && uri.pathSegments.isEmpty() },
@@ -385,6 +446,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.AFFILIATE_DASHBOARD, ApplinkConstInternalContent.AFFILIATE_DASHBOARD),
             DLP.exact(ApplinkConst.AFFILIATE_EXPLORE, ApplinkConstInternalContent.AFFILIATE_EXPLORE),
             DLP.exact(ApplinkConst.INBOX_TICKET, ApplinkConstInternalOperational.INTERNAL_INBOX_LIST),
+            DLP.exact(ApplinkConst.Navigation.MAIN_NAV, ApplinkConsInternalNavigation.MAIN_NAVIGATION),
             DLP.exact(ApplinkConst.RECENT_VIEW, ApplinkConsInternalHome.HOME_RECENT_VIEW),
             DLP.exact(ApplinkConst.WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
             DLP.exact(ApplinkConst.NEW_WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
@@ -404,7 +466,11 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
-            DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM)
+            DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
+            DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE),
+            DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
+            DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),
+            DLP.exact(ApplinkConst.OVO_FINAL_PAGE, ApplinkConstInternalGlobal.OVO_FINAL_PAGE)
     ).toMutableList()
 
     /**
@@ -447,12 +513,14 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {
         return when {
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> getSomDoneAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalOrder.CANCELLED) -> getSomCancelledAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(uri) -> AppLinkMapperSellerHome.getTopChatAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> getSomDoneAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.CANCELLED) -> getSomCancelledAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.CANCELLATION_REQUEST) -> getSomCancellationRequestAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalOrder.HISTORY) -> getSomAllOrderAppLink(uri)
             else -> return ""
         }
     }
@@ -495,6 +563,8 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
             ApplinkConst.SellerApp.TOPADS_CREATE_ADS -> ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
             ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING -> ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD
+            ApplinkConst.SellerApp.TOPADS_HEADLINE_CREATE -> ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+            ApplinkConst.SellerApp.TOPADS_HEADLINE_DETAIL -> ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL
             ApplinkConst.SellerApp.TOPADS_EDIT_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
             ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP -> ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP
             ApplinkConst.SellerApp.TOPADS_CREATE_CHOOSER -> ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
@@ -507,16 +577,13 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.VOUCHER_HISTORY
             ApplinkConst.SellerApp.VOUCHER_DETAIL -> ApplinkConstInternalSellerapp.VOUCHER_DETAIL
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-            ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
-            ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
-            ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
-            ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
-            ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
-            ApplinkConst.SELLER_NEW_ORDER -> getSomNewOrderAppLink(trimDeeplink)
-            ApplinkConst.SELLER_SHIPMENT -> getSomReadyToShipAppLink(trimDeeplink)
-            ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
-            else -> ""
+            ApplinkConst.SellerApp.CONTENT_CREATE_POST -> ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
+            ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
+            else -> when {
+                DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
+                else -> ""
+            }
         }
     }
 }

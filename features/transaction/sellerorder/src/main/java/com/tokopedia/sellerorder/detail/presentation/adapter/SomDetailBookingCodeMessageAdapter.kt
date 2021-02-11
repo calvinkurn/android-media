@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import kotlinx.android.synthetic.main.som_booking_code_message_item.view.*

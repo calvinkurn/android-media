@@ -14,5 +14,7 @@ data class ChannelModel(
         val channelBanner: ChannelBanner = ChannelBanner(),
         val channelConfig: ChannelConfig = ChannelConfig(),
         val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
-        val channelGrids: List<ChannelGrid>  = listOf()
+        val channelGrids: List<ChannelGrid>  = listOf(),
+        val name : String = "",
+        val layout: String = ""
 ): ImpressHolder()

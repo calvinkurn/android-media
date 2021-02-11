@@ -30,7 +30,7 @@ open class ChatAttachmentUseCase @Inject constructor(
     }
 
     fun getAttachments(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String,
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
             onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
@@ -58,7 +58,7 @@ open class ChatAttachmentUseCase @Inject constructor(
     }
 
     private fun generateParams(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String
     ): Map<String, Any> {
         return mapOf(

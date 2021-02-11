@@ -14,14 +14,17 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.ResponseProductList
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.product.ProductListAdapter
@@ -29,7 +32,6 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
-import com.tokopedia.topads.view.sheet.InfoSheetProductList
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -169,7 +171,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.tip_memilih_produk)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
@@ -177,7 +179,16 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
         tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
-            InfoSheetProductList.newInstance().show(fragmentManager!!, "")
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.setTitle(getString(R.string.tip_memilih_produk))
+            tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
@@ -279,7 +290,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+    private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/unify_space_24"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back_arrow" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loaderTextView2"
+        android:layout_width="@dimen/home_account_dp_200"
+        android:layout_height="@dimen/home_account_shimmer_text_title_height_bold"
+        android:layout_marginLeft="@dimen/home_account_dp_22"
+        app:corners="8"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/home_account_dp_26"
+        app:corners="8"
+        android:layout_height="@dimen/home_account_dp_26"
+        app:layout_constraintBottom_toBottomOf="@+id/loaderTextView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loaderTextView2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

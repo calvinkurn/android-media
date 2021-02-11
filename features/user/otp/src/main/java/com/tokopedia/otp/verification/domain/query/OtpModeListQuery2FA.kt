@@ -19,6 +19,8 @@ object OtpModeListQuery2FA {
                 errorMessage
                 otpDigit
                 linkType
+                enableTicker
+                tickerTrouble
                 modeLists {
                     modeCode
                     modeText

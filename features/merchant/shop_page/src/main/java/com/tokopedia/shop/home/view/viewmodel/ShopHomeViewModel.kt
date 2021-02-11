@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -30,9 +31,11 @@ import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.Event
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -43,7 +46,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -51,34 +53,30 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopHomeViewModel @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val addToCartUseCase: AddToCartUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
-        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper,
-        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
-        private val playWidgetTools: PlayWidgetTools
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val userSession: UserSessionInterface,
+    private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+    private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+    private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper,
+    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
+    private val playWidgetTools: PlayWidgetTools
+) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-        get() = _initialProductListData
-    private val _initialProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
-
-    val newProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-        get() = _newProductListData
-    private val _newProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
+    val productListData: LiveData<Result<GetShopHomeProductUiModel>>
+        get() = _productListData
+    private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -132,11 +130,11 @@ class ShopHomeViewModel @Inject constructor(
     fun getShopPageHomeData(
             shopId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
-            isRefreshShopLayout: Boolean = false
+            initialProductListData: ShopProduct.GetShopProduct?
     ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getShopPageHomeLayout(shopId)
                     },
@@ -146,17 +144,18 @@ class ShopHomeViewModel @Inject constructor(
                     }
             )
             val productList = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
-                        if (!isRefreshShopLayout)
+                        if(initialProductListData == null)
                             getProductListData(shopId, 1, shopProductFilterParameter)
-                        else null
+                        else
+                            null
                     },
                     onError = { null }
             )
 
             val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getSortListData()
                     },
@@ -169,8 +168,16 @@ class ShopHomeViewModel @Inject constructor(
 
                 _shopHomeLayoutData.postValue(Success(it))
 
-                productList.await()?.let { productListData ->
-                    _initialProductListData.postValue(Success(productListData))
+                if(initialProductListData == null) {
+                    productList.await()?.let { productListData ->
+                        _productListData.postValue(Success(productListData))
+                    }
+                }else{
+                    _productListData.postValue(Success(mapToShopHomeProductUiModel(
+                            shopId,
+                            1,
+                            initialProductListData
+                    )))
                 }
                 sortResponse.await()?.let{  sortResponse ->
                     sortListData  = sortResponse
@@ -189,23 +196,23 @@ class ShopHomeViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
-            val listProductData = withContext(dispatcherProvider.io()) {
+            val listProductData = withContext(dispatcherProvider.io) {
                 getProductListData(shopId, page, shopProductFilterParameter)
             }
-            _newProductListData.postValue(Success(listProductData))
+            _productListData.postValue(Success(listProductData))
         }) {
-            _newProductListData.postValue(Fail(it))
+            _productListData.postValue(Fail(it))
         }
     }
 
     private suspend fun getMerchantVoucherList(
             shopId: String,
-            numVoucher: Int = 0,
+            numVoucher: Int,
             shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel
     ): ShopHomeVoucherUiModel? {
         val voucherUiModel = shopPageHomeLayoutUiModel.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
         return voucherUiModel?.let{
-            val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
+            val merchantVoucherResponse = withContext(dispatcherProvider.io) {
                 getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
             }
             it.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
@@ -217,10 +224,10 @@ class ShopHomeViewModel @Inject constructor(
         if (result is Success) {
             launchCatchError(block = {
                 getMerchantVoucherList(shopId, numVoucher, result.data)?.let{
-                    _shopHomeMerchantVoucherLayoutData.value = Success(it)
+                    _shopHomeMerchantVoucherLayoutData.postValue(Success(it))
                 }
             }) {
-                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
+                _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
         }
     }
@@ -232,7 +239,7 @@ class ShopHomeViewModel @Inject constructor(
             onErrorAddToCart: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
-            val addToCartSubmitData = withContext(dispatcherProvider.io()) {
+            val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
             if (addToCartSubmitData.data.success == 1)
@@ -252,7 +259,7 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
                 asyncCatchError(
-                        dispatcherProvider.io(),
+                        dispatcherProvider.io,
                         block = {
                             val resultCheckWishlist = checkListProductWishlist(it)
                             Pair(it, resultCheckWishlist)
@@ -260,7 +267,7 @@ class ShopHomeViewModel @Inject constructor(
                         onError = { null }
                 )
             }.awaitAll()
-            _checkWishlistData.value = Success(listResultCheckWishlist)
+            _checkWishlistData.postValue(Success(listResultCheckWishlist))
         }) {}
     }
 
@@ -290,6 +297,10 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
+        return mapToShopHomeProductUiModel(shopId, page, productListResponse)
+    }
+
+    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
         val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
@@ -313,12 +324,12 @@ class ShopHomeViewModel @Inject constructor(
     fun getVideoYoutube(videoUrl: String, widgetId: String) {
         launchCatchError(block = {
             getYoutubeVideoUseCase.setVideoUrl(videoUrl)
-            val result = withContext(dispatcherProvider.io()) {
+            val result = withContext(dispatcherProvider.io) {
                 convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
             }
-            _videoYoutube.value = Pair(widgetId, Success(result))
+            _videoYoutube.postValue(Pair(widgetId, Success(result)))
         }, onError = {
-            _videoYoutube.value = Pair(widgetId, Fail(it))
+            _videoYoutube.postValue(Pair(widgetId, Fail(it)))
         })
     }
 
@@ -353,14 +364,14 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
         launchCatchError(block = {
-            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 val campaignId = model.campaignId
                 getCampaignNotifyMe(campaignId)
             }
             val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
                     getCampaignNotifyMeModel
             )
-            _campaignNplRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+            _campaignNplRemindMeStatusData.postValue(Success(getCampaignNotifyMeUiModel))
         }) {}
     }
 
@@ -372,7 +383,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clickRemindMe(campaignId: String, action: String) {
         launchCatchError(block = {
-            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 checkCampaignNotifyMe(campaignId, action)
             }
             val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
@@ -382,13 +393,13 @@ class ShopHomeViewModel @Inject constructor(
                     checkCampaignNotifyMeModel.errorMessage,
                     action
             )
-            _checkCampaignNplRemindMeStatusData.value = Success(checkCampaignNotifyMeUiModel)
+            _checkCampaignNplRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
         }) {
-            _checkCampaignNplRemindMeStatusData.value = Fail(CheckCampaignNplException(
+            _checkCampaignNplRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
                     it.cause,
                     it.message,
                     campaignId
-            ))
+            )))
         }
     }
 
@@ -405,7 +416,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getBottomSheetFilterData() {
         launchCatchError(coroutineContext, block = {
-            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+            val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
@@ -422,7 +433,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
         launchCatchError(block = {
-            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+            val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(shopId, tempShopProductFilterParameter)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
@@ -463,18 +474,19 @@ class ShopHomeViewModel @Inject constructor(
         if (shopResultLayoutUiModel !is Success) return
         val shopLayoutUiModel = shopResultLayoutUiModel.data
         val carouselPlayWidgetUiModel = shopLayoutUiModel.listWidget.find { it is CarouselPlayWidgetUiModel }
-
-        if (carouselPlayWidgetUiModel == null || carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
-
+        if (carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
-                    PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                    dispatcherProvider.io()
+                    if (GlobalConfig.isSellerApp()) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                    dispatcherProvider.io
             )
-            val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
-            _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(widgetUiModel = widgetUiModel)
+            val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
+            _playWidgetObservable.postValue(carouselPlayWidgetUiModel.copy(
+                    actionEvent = Event(CarouselPlayWidgetUiModel.Action.Refresh),
+                    widgetUiModel = widgetUiModel
+            ))
         }) {
-            _playWidgetObservable.value = null
+            _playWidgetObservable.postValue(null)
         }
     }
 
@@ -483,23 +495,62 @@ class ShopHomeViewModel @Inject constructor(
             val response = playWidgetTools.setToggleReminder(
                     channelId,
                     remind,
-                    dispatcherProvider.io()
+                    dispatcherProvider.io
             )
             val reminderUiModel = playWidgetTools.mapWidgetToggleReminder(response)
-            _playWidgetToggleReminderObservable.value = reminderUiModel.copy(remind = remind, position = position)
+            _playWidgetToggleReminderObservable.postValue(reminderUiModel.copy(remind = remind, position = position))
         }) {
-            _playWidgetToggleReminderObservable.value = PlayWidgetReminderUiModel(
+            _playWidgetToggleReminderObservable.postValue(PlayWidgetReminderUiModel(
                     remind = remind,
                     success = false,
                     position = position
-            )
+            ))
         }
     }
 
-    fun isCampaignFollower(campaignId: String): Boolean {
-        val campaignData = (_shopHomeLayoutData.value as? Success)?.data?.listWidget?.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()?.firstOrNull {
-            it.data?.firstOrNull()?.campaignId == campaignId
+    fun deleteChannel(channelId: String) {
+
+        fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
+            val currentValue = _playWidgetObservable.value
+            if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
         }
-        return campaignData?.data?.firstOrNull()?.dynamicRule?.descriptionHeader?.isNotEmpty() ?: false
+
+        updateWidget {
+            it.copy(widgetUiModel = playWidgetTools.updateDeletingChannel(it.widgetUiModel, channelId))
+        }
+
+        launchCatchError(block = {
+            playWidgetTools.deleteChannel(
+                    channelId,
+                    userSessionShopId
+            )
+
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateDeletedChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete(channelId))
+                )
+            }
+        }, onError = { err ->
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateFailedDeletingChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.DeleteFailed(channelId, err))
+                )
+            }
+        })
     }
+
+    fun isCampaignFollower(campaignId: String): Boolean {
+        val homeLayoutData = shopHomeLayoutData.value
+        if (homeLayoutData !is Success) return false
+        return homeLayoutData.data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().any {
+            val campaignItem = it.data?.firstOrNull()
+            val nplItemCampaignId = campaignItem?.campaignId.orEmpty()
+            val dynamicRule = campaignItem?.dynamicRule
+            val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
+            nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
+        }
+    }
+
 }

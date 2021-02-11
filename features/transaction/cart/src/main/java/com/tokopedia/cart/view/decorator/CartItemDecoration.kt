@@ -25,6 +25,7 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
         }
 
         when (val viewHolder = parent.getChildViewHolder(view)) {
+            is CartSelectAllViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartTickerErrorViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartShopViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0

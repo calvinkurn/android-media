@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
@@ -34,25 +35,18 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation;
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipmentMapping;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ServiceId;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.ShipProd;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
@@ -62,17 +56,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -108,9 +91,8 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setKeroDiscomToken(shipmentAddressFormDataResponse.getKeroDiscomToken());
             dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
             dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
-            dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
             dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
-            dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
+            dataResult.setBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
             dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
             dataResult.setError(!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));
@@ -168,6 +150,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
                     egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
                     egoldAttributeModel.setTiering(shipmentAddressFormDataResponse.getEgoldAttributes().isTiering());
+                    egoldAttributeModel.setChecked(shipmentAddressFormDataResponse.getEgoldAttributes().isOptIn());
                     if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
                         egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
                         egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());
@@ -639,10 +622,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
 
                                     if (!isDisablePPP) {
-                                        if (product.getPurchaseProtectionPlanData() != null) {
+                                        if (product.getPurchaseProtectionPlanDataResponse() != null) {
                                             PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
-                                            com.tokopedia.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
-                                                    product.getPurchaseProtectionPlanData();
+                                            PurchaseProtectionPlanDataResponse pppDataMapping = product.getPurchaseProtectionPlanDataResponse();
 
                                             purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
                                             purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());

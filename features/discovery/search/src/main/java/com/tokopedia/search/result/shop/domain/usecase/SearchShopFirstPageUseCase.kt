@@ -194,11 +194,18 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
               gold_shop
               gold_shop_badge
               shop_is_official
+              merchant_vouchers
               product {
                 id
                 name
                 price_format
                 applinks
+                rating_average
+                label_group {
+                    title
+                    type
+                    position
+                }
                 image_product {
                   product_id
                   product_name

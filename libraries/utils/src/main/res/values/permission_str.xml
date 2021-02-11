@@ -14,6 +14,7 @@
     <string name="permission_camera">Kamera</string>
     <string name="permission_read_storage">Media penyimpanan</string>
     <string name="permission_write_storage">Media penyimpanan</string>
+    <string name="permission_nfc">NFC</string>
     <string name="permission_contacts">Kontak</string>
     <string name="permission_location">Lokasi</string>
     <string name="permission_accounts">Akun</string>

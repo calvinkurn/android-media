@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="category_L1_selected_title">#31353B</color>
+    <color name="category_L1_unselected_title">#AE31353B</color>
+    <color name="category_background">#BFF3F4F5</color>
+    <color name="category_border">#E5E7E9</color>
+    <color name="category_unselected_background">#f3f4f5</color>
+    <color name="category_expanded_icon">#6C727C</color>
+</resources>

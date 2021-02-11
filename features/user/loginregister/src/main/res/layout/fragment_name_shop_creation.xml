@@ -24,7 +24,7 @@
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/welcome_title"
             android:textAlignment="viewStart"
-            android:textColor="#f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_18"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/your_fullname"
             android:textAlignment="viewStart"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_desc"
             app:text_field_input_type="text"
-            app:text_field_message="@string/desc_name_shop_creation" />
+            app:text_field_message="@string/desc_name_shop_creation"
+            android:textColor="@color/Unify_N700_68"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"

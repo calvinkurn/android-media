@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/digital_common_bg_chooser_operator_product_item"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_10">
+    android:paddingTop="@dimen/unify_space_12">
 
     <TextView
         android:id="@+id/product_promo_title"
@@ -13,16 +13,16 @@
         tools:text="Promo title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"/>
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_8"/>
 
     <TextView
         android:id="@+id/product_promo_tag"
         style="@style/TextProductPromoTag"
         tools:text="Promo tag"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_below="@+id/product_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -34,21 +34,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/product_promo_tag"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_5"/>
+        android:layout_marginBottom="@dimen/unify_space_4"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginRight="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_4"/>
 
     <LinearLayout
         android:id="@+id/price_promo_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_promo_description"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/unify_space_4"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:orientation="horizontal">
 
         <TextView
@@ -64,8 +64,8 @@
             tools:text="Rp. 20.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"/>
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginStart="@dimen/unify_space_8"/>
 
     </LinearLayout>
 
@@ -75,7 +75,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/price_promo_layout"
         android:layout_marginTop="@dimen/dp_5"
-        android:background="@color/separator_voucher"/>
+        android:background="@color/Unify_N700_20"/>
 
     <TextView
         android:id="@+id/empty_stock_notification"
@@ -85,15 +85,15 @@
         android:layout_alignBaseline="@+id/product_promo_title"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:layout_marginRight="@dimen/unify_space_12"
         android:background="@drawable/digital_common_bg_out_of_stock"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/unify_space_12"
+        android:paddingLeft="@dimen/unify_space_12"
+        android:paddingRight="@dimen/unify_space_12"
+        android:paddingStart="@dimen/unify_space_12"
         android:text="@string/digital_common_title_empty_stock"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textStyle="bold"
         android:visibility="visible"/>
 

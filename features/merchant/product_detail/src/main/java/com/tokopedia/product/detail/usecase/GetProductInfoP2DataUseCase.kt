@@ -39,8 +39,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                 }
 
-        val QUERY = """
-        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
           pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
@@ -54,6 +53,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subTitle
                 titlePDP
                 subTitlePDP
+                iconURL
+                partnerText
+                partnerLogo
+                linkURL
+                isAppLink
               }
             }
             productView
@@ -297,6 +301,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   show_recommendation
                 }
                 unavailable_buttons
+                hide_floating_button
               }
             }
             upcomingCampaigns {

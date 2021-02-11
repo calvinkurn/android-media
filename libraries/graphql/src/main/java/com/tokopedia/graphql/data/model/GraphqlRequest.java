@@ -102,6 +102,12 @@ public class GraphqlRequest {
         this.variables = variables;
     }
 
+    public GraphqlRequest(boolean doQueryHash, String query, Type typeOfT, Map<String, Object> variables) {
+        this(query, typeOfT);
+        this.variables = variables;
+        this.doQueryHash = doQueryHash;
+    }
+
     /**
      * Use constructor without param shouldThrow for null checker
      *

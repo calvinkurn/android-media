@@ -48,7 +48,7 @@ private fun createMockModelConfig(createMockModel: MockModelConfig.() -> Unit): 
 }
 
 /**
- * Use this method if your test ONLY uses mock response
+ * Use this method if your test ONLY uses mock response Graphql API
  * */
 fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
     val context = getInstrumentation().targetContext
@@ -56,6 +56,24 @@ fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
 
     mockModelConfig.createMockModel(context)
     application.setInterceptor(MockInterceptor(mockModelConfig))
+}
+
+/**
+ * Use this method if your test ONLY uses mock response REST API
+ * with custom interceptor
+ **/
+fun setupRestMockResponse(mockModelConfig: MockModelConfig) {
+    val context = getInstrumentation().targetContext
+    val application = context.applicationContext as InstrumentationTestApp
+
+    mockModelConfig.createMockModel(context)
+    application.addRestSupportInterceptor(MockInterceptor(mockModelConfig))
+}
+
+fun setupRestMockResponse(createMockModel: MockModelConfig.() -> Unit) {
+    val mockModelConfig = createMockModelConfig(createMockModel)
+
+    setupRestMockResponse(mockModelConfig)
 }
 
 fun setupGraphqlMockResponse(createMockModel: MockModelConfig.() -> Unit) {

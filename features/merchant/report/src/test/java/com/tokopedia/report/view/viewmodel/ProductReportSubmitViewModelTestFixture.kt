@@ -2,14 +2,12 @@ package com.tokopedia.report.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.domain.UploaderUseCase
-import com.tokopedia.report.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockkClass
 import org.junit.Before
 import org.junit.Rule
-import java.io.File
 
 abstract class ProductReportSubmitViewModelTestFixture {
 
@@ -32,6 +30,6 @@ abstract class ProductReportSubmitViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ProductReportSubmitViewModel(submitReportUseCase, uploaderUseCase, TestCoroutineDispatchers)
+        viewModel = ProductReportSubmitViewModel(submitReportUseCase, uploaderUseCase, CoroutineTestDispatchersProvider)
     }
 }

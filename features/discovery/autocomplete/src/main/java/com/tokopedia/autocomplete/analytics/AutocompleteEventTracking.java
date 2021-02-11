@@ -19,6 +19,7 @@ public interface AutocompleteEventTracking {
         String TOP_NAV = "top nav";
         String INITIAL_STATE = "initial-state";
         String SEARCH = "Search";
+        String TOP_NAV_INITIAL_STATE = "top nav - initial state";
     }
 
     interface Action {
@@ -45,6 +46,8 @@ public interface AutocompleteEventTracking {
         String IMPRESSION_RECENT_SEARCH = "impression - recent search";
         String IMPRESSION_POPULAR_SEARCH = "impression - popular search";
         String IMPRESSION_SEE_MORE_RECENT_SEARCH = "impression see more - recent search";
+        String CLICK_CURATED_CAMPAIGN = "click - curated campaign";
+        String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
     }
 
     interface Label {

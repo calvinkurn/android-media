@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <style name="InActivePhoneTakePictureStyle" parent="Theme.AppCompat.NoActionBar">
+    <item name="android:fitsSystemWindows">true</item>
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowContentOverlay">@null</item>
+  </style>
+  
+  <style name="BoldToolbar">
+    <item name="android:textSize">@dimen/fontSize_lvl4</item>
+    <item name="android:textColor">@color/dark_N0</item>
+  </style>
 </resources>

@@ -2,14 +2,12 @@ package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.mediauploader.data.state.UploadResult
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import rx.observers.TestSubscriber
-import java.io.File
 
 class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture() {
 

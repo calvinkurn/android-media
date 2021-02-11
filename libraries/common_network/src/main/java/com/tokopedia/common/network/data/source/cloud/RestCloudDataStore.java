@@ -1,6 +1,7 @@
 package com.tokopedia.common.network.data.source.cloud;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -12,11 +13,6 @@ import com.tokopedia.common.network.util.FingerprintManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.network.util.RestCacheManager;
 import com.tokopedia.common.network.util.RestConstant;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.utils.TkpdOkHttpBuilder;
-import com.tokopedia.user.session.UserSession;
 
 import java.io.File;
 import java.util.List;
@@ -27,11 +23,8 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 
 public class RestCloudDataStore implements RestDataStore {
@@ -309,23 +302,6 @@ public class RestCloudDataStore implements RestDataStore {
     }
 
     private RestApi getApiInterface(List<Interceptor> interceptors, Context context) {
-        UserSession userSession = new UserSession(context.getApplicationContext());
-        TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
-        if (interceptors != null) {
-            okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
-            for (Interceptor interceptor : interceptors) {
-                if (interceptor == null) {
-                    continue;
-                }
-
-                okkHttpBuilder.addInterceptor(interceptor);
-            }
-        }
-
-        return new Retrofit.Builder()
-                .baseUrl("http://tokopedia.com/")
-                .addConverterFactory(new StringResponseConverter())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okkHttpBuilder.build()).build().create(RestApi.class);
+        return NetworkClient.getApiInterfaceCustomInterceptor(interceptors, context);
     }
 }

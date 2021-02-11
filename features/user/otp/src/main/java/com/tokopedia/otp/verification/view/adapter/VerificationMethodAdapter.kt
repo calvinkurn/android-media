@@ -61,7 +61,7 @@ class VerificationMethodAdapter(
                 override fun onClick(widget: View) {}
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
+                    ds.color = MethodChecker.getColor(itemView.context, R.color.Unify_N700)
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             }

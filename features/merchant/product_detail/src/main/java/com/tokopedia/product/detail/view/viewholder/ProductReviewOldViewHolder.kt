@@ -67,7 +67,7 @@ class ProductReviewOldViewHolder(val view: View, val listener: DynamicProductDet
                 listener.onSeeAllTextView(componentTrackDataModel)
             }
             review_count.text = context.getString(R.string.review_counter, totalRating)
-            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
+            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_rating_gold), null)
             review_rating.text = ratingScore.toString()
 
             if (totalRating > 0) container_image_review.visible() else container_image_review.gone()

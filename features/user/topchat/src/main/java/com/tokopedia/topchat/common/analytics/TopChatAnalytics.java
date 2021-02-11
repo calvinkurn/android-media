@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.analytics;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -14,11 +15,11 @@ import com.tokopedia.abstraction.processor.beta.AddToCartBundler;
 import com.tokopedia.abstraction.processor.beta.AddToCartProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
@@ -50,6 +51,8 @@ public class TopChatAnalytics {
     private static final String EVENT_CATEGORY = "eventCategory";
     private static final String EVENT_ACTION = "eventAction";
     private static final String EVENT_LABEL = "eventLabel";
+    private static final String KEY_BUSINESS_UNIT = "businessUnit";
+    private static final String KEY_CURRENT_SITE = "currentSite";
     private static final String USER_ID = "userId";
     private static final String ECOMMERCE = "ecommerce";
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
@@ -71,6 +74,7 @@ public class TopChatAnalytics {
         public static final String UPDATE_TEMPLATE = "update template";
         public static final String ADD_TEMPLATE = "add template";
         String MESSAGE_ROOM = "message room";
+        String INBOX_CHAT_2 = "inbox chat";
 
         static String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
         String PUSH_NOTIFICATION = "push notification";
@@ -84,11 +88,14 @@ public class TopChatAnalytics {
         public static final String INBOX_CHAT = "clickInboxChat";
         public static final String CHAT_DETAIL = "clickChatDetail";
         public static final String VIEW_CHAT_DETAIL = "viewChatDetailIris";
+        String VIEW_INBOX_CHAT_IRIS = "viewInboxChatIris";
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
         String EVENT_NAME_ATC = "addToCart";
         String EVENT_NAME_PRODUCT_PREVIEW = "productView";
+
+        String CLICK_CHAT_DETAIL = "ClickChatDetail";
 
     }
 
@@ -131,6 +138,9 @@ public class TopChatAnalytics {
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
         String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
+        String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
+        String VIEW_REVIEW_REMINDER_WIDGET = "view on review reminder widget";
+        String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
     }
 
     public interface Label {
@@ -138,6 +148,14 @@ public class TopChatAnalytics {
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
         String BUYER = "buyer";
+    }
+
+    interface BusinessUnit {
+        String Communication = "communication";
+    }
+
+    interface CurrentSite {
+        String TokopediaMarketplace = "tokopediamarketplace";
     }
 
     public void setSourcePage(String sourcePage) {
@@ -182,7 +200,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void trackHeaderClicked(int shopId) {
+    public void trackHeaderClicked(long shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -239,7 +257,7 @@ public class TopChatAnalytics {
                 ""));
     }
 
-    public void trackClickUnblockChat(int shopId) {
+    public void trackClickUnblockChat(long shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
@@ -414,8 +432,18 @@ public class TopChatAnalytics {
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+                getEventClickChatAttachedProductImage()
         );
+    }
+
+    private Map<String, Object> getEventClickChatAttachedProductImage() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Name.CLICK_CHAT_DETAIL);
+        eventTracking.put("eventCategory", Category.CHAT_DETAIL);
+        eventTracking.put("eventAction", Action.CLICK_PRODUCT_REAL_IMAGE);
+        eventTracking.put("eventLabel", "");
+
+        return eventTracking;
     }
 
     // #AP7
@@ -673,6 +701,65 @@ public class TopChatAnalytics {
                         null,
                         new ArrayMap<>()
                 )
+        );
+    }
+
+    // #RR1
+    public void trackReviewCardImpression(
+            @NotNull ReviewUiModel element,
+            boolean isSeller,
+            String userId
+    ) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.VIEW_INBOX_CHAT_IRIS,
+                        Category.INBOX_CHAT_2,
+                        Action.VIEW_REVIEW_REMINDER_WIDGET,
+                        element.getEventLabel(isSeller),
+                        BusinessUnit.Communication,
+                        CurrentSite.TokopediaMarketplace,
+                        userId
+                )
+        );
+    }
+
+    // #RR2
+    public void trackReviewCardClick(
+            @NotNull ReviewUiModel element,
+            boolean isSeller,
+            String userId
+    ) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.EVENT_NAME_CLICK_INBOXCHAT,
+                        Category.INBOX_CHAT_2,
+                        Action.CLICK_REVIEW_REMINDER_WIDGET,
+                        element.getEventLabel(isSeller),
+                        BusinessUnit.Communication,
+                        CurrentSite.TokopediaMarketplace,
+                        userId
+                )
+        );
+    }
+
+    @SuppressLint("VisibleForTests")
+    private Map<String, Object> createGeneralEvent(
+            String event,
+            String category,
+            String action,
+            String label,
+            String businessUnit,
+            String currentSite,
+            String userId
+    ) {
+        return DataLayer.mapOf(
+                EVENT_NAME, event,
+                EVENT_CATEGORY, category,
+                EVENT_ACTION, action,
+                EVENT_LABEL, label,
+                KEY_BUSINESS_UNIT, businessUnit,
+                KEY_CURRENT_SITE, currentSite,
+                USER_ID, userId
         );
     }
 }

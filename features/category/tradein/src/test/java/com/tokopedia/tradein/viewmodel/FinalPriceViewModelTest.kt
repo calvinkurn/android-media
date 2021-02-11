@@ -3,7 +3,7 @@ package com.tokopedia.tradein.viewmodel
 import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.tradein.model.AddressResult
 import com.tokopedia.tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse

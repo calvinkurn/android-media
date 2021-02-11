@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/carouselImageMain"
+    android:padding="@dimen/dp_10">
+
+    <!--Don't convert these image to Vector: Strictly Prohibited-->
+    <ImageView
+        android:id="@+id/iv_appIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/qc_launcher"
+        android:contentDescription="@string/cm_app_title_name" />
+
+    <TextView
+        android:id="@+id/tv_appName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/iv_appIcon"
+        android:layout_alignBottom="@id/iv_appIcon"
+        android:layout_toEndOf="@id/iv_appIcon"
+        android:text="@string/cm_app_title_name"
+        android:layout_marginStart="@dimen/dp_5"
+        android:gravity="center_vertical"
+        android:textColor="#42B549"
+        android:textSize="12sp" />
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_MainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tvTitle"
+        android:layout_below="@id/iv_appIcon"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/bg_button_white"
+            android:contentDescription="@string/cm_app_title_name"/>
+
+        <!--Don't convert these image to Vector: Strictly Prohibited-->
+        <ImageView
+            android:id="@+id/ivArrowRight"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dp_5"
+            android:background="@drawable/cm_next_btn_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@string/cm_app_title_name"/>
+
+        <!--Don't convert these image to Vector: Strictly Prohibited-->
+        <ImageView
+            android:id="@+id/ivArrowLeft"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_margin="@dimen/dp_5"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/cm_next_btn_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:rotation="180"
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@string/cm_app_title_name"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

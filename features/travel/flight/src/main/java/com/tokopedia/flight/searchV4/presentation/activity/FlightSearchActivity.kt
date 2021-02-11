@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -323,8 +322,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
-        Toaster.make(findViewById(parentViewResourceID), getString(stringResourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay))
-        NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
+        Toaster.build(findViewById(parentViewResourceID), getString(stringResourceId),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)).show()
     }
 
     companion object {

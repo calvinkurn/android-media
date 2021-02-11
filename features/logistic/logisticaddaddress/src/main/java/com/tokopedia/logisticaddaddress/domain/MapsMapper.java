@@ -2,12 +2,12 @@ package com.tokopedia.logisticaddaddress.domain;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Data;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Prediction;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.CoordinateModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Data;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Prediction;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

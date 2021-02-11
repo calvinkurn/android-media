@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/feed_other_related_post"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
 

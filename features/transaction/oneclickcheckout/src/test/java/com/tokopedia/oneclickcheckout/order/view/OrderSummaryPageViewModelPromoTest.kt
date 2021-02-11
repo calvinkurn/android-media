@@ -119,7 +119,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                             productDetails = listOf(ProductDetailsItem(helper.product.quantity.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
             assertEquals(PromoRequest(cartType = "occ", state = "checkout",
                     orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                            product_details = listOf(ProductDetail(helper.product.productId.toLong(), helper.product.quantity.orderQuantity))))), promoRequest)
+                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.quantity.orderQuantity))))), promoRequest)
             assertEquals(0, bboCodes.size)
         }
     }
@@ -146,7 +146,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             assertEquals(PromoRequest(cartType = "occ", state = "checkout",
                     orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
                             codes = mutableListOf(helper.logisticPromo.promoCode),
-                            product_details = listOf(ProductDetail(helper.product.productId.toLong(), helper.product.quantity.orderQuantity))))), promoRequest)
+                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.quantity.orderQuantity))))), promoRequest)
             assertEquals(1, bboCodes.size)
         }
     }

@@ -312,6 +312,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
@@ -330,9 +331,13 @@ data class DynamicHomeChannel(
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
+            const val LAYOUT_RECHARGE_BU_WIDGET: String = "home_widget_2"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
+            const val LAYOUT_BEST_SELLING: String = "best_selling"
+            const val LAYOUT_CATEGORY_ICON: String = "category_icon"
+            const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }
@@ -448,7 +453,10 @@ data class DynamicHomeChannel(
             val textColor: String = "",
             @Expose
             @SerializedName("recommendationType")
-            val recommendationType: String = ""
+            val recommendationType: String = "",
+            @Expose
+            @SerializedName("campaignCode")
+            val campaignCode: String = ""
     )
 
     data class Benefit(

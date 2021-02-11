@@ -17,12 +17,16 @@ import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class DynamicChannelHeaderView: FrameLayout {
     private var itemView: View?
@@ -63,6 +67,7 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView)
+            handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
         }
     }
 
@@ -220,8 +225,15 @@ class DynamicChannelHeaderView: FrameLayout {
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime) {
-                    listener?.onChannelExpired(channel)
+                if (channel.channelConfig.enableTimeDiffMoreThan24h) {
+                    countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime,
+                            getDayChangedListener(channel.channelHeader.subtitle, expiredTime)) {
+                        listener?.onChannelExpired(channel)
+                    }
+                } else {
+                    countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime) {
+                        listener?.onChannelExpired(channel)
+                    }
                 }
                 countDownView?.visibility = View.VISIBLE
             }
@@ -230,6 +242,43 @@ class DynamicChannelHeaderView: FrameLayout {
                 it.visibility = View.GONE
             }
         }
+    }
+
+    private fun getDayChangedListener(subtitle: String, date: Date): CountDownView.DayChangedListener {
+        return object: CountDownView.DayChangedListener {
+            override fun onLessThan24h() {
+                countDownView?.let {
+                    if (!it.isVisible) {
+                        it.visibility = View.VISIBLE
+                        channelSubtitle?.text = subtitle
+                    }
+                }
+            }
+
+            override fun onMoreThan24h() {
+                countDownView?.let {
+                    if (it.isVisible) {
+                        it.visibility = View.GONE
+                        channelSubtitle?.text = String.format("%s %s", subtitle, DateHelper.formatDateToUi(date))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
+        if (channel.channelHeader.backColor.isNotEmpty()) {
+            stubSeeAllButton?.gone()
+            stubSeeAllButtonUnify?.gone()
+            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+
+            titleContainer.setPadding(
+                    titleContainer.paddingLeft,
+                    convertDpToPixel(10f, titleContainer.context),
+                    titleContainer.paddingRight,
+                    titleContainer.paddingBottom)
+        }
+
     }
 
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {

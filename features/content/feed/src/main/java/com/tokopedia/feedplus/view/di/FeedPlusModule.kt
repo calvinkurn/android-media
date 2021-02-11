@@ -34,7 +34,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.di.VoteModule
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -56,7 +55,7 @@ private const val NET_WRITE_TIMEOUT = 60
 private const val NET_CONNECT_TIMEOUT = 60
 private const val NET_RETRY = 1
 
-@Module(includes = [VoteModule::class])
+@Module
 class FeedPlusModule {
     @FeedPlusScope
     @Provides

@@ -9,7 +9,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -20,7 +20,7 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -58,46 +58,12 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".detail.view.activity.FlightDetailOrderActivity"
-            android:label="@string/flight_order_list"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_flight"
-                    android:pathPattern="@string/path_flight_order_detail"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_flight"
-                    android:path="@string/path_flight_cancel"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".cancellation.view.activity.FlightCancellationActivity"
-            android:label="@string/activity_label_flight_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight">
-        </activity>
-        <activity
             android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -109,30 +75,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
-            android:label="@string/activity_label_flight_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".cancellationV2.presentation.activity.FlightCancellationReasonActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationReviewActivity"
-            android:label="@string/activity_label_flight_review_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".cancellationV2.presentation.activity.FlightCancellationReviewActivity"
             android:label="@string/activity_label_flight_review_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".cancellation.view.activity.FlightCancellationRefundDetailActivity"
-            android:label="@string/flight_cancellation_refund_detail_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
@@ -141,18 +91,41 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationListActivity"
-            android:label="@string/flight_cancellation_list_title"
+            android:name=".orderdetail.presentation.activity.FlightOrderDetailActivity"
+            android:label="@string/flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight">
+            <intent-filter android:autoVerify="true">
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:pathPattern="@string/path_flight_order_detail"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_cancel"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity"
+            android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationDetailActivity"
-            android:label="@string/flight_cancellation_list_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
-            android:label="@string/flight_cancellation_reason_title"
+            android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
+            android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
@@ -168,6 +141,16 @@
         <activity
             android:name=".bookingV3.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationListActivity"
+            android:label="@string/flight_cancellation_list_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationDetailActivity"
+            android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
     </application>

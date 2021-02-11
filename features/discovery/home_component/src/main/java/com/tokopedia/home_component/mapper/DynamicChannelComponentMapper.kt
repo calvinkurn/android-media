@@ -10,6 +10,7 @@ object DynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = channel.groupId,
                 type = channel.type,
+                layout = channel.layout,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
                         channel.header.id,

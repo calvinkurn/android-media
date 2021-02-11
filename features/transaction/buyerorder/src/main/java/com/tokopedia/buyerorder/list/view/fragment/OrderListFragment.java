@@ -33,15 +33,10 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.buyerorder.R;
-import com.tokopedia.buyerorder.common.util.Utils;
-import com.tokopedia.buyerorder.detail.data.ShopInfo;
-import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
-import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.common.SaveDateBottomSheetActivity;
-import com.tokopedia.buyerorder.list.data.ActionButton;
-import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.OrderLabelList;
 import com.tokopedia.buyerorder.list.data.bomorderfilter.CustomDate;
@@ -56,7 +51,7 @@ import com.tokopedia.buyerorder.list.view.adapter.factory.OrderListAdapterFactor
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.EmptyStateMarketPlaceFilterViewHolder;
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.OrderListRecomListViewHolder;
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.OrderListViewHolder;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListContract;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.datepicker.DatePickerUnify;
@@ -66,14 +61,12 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -87,7 +80,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -99,7 +91,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
         OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
-        OrderListViewHolder.OnActionButtonListener, EmptyStateMarketPlaceFilterViewHolder.ActionListener {
+        EmptyStateMarketPlaceFilterViewHolder.ActionListener {
 
 
     private static final String ORDER_CATEGORY = "orderCategory";
@@ -409,7 +401,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
-        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this, this, this, this));
+        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this, this, this));
         orderListAdapter.setVisitables(new ArrayList<>());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(orderListAdapter);
@@ -651,10 +643,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
 
-        defStartDate = Utils.setFormat(format, format1, defaultDate.getStartRangeDate());
-        defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
-        customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
-        customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
+        defStartDate = BuyerUtils.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = BuyerUtils.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = BuyerUtils.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = BuyerUtils.setFormat(format, format1, customDate.getStartRangeDate());
     }
 
     @Override
@@ -696,9 +688,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
-        if (productModel instanceof OrderListRecomViewModel) {
-            OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
-            orderListAnalytics.eventRecommendationAddToCart(orderListRecomViewModel, addToCartDataResponseModel);
+        if (productModel instanceof OrderListRecomUiModel) {
+            OrderListRecomUiModel orderListRecomUiModel = (OrderListRecomUiModel) productModel;
+            orderListAnalytics.eventRecommendationAddToCart(orderListRecomUiModel, addToCartDataResponseModel);
         }
     }
 
@@ -743,8 +735,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 customFilter = false;
             } else {
                 customFilter = true;
-                startDate = Utils.setFormat(format, format2, mulaiButton.getText().toString());
-                endDate = Utils.setFormat(format, format2, sampaiButton.getText().toString());
+                startDate = BuyerUtils.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = BuyerUtils.setFormat(format, format2, sampaiButton.getText().toString());
             }
             selectedDateMap.clear();
             selectedDateMap.put(SAMPAI, endDate);
@@ -766,8 +758,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             selectedDateMap.clear();
             customFilter = false;
             datePickerlayout.setVisibility(View.GONE);
-            sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
-            mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
+            sampaiButton.setText(BuyerUtils.setFormat(format2, format, customEndDate));
+            mulaiButton.setText(BuyerUtils.setFormat(format2, format, customStartDate));
             datePickerStartDate = "";
             datePickerEndDate = "";
         });
@@ -777,8 +769,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         } else {
             radio1.setChecked(true);
         }
-        sampaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
-        mulaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+        sampaiButton.setText(BuyerUtils.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+        mulaiButton.setText(BuyerUtils.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
 
         crossIcon.setOnClickListener((View view) -> {
             changeDateBottomSheetDialog.dismiss();
@@ -869,11 +861,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + BuyerUtils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
 
             } else {
-                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + BuyerUtils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
@@ -923,11 +915,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWishListClicked(@NotNull Object productModel, boolean isSelected, @NotNull WishListResponseListener wishListResponseListener) {
-        if (productModel instanceof OrderListRecomViewModel) {
+        if (productModel instanceof OrderListRecomUiModel) {
             if (isSelected) {
-                presenter.addWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+                presenter.addWishlist(((OrderListRecomUiModel) productModel).getRecommendationItem(), wishListResponseListener);
             } else {
-                presenter.removeWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+                presenter.removeWishlist(((OrderListRecomUiModel) productModel).getRecommendationItem(), wishListResponseListener);
             }
         }
     }
@@ -935,112 +927,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setSelectFilterName(String selectFilterName) {
         orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
-    }
-
-
-    public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
-        if (actionButton != null)
-            this.actionButtonUri = actionButton.uri();
-        this.selectedOrderId = order.id();
-        switch (actionButton.label().toLowerCase()) {
-            case ACTION_BUY_AGAIN:
-                if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
-                else
-                    handleDefaultCase(actionButton);
-                break;
-            case ACTION_SUBMIT_CANCELLATION:
-            case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
-                break;
-            case ACTION_TRACK_IT:
-                trackOrder();
-                orderListAnalytics.sendActionButtonClickEventList("click track", "");
-                break;
-            case ACTION_DONE:
-                showPopUpSelesai();
-                break;
-            default:
-                if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
-                    String eventLabel = "";
-                    if (order.items() != null && !order.items().isEmpty()) {
-                        eventLabel = String.valueOf(order.items().get(0).getId());
-                    }
-                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
-
-                } else if (actionButton.label().equalsIgnoreCase(ACTION_TULIS_REVIEW)) {
-                    orderListAnalytics.sendActionButtonClickEventList(CLICK_TULIS_REVIEW, String.valueOf(order.status()));
-                }
-
-                handleDefaultCase(actionButton);
-                break;
-        }
-
-    }
-
-    private void showPopUpSelesai() {
-        orderListAnalytics.sendActionButtonClickEvent("selesai");
-        if (getContext() != null) {
-            DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-            View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
-            TextView title = childView.findViewById(R.id.tv_title_dialog);
-            title.setText(getString(R.string.popup_selesai_title));
-
-            TextView desc = childView.findViewById(R.id.tv_desc_dialog);
-            desc.setText(getString(R.string.popup_selesai_desc));
-
-            TextView btnOk = childView.findViewById(R.id.btn_ok_dialog);
-            btnOk.setText(getString(R.string.popup_selesai_ok_btn));
-            btnOk.setOnClickListener(view1 -> {
-                dialogUnify.dismiss();
-                presenter.finishOrder(getContext(), selectedOrderId, actionButtonUri);
-            });
-
-            TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
-            btnCancel.setText(getString(R.string.popup_selesai_cancel_btn));
-            btnCancel.setOnClickListener(view12 -> {
-                dialogUnify.dismiss();
-            });
-
-            dialogUnify.setUnlockVersion();
-            dialogUnify.setChild(childView);
-            dialogUnify.show();
-        }
-    }
-
-    private void handleDefaultCase(ActionButton actionButton) {
-        String newUri = actionButton.uri();
-        if (newUri.startsWith(KEY_URI)) {
-            if (newUri.contains(KEY_URI_PARAMETER)) {
-                Uri url = Uri.parse(newUri);
-                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER) : "";
-                newUri = newUri.replace(queryParameter, "");
-                newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
-            }
-            RouteManager.route(getActivity(), newUri);
-        } else if (!TextUtils.isEmpty(newUri)) {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, newUri);
-        }
-    }
-
-    @Override
-    public void requestCancelOrder(Status status) {
-        Intent intent = new Intent(getContext(), RequestCancelActivity.class);
-        intent.putExtra("OrderId", selectedOrderId);
-        intent.putExtra("action_button_url", actionButtonUri);
-        if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (presenter.shouldShowTimeForCancellation() && getView() != null) {
-                Toaster.build(getView(),
-                        presenter.getCancelTime(),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_ERROR,
-                        getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
-                        }).show();
-            } else
-                startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
-        } else if (status.status().equals(STATUS_CODE_11)) {
-            startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 0), REQUEST_CANCEL_ORDER);
-        }
     }
 
     private void trackOrder() {
@@ -1053,25 +939,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(getContext(), routingAppLink);
-    }
-
-    @Override
-    public void startSellerAndAddInvoice() {
-        ShopInfo shopInfo = presenter.getShopInfo();
-        if (shopInfo != null) {
-            String shopId = String.valueOf(shopInfo.getShopId());
-            String shopName = shopInfo.getShopName();
-            String shopLogo = shopInfo.getShopLogo();
-            String shopUrl = shopInfo.getShopUrl();
-            String invoiceUrl;
-            Uri uri = Uri.parse(actionButtonUri);
-            invoiceUrl = uri.getQueryParameter(INVOICE_URL);
-            String applink = "tokopedia://topchat/askseller/" + shopId;
-            Intent intent = RouteManager.getIntent(getContext(), applink);
-            presenter.assignInvoiceDataTo(intent);
-            intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
-            startActivity(intent);
-        }
     }
 
     @Override

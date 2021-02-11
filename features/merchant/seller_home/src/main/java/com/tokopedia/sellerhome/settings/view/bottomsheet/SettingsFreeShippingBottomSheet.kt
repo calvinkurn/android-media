@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_settings_free_shipping.*
 import javax.inject.Inject
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
 
     companion object {
-        val TAG: String = SettingsFreeShippingBottomSheet::class.java.simpleName
+        val TAG = SettingsFreeShippingBottomSheet::class.java.canonicalName
 
         fun createInstance(): SettingsFreeShippingBottomSheet {
             return SettingsFreeShippingBottomSheet()

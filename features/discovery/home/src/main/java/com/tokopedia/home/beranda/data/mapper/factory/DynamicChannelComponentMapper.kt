@@ -10,6 +10,7 @@ object DynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = channel.groupId,
                 type = channel.type,
+                layout = channel.layout,
                 verticalPosition = verticalPosition,
                 contextualInfo = channel.contextualInfo,
                 widgetParam = channel.widgetParam,
@@ -106,7 +107,8 @@ object DynamicChannelComponentMapper {
                                     it.benefit.value
                             ),
                             textColor = it.textColor,
-                            recommendationType = it.recommendationType
+                            recommendationType = it.recommendationType,
+                            campaignCode = it.campaignCode
                     )
                 }
         )

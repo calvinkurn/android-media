@@ -37,10 +37,10 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
     public void bind(final TemplateChatModel element) {
         if (element.size() >= 5) {
             imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_grey));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.add_template_disabled));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
         } else {
-            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_green));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.design.R.color.medium_green));
+            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_topchat_plus_green));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         }
 
         view.setOnClickListener(new View.OnClickListener() {

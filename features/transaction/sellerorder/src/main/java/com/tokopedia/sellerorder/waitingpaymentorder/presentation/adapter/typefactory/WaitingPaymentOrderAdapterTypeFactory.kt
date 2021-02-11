@@ -4,13 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrderLoadingViewHolder
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersErrorViewHolder
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentTickerViewHolder
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.*
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
 
@@ -38,12 +36,17 @@ class WaitingPaymentOrderAdapterTypeFactory(
         return WaitingPaymentOrderLoadingViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: EmptyModel?): Int {
+        return WaitingPaymentOrderEmptyViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent)
             WaitingPaymentTickerViewHolder.LAYOUT -> WaitingPaymentTickerViewHolder(parent, itemClickListener)
             WaitingPaymentOrdersErrorViewHolder.LAYOUT -> WaitingPaymentOrdersErrorViewHolder(parent)
             WaitingPaymentOrderLoadingViewHolder.LAYOUT -> WaitingPaymentOrderLoadingViewHolder(parent)
+            WaitingPaymentOrderEmptyViewHolder.LAYOUT -> WaitingPaymentOrderEmptyViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

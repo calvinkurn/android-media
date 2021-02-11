@@ -9,9 +9,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
-import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
@@ -20,10 +20,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val initiateVoucherUseCase: InitiateVoucherUseCase,
-        private val basicShopInfoUseCase: BasicShopInfoUseCase,
-        private val userSession: UserSessionInterface
+    private val dispatchers: CoroutineDispatchers,
+    private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val basicShopInfoUseCase: BasicShopInfoUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     private var maxPosition: Int? = null

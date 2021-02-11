@@ -20,10 +20,15 @@ data class LineGraphWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<LineGraphDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<LineGraphDataUiModel> {
+        return LineGraphWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }

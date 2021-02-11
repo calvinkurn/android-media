@@ -47,7 +47,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     var currentSlug: String = ""
         private set
-
+    var currentSlugDC: String = ""
+        private set
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
         get() = _officialStoreBannersResult
@@ -92,6 +93,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
+            currentSlugDC = category?.slug ?: ""
 
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)

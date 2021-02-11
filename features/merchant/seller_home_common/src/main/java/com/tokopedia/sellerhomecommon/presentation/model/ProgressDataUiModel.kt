@@ -16,4 +16,8 @@ data class ProgressDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && value == 0
+    }
+}

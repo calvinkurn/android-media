@@ -7,9 +7,9 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -28,7 +28,7 @@ class PromoListItemViewHolder(private val view: View,
 ) : AbstractViewHolder<PromoListItemUiModel>(view) {
 
     private val containerImagePromoItem by lazy {
-        view.findViewById<LinearLayout>(R.id.container_image_promo_item)
+        view.findViewById<FlexboxLayout>(R.id.container_image_promo_item)
     }
     private val labelPromoItemTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_title)
@@ -64,9 +64,9 @@ class PromoListItemViewHolder(private val view: View,
                 if (it.isNotBlank()) {
                     hasNonBlankUrl = true
                     val imageView = ImageView(itemView.context)
-                    imageView.layoutParams = LinearLayout.LayoutParams(
-                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
-                            LinearLayout.LayoutParams.MATCH_PARENT
+                    imageView.layoutParams = FlexboxLayout.LayoutParams(
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20)
                     )
                     imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4), 0)
                     imageView.scaleType = ImageView.ScaleType.FIT_START
@@ -135,11 +135,11 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.clr_f531353b))
-        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
+        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -162,7 +162,7 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.purchase_platform.common.R.color.n_700_44)
+        val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
         labelPromoItemTitle.setTextColor(disabledColor)
         labelPromoCodeInfo.setTextColor(disabledColor)
         labelPromoCodeValue.setTextColor(disabledColor)
@@ -190,7 +190,7 @@ class PromoListItemViewHolder(private val view: View,
                 override fun updateDrawState(textPaint: TextPaint) {
                     super.updateDrawState(textPaint)
                     textPaint.isUnderlineText = false
-                    textPaint.color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                    textPaint.color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
             }
             formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

@@ -21,14 +21,6 @@ class SettingNotifActivity : BaseOtpActivity() {
         return SettingNotifFragment.createInstance(bundle)
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-        supportActionBar?.apply {
-            title = getString(R.string.title_setting_push_notif)
-            setDisplayShowTitleEnabled(true)
-        }
-    }
-
     override fun onBackPressed() {
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {

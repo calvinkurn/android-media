@@ -30,10 +30,12 @@ class DescriptionBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+
+        const val TAG = "DescriptionBottomSheet"
     }
 
     fun show(content: String, fm: FragmentManager) {
         tvMvcDescription?.text = content.parseAsHtml()
-        show(fm, this::class.java.simpleName)
+        show(fm, TAG)
     }
 }

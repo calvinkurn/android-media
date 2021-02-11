@@ -7,7 +7,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 /**
@@ -37,7 +37,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
-    var labelGroupList: List<LabelGroupViewModel> = listOf()
+    var labelGroupList: List<LabelGroupUiModel> = listOf()
     var stockLabel: String = ""
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0

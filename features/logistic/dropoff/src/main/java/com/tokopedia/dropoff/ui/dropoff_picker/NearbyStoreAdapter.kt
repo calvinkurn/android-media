@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.R
 import com.tokopedia.dropoff.ui.dropoff_picker.model.*
 import com.tokopedia.dropoff.util.getDescription
-import com.tokopedia.logisticdata.util.toKilometers
+import com.tokopedia.logisticCommon.util.toKilometers
 import kotlinx.android.synthetic.main.item_empty_nearby_location.view.*
 import kotlinx.android.synthetic.main.item_nearby_location.view.*
 

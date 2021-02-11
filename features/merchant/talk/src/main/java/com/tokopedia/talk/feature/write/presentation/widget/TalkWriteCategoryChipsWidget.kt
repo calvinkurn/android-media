@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class TalkWriteCategoryChipsWidget(private val listener: ChipClickListener) : RecyclerView.Adapter<TalkWriteCategoryChipsWidget.ItemViewHolder>() {

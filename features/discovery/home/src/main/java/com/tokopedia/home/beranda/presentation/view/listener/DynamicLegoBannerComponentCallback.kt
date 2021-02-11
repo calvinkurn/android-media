@@ -90,6 +90,28 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
         )
     }
 
+    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+    }
+
+    override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        LegoBannerTracking.sendLegoBannerTwoClick(channelModel, channelGrid, position, homeCategoryListener.userId)
+        RouteManager.route(context,
+                if (channelGrid.applink.isNotEmpty())
+                    channelGrid.applink else channelGrid.url)
+    }
+
+    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+        homeCategoryListener.putEEToIris(
+                LegoBannerTracking.getLegoBannerTwoImageImpression(
+                        channelModel, parentPosition, true, homeCategoryListener.userId
+                ) as HashMap<String, Any>
+        )
+    }
+
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
 
     }

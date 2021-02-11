@@ -112,7 +112,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         sendTrackerTrackScreenData()
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel

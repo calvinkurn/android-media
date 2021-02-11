@@ -20,7 +20,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Dirilis dalam " />
@@ -35,11 +35,11 @@
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:visibility="gone"
-        app:unify_timer_background_color="@color/white"
-        app:unify_timer_colon_color="@color/clr_EF144A"
+        app:unify_timer_background_color="@color/Unify_N0"
+        app:unify_timer_colon_color="@color/Unify_R500"
         app:unify_timer_custom_box_height="16"
         app:unify_timer_custom_box_width="14"
-        app:unify_timer_text_color="@color/clr_EF144A"
+        app:unify_timer_text_color="@color/Unify_R500"
         tools:visibility="visible" />
 </LinearLayout>
 

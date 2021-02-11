@@ -1,0 +1,65 @@
+{
+  "data": {
+    "hachikoCouponDetail": {
+      "id": 2,
+      "expired": "Hari ini",
+      "real_code": "FREE50NE113C",
+      "minimum_usage": "",
+      "minimum_usage_label": "",
+      "points": 10000,
+      "title": "Coupon Title 4",
+      "catalog_title": "Coupon Diskon 100%",
+      "sub_title": "SubCoupon Title 4",
+      "catalog_sub_title": "Sub title 2 gege",
+      "description": "desc 2",
+      "overview": "Overview 2",
+      "how_to_use": "sikat",
+      "tnc": "apa aja",
+      "icon": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140338/market-place%402x.png",
+      "thumbnail_url": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140406/jnt%402x.png",
+      "thumbnail_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140411/jnt%403x.png",
+      "image_url": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140406/jnt%402x.png",
+      "image_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140411/jnt%403x.png",
+      "thumbnail_v2_url": "https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2018/07/Catalog-Banner-tkpdm-Desktop_360x120.jpg",
+      "thumbnail_v2_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140411/jnt%403x.png",
+      "image_v2_url": "https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2018/07/Catalog-Detail-tkpdm-Desktop_960x160.jpg",
+      "image_v2_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140411/jnt%403x.png",
+      "quota": 0,
+      "is_gift": 1,
+      "is_show_button": true,
+      "cta": "tokopedia://cart",
+      "cta_desktop": "https://staging.tokopedia.com/tx.pl",
+      "usage": {
+        "active_count_down": 0,
+        "expired_count_down": 0,
+        "text": "",
+        "usage_str": "",
+        "btn_usage": {
+          "text": "Expired",
+          "url": "https://staging.tokopedia.com/tx.pl",
+          "applink": "tokopedia://cart",
+          "type": "disable"
+        }
+      },
+      "swipe": {
+        "need_swipe": false,
+        "text": "",
+        "note": "",
+        "partner_code": "",
+        "pin": {
+          "need_pin": false,
+          "text": ""
+        }
+      },
+      "base_code": "MZTFS10",
+      "promo_id": 5701,
+      "product_recommendation": {
+        "is_show": true,
+        "param": "{\"userID\":111,\"os\":true,\"powerMerchant\":true}"
+      },
+      "is_applicable": false,
+      "status": 8,
+      "statusStr": ""
+    }
+  }
+}

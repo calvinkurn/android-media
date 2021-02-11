@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import java.util.*
 
@@ -36,6 +37,15 @@ data class SearchProductModel(
         @Expose
         val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget()
 ) {
+
+    private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
+
+    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
+        this.topAdsImageViewModelList.clear()
+        this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
+    }
+
+    fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
     data class SearchProduct (
             @SerializedName("header")
@@ -176,14 +186,6 @@ data class SearchProductModel(
             @Expose
             val imageUrl: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
-
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -207,6 +209,14 @@ data class SearchProductModel(
             @SerializedName("badges")
             @Expose
             val badgeList: List<OtherRelatedProductBadge> = listOf(),
+
+            @SerializedName("ratingAverage")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("labelGroups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
 
             @SerializedName("freeOngkir")
             @Expose
@@ -316,17 +326,9 @@ data class SearchProductModel(
             @Expose
             val categoryName: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
             @SerializedName("ratingAverage")
             @Expose
             val ratingAverage: String = "",
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
 
             @SerializedName("originalPrice")
             @Expose
@@ -352,6 +354,10 @@ data class SearchProductModel(
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),
 
+            @SerializedName("labelGroupVariant")
+            @Expose
+            val labelGroupVariantList: List<ProductLabelGroupVariant> = listOf(),
+
             @SerializedName("badges")
             @Expose
             val badgeList: List<ProductBadge> = listOf(),
@@ -359,10 +365,6 @@ data class SearchProductModel(
             @SerializedName("wishlist")
             @Expose
             val isWishlist: Boolean = false,
-
-            @SerializedName("count_sold")
-            @Expose
-            val countSold: String = "",
 
             @SerializedName("minOrder")
             @Expose
@@ -450,6 +452,24 @@ data class SearchProductModel(
             @SerializedName("url")
             @Expose
             val url: String = ""
+    )
+
+    data class ProductLabelGroupVariant(
+           @SerializedName("title")
+           @Expose
+           val title: String = "",
+
+           @SerializedName("type")
+           @Expose
+           val type: String = "",
+
+           @SerializedName("type_variant")
+           @Expose
+           val typeVariant: String = "",
+
+           @SerializedName("hex_color")
+           @Expose
+           val hexColor: String = ""
     )
 
     data class ProductBadge(
@@ -593,6 +613,18 @@ data class SearchProductModel(
             @Expose
             val applink: String = "",
 
+            @SerializedName("banner_image_url")
+            @Expose
+            val bannerImageUrl: String = "",
+
+            @SerializedName("banner_link_url")
+            @Expose
+            val bannerLinkUrl: String = "",
+
+            @SerializedName("banner_applink_url")
+            @Expose
+            val bannerApplinkUrl: String = "",
+
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
@@ -641,7 +673,23 @@ data class SearchProductModel(
 
             @SerializedName("description")
             @Expose
-            val description: List<String> = listOf()
+            val description: List<String> = listOf(),
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("label_groups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("original_price")
+            @Expose
+            val originalPrice: String = "",
+
+            @SerializedName("discount_percentage")
+            @Expose
+            val discountPercentage: Int = 0
     )
 
     data class SearchInspirationWidget(

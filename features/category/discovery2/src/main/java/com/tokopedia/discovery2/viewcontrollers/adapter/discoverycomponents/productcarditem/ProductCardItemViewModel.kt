@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.PDP_APPLINK
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
@@ -13,10 +12,9 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -52,11 +50,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
-    init {
-        initDaggerInject()
-    }
+    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -111,7 +105,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     fun getFreeOngkirImage(dataItem: DataItem): String {
         val isBebasActive = dataItem.freeOngkir?.isActive
         return if (isBebasActive == true) {
-            dataItem.freeOngkir.freeOngkirImageUrl
+            dataItem.freeOngkir?.freeOngkirImageUrl ?: ""
         } else {
             ""
         }
@@ -281,10 +275,5 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return campaignNotifyMeRequest
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 }

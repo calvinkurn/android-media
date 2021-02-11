@@ -31,7 +31,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         RoundedShadowUtill.generateBackgroundWithShadow(view,
                 com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 R.dimen.dp_12,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_44,
                 R.dimen.dp_2,
                 Gravity.TOP)
     }
@@ -96,7 +96,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun animateSlideUp() = with(view) {
-        base_btn_follow?.visibility = View.VISIBLE
+        visibility = View.VISIBLE
         animate().translationY(0F).setDuration(GONE_ANIMATION_DURATION).setListener(null)
     }
 
@@ -104,7 +104,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
-                base_btn_follow?.visibility = View.GONE
+                visibility = View.GONE
                 stopLoading()
             }
         })

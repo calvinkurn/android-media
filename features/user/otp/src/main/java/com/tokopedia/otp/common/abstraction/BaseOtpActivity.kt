@@ -17,20 +17,11 @@ import com.tokopedia.otp.common.di.OtpComponentBuilder
 
 abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent> {
 
-    override fun getComponent(): OtpComponent = OtpComponentBuilder.getComponent(application as BaseMainApplication, this)
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
-        toolbar = findViewById(toolbarResourceID)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_toolbar_back_otp)
-            setDisplayShowTitleEnabled(false)
-            setDisplayHomeAsUpEnabled(true)
-            elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@BaseOtpActivity, R.color.Neutral_N0)))
-        }
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_otp
     }
+
+    override fun getComponent(): OtpComponent = OtpComponentBuilder.getComponent(application as BaseMainApplication, this)
 
     @SuppressLint("InlinedApi")
     override fun setupStatusBar() {
@@ -44,7 +35,7 @@ abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

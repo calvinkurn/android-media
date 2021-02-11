@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
@@ -23,7 +23,7 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
 
     void onChangeAddress();
 
@@ -96,8 +96,6 @@ public interface ShipmentAdapterActionListener {
     void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 
     void onProcessToPayment();
-
-    void onProcessToPaymentCod();
 
     void onChangeTradeInDropOffClicked();
 

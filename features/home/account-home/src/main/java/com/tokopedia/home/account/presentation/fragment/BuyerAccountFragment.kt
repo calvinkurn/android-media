@@ -99,7 +99,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
+        swipe_refresh_layout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
@@ -486,17 +486,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         return recommendationList
     }
 
-    private fun getAbTestingRemoteConfig(): RemoteConfig {
-        return RemoteConfigInstance.getInstance().abTestPlatform
-    }
-
     private fun useUoh(): Boolean {
         return try {
-            val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
-            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
 
             val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
-            (rollence && remoteConfigFirebase)
+            (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
         } catch (e: Exception) {
             false

@@ -130,4 +130,36 @@ class EventPDPCheckoutViewModelTest {
 
     }
 
+    @Test
+    fun `CheckoutInstantEvent_SuccessCheckout_ShouldSuccessCheckoutInstant`(){
+
+        val checkoutMock = Gson().fromJson(getJson("checkout_instant_mock.json"), EventCheckoutInstantResponse::class.java)
+
+        val result = HashMap<Type, Any>()
+        result[EventCheckoutInstantResponse::class.java] = checkoutMock
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
+
+        val actual = eventCheckoutViewModel.eventCheckoutInstantResponse.value
+        assertEquals(actual, checkoutMock)
+    }
+
+    @Test
+    fun `CheckoutInstantEvent_FailCheckout_ShouldFailCheckout`(){
+        //given
+        val error = Throwable("Error Checkout")
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
+
+        //when
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
+
+        //then
+        val actual = eventCheckoutViewModel.errorGeneralValue.value
+        assert(actual?.message.equals(error.message))
+
+    }
+
 }

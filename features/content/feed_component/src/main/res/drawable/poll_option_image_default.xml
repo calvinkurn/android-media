@@ -2,7 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <solid
-                android:color="@color/poll_black"/>
+                android:color="@color/Unify_N700_44"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -12,8 +12,8 @@
                     android:bottomRightRadius="3dp"
                     android:topRightRadius="3dp"/>
                 <gradient
-                    android:endColor="@color/poll_second_green"
-                    android:startColor="@color/poll_first_green"/>
+                    android:endColor="@color/Unify_N150"
+                    android:startColor="@color/Unify_G500"/>
             </shape>
         </scale>
     </item>

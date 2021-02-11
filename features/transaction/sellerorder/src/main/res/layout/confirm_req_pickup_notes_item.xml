@@ -20,7 +20,7 @@
             android:id="@+id/label_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             android:layout_centerInParent="true"/>
@@ -38,7 +38,6 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_toRightOf="@id/rl_index_notes"
         android:layout_toEndOf="@id/rl_index_notes"
         android:layout_centerVertical="true"/>
 

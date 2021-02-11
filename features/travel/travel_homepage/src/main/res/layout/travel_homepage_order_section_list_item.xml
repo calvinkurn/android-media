@@ -42,7 +42,7 @@
             app:layout_constraintEnd_toStartOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Neutral_N200" />
+            tools:background="@color/Unify_N200" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
@@ -56,7 +56,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +73,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -90,7 +90,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/title"

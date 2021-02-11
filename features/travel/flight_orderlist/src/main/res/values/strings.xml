@@ -20,7 +20,6 @@
     <string name="flight_order_payment_label">Metode Pembayaran</string>
     <string name="flight_order_a_n_prefix">a.n.</string>
     <string name="flight_order_branch_prefix">Cabang</string>
-    <string name="flight_order_detail_due_date_label">Batas Akhir Pembayaran</string>
     <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
 
     <string name="flight_order_refund_button_card">Order Detail</string>
@@ -28,9 +27,6 @@
     <string name="flight_order_detail_button_label">Order Detail</string>
     <string name="flight_order_failed_button_label">Pesan Ulang</string>
 
-    <string name="flight_order_waiting_for_confirmation_title">Menunggu Konfirmasi Pemesanan</string>
-    <string name="flight_order_in_progress_title">Pemesanan Dalam Proses</string>
-    <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
     <string name="flight_order_departure_schedule">Jadwal Penerbangan</string>
 
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
@@ -38,17 +34,17 @@
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
     <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dana dari tiket pesawat yang dibatalkan kemungkinan tidak dapat dikembalikan sesuai dengan ketentuan dari maskapai terkait.]]></string>
 
-    <string name="flight_resend_eticket_dialog_email_empty_error">Alamat Email tidak boleh kosong</string>
-    <string name="flight_resend_eticket_dialog_email_invalid_error">Alamat Email tidak valid</string>
-    <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
+    <string name="flight_resend_eticket_dialog_email_empty_error">Wajib diisi.</string>
+    <string name="flight_resend_eticket_dialog_email_invalid_error">Pastikan format e-mail sudah benar.</string>
+    <string name="flight_resend_eticket_dialog_general_error">E-mail gagal dikirim, coba kirim ulang ya.</string>
 
-    <string name="flight_order_detail_applink_pattern" formatted="false">%s/%s</string>
+    <string name="flight_order_detail_applink_pattern" formatted="false">%1$s/%2$s</string>
 
-    <string name="flight_resend_eticket_dialog_title">Kirim E-Ticket</string>
-    <string name="flight_resend_eticket_dialog_description">Masukkan alamat Email tujuan Anda.</string>
-    <string name="flight_resend_eticket_dialog_abort">BATAL</string>
+    <string name="flight_resend_eticket_email_label">E-mail</string>
     <string name="flight_resend_eticket_dialog_send">KIRIM</string>
-    <string name="flight_resend_eticket_dialog_email_hint">Alamat Email</string>
-    <string name="resend_eticket_success" translatable="false">E-Ticket anda berhasil dikirim.</string>
+    <string name="flight_resend_eticket_dialog_email_hint">Johndoe@tokopedia.com</string>
+    <string name="resend_eticket_success" translatable="false">Hore! E-mail berhasil dikirim.</string>
+
+    <string name="resend_eticket_bottomsheet_title">Kirim lewat e-mail</string>
 
 </resources>

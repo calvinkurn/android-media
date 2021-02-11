@@ -27,12 +27,9 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
 
     var adapter = HotelSearchResultFilterV2Adapter()
 
-    var isAdvanceFilter = false
-
     fun setFilter(filter: List<FilterV2>): HotelFilterBottomSheets = this.apply { filters = filter }
     fun setSelected(paramFilterV2: List<ParamFilterV2>): HotelFilterBottomSheets = this.apply { selectedFilters = paramFilterV2.toMutableList() }
     fun setSubmitFilterListener(listener: SubmitFilterListener): HotelFilterBottomSheets = this.apply { this.listener = listener }
-    fun setIsAdvanceFilter(isAdvancedFilter: Boolean): HotelFilterBottomSheets = this.apply { this.isAdvanceFilter = isAdvancedFilter }
 
     init {
         setTitle("Filter")
@@ -65,7 +62,7 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
             adapter.onSelectedFilterChanged(it.name, it.optionSelected.toMutableList())
         }
 
-        adapter.isSelectionWithOverflowLayout = isAdvanceFilter
+        adapter.isSelectionWithOverflowLayout = true
         recyclerView.adapter = adapter
 
         setAction("Reset") {

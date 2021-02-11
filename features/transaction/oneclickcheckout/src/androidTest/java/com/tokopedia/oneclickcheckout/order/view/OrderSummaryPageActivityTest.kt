@@ -72,8 +72,7 @@ class OrderSummaryPageActivityTest {
 
             assertProfileAddress(
                     headerMessage = "Pilihan 1",
-                    addressName = "Address 1",
-                    addressReceiver = " - User 1 (1)",
+                    addressName = "Address 1 - User 1 (1)",
                     addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
                     isMainPreference = true
             )

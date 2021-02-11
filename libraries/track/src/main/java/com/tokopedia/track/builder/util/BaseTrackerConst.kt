@@ -15,6 +15,7 @@ abstract class BaseTrackerConst {
         const val CLICK = "click"
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
+        const val OPEN_SCREEN = "openScreen"
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
@@ -113,7 +114,7 @@ abstract class BaseTrackerConst {
             val categoryId: String = "",
             val clusterId: Int = -1,
             val quantity: String = "",
-            val headerName: String = "",
+            val headerName: String? = null,
             val isCarousel: Boolean? = null,
             val recommendationType: String = "",
             val shopId:String = "",
@@ -283,7 +284,7 @@ abstract class BaseTrackerConst {
             if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
             if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
             if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
-            if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+            if(product.headerName != null) newList += " - ${product.headerName}"
             return newList
         }
     }

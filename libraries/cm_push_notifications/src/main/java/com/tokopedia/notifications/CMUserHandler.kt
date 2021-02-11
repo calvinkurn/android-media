@@ -130,6 +130,9 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 //ignore temporary fcm token
                 return
             }
+
+            if (CMNotificationUtils.checkTokenValidity(token)) return
+
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
             val applicationName = CMNotificationUtils.getApplicationName(mContext)

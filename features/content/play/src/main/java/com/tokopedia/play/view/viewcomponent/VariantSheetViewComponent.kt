@@ -224,12 +224,13 @@ class VariantSheetViewComponent(
 
     fun showToaster(toasterType: Int, message: String = "", actionText: String, actionListener: View.OnClickListener) {
         Toaster.toasterCustomBottomHeight = btnAction.height + toasterMargin
-        Toaster.make(
+        Toaster.build(
                 rootView,
                 message,
                 type = toasterType,
                 actionText = actionText,
-                clickListener = actionListener)
+                clickListener = actionListener
+        ).show()
     }
 
     private fun setProduct(product: ProductLineUiModel) {

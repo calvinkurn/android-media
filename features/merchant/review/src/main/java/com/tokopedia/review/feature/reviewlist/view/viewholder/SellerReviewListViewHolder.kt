@@ -1,11 +1,11 @@
 package com.tokopedia.review.feature.reviewlist.view.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.roundDecimal
@@ -30,9 +30,9 @@ class SellerReviewListViewHolder(val view: View,
     private val ivRating: AppCompatImageView = view.findViewById(R.id.ivRating)
 
     override fun bind(element: ProductReviewUiModel) {
-        view.itemRatingProduct.setBackgroundColor(Color.WHITE)
+        view.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
-        ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
+        ivItemProduct.loadImage(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName
 
         tgRatingCount.text = element.rating?.roundDecimal()

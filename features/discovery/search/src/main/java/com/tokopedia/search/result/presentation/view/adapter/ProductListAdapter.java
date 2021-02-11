@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductViewMode
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
@@ -42,6 +43,23 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         this.itemChangeView = itemChangeView;
         this.typeFactory = typeFactory;
+    }
+
+    public void changeSearchNavigationListView(int position) {
+        if (position >= 0 && position < list.size() && list.get(position) instanceof SearchProductCountViewModel) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_LIST);
+        }
+    }
+
+    public void changeSearchNavigationDoubleGridView(int position) {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+    }
+
+    public void changeSearchNavigationSingleGridView(int position) {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
     }
 
     public void changeListView() {

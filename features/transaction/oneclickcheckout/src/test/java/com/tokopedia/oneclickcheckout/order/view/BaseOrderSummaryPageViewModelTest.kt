@@ -2,9 +2,10 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -37,6 +38,9 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK
     lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
+
+    @MockK
+    lateinit var getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
@@ -71,7 +75,7 @@ open class BaseOrderSummaryPageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
-        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase,
+        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase, getAddressCornerUseCase,
                 OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),

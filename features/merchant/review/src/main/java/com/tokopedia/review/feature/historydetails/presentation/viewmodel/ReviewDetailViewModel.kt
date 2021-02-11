@@ -8,21 +8,19 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
-import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputation
-import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
+class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherProvider: CoroutineDispatchers,
                                                 private val userSession: UserSessionInterface,
                                                 private val productrevGetReviewDetailUseCase: ProductrevGetReviewDetailUseCase,
                                                 private val inboxReviewInsertReputationUseCase: InboxReviewInsertReputationUseCase)
-    : BaseViewModel(coroutineDispatcherProvider.io()) {
+    : BaseViewModel(coroutineDispatcherProvider.io) {
 
-    private val _feedbackId = MutableLiveData<Int>()
+    private val _feedbackId = MutableLiveData<Long>()
 
     private val _reviewDetails = MediatorLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
 
@@ -31,8 +29,8 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
-    val feedbackId: Int
-        get() = _feedbackId.value ?: 0
+    val feedbackId: Long
+        get() = _feedbackId.value ?: 0L
 
     val submitReputationResult: LiveData<ReviewViewState<Int>>
         get() = _submitReputationResult
@@ -43,12 +41,12 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getReviewDetails(feedbackId: Int, isRefresh: Boolean = false) {
+    fun getReviewDetails(feedbackId: Long, isRefresh: Boolean = false) {
         if(isRefresh) {
             _reviewDetails.value = LoadingView()
         }
         launchCatchError(block = {
-            val response = withContext(coroutineDispatcherProvider.io()) {
+            val response = withContext(coroutineDispatcherProvider.io) {
                 productrevGetReviewDetailUseCase.setRequestParams(feedbackId)
                 productrevGetReviewDetailUseCase.executeOnBackground()
             }
@@ -62,7 +60,7 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         _feedbackId.notifyObserver()
     }
 
-    fun setFeedbackId(feedbackId: Int) {
+    fun setFeedbackId(feedbackId: Long) {
         this._feedbackId.value = feedbackId
     }
 
@@ -70,10 +68,10 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         return userSession.userId
     }
 
-    fun submitReputation(reputationId: Int, reputationScore: Int) {
+    fun submitReputation(reputationId: Long, reputationScore: Int) {
         _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
-            val response = withContext(coroutineDispatcherProvider.io()) {
+            val response = withContext(coroutineDispatcherProvider.io) {
                 inboxReviewInsertReputationUseCase.setParams(reputationId, reputationScore, userSession.userId.toIntOrZero())
                 inboxReviewInsertReputationUseCase.executeOnBackground()
             }

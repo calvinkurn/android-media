@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.adapter.viewholder
+package com.tokopedia.digital.home.old.presentation.adapter.viewholder
 
 import android.graphics.Rect
 import android.view.View
@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageSubscriptionModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemSubscriptionAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.model.DigitalHomePageSubscriptionModel
+import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemSubscriptionAdapter
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_subscription.view.*
@@ -53,6 +53,6 @@ class DigitalHomePageSubscriptionViewHolder(itemView: View?, val onItemBindListe
     companion object {
         val LAYOUT = R.layout.layout_digital_home_subscription
 
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
+        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
     }
 }

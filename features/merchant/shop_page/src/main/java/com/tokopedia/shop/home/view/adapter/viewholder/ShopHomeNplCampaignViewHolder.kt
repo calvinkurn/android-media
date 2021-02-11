@@ -154,7 +154,10 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            setImageUrl(bannerUrl, heightRatio = 1f)
+            try {
+                if(context.isValidGlideContext())
+                    setImageUrl(bannerUrl, heightRatio = 1f)
+            } catch (e: Throwable) { }
         }
     }
 
@@ -209,9 +212,9 @@ class ShopHomeNplCampaignViewHolder(
         val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
         itemView.text_remind_me?.apply {
             val colorText = if(isRemindMe){
-                com.tokopedia.design.R.color.white
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
             }else{
-                R.color.clr_AD31353B
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
             }
             setTextColor(MethodChecker.getColor(itemView.context, colorText))
             if(totalNotifyWording.isEmpty()) {

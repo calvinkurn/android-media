@@ -1,7 +1,6 @@
 package com.tokopedia.categorylevels.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.categorylevels.domain.usecase.SubCategoryV3UseCase
 import com.tokopedia.common_category.usecase.DynamicFilterUseCase
 import com.tokopedia.common_category.usecase.GetProductListUseCase
 import com.tokopedia.common_category.usecase.QuickFilterUseCase

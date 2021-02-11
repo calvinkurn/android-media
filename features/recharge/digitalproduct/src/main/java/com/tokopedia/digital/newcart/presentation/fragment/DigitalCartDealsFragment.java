@@ -2,7 +2,6 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
@@ -34,6 +32,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsContr
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsPagerAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -179,8 +178,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderGetCategoriesError(String message) {
-        Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{}).show();
     }
 
     @Override
@@ -230,8 +229,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderErrorInRedSnackbar(int resId) {
-        Toaster.make(getView(), getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        Toaster.build(getView(), getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{}).show();
     }
 
     @Override
@@ -332,12 +331,12 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
+                .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl4)
                 .nextStringRes(com.tokopedia.showcase.R.string.next)
                 .prevStringRes(com.tokopedia.showcase.R.string.previous)
                 .useCircleIndicator(true)
@@ -361,7 +360,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         checkoutContainer.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             checkoutContainer.setElevation(60);
-            checkoutContainer.setBackgroundResource(com.tokopedia.design.R.color.white);
+            checkoutContainer.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
             checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
@@ -416,16 +415,16 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showDim(float procentage, int height) {
+    public void showDim(float percentage, int height) {
         checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         checkoutDim.setVisibility(View.VISIBLE);
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (DEFAULT_MAX_DIM * procentage)));
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * percentage)));
     }
 
     @Override
-    public void hideDim(float procentage) {
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (DEFAULT_MAX_DIM * procentage)));
-        if (procentage == 0.0) {
+    public void hideDim(float percentage) {
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * percentage)));
+        if (percentage == 0.0) {
             checkoutDim.setVisibility(View.GONE);
         }
     }

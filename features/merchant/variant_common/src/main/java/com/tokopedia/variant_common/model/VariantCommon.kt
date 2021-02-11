@@ -10,11 +10,11 @@ data class Variant(
 
         @SerializedName("productVariantID")
         @Expose
-        val pv: Int? = null, //ex: 6528
+        val pv: String? = null, //ex: 6528
 
         @SerializedName("variantID")
         @Expose
-        val v: Int? = null, //ex:1
+        val v: String? = null, //ex:1
 
         @SerializedName("variantUnitID")
         @Expose

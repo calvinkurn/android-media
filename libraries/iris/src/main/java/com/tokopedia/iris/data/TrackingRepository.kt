@@ -103,21 +103,29 @@ class TrackingRepository(
             val isSuccessFul = response.isSuccessful
             if (!isSuccessFul) {
                 Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
-                eventName?.let {
-                    if (CM_REALTIME_EVENT_LIST.contains(it))
-                        saveEvent(data, session)
-                }
+                saveRealTimeCmData(eventName, data, session)
             }
             return isSuccessFul
         } catch (e: Exception) {
             Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
-            eventName?.let {
-                if (CM_REALTIME_EVENT_LIST.contains(it))
-                    saveEvent(data, session)
-            }
+            saveRealTimeCmData(eventName, data, session)
             return false
         }
     }
+
+    private suspend fun saveRealTimeCmData(eventName: String?, data: String, session: Session){
+        try {
+            eventName?.let {
+                if (CM_REALTIME_EVENT_LIST.contains(it)) {
+                    val transformedEvent = TrackingMapper.reformatEvent(data, session.getSessionId()).toString()
+                    saveEvent(transformedEvent, session)
+                }
+            }
+        }catch (e:Exception){
+            Timber.e("P1#IRIS_REALTIME_ERROR#transform_exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+        }
+    }
+
 
     /**
      * @return data size that has been successfully send to server

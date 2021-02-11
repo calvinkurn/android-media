@@ -5,23 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/unify_space_4"
         android:text="@string/vg_product_detail_title"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/detail_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
-        android:textColor="@color/black_70"
+        android:layout_marginBottom="@dimen/unify_space_4"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_1"
         tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
 
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/vg_product_detail_url"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 

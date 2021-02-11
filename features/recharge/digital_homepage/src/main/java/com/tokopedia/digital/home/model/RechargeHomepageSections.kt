@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections(
@@ -40,6 +41,12 @@ data class RechargeHomepageSections(
             @SerializedName("app_link")
             @Expose
             val applink: String = "",
+            @SerializedName("media_url")
+            @Expose
+            val mediaUrl: String = "",
+            @SerializedName("label_1")
+            @Expose
+            val label1: String = "#FFFFFF",
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
@@ -216,7 +223,8 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
 
 }
 
-data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section,
+                                             val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -267,7 +275,8 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
 
 }
 
-data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section,
+                                              val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -282,4 +291,20 @@ data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSecti
         } else false
     }
 
+}
+
+data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    override fun visitableId(): Int {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageProductBannerModel) {
+            section == b.section
+        } else false
+    }
 }

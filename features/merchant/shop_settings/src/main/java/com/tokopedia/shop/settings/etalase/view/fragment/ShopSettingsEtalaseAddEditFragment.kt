@@ -17,24 +17,26 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
-import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
-import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
+import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseAddEditViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
 import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
-        ShopSettingsEtalaseAddEditView,
         MerchantCommonBottomSheet.BottomSheetListener {
     @Inject
-    lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
+    lateinit var viewModel: ShopSettingsEtalaseAddEditViewModel
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
-
+    private var listEtalaseModel: List<ShopEtalaseModel>? = null
     private var isValid = true
 
     companion object {
@@ -42,6 +44,8 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
         private const val FEATURE_ETALASE = "Etalase"
+        private const val DEFAULT_ETALASE_TYPE  = -1
+        const val ID = "id"
         const val MAXIMUN_ETALASE_COUNT = 10
 
         @JvmStatic
@@ -58,7 +62,6 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         getComponent(ShopSettingsComponent::class.java).inject(this)
-        presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,26 +93,41 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
             }
         })
         getEtalaseList()
+        observeData()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+    private fun observeData() {
+        observe(viewModel.shopEtalase) { result ->
+            hideLoading()
+            when(result) {
+                is Success -> onSuccessGetEtalaseList(result.data)
+                is Fail -> onErrorGetEtalaseList(result.throwable)
+            }
+        }
+
+        observe(viewModel.saveMessage) { result ->
+            hideLoading()
+            when(result) {
+                is Success -> onSuccesAddEdit(result.data)
+                is Fail -> onErrorAddEdit(result.throwable)
+            }
+        }
     }
 
     fun saveAddEditEtalase() {
         if (isValid) {
             etalase.name = edit_text_title.text.toString().trim()
             getEtalaseList()
-            if (!presenter.isEtalaseDuplicate(etalase.name)) {
-                presenter.saveEtalase(etalase, isEdit)
+            if (!isEtalaseDuplicate(etalase.name)) {
+                showLoading()
+                viewModel.saveShopEtalase(etalase, isEdit)
             } else {
                 edit_text_title.error = context?.getString(R.string.shop_etalase_title_already_exist)
             }
         }
     }
 
-    override fun onSuccesAddEdit(string: String?) {
+    private fun onSuccesAddEdit(string: String?) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().putExtras(Bundle().apply {
                 putBoolean(PARAM_IS_SUCCESS, !TextUtils.isEmpty(string))
@@ -119,11 +137,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onErrorAddEdit(throwable: Throwable?) {
+    private fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null) {
-            if (isIdlePowerMerchant() && presenter.isEtalaseCountAtMax()) {
+            if (isIdlePowerMerchant() && isEtalaseCountAtMax()) {
                 showIdlePowerMerchantBottomSheet(FEATURE_ETALASE)
-            } else if (!isPowerMerchant() && presenter.isEtalaseCountAtMax()) {
+            } else if (!isPowerMerchant() && isEtalaseCountAtMax()) {
                 showRegularMerchantBottomSheet(FEATURE_ETALASE)
             } else {
                 showToasterError(throwable) {
@@ -134,12 +152,13 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSuccessGetEtalaseList() {
+    private fun onSuccessGetEtalaseList(list: List<ShopEtalaseModel>) {
         scroll_view.visibility = View.VISIBLE
         (activity as? ShopSettingsEtalaseAddEditActivity)?.showSaveButton()
+        listEtalaseModel = list
     }
 
-    override fun onErrorGetEtalaseList(throwable: Throwable?) {
+    private fun onErrorGetEtalaseList(throwable: Throwable?) {
         showToasterError(throwable) {
             getEtalaseList()
         }
@@ -152,15 +171,14 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 onRetry()
             })
         }
-
     }
 
     private fun isIdlePowerMerchant(): Boolean {
-        return presenter.isIdlePowerMerchant()
+        return viewModel.isIdlePowerMerchant()
     }
 
     private fun isPowerMerchant(): Boolean {
-        return presenter.isPowerMerchant()
+        return viewModel.isPowerMerchant()
     }
 
     private fun showIdlePowerMerchantBottomSheet(featureName: String) {
@@ -195,15 +213,24 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun getEtalaseList() {
-        presenter.getEtalaseList()
+        showLoading()
+        viewModel.getShopEtalase()
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         progress_bar?.visibility = View.VISIBLE
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         progress_bar?.visibility = View.GONE
+    }
+
+    private fun isEtalaseCountAtMax(): Boolean {
+        return listEtalaseModel?.filter { it.type!= DEFAULT_ETALASE_TYPE }?.size ?: 0 >= MAXIMUN_ETALASE_COUNT
+    }
+
+    private fun isEtalaseDuplicate(query: String): Boolean {
+        return listEtalaseModel?.any { it.name == query } ?: false
     }
 
 }

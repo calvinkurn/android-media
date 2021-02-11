@@ -25,7 +25,7 @@ class ImageAnnouncementViewModel
 constructor(
         messageId: String, fromUid: String, from: String, fromRole: String,
         attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-        val redirectUrl: String, message: String, val blastId: Int, source: String
+        val redirectUrl: String, message: String, val blastId: Long, source: String
 ) : BaseChatViewModel(
         messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory> {

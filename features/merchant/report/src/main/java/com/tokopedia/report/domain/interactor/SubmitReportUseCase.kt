@@ -11,12 +11,12 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @Suppress("UNCHECKED_CAST")
-class SubmitReportUseCase @Inject constructor(@Named("product_report_submit") private val gqlMutationQuery: String,
-                                              private val graphqlUseCase: GraphqlUseCase): UseCase<Boolean>() {
+class SubmitReportUseCase @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase): UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
         if (requestParams == null) return Observable.error(Throwable("Invalid Params"))
-        val graphqlRequest = GraphqlRequest(gqlMutationQuery, SubmitReportResponse.Data::class.java,
+        val graphqlRequest = GraphqlRequest(query, SubmitReportResponse.Data::class.java,
                 mapOf("input" to requestParams.parameters), false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -35,6 +35,15 @@ class SubmitReportUseCase @Inject constructor(@Named("product_report_submit") pr
         private const val PARAM_FIELDS = "additional_fields"
         private const val PARAM_PRODUCT_ID = "product_id"
         private const val PARAM_CATEGORY_ID = "category_id"
+
+        private const val query = """
+            mutation submitReport(${'$'}input: ReportProductRequest!){
+              visionSaveReportProduct(input: ${'$'}input) {
+                  status
+                  server_process_time
+                }
+            }
+        """
 
         fun createRequestParam(categoryId: Int, productId: Int, fields: Map<String, Any>): RequestParams = RequestParams.create()
                 .apply {

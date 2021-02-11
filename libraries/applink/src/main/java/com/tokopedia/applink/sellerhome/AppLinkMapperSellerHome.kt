@@ -6,8 +6,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancellationRequest
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerFinished
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerHistory
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerInShipping
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerNewOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerReadyToShip
@@ -20,11 +23,11 @@ import com.tokopedia.config.GlobalConfig
 object AppLinkMapperSellerHome {
 
     const val QUERY_PARAM_SEARCH = "search"
+    const val FILTER_ORDER_TYPE = "filter_order_type"
 
-    fun getSomNewOrderAppLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    fun getSomNewOrderAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, param)
@@ -36,10 +39,9 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getSomReadyToShipAppLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    fun getSomReadyToShipAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             if (searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, param)
@@ -51,10 +53,9 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getSomShippedAppLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    fun getSomShippedAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED, param)
@@ -66,10 +67,9 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getSomDoneAppLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    fun getSomDoneAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE, param)
@@ -81,10 +81,9 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getSomCancelledAppLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    fun getSomCancelledAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED, param)
@@ -96,16 +95,44 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getTopChatAppLink(deepLink: String): String {
-        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+    fun getSomCancellationRequestAppLink(uri: Uri): String {
+        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
+            val param = mutableMapOf<String, Any>(FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST)
+            if(searchKeyword.isNotBlank()) {
+                param[QUERY_PARAM_SEARCH] = searchKeyword
+                UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST, param)
+            } else {
+                UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST, param)
+            }
+        } else {
+            getRegisteredNavigationMainAppSellerCancellationRequest()
+        }
+    }
+
+    fun getSomAllOrderAppLink(uri: Uri): String {
+        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL
+            }
+        } else {
+            getRegisteredNavigationMainAppSellerHistory()
+        }
+    }
+
+    fun getTopChatAppLink(uri: Uri): String {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             ApplinkConstInternalSellerapp.SELLER_HOME_CHAT
         } else {
             ApplinkConstInternalGlobal.TOPCHAT
         }
     }
 
-    fun shouldRedirectToSellerApp(deepLink: String): Boolean {
-        val uri = Uri.parse(deepLink)
+    fun shouldRedirectToSellerApp(uri: Uri): Boolean {
         return uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
     }
 

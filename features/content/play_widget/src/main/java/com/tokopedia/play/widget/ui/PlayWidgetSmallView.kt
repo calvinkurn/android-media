@@ -100,6 +100,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
 
+        tvSeeAll.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
         tvSeeAll.text = data.actionTitle
         tvSeeAll.setOnClickListener {
             mAnalyticListener?.onClickViewAll(this)

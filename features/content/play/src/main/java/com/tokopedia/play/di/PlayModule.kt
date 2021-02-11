@@ -15,6 +15,8 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -94,5 +96,11 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     fun provideExoPlaybackExceptionParser(): ExoPlaybackExceptionParser {
         return ExoPlaybackExceptionParser()
+    }
+
+    @PlayScope
+    @Provides
+    fun provideRemoteConfig(): RemoteConfig {
+        return FirebaseRemoteConfigImpl(mContext)
     }
 }

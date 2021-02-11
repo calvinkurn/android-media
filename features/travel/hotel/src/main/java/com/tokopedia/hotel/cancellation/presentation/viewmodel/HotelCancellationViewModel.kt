@@ -49,7 +49,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
             val errors = graphqlResponse.getError(HotelCancellationModel.Response::class.java)
 
             if (errors != null && errors.isNotEmpty() && errors.first().extensions != null) {
-                mutableCancellationData.postValue(Fail(HotelErrorException(errors.first().extensions.code, errors.first().extensions.developerMessage)))
+                mutableCancellationData.postValue(Fail(HotelErrorException(errors.first().extensions.code, errors.first().message)))
             } else {
                 val data = graphqlResponse.getSuccessData<HotelCancellationModel.Response>().response.data
                 mutableCancellationData.postValue(Success(data))

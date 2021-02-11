@@ -13,7 +13,7 @@
         android:id="@+id/setting"
         android:layout_width="12dp"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_plus_green" />
+        app:srcCompat="@drawable/ic_topchat_plus_green" />
 
     <androidx.legacy.widget.Space
         android:layout_width="10dp"
@@ -26,7 +26,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/add_template_chat"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_G400"
         android:textSize="@dimen/fontSize_lvl3"
         android:textStyle="normal" />
 

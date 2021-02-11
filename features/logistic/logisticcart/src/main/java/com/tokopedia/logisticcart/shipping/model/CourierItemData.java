@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodProductData;
 
 /**
  * Created by Irfan Khoirul on 25/01/18.

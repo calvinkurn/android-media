@@ -11,5 +11,6 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_8"
+        android:textColor="@color/Unify_N700_96"
         style="@style/TextView.Title.Bold"/>
 </LinearLayout>

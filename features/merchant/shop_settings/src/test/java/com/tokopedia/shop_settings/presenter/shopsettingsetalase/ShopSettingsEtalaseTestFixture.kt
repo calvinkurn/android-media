@@ -3,9 +3,10 @@ package com.tokopedia.shop_settings.presenter.shopsettingsetalase
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.*
-import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
-import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
+import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseAddEditViewModel
+import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseListViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -35,9 +36,9 @@ abstract class ShopSettingsEtalaseTestFixture {
     @RelaxedMockK
     lateinit var updateShopEtalaseUseCase: UpdateShopEtalaseUseCase
 
-    protected lateinit var shopSettingsEtalaseListPresenter: ShopSettingEtalaseListPresenter
+    protected lateinit var shopSettingsEtalaseListViewModel: ShopSettingsEtalaseListViewModel
     protected lateinit var shopSettingsEtalaseListReorderPresenter: ShopSettingEtalaseListReorderPresenter
-    protected lateinit var shopSettingsEtalaseAddEditPresenter: ShopSettingsEtalaseAddEditPresenter
+    protected lateinit var shopSettingsEtalaseAddEditViewModel: ShopSettingsEtalaseAddEditViewModel
     protected lateinit var userSession: UserSessionInterface
 
     @Before
@@ -46,20 +47,22 @@ abstract class ShopSettingsEtalaseTestFixture {
         val context = mockk<Context>()
         userSession = UserSession(context)
 
-        shopSettingsEtalaseListPresenter = ShopSettingEtalaseListPresenter(
+        shopSettingsEtalaseListViewModel = ShopSettingsEtalaseListViewModel(
                 getShopEtalaseUseCase,
-                deleteShopEtalaseUseCase
+                deleteShopEtalaseUseCase,
+                CoroutineTestDispatchersProvider
         )
 
         shopSettingsEtalaseListReorderPresenter = ShopSettingEtalaseListReorderPresenter(
                 reorderShopEtalaseUseCase
         )
 
-        shopSettingsEtalaseAddEditPresenter = ShopSettingsEtalaseAddEditPresenter(
+        shopSettingsEtalaseAddEditViewModel = ShopSettingsEtalaseAddEditViewModel(
                 addShopEtalaseUseCase,
                 updateShopEtalaseUseCase,
                 getShopEtalaseUseCase,
-                userSession
+                userSession,
+                CoroutineTestDispatchersProvider
         )
     }
 

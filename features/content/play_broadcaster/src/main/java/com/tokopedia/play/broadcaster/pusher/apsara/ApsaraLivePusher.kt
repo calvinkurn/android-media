@@ -111,9 +111,9 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         if (this.mIngestUrl.isEmpty()) {
             throw IllegalArgumentException("ingestUrl must not be empty")
         }
-        if (!validUrl(ingestUrl)) {
-            throw IllegalArgumentException("ingestUrl must valid url")
-        }
+//        if (!validUrl(ingestUrl)) {
+//            throw IllegalArgumentException("ingestUrl must valid url")
+//        }
         mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
     }
 

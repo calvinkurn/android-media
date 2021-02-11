@@ -1,6 +1,6 @@
 package com.tokopedia.attachproduct.view.presenter;
 
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachcommon.data.ResultProduct;
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 import java.util.ArrayList;

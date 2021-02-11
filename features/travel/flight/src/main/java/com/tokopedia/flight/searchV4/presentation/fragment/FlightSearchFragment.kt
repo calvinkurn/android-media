@@ -319,6 +319,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     onResetFilterClicked()
                 }
             }
+        } else if (flightSearchViewModel.filterModel.departureArrivalTime.isNotEmpty()) {
+            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_for_return_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_for_return_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+                override fun onEmptyButtonClicked() {
+                    activity?.finish()
+                }
+            }
         } else {
             emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
             emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
@@ -387,6 +396,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             filterModel.also {
                 it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
                 it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+                it.departureArrivalTime = ""
             }
 
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
@@ -691,7 +701,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         }
 
-        flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
+        Handler().postDelayed({ flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter() },
+                QUICK_FILTER_INDICATOR_DELAY)
     }
 
     private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
@@ -741,6 +752,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
+        private const val QUICK_FILTER_INDICATOR_DELAY: Long = 50
 
         private const val QUICK_FILTER_DIRECT_ORDER = 0
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1

@@ -20,10 +20,15 @@ data class DescriptionWidgetUiModel (
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
+        return DescriptionWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }

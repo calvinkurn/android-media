@@ -1,9 +1,12 @@
 package com.tokopedia.logisticcart.shipping.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by fajarnuha on 26/12/18.
  */
-public class CodModel {
+public class CodModel implements Parcelable {
 
     private boolean isCod;
     private int counterCod;
@@ -21,6 +24,26 @@ public class CodModel {
         this.messageLink = messageLink;
         this.messageLogo = messageLogo;
     }
+
+    protected CodModel(Parcel in) {
+        isCod = in.readByte() != 0;
+        counterCod = in.readInt();
+        messageInfo = in.readString();
+        messageLink = in.readString();
+        messageLogo = in.readString();
+    }
+
+    public static final Creator<CodModel> CREATOR = new Creator<CodModel>() {
+        @Override
+        public CodModel createFromParcel(Parcel in) {
+            return new CodModel(in);
+        }
+
+        @Override
+        public CodModel[] newArray(int size) {
+            return new CodModel[size];
+        }
+    };
 
     public boolean isCod() {
         return isCod;
@@ -60,5 +83,19 @@ public class CodModel {
 
     public void setMessageLogo(String messageLogo) {
         this.messageLogo = messageLogo;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isCod ? 1 : 0));
+        dest.writeInt(counterCod);
+        dest.writeString(messageInfo);
+        dest.writeString(messageLink);
+        dest.writeString(messageLogo);
     }
 }

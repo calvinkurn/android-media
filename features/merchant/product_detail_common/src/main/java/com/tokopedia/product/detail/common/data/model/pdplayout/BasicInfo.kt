@@ -4,7 +4,6 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.content.Context
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.R
-import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -13,8 +12,6 @@ import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 
 data class BasicInfo(
-        @SerializedName("alias")
-        val alias: String = "",
         @SerializedName("shopName")
         val shopName: String = "",
         @SerializedName("blacklistMessage")
@@ -23,16 +20,10 @@ data class BasicInfo(
         val catalogID: String = "",
         @SerializedName("category")
         val category: Category = Category(),
-        @SerializedName("gtin")
-        val gtin: String = "",
         @SerializedName("isBlacklisted")
         val isBlacklisted: Boolean = false,
-        @SerializedName("isKreasiLokal")
-        val isKreasiLokal: Boolean = false,
         @SerializedName("isLeasing")
         val isLeasing: Boolean = false,
-        @SerializedName("isMustInsurance")
-        val isMustInsurance: Boolean = false,
         @SerializedName("maxOrder")
         val maxOrder: Int = 0,
         @SerializedName("menu")
@@ -51,8 +42,6 @@ data class BasicInfo(
         val status: String = "",
         @SerializedName("url")
         val url: String = "",
-        @SerializedName("condition")
-        val condition: String = ProductConditionTypeDef.UNKNOWN,
         @SerializedName("weightUnit")
         val weightUnit: String = WeightTypeDef.UNKNOWN,
         @SerializedName("weight")
@@ -68,9 +57,6 @@ data class BasicInfo(
     companion object {
         const val KG = "kilogram"
         const val KILO = 1000
-
-        const val LABEL_KG = "Kg"
-        const val LABEL_GRAM = "gram"
     }
 
     fun getDefaultOngkirInt(): Int = defaultOngkirEstimation.toIntOrNull() ?: 30000
@@ -79,6 +65,9 @@ data class BasicInfo(
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
+    }
+    fun isWarehouse(): Boolean {
+        return status == ProductStatusTypeDef.WAREHOUSE
     }
 
     fun statusMessage(context: Context): String {

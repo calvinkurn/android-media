@@ -98,6 +98,9 @@ data class Picture(
         var original: String? = null,
         @SerializedName("url200")
         @Expose
-        var thumbnail: String? = null
+        var thumbnail: String? = null,
+        @SerializedName("url100")
+        @Expose
+        var url100: String? = null
 
 )

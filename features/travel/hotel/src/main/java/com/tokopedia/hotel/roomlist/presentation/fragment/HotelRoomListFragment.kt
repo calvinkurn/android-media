@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -49,12 +48,16 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -145,9 +148,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
-                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId))
                     }
                 }
                 is Fail -> {
@@ -155,7 +156,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                         ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
-                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                        else -> view?.let { v ->
+                            Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
                     }
                 }
             }
@@ -217,7 +221,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         filter_recycler_view.listener = this
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                R.color.hotel_snackbar_border)
+                com.tokopedia.unifyprinciples.R.color.Unify_G300)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

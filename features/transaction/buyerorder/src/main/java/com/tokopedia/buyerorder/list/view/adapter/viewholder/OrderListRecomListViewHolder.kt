@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomViewModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
+class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomUiModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
 
     companion object {
         @JvmField
@@ -25,7 +25,7 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
     private var recomTitle : String = "none/other"
     private var isSelected: Boolean = false
 
-    override fun bind(element: OrderListRecomViewModel) {
+    override fun bind(element: OrderListRecomUiModel) {
         recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
         recommendationCardView?.showAddToCartButton()
         recommendationCardView?.setAddToCartClickListener{

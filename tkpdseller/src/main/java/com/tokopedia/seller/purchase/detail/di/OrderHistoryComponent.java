@@ -1,6 +1,6 @@
 package com.tokopedia.seller.purchase.detail.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 
 import dagger.Component;
@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @OrderHistoryScope
-@Component(modules = OrderHistoryModule.class, dependencies = AppComponent.class)
+@Component(modules = OrderHistoryModule.class, dependencies = BaseAppComponent.class)
 public interface OrderHistoryComponent {
     void inject(OrderHistoryActivity activity);
 }

@@ -48,7 +48,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -65,7 +66,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -82,7 +84,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -99,7 +102,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -119,7 +123,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 }.orEmpty(),
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -136,7 +141,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -153,7 +159,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -170,7 +177,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -187,7 +195,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -204,7 +213,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = fromCache
+                isFromCache = fromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -221,7 +231,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = isFromCache
+                isFromCache = isFromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 
@@ -238,7 +249,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 data = null,
                 isLoaded = false,
                 isLoading = false,
-                isFromCache = isFromCache
+                isFromCache = isFromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
 }

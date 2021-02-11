@@ -78,6 +78,8 @@ class HomeRecommendationTypeFactoryImpl(
         return RecommendationShimmeringViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: RecommendationEmptyDataModel): Int = -1
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         tools:text="Ketentuan Pembatalan"
         app:typographyType="heading_4"
-        android:textColor="@color/Neutral_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hotel_cancellation_policy_rv"

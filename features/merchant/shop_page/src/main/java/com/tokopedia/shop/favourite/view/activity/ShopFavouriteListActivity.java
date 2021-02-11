@@ -2,11 +2,13 @@ package com.tokopedia.shop.favourite.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -30,6 +32,10 @@ public class ShopFavouriteListActivity extends BaseSimpleActivity implements Has
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         super.onCreate(savedInstanceState);
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        toolbar.setBackground(new ColorDrawable(
+                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        ));
     }
 
     @Override

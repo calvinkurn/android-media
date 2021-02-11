@@ -2,13 +2,16 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmViewModel
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -21,6 +24,8 @@ private const val noGlobalNavWidget = "searchproduct/globalnavwidget/no-global-n
 
 internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixtures() {
 
+    private val requestParamsSlot = slot<RequestParams>()
+    private val requestParams by lazy { requestParamsSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
 
     @Test
@@ -34,7 +39,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is true`() {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+        every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(globalNavWidgetAndShowTopAdsTrue.jsonToObject())
         }
     }
@@ -74,7 +79,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`() {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+        every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(globalNavWidgetAndShowTopAdsFalse.jsonToObject())
         }
     }
@@ -100,7 +105,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `Given Search Product API will return SearchProductModel without Global Nav Widget`() {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+        every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(noGlobalNavWidget.jsonToObject())
         }
     }
@@ -138,6 +143,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
 
         `When Load Data`()
 
+        `Then verify request params to skip global nav`()
         `Then verify view set product list`()
         `Then verify visitable list does not have global nav widget`()
     }
@@ -146,10 +152,14 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
         every { productListView.isAnyFilterActive } returns true
     }
 
+    private fun `Then verify request params to skip global nav`() {
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe true
+    }
+
     private fun `Then verify visitable list does not have global nav widget`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+        visitableList.any { it is GlobalNavViewModel } shouldBe false
     }
 
     @Test
@@ -159,6 +169,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
 
         `When Load Data`()
 
+        `Then verify request params to skip global nav`()
         `Then verify view set product list`()
         `Then verify visitable list does not have global nav widget`()
     }

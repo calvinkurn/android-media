@@ -46,6 +46,8 @@ object SettingConstant {
     const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
     const val POWER_MERCHANT_URL = "https://seller.tokopedia.com/edu/power-merchant"
 
+    const val ENABLE_NEW_ACCOUNT = "home_account_new_enable_config"
+
     object Url {
         const val BASE_MOBILE = "https://m.tokopedia.com/"
         const val PATH_TERM_CONDITION = "terms.pl?isBack=true"

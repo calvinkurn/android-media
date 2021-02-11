@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -46,7 +47,9 @@ public class BranchWrapper implements WrapperInterface {
         if(Branch.getInstance() == null) {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
-
+            if(GlobalConfig.isAllowDebuggingTools()) {
+                Branch.enableLogging();
+            }
         }
     }
 
@@ -273,6 +276,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getUri();
+        } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         }
 
         else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {

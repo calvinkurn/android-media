@@ -144,6 +144,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
      */
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
         if (configuration == null) {
+            if(!::remoteConfig.isInitialized) {
+                remoteConfig = FirebaseRemoteConfigImpl(context)
+            }
             setConfiguration(remoteConfig)
         }
         val conf = configuration ?: return

@@ -2,7 +2,6 @@ package com.tokopedia.flight.orderlist.view.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
@@ -17,6 +16,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
+import com.tokopedia.sortfilter.SortFilterItem;
+import com.tokopedia.unifycomponents.ChipsUnify;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
@@ -106,14 +108,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     private void buildAndRenderFilterList() {
-        int[] colorBorder = new int[6];
-        colorBorder[0] = R.color.tkpd_main_green;
-        colorBorder[1] = R.color.tkpd_main_green;
-        colorBorder[2] = R.color.tkpd_main_green;
-        colorBorder[3] = R.color.tkpd_main_green;
-        colorBorder[4] = R.color.tkpd_main_green;
-        colorBorder[5] = R.color.tkpd_main_green;
-
         List<OrderSimpleViewModel> filtersMap = new ArrayList<>();
         filtersMap.add(new OrderSimpleViewModel("", getView().getString(R.string.flight_order_status_all_label)));
         filtersMap.add(new OrderSimpleViewModel("700,800", getView().getString(R.string.flight_order_status_success_label)));
@@ -122,28 +116,28 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         filtersMap.add(new OrderSimpleViewModel("200,300", getView().getString(R.string.flight_order_status_in_progress_label)));
         filtersMap.add(new OrderSimpleViewModel("610,650", getView().getString(R.string.flight_order_status_refund_label)));
 
-        List<QuickFilterItem> filterItems = new ArrayList<>();
+        List<SortFilterItem> filterItems = new ArrayList<>();
         boolean isAnyItemSelected = false;
         for (OrderSimpleViewModel entry : filtersMap) {
-            QuickFilterItem finishFilter = new QuickFilterItem();
-            finishFilter.setName(entry.getDescription());
-            finishFilter.setType(entry.getLabel());
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
+
+            String chipsType = ChipsUnify.TYPE_NORMAL;
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getLabel())) {
                 isAnyItemSelected = true;
-                finishFilter.setSelected(true);
-            } else {
-                finishFilter.setSelected(false);
+                chipsType = ChipsUnify.TYPE_SELECTED;
             }
+
+            SortFilterItem finishFilter = new SortFilterItem(entry.getDescription(),
+                    chipsType, ChipsUnify.SIZE_MEDIUM, () -> {
+                getView().selectFilter(entry.getLabel());
+                return Unit.INSTANCE;});
             filterItems.add(finishFilter);
         }
 
         if (!isAnyItemSelected && filterItems.size() > 0) {
-            filterItems.get(0).setSelected(true);
+            filterItems.get(0).setType(ChipsUnify.TYPE_SELECTED);
         }
 
         getView().renderOrderStatus(filterItems);
-
     }
 
     @Override

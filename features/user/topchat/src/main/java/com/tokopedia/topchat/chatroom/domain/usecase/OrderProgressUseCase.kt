@@ -51,7 +51,6 @@ class OrderProgressUseCase @Inject constructor(
             imageUrl
             name
             status
-            statusId
             label {
               title
               value

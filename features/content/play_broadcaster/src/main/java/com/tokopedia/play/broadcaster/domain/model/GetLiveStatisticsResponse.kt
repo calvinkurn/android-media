@@ -9,12 +9,15 @@ import com.google.gson.annotations.SerializedName
 data class GetLiveStatisticsResponse(
         @SerializedName("broadcasterReportLiveSummaries")
         @Expose
-        val response: ReportChannelSummary = ReportChannelSummary()
+        val reportChannelSummary: ReportChannelSummary = ReportChannelSummary()
 ) {
         data class ReportChannelSummary(
                 @SerializedName("channel")
                 @Expose
-                val channel: Channel = Channel()
+                val channel: Channel = Channel(),
+                @SerializedName("duration")
+                @Expose
+                val duration: String = ""
         )
 
         data class Channel(

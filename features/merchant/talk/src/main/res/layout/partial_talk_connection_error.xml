@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/dp_36"
         android:layout_marginEnd="@dimen/dp_36"
         android:layout_marginTop="@dimen/dp_29"
-        android:src="@drawable/unify_globalerrors_connection"
         app:layout_constraintTop_toTopOf="parent"/>
     
     <com.tokopedia.unifyprinciples.Typography

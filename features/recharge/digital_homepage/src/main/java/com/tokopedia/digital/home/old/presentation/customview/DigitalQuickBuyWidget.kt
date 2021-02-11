@@ -1,14 +1,14 @@
-package com.tokopedia.digital.home.presentation.customview
+package com.tokopedia.digital.home.old.presentation.customview
 
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalQuickBuyItem
+import com.tokopedia.digital.home.old.model.DigitalQuickBuyItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.layout_quick_buy_widget.view.*
 import kotlinx.android.synthetic.main.layout_quick_buy_widget_footer.view.*

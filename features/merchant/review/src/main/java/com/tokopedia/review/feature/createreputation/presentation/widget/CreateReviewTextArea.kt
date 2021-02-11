@@ -43,7 +43,7 @@ class CreateReviewTextArea : BaseCustomView {
                 }
                 false
             })
-            setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+            setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         }
     }
 

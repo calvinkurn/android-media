@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_item.vie
 
 class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener) : RecyclerView.Adapter<EventCheckoutAdditionalAdapter.EventCheckoutAdditionalViewHolder>() {
 
-    private var listAdditional = emptyList<EventCheckoutAdditionalData>()
+    private var listAdditional = mutableListOf<EventCheckoutAdditionalData>()
 
     inner class EventCheckoutAdditionalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(additionalData: EventCheckoutAdditionalData) {
@@ -68,7 +68,7 @@ class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener)
         return listAdditional.get(position).additionalType.type
     }
 
-    fun setList(list: List<EventCheckoutAdditionalData>) {
+    fun setList(list: MutableList<EventCheckoutAdditionalData>) {
         listAdditional = list
         notifyDataSetChanged()
     }
