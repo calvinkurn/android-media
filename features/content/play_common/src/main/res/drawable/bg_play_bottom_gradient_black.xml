@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <gradient
         android:startColor="@color/play_bottom_gradient_lighter"
-        android:endColor="@color/Unify_N700_68"
+        android:endColor="@color/play_bottom_gradient_darker"
         android:angle="270"
         />
 </shape>

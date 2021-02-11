@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "inbox_counter": {
+      "all": {
+        "total_int": 1,
+        "notifcenter_int": 1,
+        "chat_int": 0,
+        "talk_int": 0
+      },
+      "buyer": {
+        "total_int": 0,
+        "notifcenter_int": 0,
+        "chat_int": 0,
+        "talk_int": 0
+      },
+      "seller": {
+        "total_int": 1,
+        "notifcenter_int": 1,
+        "chat_int": 0,
+        "talk_int": 0
+      }
+    }
+  }
+}

@@ -1,9 +1,13 @@
 package com.tokopedia.loginregister.registerinitial.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.loginregister.common.DispatcherProvider;
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,4 +55,11 @@ public class RegisterInitialModule {
             }
         };
     }
+
+    @RegisterInitialScope
+    @Provides
+    ExternalRegisterPreference provideExternalRegisterPreference(@ApplicationContext Context context) {
+        return new ExternalRegisterPreference(context);
+    }
+
 }
