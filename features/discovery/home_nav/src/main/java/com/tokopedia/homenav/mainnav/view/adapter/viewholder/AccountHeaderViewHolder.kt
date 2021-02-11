@@ -172,7 +172,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopTitle.visible()
             tvShopInfo.setText(element.shopName, TextView.BufferType.SPANNABLE)
             val str = tvShopInfo.text as Spannable
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()

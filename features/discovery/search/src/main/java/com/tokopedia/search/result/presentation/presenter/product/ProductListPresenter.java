@@ -1288,8 +1288,13 @@ final class ProductListPresenter
     }
 
     private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmViewModel cpmViewModel) {
+        List<Visitable> headlineAdsVisitableList = new ArrayList<>();
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+        headlineAdsVisitableList.add(cpmViewModel);
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+
         Visitable product = productList.get(position - 1);
-        visitableList.add(visitableList.indexOf(product) + 1, cpmViewModel);
+        visitableList.addAll(visitableList.indexOf(product) + 1, headlineAdsVisitableList);
     }
 
     private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage) {
