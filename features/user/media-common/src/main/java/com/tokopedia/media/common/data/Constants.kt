@@ -1,5 +1,7 @@
 package com.tokopedia.media.common.data
 
+import android.net.Uri
+
 /*
 * Client hints: ECT
 * The first client hints that will be used for adaptive is Effective Connection Types (ECT).
@@ -7,7 +9,10 @@ package com.tokopedia.media.common.data
 * But for the first phase, ECT is giving us enough information regarding the client’s
 * network capabilities. See this article to read the details.
 * */
-const val HEADER_ECT = "ect"
+const val PARAM_ECT = "ect"
+
+// url parameter of blur hashing
+const val PARAM_BLURHASH = "b"
 
 /*
 * determine object classification in every network capability segmentation
@@ -22,3 +27,8 @@ const val UNDEFINED = "4g"
 // the key of connection type
 const val LOW_QUALITY_SETTINGS = 1 // 2g / 3g
 const val HIGH_QUALITY_SETTINGS = 2 // 4g / wifi
+
+// convert String to Uri
+fun String.toUri(): Uri? {
+    return Uri.parse(this)
+}
