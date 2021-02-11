@@ -438,8 +438,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun selectUnreadFilterFromCardSA() {
         if(GlobalConfig.isSellerApp()) {
-            val tab = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
-            if (tab == FILTER_UNREAD) {
+            val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
+            if (filter == FILTER_UNREAD) {
                 val indexReadFilter = talkInboxSortFilter.chipItems.indexOfFirst {  it.title == getString(R.string.inbox_read) }
                 val indexUnreadFilter = talkInboxSortFilter.chipItems.indexOfFirst { it.title == getString(R.string.inbox_unread) }
                 val readFilter = talkInboxSortFilter.chipItems.getOrNull(indexReadFilter)
