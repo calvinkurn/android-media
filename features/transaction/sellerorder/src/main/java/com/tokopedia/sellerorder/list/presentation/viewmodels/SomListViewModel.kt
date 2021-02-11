@@ -17,7 +17,6 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.shop.common.constant.AdminPermissionGroup
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -293,19 +292,19 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
-            getAdminPermissionJob = launchCatchError(
-                    block = {
-                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
-                            _isAdminEligible.postValue(Success(isEligible ?: false))
-                            _canShowOrderData.postValue(isEligible)
-                        }
-                    },
-                    onError = {
-                        _isAdminEligible.postValue(Fail(it))
-                    }
-            )
-        }
+//        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
+//            getAdminPermissionJob = launchCatchError(
+//                    block = {
+//                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+//                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
+//                            _isAdminEligible.postValue(Success(isEligible ?: false))
+//                            _canShowOrderData.postValue(isEligible)
+//                        }
+//                    },
+//                    onError = {
+//                        _isAdminEligible.postValue(Fail(it))
+//                    }
+//            )
+//        }
     }
 }
