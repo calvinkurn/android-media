@@ -23,6 +23,8 @@ object SnapshotAnalytics {
     private const val SELLER_APP_ANDROID_SOM = "android-sellerapp"
     private const val MAIN_APP_ANDROID_SOM = "android-mainapp"
     private const val MARKETPLACE = "marketplace"
+    private const val BUSINESS_UNIT_SOM = "Seller Order Management"
+
 
     fun clickLihatHalamanProduk(productId: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_BOM,
@@ -56,7 +58,7 @@ object SnapshotAnalytics {
         }
         event[USER_ID] = userId
         event[PRODUCT_ID] = productId
-        event[BUSINESS_UNIT] = MARKETPLACE
+        event[BUSINESS_UNIT] = BUSINESS_UNIT_SOM
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
@@ -70,7 +72,7 @@ object SnapshotAnalytics {
         }
         event[USER_ID] = userId
         event[SHOP_ID] = shopId
-        event[BUSINESS_UNIT] = MARKETPLACE
+        event[BUSINESS_UNIT] = BUSINESS_UNIT_SOM
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 }
