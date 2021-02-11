@@ -13,6 +13,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.view.fragment.StatisticFragment
+import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_stc_statistic.*
@@ -25,12 +26,7 @@ import kotlinx.android.synthetic.main.activity_stc_statistic.*
 
 class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformanceMonitoringListener {
 
-    private val shopStatistic by lazy {
-        StatisticFragment.newInstance(Const.PageSource.SHOP_INSIGHT)
-    }
-    private val buyerStatistic by lazy {
-        StatisticFragment.newInstance(Const.PageSource.BUYER_INSIGHT)
-    }
+    private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
 
     val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
@@ -66,12 +62,15 @@ class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformance
     }
 
     private fun initVar() {
-        val shopTitle = getString(R.string.stc_shop)
-        val buyerTitle = getString(R.string.stc_buyer)
-        viewPagerAdapter = StatisticViewPagerAdapter(supportFragmentManager).apply {
-            addFragment(shopStatistic, shopTitle)
-            addFragment(buyerStatistic, buyerTitle)
+        pages = getStatisticPages()
+        viewPagerAdapter = StatisticViewPagerAdapter(supportFragmentManager)
+        pages.forEach { page ->
+            viewPagerAdapter?.addFragment(StatisticFragment.newInstance(page), page.pageTitle)
         }
+    }
+
+    private fun getStatisticPages(): List<StatisticPageUiModel> {
+        return listOf(Const.StatisticPage.getShopStatistic(this), Const.StatisticPage.getBuyerStatistic(this))
     }
 
     private fun setupView() {

@@ -42,7 +42,6 @@ class StatisticViewModel @Inject constructor(
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
-        private const val TICKER_PAGE_NAME = "seller-statistic"
     }
 
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
@@ -106,10 +105,10 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getTickers() {
+    fun getTickers(tickerPageName: String) {
         launchCatchError(block = {
             val result: Success<List<TickerItemUiModel>> = Success(withContext(dispatcher.io) {
-                getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+                getTickerUseCase.get().params = GetTickerUseCase.createParams(tickerPageName)
                 return@withContext getTickerUseCase.get().executeOnBackground()
             })
             _tickers.postValue(result)

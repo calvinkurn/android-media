@@ -43,6 +43,7 @@ import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -72,12 +73,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
-        private const val PAGE_SOURCE = "page_surce"
+        private const val STATISTIC_PAGE = "statistic_page"
 
-        fun newInstance(pageSource: String): StatisticFragment {
+        fun newInstance(page: StatisticPageUiModel): StatisticFragment {
             return StatisticFragment().apply {
                 arguments = Bundle().apply {
-                    putString(PAGE_SOURCE, pageSource)
+                    putParcelable(STATISTIC_PAGE, page)
                 }
             }
         }
@@ -97,14 +98,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val dateFilterBottomSheet by lazy { DateFilterBottomSheet.newInstance() }
     private val defaultStartDate by lazy { Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS)) }
     private val defaultEndDate by lazy { Date() }
-    private val job = Job()
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
-    private var pageSource: String = Const.PageSource.SHOP_INSIGHT
+    private var statisticPage: StatisticPageUiModel? = null
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var headerSubTitle: String = ""
 
+    private val job = Job()
+    private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private var isPltMonitoringCompleted = false
     private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
     private var performanceMonitoringLineGraphWidget: PerformanceMonitoring? = null
@@ -117,10 +119,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageSource = getPageSourceFromArgs()
-        coroutineScope.launch {
-            startLayoutNetworkPerformanceMonitoring()
-            mViewModel.getWidgetLayout(pageSource)
+        statisticPage = getPageFromArgs()
+        statisticPage?.let { page ->
+            coroutineScope.launch {
+                startLayoutNetworkPerformanceMonitoring()
+                mViewModel.getWidgetLayout(page.pageSource)
+            }
         }
     }
 
@@ -151,6 +155,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onResume() {
         super.onResume()
+        setHeaderSubTitle(headerSubTitle)
         if (userVisibleHint)
             StatisticTracker.sendScreen(screenName)
     }
@@ -306,8 +311,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    private fun getPageFromArgs(): StatisticPageUiModel? {
+        return arguments?.getParcelable(STATISTIC_PAGE)
+    }
+
     private fun setDefaultDynamicParameter() {
-        mViewModel.setDateFilter(pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        statisticPage?.let {
+            mViewModel.setDateFilter(it.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        }
     }
 
     private fun getRegularMerchantStatus(): Boolean {
@@ -325,6 +336,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setHeaderSubTitle(subTitle: String) {
+        this.headerSubTitle = subTitle
         (activity as? FragmentListener)?.setHeaderSubTitle(subTitle)
     }
 
@@ -434,10 +446,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun applyDateRange(item: DateFilterItem) {
-        StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateFilter(pageSource, startDate, endDate, item.getDateFilterType())
+        statisticPage?.let {
+            mViewModel.setDateFilter(it.pageSource, startDate, endDate, item.getDateFilterType())
+        }
+
+        StatisticTracker.sendSetDateFilterEvent(item.label)
         adapter.data.forEach {
             if (it !is TickerWidgetUiModel) {
                 it.isLoaded = false
@@ -555,7 +570,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         swipeRefreshStc.isRefreshing = isAdapterNotEmpty
 
         globalErrorStc.gone()
-        mViewModel.getWidgetLayout(pageSource)
+        statisticPage?.let {
+            mViewModel.getWidgetLayout(it.pageSource)
+        }
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) = view?.run {
@@ -640,13 +657,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeTickers() {
+        statisticPage?.let {
+            mViewModel.getTickers(it.tickerPageName)
+        }
         mViewModel.tickers.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> showTickers(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_TICKER)
             }
         })
-        mViewModel.getTickers()
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
@@ -725,9 +744,5 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
         }
-    }
-
-    private fun getPageSourceFromArgs(): String {
-        return arguments?.getString(PAGE_SOURCE) ?: pageSource
     }
 }
