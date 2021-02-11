@@ -7,6 +7,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.talk.R
 
@@ -32,6 +34,21 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         getDataFromApplink()
         setupNavController()
+    }
+
+    override fun onBackPressed() {
+        if(isTaskRoot && isTalkSettingsFragment()) {
+            goToInbox()
+        }
+        super.onBackPressed()
+    }
+
+    private fun goToInbox() {
+        RouteManager.route(this, ApplinkConstInternalGlobal.INBOX_TALK)
+    }
+
+    private fun isTalkSettingsFragment(): Boolean {
+        return findNavController(R.id.talk_seller_settings_parent_view).currentDestination?.id == R.id.sellerSettingsFragment
     }
 
     private fun setupNavController() {
