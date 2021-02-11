@@ -29,11 +29,11 @@
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
-    <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
+    <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
-    <string name="min_bid_error">Biaya minimum %d rupiah</string>
-    <string name="max_bid_error">Biaya maximum %d rupiah</string>
-    <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
+    <string name="min_bid_error">Biaya minimum %s rupiah</string>
+    <string name="max_bid_error">Biaya maximum %s rupiah</string>
+    <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %s</string>
     <string name="topads_common_cancel_btn">Batalkan</string>
     <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
     <string name="topads_common_save_butt">Simpan</string>
@@ -98,7 +98,7 @@
     <string name="topads_common_keyword_jenis">Jenis</string>
     <string name="topads_common_keyword_budget">Biaya</string>
     <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
-    <string name="topads_common_error_multiple_50">Biaya harus kelipatan %d</string>
+    <string name="topads_common_error_multiple_50">Biaya harus kelipatan %s</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
     <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
     <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>

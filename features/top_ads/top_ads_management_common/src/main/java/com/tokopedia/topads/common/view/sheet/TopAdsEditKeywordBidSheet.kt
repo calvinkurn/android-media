@@ -29,9 +29,9 @@ private const val CLICK_SUBMIT_BUTTON = "click - simpan keyword setup"
 class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
-    private var minBid = 0
-    private var maxBid = 0
-    private var suggestedBid = 0
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestedBid = "0"
     private var position = 0
     private var type = 11
     private var name = ""
@@ -56,15 +56,15 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 when {
-                    result < minBid -> {
+                    result < minBid.toDouble() -> {
                         setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                     }
-                    result > maxBid -> {
+                    result > maxBid.toDouble() -> {
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
                     }
 
                     result % 50 != 0 -> {
-                        setMessageErrorField(getString(R.string.topads_common_error_multiple_50), 50, true)
+                        setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
                     }
 
                     else -> {
@@ -119,10 +119,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun getDatafromArguments() {
-        minBid = arguments?.getInt(MIN_BID) ?: 0
-        maxBid = arguments?.getInt(MAX_BID) ?: 0
+        minBid = arguments?.getString(MIN_BID) ?: "0"
+        maxBid = arguments?.getString(MAX_BID) ?: "0"
         position = arguments?.getInt(ITEM_POSITION) ?: 0
-        suggestedBid = arguments?.getInt(SUGGESTION_BID) ?: 0
+        suggestedBid = arguments?.getString(SUGGESTION_BID) ?: "0"
         type = arguments?.getInt(CURRENT_KEY_TYPE) ?: 11
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
@@ -131,7 +131,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     }
 
-    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
+    private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
         budget.setError(bool)
         budget.setMessage(Html.fromHtml(String.format(error, bid)))
         if (bool)

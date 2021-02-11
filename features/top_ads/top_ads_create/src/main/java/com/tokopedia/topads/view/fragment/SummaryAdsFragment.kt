@@ -299,7 +299,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             key.keywordTypeID = stepperModel?.selectedKeywordType?.get(index).toString()
         }
         key.keywordTag = stepperModel?.selectedKeywords?.get(index) ?: ""
-        if (stepperModel?.selectedSuggestBid?.get(index) ?: 0 > 0) {
+        if (stepperModel?.selectedSuggestBid?.get(index)?.toDouble() ?: 0.0 > 0) {
             key.priceBid = stepperModel?.selectedSuggestBid?.get(index)?.toDouble() ?: 0.0
         } else
             key.priceBid = stepperModel?.minSuggestBidKeyword?.toDouble() ?: 0.0

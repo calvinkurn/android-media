@@ -29,7 +29,7 @@ data class TopAdsManageHeadlineInput(
                 @SerializedName("name")
                 var name: String = "",
                 @SerializedName("priceBid")
-                var priceBid: Float = 0.0F,
+                var priceBid: String = "0",
                 @SerializedName("scheduleEnd")
                 var scheduleEnd: String = "",
                 @SerializedName("scheduleStart")
@@ -71,7 +71,7 @@ data class TopAdsManageHeadlineInput(
                         @SerializedName("id")
                         var id: String = "0",
                         @SerializedName("priceBid")
-                        var priceBid: Int = 0,
+                        var priceBid: String = "0",
                         @SerializedName("status")
                         var status: String = "",
                         @SerializedName("tag")

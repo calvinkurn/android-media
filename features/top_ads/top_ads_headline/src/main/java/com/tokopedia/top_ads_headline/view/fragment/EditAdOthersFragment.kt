@@ -120,7 +120,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         })
     }
 
-    fun setDailyBudget(minBid: Int) {
+    fun setDailyBudget(minBid: Double) {
         val budget: Long = (minBid * MULTIPLIER).toLong()
         stepperModel?.dailyBudget = budget.toFloat()
         budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
@@ -134,11 +134,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                     budget = stepperModel.dailyBudget.toLong()
                     limitBudgetSwitch.isChecked = true
                 }
-                stepperModel.adBidPrice != 0 -> {
-                    budget = stepperModel.adBidPrice * MULTIPLIER.toLong()
+                stepperModel.adBidPrice != 0.0 -> {
+                    budget = stepperModel.adBidPrice.toLong() * MULTIPLIER.toLong()
                 }
                 else -> {
-                    budget = (stepperModel.minBid * MULTIPLIER).toLong()
+                    budget = (stepperModel.minBid.toLong() * MULTIPLIER)
                 }
             }
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
@@ -152,9 +152,9 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, Utils.convertToCurrency(number.toLong()))
-                val minBid = stepperModel?.minBid ?: 0
+                val minBid: String = stepperModel?.minBid ?: "0"
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < minBid * MULTIPLIER && budgetCost.isVisible) {
+                if (number < minBid.toDouble() * MULTIPLIER && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))

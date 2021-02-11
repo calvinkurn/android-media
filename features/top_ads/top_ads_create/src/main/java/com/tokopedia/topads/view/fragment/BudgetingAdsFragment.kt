@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
@@ -51,11 +52,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: BudgetingAdsViewModel
     private lateinit var bidInfoAdapter: BidInfoAdapter
-    private var maxBid = 0
-    private var minBid = 0
-    private var minSuggestKeyword = 0
-    private var maxSuggestKeyword = 0
-    private var suggestBidPerClick = 0
+    private var maxBid = "0"
+    private var minBid = "0"
+    private var minSuggestKeyword = "0"
+    private var maxSuggestKeyword = "0"
+    private var suggestBidPerClick = "0"
     private var isEnable = false
     private var userID: String = ""
     private var shopID = ""
@@ -73,7 +74,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         const val BROAD_TYPE = "Luas"
         private const val EXACT_POSITIVE = 21
         const val BROAD_POSITIVE = 11
-        private const val FACTOR = 50
+        private const val FACTOR = "50"
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
@@ -100,9 +101,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         sheet.onSaved = { bid, type, position ->
             if (bidInfoAdapter.typeList.isNotEmpty() && bidInfoAdapter.typeList.size > position)
                 bidInfoAdapter.typeList[position] = type
-            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid.toInt()
+            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid
             bidInfoAdapter.notifyDataSetChanged()
-            stepperModel?.selectedSuggestBid?.set(position, bid.toInt())
+            stepperModel?.selectedSuggestBid?.set(position, bid)
         }
         sheet.onDelete = { position ->
             if (bidInfoAdapter.typeList.isNotEmpty() && bidInfoAdapter.typeList.size > position)
@@ -117,9 +118,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
-        bundle.putInt(MAX_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.maxBid)
-        bundle.putInt(MIN_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.minBid)
-        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos) ?: 0)
+        bundle.putString(MAX_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.maxBid)
+        bundle.putString(MIN_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.minBid)
+        bundle.putString(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos) ?: "0")
         bundle.putString(KEYWORD_NAME, stepperModel?.selectedKeywords?.get(pos))
         if ((bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType == SPECIFIC_TYPE) {
             bundle.putInt(CURRENT_KEY_TYPE, EXACT_POSITIVE)
@@ -181,8 +182,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         if (stepperModel?.selectedKeywordType?.isNotEmpty() != false) {
             setRestoreValue()
         }
-        val dummyId: MutableList<Int> = mutableListOf()
-        val productIds = stepperModel?.selectedProductIds
+        val dummyId: MutableList<Double> = mutableListOf()
+        val productIds = stepperModel?.selectedProductIds?.map {
+            it.toDouble()
+        }
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("group", dummyId))
         val suggestionsDefault = ArrayList<DataSuggestions>()
@@ -201,9 +204,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onDefaultSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        suggestBidPerClick = data[0].suggestionBid
-        maxBid = data[0].maxBid
-        minBid = data[0].minBid
+        data.firstOrNull()?.let {
+            suggestBidPerClick = it.suggestionBid
+            maxBid = it.maxBid
+            minBid = it.minBid
+        }
+
         val list: MutableList<Int> = mutableListOf()
         stepperModel?.selectedKeywords?.forEach { _ ->
             list.add(EXACT_POSITIVE)
@@ -212,9 +218,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         if (stepperModel?.finalBidPerClick != -1 && stepperModel?.finalBidPerClick != 0)
             budget.textFieldInput.setText(stepperModel?.finalBidPerClick.toString())
         else
-            budget.textFieldInput.setText(suggestBidPerClick.toString())
+            budget.textFieldInput.setText(suggestBidPerClick)
 
-        if (budget.textFieldInput.text.toString().replace(",", "").toInt() in (minBid + 1) until maxBid) {
+        if (budget.textFieldInput.text.toString().removeCommaRawString().toFloat() > minBid.toFloat() && budget.textFieldInput.text.toString().removeCommaRawString().toFloat() < maxBid.toFloat()) {
             setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
             isEnable = true
             actionEnable()
@@ -228,11 +234,13 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        stepperModel?.selectedKeywords?.forEach { _ ->
-            bidInfoAdapter.items.add(BidInfoItemViewModel(data[0]))
+        data.firstOrNull()?.let {
+            stepperModel?.selectedKeywords?.forEach { _ ->
+                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+            }
+            minSuggestKeyword = it.minBid
+            maxSuggestKeyword = it.maxBid
         }
-        minSuggestKeyword = data[0].minBid
-        maxSuggestKeyword = data[0].maxBid
         bidInfoAdapter.setMinimumBid(minSuggestKeyword)
         bidInfoAdapter.notifyDataSetChanged()
         loading.visibility = View.GONE
@@ -292,16 +300,16 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 val result = number.toInt()
                 stepperModel?.finalBidPerClick = result
                 when {
-                    result < minBid -> {
+                    result < minBid.toFloat() -> {
                         setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                         isEnable = false
                     }
-                    result > maxBid -> {
+                    result > maxBid.toFloat() -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
                     }
 
-                    result % FACTOR != 0 -> {
+                    result % (FACTOR.toInt()) != 0 -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.topads_common_error_multiple_50), FACTOR, true)
                     }
@@ -317,7 +325,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bid_list.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
+    private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
         budget.setError(bool)
         budget.setMessage(Html.fromHtml(String.format(error, bid)))
     }
