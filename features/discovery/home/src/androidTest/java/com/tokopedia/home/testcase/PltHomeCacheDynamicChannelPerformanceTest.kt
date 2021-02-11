@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.home.R
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
@@ -85,7 +86,10 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     }
 
     private fun savePLTPerformanceResultData(tag: String, datasource: String) {
-        val performanceData = activityRule.activity.getPltPerformanceResultData()
+        var performanceData = activityRule.activity.getPltPerformanceResultData()
+        if (isCacheDataSource(datasource)) {
+            performanceData = PltPerformanceData()
+        }
         performanceData?.let {
             writePLTPerformanceFile(
                     activityRule.activity,
