@@ -23,6 +23,8 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 const val RPC_FILTER_KEY = "rpc_"
+const val DEFAULT_SORT_ID = "23"
+const val DEFAULT_SORT_KEY = "ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
@@ -49,6 +51,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     init {
         fetchQuickFilters()
+        addDefaultToSearchParameter()
     }
 
     fun fetchQuickFilters() {
@@ -178,6 +181,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
+    private fun addDefaultToSearchParameter() {
+        if(!components.searchParameter.contains(DEFAULT_SORT_KEY))
+            components.searchParameter.set(DEFAULT_SORT_KEY, DEFAULT_SORT_ID)
+    }
+
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         setSelectedSort(applySortFilterModel.selectedSortMapParameter)
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
@@ -190,7 +198,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getSelectedFilterCount() : Int {
-        return components.filterController.filterViewStateSet.size
+        return if(getTargetComponent()?.selectedSort.isNullOrEmpty() || getTargetComponent()?.selectedSort?.containsValue(DEFAULT_SORT_ID) == true) {
+            components.filterController.filterViewStateSet.size
+        } else {
+            components.filterController.filterViewStateSet.size + 1
+        }
     }
 
     fun filterProductsCount(selectedFilterMapParameter: Map<String, String>) {
