@@ -591,17 +591,7 @@ class PlayViewModel @Inject constructor(
 
     fun updateBadgeCart() {
         val cartInfo = _observableCartInfo.value
-        if (cartInfo?.shouldShow == true) {
-            viewModelScope.launchCatchError(block = {
-                val newCount = getCartCount()
-                _observableCartInfo.value = PlayCartInfoUiModel.Complete(
-                        shouldShow = cartInfo.shouldShow,
-                        count = newCount
-                )
-            }, onError = {
-
-            })
-        }
+        if (cartInfo != null) updateCartInfo(cartInfo)
     }
 
     fun getVideoPlayer() = playVideoPlayer

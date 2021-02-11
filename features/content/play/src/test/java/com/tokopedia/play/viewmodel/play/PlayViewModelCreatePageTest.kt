@@ -1,48 +1,22 @@
-package com.tokopedia.play.viewmodel
+package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.data.ChannelStatusResponse
-import com.tokopedia.play.data.ReportSummaries
-import com.tokopedia.play.data.TotalLike
-import com.tokopedia.play.data.websocket.PlaySocket
-import com.tokopedia.play.domain.*
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
-import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
-import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
-import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeoutException
 
 /**
  * Created by jegul on 20/02/20

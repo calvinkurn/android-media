@@ -17,10 +17,12 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 ): UseCase<ChannelDetailsWithRecomResponse>() {
 
     private val query = """
-          query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String){
+          query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String, ${'$'}$PARAM_SOURCE_TYPE: String, ${'$'}$PARAM_SOURCE_ID: String){
               playGetChannelDetailsWithRecom(req: {
-                originID: ${'$'}$PARAM_CHANNEL_ID,
-                cursor: ${'$'}$PARAM_CURSOR
+                origin_id: ${'$'}$PARAM_CHANNEL_ID,
+                cursor: ${'$'}$PARAM_CURSOR,
+                source_type: ${'$'}$PARAM_SOURCE_TYPE,
+                source_id: ${'$'}$PARAM_SOURCE_ID
               }) {
                 meta {
                   cursor
@@ -170,8 +172,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
             fun getBySource(sourceType: String, sourceId: String? = null): SourceType {
                 return when (sourceType) {
                     SOURCE_TYPE_SHOP -> {
-                        requireNotNull(sourceId)
-                        Shop(sourceId)
+                        Shop(sourceId.orEmpty())
                     }
                     SOURCE_TYPE_HOME -> Home
                     SOURCE_TYPE_FEEDS -> Feeds
