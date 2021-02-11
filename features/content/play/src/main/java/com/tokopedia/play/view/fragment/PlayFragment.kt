@@ -352,7 +352,6 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
-        observeChannelErrorEvent()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -387,12 +386,6 @@ class PlayFragment @Inject constructor(
 //                }
 //            }
 //        })
-    }
-
-    private fun observeChannelErrorEvent() {
-        playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
-            resetMonitoring()
-        })
     }
 
     private fun observeSocketInfo() {
@@ -500,10 +493,6 @@ class PlayFragment @Inject constructor(
     fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
-    }
-
-    private fun resetMonitoring() {
-        pageMonitoring.invalidate()
     }
 
     private fun stopPageMonitoring() {
