@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
@@ -29,7 +30,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.share.DefaultShare
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
-class CatalogDetailPageActivity : BaseActivity(),
+class CatalogDetailPageActivity :  BaseSimpleActivity(),
         CatalogDetailPageFragment.Listener,
         CategoryNavigationListener,
         BottomSheetListener {
@@ -46,6 +47,7 @@ class CatalogDetailPageActivity : BaseActivity(),
     private var filters: ArrayList<Filter> = ArrayList()
 
     companion object {
+        private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         private const val ORDER_BY = "ob"
@@ -55,6 +57,19 @@ class CatalogDetailPageActivity : BaseActivity(),
             intent.putExtra(EXTRA_CATALOG_ID, catalogId)
             return intent
         }
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.catalog_detail_parent_view
+    }
+
+    override fun getNewFragment(): Fragment? {
+        catalogDetailFragment =  getNewCatalogDetailFragment()
+        return catalogDetailFragment
+    }
+
+    override fun getTagFragment(): String {
+        return CATALOG_DETAIL_TAG
     }
 
     override fun getScreenName(): String? {
@@ -88,8 +103,6 @@ class CatalogDetailPageActivity : BaseActivity(),
     }
 
     private fun prepareView() {
-        setupToolbar()
-        setFragment()
         initBottomSheetListener()
 
         bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
@@ -157,40 +170,14 @@ class CatalogDetailPageActivity : BaseActivity(),
         fragment.reloadData()
     }
 
-    private fun setFragment() {
-        catalogDetailFragment = getNewCatalogDetailFragment()
-        supportFragmentManager.beginTransaction()
-                .add(R.id.parent_view, catalogDetailFragment)
-                .commit()
-    }
-
-    private fun setupToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 10f
-            toolbar.setBackgroundResource(com.tokopedia.abstraction.R.color.white)
-        } else {
-            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow)
-        }
-        img_share_button.setOnClickListener {
-            if (shareData != null) {
-                CatalogDetailPageAnalytics.trackEventClickSocialShare()
-                DefaultShare(this, shareData!!).show()
-            } else
-                NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia")
-        }
-        action_up_btn.setOnClickListener {
-            onBackPressed()
-        }
-    }
 
     override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId: String) {
         this.shareData = shareData
         this.catalogName = catalogName
-        title_toolbar.text = catalogName
 
         catalogDetailListingFragment = getNewCatalogDetailListingFragment(catalogName, departmentId)
         supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout, catalogDetailListingFragment)
+                .add(R.id.catalog_detail_parent_view, catalogDetailListingFragment)
                 .commit()
     }
 

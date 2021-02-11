@@ -102,4 +102,12 @@
         app:loader_type="rect"
         />
 
+    <include
+        android:id="@+id/shimmer_specifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/product_description"
+        layout="@layout/item_shimmer_catalog_specifications_container"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,11 +12,15 @@ class CatalogUiUpdater(var mapOfData: MutableMap<String, BaseCatalogDataModel>) 
     val specificationsMap: CatalogSpecificationDataModel?
         get() = mapOfData[CatalogConstant.CATALOG_SPECIFICATION] as? CatalogSpecificationDataModel
 
-    fun updateProductInfo(catalogInfoDataModel: CatalogInfoDataModel){
+    fun updateModel(model: BaseCatalogDataModel){
+        updateData(model.type(),model)
+    }
+
+    fun updateProductInfo(catalogInfoDataModel: BaseCatalogDataModel){
         updateData(CatalogConstant.CATALOG_INFO,catalogInfoDataModel)
     }
 
-    fun updateSpecifications(specificationDataModel: CatalogSpecificationDataModel){
+    fun updateSpecifications(specificationDataModel: BaseCatalogDataModel){
         updateData(CatalogConstant.CATALOG_SPECIFICATION,specificationDataModel)
     }
 

@@ -21,11 +21,21 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
 import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 
-class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
+class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
+
     var list: ArrayList<Fragment> = ArrayList()
+
+    init {
+        isFullpage = true
+        isDragable = true
+        isHideable = true
+        clearContentPadding = true
+        isSkipCollapseState = true
+    }
 
     companion object {
         const val DESCRIPTION = "DESCRIPTION"
@@ -40,21 +50,41 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_bottomsheet_catalog_specifications, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setChild(getContentView())
+    }
+
+    private fun getContentView(): View {
+        return View.inflate(requireContext(), R.layout.fragment_bottomsheet_catalog_specifications, null)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initData()
+        initViews()
+        setCustomTabText(context,tab_layout_specs)
+        view_pager_specs.setCurrentItem(1)
+    }
+
+    private fun initData(){
         var description: String? = null
         var specifications: ArrayList<SpecificationsComponentData>? = null
         if(arguments!=null){
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
         }
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
+    }
+
+    private fun initViews() {
         val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
         val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
-
         activity?.let {
+            setTitle(it.resources.getString(R.string.catalog_detail_product))
             val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
@@ -80,13 +110,6 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
         closeButton?.setOnClickListener {
             dismiss()
         }
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setCustomTabText(context,tab_layout_specs)
-        view_pager_specs.setCurrentItem(1)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

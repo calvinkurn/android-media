@@ -13,7 +13,7 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 
 class CatalogDetailAdapter (asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
-                            private val listener : CatalogDetailListener,
+                            private val catalogListener : CatalogDetailListener,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 

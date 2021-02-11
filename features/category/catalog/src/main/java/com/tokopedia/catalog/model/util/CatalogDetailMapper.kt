@@ -54,28 +54,22 @@ object CatalogDetailMapper {
 
     fun getDummyCatalogData() : CatalogResponse{
 
-        val longDesc = "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.\n" +
-                "\n" +
-                "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.\n" +
-                "\n" +
-                "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.\n" +
-                "\n" +
-                "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro."
+        val longDesc = "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro."
         val catalogImageList = arrayListOf<CatalogImage>()
         catalogImageList.add(CatalogImage(
-                "https://img.etimg.com/thumb/width-400,height-300,msid-79662724,imgsize-/.jpg",
+                "https://media.wired.com/photos/5fa5e735ba670daaf8e97a91/1:1/w_1502,h_1502,c_limit/GEAR-MAX-Apple-iPhone-12-Pro-Max-SOURCE-Apple.jpg",
                 true
         ))
         catalogImageList.add(CatalogImage(
-                "https://static.toiimg.com/photo/79167081.cms",
+                "https://www.apple.com/newsroom/images/product/iphone/standard/Apple_announce-iphone12pro_10132020.jpg.news_app_ed.jpg",
                 false
         ))
         catalogImageList.add(CatalogImage(
-                "https://www.gizbot.com/images/2020-04/apple-iphone-12-concept_158711095630.jpg",
+                "https://www.gizmochina.com/wp-content/uploads/2018/09/Apple-iPhone-Xs.jpg",
                 false
         ))
         catalogImageList.add(CatalogImage(
-                "https://images.idgesg.net/images/article/2020/10/iphone-12-pro-colors-100862075-large.jpg",
+                "https://static.compareindia.news18.com/compareindia/gallery/images/2019/oct/iphone11promax7202_151120498928.jpg",
                 false
         ))
         val marketPriceList = arrayListOf<CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>()
@@ -183,7 +177,7 @@ object CatalogDetailMapper {
                 "iPhone 12 - 64GB",
                 "Apple",
                 "10 HP Terbaik",
-                 "<p>\r\nGalaxy A10s terlihat sangat mirip dengan A10 karena dibangun menggunakan bahan baku plastik mengkilap yang sama. Tapi, dengan ukuran 156,9 x 75,8 x 7,8mm yang lebih tinggi, lebih luas, dan lebih ramping dari A10. Smartphone ini memiliki berat 168g yang cukup ringan dan nyaman digenggam.\r\n<br>\r\n</p>\r\n<p>\r\nDi bagian depan, ada tampilan Infinity-V dengan bagian bawah yang berukuran relatif besar. Tombol daya ada di sisi kanan perangkat, sementara tombol volume dan tempat penyimpanan SIM serta slot microSD ada di sebelah kiri. Ada jack headphone, port micro-USB, dan mic di bagian bawah, meninggalkan bagian atas hanya tersisa dengan mic sekunder. Di sisi belakang, ada dual-kamera yang tersusun secara vertikal dan lampu LED di sudut kiri atas, sedangkan terdapat branding Samsung di bagian tengah. Untuk fingerprint, ini tepat terletak di atasnya. Semuanya tampilan bagian belakang sebenarnya terlihat cukup berbeda dari A10.\r\n<br>\r\n</p>\r\n<p>\r\nGalaxy A10s dilengkapi dengan layar HD + Infinity-V 6,2 inci, CPU Mediatek Helio P22, GPU PowerVR GE8320, RAM 2GB, penyimpanan internal 32GB, pengaturan kamera belakang 13MP + 2MP, kamera selfie 5MP, baterai 4.000 mAh, dan Samsung One UI berdasarkan Android Pie. Dibandingkan dengan A10, A10s memiliki kamera tambahan di bagian belakang, baterai lebih besar, dan mungkin chipset yang sedikit lebih baik. Smartphone ini juga memiliki pembaca fingerprint yang cukup responsif. \r\n<br>\r\n</p>\r\n<p>\r\nLayar pada Galaxy A10s tidak jauh berbeda dari A10. Smartphone canggih keluaran Samsung ini dilengkapi layar Infinity-V 6,2 inci dengan resolusi 720 × 1520 piksel, yang memberikan kerapatan piksel ~ 271 PPI. Samsung masih setia menggunakan panel IPS LCD yang berwarna cerah dan kontras layar Super AMOLED sama seperti di perangkat Galaxy lainnya. A10s juga menjadi smartphone paling dasar dari seri Galaxy A yang diluncurkan Samsung. Galaxy A10s membanggakan sistem dual-kamera yang mereka miliki di bagian belakangnya. Kamera ini terdiri dari sensor utama 13 MP f / 1.9 dan sensor kedalaman 2 MP f / 2.4 untuk efek bokeh yang lebih baik. Di bagian depan, ada selfie shooter 5 MP f / 2.0. \r\n<br>\r\n</p>\r\n<p>\r\nKamera belakang utama berperan untuk mendukung pemotretan panorama, HDR, dan dapat merekam video 1080p pada 30fps. Sekali lagi, hardware dan kemampuan kamera nampak identik dengan apa yang bisa kamu temukan pada A10. Perbedaan lain yang bisa kamu temukan adalah A10s memiliki model yang lebih baru dengan sensor kedalaman khusus di bagian belakang. Dengan Galaxy A10s, kamu bisa menjalankan fitur Samsung One berbasiskan Android Pie yang out of the box. \r\n</p>",
+                 "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.",
                 "https://www.tokopedia.com/catalog/64743/samsung-galaxy-a10s",
                 "https://m.tokopedia.com/catalog/64743/samsung-galaxy-a10s",
                 catalogImageList,

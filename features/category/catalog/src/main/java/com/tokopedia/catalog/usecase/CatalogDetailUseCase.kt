@@ -29,5 +29,4 @@ class CatalogDetailUseCase @Inject constructor(private val catalogDetailReposito
         val components = CatalogDetailMapper.mapIntoVisitable(data.catalogGetDetailModular)
         return CatalogDetailDataModel(basicInfoModel,components)
     }
-
 }

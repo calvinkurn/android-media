@@ -46,7 +46,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         var specifications: ArrayList<SpecificationsComponentData>? = null
 
         if (arguments != null) {
-            type = arguments!!.getInt(TYPE, 0)
+            type = requireArguments().getInt(TYPE, 0)
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
         }
@@ -107,5 +107,4 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             linear_layout.addView(headerView)
         }
     }
-
 }

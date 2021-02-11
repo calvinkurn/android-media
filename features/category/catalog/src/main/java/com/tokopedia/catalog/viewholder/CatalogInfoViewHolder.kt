@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogImagesAdapter
+import com.tokopedia.catalog.adapter.CatalogImagesItemDecoration
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import kotlinx.android.synthetic.main.item_catalog_product_info.view.*
@@ -27,9 +28,13 @@ class CatalogInfoViewHolder (private val view : View,
 
     private fun renderProductHeaderInfo(productInfo: CatalogInfoDataModel) {
         val imagesRV = view.findViewById<RecyclerView>(R.id.catalog_images_rv)
-        imagesRV.layoutManager = layoutManager
         imagesAdapter = CatalogImagesAdapter(productInfo.images, listener)
-        imagesRV.adapter = imagesAdapter!!
+
+        imagesRV.apply {
+            layoutManager = layoutManager
+            adapter = imagesAdapter
+            addItemDecoration(CatalogImagesItemDecoration())
+        }
 
         productInfo.run {
             view.product_name.text = productName

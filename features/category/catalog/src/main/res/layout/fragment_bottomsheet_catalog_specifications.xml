@@ -10,35 +10,13 @@
         android:layout_height="match_parent"
         android:background="@drawable/header_bottom_sheet_rounded_white">
 
-        <ImageView
-            android:id="@+id/close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_x_black" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/close_button"
-            app:layout_constraintStart_toEndOf="@id/close_button"
-            app:layout_constraintBottom_toBottomOf="@id/close_button"
-            app:typographyType="heading_3"
-            android:paddingTop="@dimen/dp_16"
-            android:text="Detail produk"
-            />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            app:layout_constraintTop_toBottomOf="@+id/close_button">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout_specs"

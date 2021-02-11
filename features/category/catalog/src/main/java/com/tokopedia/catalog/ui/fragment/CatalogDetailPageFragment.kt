@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +33,9 @@ import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
@@ -51,7 +55,10 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogId: String = ""
     private lateinit var fragment: CatalogGalleryFragment
 
+    private var navToolbar: NavToolbar? = null
     private var catalogPageRecyclerView: RecyclerView? = null
+    private var shimmerLayout : ConstraintLayout? = null
+
     private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
 
     private val catalogDetailAdapter by lazy {
@@ -85,17 +92,24 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
+        initNavToolbar()
+        initViews()
         if (arguments != null) {
-            catalogId = arguments!!.getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
+            showShimmer()
         }
 
         setupRecyclerView(view)
         setObservers()
+    }
+
+    private fun initViews() {
+        shimmerLayout = view?.findViewById(R.id.shimmer_layout)
     }
 
     private fun setObservers() {
@@ -103,10 +117,9 @@ class CatalogDetailPageFragment : Fragment(),
             when (it) {
                 is Success -> {
                     catalog_layout.show()
-
-                    // TODO Change
-                    catalogUiUpdater?.updateProductInfo(it.data.listOfComponents[0] as CatalogInfoDataModel)
-                    catalogUiUpdater?.updateSpecifications(it.data.listOfComponents[1] as CatalogSpecificationDataModel)
+                    it.data.listOfComponents.forEach { component ->
+                        catalogUiUpdater?.updateModel(component)
+                    }
                     updateUi()
                 }
                 is Fail -> {
@@ -121,7 +134,32 @@ class CatalogDetailPageFragment : Fragment(),
 
     }
 
+    private fun initNavToolbar() {
+        navToolbar = view?.findViewById(R.id.catalog_navtoolbar)
+        navToolbar?.apply {
+            setIcon(
+                    IconBuilder()
+                            .addIcon(IconList.ID_SHARE) {}
+                            .addIcon(IconList.ID_CART) {}
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+            //setupSearchbar(listOf(HintData(getString(R.string.pdp_search_hint, ""))))
+            show()
+        }
+    }
+
+    private fun showShimmer(){
+        if(catalogUiUpdater?.mapOfData?.size ?: 0 == 0)
+            shimmerLayout?.visibility = View.VISIBLE
+    }
+
+    private fun hideShimmer(){
+        if(catalogUiUpdater?.mapOfData?.size ?: 0 > 0)
+            shimmerLayout?.visibility = View.GONE
+    }
+
     private fun updateUi() {
+        hideShimmer()
         val newData = catalogUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
     }
