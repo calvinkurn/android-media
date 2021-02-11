@@ -210,10 +210,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun setTopTickerData(data: ThankPageTopTickerData) {
         getTopTickerView()?.apply {
             visible()
-            tickerTitle = data.tickerTitle
+            tickerTitle = data.tickerTitle ?: ""
             setTextDescription(data.tickerDescription ?: "")
             closeButtonVisibility = View.GONE
-            tickerType = when(data.ticketType) {
+            tickerType = when (data.ticketType) {
                 TICKER_WARNING -> Ticker.TYPE_WARNING
                 TICKER_INFO -> Ticker.TYPE_INFORMATION
                 TICKER_ERROR -> Ticker.TYPE_ERROR
