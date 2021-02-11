@@ -161,8 +161,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         viewPager.setAdapter(sectionAdapter);
 
         if (GlobalConfig.isSellerApp()) {
-            if(tab.equals(SELLER_INBOX_REVIEW_TAB)) {
-                viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
+            if (tab != null && !tab.isEmpty()) {
+                if (tab.equals(SELLER_INBOX_REVIEW_TAB)) {
+                    viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
+                }
             }
         }
 
