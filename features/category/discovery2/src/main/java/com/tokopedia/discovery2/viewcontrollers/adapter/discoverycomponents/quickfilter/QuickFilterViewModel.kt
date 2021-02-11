@@ -198,7 +198,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getSelectedFilterCount() : Int {
-        return if(getTargetComponent()?.selectedSort.isNullOrEmpty() || getTargetComponent()?.selectedSort?.containsValue(DEFAULT_SORT_ID) == true) {
+        return if(!components.searchParameter.contains(DEFAULT_SORT_KEY) || components.searchParameter.get(DEFAULT_SORT_KEY) == DEFAULT_SORT_ID) {
             components.filterController.filterViewStateSet.size
         } else {
             components.filterController.filterViewStateSet.size + 1
