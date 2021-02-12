@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.domain
 
 const val GQL_ADD_BANK_ACCOUNT = """mutation richieAddBankAccountNewFlow(${'$'}bankID: Int!,
-                                    ${'$'}bankName: String!, +
+                                    ${'$'}bankName: String!, 
                                     ${'$'}accountNo: String!,
                                     ${'$'}accountName:String!,
                                     ${'$'}isManual : Boolean!){
