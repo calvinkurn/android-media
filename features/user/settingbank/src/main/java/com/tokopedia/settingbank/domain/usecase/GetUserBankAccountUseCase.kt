@@ -13,9 +13,8 @@ import javax.inject.Inject
 class GetUserBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<BankAccountListResponse>(graphqlRepository) {
 
-    fun getUserBankAccountList(onSuccessBankListSuccess: (List<BankAccount>) -> Unit,
-                       onAddBankAccountButtonState: (Boolean) -> Unit,
-                       onFail: (Throwable) -> Unit) {
+    fun getUserBankAccountList(onSuccessBankListSuccess: (List<BankAccount>, Boolean) -> Unit,
+                               onFail: (Throwable) -> Unit) {
         setTypeClass(BankAccountListResponse::class.java)
         setGraphqlQuery(GQLUserBankAccountList.GQL_QUERY)
         execute({
@@ -23,15 +22,12 @@ class GetUserBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRe
             val userInfo = it.getBankAccount.data.userInfo
             bankAccountList?.let { bankAccountList ->
                 if (bankAccountList.isNotEmpty()) {
-                    onSuccessBankListSuccess(bankAccountList)
-                    onAddBankAccountButtonState(userInfo.isVerified)
+                    onSuccessBankListSuccess(bankAccountList, userInfo.isVerified)
                 } else {
-                    onSuccessBankListSuccess(listOf())
-                    onAddBankAccountButtonState(true)
+                    onSuccessBankListSuccess(listOf(), true)
                 }
             } ?: run {
-                onSuccessBankListSuccess(listOf())
-                onAddBankAccountButtonState(true)
+                onSuccessBankListSuccess(listOf(), true)
             }
         }, {
             onFail(it)

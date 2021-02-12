@@ -2,6 +2,7 @@ package com.tokopedia.settingbank.view.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.domain.model.KYCInfo
 import com.tokopedia.settingbank.domain.model.TemplateData
@@ -19,7 +20,7 @@ class SettingBankViewModel @Inject constructor(
         private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase>,
         private val getUserBankAccountUseCase: dagger.Lazy<GetUserBankAccountUseCase>,
         private val deleteBankAccountUseCase: dagger.Lazy<DeleteBankAccountUseCase>,
-        private val kyCInfoUseCase: KyCInfoUseCase,
+        private val kyCInfoUseCase: dagger.Lazy<KyCInfoUseCase>,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
 
@@ -33,10 +34,10 @@ class SettingBankViewModel @Inject constructor(
     val addBankAccountStateLiveData = MutableLiveData<Boolean>()
 
     fun loadUserAddedBankList() {
-        getUserBankAccountUseCase.get().getUserBankAccountList({
-            bankAccountListLiveData.postValue(Success(it))
-        }, {
-            addBankAccountStateLiveData.postValue(it)
+        getUserBankAccountUseCase.get().getUserBankAccountList({ bankAccountList: List<BankAccount>,
+                                                                 status: Boolean ->
+            bankAccountListLiveData.postValue(Success(bankAccountList))
+            addBankAccountStateLiveData.postValue(status)
         }, {
             bankAccountListLiveData.postValue(Fail(it))
         })
@@ -67,7 +68,7 @@ class SettingBankViewModel @Inject constructor(
     }
 
     fun getKYCInfo() {
-        kyCInfoUseCase.getKYCCheckInfo({
+        kyCInfoUseCase.get().getKYCCheckInfo({
             kycInfoLiveData.postValue(Success(it))
         }, {
             kycInfoLiveData.postValue(Fail(it))
@@ -78,7 +79,7 @@ class SettingBankViewModel @Inject constructor(
         termsAndConditionUseCase.get().cancelJobs()
         getUserBankAccountUseCase.get().cancelJobs()
         deleteBankAccountUseCase.get().cancelJobs()
-        kyCInfoUseCase.cancelJobs()
+        kyCInfoUseCase.get().cancelJobs()
         super.onCleared()
     }
 
