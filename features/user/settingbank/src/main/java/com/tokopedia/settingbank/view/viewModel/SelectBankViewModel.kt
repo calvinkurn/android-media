@@ -7,6 +7,7 @@ import com.tokopedia.settingbank.domain.usecase.BankListUseCase
 import com.tokopedia.settingbank.domain.usecase.SearchBankListUseCase
 import com.tokopedia.settingbank.view.viewState.BankListState
 import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
+import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -38,12 +39,11 @@ class SelectBankViewModel @Inject constructor(
         searchBankUseCase.get().searchForBanks(
                 query, masterBankList.value
         ) {
-            bankListState.postValue(it)
+            bankListState.postValue(OnBankSearchResult(it))
         }
     }
 
     fun resetSearchResult() {
-        searchBankUseCase.get().cancelJobs()
         searchBankByQuery("")
     }
 

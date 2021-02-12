@@ -1,14 +1,12 @@
 package com.tokopedia.settingbank.domain.usecase
 
 import com.tokopedia.settingbank.domain.model.Bank
-import com.tokopedia.settingbank.view.viewState.BankListState
-import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class SearchBankListUseCase @Inject constructor() : UseCase<BankListState>() {
+class SearchBankListUseCase @Inject constructor() : UseCase<ArrayList<Bank>>() {
 
     private val DELAY_IN_SEARCH = 200L
     private val PARAM_SEARCH_QUERY = "param_search_query"
@@ -16,7 +14,7 @@ class SearchBankListUseCase @Inject constructor() : UseCase<BankListState>() {
 
 
     fun searchForBanks(query: String?, bankList: ArrayList<Bank>?,
-                       onSearchComplete: (BankListState) -> Unit) {
+                       onSearchComplete: (ArrayList<Bank>) -> Unit) {
         val requestParams = RequestParams().apply {
             putString(PARAM_SEARCH_QUERY, query ?: "")
             putObject(PARAM_BANK_LIST, bankList ?: arrayListOf<Bank>())
@@ -24,16 +22,15 @@ class SearchBankListUseCase @Inject constructor() : UseCase<BankListState>() {
         execute({
             onSearchComplete(it)
         }, {
-            onSearchComplete(OnBankSearchResult(bankList ?: arrayListOf()))
+            onSearchComplete(bankList ?: arrayListOf())
         }, requestParams)
     }
 
-    override suspend fun executeOnBackground(): BankListState {
+    override suspend fun executeOnBackground(): ArrayList<Bank> {
         delay(DELAY_IN_SEARCH)
         val query = useCaseRequestParams.getString(PARAM_SEARCH_QUERY, "")
         val bankList = useCaseRequestParams.getObject(PARAM_BANK_LIST) as ArrayList<Bank>
-        val searchedList = searchInMasterList(query, bankList)
-        return OnBankSearchResult(searchedList)
+        return searchInMasterList(query, bankList)
     }
 
     private fun searchInMasterList(query: String, bankList: ArrayList<Bank>): ArrayList<Bank> {
