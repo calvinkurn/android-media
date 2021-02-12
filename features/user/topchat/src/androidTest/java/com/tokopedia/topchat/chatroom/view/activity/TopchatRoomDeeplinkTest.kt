@@ -69,6 +69,22 @@ class TopchatRoomDeeplinkTest {
     }
 
     @Test
+    fun test_chatroom_external_deeplink_askseller_with_shopId_and_custom_msg() {
+        // Given
+        val customMsg = "hi seller"
+        val keyCustomMsg = "customMessage"
+        val applink = "tokopedia://topchat/askseller/$exShopId?$keyCustomMsg=$customMsg"
+
+        // When
+        val intent = RouteManager.getIntent(context, applink)
+
+        // Then
+        verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exShopId)
+        verifyQueryParameter(intent, keyCustomMsg, customMsg)
+    }
+
+    @Test
     fun test_chatroom_internal_deeplink_with_msgId() {
         // Given
         val applink = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId"
@@ -136,5 +152,13 @@ class TopchatRoomDeeplinkTest {
             expectedValue: String
     ) {
         assertThat(intent.data?.lastPathSegment, equalTo(expectedValue))
+    }
+
+    private fun verifyQueryParameter(
+            intent: Intent,
+            key: String,
+            expectedValue: String
+    ) {
+        assertThat(intent.data?.getQueryParameter(key), equalTo(expectedValue))
     }
 }
