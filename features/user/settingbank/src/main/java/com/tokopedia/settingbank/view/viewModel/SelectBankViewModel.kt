@@ -19,7 +19,6 @@ class SelectBankViewModel @Inject constructor(
     private val masterBankList = MutableLiveData<ArrayList<Bank>>()
     val bankListState = MutableLiveData<BankListState>()
 
-
     fun loadBankList() {
         bankListUseCase.get().getBankList {
             when (it) {
