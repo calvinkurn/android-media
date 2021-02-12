@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFaqHeading"
@@ -11,7 +12,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_24"
-        android:text="Berapa lama proses persetujuan aplikasi kredit online Kredivo?"
+        tools:text="Berapa lama proses persetujuan aplikasi kredit online Kredivo?"
         android:textSize="@dimen/unify_font_14"
         app:layout_constraintEnd_toStartOf="@+id/ivArrowBottom"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya"
+        tools:text="Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya"
         android:textSize="@dimen/unify_font_12"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"

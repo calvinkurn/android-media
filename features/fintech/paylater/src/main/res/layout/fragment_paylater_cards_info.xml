@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
             android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="@string/kredivo"
+            tools:text="@string/kredivo"
             android:textSize="@dimen/unify_font_14"
             app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
             app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"

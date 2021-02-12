@@ -15,12 +15,9 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerStepDetails
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.ProcessingApplicationPartnerType
-import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
-import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -141,29 +138,16 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     ) {
         val bundle = Bundle()
         productItemData.let { data ->
-            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
-                is RegisterStepsPartnerType ->
-                    openActionBottomSheet(
-                            bundle,
-                            data.partnerApplyDetails,
-                            "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
-
-                is UsageStepsPartnerType ->
-                    openActionBottomSheet(
-                            bundle,
-                            data.partnerUsageDetails,
-                            "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
-
                 is ProcessingApplicationPartnerType ->
                     openVerificationBottomSheet(bundle, partnerApplicationDetail)
+                else -> openActionBottomSheet(bundle, data)
             }
         }
     }
 
-    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterPartnerStepDetails?, title: String) {
+    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterItemProductData) {
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, partnerData)
-        bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, title)
         pdpSimulationCallback?.openBottomSheet(bundle, PayLaterActionStepsBottomSheet::class.java)
     }
 

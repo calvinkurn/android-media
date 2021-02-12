@@ -54,7 +54,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun initListener() {
         btnHowToUse.setOnClickListener {
             val bundle = Bundle()
-            setBundleData(bundle)
+            bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
             PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
         }
 
@@ -69,8 +69,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setData() {
         tvTitlePaymentPartner.text = responseData?.partnerName
         responseData?.subHeader?.let {
-            tvSubTitlePaylaterPartner.text = it
-            tvSubTitlePaylaterPartner.visible()
+            if (it.isNotEmpty()) {
+                tvSubTitlePaylaterPartner.text = it
+                tvSubTitlePaylaterPartner.visible()
+            }
         }
         applicationStatusData?.let {
             setLabelData(it)
@@ -96,22 +98,6 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
                 } else {
                     tvPaylaterPartnerStatus.gone()
-                }
-            }
-        }
-    }
-
-    private fun setBundleData(bundle: Bundle) {
-        responseData?.let { data ->
-            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
-            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, null)) {
-                is RegisterStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
-                }
-                is UsageStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerUsageDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
                 }
             }
         }

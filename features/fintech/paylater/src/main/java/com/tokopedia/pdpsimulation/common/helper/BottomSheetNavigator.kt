@@ -10,7 +10,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayL
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterVerificationBottomSheet
 
-class BottomSheetManager(val childFragmentManager: FragmentManager) {
+class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
     fun <T : Any> showBottomSheet(modelClass: Class<T>, bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback) {
         when {

@@ -52,8 +52,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
-    private val bottomSheetManager: BottomSheetManager by lazy(LazyThreadSafetyMode.NONE) {
-        BottomSheetManager(childFragmentManager)
+    private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
+        BottomSheetNavigator(childFragmentManager)
     }
 
     private val productPrice: Int by lazy {
@@ -172,7 +172,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun handleRegisterWidgetVisibility(position: Int) {
-        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive) showRegisterWidget()
+        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive)
+            showRegisterWidget()
         else daftarGroup.gone()
     }
 
@@ -215,7 +216,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetManager.showBottomSheet(modelClass, bundle, this)
+        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this)
     }
 
     override fun switchPaymentMode() {

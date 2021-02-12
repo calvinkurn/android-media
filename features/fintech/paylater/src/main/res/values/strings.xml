@@ -39,6 +39,7 @@
     <string name="credit_card_simulation_offer">Bunga 0% berlaku di semua cicilan</string>
     <string name="credit_card_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai payLater. Ada  bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi PayLater</a>]]></string>
     <string name="credit_card_tnc_more_info_text">Info Selengkapnya</string>
+    <string name="credit_card_best_offer_text">Penawaran Terbaik</string>
 
 
     <!-- PayLater Products Detail Page -->
@@ -46,6 +47,8 @@
     <string name="kredivo">Kredivo</string>
     <string name="pay_later_see_how_to_use">Lihat Cara Pakai</string>
     <string name="pay_later_see_more">Lihat Lebih Lengkap</string>
+    <string name="pay_later_faq_see_more">Lihat Lebih Banyak</string>
+    <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
 
     <!-- BottomSheet title-->
     <string name="pay_later_find_out_more_heading">Hal yang sering ditanyakan</string>

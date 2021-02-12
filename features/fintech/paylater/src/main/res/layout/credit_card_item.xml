@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
-            android:text="Penawaran Terbaik"
+            android:text="@string/credit_card_best_offer_text"
             android:textColor="@color/Unify_N0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
