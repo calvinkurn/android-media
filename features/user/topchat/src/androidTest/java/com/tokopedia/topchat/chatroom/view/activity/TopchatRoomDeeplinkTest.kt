@@ -7,6 +7,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -29,6 +30,21 @@ class TopchatRoomDeeplinkTest {
         // Given
         val applink = "tokopedia://topchat/$exMessageId"
         val applinkWithEndTrail = "tokopedia://topchat/$exMessageId/"
+
+        // When
+        val intent = RouteManager.getIntent(context, applink)
+        val intentWithEndTrail = RouteManager.getIntent(context, applinkWithEndTrail)
+
+        // Then
+        verifyDeeplink(intent, applink, topchat)
+        verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
+    }
+
+    @Test
+    fun test_chatroom_internal_deeplink_with_msgId() {
+        // Given
+        val applink = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId"
+        val applinkWithEndTrail = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId/"
 
         // When
         val intent = RouteManager.getIntent(context, applink)
