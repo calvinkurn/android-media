@@ -6,6 +6,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import org.junit.Assert
@@ -38,6 +39,18 @@ class TopchatRoomDeeplinkTest {
         // Then
         verifyDeeplink(intent, applink, topchat)
         verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
+    }
+
+    @Test
+    fun test_chatroom_external_deeplink_with_msgId_formatted() {
+        // Given
+        val msgId = exMessageId
+
+        // When
+        val intent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, msgId)
+
+        // Then
+        verifyDeeplink(intent, topchat)
     }
 
     @Test
