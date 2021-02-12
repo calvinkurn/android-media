@@ -55,6 +55,20 @@ class TopchatRoomDeeplinkTest {
         verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
     }
 
+    @Test
+    fun test_chatroom_internal_deeplink_with_msgId_formatted() {
+        // Given
+        val msgId = exMessageId
+
+        // When
+        val intent = RouteManager.getIntent(
+                context, ApplinkConstInternalGlobal.TOPCHAT_ROOM, msgId
+        )
+
+        // Then
+        verifyDeeplink(intent, topchat)
+    }
+
     private fun verifyDeeplink(
             intent: Intent,
             applink: String,
@@ -70,6 +84,23 @@ class TopchatRoomDeeplinkTest {
 
         if (resolverActivityMissing) {
             Assert.fail("$applink is not resolved for $canonicalName")
+        }
+    }
+
+    private fun verifyDeeplink(
+            intent: Intent,
+            canonicalName: String
+    ) {
+        val resolvedActivities = context.packageManager
+                .queryIntentActivities(intent, PackageManager.MATCH_ALL)
+
+        val resolverActivityMissing = resolvedActivities.none {
+            it.activityInfo.packageName == context.packageName &&
+                    it.activityInfo.name == topchat
+        }
+
+        if (resolverActivityMissing) {
+            Assert.fail("intent is not resolved for $canonicalName")
         }
     }
 }
