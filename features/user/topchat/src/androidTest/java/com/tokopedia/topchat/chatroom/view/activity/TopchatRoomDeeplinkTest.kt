@@ -9,6 +9,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +40,9 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exMessageId)
         verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
+        verifyLastPathSegment(intentWithEndTrail, exMessageId)
     }
 
     @Test
@@ -51,6 +55,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         verifyDeeplink(intent, topchat)
+        verifyLastPathSegment(intent, msgId)
     }
 
     @Test
@@ -65,7 +70,9 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exMessageId)
         verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
+        verifyLastPathSegment(intentWithEndTrail, exMessageId)
     }
 
     @Test
@@ -80,6 +87,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         verifyDeeplink(intent, topchat)
+        verifyLastPathSegment(intent, msgId)
     }
 
     private fun verifyDeeplink(
@@ -115,5 +123,12 @@ class TopchatRoomDeeplinkTest {
         if (resolverActivityMissing) {
             Assert.fail("intent is not resolved for $canonicalName")
         }
+    }
+
+    private fun verifyLastPathSegment(
+            intent: Intent,
+            expectedValue: String
+    ) {
+        assertThat(intent.data?.lastPathSegment, equalTo(expectedValue))
     }
 }
