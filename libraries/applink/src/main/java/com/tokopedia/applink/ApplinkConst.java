@@ -123,6 +123,16 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Go to chat room and chat with buyer use one of the pattern below:
+     * - {@value TOPCHAT_ROOM_ASKBUYER} - use userId only
+     * - {@value TOPCHAT_ROOM_ASKBUYER_WITH_MSG} - use userId and provide initial msg in editText
+     * - {@value TOPCHAT_ASKBUYER} - use userId and several parameters
+     *
+     */
+    String TOPCHAT_ROOM_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}";
+    String TOPCHAT_ROOM_ASKBUYER_WITH_MSG = "tokopedia://topchat/askbuyer/{toUserId}" +
+            "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";

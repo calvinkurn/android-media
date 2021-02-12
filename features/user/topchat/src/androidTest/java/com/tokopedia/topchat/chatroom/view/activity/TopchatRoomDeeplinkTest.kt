@@ -131,6 +131,21 @@ class TopchatRoomDeeplinkTest {
     }
 
     @Test
+    fun test_chatroom_external_deeplink_askbuyer_with_userId_formatted() {
+        // Given
+        val userId = exUserId
+
+        // When
+        val intent = RouteManager.getIntent(
+                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER, userId
+        )
+
+        // Then
+        verifyDeeplink(intent, topchat)
+        verifyLastPathSegment(intent, userId)
+    }
+
+    @Test
     fun test_chatroom_external_deeplink_askbuyer_with_userId_and_custom_msg() {
         // Given
         val customMsg = "hi buyer"
@@ -144,6 +159,23 @@ class TopchatRoomDeeplinkTest {
         verifyDeeplink(intent, applink, topchat)
         verifyLastPathSegment(intent, exUserId)
         verifyQueryParameter(intent, keyCustomMsg, customMsg)
+    }
+
+    @Test
+    fun test_chatroom_external_deeplink_askbuyer_with_userId_and_custom_msg_formatted() {
+        // Given
+        val customMsg = "hi buyer"
+        val userId = exUserId
+
+        // When
+        val intent = RouteManager.getIntent(
+                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, userId, customMsg
+        )
+
+        // Then
+        verifyDeeplink(intent, topchat)
+        verifyLastPathSegment(intent, exUserId)
+        verifyQueryParameter(intent, "customMessage", customMsg)
     }
 
     @Test
