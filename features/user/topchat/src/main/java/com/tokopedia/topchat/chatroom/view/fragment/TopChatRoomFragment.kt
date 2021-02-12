@@ -106,7 +106,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -154,7 +153,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
-    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
@@ -197,7 +195,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFireBase()
-        initTooltipPopup()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -353,10 +350,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         hideLoading()
     }
 
-    private fun initTooltipPopup() {
-        toolTip = ToolTipStickerPopupWindow(context, presenter)
-    }
-
     private fun setupAnalytic() {
         analytics.setSourcePage(sourcePage)
     }
@@ -467,7 +460,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
-        showStickerOnBoardingTooltip()
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -492,15 +484,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvScrollListener?.updateHasNextState(chat)
         if (hasNext) {
             showTopLoading()
-        }
-    }
-
-    private fun showStickerOnBoardingTooltip() {
-        if (
-                !presenter.isStickerTooltipAlreadyShow() &&
-                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == true
-        ) {
-            toolTip.showAtTop(getViewState().chatStickerMenuButton)
         }
     }
 
@@ -1294,7 +1277,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        toolTip.dismiss()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
@@ -1501,7 +1483,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
-        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {

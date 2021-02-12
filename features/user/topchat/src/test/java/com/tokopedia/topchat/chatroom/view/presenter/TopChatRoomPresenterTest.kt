@@ -5,8 +5,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -1150,31 +1148,6 @@ class TopChatRoomPresenterTest {
         val attachments = presenter.attachments
         verify(exactly = 1) { view.updateAttachmentsView(attachments) }
         assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `check isStickerTooltipAlreadyShow`() {
-        // Given
-        every {
-            sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false)
-        } returns false
-
-        // When
-        presenter.isStickerTooltipAlreadyShow()
-
-        // Then
-        verify(exactly = 1) { sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false) }
-    }
-
-    @Test
-    fun `check toolTipOnBoardingShown`() {
-        // When
-        presenter.toolTipOnBoardingShown()
-
-        // Then
-        verify(exactly = 1) {
-            sharedPref.edit().putBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, true).apply()
-        }
     }
 
     @Test

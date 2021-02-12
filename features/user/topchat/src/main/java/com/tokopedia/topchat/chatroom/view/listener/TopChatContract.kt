@@ -158,10 +158,6 @@ interface TopChatContract {
 
         fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
 
-        fun isStickerTooltipAlreadyShow(): Boolean
-
-        fun toolTipOnBoardingShown()
-
         fun setBeforeReplyTime(createTime: String)
 
         fun isInTheMiddleOfThePage(): Boolean

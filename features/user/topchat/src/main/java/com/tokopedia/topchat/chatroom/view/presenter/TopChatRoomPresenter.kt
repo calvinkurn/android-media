@@ -662,14 +662,6 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun isStickerTooltipAlreadyShow(): Boolean {
-        return sharedPref.getBoolean(STICKER_TOOLTIP_ONBOARDING, false)
-    }
-
-    override fun toolTipOnBoardingShown() {
-        sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
-    }
-
     override fun setBeforeReplyTime(createTime: String) {
         getChatUseCase.minReplyTime = createTime
     }
@@ -755,8 +747,4 @@ class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
-
-    companion object {
-        const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
-    }
 }
