@@ -1,69 +1,163 @@
 package com.tokopedia.settingbank.view.viewModel
 
-internal class AddAccountViewModelTest {
-   /* @get:Rule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.settingbank.domain.model.AddBankResponse
+import com.tokopedia.settingbank.domain.model.TemplateData
+import com.tokopedia.settingbank.domain.usecase.*
+import com.tokopedia.settingbank.view.viewState.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+class AddAccountViewModelTest {
+    @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val useCase: GetHowToPayInstructions = mockk()
-    private val appLinkPaymentUseCase: AppLinkPaymentUseCase = mockk()
+    private val addBankAccountUseCase: dagger.Lazy<AddBankAccountUseCase> = mockk()
+    private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase> = mockk()
+    private val checkBankAccountUseCase: dagger.Lazy<CheckBankAccountUseCase> = mockk()
+    private val validateAccountNameUseCase: dagger.Lazy<ValidateAccountNameUseCase> = mockk()
+    private val validateAccountNumberUseCase: dagger.Lazy<ValidateAccountNumberUseCase> = mockk()
 
-    private lateinit var viewModel: HowToPayViewModel
+    private lateinit var viewModel: AddAccountViewModel
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        viewModel = HowToPayViewModel(appLinkPaymentUseCase, useCase)
+        viewModel = spyk(AddAccountViewModel(addBankAccountUseCase,
+                termsAndConditionUseCase,
+                checkBankAccountUseCase, validateAccountNameUseCase,
+                validateAccountNumberUseCase, TestCoroutineDispatcher()))
     }
 
-
     @Test
-    fun `getMutableLiveData success`() {
-        val result = mockk<HowToPayInstruction>()
-        val appLinkPaymentInfo = mockk<AppLinkPaymentInfo>()
-        coEvery { useCase.getHowToPayInstruction(any(), any(), any()) }
+    fun `addBank success`() {
+        val result = mockk<AddBankResponse>()
+        coEvery { addBankAccountUseCase.get().addBankAccount(any(), any(), any()) }
                 .coAnswers {
-                    secondArg<(HowToPayInstruction) -> Unit>().invoke(result)
+                    secondArg<(AddBankResponse) -> Unit>().invoke(result)
                 }
-        every { useCase.getRequestParam(any()) } returns mockk()
-        viewModel.getHowToPayInstruction(appLinkPaymentInfo)
-        assert(viewModel.howToPayLiveData.value is Success)
+        viewModel.addBank(mockk())
+        assert(viewModel.addBankAccountLiveData.value is Success)
     }
 
     @Test
-    fun `getMutableLiveData fail`() {
+    fun `addBank Fail`() {
         val result = mockk<Throwable>()
-        val appLinkPaymentInfo = mockk<AppLinkPaymentInfo>()
-        coEvery { useCase.getHowToPayInstruction(any(), any(), any()) }
+        coEvery { addBankAccountUseCase.get().addBankAccount(any(), any(), any()) }
                 .coAnswers {
                     thirdArg<(Throwable) -> Unit>().invoke(result)
                 }
-        every { useCase.getRequestParam(any()) } returns mockk()
-        viewModel.getHowToPayInstruction(appLinkPaymentInfo)
-        assert(viewModel.howToPayLiveData.value is Fail)
+        viewModel.addBank(mockk())
+        assert(viewModel.addBankAccountLiveData.value is Fail)
     }
 
     @Test
-    fun `getAppLinkPaymentInfoData success`() {
-        val result = mockk<AppLinkPaymentInfo>()
-        val bundle = mockk<Bundle>()
-        coEvery { appLinkPaymentUseCase.getAppLinkPaymentInfo(any(), any(), any()) }
+    fun `validateManualAccountName success`() {
+        val result = mockk<OnAccountNameValidated>()
+        coEvery { validateAccountNameUseCase.get().validateAccountHolderNameLength(any(), any()) }
                 .coAnswers {
-                    secondArg<(AppLinkPaymentInfo) -> Unit>().invoke(result)
+                    secondArg<(AccountNameValidationResult) -> Unit>().invoke(result)
                 }
-        every { useCase.getRequestParam(any()) } returns mockk()
-        viewModel.getAppLinkPaymentInfoData(bundle)
-        assert(viewModel.appLinkPaymentLiveData.value is Success)
+        viewModel.validateManualAccountName("")
+        assert(viewModel.accountNameValidationResult.value is OnAccountNameValidated)
     }
 
     @Test
-    fun `getAppLinkPaymentInfoData fail`() {
+    fun `validateManualAccountName Fail`() {
+        val result = mockk<OnAccountValidationFailed>()
+        coEvery { validateAccountNameUseCase.get().validateAccountHolderNameLength(any(), any()) }
+                .coAnswers {
+                    secondArg<(AccountNameValidationResult) -> Unit>().invoke(result)
+                }
+        viewModel.validateManualAccountName("")
+        assert(viewModel.accountNameValidationResult.value is OnAccountValidationFailed)
+    }
+
+
+    @Test
+    fun `checkAccountNumber Success`() {
+        val result = mockk<OnAccountCheckSuccess>()
+        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+                .coAnswers {
+                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                }
+        viewModel.checkAccountNumber(1, "")
+        assert(viewModel.accountCheckState.value is OnAccountCheckSuccess)
+    }
+
+    @Test
+    fun `checkAccountNumber Failed with error message`() {
+        val result = mockk<OnErrorInAccountNumber>()
+        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+                .coAnswers {
+                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                }
+        viewModel.checkAccountNumber(1, "")
+        assert(viewModel.accountCheckState.value is OnErrorInAccountNumber)
+    }
+
+    @Test
+    fun `checkAccountNumber GQL Request Failed`() {
+        val result = mockk<OnCheckAccountError>()
+        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+                .coAnswers {
+                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                }
+        viewModel.checkAccountNumber(1, "")
+        assert(viewModel.accountCheckState.value is OnCheckAccountError)
+    }
+
+
+    @Test
+    fun `loadTermsAndCondition Success`() {
+        val result = mockk<TemplateData>()
+        coEvery { termsAndConditionUseCase.get().getTermsAndCondition(any(), any()) }
+                .coAnswers {
+                    firstArg<(TemplateData) -> Unit>().invoke(result)
+                }
+        viewModel.loadTermsAndCondition()
+        assert(viewModel.termsAndConditionLiveData.value is Success)
+    }
+
+    @Test
+    fun `loadTermsAndCondition Fail`() {
         val result = mockk<Throwable>()
-        val bundle = mockk<Bundle>()
-        coEvery { appLinkPaymentUseCase.getAppLinkPaymentInfo(any(), any(), any()) }
+        coEvery { termsAndConditionUseCase.get().getTermsAndCondition(any(), any()) }
                 .coAnswers {
-                    thirdArg<(Throwable) -> Unit>().invoke(result)
+                    secondArg<(Throwable) -> Unit>().invoke(result)
                 }
-        every { useCase.getRequestParam(any()) } returns mockk()
-        viewModel.getAppLinkPaymentInfoData(bundle)
-        assert(viewModel.appLinkPaymentLiveData.value is Fail)
-    }*/
+        viewModel.loadTermsAndCondition()
+        assert(viewModel.termsAndConditionLiveData.value is Fail)
+    }
+
+    @Test
+    fun `validateAccountNumber Success`() {
+        val result = mockk<ValidateAccountNumberSuccess>()
+        every { validateAccountNumberUseCase.get().cancelJobs() } returns Unit
+        coEvery { validateAccountNumberUseCase.get().onTextChanged(any(), any(), any()) }
+                .coAnswers {
+                    thirdArg<(ValidateAccountNumberState) -> Unit>().invoke(result)
+                }
+        viewModel.validateAccountNumber(mockk(), "")
+        assert(viewModel.validateAccountNumberStateLiveData.value is ValidateAccountNumberSuccess)
+    }
+
+    @Test
+    fun `validateAccountNumber Failed`() {
+        val result = mockk<OnNOBankSelected>()
+        every { validateAccountNumberUseCase.get().cancelJobs() } returns Unit
+        coEvery { validateAccountNumberUseCase.get().onTextChanged(any(), any(), any()) }
+                .coAnswers {
+                    thirdArg<(ValidateAccountNumberState) -> Unit>().invoke(result)
+                }
+        viewModel.validateAccountNumber(null, "")
+        assert(viewModel.validateAccountNumberStateLiveData.value is OnNOBankSelected)
+    }
+
 }
