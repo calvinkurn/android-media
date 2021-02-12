@@ -21,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
@@ -85,14 +84,6 @@ class TopChatRoomProductTest {
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
         gtmLogDbSource.deleteAll().subscribe()
-        setupOccAbTest()
-    }
-
-    private fun setupOccAbTest() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                TopchatProductAttachmentViewHolder.AB_TEST_KEY,
-                TopchatProductAttachmentViewHolder.VARIANT_DEFAULT
-        )
     }
 
     @Test
@@ -200,7 +191,7 @@ class TopChatRoomProductTest {
         val viewAction =
                 RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
                         1,
-                        ClickChildViewWithIdAction(null)
+                        ClickChildViewWithIdAction()
                                 .clickChildViewWithId(R.id.tv_atc)
                 )
         onView(AllOf.allOf(isDisplayed(), withId(recyclerViewId)))
@@ -211,7 +202,7 @@ class TopChatRoomProductTest {
         val viewAction =
                 RecyclerViewActions.actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
                         1,
-                        ClickChildViewWithIdAction(null)
+                        ClickChildViewWithIdAction()
                                 .clickChildViewWithId(R.id.tv_buy)
                 )
         onView(AllOf.allOf(isDisplayed(), withId(recyclerViewId)))

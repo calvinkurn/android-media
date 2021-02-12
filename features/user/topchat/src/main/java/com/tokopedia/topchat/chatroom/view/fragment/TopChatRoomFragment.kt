@@ -36,7 +36,6 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -273,36 +272,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupBackground() {
         presenter.getBackground()
-    }
-
-    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
-        val addToCartOccRequestParams = AddToCartOccRequestParams(
-                productId = product.productId.toString(),
-                shopId = product.shopId.toString(),
-                quantity = product.minOrder.toString(),
-                productName = product.productName,
-                category = product.category,
-                price = product.priceInt.toString(),
-                userId = session.userId
-        )
-        presenter.addToCart(addToCartOccRequestParams, {
-            analytics.trackClickOccProduct(
-                    product,
-                    getViewState().chatRoomViewModel.shopType,
-                    getViewState().chatRoomViewModel.shopName,
-                    it.data.cartId
-            )
-            finishOccLoading(product, position)
-            RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        }, {
-            finishOccLoading(product, position)
-            showSnackbarError(it)
-        })
-    }
-
-    private fun finishOccLoading(product: ProductAttachmentViewModel, position: Int) {
-        product.isLoadingOcc = false
-        adapter.updateOccLoadingStatus(product, position)
     }
 
     private fun setupBeforeReplyTime() {
@@ -951,8 +920,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         activity?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
                     .withSimpleMultipleSelection(maxPick = 1).apply {
-                maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
-            }
+                        maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
+                    }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)

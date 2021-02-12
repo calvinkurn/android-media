@@ -5,9 +5,6 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -28,7 +25,6 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -63,7 +59,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -99,7 +94,6 @@ class TopChatRoomPresenter @Inject constructor(
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
-        private val addToCartOccUseCase: AddToCartOccUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
@@ -706,34 +700,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
-    }
-
-    override fun addToCart(
-            addToCartOccRequestParams: AddToCartOccRequestParams,
-            onSuccess: (AddToCartDataModel) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        launchCatchError(dispatchers.IO,
-                {
-                    val requestParams = RequestParams.create().apply {
-                        putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartOccRequestParams)
-                    }
-                    val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
-                    if (result.isDataError()) {
-                        withContext(dispatchers.Main) {
-                            val errorMessage = result.getAtcErrorMessage()
-                            onError(Throwable(errorMessage))
-                        }
-                    } else {
-                        withContext(dispatchers.Main) {
-                            onSuccess(result)
-                        }
-                    }
-                },
-                {
-                    onError(it)
-                }
-        )
     }
 
     override fun getBackground() {
