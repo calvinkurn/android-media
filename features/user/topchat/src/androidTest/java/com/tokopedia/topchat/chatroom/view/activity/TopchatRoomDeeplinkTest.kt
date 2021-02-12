@@ -26,6 +26,7 @@ class TopchatRoomDeeplinkTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val exMessageId = "66961"
+    private val exShopId = "77961"
     private val topchat = "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity"
 
     @Test
@@ -56,6 +57,19 @@ class TopchatRoomDeeplinkTest {
         // Then
         verifyDeeplink(intent, topchat)
         verifyLastPathSegment(intent, msgId)
+    }
+
+    @Test
+    fun test_chatroom_external_deeplink_askseller_with_shopId() {
+        // Given
+        val applink = "tokopedia://topchat/askseller/$exShopId"
+
+        // When
+        val intent = RouteManager.getIntent(context, applink)
+
+        // Then
+        verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exShopId)
     }
 
     @Test
