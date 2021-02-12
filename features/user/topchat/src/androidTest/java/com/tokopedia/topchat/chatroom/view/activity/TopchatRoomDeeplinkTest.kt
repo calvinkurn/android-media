@@ -27,6 +27,7 @@ class TopchatRoomDeeplinkTest {
 
     private val exMessageId = "66961"
     private val exShopId = "77961"
+    private val exUserId = "88961"
     private val topchat = "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity"
 
     @Test
@@ -114,6 +115,35 @@ class TopchatRoomDeeplinkTest {
         verifyDeeplink(intent, topchat)
         verifyLastPathSegment(intent, exShopId)
         verifyQueryParameter(intent, "customMessage", customMsg)
+    }
+
+    @Test
+    fun test_chatroom_external_deeplink_askbuyer_with_userId() {
+        // Given
+        val applink = "tokopedia://topchat/askbuyer/$exUserId"
+
+        // When
+        val intent = RouteManager.getIntent(context, applink)
+
+        // Then
+        verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exUserId)
+    }
+
+    @Test
+    fun test_chatroom_external_deeplink_askbuyer_with_userId_and_custom_msg() {
+        // Given
+        val customMsg = "hi buyer"
+        val keyCustomMsg = "customMessage"
+        val applink = "tokopedia://topchat/askbuyer/$exUserId?$keyCustomMsg=$customMsg"
+
+        // When
+        val intent = RouteManager.getIntent(context, applink)
+
+        // Then
+        verifyDeeplink(intent, applink, topchat)
+        verifyLastPathSegment(intent, exUserId)
+        verifyQueryParameter(intent, keyCustomMsg, customMsg)
     }
 
     @Test
