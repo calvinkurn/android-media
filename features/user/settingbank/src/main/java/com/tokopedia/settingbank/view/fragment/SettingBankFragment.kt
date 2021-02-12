@@ -13,8 +13,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
@@ -87,7 +89,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         initBankAccountRecyclerView()
         startObservingViewModels()
         loadUserBankAccountList()
-        add_account_button.visible()
+        add_account_button.gone()
         add_account_button.setOnClickListener {
             when (bankAccountListAdapter.getBankAccountListSize()) {
                 0 -> bankSettingAnalytics.eventOnAddBankClick()
@@ -146,7 +148,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                     }
                 }
                 is Fail -> {
-                    showError(it.throwable, null)
+                    onBankAccountLoadingFailed(it.throwable)
                 }
             }
             progress_bar.gone()
@@ -157,10 +159,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         })
 
         settingBankViewModel.tncNotesLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> populateTNCNoteInAdapter(it.data)
-                is Fail -> showError(it.throwable, null)
-            }
+            if (it is Success) populateTNCNoteInAdapter(it.data)
         })
 
         settingBankViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
@@ -181,6 +180,26 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 is Fail -> showError(it.throwable, null)
             }
         })
+    }
+
+    private fun onBankAccountLoadingFailed(throwable: Throwable) {
+        if(throwable is MessageErrorException){
+            showGlobalError(GlobalError.SERVER_ERROR, ::loadUserBankAccountList)
+        }else{
+            showGlobalError(GlobalError.NO_CONNECTION, ::loadUserBankAccountList)
+        }
+    }
+
+
+    private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
+        globalError.visible()
+        globalError.setType(errorType)
+        globalError.errorAction.visible()
+        globalError.errorAction.setOnClickListener {
+            showLoadingState(true)
+            retryAction.invoke()
+            globalError.gone()
+        }
     }
 
     private fun updateAddBankAccountBtnState(isEnable: Boolean) {
@@ -281,9 +300,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showLoadingState(show: Boolean) {
         if (show) {
-            account_list_rv.visible()
-            view_btn_top_shadow.visible()
-            add_account_button.visible()
+            account_list_rv.gone()
+            view_btn_top_shadow.gone()
+            add_account_button.gone()
 
             iv_noBankAccountAdded.gone()
             tv_no_save_account.gone()
