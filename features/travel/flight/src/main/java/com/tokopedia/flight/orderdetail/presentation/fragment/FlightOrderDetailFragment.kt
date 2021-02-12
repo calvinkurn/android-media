@@ -286,14 +286,14 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailInsurance.setData(
                 getString(R.string.flight_order_detail_insurance_title_label),
                 FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.iconunify_protection),
+                        MethodChecker.getDrawable(requireContext(), com.tokopedia.iconunify.R.drawable.iconunify_protection),
                         getString(R.string.flight_order_detail_insurance_trip_label),
                         getString(R.string.flight_order_detail_insurance_trip_description),
                         true,
                         false
                 ),
                 FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.iconunify_protection),
+                        MethodChecker.getDrawable(requireContext(), com.tokopedia.iconunify.R.drawable.iconunify_protection),
                         getString(R.string.flight_order_detail_insurance_cancel_label),
                         getString(R.string.flight_order_detail_insurance_trip_description),
                         true,
