@@ -33,17 +33,13 @@ class TopchatRoomDeeplinkTest {
     fun test_chatroom_external_deeplink_with_msgId() {
         // Given
         val applink = "tokopedia://topchat/$exMessageId"
-        val applinkWithEndTrail = "tokopedia://topchat/$exMessageId/"
 
         // When
         val intent = RouteManager.getIntent(context, applink)
-        val intentWithEndTrail = RouteManager.getIntent(context, applinkWithEndTrail)
 
         // Then
         verifyDeeplink(intent, applink, topchat)
         verifyLastPathSegment(intent, exMessageId)
-        verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
-        verifyLastPathSegment(intentWithEndTrail, exMessageId)
     }
 
     @Test
@@ -76,17 +72,13 @@ class TopchatRoomDeeplinkTest {
     fun test_chatroom_internal_deeplink_with_msgId() {
         // Given
         val applink = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId"
-        val applinkWithEndTrail = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId/"
 
         // When
         val intent = RouteManager.getIntent(context, applink)
-        val intentWithEndTrail = RouteManager.getIntent(context, applinkWithEndTrail)
 
         // Then
         verifyDeeplink(intent, applink, topchat)
         verifyLastPathSegment(intent, exMessageId)
-        verifyDeeplink(intentWithEndTrail, applinkWithEndTrail, topchat)
-        verifyLastPathSegment(intentWithEndTrail, exMessageId)
     }
 
     @Test
