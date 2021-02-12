@@ -1,5 +1,6 @@
 package tokopedia.applink.deeplink
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -214,5 +215,39 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check seller history internal appLink then should return seller home seller history in sellerapp with search param`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
         assertEqualsDeepLinkMapper("${ApplinkConstInternalOrder.HISTORY}?search=product", expectedDeepLink)
+    }
+
+    @Test
+    fun `check reputation applink with tab param then should return internal review in sellerapp`() {
+        val tabInboxReview = "inbox-review"
+        val tabParam = "tab"
+
+        val appLink = Uri.parse(ApplinkConst.REPUTATION)
+                .buildUpon()
+                .appendQueryParameter(tabParam, tabInboxReview)
+                .build()
+                .toString()
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}&${tabParam}=${tabInboxReview}"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, tabParam to tabInboxReview)
+    }
+
+    @Test
+    fun `check talk applink with filter param then should return internal talk in sellerapp`() {
+        val filterUnread = "unread"
+        val filterParam = "filter"
+
+        val appLink = Uri.parse(ApplinkConst.TALK)
+                .buildUpon()
+                .appendQueryParameter(filterParam, filterUnread)
+                .build()
+                .toString()
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}&${filterParam}=${filterUnread}"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, filterParam to filterUnread)
     }
 }

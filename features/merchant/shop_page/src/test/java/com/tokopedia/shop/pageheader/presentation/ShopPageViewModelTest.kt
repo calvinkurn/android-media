@@ -22,6 +22,8 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -46,26 +48,43 @@ class ShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var gqlGetShopFavoriteStatusUseCase: Lazy<GQLGetShopFavoriteStatusUseCase>
+    
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
+    
     @RelaxedMockK
     lateinit var gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>
+    
     @RelaxedMockK
     lateinit var getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>
+    
     @RelaxedMockK
     lateinit var gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>
+
     @RelaxedMockK
     lateinit var getShopReputationUseCase: Lazy<GetShopReputationUseCase>
+
     @RelaxedMockK
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
+
     @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
+
     @RelaxedMockK
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
+
     @RelaxedMockK
     lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
+
+    @RelaxedMockK
+    lateinit var shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>
+
+    @RelaxedMockK
+    lateinit var shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>
+
     @RelaxedMockK
     lateinit var firebaseRemoteConfig: RemoteConfig
+
     @RelaxedMockK
     lateinit var context: Context
 
@@ -91,6 +110,8 @@ class ShopPageViewModelTest {
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
                 getShopProductListUseCase,
+                shopModerateRequestStatusUseCase,
+                shopRequestUnmoderateUseCase,
                 firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
