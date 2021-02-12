@@ -26,9 +26,8 @@ import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.*
 import com.tokopedia.settingbank.util.AddBankAccountException
-import com.tokopedia.settingbank.util.SettingBankTextWatcher
-import com.tokopedia.settingbank.util.TextWatcherListener
 import com.tokopedia.settingbank.util.getBankTypeFromAbbreviation
+import com.tokopedia.settingbank.util.textChangedListener
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
 import com.tokopedia.settingbank.view.viewState.*
@@ -41,7 +40,7 @@ import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
 import javax.inject.Inject
 
 
-class AddBankFragment : BaseDaggerFragment(), TextWatcherListener {
+class AddBankFragment : BaseDaggerFragment() {
 
 
     private val REQUEST_OTP: Int = 103
@@ -119,7 +118,7 @@ class AddBankFragment : BaseDaggerFragment(), TextWatcherListener {
         super.onViewCreated(view, savedInstanceState)
         setDownArrowBankName()
         setRestoredFragmentState()
-        etBankAccountNumber.addTextChangedListener(SettingBankTextWatcher(this))
+        etBankAccountNumber.textChangedListener(onTextChangeExt = ::onTextChanged)
         setTncText()
         startObservingViewModels()
         setBankName()
@@ -516,8 +515,12 @@ class AddBankFragment : BaseDaggerFragment(), TextWatcherListener {
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
     }
 
-    override fun onTextChanged(str: String) {
-        addAccountViewModel.validateAccountNumber(bank, str)
+     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+         s?.let {
+             addAccountViewModel.validateAccountNumber(bank, s.toString())
+         }?:run {
+             addAccountViewModel.validateAccountNumber(bank, "")
+         }
     }
 
 }

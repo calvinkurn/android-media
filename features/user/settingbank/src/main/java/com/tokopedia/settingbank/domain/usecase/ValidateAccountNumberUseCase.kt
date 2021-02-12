@@ -27,10 +27,11 @@ class ValidateAccountNumberUseCase @Inject constructor() : UseCase<ValidateAccou
             }
             execute({
                 onSuccess(it)
-            }, {}, requestParams)
+            }, {
+
+            }, requestParams)
         }
     }
-
 
     override suspend fun executeOnBackground(): ValidateAccountNumberState {
         val bank: Bank = useCaseRequestParams.getObject(BANK) as Bank
