@@ -142,10 +142,10 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun onItemClicked(address: Address) {
-        setBackAddressResult(address)
+        setBackAddressResult(address, "", "")
     }
 
-    private fun setBackAddressResult(address: Address) {
+    private fun setBackAddressResult(address: Address, latitude: String, longitude: String) {
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
@@ -158,6 +158,8 @@ PopularCityAdapter.ActionListener {
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, address.provinceId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.provinceName)
                 putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, address.zipCodes)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, latitude)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, longitude)
             }
             it.setResult(Activity.RESULT_OK, resultIntent)
             it.finish()
@@ -235,7 +237,6 @@ PopularCityAdapter.ActionListener {
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
-                            // fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG)  }
                             permissionCheckerHelper?.onPermissionDenied(it, permissionText)
                         }
 
@@ -247,14 +248,12 @@ PopularCityAdapter.ActionListener {
                         override fun onPermissionGranted() {
                             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                                 if (data != null) {
-                                    println("++ lat = ${data.latitude}, long = ${data.longitude}")
-                                    // moveMap(getLatLng(data.latitude, data.longitude), PinpointMapFragment.ZOOM_LEVEL)
+                                    setBackAddressResult(Address(), data.latitude.toString(), data.longitude.toString())
                                 }
                             }
                         }
 
                     }, it.getString(R.string.rationale_need_location))
-            println("++ masuk requestLocation")
         }
     }
 
@@ -283,6 +282,8 @@ PopularCityAdapter.ActionListener {
         const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
         const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
         const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE = "latitude"
+        const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE = "longitude"
 
         @JvmStatic
         fun newInstance(): DiscomFragment = DiscomFragment()

@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -19,7 +18,18 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
+import java.util.ArrayList;
+
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.
@@ -99,9 +109,23 @@ public class DiscomActivity extends BaseSimpleActivity
         System.out.println("++ isAllowed = "+isAllowed);
         if (isAllowed) {
             fusedLocationClient = new FusedLocationProviderClient(this);
-            fusedLocationClient.getLastLocation().addOnSuccessListener(location ->
-                    System.out.println("++ lat = "+location.getLatitude()+", long = "+location.getLongitude()));
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this::returnResult);
         }
 
+    }
+
+    private void returnResult(Location location) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, "");
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, "");
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, "");
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, "");
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, "");
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "");
+        resultIntent.putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, new ArrayList<>());
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, location.getLatitude());
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, location.getLongitude());
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 }
