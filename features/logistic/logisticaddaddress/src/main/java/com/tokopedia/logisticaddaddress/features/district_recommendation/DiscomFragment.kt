@@ -29,6 +29,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
@@ -46,6 +47,8 @@ PopularCityAdapter.ActionListener {
     private var rlCurrLocation: RelativeLayout? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var dividerCurrLocation: View? = null
+    private var isLocalization: Boolean? = null
 
     @Inject
     lateinit var addressMapper: AddressMapper
@@ -72,8 +75,10 @@ PopularCityAdapter.ActionListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             mToken = it.getParcelable(ARGUMENT_DATA_TOKEN)
+            isLocalization = it.getBoolean(IS_LOCALIZATION, false)
         }
-        permissionCheckerHelper = PermissionCheckerHelper()
+
+        if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,6 +88,7 @@ PopularCityAdapter.ActionListener {
         llDiscomPopularCity = view.findViewById(R.id.ll_discom_popular_city)
         rvChipsPopularCity = view.findViewById(R.id.rv_discom_chips_popular_city)
         rlCurrLocation = view.findViewById(R.id.rl_discom_current_location)
+        dividerCurrLocation = view.findViewById(R.id.discom_current_location_divider)
         return view
     }
 
@@ -97,12 +103,24 @@ PopularCityAdapter.ActionListener {
         }
         swipeRefreshLayout!!.isEnabled = false
 
-        rlCurrLocation?.setOnClickListener {
-            if (AddNewAddressUtils.isGpsEnabled(it.context)) {
-                requestLocation()
+        if (isLocalization == true) {
+            rlCurrLocation?.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    if (AddNewAddressUtils.isGpsEnabled(it.context)) {
+                        requestLocation()
+                    }
+                }
             }
+            dividerCurrLocation?.visibility = View.VISIBLE
+            llDiscomPopularCity?.visibility = View.VISIBLE
+            fusedLocationClient = FusedLocationProviderClient(requireActivity())
+
+        } else {
+            rlCurrLocation?.visibility = View.GONE
+            dividerCurrLocation?.visibility = View.GONE
+            llDiscomPopularCity?.visibility = View.GONE
         }
-        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     override fun getSearchInputViewResourceId(): Int {
@@ -182,8 +200,8 @@ PopularCityAdapter.ActionListener {
         super.renderList(list, hasNextPage)
 
         llDiscomPopularCity?.visibility = View.GONE
-        tvMessage!!.text = getString(R.string.message_advice_search_address)
-        setMessageSection(true)
+        tvMessage?.text = getString(R.string.message_advice_search_address)
+        setMessageSection(true, isLocalization == true)
 
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
@@ -192,7 +210,7 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun setLoadingState(active: Boolean) {
-        setMessageSection(false)
+        setMessageSection(false, isLocalization == true)
         if (active)
             super.showLoading()
         else
@@ -201,35 +219,40 @@ PopularCityAdapter.ActionListener {
 
     override fun showEmpty() {
         tvMessage!!.text = getString(R.string.message_search_address_no_result)
-        setMessageSection(true)
+        setMessageSection(true, isLocalization == true)
     }
 
     private fun showInitialLoadMessage() {
-        setMessageSection(false)
+        setMessageSection(false, isLocalization == true)
 
-        // please hide on seller side
-        val cityList = resources.getStringArray(R.array.cityList)
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+        if (isLocalization == true) {
+            val cityList = resources.getStringArray(R.array.cityList)
+            val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                    .build()
 
-        llDiscomPopularCity?.visibility = View.VISIBLE
-        rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
-        popularCityAdapter = PopularCityAdapter(context, this)
-        popularCityAdapter?.cityList = cityList.toMutableList()
+            llDiscomPopularCity?.visibility = View.VISIBLE
+            rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            popularCityAdapter = PopularCityAdapter(context, this)
+            popularCityAdapter?.cityList = cityList.toMutableList()
 
-        rvChipsPopularCity?.apply {
-            val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
-            layoutManager = chipsLayoutManager
-            adapter = popularCityAdapter
-            dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            rvChipsPopularCity?.apply {
+                val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+                layoutManager = chipsLayoutManager
+                adapter = popularCityAdapter
+                dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            }
         }
     }
 
-    private fun setMessageSection(active: Boolean) {
-        tvMessage!!.visibility = if (active) View.VISIBLE else View.GONE
-        swipeRefreshLayout!!.visibility = if (active) View.VISIBLE else View.GONE
+    private fun setMessageSection(active: Boolean, isLocalization: Boolean) {
+        tvMessage?.visibility = if (active) View.VISIBLE else View.GONE
+        if (isLocalization) {
+            swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
+        } else {
+            swipeRefreshLayout?.visibility = if (active) View.GONE else View.VISIBLE
+        }
     }
 
     fun requestLocation() {
@@ -286,12 +309,17 @@ PopularCityAdapter.ActionListener {
         const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE = "longitude"
 
         @JvmStatic
-        fun newInstance(): DiscomFragment = DiscomFragment()
+        fun newInstance(isLocalization: Boolean): DiscomFragment = DiscomFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean(IS_LOCALIZATION, isLocalization)
+            }
+        }
 
         @JvmStatic
-        fun newInstance(token: Token): DiscomFragment = DiscomFragment().apply {
+        fun newInstance(token: Token, isLocalization: Boolean): DiscomFragment = DiscomFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA_TOKEN, token)
+                putBoolean(IS_LOCALIZATION, isLocalization)
             }
         }
 

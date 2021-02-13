@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import java.util.ArrayList;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.IS_LOCALIZATION;
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID;
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME;
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID;
@@ -61,10 +62,11 @@ public class DiscomActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         Token  token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
+        boolean isLocalization = getIntent().getBooleanExtra(IS_LOCALIZATION, false);
         if (token == null) {
-            return DiscomFragment.newInstance();
+            return DiscomFragment.newInstance(isLocalization);
         } else {
-            return DiscomFragment.newInstance(token);
+            return DiscomFragment.newInstance(token, isLocalization);
         }
     }
 
