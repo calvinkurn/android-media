@@ -2,25 +2,19 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.annotation.IdRes
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -28,38 +22,17 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
-import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
-import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
-import com.tokopedia.utils.time.TimeHelper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.core.AllOf
-import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class TopchatRoomCassavaTest {
-
-    @get:Rule
-    var activityTestRule = IntentsTestRule(
-            TopChatRoomActivityStub::class.java, false, false
-    )
-
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    private lateinit var getChatUseCase: GetChatUseCaseStub
-    private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
-    private lateinit var activity: TopChatRoomActivityStub
+class TopchatRoomCassavaTest : TopchatRoomTest() {
 
     private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
             "success_get_chat_first_page.json",
@@ -81,15 +54,13 @@ class TopchatRoomCassavaTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
-    private val exMessageId = "66961"
 
     @ExperimentalCoroutinesApi
     @Before
-    fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        getChatUseCase = GetChatUseCaseStub()
-        chatAttachmentUseCase = ChatAttachmentUseCaseStub()
+    override fun before() {
+        super.before()
         gtmLogDbSource.deleteAll().subscribe()
+
     }
 
     @Test
@@ -103,7 +74,7 @@ class TopchatRoomCassavaTest {
         )
 
         // When
-        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
+        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -127,7 +98,7 @@ class TopchatRoomCassavaTest {
         )
 
         // When
-        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
+        inflateTestFragment()
         performClickOnProductCard(R.id.rv_product_carousel)
         performClickAtcButton(R.id.rv_product_carousel)
         performClickBuyButton(R.id.rv_product_carousel)
@@ -153,7 +124,7 @@ class TopchatRoomCassavaTest {
         )
 
         // When
-        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
+        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -164,19 +135,6 @@ class TopchatRoomCassavaTest {
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaSearchProduct),
                 hasAllSuccess()
         )
-    }
-
-    private fun setupChatRoomActivity(
-            sourcePage: String? = null
-    ) {
-        val intent = Intent().apply {
-            putExtra(ApplinkConst.Chat.MESSAGE_ID, exMessageId)
-            sourcePage?.let {
-                putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
-            }
-        }
-        activityTestRule.launchActivity(intent)
-        activity = activityTestRule.activity
     }
 
     private fun verifyRecyclerViewDisplayed(@IdRes recyclerViewId: Int) {
