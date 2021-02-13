@@ -716,7 +716,7 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) {
-            sendAbleProductPreview.sendTo(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+            sendAbleProductPreview.generateMsgObj(exMessageId, exOpponentId, exSendMessage, listInterceptor)
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
