@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class TopchatRoomTest {
+class TopchatRoomCassavaTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
