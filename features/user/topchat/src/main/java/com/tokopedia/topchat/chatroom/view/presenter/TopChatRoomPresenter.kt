@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -70,11 +72,11 @@ import kotlin.coroutines.CoroutineContext
  * @author : Steven 11/12/18
  */
 
-class TopChatRoomPresenter @Inject constructor(
+open class TopChatRoomPresenter @Inject constructor(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
-        private val webSocketUtil: RxWebSocketUtil,
+        protected val webSocketUtil: RxWebSocketUtil,
         private var getChatUseCase: GetChatUseCase,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -208,6 +210,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onReplyMessage(pojo: ChatSocketPojo) {
+        Log.d("DEBUG_TEXT", "onReplyMessage ${Thread.currentThread().id}")
         val temp = mapToVisitable(pojo)
         view?.onReceiveMessageEvent(temp)
         if (!pojo.isOpposite) {
@@ -410,8 +413,12 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun sendMessageWebSocket(messageText: String) {
+    protected open fun sendMessageWebSocket(messageText: String) {
         RxWebSocket.send(messageText, listInterceptor)
+    }
+
+    protected open fun sendMessageJsonObjWebSocket(msgObj: JsonObject) {
+        RxWebSocket.send(msgObj, listInterceptor)
     }
 
     override fun sendAttachmentsAndMessage(
@@ -488,14 +495,24 @@ class TopChatRoomPresenter @Inject constructor(
     ) {
         val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
         val stringContract = CommonUtil.toJson(stickerContract)
-        RxWebSocket.send(stringContract, listInterceptor)
+        sendMessageWebSocket(stringContract)
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
-            attachment.sendTo(messageId, opponentId, message, listInterceptor)
+            val wsMsgPayload = attachment.generateMsgObj(
+                    messageId, opponentId, message, listInterceptor
+            )
+            sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)
+        }
+    }
+
+    private fun sendWebSocketAttachmentPayload(wsMsgPayload: Any) {
+        when (wsMsgPayload) {
+            is String -> sendMessageWebSocket(wsMsgPayload)
+            is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
         }
     }
 
