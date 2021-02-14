@@ -47,6 +47,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
@@ -146,6 +147,7 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
+    private var statusState: Boolean? = null
 
     private var toolbar: Toolbar? = null
 
@@ -484,6 +486,20 @@ class AddEditProductPreviewFragment :
         validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            statusState = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_PREVIEW)
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (productStatusSwitch != null) {
+            outState.putBoolean(KEY_SAVE_INSTANCE_PREVIEW, productStatusSwitch?.isChecked == true)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
@@ -940,7 +956,10 @@ class AddEditProductPreviewFragment :
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
-            updateProductStatusSwitch(it)
+            if (statusState == null) {
+                updateProductStatusSwitch(it)
+            }
+            statusState?.apply { productStatusSwitch?.isChecked = this }
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()

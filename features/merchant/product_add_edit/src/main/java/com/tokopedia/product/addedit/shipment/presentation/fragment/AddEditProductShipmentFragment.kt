@@ -22,11 +22,14 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_SHIPMENT
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
@@ -170,6 +173,27 @@ class AddEditProductShipmentFragment:
         // PLT monitoring
         stopNetworkRequestPerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        inputAllDataInProductInputModel()
+        outState.putString(KEY_SAVE_INSTANCE_SHIPMENT, mapObjectToJson(productInputModel?.shipmentInputModel))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModel = savedInstanceState.getString(KEY_SAVE_INSTANCE_SHIPMENT)
+            if (!productInputModel.isNullOrBlank()) {
+                mapJsonToObject(productInputModel, ShipmentInputModel::class.java).apply {
+                    shipmentViewModel.shipmentInputModel = this
+                    val weightUnitResId = getWeightTypeTitle(weightUnit)
+                    tfWeightUnit.setText(getString(weightUnitResId))
+                    selectedWeightPosition = weightUnit
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onResume() {

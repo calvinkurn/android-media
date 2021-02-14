@@ -31,6 +31,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_DESCRIPTION
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
@@ -42,6 +43,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
@@ -296,6 +299,29 @@ class AddEditProductDescriptionFragment:
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        inputAllDataInInputModel()
+        outState.putString(KEY_SAVE_INSTANCE_DESCRIPTION, mapObjectToJson(descriptionViewModel.productInputModel.value))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_DESCRIPTION)
+            if (!productInputModelJson.isNullOrBlank()) {
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    descriptionViewModel.updateProductInputModel(this)
+                    val videoLinks = descriptionInputModel.videoLinkList
+                    if (videoLinks.isNotEmpty()) {
+                        super.clearAllData()
+                        super.renderList(videoLinks)
+                    }
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     private fun sendClickAddProductVariant() {

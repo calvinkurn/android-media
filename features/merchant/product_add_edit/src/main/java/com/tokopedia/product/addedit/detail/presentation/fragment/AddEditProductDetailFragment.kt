@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_DETAIL
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
@@ -67,6 +68,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
@@ -667,6 +670,28 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        inputAllDataInProductInputModel()
+        outState.putString(KEY_SAVE_INSTANCE_DETAIL, mapObjectToJson(viewModel.productInputModel.detailInputModel))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val detailInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_DETAIL)
+            if (!detailInputModelJson.isNullOrBlank()) {
+                mapJsonToObject(detailInputModelJson, DetailInputModel::class.java).apply {
+                    viewModel.productInputModel.detailInputModel = this
+                    if (!imageUrlOrPathList.isNullOrEmpty()) {
+                        viewModel.productPhotoPaths = imageUrlOrPathList as MutableList<String>
+                    }
+                    fillProductDetailForm(this)
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onDestroyView() {
