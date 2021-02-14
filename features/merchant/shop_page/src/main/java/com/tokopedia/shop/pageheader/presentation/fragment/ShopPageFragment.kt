@@ -1345,7 +1345,7 @@ class ShopPageFragment :
         }
 
         activity?.run {
-            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), isFollowing, false)
+            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), !isFollowing, false)
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
