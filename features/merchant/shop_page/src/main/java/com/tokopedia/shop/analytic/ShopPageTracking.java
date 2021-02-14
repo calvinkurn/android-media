@@ -474,7 +474,7 @@ public class ShopPageTracking {
         eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, PHYSICAL_GOODS);
         eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
         eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
-        if (!promolist.isEmpty() && promolist != null) {
+        if (promolist != null) {
             eventMap.put(
                     ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
                             ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf()
