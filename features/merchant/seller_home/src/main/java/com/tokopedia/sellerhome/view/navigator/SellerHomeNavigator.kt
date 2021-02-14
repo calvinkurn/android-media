@@ -23,10 +23,6 @@ class SellerHomeNavigator(
     private val userSession: UserSessionInterface
 ) {
 
-    companion object {
-        private const val ERROR_NAVIGATOR = "Error when using navigator."
-    }
-
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
     private var chatFragment: Fragment? = null
