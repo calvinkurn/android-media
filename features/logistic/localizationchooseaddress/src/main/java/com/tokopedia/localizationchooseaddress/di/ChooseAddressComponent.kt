@@ -1,7 +1,7 @@
 package com.tokopedia.localizationchooseaddress.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.localizationchooseaddress.ui.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import dagger.Component
 
 @ChooseAddressScope

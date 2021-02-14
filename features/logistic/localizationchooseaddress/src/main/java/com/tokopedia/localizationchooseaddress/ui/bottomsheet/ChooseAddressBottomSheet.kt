@@ -1,5 +1,6 @@
-package com.tokopedia.localizationchooseaddress.ui
+package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,11 +49,15 @@ class ChooseAddressBottomSheet: BottomSheetUnify(), HasComponent<ChooseAddressCo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+    }
 
+    /*on activity result here*/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun initInjector() {
-        component?.inject(this)
+        component.inject(this)
     }
 
     private fun initLayout() {
