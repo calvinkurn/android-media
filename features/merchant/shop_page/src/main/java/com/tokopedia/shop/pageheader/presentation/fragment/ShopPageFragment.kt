@@ -1249,11 +1249,11 @@ class ShopPageFragment :
                         }
                     }.show()
                 }
+                trackViewToasterFollowUnfollow(
+                        followShop.isFollowing == true,
+                        followShop.success == true
+                )
             }
-            trackViewToasterFollowUnfollow(
-                    followShop.isFollowing == true,
-                    followShop.success == true
-            )
         }
     }
 
@@ -1446,7 +1446,7 @@ class ShopPageFragment :
 
     override fun setFollowStatus(isFollowing: Boolean) {
         shopPageTracking?.clickFollowUnfollowShop(
-                isFollowing,
+                !isFollowing,
                 shopId,
                 shopViewModel.userId
         )
