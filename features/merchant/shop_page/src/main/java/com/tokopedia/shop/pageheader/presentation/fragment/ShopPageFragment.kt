@@ -1269,11 +1269,11 @@ class ShopPageFragment :
             {
                 setFollowStatus(shopPageFragmentHeaderViewHolder.isShopFavourited())
             }.show()
+            trackViewToasterFollowUnfollow(
+                    isFollowing,
+                    isSuccess
+            )
         }
-        trackViewToasterFollowUnfollow(
-                isFollowing,
-                isSuccess
-        )
     }
 
     private fun trackViewToasterFollowUnfollow(isFollowing: Boolean, isSuccess: Boolean) {
