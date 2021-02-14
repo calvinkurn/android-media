@@ -108,7 +108,6 @@ public class DiscomActivity extends BaseSimpleActivity
                 break;
             }
         }
-        System.out.println("++ isAllowed = "+isAllowed);
         if (isAllowed) {
             fusedLocationClient = new FusedLocationProviderClient(this);
             fusedLocationClient.getLastLocation().addOnSuccessListener(this::returnResult);
@@ -117,6 +116,7 @@ public class DiscomActivity extends BaseSimpleActivity
     }
 
     private void returnResult(Location location) {
+        System.out.println("++ latitude = "+location.getLatitude()+", longitude = "+location.getLongitude());
         Intent resultIntent = new Intent();
         resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, "");
         resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, "");
