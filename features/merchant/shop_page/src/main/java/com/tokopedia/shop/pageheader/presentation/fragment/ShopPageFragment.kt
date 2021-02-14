@@ -191,6 +191,7 @@ class ShopPageFragment :
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
+    var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
     lateinit var stickyLoginView: StickyLoginView
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
@@ -319,7 +320,7 @@ class ShopPageFragment :
             swipeToRefresh.isEnabled = (verticalOffset == 0)
             val appBarIsCollapsed = ((verticalOffset + shopPageHeaderContentConstraintLayout.height) == 0)
             if (appBarIsCollapsed && shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
-                shopPageFragmentHeaderViewHolder.dismissCoachMark()
+                shopPageFragmentHeaderViewHolder.dismissCoachMark(shopId, shopViewModel.userId)
             }
         })
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
@@ -330,7 +331,7 @@ class ShopPageFragment :
             refreshData()
             updateStickyContent()
             if (shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
-                shopPageFragmentHeaderViewHolder.dismissCoachMark()
+                shopPageFragmentHeaderViewHolder.dismissCoachMark(shopId, shopViewModel.userId)
             }
         }
         mainLayout.requestFocus()
@@ -439,7 +440,12 @@ class ShopPageFragment :
             when(it) {
                 is Success -> {
                     it.data.followStatus.apply {
-                        shopPageFragmentHeaderViewHolder.setFollowStatus(this)
+                        shopPageFragmentHeaderViewHolder.setFollowStatus(
+                                followStatus = this,
+                                shopId = shopId,
+                                userId = shopViewModel.userId
+                        )
+                        isFollowing = this?.status?.userIsFollowing == true
                     }
                 }
                 is Fail -> {
@@ -451,8 +457,9 @@ class ShopPageFragment :
         shopViewModel.followShopData.observe(owner) {
             when(it) {
                 is Success -> {
-                    it.data.followShop?.apply {
-                        onSuccessUpdateFollowStatus(this)
+                    it.data.followShop?.let { followShop ->
+                        onSuccessUpdateFollowStatus(followShop)
+                        isFollowing = followShop.isFollowing == true
                     }
                 }
                 is Fail -> {
@@ -562,6 +569,7 @@ class ShopPageFragment :
     private fun observeShopPageFollowingStatusSharedViewModel() {
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
             shopPageFragmentHeaderViewHolder.updateFollowStatus(it)
+            isFollowing = it.isFollowing == true
         })
     }
 
@@ -1010,7 +1018,7 @@ class ShopPageFragment :
         shopPageTracking?.sendAllTrackingQueue()
         shopShareBottomSheet?.dismiss()
         if (shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
-            shopPageFragmentHeaderViewHolder.dismissCoachMark()
+            shopPageFragmentHeaderViewHolder.dismissCoachMark(shopId, shopViewModel.userId)
         }
     }
 
@@ -1203,14 +1211,19 @@ class ShopPageFragment :
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
-        val success = followShop.success == true
-        if (success) {
+        val isSuccess = followShop.success == true
+        if (isSuccess) {
             shopPageFragmentHeaderViewHolder.updateFollowStatus(followShop)
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
             showSuccessUpdateFollowToaster(followShop)
         } else {
             shopPageFragmentHeaderViewHolder.setLoadingFollowButton(false)
-            followShop.message?.let { showErrorUpdateFollowToaster(it) }
+            followShop.message?.let {
+                showErrorUpdateFollowToaster(it,
+                    isFollowing = followShop.isFollowing == true,
+                    isSuccess = followShop.success == true
+                )
+            }
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
         }
     }
@@ -1229,14 +1242,22 @@ class ShopPageFragment :
                     {
                         if (!shopId.isNullOrBlank()) {
                             showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                            shopPageTracking?.clickCekToasterSuccess(
+                                    shopId,
+                                    shopViewModel.userId
+                            )
                         }
                     }.show()
                 }
             }
+            trackViewToasterFollowUnfollow(
+                    followShop.isFollowing == true,
+                    followShop.success == true
+            )
         }
     }
 
-    private fun showErrorUpdateFollowToaster(message: String) {
+    private fun showErrorUpdateFollowToaster(message: String, isFollowing: Boolean, isSuccess: Boolean) {
         view?.let {
             Toaster.build(
                     it,
@@ -1248,6 +1269,26 @@ class ShopPageFragment :
             {
                 setFollowStatus(shopPageFragmentHeaderViewHolder.isShopFavourited())
             }.show()
+        }
+        trackViewToasterFollowUnfollow(
+                isFollowing,
+                isSuccess
+        )
+    }
+
+    private fun trackViewToasterFollowUnfollow(isFollowing: Boolean, isSuccess: Boolean) {
+        if (isFollowing) {
+            shopPageTracking?.viewToasterFollow(
+                    isSuccess,
+                    shopId,
+                    shopViewModel.userId
+            )
+        } else {
+            shopPageTracking?.viewToasterUnfollow(
+                    isSuccess,
+                    shopId,
+                    shopViewModel.userId
+            )
         }
     }
 
@@ -1304,7 +1345,7 @@ class ShopPageFragment :
         }
 
         activity?.run {
-            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster))
+            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), isFollowing, false)
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
@@ -1406,11 +1447,8 @@ class ShopPageFragment :
     override fun setFollowStatus(isFollowing: Boolean) {
         shopPageTracking?.clickFollowUnfollowShop(
                 isFollowing,
-                CustomDimensionShopPage.create(
-                        shopId,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false
-                )
+                shopId,
+                shopViewModel.userId
         )
 
         shopPageTracking?.sendMoEngageFavoriteEvent(

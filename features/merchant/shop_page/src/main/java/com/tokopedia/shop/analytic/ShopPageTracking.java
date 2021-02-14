@@ -51,6 +51,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUC
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
@@ -59,6 +60,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SORT_PRODUCT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
 
@@ -455,6 +457,30 @@ public class ShopPageTracking {
                 )
         );
 
+        sendDataLayerEvent(eventMap);
+    }
+
+    protected void followUnfollowShop(
+            String action,
+            String label,
+            String userId,
+            List<String> promolist
+    ) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_VIEW);
+        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
+        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
+        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);
+        eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, PHYSICAL_GOODS);
+        eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
+        if (!promolist.isEmpty() && promolist != null) {
+            eventMap.put(
+                    ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                            ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf()
+                    )
+            );
+        }
         sendDataLayerEvent(eventMap);
     }
 
