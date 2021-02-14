@@ -11,12 +11,8 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.views.MvcView
 
@@ -30,18 +26,10 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShopHomeVoucherViewHolder(
         itemView: View,
-        override val isOwner: Boolean,
         private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
-) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView), MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
+) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView){
 
     interface ShopHomeVoucherViewHolderListener {
-        fun onVoucherItemImpressed(parentPosition: Int, itemPosition: Int, voucher: MerchantVoucherViewModel)
-        fun onVoucherSeeAllClicked()
-        fun onVoucherClicked(
-                parentPosition: Int,
-                position: Int,
-                merchantVoucherViewModel: MerchantVoucherViewModel
-        )
         fun onVoucherReloaded()
     }
 
@@ -119,21 +107,5 @@ class ShopHomeVoucherViewHolder(
                 .append(spannableStringBuilder)
                 .append(" ")
                 .append(getString(R.string.shop_page_reload_end_of_description))
-    }
-
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
-
-    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {}
-
-    override fun onSeeAllClicked() {
-        shopHomeVoucherViewHolderListener.onVoucherSeeAllClicked()
-    }
-
-    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {
-        shopHomeVoucherViewHolderListener.onVoucherItemImpressed(
-                adapterPosition,
-                voucherPosition,
-                merchantVoucherViewModel
-        )
     }
 }

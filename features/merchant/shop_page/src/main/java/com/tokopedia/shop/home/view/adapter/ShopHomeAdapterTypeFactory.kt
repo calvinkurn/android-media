@@ -127,8 +127,7 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeCarousellProductViewHolder(parent, shopHomeCarouselProductListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent, adapter?.isOwner
-                        ?: false, onMerchantVoucherListWidgetListener)
+                ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
