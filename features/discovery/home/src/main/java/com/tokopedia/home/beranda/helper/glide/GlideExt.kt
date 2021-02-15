@@ -12,7 +12,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.transform.RoundedCorners
-import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
@@ -32,100 +31,82 @@ fun ImageView.loadGif(url: String) = loadAsGif(url)
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        cacheStrategy = MediaCacheStrategy.RESOURCE
-        loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                handleOnResourceReady(dataSource, resource, performanceMonitoring)
-                listener?.successLoad(resource, dataSource)
-            }
-
-            override fun failedLoad(error: MediaException?) {
-                GlideErrorLogHelper().logError(context, error, url)
-                listener?.failedLoad(error)
-            }
-
-        }
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        listener({ resource, dataSource ->
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            listener?.successLoad(resource, dataSource)
+        }, {
+            GlideErrorLogHelper().logError(context, it, url)
+            listener?.failedLoad(it)
+        })
     }
 }
 
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        placeHolder = R.drawable.placeholder_grey
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        cacheStrategy = MediaCacheStrategy.RESOURCE
-        transform = FitCenter()
-        loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                handleOnResourceReady(dataSource, resource, performanceMonitoring)
-            }
-
-            override fun failedLoad(error: MediaException?) {
-                GlideErrorLogHelper().logError(context, error, url)
-            }
-
-        }
+        setPlaceHolder(R.drawable.placeholder_grey)
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        transform(FitCenter())
+        listener({ resource, dataSource ->
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+        }, {
+            GlideErrorLogHelper().logError(context, it, url)
+        })
     }
 }
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        cacheStrategy = MediaCacheStrategy.RESOURCE
-        transforms = listOf(RoundedCorners(roundedRadius), CenterCrop())
-        loaderListener = object : LoaderStateListener {
-            override fun failedLoad(error: MediaException?) {}
-
-            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                handleOnResourceReady(dataSource, resource, performanceMonitoring)
-            }
-        }
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
+        listener({ resource, dataSource ->
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+        })
     }
 }
 
 fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        placeHolder = R.drawable.placeholder_grey
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        overrideSize = Resize(width, height)
-        loaderListener = object : LoaderStateListener {
-            override fun failedLoad(error: MediaException?) {
-                listener?.failedLoad(error)
-            }
-
-            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                listener?.successLoad(resource, dataSource)
-                handleOnResourceReady(dataSource, resource, performanceMonitoring)
-            }
-        }
+        setPlaceHolder(R.drawable.placeholder_grey)
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        overrideSize(Resize(width, height))
+        listener({ resource, dataSource ->
+            listener?.successLoad(resource, dataSource)
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+        }, {
+            listener?.failedLoad(it)
+        })
     }
 }
 
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        placeHolder = R.drawable.placeholder_grey
-        transforms = listOf(RoundedCorners(15), CenterCrop())
-        cacheStrategy = MediaCacheStrategy.RESOURCE
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setPlaceHolder(R.drawable.placeholder_grey)
+        transforms(listOf(RoundedCorners(15), CenterCrop()))
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
     }
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
     this.loadImage(url) {
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        cacheStrategy = MediaCacheStrategy.RESOURCE
-        placeHolder = -1
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        setPlaceHolder(-1)
     }
 }
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
-        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
-        cacheStrategy = MediaCacheStrategy.RESOURCE
-        transform = CenterCrop()
-        placeHolder = placeholder
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        transform(CenterCrop())
+        setPlaceHolder(placeholder)
     }
 }
 
