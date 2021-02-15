@@ -15,7 +15,7 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
         private const val PARAM_SOURCE = "source"
         private const val SOURCE = "\$source"
 
-        internal val QUERY = """
+        val QUERY = """
             query getAdminType($SOURCE: String) {
               getAdminType(source: $SOURCE) {
                 shopID
