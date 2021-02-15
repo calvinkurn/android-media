@@ -32,14 +32,14 @@
             android:background="@color/Unify_N0"
             android:padding="@dimen/spacing_lvl4">
 
-            <com.tokopedia.iconunify.IconUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivFlightOrderTopButtonLeftIcon"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:icon_name="PROTECTION" />
+                app:srcCompat="@drawable/ic_flight_order_detail_web_check_in" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tgFlightOrderTopButtonTopText"
@@ -91,14 +91,14 @@
             android:background="@color/Unify_N0"
             android:padding="@dimen/spacing_lvl4">
 
-            <com.tokopedia.iconunify.IconUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivFlightOrderBottomButtonLeftIcon"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:icon_name="PROTECTION" />
+                app:srcCompat="@drawable/ic_flight_order_detail_cancellation" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tgFlightOrderBottomButtonTopText"
