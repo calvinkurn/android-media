@@ -75,7 +75,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) { transform = FitCenter() }
+            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) { transform(FitCenter()) }
         }
     }
 

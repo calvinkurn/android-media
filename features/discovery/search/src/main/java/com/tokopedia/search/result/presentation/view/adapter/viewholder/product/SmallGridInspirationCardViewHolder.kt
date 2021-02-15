@@ -71,7 +71,9 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) { transform = FitCenter() }
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) {
+                transform(FitCenter())
+            }
         }
     }
 
