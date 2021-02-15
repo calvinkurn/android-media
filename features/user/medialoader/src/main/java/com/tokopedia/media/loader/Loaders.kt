@@ -31,7 +31,7 @@ inline fun ImageView.loadImage(
 
 fun ImageView.loadImageCircle(url: String) {
     call(url, Properties().apply {
-        isCircular = true
+        isCircular(true)
     })
 }
 
@@ -42,7 +42,7 @@ inline fun ImageView.loadImageRounded(
         rounded: Float = DEFAULT_ROUNDED,
         crossinline configuration: Properties.() -> Unit = {
             Properties().apply {
-                roundedRadius = rounded
+                setRoundedRadius(rounded)
             }
         }) {
     call(url, Properties().apply(configuration))
