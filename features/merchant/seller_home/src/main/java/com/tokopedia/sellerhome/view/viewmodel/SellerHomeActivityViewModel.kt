@@ -10,6 +10,7 @@ import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Result
@@ -30,6 +31,10 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
+
+    companion object {
+        private const val SOURCE = "stuart_seller_home"
+    }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
     val notifications: LiveData<Result<NotificationUiModel>>
@@ -78,6 +83,7 @@ class SellerHomeActivityViewModel @Inject constructor(
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
         getEligiblityOnlyWhenAdminShouldCheckRole {
+            sellerAdminUseCase.requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
             sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
                 adminDataResponse.data.detail.roleType.also { roleType ->
                     updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)

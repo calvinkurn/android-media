@@ -11,8 +11,10 @@ import javax.inject.Inject
 
 class SellerAdminUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<AdminDataResponse>() {
 
+    var requestParams: RequestParams = GetAdminTypeUseCase.createRequestParams()
+
     override suspend fun executeOnBackground(): AdminDataResponse {
-        GraphqlRequest(GetAdminTypeUseCase.QUERY, AdminTypeResponse::class.java, RequestParams.EMPTY.parameters).let { request ->
+        GraphqlRequest(GetAdminTypeUseCase.QUERY, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
             gqlRepository.getReseponse(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {
