@@ -3,8 +3,6 @@ package com.tokopedia.topchat.common.chat.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
-import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel;
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 
@@ -29,18 +27,10 @@ import rx.Observable;
  */
 
 public interface ChatApi {
-    @GET(TkpdBaseURL.Chat.GET_MESSAGE)
-    Observable<Response<DataResponse<MessageData>>> getMessage(@QueryMap Map<String, Object> requestParams);
-
-    @Headers("Cookie:_SID_TOKOPEDIA_")
-    @GET(TkpdBaseURL.Chat.SEARCH)
-    Observable<Response<DataResponse<SearchedMessage>>> searchChat(@QueryMap Map<String, Object>
-                                                                           requestParams);
-
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
     Observable<Response<DataResponse<DeleteChatListUiModel>>> deleteMessage(@Body JsonObject
-                                                                                      parameters);
+                                                                                    parameters);
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
     Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>
@@ -63,6 +53,6 @@ public interface ChatApi {
 
     @HTTP(method = "DELETE", path = TkpdBaseURL.Chat.DELETE_TEMPLATE + "/{is_seller}", hasBody = true)
     Observable<Response<DataResponse<TemplateData>>> deleteTemplate(@Path("index") int index
-                                                                    , @Path("is_seller") boolean isSeller
-                                                                    , @Body JsonObject object);
+            , @Path("is_seller") boolean isSeller
+            , @Body JsonObject object);
 }

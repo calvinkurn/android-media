@@ -10,10 +10,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.additional_check.R
+import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
+import com.tokopedia.additional_check.common.ADD_PIN_PAGE
+import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
+import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import kotlinx.android.synthetic.main.fragment_two_factor.view.*
@@ -23,10 +27,14 @@ import kotlinx.android.synthetic.main.fragment_two_factor.view.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class TwoFactorFragment: BaseDaggerFragment() {
+class TwoFactorFragment constructor(
+        private val activePageListener: ActivePageListener
+): BaseDaggerFragment() {
 
     private val ADD_PHONE_REQ_CODE = 1
     private val ADD_PIN_REQ_CODE = 2
+
+    private val twoFactorTracker = TwoFactorTracker()
 
     var model: TwoFactorResult? = TwoFactorResult()
 
@@ -53,25 +61,36 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun renderPinView(mView: View?){
         context?.run {
+            activePageListener.currentPage(ADD_PIN_PAGE)
+            twoFactorTracker.viewPageOnboardingAddPin()
+
             mView?.title_two_factor?.text = getString(R.string.add_pin_heading)
             mView?.body_two_factor?.text = getString(R.string.add_pin_body)
             mView?.btn_two_factor?.text = getString(R.string.add_pin_button_title)
             mView?.img_view_two_factor?.run {
                 ImageHandler.LoadImage(this, PIN_ONBOARDING_IMG)
             }
-            mView?.btn_two_factor?.setOnClickListener { goToAddPin() }
+            mView?.btn_two_factor?.setOnClickListener {
+                twoFactorTracker.clickButtonPageAddPin()
+                goToAddPin()
+            }
         }
     }
 
     private fun renderPhoneView(mView: View?){
         context?.run {
+            activePageListener.currentPage(ADD_PHONE_NUMBER_PAGE)
+
             mView?.title_two_factor?.text = getString(R.string.add_phone_heading)
             mView?.body_two_factor?.text = getString(R.string.add_phone_body)
             mView?.btn_two_factor?.text = getString(R.string.add_phone_button_title)
             mView?.img_view_two_factor?.run {
                 ImageHandler.LoadImage(this, PHONE_ONBOARDING_IMG)
             }
-            mView?.btn_two_factor?.setOnClickListener { goToAddPhone() }
+            mView?.btn_two_factor?.setOnClickListener {
+                twoFactorTracker.clickButtonPageAddPhoneNumber()
+                goToAddPhone()
+            }
         }
     }
 
@@ -130,8 +149,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
         private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
         private const val PIN_SUCCESS_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_success_two_factor.png"
 
-        fun newInstance(bundle: Bundle?): Fragment{
-            return TwoFactorFragment().apply {
+        fun newInstance(bundle: Bundle?, activePageListener: ActivePageListener): Fragment{
+            return TwoFactorFragment(activePageListener).apply {
                 arguments = bundle
             }
         }

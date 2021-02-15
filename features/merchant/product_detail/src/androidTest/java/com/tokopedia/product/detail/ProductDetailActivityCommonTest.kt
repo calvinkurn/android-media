@@ -3,13 +3,9 @@ package com.tokopedia.product.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
-import androidx.test.runner.screenshot.Screenshot
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
-import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
 
 /**
@@ -53,12 +49,6 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
             "", false,
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
-
-    fun takeScreenShot(screenshotName: String) {
-        Handler(Looper.getMainLooper()).post {
-            screenShotAndSave(window.decorView, "", screenshotName)
-        }
-    }
 
     fun getLastPositionIndex(): Int {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragmentDiffutil
