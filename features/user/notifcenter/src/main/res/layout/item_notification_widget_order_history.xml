@@ -201,7 +201,7 @@
             android:paddingTop="@dimen/unify_space_8"
             android:paddingBottom="@dimen/unify_space_8"
             android:text="@string/cta_widget_notifcenter_see_previous"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_N500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_history"
             app:typographyType="body_3"
