@@ -37,6 +37,8 @@ data class CartDataListResponse(
         val shoppingSummary: ShoppingSummary = ShoppingSummary(),
         @SerializedName("fulfillment_message")
         val fulfillmentMessage: String = "",
+        @SerializedName("toko_cabang")
+        val tokoCabangInfo: TokoCabangInfo = TokoCabangInfo(),
         @SerializedName("available_section")
         val availableSection: AvailableSection = AvailableSection(),
         @SerializedName("unavailable_ticker")

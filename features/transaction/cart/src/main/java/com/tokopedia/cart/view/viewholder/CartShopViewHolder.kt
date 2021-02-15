@@ -16,6 +16,7 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -50,6 +51,7 @@ class CartShopViewHolder(itemView: View,
     private val separatorFreeShipping: Typography = itemView.findViewById(R.id.separator_free_shipping)
     private val imgFreeShipping: ImageView = itemView.findViewById(R.id.img_free_shipping)
     private val labelFulfillment: Label = itemView.findViewById(R.id.label_fulfillment)
+    private val imgFulfillmentBadge: ImageUnify = itemView.findViewById(R.id.iu_image_fulfill)
     private val separatorEstimatedTimeArrival: Typography = itemView.findViewById(R.id.separator_estimated_time_arrival)
     private val textEstimatedTimeArrival: Typography = itemView.findViewById(R.id.text_estimated_time_arrival)
 
@@ -134,9 +136,16 @@ class CartShopViewHolder(itemView: View,
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
         labelFulfillment.visibility = if (cartShopHolderData.shopGroupAvailableData.isFulfillment) View.VISIBLE else View.GONE
         if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
+            if (cartShopHolderData.shopGroupAvailableData.isFulfillment) {
+                imgFulfillmentBadge.show()
+                imgFulfillmentBadge.setImageUrl(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
+            } else {
+                imgFulfillmentBadge.gone()
+            }
             tvFulfillDistrict.show()
             tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
         } else {
+            imgFulfillmentBadge.gone()
             tvFulfillDistrict.gone()
         }
     }

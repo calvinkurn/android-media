@@ -163,14 +163,19 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else if (availableGroup.shop.goldMerchant.isGoldBadge) availableGroup.shop.goldMerchant.goldMerchantLogoUrl
                     else ""
             it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = availableGroup.shipmentInformation.shopLocation
+            it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+            it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
             it.isHasPromoList = availableGroup.hasPromoList
             it.cartString = availableGroup.cartString
             it.promoCodes = availableGroup.promoCodes
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
-            it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
+            it.freeShippingBadgeUrl = when {
+                availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
+                availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
+                else -> ""
+            }
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it
@@ -328,6 +333,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isCheckboxState = cartDetail.isCheckboxState
             it.priceOriginal = cartDetail.product.productOriginalPrice
             if (cartDetail.product.freeShipping.eligible && cartDetail.product.freeShipping.badgeUrl.isNotBlank()) {
+                // TODO: 15/02/21 This flag is for analytics
                 it.isFreeShipping = true
                 it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
             }
