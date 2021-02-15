@@ -5,12 +5,12 @@ import com.google.gson.Gson
 import com.tokopedia.cart.R
 import com.tokopedia.cart.availableAndErrorCartItemMockData
 import com.tokopedia.cart.availableCartItemMockData
-import com.tokopedia.cart.errorCartItemMockData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDataListResponse
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.CartTickerErrorData
+import com.tokopedia.cart.errorCartItemMockData
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -45,7 +45,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker data") {
-                assertEquals(TickerData(0, "Hai Member Gold, kuota Bebas Ongkir kamu sisa 3x (untuk 1 pesanan/transaksi) buat minggu ini.", "cart"), result.tickerData)
+                assertEquals(TickerData("0", "Hai Member Gold, kuota Bebas Ongkir kamu sisa 3x (untuk 1 pesanan/transaksi) buat minggu ini.", "cart"), result.tickerData)
             }
 
             Then("should contains 1 available shop") {

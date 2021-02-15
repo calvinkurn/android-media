@@ -556,7 +556,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
-                    new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
+                    new TickerAnnouncementHolderData(cartShipmentAddressFormData.getTickerData().getId(),
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
