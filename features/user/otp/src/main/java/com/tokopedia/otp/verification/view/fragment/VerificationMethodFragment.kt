@@ -220,10 +220,14 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun setAbTestFooter() {
-        when (abTestPlatform.getString(AB_TEST_KEY_INACTIVE_PHONE, AB_TEST_VARIANT_1_INACTIVE_PHONE)) {
-            AB_TEST_VARIANT_1_INACTIVE_PHONE -> { onVariant1InactivePhone() }
-            AB_TEST_VARIANT_2_INACTIVE_PHONE -> { onVariant2InactivePhone() }
-            AB_TEST_VARIANT_3_INACTIVE_PHONE -> { onVariant3InactivePhone() }
+        val abTestKeyInactivePhone1 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_1, false)
+        val abTestKeyInactivePhone2 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_2, false)
+        val abTestKeyInactivePhone3 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_3, false)
+
+        when {
+            abTestKeyInactivePhone1 -> { onVariant1InactivePhone() }
+            abTestKeyInactivePhone2 -> { onVariant2InactivePhone() }
+            abTestKeyInactivePhone3 -> { onVariant3InactivePhone() }
             else -> onTypeHideLink()
         }
     }
@@ -284,7 +288,8 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun onGoToInactivePhoneNumber() {
         context?.let {
             analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
-            analytics.trackClickInactivePhoneLink()val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+            analytics.trackClickInactivePhoneLink()
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
             if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
@@ -347,10 +352,9 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     companion object {
 
         private const val TITLE = "Verifikasi"
-        private const val AB_TEST_KEY_INACTIVE_PHONE = "KEY"
-        private const val AB_TEST_VARIANT_1_INACTIVE_PHONE = "VARIANT 1"
-        private const val AB_TEST_VARIANT_2_INACTIVE_PHONE = "VARIANT 2"
-        private const val AB_TEST_VARIANT_3_INACTIVE_PHONE = "VARIANT 3"
+        private const val AB_TEST_KEY_INACTIVE_PHONE_1 = "inactive_pn_1"
+        private const val AB_TEST_KEY_INACTIVE_PHONE_2 = "inactive_pn_2"
+        private const val AB_TEST_KEY_INACTIVE_PHONE_3 = "inactive_pn_3"
 
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
