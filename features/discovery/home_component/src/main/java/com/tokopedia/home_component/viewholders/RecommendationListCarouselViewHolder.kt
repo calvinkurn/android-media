@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -196,7 +195,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationListViewHolder(
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
-            val isCacheData: Boolean
+            val isCacheData: Boolean,
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -239,17 +238,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
-                            recommendation.recommendationApplink
-                    )
-                }
-            } else if(recommendation is HomeRecommendationListSeeMoreData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener?.onRecommendationCarouselGridImpression(
-                            recommendation.channel,
-                            null,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            true
+                            recommendation.recommendationApplink,
+                            recommendation.parentPosition
                     )
                 }
             }

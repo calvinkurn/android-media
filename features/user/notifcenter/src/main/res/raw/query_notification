@@ -13,6 +13,11 @@ query Notification($cursor: String) {
       ticket
       review
     }
+    inbox_counter{
+      all{
+        total_int
+      }
+    }
     chat {
       unreads
     }

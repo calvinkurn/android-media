@@ -133,7 +133,6 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         viewPagerHeadline.adapter = getViewPagerAdapter()
         viewPagerHeadline.offscreenPageLimit = 2
         viewPagerHeadline.currentItem = 0
-        //  viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout?.setupWithViewPager(viewPagerHeadline)
     }
 
@@ -411,7 +410,6 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     fun setKeywordCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
-//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {

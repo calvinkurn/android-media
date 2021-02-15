@@ -61,10 +61,10 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
                     setCurrentBid = number
                     holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
                     when {
-                        number < suggestedPriceDaily.toDouble() && number > priceDaily -> {
+                        number < suggestedPriceDaily && number > priceDaily -> {
                             holder.view.buttonSubmitEdit.isEnabled = true
                             holder.view.editBudget?.setError(false)
-                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), suggestedPriceDaily))
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), suggestedPriceDaily.toInt()))
                         }
                         number < priceDaily -> {
                             holder.view.editBudget?.setError(true)

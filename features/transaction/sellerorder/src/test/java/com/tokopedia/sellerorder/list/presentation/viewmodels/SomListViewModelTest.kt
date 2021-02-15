@@ -15,8 +15,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.util.observeAwaitValue
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +29,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Field
-import org.mockito.ArgumentMatchers.anyInt
 
 class SomListViewModelTest {
     @get:Rule
@@ -76,7 +74,7 @@ class SomListViewModelTest {
     lateinit var bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 
     @RelaxedMockK
-    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
+    lateinit var adminPermissionUseCase: AdminPermissionUseCase
 
     private val dispatcher: SomDispatcherProvider = SomTestDispatcherProvider()
 
@@ -91,7 +89,7 @@ class SomListViewModelTest {
                 somRejectOrderUseCase, somRejectCancelOrderRequest, somEditRefNumUseCase, userSession,
                 dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
                 somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
-                bulkAcceptOrderUseCase, authorizeAccessUseCase)
+                bulkAcceptOrderUseCase, adminPermissionUseCase)
 
         somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
             isAccessible = true
@@ -121,7 +119,7 @@ class SomListViewModelTest {
             shippingList = mutableSetOf(12)
             orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
-            nextOrderId = 123456
+            nextOrderId = 123456L
         }
         viewModel.updateGetOrderListParams(newParams)
     }
@@ -439,7 +437,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } returns Success(SomListFilterUiModel())
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()
@@ -454,7 +452,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.execute()
         } throws Throwable()
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify {
             somListGetFilterListUseCase.execute()
@@ -534,7 +532,7 @@ class SomListViewModelTest {
     fun getOrderList_shouldSuccess() {
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
@@ -551,7 +549,7 @@ class SomListViewModelTest {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
@@ -604,7 +602,7 @@ class SomListViewModelTest {
 
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns ("0" to listOf())
 
         viewModel.refreshSelectedOrder(invoice)
 
@@ -728,11 +726,8 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldSuccess() {
         coEvery {
-            authorizeAccessUseCase.execute(any())
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } returns true
-        coEvery {
-            userSession.isShopOwner
-        } returns false
         coEvery {
             userSession.isShopAdmin
         } returns true
@@ -740,7 +735,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(any())
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
 
         assert(viewModel.isAdminEligible.observeAwaitValue() is Success)
@@ -749,11 +744,8 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldFail() {
         coEvery {
-            authorizeAccessUseCase.execute(any())
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } throws Throwable()
-        coEvery {
-            userSession.isShopOwner
-        } returns false
         coEvery {
             userSession.isShopAdmin
         } returns true
@@ -761,47 +753,14 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(any())
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
 
         assert(viewModel.isAdminEligible.observeAwaitValue() is Fail)
     }
 
     @Test
-    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() {
-        coEvery {
-            userSession.isShopOwner
-        } returns true
-
-        viewModel.getAdminPermission()
-
-        coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(any())
-        }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == true)
-    }
-
-    @Test
-    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() {
-        coEvery {
-            userSession.isShopOwner
-        } returns false
-        coEvery {
-            userSession.isShopAdmin
-        } returns true
-
-        viewModel.getAdminPermission()
-
-        coVerify {
-            authorizeAccessUseCase.execute(any())
-        }
-    }
-
-    @Test
-    fun getAdminPermission_whenIsNotShopOwnerOrAdmin_shouldNotRunAndShouldNotEligible() {
-        coEvery {
-            userSession.isShopOwner
-        } returns false
+    fun getAdminPermission_whenIsNotShopAdmin_shouldNotRun() {
         coEvery {
             userSession.isShopAdmin
         } returns false
@@ -809,9 +768,8 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(any())
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == false)
     }
 
     @Test
