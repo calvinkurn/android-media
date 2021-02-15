@@ -177,6 +177,8 @@ class PlayViewModelRobot(
     fun doUnlike() {
         viewModel.changeLikeCount(false)
     }
+
+    fun isPiPAllowed() = viewModel.isPiPAllowed
 }
 
 fun givenPlayViewModelRobot(
