@@ -277,31 +277,35 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
 
         /* Render Insurance View */
-        flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
-            override fun onTopButtonClicked() {}
+        if(data.insurances.isNotEmpty()) {
+            flightOrderDetailInsurance.visibility = View.VISIBLE
+            flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
+                override fun onTopButtonClicked() {}
 
-            override fun onBottomButtonClicked() {}
+                override fun onBottomButtonClicked() {}
 
+            }
+            flightOrderDetailInsurance.setData(
+                    getString(R.string.flight_order_detail_insurance_title_label),
+                    FlightOrderDetailButtonModel(
+                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                            getString(R.string.flight_order_detail_insurance_trip_label),
+                            getString(R.string.flight_order_detail_insurance_trip_description),
+                            true,
+                            false
+                    ),
+                    FlightOrderDetailButtonModel(
+                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                            getString(R.string.flight_order_detail_insurance_cancel_label),
+                            getString(R.string.flight_order_detail_insurance_trip_description),
+                            true,
+                            false
+                    )
+            )
+            flightOrderDetailInsurance.buildView()
+        }else{
+            flightOrderDetailInsurance.visibility = View.GONE
         }
-        flightOrderDetailInsurance.setData(
-                getString(R.string.flight_order_detail_insurance_title_label),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                        getString(R.string.flight_order_detail_insurance_trip_label),
-                        getString(R.string.flight_order_detail_insurance_trip_description),
-                        true,
-                        false
-                ),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                        getString(R.string.flight_order_detail_insurance_cancel_label),
-                        getString(R.string.flight_order_detail_insurance_trip_description),
-                        true,
-                        false
-                )
-        )
-        flightOrderDetailInsurance.buildView()
-
 
         /* Render Web Check In View */
         val isWebCheckInButtonVisible: Pair<Boolean, String> = flightOrderDetailViewModel.isWebCheckInAvailable(data)
