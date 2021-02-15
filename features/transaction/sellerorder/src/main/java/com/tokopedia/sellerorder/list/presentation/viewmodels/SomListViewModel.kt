@@ -16,7 +16,6 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,8 +39,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
-        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val adminPermissionUseCase: AdminPermissionUseCase
+        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
