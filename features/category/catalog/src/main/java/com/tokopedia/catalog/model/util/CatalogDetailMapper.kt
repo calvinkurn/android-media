@@ -3,32 +3,31 @@ package com.tokopedia.catalog.model.util
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogResponse
+import com.tokopedia.catalog.model.raw.CatalogResponseData
 import com.tokopedia.catalog.model.raw.ComponentData
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 
 object CatalogDetailMapper {
 
-    fun mapIntoVisitable(catalogGetDetailModular : CatalogResponse.CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
+    fun mapIntoVisitable(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
         val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
 
         // Adding CatalogInfoDataModel
         catalogGetDetailModular.basicInfo.run {
             listOfComponents.add(CatalogInfoDataModel(name = "Catalog Info",type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, tag = tag,
-                    priceRange = "${marketPrice[0].minFmt} - ${marketPrice[0].maxFmt}" ,
+                    priceRange = "${marketPrice[0].minFmt ?: marketPrice[0].min} - ${marketPrice[0].maxFmt ?: marketPrice[0].max}" ,
                     description = description, images = catalogGetDetailModular.basicInfo.catalogImage))
         }
 
-        catalogGetDetailModular.basicInfo.components.forEachIndexed { index, component ->
+        catalogGetDetailModular.components.forEachIndexed { index, component ->
             when(component.type){
                 CatalogConstant.CATALOG_SPECIFICATION -> {
-                    // TODO Optimize
                     val crudeSpecificationsData = component.data
                     val specifications = arrayListOf<SpecificationsComponentData>()
                     crudeSpecificationsData.forEachIndexed { indexComponentData, componentData ->
-                        specifications.add(SpecificationsComponentData(componentData.name,componentData.specificationsRow))
+                        specifications.add(SpecificationsComponentData(componentData.name,componentData.icon,componentData.specificationsRow))
                     }
                     listOfComponents.add(CatalogSpecificationDataModel(name = component.name, type = component.type , specificationsList = specifications))
                 }
@@ -46,13 +45,7 @@ object CatalogDetailMapper {
         return listOfComponents
     }
 
-
-    fun mapToBasicInfo(basicInfo: CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo): CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo {
-        return basicInfo
-    }
-
-
-    fun getDummyCatalogData() : CatalogResponse{
+    fun getDummyCatalogData() : CatalogResponseData{
 
         val longDesc = "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro."
         val catalogImageList = arrayListOf<CatalogImage>()
@@ -72,8 +65,8 @@ object CatalogDetailMapper {
                 "https://static.compareindia.news18.com/compareindia/gallery/images/2019/oct/iphone11promax7202_151120498928.jpg",
                 false
         ))
-        val marketPriceList = arrayListOf<CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>()
-        marketPriceList.add((CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice(
+        val marketPriceList = arrayListOf<CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>()
+        marketPriceList.add((CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice(
                 1620340,
                 1625900,
                 "Rp. 14.620.340",
@@ -81,28 +74,26 @@ object CatalogDetailMapper {
                 "2020-03-01",
                 "Tokopedia"
         )))
-        val longDescList = arrayListOf<CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription>()
-        longDescList.add(CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
+        val longDescList = arrayListOf<CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription>()
+        longDescList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
                 "Desain kokoh dari iPhone 5s",
                 longDesc
         ))
-        longDescList.add(CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
+        longDescList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
                 "Desain kokoh dari iPhone 5s",
                 longDesc
         ))
-        longDescList.add(CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
+        longDescList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
                 "Desain kokoh dari iPhone 5s",
                 longDesc
         ))
-        longDescList.add(CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
+        longDescList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.LongDescription(
                 "Desain kokoh dari iPhone 5s",
                 longDesc
         ))
-        val componentList = arrayListOf<CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component>()
-        val values = arrayListOf<String>()
-        values.add("23 Oktober 2020")
+        val componentList = arrayListOf<CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component>()
+        val values = "23 Oktober 2020"
         val row = ComponentData.SpecificationsRow(
-                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/home-house-homepage-building-20.png",
                 "Tanggal",
                 values
         )
@@ -110,12 +101,11 @@ object CatalogDetailMapper {
         rows.add(row)
         val specification = ComponentData(
                 "Rilis",
+                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/home-house-homepage-building-20.png",
                 rows,
         )
-        val values2 = arrayListOf<String>()
-        values2.add("GSM / CDMA / HSPA / EVDO / LTE / 5G")
+        val values2 = "GSM / CDMA / HSPA / EVDO / LTE / 5G"
         val row2 = ComponentData.SpecificationsRow(
-                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 "Teknologi",
                 values2
         )
@@ -123,28 +113,23 @@ object CatalogDetailMapper {
         rows2.add(row2)
         val specification2 = ComponentData(
                 "Jaringan",
+                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 rows2,
         )
 
-        val values3 = arrayListOf<String>()
-        values3.add("146.7 x 71.5 x 7.4 mm (5.78 x 2.81 x 0.29 in)")
+        val values3 = "146.7 x 71.5 x 7.4 mm (5.78 x 2.81 x 0.29 in)"
         val row3 = ComponentData.SpecificationsRow(
-                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 "Dimensi",
                 values3
         )
-        val values4 = arrayListOf<String>()
-        values4.add("64 gr")
+        val values4 = "64 gr"
         val row4 = ComponentData.SpecificationsRow(
-                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 "Berat",
                 values4
         )
 
-        val values5 = arrayListOf<String>()
-        values5.add("Glass front (Gorilla Glass), glass back (Gorilla Glass), aluminum frame")
+        val values5 = "Glass front (Gorilla Glass), glass back (Gorilla Glass), aluminum frame"
         val row5 = ComponentData.SpecificationsRow(
-                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 "Built",
                 values5
         )
@@ -154,6 +139,7 @@ object CatalogDetailMapper {
         rows3.add(row5)
         val specification3 = ComponentData(
                 "Body",
+                "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 rows3,
         )
 
@@ -162,7 +148,7 @@ object CatalogDetailMapper {
         specifications.add(specification2)
         specifications.add(specification3)
         specifications.add(specification)
-        componentList.add(CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
+        componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
                 1,
                 "Catalog Spec",
                 "catalog-spec-horizontal-scroll",
@@ -170,8 +156,7 @@ object CatalogDetailMapper {
                 specifications
         ))
 
-        val header = CatalogResponse.CatalogResponseData.CatalogGetDetailModular.Header(200,"Good")
-        val basicInfo  = CatalogResponse.CatalogResponseData.CatalogGetDetailModular.BasicInfo(
+        val basicInfo  = CatalogResponseData.CatalogGetDetailModular.BasicInfo(
                 "64743",
                 "3054",
                 "iPhone 12 - 64GB",
@@ -182,12 +167,10 @@ object CatalogDetailMapper {
                 "https://m.tokopedia.com/catalog/64743/samsung-galaxy-a10s",
                 catalogImageList,
                 marketPriceList,
-                longDescList,
-                componentList
+                longDescList
         )
-        val catalogGetDetailModular = CatalogResponse.CatalogResponseData.CatalogGetDetailModular(header,basicInfo)
-        val catalogDataResponse = CatalogResponse.CatalogResponseData(catalogGetDetailModular)
-        return CatalogResponse(catalogDataResponse)
+        val catalogGetDetailModular = CatalogResponseData.CatalogGetDetailModular(basicInfo,componentList)
+        return CatalogResponseData(catalogGetDetailModular)
     }
 
 }

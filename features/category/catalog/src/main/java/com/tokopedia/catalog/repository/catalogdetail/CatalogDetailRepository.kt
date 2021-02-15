@@ -1,7 +1,7 @@
 package com.tokopedia.catalog.repository.catalogdetail
 
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.catalog.model.raw.CatalogResponse
+import com.tokopedia.catalog.model.raw.CatalogResponseData
 import com.tokopedia.catalog.model.raw.GQL_CATALOG_QUERY
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
@@ -14,7 +14,7 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
 
     suspend fun getCatalogDetail(categoryID: String): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
-        type.add(CatalogResponse::class.java)
+        type.add(CatalogResponseData::class.java)
         return getGQLData(getQueries(), type, getRequests(categoryID))
     }
 
@@ -32,7 +32,7 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
 
     private fun createRequestParams(catalogId: String) : RequestParams {
         return RequestParams().apply {
-            putString(KEY_CATALOG_ID, catalogId)
+            putString(KEY_CATALOG_ID, "24")
         }
     }
 }

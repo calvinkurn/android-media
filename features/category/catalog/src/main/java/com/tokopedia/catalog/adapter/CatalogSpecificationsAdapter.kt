@@ -25,9 +25,9 @@ class CatalogSpecificationsAdapter (val list : ArrayList<SpecificationsComponent
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(model: SpecificationsComponentData, catalogDetailListener: CatalogDetailListener?) {
-            itemView.specification_iv.loadImage(model.specificationsRow[0].icon)
+            itemView.specification_iv.loadImage(model.icon)
             itemView.specification_name.text = model.specificationsRow[0].key
-            itemView.specification_description.text = model.specificationsRow[0].value[0]
+            itemView.specification_description.text = model.specificationsRow[0].value
             itemView.setOnClickListener {
 
             }

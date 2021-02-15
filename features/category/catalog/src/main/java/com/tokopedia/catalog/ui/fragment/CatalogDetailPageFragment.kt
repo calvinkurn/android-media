@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -57,7 +58,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private var navToolbar: NavToolbar? = null
     private var catalogPageRecyclerView: RecyclerView? = null
-    private var shimmerLayout : ConstraintLayout? = null
+    private var shimmerLayout : ScrollView? = null
 
     private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
 
@@ -116,7 +117,6 @@ class CatalogDetailPageFragment : Fragment(),
         catalogDetailPageViewModel.getCatalogResponseData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    catalog_layout.show()
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater?.updateModel(component)
                     }

@@ -16,7 +16,6 @@ class CatalogInfoViewHolder (private val view : View,
                              private val listener : CatalogDetailListener) : AbstractViewHolder<CatalogInfoDataModel>(view){
 
     private var imagesAdapter : CatalogImagesAdapter? = null
-    private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     companion object {
         val LAYOUT = R.layout.item_catalog_product_info

@@ -80,7 +80,8 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                         setBottomTextSize(14.0f)
                         setBottomTextColor(MethodChecker.getColor(context, R.color.catalog_grey_796))
                         doubleTextView.setBottomTextStyle("")
-                        setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
+                        //setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
+                        setBottomText(MethodChecker.fromHtml(row.value))
                     }
                    linear_layout.addView(doubleTextView)
                 }
