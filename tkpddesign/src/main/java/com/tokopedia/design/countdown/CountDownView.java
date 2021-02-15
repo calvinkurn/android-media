@@ -313,9 +313,9 @@ public class CountDownView extends FrameLayout {
                 refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
 
                 if (dayChangedListener != null && isMoreThanADay(timeDiff)) {
-                    dayChangedListener.onMoreThan24h();
+//                    dayChangedListener.onMoreThan24h();
                 } else {
-                    dayChangedListener.onLessThan24h();
+//                    dayChangedListener.onLessThan24h();
                 }
             } else {
                 handleExpiredTime(listener);
