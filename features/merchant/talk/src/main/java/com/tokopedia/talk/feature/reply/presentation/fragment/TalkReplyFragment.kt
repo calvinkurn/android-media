@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -609,7 +610,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.createNewCommentResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
-                is Fail -> onFailCreateComment(it.throwable.message)
+                is Fail -> onFailCreateComment(if (it.throwable is AkamaiErrorException) getString(R.string.reply_toaster_network_error) else it.throwable.message)
             }
         })
     }

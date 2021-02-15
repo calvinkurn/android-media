@@ -53,7 +53,7 @@
     <string name="reply_toaster_network_error">Komentar gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_toaster_length_too_short_error">Kamu harus masukkan min. 5 karakter.</string>
     <string name="delete_toaster_success">Komentarmu berhasil dihapus.</string>
-    <string name="delete_toaster_network_error">Komentar belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
     <string name="delete_dialog_question_description">Semua jawaban di Diskusi ini akan hilang jika pertanyaan dihapus</string>
