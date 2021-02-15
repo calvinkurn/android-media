@@ -1410,7 +1410,118 @@
                         "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
                         "gradient_color": ["#005C98"]
                     }
-                }, {
+                },
+                {
+                    "id": 72908,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Testing Gavril",
+                    "layout": "1x2_banner",
+                    "type": "inspiration",
+                    "campaignID": 0,
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 73149,
+                        "name": "",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "hero": null,
+                    "grids": [
+                        {
+                            "id": 245676,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/9b4f8045-a1ae-49ee-833c-aa158010949c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        },
+                        {
+                            "id": 245677,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/8d3e4f4b-ba1e-4f42-acb4-fea8275894f4.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
                     "id": 29925,
                     "group_id": 164,
                     "galaxy_attribution": "PG",
@@ -2736,6 +2847,10 @@
                     }
                 },
                 {
+                    "id": 74104,
+                    "layout": "dg_bills"
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",
@@ -2912,7 +3027,8 @@
                         "attribution": "",
                         "gradient_color": ["#FFFFFF"]
                     }
-                }, {
+                },
+                {
                     "id": 17771,
                     "group_id": 149,
                     "galaxy_attribution": "",
@@ -3055,6 +3171,11 @@
                         "gradient_color": ["#FFFFFF"]
                     }
                 },
+                {
+                    "id": 74103,
+                    "layout": "salam_todo"
+                },
+
                 {
                     "id": 34036,
                     "group_id": 37,
@@ -3354,7 +3475,228 @@
                         "expiredTime": "",
                         "backColor": "green",
                         "backImage": ""
-                    }}]
+                    }
+                },
+                {
+                    "banner": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "attribution": "",
+                        "back_color": "#346eeb",
+                        "cta": {
+                            "coupon_code": "",
+                            "mode": "",
+                            "text": "",
+                            "type": ""
+                        },
+                        "description": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ],
+                        "id": 10197,
+                        "image_url": "https://ecs7-p.tokopedia.net/img/PYbRbC/2021/1/28/e6a29f96-c463-4960-91ce-90ddf8678567.png",
+                        "text_color": "#ffffff",
+                        "title": "",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "brand_id": "",
+                    "campaignCode": "",
+                    "categoryID": "{}",
+                    "category_persona": "",
+                    "contextualInfo": 1,
+                    "galaxy_attribution": "PG",
+                    "grids": [
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1147390125",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243826,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/4/11879544/11879544_76e020bd-a725-4a5c-ab2f-b4043b20ea07_1080_1080",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Laptop",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1147390125",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=721948527",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243827,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2021/1/12/49d0f4b5-9c16-4b87-9a2d-0e4e6712a6fb.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Lampu",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=721948527",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1139161419",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243828,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/31/31712488/31712488_11433140-e4ce-45aa-8c62-c39872e764ed_800_800",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Alat Tulis",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1139161419",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=786947893",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243829,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/12/9/f12f41c6-02ff-4e81-94c2-7438f790b221.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Meja Belajar",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=786947893",
+                            "warehouseID": 0
+                        }
+                    ],
+                    "group_id": 240,
+                    "has_close_button": false,
+                    "header": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "backColor": "",
+                        "backImage": "",
+                        "expiredTime": "",
+                        "id": 71585,
+                        "name": "Kisah Kasih Alat Tulis",
+                        "serverTime": 0,
+                        "subtitle": "",
+                        "textColor": "#000000",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "id": 71344,
+                    "isAutoRefreshAfterExpired": false,
+                    "layout": "6_image_auto",
+                    "name": "test lego 6 auto",
+                    "pageName": "",
+                    "perso_type": 1,
+                    "persona": "",
+                    "showPromoBadge": false,
+                    "token": "",
+                    "type": "inspiration",
+                    "widgetParam": ""
+                }
+            ]
         }
     }
 }]
