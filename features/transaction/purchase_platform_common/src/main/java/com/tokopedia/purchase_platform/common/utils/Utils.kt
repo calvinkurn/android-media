@@ -10,6 +10,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.CompoundButton
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
@@ -58,6 +59,14 @@ object Utils {
     @JvmStatic
     fun setToasterCustomBottomHeight(bottomHeight: Int) {
         Toaster.toasterCustomBottomHeight = bottomHeight
+    }
+
+    @JvmStatic
+    fun isNotNullOrEmptyOrZero(string: String): Boolean {
+        if (string.toLongOrZero() == 0L) {
+            return false
+        }
+        return true
     }
 }
 

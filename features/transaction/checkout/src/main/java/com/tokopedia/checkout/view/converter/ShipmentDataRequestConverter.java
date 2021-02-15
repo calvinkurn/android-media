@@ -1,8 +1,9 @@
 package com.tokopedia.checkout.view.converter;
 
+import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
@@ -13,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.checkout.request.PromoRequ
 import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.ShippingInfoCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.ShopProductCheckoutRequest;
-import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,7 +214,7 @@ public class ShipmentDataRequestConverter {
             List<ShopProductCheckoutRequest> shopProducts,
             RecipientAddressModel recipientAddress) {
 
-        int addressId = getSelectedAddressId(recipientAddress);
+        String addressId = getSelectedAddressId(recipientAddress);
         List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
         checkoutRequestData.add(new DataCheckoutRequest.Builder()
                 .addressId(addressId)
@@ -224,16 +224,15 @@ public class ShipmentDataRequestConverter {
         return checkoutRequestData;
     }
 
-    private int getSelectedAddressId(RecipientAddressModel recipientAddress) {
-        int addressId = 0;
+    private String getSelectedAddressId(RecipientAddressModel recipientAddress) {
         if (recipientAddress != null) {
             if (recipientAddress.getSelectedTabIndex() == 1 && recipientAddress.getLocationDataModel() != null) {
-                addressId = recipientAddress.getLocationDataModel().getAddrId();
+                return recipientAddress.getLocationDataModel().getAddrId();
             } else {
-                addressId = Integer.parseInt(recipientAddress.getId());
+                return recipientAddress.getId();
             }
         }
-        return addressId;
+        return "0";
     }
 
 }

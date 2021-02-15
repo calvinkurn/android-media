@@ -14,6 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
@@ -37,16 +38,16 @@ public class ShipmentDataConverter {
     }
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+        if (cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress defaultAddress = null;
             UserAddress tradeInDropOffAddress = null;
             if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId())) {
                     defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
                 }
                 if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId())) {
                     tradeInDropOffAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
                 }
             }

@@ -70,7 +70,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // for robinhood III
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private String blackboxInfo;
 
     private boolean isFulfillment;
@@ -138,7 +138,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
         fulfillmentId = in.readInt();
@@ -192,7 +192,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
         dest.writeInt(fulfillmentId);
@@ -527,11 +527,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public int getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 

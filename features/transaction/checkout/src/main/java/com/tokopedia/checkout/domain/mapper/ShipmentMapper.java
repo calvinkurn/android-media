@@ -56,6 +56,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -542,7 +543,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     } else {
                                         analyticsProductCheckoutData.setCodFlag(String.valueOf(false));
                                     }
-                                    if (groupAddressResult.getUserAddress() != null && groupAddressResult.getUserAddress().getCornerId() != 0) {
+                                    if (groupAddressResult.getUserAddress() != null && Utils.isNotNullOrEmptyOrZero(groupAddressResult.getUserAddress().getCornerId())) {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(true));
                                     } else {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
