@@ -50,7 +50,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author by nisie on 8/10/17.
@@ -61,21 +60,24 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
+    public static final String GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
+    public static final int TAB_SELLER_INBOX_REVIEW = 1;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
     private Fragment inboxReviewFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
+    private static final String SELLER_INBOX_REVIEW_TAB = "inbox-ulasan";
     public static String tickerTitle;
 
     private ViewPager viewPager;
-    private TabsUnify indicator;
+    public TabsUnify indicator;
     private PagerAdapter sectionAdapter;
     private HeaderUnify toolbar;
 
@@ -83,6 +85,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private boolean goToReputationHistory;
     private boolean goToBuyerReview;
+    private boolean goToInboxReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
@@ -97,6 +100,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
+        goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
@@ -111,6 +115,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         setupStatusBar();
         clearCacheIfFromNotification();
         initView();
+        setupTabViewpager(tab);
         openBuyerReview();
     }
 
@@ -129,6 +134,11 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
             sellerReputationFragment = SellerReputationFragment.createInstance();
         }
+    }
+
+    private void setupTabViewpager(String tab) {
+        indicator.setCustomTabMode(TabLayout.MODE_SCROLLABLE);
+        indicator.setCustomTabGravity(TabLayout.GRAVITY_FILL);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -144,6 +154,32 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             }
         });
 
+        setupTabName();
+
+        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
+        viewPager.setOffscreenPageLimit(getFragmentList().size());
+        viewPager.setAdapter(sectionAdapter);
+
+        if (GlobalConfig.isSellerApp()) {
+            if (tab != null && !tab.isEmpty()) {
+                if (tab.equals(SELLER_INBOX_REVIEW_TAB)) {
+                    viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
+                }
+            }
+        }
+
+        if (goToReputationHistory) {
+            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
+
+        if (goToBuyerReview) {
+            viewPager.setCurrentItem(TAB_BUYER_REVIEW);
+        }
+
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
+    }
+
+    private void setupTabName() {
         if (!GlobalConfig.isSellerApp()) {
             indicator.addNewTab(getString(R.string
                     .title_tab_waiting_review));
@@ -170,20 +206,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 indicator.addNewTab(getString(R.string.title_reputation_history));
             }
         }
-
-        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
-        viewPager.setOffscreenPageLimit(getFragmentList().size());
-        viewPager.setAdapter(sectionAdapter);
-
-        if (goToReputationHistory) {
-            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
-        }
-
-        if (goToBuyerReview) {
-            viewPager.setCurrentItem(TAB_BUYER_REVIEW);
-        }
-
-        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
     }
 
     private void openBuyerReview() {
@@ -244,7 +266,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
     }
 
-    protected List<Fragment> getFragmentList() {
+    public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
@@ -282,11 +304,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     private void setupToolbar() {
@@ -404,5 +421,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 pageLoadTimePerformance.stopRenderPerformanceMonitoring();
             }
         }
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }
