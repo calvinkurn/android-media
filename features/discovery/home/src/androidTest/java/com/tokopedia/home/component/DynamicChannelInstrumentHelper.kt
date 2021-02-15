@@ -115,6 +115,7 @@ fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+    waitForData()
     val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
     val reminderWidgetModel = adapter.currentList.get(itemPosition)
     val reminderModel = reminderWidgetModel as ReminderWidgetModel
@@ -126,6 +127,7 @@ fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition
 }
 
 fun clickOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+    waitForData()
     val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
     val reminderWidgetModel = adapter.currentList.get(itemPosition)
     val reminderModel = reminderWidgetModel as ReminderWidgetModel
@@ -288,8 +290,8 @@ private fun clickReminderWidgetSalam(){
 
 private fun clickReminderWidgetRecharge(){
     try {
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
-                ViewMatchers.withText("Bayar Sekarang")),0)).perform(ViewActions.click())
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
+                ViewMatchers.withText("Bayar Sekarang"))).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -323,7 +325,6 @@ fun getAssertCloseReminderWidget(gtmLogDBSource: GtmLogDBSource, context: Contex
             hasAllSuccess())
     assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE),
             hasAllSuccess())
-//    -> impression intermitten missing
 }
 
 fun getAssertReminderWidget(gtmLogDBSource: GtmLogDBSource, context: Context) {
@@ -331,7 +332,6 @@ fun getAssertReminderWidget(gtmLogDBSource: GtmLogDBSource, context: Context) {
             hasAllSuccess())
     assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM),
             hasAllSuccess())
-//    -> impression intermitten missing
 }
 
 fun getAssertHomepageScreen(gtmLogDBSource: GtmLogDBSource, context: Context) {
