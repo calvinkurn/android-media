@@ -92,7 +92,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = shouldHaveActionMenu(channelType, item.partner.id),
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
-                share = mapWidgetShare(item.share)
+                share = mapWidgetShare(item.share),
+                performanceSummaryLink = item.performanceSummaryPageLink
         )
     }
 
