@@ -50,9 +50,9 @@ public class BranchWrapper implements WrapperInterface {
         if(Branch.getInstance() == null) {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
-            if(GlobalConfig.isAllowDebuggingTools()) {
-                Branch.enableLogging();
-            }
+//            if(GlobalConfig.isAllowDebuggingTools()) {
+            Branch.enableLogging();
+//            }
         }
     }
 
@@ -107,14 +107,9 @@ public class BranchWrapper implements WrapperInterface {
         return new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
+                isBranchInitialized = true;
                 if (error == null) {
-                    if(!isBranchInitialized){
-                        fetchLastAttributeTouchData();
-                        isBranchInitialized = true;
-                    }
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
-                    Log.d("Varun Branch", deeplink);
-                    Log.d("Varun Branch", referringParams.toString());
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
 
                     if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
