@@ -98,7 +98,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
         GraphqlClient.init(this);
-        com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
 
         super.onCreate();
