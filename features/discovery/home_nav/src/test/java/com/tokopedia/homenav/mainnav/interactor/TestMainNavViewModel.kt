@@ -213,11 +213,12 @@ class TestMainNavViewModel {
     fun `test when viewmodel created and logged in user only have ongoing order then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSession>()
+        val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn() } returns true
         every { userSession.hasShop() } returns true
 
+        coEvery { userSession.isShopOwner } returns true
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -245,10 +246,11 @@ class TestMainNavViewModel {
     fun `test when viewmodel created and loggedin user only have payment transaction then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSession>()
+        val userSession = mockk<UserSessionInterface>()
 
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { userSession.isShopOwner } returns true
         every { userSession.isLoggedIn() } returns true
         every { userSession.hasShop() } returns true
 
