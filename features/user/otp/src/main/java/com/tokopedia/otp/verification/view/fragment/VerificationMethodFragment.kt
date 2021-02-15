@@ -187,7 +187,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
         loadTickerTrouble(otpModeListData)
-        setFooter(otpModeListData.linkType)
+        setAbTestFooter(otpModeListData.linkType)
     }
 
     private fun skipView(modeListData: ModeListData) {
@@ -214,21 +214,21 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         when (linkType) {
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
             TYPE_PROFILE_SETTING -> onProfileSettingType()
-            else -> setAbTestFooter()
+            else -> onTypeHideLink()
         }
 
     }
 
-    private fun setAbTestFooter() {
+    private fun setAbTestFooter(linkType: Int) {
         val abTestKeyInactivePhone1 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_1, false)
         val abTestKeyInactivePhone2 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_2, false)
         val abTestKeyInactivePhone3 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_3, false)
 
         when {
-            abTestKeyInactivePhone1 -> { onVariant1InactivePhone() }
-            abTestKeyInactivePhone2 -> { onVariant2InactivePhone() }
             abTestKeyInactivePhone3 -> { onVariant3InactivePhone() }
-            else -> onTypeHideLink()
+            abTestKeyInactivePhone2 -> { onVariant2InactivePhone() }
+            abTestKeyInactivePhone1 -> { onVariant1InactivePhone() }
+            else -> setFooter(linkType)
         }
     }
 
