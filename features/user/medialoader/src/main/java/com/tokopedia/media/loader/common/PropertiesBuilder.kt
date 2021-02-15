@@ -20,6 +20,11 @@ import com.tokopedia.media.loader.utils.Listener.invoke as callbackListener
 
 class PropertiesBuilder {
 
+    /*
+    * The transformation mechanism carried out by medialoader is
+    * that it will collect any transformations specified in the properties applied
+    * and will be transformed at the same time using MultiTransform().
+    * */
     private val _transform = mutableListOf<Transformation<Bitmap>>()
 
     fun build(
@@ -29,9 +34,14 @@ class PropertiesBuilder {
             performanceMonitoring: PerformanceMonitoring? = null,
             request: GlideRequest<Bitmap>
     ) = request.apply {
+        // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
 
         with(properties) {
+            /*
+            * because the medialoader placeholder has a different behavior,
+            * a builder is needed to handle it. the type of placeholder following:
+            * */
             blurHashPlaceHolder(context, blurHash, this, request)
 
             if (!isAnimate) dontAnimate()
@@ -45,6 +55,7 @@ class PropertiesBuilder {
             transforms?.let { _transform.addAll(it) }
             transform?.let { _transform.add(it) }
             signatureKey?.let { signature(it) }
+
             error(error)
 
             if (_transform.isNotEmpty()) {

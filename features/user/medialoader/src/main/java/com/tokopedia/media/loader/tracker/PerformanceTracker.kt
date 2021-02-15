@@ -8,23 +8,30 @@ import com.tokopedia.media.loader.utils.AttributeUtils
 object PerformanceTracker {
 
     private const val MEDIA_LOADER_TRACE = "mp_medialoader"
-    private const val URL_PREFIX = "https://ecs7-p.tokopedia.net/img/cache/"
+    private const val CDN_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 
-    fun track(url: String, context: Context): PerformanceMonitoring {
-        val urlWithoutPrefix = url.removePrefix(URL_PREFIX)
+    private const val IMAGE_URL = "image_url"
+    private const val QUALITY_SETTING = "image_quality_setting"
+    private const val DATE_TIME = "date_time"
+    private const val LOAD_TIME = "load_time"
+    private const val FILE_SIZE = "file_size"
+
+    fun preRender(url: String, context: Context): PerformanceMonitoring {
+        val urlWithoutPrefix = url.removePrefix(CDN_URL_PREFIX)
+
         val mediaSetting = MediaSettingPreferences(context)
         val mediaSettingIndex = mediaSetting.qualitySettings()
 
         return PerformanceMonitoring.start(MEDIA_LOADER_TRACE).apply {
-            putCustomAttribute("image_url", urlWithoutPrefix)
-            putCustomAttribute("image_quality_setting", mediaSetting.getQualitySetting(mediaSettingIndex))
-            putCustomAttribute("date_time", AttributeUtils.getDateTime())
+            putCustomAttribute(IMAGE_URL, urlWithoutPrefix)
+            putCustomAttribute(QUALITY_SETTING, mediaSetting.getQualitySetting(mediaSettingIndex))
+            putCustomAttribute(DATE_TIME, AttributeUtils.getDateTime())
         }
     }
 
     fun postRender(performanceMonitoring: PerformanceMonitoring?, loadTime: String, fileSize: String) {
-        performanceMonitoring?.putCustomAttribute("load_time", loadTime)
-        performanceMonitoring?.putCustomAttribute("file_size", fileSize)
+        performanceMonitoring?.putCustomAttribute(LOAD_TIME, loadTime)
+        performanceMonitoring?.putCustomAttribute(FILE_SIZE, fileSize)
 
         performanceMonitoring?.stopTrace()
     }

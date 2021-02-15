@@ -14,6 +14,9 @@ const val PARAM_ECT = "ect"
 // url parameter of blur hashing
 const val PARAM_BLURHASH = "b"
 
+// a new main URL using CDN
+const val CDN_IMAGE_URL = "images.tokopedia.net"
+
 /*
 * determine object classification in every network capability segmentation
 * only supported for 2 segmentation are slow for 2g / 3g, and fast for 4g and wifi.

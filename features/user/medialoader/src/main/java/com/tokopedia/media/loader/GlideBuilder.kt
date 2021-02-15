@@ -4,19 +4,19 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.tokopedia.media.common.Loader
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.PropertiesBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
-import com.tokopedia.media.loader.tracker.PerformanceTracker.track as performanceTracker
+import com.tokopedia.media.loader.tracker.PerformanceTracker
 
 object GlideBuilder {
 
-    private val propertiesBuilder by lazy { PropertiesBuilder() }
+    private val builder by lazy { PropertiesBuilder() }
 
     private fun automateScaleType(
             imageView: ImageView,
@@ -34,45 +34,66 @@ object GlideBuilder {
 
     @JvmOverloads
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
+        var tracker: PerformanceMonitoring? = null
         val context = imageView.context
 
         if (data == null) {
+            // if the data source is null, the image will be render the error drawable
             imageView.setImageDrawable(getDrawable(context, properties.error))
+            return
         }
 
-        GlideApp.with(context).asBitmap().load(data).apply {
+        GlideApp.with(context).asBitmap().apply {
+            /*
+            * automateScaleType mean, the image will be scaled automatically
+            * based on scaleType attribute which is already defined on ImageView
+            * */
             automateScaleType(imageView, this)
 
             when (data) {
                 is String -> {
-                    val source = Loader.urlBuilder(data)
-                    val hash = data.toUri()?.getQueryParameter(PARAM_BLURHASH)
-                    val performanceMonitoring = performanceTracker(source, context)
+                    /*
+                    * get the hash of image blur (placeholder) from the URL, example:
+                    * https://images.tokopedia.net/samples.png?b=abc123
+                    * the hash of blur is abc123
+                    * */
+                    val blurHash = data.toUri()?.getQueryParameter(PARAM_BLURHASH)
 
-                    propertiesBuilder.build(
+                    /*
+                    * only track the performance monitoring for a new domain,
+                    * which is already using CDN services, 'images.tokopedia.net'.
+                    * */
+                    if (data.contains(CDN_IMAGE_URL)) {
+                        tracker = PerformanceTracker.preRender(data, context)
+                    }
+
+                    builder.build(
                             context = context,
-                            blurHash = hash,
+                            blurHash = blurHash,
                             properties = properties,
-                            performanceMonitoring = performanceMonitoring,
+                            performanceMonitoring = tracker,
                             request = this
-                    )
+                    ).load(data)
                 }
-                else -> propertiesBuilder.build(
-                        context = context,
-                        properties = properties,
-                        request = this
-                )
+                else -> {
+                    builder.build(
+                            context = context,
+                            properties = properties,
+                            request = this
+                    ).load(data)
+                }
+
             }.into(imageView)
         }
     }
 
+    // temporarily the GIF loader
     fun loadGifImage(imageView: ImageView, data: String) {
         with(imageView) {
             GlideApp.with(context)
                     .asGif()
                     .load(data)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .transform(RoundedCorners(10))
                     .into(this)
         }
     }
