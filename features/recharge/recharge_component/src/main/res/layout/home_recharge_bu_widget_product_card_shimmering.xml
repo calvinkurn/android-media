@@ -14,7 +14,7 @@
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="match_parent"
             android:layout_height="132dp"
-            app:custom_color="@color/Neutral_N50" />
+            app:custom_color="@color/Unify_N50" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="116dp"
@@ -22,7 +22,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Neutral_N50" />
+            app:custom_color="@color/Unify_N50" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl8"
@@ -30,7 +30,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Neutral_N50" />
+            app:custom_color="@color/Unify_N50" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl7"
@@ -38,7 +38,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Neutral_N50" />
+            app:custom_color="@color/Unify_N50" />
 
     </LinearLayout>
 
