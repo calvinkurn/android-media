@@ -24,10 +24,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
@@ -156,18 +154,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
                     container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
                 }
 
-                var shop_badge = findViewById<ImageView>(R.id.shop_badge)
+                val shop_badge = findViewById<ImageView>(R.id.shop_badge)
                 shop_badge?.let {
-                    if (cpmData?.cpm?.badges?.size ?: 0 > 0) {
+                    if (cpmData.cpm?.badges?.size ?: 0 > 0) {
                         shop_badge.show()
-                        Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
+                        Glide.with(shop_badge).load(cpmData.cpm.badges[0].imageUrl).into(shop_badge)
                     } else {
                         shop_badge.hide()
                     }
                 }
-                shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
-                description?.text = cpmData?.cpm?.cpmShop?.slogan
-                if (cpmData?.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
+                shop_name?.text = MethodChecker.fromHtml(cpmData.cpm?.cpmShop?.name)
+                description?.text = cpmData.cpm?.cpmShop?.slogan
+                if (cpmData.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
                     bindFavorite(cpmData.cpm.cpmShop.isFollowed)
                     btnFollow.setOnClickListener {
                         cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1) }
@@ -184,15 +182,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
 
                 shopdetail.setOnClickListener {
                     if (topAdsBannerClickListener != null) {
-                        topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                        ImpresionTask(className).execute(cpmData?.adClickUrl)
+                        topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
+                        ImpresionTask(className).execute(cpmData.adClickUrl)
                     }
                 }
 
                 val shop_image = findViewById<ImageView>(R.id.shop_image)
                 shop_image?.let {
-                    Glide.with(context).load(cpmData?.cpm?.cpmImage?.fullEcs).into(shop_image)
-                    cpmData?.cpm?.cpmShop?.imageShop?.let { it1 ->
+                    Glide.with(context).load(cpmData.cpm?.cpmImage?.fullEcs).into(shop_image)
+                    cpmData.cpm?.cpmShop?.imageShop?.let { it1 ->
                         shop_image.addOnImpressionListener(it1) {
                             impressionListener?.let {
                                 it.onImpressionHeadlineAdsItem(0, cpmData)
@@ -208,7 +206,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
                 items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
                 if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
-                    setRecyclerViewSize(productCardModelList)
                     for (i in 0 until productCardModelList.size) {
                         if (i < 3) {
                             items.add(BannerShopProductViewModel(cpmData, productCardModelList[i],
@@ -224,28 +221,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
                 bannerAdsAdapter?.setList(items)
             }
         }
-    }
-
-    private fun setRecyclerViewSize(productCardModelList: java.util.ArrayList<ProductCardModel>) {
-        findViewById<RecyclerView>(R.id.list)?.let { recyclerView ->
-            launchCatchError(
-                    block = {
-                        recyclerView.setHasFixedSize(true)
-                        recyclerView.setHeightBasedOnProductCardMaxHeight(productCardModelList)
-                    },
-                    onError = {
-                        it.printStackTrace()
-                    }
-            )
-        }
-    }
-
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(productCardModelList: List<ProductCardModel>) {
-        val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.topads_sdk_headline_ad_width)
-        val maxHeightForGridView = productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
-        val layoutParams = this.layoutParams
-        layoutParams?.height = maxHeightForGridView
-        this.layoutParams = layoutParams
     }
 
     private fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
