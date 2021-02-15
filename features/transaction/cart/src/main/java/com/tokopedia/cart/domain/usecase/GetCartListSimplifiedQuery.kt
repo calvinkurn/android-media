@@ -9,6 +9,32 @@ fun getQueryCartRevamp(): String {
             status
             data {
               errors
+              localization_choose_address {
+                address_id
+                address_name
+                address
+                postal_code
+                phone
+                receiver_name
+                status
+                country
+                province_id
+                province_name
+                city_id
+                city_name
+                district_id
+                district_name
+                address_2
+                latitude
+                longitude
+                corner_id
+                is_corner
+                is_primary
+                buyer_store_code
+                type
+                state
+                state_detail
+              }
               empty_cart {
                 title
                 image
