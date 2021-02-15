@@ -2,6 +2,8 @@ package com.tokopedia.play.robot.play.result
 
 import com.tokopedia.play.helper.NoValueException
 import com.tokopedia.play.robot.DualResult
+import com.tokopedia.play.robot.errorHasResult
+import com.tokopedia.play.robot.errorNoResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import org.assertj.core.api.Assertions
@@ -18,9 +20,6 @@ class PlayNewChatResult(
     } catch (e: Throwable) {
         DualResult.NoValue(e)
     }
-
-    private val errorNoResult = "Result has no value"
-    private val errorHasResult = "Result has value"
 
     fun isEqualTo(expected: PlayChatUiModel): PlayNewChatResult {
         require(mResult is DualResult.HasValue) { errorNoResult }

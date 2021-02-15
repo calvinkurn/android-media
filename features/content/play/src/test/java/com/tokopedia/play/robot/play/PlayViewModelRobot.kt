@@ -169,6 +169,14 @@ class PlayViewModelRobot(
     fun sendChat(message: String) {
         viewModel.sendChat(message)
     }
+
+    fun doLike() {
+        viewModel.changeLikeCount(true)
+    }
+
+    fun doUnlike() {
+        viewModel.changeLikeCount(false)
+    }
 }
 
 fun givenPlayViewModelRobot(

@@ -19,7 +19,7 @@ class PlayViewModelRobotResult(
         get() = PlayVideoMetaResult(viewModel.observableVideoMeta.getOrAwaitValue())
 
     val likeStatusResult: PlayLikeInfoResult.LikeStatusResult
-        get() = PlayLikeInfoResult.LikeStatusResult(viewModel.observableLikeStatusInfo.getOrAwaitValue())
+        get() = PlayLikeInfoResult.LikeStatusResult { viewModel.observableLikeStatusInfo.getOrAwaitValue() }
 
     val totalViewResult: PlayTotalViewResult
         get() = PlayTotalViewResult(viewModel.observableTotalViews.getOrAwaitValue())
