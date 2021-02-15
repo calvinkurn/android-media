@@ -747,7 +747,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             setTrackingUserId(userSession.userId)
             setFCM()
             SubmitDeviceWorker.scheduleWorker(this, true)
-            DataVisorWorker.scheduleWorker(requireContext())
+            DataVisorWorker.scheduleWorker(this, true)
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
