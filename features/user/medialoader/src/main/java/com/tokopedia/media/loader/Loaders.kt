@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
-fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
+fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
