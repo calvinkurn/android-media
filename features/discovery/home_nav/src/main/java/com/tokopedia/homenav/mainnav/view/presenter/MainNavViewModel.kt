@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.usecase.coroutines.Fail
@@ -63,6 +64,8 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_HOME_BACK_ICON = 2
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val INDEX_DEFAULT_BU_POSITION = 1
+
+        private const val SOURCE = "dave_home_nav"
     }
 
     private var haveLogoutData: Boolean? = false
@@ -555,6 +558,7 @@ class MainNavViewModel @Inject constructor(
                     Pair(null, null)
                 } else {
                     accountAdminInfoUseCase.get().run {
+                        requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
                         isLocationAdmin = userSession.get().isLocationAdmin
                         setStrategyCloudThenCache()
                         executeOnBackground()

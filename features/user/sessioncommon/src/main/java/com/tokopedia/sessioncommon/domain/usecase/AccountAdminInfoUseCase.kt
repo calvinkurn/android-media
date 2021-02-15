@@ -18,10 +18,11 @@ class AccountAdminInfoUseCase @Inject constructor(private val refreshShopBasicDa
 
 
     var isLocationAdmin: Boolean = false
+    var requestParams: RequestParams = GetAdminTypeUseCase.createRequestParams()
 
     override suspend fun executeOnBackground(): Pair<AdminDataResponse?, ShopData?> {
         try {
-            val request = GraphqlRequest(GetAdminTypeUseCase.QUERY, AdminTypeResponse::class.java, RequestParams.EMPTY.parameters)
+            val request = GraphqlRequest(GetAdminTypeUseCase.QUERY, AdminTypeResponse::class.java, requestParams.parameters)
             graphqlRepository.getReseponse(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {

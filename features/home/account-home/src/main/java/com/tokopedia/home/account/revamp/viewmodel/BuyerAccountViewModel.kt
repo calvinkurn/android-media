@@ -16,6 +16,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -80,6 +81,7 @@ class BuyerAccountViewModel @Inject constructor (
                         null to null
                     } else {
                         with(accountAdminInfoUseCase) {
+                            requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
                             isLocationAdmin = userSession.isLocationAdmin
                             setStrategyCloudThenCache()
                             executeOnBackground()
@@ -238,5 +240,6 @@ class BuyerAccountViewModel @Inject constructor (
         private const val MSG_FAILED_ADD_WISHLIST = "Gagal menambahkan ke Wishlist"
         private const val MSG_SUCCESS_REMOVE_WISHLIST = "Berhasil menghapus dari Wishlist"
         private const val AKUN_PAGE = "account"
+        private const val SOURCE = "kevin_account-home"
     }
 }
