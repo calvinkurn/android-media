@@ -54,18 +54,6 @@
         tools:src="@drawable/ic_badge_shop_official"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_fulfillment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:text="@string/label_fulfilment"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
-        app:layout_constraintStart_toEndOf="@+id/tv_shop_name"
-        app:layout_constraintTop_toTopOf="@+id/tv_shop_name" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
         android:layout_width="wrap_content"
@@ -94,7 +82,8 @@
             android:id="@+id/iu_image_fulfill"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl2"/>
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:scaleType="fitCenter" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_fulfill_district"

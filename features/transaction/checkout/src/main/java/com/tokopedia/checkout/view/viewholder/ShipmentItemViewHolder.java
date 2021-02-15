@@ -167,7 +167,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
     private TextView tvFulfillName;
-    private Label labelFulfillment;
     private ImageUnify imgFulfillmentBadge;
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
@@ -301,7 +300,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvPrioritasInfo = itemView.findViewById(R.id.tv_order_prioritas_info);
 
         tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
-        labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
         imgFulfillmentBadge = itemView.findViewById(R.id.iu_image_fulfill);
         tvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
 
@@ -413,7 +411,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderFulfillment(ShipmentCartItemModel model) {
-        labelFulfillment.setVisibility(model.isFulfillment() ? View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(model.getShopLocation())) {
             if (model.isFulfillment()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgFulfillmentBadge, model.getFulfillmentBadgeUrl());

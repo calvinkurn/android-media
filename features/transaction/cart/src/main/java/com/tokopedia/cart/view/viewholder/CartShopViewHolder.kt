@@ -50,7 +50,6 @@ class CartShopViewHolder(itemView: View,
     private val labelIncident: Label = itemView.findViewById(R.id.label_incident)
     private val separatorFreeShipping: Typography = itemView.findViewById(R.id.separator_free_shipping)
     private val imgFreeShipping: ImageView = itemView.findViewById(R.id.img_free_shipping)
-    private val labelFulfillment: Label = itemView.findViewById(R.id.label_fulfillment)
     private val imgFulfillmentBadge: ImageUnify = itemView.findViewById(R.id.iu_image_fulfill)
     private val separatorEstimatedTimeArrival: Typography = itemView.findViewById(R.id.separator_estimated_time_arrival)
     private val textEstimatedTimeArrival: Typography = itemView.findViewById(R.id.text_estimated_time_arrival)
@@ -134,7 +133,6 @@ class CartShopViewHolder(itemView: View,
     }
 
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
-        labelFulfillment.visibility = if (cartShopHolderData.shopGroupAvailableData.isFulfillment) View.VISIBLE else View.GONE
         if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
             if (cartShopHolderData.shopGroupAvailableData.isFulfillment) {
                 imgFulfillmentBadge.show()
