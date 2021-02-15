@@ -153,6 +153,22 @@ class PlayViewModelRobot(
     }
 
     fun getVideoPlayer() = viewModel.getVideoPlayer()
+
+    fun setLoggedIn(isUserLoggedIn: Boolean) {
+        every { userSession.isLoggedIn } returns isUserLoggedIn
+    }
+
+    fun setName(name: String) {
+        every { userSession.name } returns name
+    }
+
+    fun setUserId(userId: String) {
+        every { userSession.userId } returns userId
+    }
+
+    fun sendChat(message: String) {
+        viewModel.sendChat(message)
+    }
 }
 
 fun givenPlayViewModelRobot(

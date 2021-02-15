@@ -48,6 +48,9 @@ class PlayViewModelRobotResult(
     val bottomInsetsResult: PlayBottomInsetsResult
         get() = PlayBottomInsetsResult(viewModel.observableBottomInsetsState.getOrAwaitValue())
 
+    val newChatResult: PlayNewChatResult
+        get() = PlayNewChatResult { viewModel.observableNewChat.getOrAwaitValue() }
+
     /**
      * Field
      */
