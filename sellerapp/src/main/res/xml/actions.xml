@@ -6,6 +6,7 @@
             urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderDate}">
             <parameter-mapping
                 intentParameter="order.orderDate"
+                required="true"
                 urlParameter="orderDate"/>
         </fulfillment>
         <fulfillment
