@@ -13,6 +13,8 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemBannerAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
 
 /**
@@ -36,8 +38,13 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         }
     }
 
-    private fun initSeeAllPromo(section: RechargeHomepageSections.Section){
-        itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
+    private fun initSeeAllPromo(section: RechargeHomepageSections.Section) {
+        if (section.applink.isNotEmpty()) {
+            itemView.see_all_promo.show()
+            itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
+        } else {
+            itemView.see_all_promo.hide()
+        }
     }
 
     private fun initBanner(section: RechargeHomepageSections.Section){
