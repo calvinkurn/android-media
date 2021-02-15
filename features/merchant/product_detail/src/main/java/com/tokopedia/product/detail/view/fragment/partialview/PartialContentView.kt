@@ -4,7 +4,9 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.transform.FitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -34,7 +36,10 @@ class PartialContentView(private val view: View,
         product_name.text = MethodChecker.fromHtml(data.productName)
 
         img_free_ongkir.shouldShowWithAction(data.freeOngkir.isActive) {
-            img_free_ongkir.loadImageRounded(data.freeOngkir.imageURL)
+            img_free_ongkir.loadImage(data.freeOngkir.imageURL) {
+                setCacheStrategy(MediaCacheStrategy.DATA)
+                transform(FitCenter())
+            }
         }
 
         text_cashback_green.shouldShowWithAction(data.cashbackPercentage > 0) {
