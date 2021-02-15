@@ -87,8 +87,18 @@ class OrderSummaryPageRobot {
         CourierBottomSheetRobot().apply(func)
     }
 
+    fun clickChangeCourierRevamp(func: CourierBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_new_change_courier)).perform(scrollTo()).perform(click())
+        CourierBottomSheetRobot().apply(func)
+    }
+
     fun clickUbahDuration(func: DurationBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_shipping_change_duration)).perform(scrollTo()).perform(click())
+        DurationBottomSheetRobot().apply(func)
+    }
+
+    fun clickUbahDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -99,6 +109,10 @@ class OrderSummaryPageRobot {
     fun clickBboTicker() {
         onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
         onView(withId(R.id.ticker_action)).perform(click())
+    }
+
+    fun clickApplyShipmentPromoRevamp() {
+        onView(withId(R.id.ticker_new_action)).perform(scrollTo()).perform(click())
     }
 
     fun clickOvoActivationButton(func: OvoActivationBottomSheetRobot.() -> Unit) {
@@ -243,6 +257,66 @@ class OrderSummaryPageRobot {
             noViewFoundException?.printStackTrace()
             if (hasPromo) {
                 assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
+    fun assertShipmentRevamp(shippingDuration: String?, shippingCourier: String, shippingPrice: String?, shippingEta: String?) {
+        if (shippingDuration != null) {
+            onView(withId(R.id.tv_new_shipping_duration)).perform(scrollTo()).check(matches(withText(shippingDuration)))
+        } else {
+            onView(withId(R.id.tv_new_shipping_duration)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+        onView(withId(R.id.tv_new_shipping_courier)).perform(scrollTo()).check(matches(withText(shippingCourier)))
+        if (shippingPrice != null) {
+            onView(withId(R.id.tv_new_shipping_price)).perform(scrollTo()).check(matches(withText(shippingPrice)))
+        } else {
+            onView(withId(R.id.tv_new_shipping_price)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+        if (shippingEta != null) {
+            onView(withId(R.id.tv_new_shipping_courier_eta)).perform(scrollTo()).check(matches(withText(shippingEta)))
+        } else {
+            onView(withId(R.id.tv_new_shipping_courier_eta)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
+    fun assertShipmentPromoRevamp(hasPromo: Boolean, promoTitle: String? = null, promoSubtitle: String? = null, promoDescription: String? = null) {
+        onView(withId(R.id.ticker_new_shipping_promo)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasPromo) {
+                assertEquals(View.VISIBLE, view.visibility)
+                val title = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_title)
+                if (promoTitle != null) {
+                    assertEquals(promoTitle, title.text)
+                    assertEquals(View.VISIBLE, title.visibility)
+                } else {
+                    assertEquals(View.GONE, title.visibility)
+                }
+                val subtitle = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_subtitle)
+                if (promoSubtitle != null) {
+                    assertEquals(promoSubtitle, subtitle.text)
+                    assertEquals(View.VISIBLE, subtitle.visibility)
+                } else {
+                    assertEquals(View.GONE, subtitle.visibility)
+                }
+                val desc = view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description)
+                if (promoDescription != null) {
+                    assertEquals(promoDescription, desc.text)
+                    assertEquals(View.VISIBLE, desc.visibility)
+                } else {
+                    assertEquals(View.GONE, desc.visibility)
+                }
             } else {
                 assertEquals(View.GONE, view.visibility)
             }
