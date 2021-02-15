@@ -62,11 +62,7 @@ object SnapshotAnalytics {
     fun clickShopPageFromSOM(shopId: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_SOM, SOM_PRODUCT_SNAPSHOT_PAGE,
                 CLICK_SHOP_PAGE, "")
-        if(GlobalConfig.isSellerApp()) {
-            event[CURRENT_SITE] = SELLER_APP_ANDROID_SOM
-        } else {
-            event[CURRENT_SITE] = MAIN_APP_ANDROID_SOM
-        }
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[SHOP_ID] = shopId
         event[BUSINESS_UNIT] = BUSINESS_UNIT_SOM
