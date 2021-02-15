@@ -6,4 +6,6 @@ interface FragmentNavigationInterface {
 
     fun showExitDialog()
 
+    fun isDarkModeOn(): Boolean
+
 }

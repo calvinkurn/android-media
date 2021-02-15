@@ -95,7 +95,7 @@ class OvoWidgetView: FrameLayout {
         val container = itemView.findViewById<View>(R.id.container_nonlogin)
         val imgNonLogin = itemView.findViewById<AppCompatImageView>(R.id.bg_container_nonlogin)
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
         Glide.with(itemView.context.applicationContext)
@@ -115,7 +115,7 @@ class OvoWidgetView: FrameLayout {
                 AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
