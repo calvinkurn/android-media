@@ -5,6 +5,7 @@ import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
@@ -24,6 +25,73 @@ open class Properties(
         var transform: Transformation<Bitmap>? = null,
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
+
+    fun thumbnailUrl(url: String) = apply {
+        this.thumbnailUrl = url
+    }
+
+    fun useBlurHash(condition: Boolean) = apply {
+        this.blurHash = condition
+    }
+
+    fun isAnimate(condition: Boolean) = apply {
+        this.isAnimate = condition
+    }
+
+    fun isCircular(condition: Boolean) = apply {
+        this.isCircular = condition
+    }
+
+    fun setRoundedRadius(radius: Float) = apply {
+        this.roundedRadius = radius
+    }
+
+    fun setSignatureKey(key: Key?) = apply {
+        this.signatureKey = key
+    }
+
+    fun setErrorDrawable(resourceId: Int) = apply {
+        this.error = resourceId
+    }
+
+    fun setPlaceHolder(resourceId: Int) = apply {
+        this.placeHolder = resourceId
+    }
+
+    fun setCacheStrategy(strategy: MediaCacheStrategy) = apply {
+        this.cacheStrategy = strategy
+    }
+
+    fun overrideSize(newSize: Resize) = apply {
+        this.overrideSize = newSize
+    }
+
+    fun decodeFormat(format: MediaDecodeFormat) = apply {
+        this.decodeFormat = format
+    }
+
+    fun listener(
+            onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+            onError: (MediaException?) -> Unit = { _ -> }
+    ) = apply {
+        this.loaderListener = object : LoaderStateListener {
+            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
+                onSuccess(resource, dataSource)
+            }
+
+            override fun failedLoad(error: MediaException?) {
+                onError(error)
+            }
+        }
+    }
+
+    fun transform(transform: Transformation<Bitmap>) = apply {
+        this.transform = transform
+    }
+
+    fun transforms(transforms: List<Transformation<Bitmap>>) = apply {
+        this.transforms = transforms
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
