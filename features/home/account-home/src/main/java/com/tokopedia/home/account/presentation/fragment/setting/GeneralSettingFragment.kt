@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -295,7 +294,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             SettingConstant.SETTING_IMAGE_QUALITY -> {
-                RouteManager.route(context, ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING)
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             else -> {
             }

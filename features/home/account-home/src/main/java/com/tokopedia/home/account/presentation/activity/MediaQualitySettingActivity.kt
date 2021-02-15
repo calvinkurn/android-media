@@ -7,9 +7,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.presentation.fragment.setting.ImageQualitySettingFragment
+import com.tokopedia.home.account.presentation.fragment.setting.MediaQualitySettingFragment
 
-class ImageQualitySettingActivity: BaseSimpleActivity() {
+class MediaQualitySettingActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.setBackgroundColor(Color.WHITE)
@@ -18,7 +18,7 @@ class ImageQualitySettingActivity: BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return ImageQualitySettingFragment.createInstance(Bundle.EMPTY)
+        return MediaQualitySettingFragment.createInstance(Bundle.EMPTY)
     }
 
     private fun updateToolbarTitle() {
@@ -27,7 +27,7 @@ class ImageQualitySettingActivity: BaseSimpleActivity() {
 
     companion object {
         fun getCallingIntent(context: Context?, extras: Bundle?): Intent? {
-            val intent = Intent(context, ImageQualitySettingActivity::class.java)
+            val intent = Intent(context, MediaQualitySettingActivity::class.java)
             intent.putExtras(extras ?: Bundle())
             return intent
         }

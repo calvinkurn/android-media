@@ -8,7 +8,7 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
 import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.LOW_QUALITY
 import com.tokopedia.media.common.data.MediaSettingPreferences
@@ -60,7 +60,7 @@ class ToasterActivityLifecycle(
                             duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
                             clickListener = View.OnClickListener {
-                                startActivity(RouteManager.getIntent(this, IMAGE_QUALITY_SETTING))
+                                startActivity(RouteManager.getIntent(this, MEDIA_QUALITY_SETTING))
                             }
                     ).show()
                 }

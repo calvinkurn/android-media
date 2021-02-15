@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_image_quality_setting.*
 import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT as LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL as TYPE_NORMAL
 
-class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingListener {
+class MediaQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingListener {
 
     private val _adapter by lazy { ImageQualitySettingAdapter(settingsMenu(), this) }
     private val settings by lazy { MediaSettingPreferences(requireContext()) }
@@ -69,8 +69,8 @@ class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingList
     companion object {
         const val SCREEN_NAME = "Image Quality Setting"
 
-        fun createInstance(bundle: Bundle): ImageQualitySettingFragment {
-            val fragment = ImageQualitySettingFragment()
+        fun createInstance(bundle: Bundle): MediaQualitySettingFragment {
+            val fragment = MediaQualitySettingFragment()
             fragment.arguments = bundle
             return fragment
         }
