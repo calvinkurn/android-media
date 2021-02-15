@@ -113,24 +113,12 @@ open class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        isActive = true
-    }
-
-    override fun onStop() {
-        super.onStop()
-        isActive = false
-    }
-
     companion object {
         val REQUEST_CODE_CHAT_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
         val ROLE_USER = "user"
-
-        var isActive = false
     }
 
 }

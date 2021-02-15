@@ -495,6 +495,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
         fpm.stopTrace()
+        UploadImageChatService.dummyMap[messageId]?.let {
+            for (dummy in it) {
+                addDummyMessage(dummy)
+            }
+        }
     }
 
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -1819,16 +1824,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    //Success upload image with service
     private fun onSuccessUploadImageWS(intent: Intent) {
-        val uploadId = intent.getStringExtra(UploadImageChatService.UPLOAD_ID)?: ""
         val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-        presenter.sendImageByWebSocket(uploadId, image)
+        removeDummy(image)
     }
 
+    //Error upload image with service
     private fun onErrorUploadImageWS(intent: Intent) {
         val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
         val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-        onErrorUploadImage(errorMessage, image)
+        showToasterError(errorMessage)
+        removeDummy(image)
     }
 
     private fun unregisterUploadImageReceiver() {

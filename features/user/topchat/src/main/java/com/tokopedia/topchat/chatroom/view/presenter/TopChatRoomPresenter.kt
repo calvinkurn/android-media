@@ -172,6 +172,10 @@ class TopChatRoomPresenter @Inject constructor(
         val subscription = rxWebSocket?.subscribe(subscriber)
 
         mSubscription?.add(subscription)
+
+        if(UploadImageChatService.dummyMap[thisMessageId] == null) {
+            UploadImageChatService.dummyMap[thisMessageId] = arrayListOf()
+        }
     }
 
     override fun destroyWebSocket() {
@@ -332,19 +336,10 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun startUploadImages(image: ImageUploadViewModel) {
-        processDummyMessage(image)
-        UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
-    }
-
-    fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
-        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
-        sendMessageWebSocket(requestParams)
-    }
-
-    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
-        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
-        sendByApi(requestParams, image)
+    override fun startUploadImages(it: ImageUploadViewModel) {
+        view?.addDummyMessage(it)
+        UploadImageChatService.dummyMap[thisMessageId]?.add(it)
+        UploadImageChatService.enqueueWork(view.context, it, thisMessageId)
     }
 
     override fun isUploading(): Boolean {

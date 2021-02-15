@@ -11,12 +11,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
@@ -34,11 +34,11 @@ class UploadImageChatService: JobIntentService() {
 
     companion object {
         private const val JOB_ID_UPLOAD_IMAGE = 813
-        const val UPLOAD_ID = "uploadId"
         const val IMAGE = "image"
         const val ERROR_MESSAGE = "errorMessage"
         const val MESSAGE_ID = "messageId"
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
+        var dummyMap = hashMapOf<String, ArrayList<Visitable<*>>>()
 
         fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
             val intent = Intent(context, UploadImageChatService::class.java)
@@ -84,12 +84,7 @@ class UploadImageChatService: JobIntentService() {
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
-        if(TopChatRoomActivity.isActive) {
-            sendSuccessBroadcast(uploadId, image)
-            notificationManager?.onSuccessUpload()
-        } else {
-            sendImageByApi(uploadId, image)
-        }
+        sendImageByApi(uploadId, image)
     }
 
     private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
@@ -103,23 +98,30 @@ class UploadImageChatService: JobIntentService() {
                 if (response.isSuccessReplyChat) {
                     notificationManager?.onSuccessUpload()
                 }
+                removeDummyOnList(dummyMessage)
+                image?.let {
+                    sendSuccessBroadcast(it)
+                }
             }
 
             override fun onCompleted() {
             }
 
-            override fun onError(e: Throwable?) {
+            override fun onError(e: Throwable) {
                 val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, e)
                 notificationManager?.onFailedUpload(errorMessage)
+                removeDummyOnList(dummyMessage)
+                image?.let {
+                    onErrorUploadImage(e, it)
+                }
             }
         })
     }
 
-    private fun sendSuccessBroadcast(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendSuccessBroadcast(image: ImageUploadViewModel) {
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
 
         val bundle = Bundle()
-        bundle.putString(UPLOAD_ID, uploadId)
         bundle.putSerializable(IMAGE, image)
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
 
@@ -137,6 +139,24 @@ class UploadImageChatService: JobIntentService() {
 
         result.putExtras(bundle)
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
+    }
+
+    @Synchronized
+    private fun removeDummyOnList(dummy: Visitable<*>) {
+        var tmpDummy: Visitable<*>? = null
+        dummyMap[messageId]?.let {
+            for(i in 0 until it.size) {
+                val temp = (it[i] as SendableViewModel)
+                if (temp.startTime == (dummy as SendableViewModel).startTime
+                        && temp.messageId == (dummy as SendableViewModel).messageId) {
+                    tmpDummy = it[i]
+                    break
+                }
+            }
+            tmpDummy?.let {tmp ->
+                it.remove(tmp)
+            }
+        }
     }
 
     override fun onDestroy() {
