@@ -8,5 +8,8 @@
                 intentParameter="order.orderDate"
                 urlParameter="orderDate"/>
         </fulfillment>
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.DEEPLINK"
+            urlTemplate="tokopedia-android-internal://sellerapp/sellerhome-som-allorder"/>
     </action>
 </actions>
