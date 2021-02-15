@@ -28,7 +28,8 @@ data class OrderProduct(
         var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
-        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData()
+        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
+        var preorderDuration: Int = 0
 ) {
 
     fun getPrice(): Long {

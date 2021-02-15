@@ -113,6 +113,10 @@ class OfficialHomeAdapterTypeFactory(
         return -1
     }
 
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
