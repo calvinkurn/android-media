@@ -15,12 +15,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
@@ -33,8 +35,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_SHOP_SNIPPET
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -61,7 +61,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -76,6 +75,7 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
         private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+        private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
@@ -99,6 +99,10 @@ class ShopPageViewModel @Inject constructor(
 
     val userShopId: String
         get() = userSessionInterface.shopId
+
+    private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
+    val shopShareTracker : LiveData<Result<ShopQuestGeneralTracker>>
+        get() = _shopShareTracker
 
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
@@ -262,6 +266,23 @@ class ShopPageViewModel @Inject constructor(
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    fun sendShopShareTracker(shopId : String, channel : String) {
+        launchCatchError(dispatcherProvider.io, {
+            val useCase = shopQuestGeneralTrackerUseCase.get()
+            useCase.params = ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = ShopPageConstant.SHOP_SHARE_GQL_TRACKER_ACTION,
+                    source = ShopPageConstant.SHOP_SHARE_GQL_TRACKER_SOURCE,
+                    channel = channel,
+                    input = ShopQuestGeneralTrackerInput(shopId)
+            )
+            val shopShareTrackerResponse = useCase.executeOnBackground()
+            _shopShareTracker.postValue(Success(shopShareTrackerResponse))
+
+        }) {
+            _shopShareTracker.postValue(Fail(it))
+        }
     }
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {

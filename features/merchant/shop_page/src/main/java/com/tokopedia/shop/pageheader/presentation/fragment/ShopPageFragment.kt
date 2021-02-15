@@ -280,6 +280,7 @@ class ShopPageFragment :
         shopViewModel?.shopImagePath?.removeObservers(this)
         shopViewModel?.shopUnmoderateData?.removeObservers(this)
         shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
+        shopViewModel?.shopShareTracker?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -403,6 +404,27 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     onErrorGetShopPageHeaderContentData(result.throwable)
+                }
+            }
+        })
+
+        shopViewModel?.shopShareTracker?.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    if(!it.data.success) {
+                        ShopUtil.logTimberWarning(
+                                "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                                "shop_id='${shopId}';" +
+                                        "error_message='${it.data.message}';"
+                        )
+                    }
+                }
+                is Fail -> {
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${it.throwable.message}';"
+                    )
                 }
             }
         })
@@ -1465,9 +1487,27 @@ class ShopPageFragment :
                                 })
                             }
                         }
-                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
-                        shopShareBottomSheet?.dismiss()
 
+                        // send gql tracker
+                        shopShare.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shopShare) {
+                                        is ShopShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShopShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
+
+                        // send gtm tracker
+                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
+
+                        shopShareBottomSheet?.dismiss()
                     }
 
                     override fun onError(linkerError: LinkerError?) {}
