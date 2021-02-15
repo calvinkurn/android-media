@@ -34,17 +34,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class TopchatRoomCassavaTest : TopchatRoomTest() {
 
-    private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_first_page.json",
-            GetExistingChatPojo::class.java
-    )
-    private var firstPageChatBroadcast: GetExistingChatPojo = AndroidFileUtil.parse(
+    private var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
             "success_get_chat_broadcast.json",
             GetExistingChatPojo::class.java
-    )
-    private var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
-            "success_get_chat_attachments.json",
-            ChatAttachmentResponse::class.java
     )
 
     private val cassavaDirTopchat = "tracker/user/topchat"
@@ -52,7 +44,6 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     private val cassavaBroadcastProduct = "$cassavaDirTopchat/product_card_from_broadcast_p0.json"
     private val cassavaSearchProduct = "$cassavaDirTopchat/product_card_from_search_p0.json"
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
 
     @ExperimentalCoroutinesApi
@@ -67,7 +58,7 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_user() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChat
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
@@ -91,7 +82,7 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     fun asses_view_click_cta_atc_and_buy_product_attachment_from_broadcast() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatBroadcast
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
@@ -117,7 +108,7 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         setupChatRoomActivity(
                 sourcePage = ApplinkConst.Chat.SOURCE_CHAT_SEARCH
         )
-        getChatUseCase.response = firstPageChat
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)

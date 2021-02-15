@@ -6,11 +6,9 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.RecyclerViewChildActions.Companion.atPositionOnView
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.websocket.WebSocketResponse
@@ -20,14 +18,6 @@ import org.junit.Test
 
 class TopchatRoomBuyerUxTest : TopchatRoomTest() {
 
-    private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_first_page.json",
-            GetExistingChatPojo::class.java
-    )
-    private var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
-            "success_get_chat_attachments.json",
-            ChatAttachmentResponse::class.java
-    )
     private var wsResponseText: WebSocketResponse = AndroidFileUtil.parse(
             "ws_response_text.json",
             WebSocketResponse::class.java
@@ -44,7 +34,7 @@ class TopchatRoomBuyerUxTest : TopchatRoomTest() {
         // Given
         setupChatRoomActivity()
         val myMsg = "Hi seller"
-        getChatUseCase.response = firstPageChat
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
                 wsResponseText, TopChatRoomPresenterStub.exStartTime
@@ -68,13 +58,4 @@ class TopchatRoomBuyerUxTest : TopchatRoomTest() {
         )
     }
 
-    private fun changeResponseStartTime(
-            response: WebSocketResponse,
-            exStartTime: String
-    ) {
-        response.jsonObject?.addProperty(
-                "start_time",
-                exStartTime
-        )
-    }
 }
