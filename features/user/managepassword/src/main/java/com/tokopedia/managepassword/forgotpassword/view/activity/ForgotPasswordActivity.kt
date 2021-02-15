@@ -101,9 +101,10 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                     }
                 }
                 REQUEST_CODE_LOGOUT -> gotoLogin(uri)
+                REQUEST_CODE_LOGIN -> gotoHome()
             }
         } else {
-            finish()
+            gotoHome()
         }
     }
 
@@ -140,6 +141,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
             intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
             userSession.autofillUserData = decodeParam(phone)
         }
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
@@ -169,6 +175,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     companion object {
         private const val REQUEST_CODE_WEB_VIEW = 100
         private const val REQUEST_CODE_LOGOUT = 101
+        private const val REQUEST_CODE_LOGIN = 102
 
         const val QUERY_PARAM_EMAIL = "e"
         const val QUERY_PARAM_PHONE = "p"
