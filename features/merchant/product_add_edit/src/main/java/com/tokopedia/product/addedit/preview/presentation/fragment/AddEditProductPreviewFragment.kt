@@ -495,6 +495,7 @@ class AddEditProductPreviewFragment :
         if (savedInstanceState != null) {
             val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
             if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     productInputModel = this
                 }
@@ -960,6 +961,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+            //check whether productInputModel has value from savedInstanceState or not
             if (productInputModel == null) {
                 showProductPhotoPreview(it)
                 showProductDetailPreview(it)

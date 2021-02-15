@@ -691,15 +691,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
 
             if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
                 val productInputModel = mapJsonToObject(productInputModelJson, ProductInputModel::class.java)
                 viewModel.productInputModel = productInputModel
                 if (!productInputModel.detailInputModel.imageUrlOrPathList.isNullOrEmpty()) {
                     viewModel.productPhotoPaths = productInputModel.detailInputModel.imageUrlOrPathList as MutableList<String>
                 }
                 fillProductDetailForm(productInputModel.detailInputModel)
+                setupButton()
             }
-
-            setupButton()
         }
         super.onViewStateRestored(savedInstanceState)
     }

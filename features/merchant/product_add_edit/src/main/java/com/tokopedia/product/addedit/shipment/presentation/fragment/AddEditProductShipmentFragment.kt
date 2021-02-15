@@ -197,6 +197,7 @@ class AddEditProductShipmentFragment:
             shipmentViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
 
             if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     productInputModel = this
                     shipmentViewModel.shipmentInputModel = shipmentInputModel

@@ -32,6 +32,10 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
@@ -304,22 +308,23 @@ class AddEditProductDescriptionFragment:
     override fun onSaveInstanceState(outState: Bundle) {
         inputAllDataInInputModel()
         outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
-        outState.putBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
-        outState.putBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
-        outState.putBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
-        outState.putBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
         super.onSaveInstanceState(outState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
-            descriptionViewModel.isAddMode = savedInstanceState.getBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING)
-            descriptionViewModel.isEditMode = savedInstanceState.getBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING)
-            descriptionViewModel.isDraftMode = savedInstanceState.getBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING)
-            descriptionViewModel.isFirstMoved = savedInstanceState.getBoolean(AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+            descriptionViewModel.isAddMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
+            descriptionViewModel.isEditMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            descriptionViewModel.isDraftMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            descriptionViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
 
             if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     descriptionViewModel.updateProductInputModel(this)
                     if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) {
