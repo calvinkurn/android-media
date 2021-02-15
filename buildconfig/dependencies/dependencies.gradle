@@ -265,6 +265,7 @@ ext {
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionsVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
+            lifecycleRuntimeKtx   : "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
