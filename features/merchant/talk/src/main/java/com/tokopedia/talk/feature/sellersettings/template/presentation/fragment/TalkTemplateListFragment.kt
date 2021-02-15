@@ -25,6 +25,7 @@ import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateC
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
+import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListViewHolder
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateBottomSheetListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel.TalkTemplateViewModel
@@ -55,6 +56,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private var talkTemplateListAddButton: UnifyButton? = null
     private var talkTemplateListSwitch: SwitchUnify? = null
     private var talkTemplateListLoading: View? = null
+    private val touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
+    private val itemTouchHelper = ItemTouchHelper(touchHelperCallback)
 
     override fun getScreenName(): String {
         return ""
@@ -78,6 +81,10 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     override fun onItemMove(originalIndex: Int, moveTo: Int) {
         viewModel.arrangeTemplate(originalIndex, moveTo, isSeller)
+    }
+
+    override fun onDrag(viewHolder: TalkTemplateListViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -166,8 +173,6 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun initRecyclerView() {
-        val touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
-        val itemTouchHelper = ItemTouchHelper(touchHelperCallback)
         talkTemplateListRecyclerView?.apply {
             adapter = this@TalkTemplateListFragment.adapter
             layoutManager = LinearLayoutManager(context)

@@ -7,7 +7,7 @@ import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
