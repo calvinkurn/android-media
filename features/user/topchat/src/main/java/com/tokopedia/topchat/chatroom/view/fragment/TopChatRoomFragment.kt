@@ -17,6 +17,7 @@ import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -106,6 +107,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -114,6 +116,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -148,6 +152,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var session: UserSessionInterface
+
+    @Inject
+    lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var alertDialog: Dialog
@@ -852,6 +859,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
             clearEditText()
+            sellerReviewHelper.hasRepliedChat = true
         }
     }
 
@@ -979,6 +987,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 } else {
                     presenter.startCompressImages(model)
                 }
+                sellerReviewHelper.hasRepliedChat = true
             }
         }
     }
@@ -1271,6 +1280,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        lifecycleScope.launch(Dispatchers.IO) {
+            sellerReviewHelper.saveMessageId(messageId)
         }
     }
 
