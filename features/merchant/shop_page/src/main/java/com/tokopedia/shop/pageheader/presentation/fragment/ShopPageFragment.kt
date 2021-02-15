@@ -111,7 +111,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -185,7 +184,7 @@ class ShopPageFragment :
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
-    var stickyLoginView: StickyLoginView? = null
+    private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
@@ -636,7 +635,7 @@ class ShopPageFragment :
             }
         })
 
-        stickyLoginView?.loadContent()
+        stickyLoginView?.hide()
     }
 
     private fun getInitialData() {
@@ -967,6 +966,8 @@ class ShopPageFragment :
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
+
+        stickyLoginView?.loadContent()
     }
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {

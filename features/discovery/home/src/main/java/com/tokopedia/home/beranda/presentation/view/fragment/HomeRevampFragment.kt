@@ -280,7 +280,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
-    private lateinit var stickyLoginView: StickyLoginView
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -288,6 +287,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var backgroundViewImage: ImageView
+    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
@@ -309,7 +309,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var positionSticky: IntArray? = IntArray(2)
     private var isLightThemeStatusBar = true
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
@@ -772,13 +771,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     AbTestPlatform.NAVIGATION_VARIANT_REVAMP
                 } else {
                     AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
+                }
+        )
     }
 
     private fun initStickyLogin() {
-        stickyLoginView.page = StickyLoginConstant.Page.HOME
-        stickyLoginView.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView.setStickyAction(object : StickyLoginAction {
+        stickyLoginView?.page = StickyLoginConstant.Page.HOME
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
@@ -793,20 +793,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
 
             override fun onViewChange(isShowing: Boolean) {
-                if (stickyLoginView.isShowing()) {
-                    positionSticky = stickyLoginView.getLocation()
-                }
                 floatingEggButtonFragment?.let {
                     updateEggBottomMargin(it)
                 }
             }
         })
-        getHomeViewModel().setRollanceNavigationType(
-                if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-                } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
+
+        stickyLoginView?.hide()
     }
 
     private fun scrollToRecommendList() {
@@ -1523,7 +1516,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1540,7 +1533,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1582,7 +1575,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
@@ -2311,13 +2304,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView.height)
+        if (stickyLoginView?.isShowing() == true) {
+            stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
+            val stickyTopLocation = stickyLoginView?.getLocation()?.get(1) ?: 0
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
-                floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+            if (positionEgg[1] + eggHeight > stickyTopLocation) {
+                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
             }
         } else {
             params.setMargins(0, 0, 0, 0)
