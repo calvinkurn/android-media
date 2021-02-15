@@ -6,13 +6,12 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 15/02/21.
  */
-class PlayAnalytic @Inject constructor(
+class PlayAnalytic(
         private val userSession: UserSessionInterface,
         private val trackingQueue: TrackingQueue,
 ) {
