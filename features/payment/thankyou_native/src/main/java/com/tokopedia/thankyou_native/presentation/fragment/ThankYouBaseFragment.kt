@@ -23,6 +23,7 @@ import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
+import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
@@ -38,6 +39,7 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.Dig
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -50,6 +52,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
+    abstract fun getTopTickerView(): Ticker?
 
     private lateinit var dialogHelper: DialogHelper
 
@@ -113,6 +116,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             observeViewModel()
             getFeatureRecommendationData()
             addRecommendation()
+            getTopTickerData()
         }
     }
 
@@ -124,7 +128,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             if (isThanksWidgetEnabled)
                 thanksPageDataViewModel.getFeatureEngine(thanksPageData)
         }
-
     }
 
     private fun addRecommendation() {
@@ -177,6 +180,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
+    private fun getTopTickerData() {
+        thanksPageDataViewModel.getThanksPageTicker(thanksPageData.configList)
+    }
+
+
     private fun observeViewModel() {
         thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -187,15 +195,40 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
             addDataToGyroRecommendationView(it)
         })
+
+        thanksPageDataViewModel.topTickerLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    setTopTickerData(it.data)
+                }
+                is Fail -> getTopTickerView()?.gone()
+            }
+        })
+    }
+
+
+    private fun setTopTickerData(data: ThankPageTopTickerData) {
+        getTopTickerView()?.apply {
+            visible()
+            tickerTitle = data.tickerTitle ?: ""
+            setTextDescription(data.tickerDescription ?: "")
+            closeButtonVisibility = View.GONE
+            tickerType = when (data.ticketType) {
+                TICKER_WARNING -> Ticker.TYPE_WARNING
+                TICKER_INFO -> Ticker.TYPE_INFORMATION
+                TICKER_ERROR -> Ticker.TYPE_ERROR
+                else -> Ticker.TYPE_INFORMATION
+            }
+        }
     }
 
     private fun addDataToGyroRecommendationView(gyroRecommendation: GyroRecommendation) {
         if (::thanksPageData.isInitialized) {
-            if(!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
+            if (!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
                 getFeatureListingContainer()?.visible()
                 getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
                         gyroRecommendationAnalytics.get())
-            }else{
+            } else {
                 getFeatureListingContainer()?.gone()
             }
         }
@@ -263,7 +296,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
                 thanksPageData.paymentID.toString())
 
-        if(activity is ThankYouPageActivity){
+        if (activity is ThankYouPageActivity) {
             (activity as ThankYouPageActivity).cancelGratifDialog()
         }
     }
@@ -371,6 +404,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     companion object {
+        const val TICKER_WARNING = "Warning"
+        const val TICKER_INFO = "Info"
+        const val TICKER_ERROR = "Error"
+
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
     }
 }
