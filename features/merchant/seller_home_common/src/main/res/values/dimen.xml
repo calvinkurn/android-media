@@ -4,6 +4,7 @@
     <dimen name="shc_large_widget_height">320dp</dimen>
     <dimen name="shc_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
+    <dimen name="shc_dimen_0_8dp">0.8dp</dimen>
     <dimen name="shc_dimen_1dp">1dp</dimen>
     <dimen name="shc_dimen_6dp">6dp</dimen>
     <dimen name="shc_dimen_7dp">7dp</dimen>

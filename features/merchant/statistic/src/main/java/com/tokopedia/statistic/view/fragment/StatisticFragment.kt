@@ -41,6 +41,7 @@ import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
+import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -177,6 +178,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         when (item.itemId) {
             android.R.id.home -> activity?.finish()
             R.id.actionStcSelectDate -> selectDateRange()
+            R.id.actionStcOtherMenu -> setupActionMenu()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -709,6 +711,20 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun showTickers(tickers: List<TickerItemUiModel>) {
         tickerWidget.data?.tickers = tickers
         notifyWidgetChanged(tickerWidget)
+    }
+
+    private fun setupActionMenu() {
+        statisticPage?.actionMenu?.let { menus ->
+            //we can't show bottom sheet if FragmentManager's state has already been saved
+            if (childFragmentManager.isStateSaved) return
+
+            val actionMenuBottomSheet = ActionMenuBottomSheet.createInstance(menus)
+
+            //to prevent IllegalStateException: Fragment already added
+            if (actionMenuBottomSheet.isAdded) return
+
+            actionMenuBottomSheet.show(childFragmentManager)
+        }
     }
 
     private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {

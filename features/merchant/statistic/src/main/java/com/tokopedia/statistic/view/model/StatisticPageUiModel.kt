@@ -11,5 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class StatisticPageUiModel(
         val pageTitle: String = "",
         val pageSource: String = "",
-        val tickerPageName: String = ""
+        val tickerPageName: String = "",
+        val actionMenu: List<ActionMenuUiModel> = emptyList()
 ) : Parcelable
