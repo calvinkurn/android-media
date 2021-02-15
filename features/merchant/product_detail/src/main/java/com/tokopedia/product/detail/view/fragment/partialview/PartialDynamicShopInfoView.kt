@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.relativeWeekDay
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -23,7 +24,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                    componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
             shop_name.text = MethodChecker.fromHtml(shopName)
-            shop_ava.loadImage(shopAvatar)
+            shop_ava.loadIcon(shopAvatar)
 
             var templateLocOnline = "${shopLocation} "
             if (shopLastActive.isNotBlank()) {
@@ -50,7 +51,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
 
             if (drawable == null) iv_badge.gone()
             else {
-                iv_badge.setImageDrawable(drawable)
+                iv_badge.loadImage(drawable)
                 iv_badge.visible()
             }
             adjustSendMsgAndFavoriteTextSize()
@@ -98,7 +99,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
     }
 
     fun renderShopBadge(shopBadge: String) {
-        view.l_medal.loadImage(shopBadge)
+        view.l_medal.loadIcon(shopBadge)
     }
 
     fun renderShopFeature(isGoApotik: Boolean) {

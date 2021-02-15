@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
 import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
@@ -36,7 +36,7 @@ class CourierTypeFactory: BaseAdapterTypeFactory(){
                         courier_item_name.setFontSize(TextViewCompat.FontSize.TITLE)
                         courier_item_name.text = element.name
                         courier_item_info.text = element.product.map { it.name }.joinToString(", ")
-                        courier_item_image.loadImage(element.image)
+                        courier_item_image.loadIcon(element.image)
                     }
                     else -> {}
                 }

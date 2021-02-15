@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
@@ -184,8 +184,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         shopLocation.text = dataModel.recommendationItem.location
         reviewCount.text = "(${dataModel.recommendationItem.countReview})"
         ratingCount.text = dataModel.recommendationItem.rating.toString()
-        shopBadges.loadImage(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
-        freeOngkirImage.loadImage(dataModel.recommendationItem.freeOngkirImageUrl)
+        shopBadges.loadIcon(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
+        freeOngkirImage.loadIcon(dataModel.recommendationItem.freeOngkirImageUrl)
         ticker.tickerType = if(dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
         ticker.setTextDescription(getString(if(dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
         addToCartDoneAddedProductListener.onRecommendationItemSelected(dataModel, dataModel.recommendationItem.position)

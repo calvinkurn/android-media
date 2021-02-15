@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
@@ -49,11 +49,11 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         pdp_arrow_right?.showWithCondition(element.isApplink)
 
         pdp_icon?.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
-            view.pdp_icon?.loadImage(element.parentIcon)
+            view.pdp_icon?.loadIcon(element.parentIcon)
         }
 
         view.ic_pdp_additional_info?.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
-            view.ic_pdp_additional_info?.loadImage(element.additionalIcon)
+            view.ic_pdp_additional_info?.loadIcon(element.additionalIcon)
         }
     }
 

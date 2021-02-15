@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -59,7 +59,7 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
 
     private fun renderTitle(title: String, icon: String) = with(view) {
         custom_image.shouldShowWithAction(icon.isNotEmpty()) {
-            custom_image.loadImage(icon)
+            custom_image.loadIcon(icon)
         }
         custom_title.shouldShowWithAction(title.isNotEmpty()) {
             custom_title.text = title
