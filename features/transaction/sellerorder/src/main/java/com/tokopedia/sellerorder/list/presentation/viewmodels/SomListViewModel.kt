@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -50,6 +51,7 @@ class SomListViewModel @Inject constructor(
     private var retryCount = 0
 
     private var getOrderListJob: Job? = null
+    private var getFiltersJob: Job? = null
 
     private val _tickerResult = MutableLiveData<Result<List<TickerData>>>()
     val tickerResult: LiveData<Result<List<TickerData>>>
@@ -170,7 +172,7 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        launchCatchError(block = {
+        getFiltersJob = launchCatchError(block = {
             _filterResult.postValue(somListGetFilterListUseCase.execute().apply { data.refreshOrder = refreshOrders })
         }, onError = {
             _filterResult.postValue(Fail(it))
@@ -191,7 +193,7 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()
-            getOrderListParams.nextOrderId = result.first
+            getOrderListParams.nextOrderId = result.first.toLongOrZero()
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
@@ -200,15 +202,14 @@ class SomListViewModel @Inject constructor(
 
     fun refreshSelectedOrder(invoice: String) {
         launchCatchError(block = {
-            val currentSearchParam = getOrderListParams.search
-            val currentNextOrderId = getOrderListParams.nextOrderId
-            setSearchParam(invoice)
-            resetNextOrderId()
+            val getOrderListParams = getOrderListParams.copy(
+                    search = invoice,
+                    nextOrderId = 0L
+            )
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
-            setSearchParam(currentSearchParam)
             getUserRolesJob()?.join()
-            getOrderListParams.nextOrderId = currentNextOrderId
+            getFiltersJob?.join()
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
@@ -249,10 +250,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun resetNextOrderId() {
-        getOrderListParams.nextOrderId = 0
+        getOrderListParams.nextOrderId = 0L
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
 
     fun getDataOrderListParams() = getOrderListParams
 

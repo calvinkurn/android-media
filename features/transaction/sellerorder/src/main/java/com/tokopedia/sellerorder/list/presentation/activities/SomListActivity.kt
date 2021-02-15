@@ -9,10 +9,11 @@ import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 
-class SomListActivity : BaseSimpleActivity(), SomListLoadTimeMonitoringActivity {
+class SomListActivity : BaseSomActivity(), SomListLoadTimeMonitoringActivity {
 
     companion object {
         @JvmStatic

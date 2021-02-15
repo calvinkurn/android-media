@@ -339,7 +339,7 @@ open class AddToCartDoneBottomSheet :
     private fun goToCart() {
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
@@ -352,7 +352,7 @@ open class AddToCartDoneBottomSheet :
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
-        dismiss()
+        dismissAllowingStateLoss()
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
