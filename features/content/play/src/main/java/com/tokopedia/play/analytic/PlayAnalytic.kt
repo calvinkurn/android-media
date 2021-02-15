@@ -31,6 +31,23 @@ class PlayAnalytic @Inject constructor(
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
     }
 
+    /**
+     * User swipe room
+     */
+    fun swipeRoom() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "swipe channel",
+                        KEY_EVENT_LABEL to "${generateSwipeSession()} - $channelId - ${channelType.value} - $sourceType",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
     fun clickLeaveRoom(duration: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_BACK,
@@ -310,23 +327,6 @@ class PlayAnalytic @Inject constructor(
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "click on button share link",
                         KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
-        )
-    }
-
-    /**
-     * User swipe room
-     */
-    fun swipeRoom(sourceType: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "swipe channel",
-                        KEY_EVENT_LABEL to "${generateSwipeSession()} - $channelId - ${channelType.value} - $sourceType",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT

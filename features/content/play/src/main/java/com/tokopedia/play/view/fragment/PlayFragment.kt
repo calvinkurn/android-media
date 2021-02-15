@@ -283,6 +283,7 @@ class PlayFragment @Inject constructor(
     private fun onPageFocused() {
         analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
         playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        sendSwipeRoomAnalytic()
     }
 
     private fun onPageDefocused() {
@@ -555,6 +556,10 @@ class PlayFragment @Inject constructor(
 
     private fun doAutoSwipe() {
         playNavigation.navigateToNextPage()
+    }
+
+    private fun sendSwipeRoomAnalytic() {
+        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
     }
 
     //region onStateChanged
