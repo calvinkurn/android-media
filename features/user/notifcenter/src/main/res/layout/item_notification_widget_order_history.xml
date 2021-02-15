@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/notification_container"
     style="@style/BaseNotification_Container"
-    android:paddingBottom="@dimen/unify_space_0">
+    android:paddingBottom="@dimen/unify_space_0"
+    tools:background="@drawable/bg_notifcenter_gradient_notif_order_timeline">
 
     <ImageView
         android:id="@+id/iv_icon"

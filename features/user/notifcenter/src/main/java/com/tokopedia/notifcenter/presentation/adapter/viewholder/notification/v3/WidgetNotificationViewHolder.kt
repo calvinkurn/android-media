@@ -82,6 +82,16 @@ class WidgetNotificationViewHolder constructor(
         bindPaddingBottom(element)
     }
 
+    override fun bindContainer(element: NotificationUiModel) {
+        when {
+            !element.isRead() -> container?.setBackgroundColor(clickedColor)
+            element.isHistoryVisible -> container?.setBackgroundResource(
+                    R.drawable.bg_notifcenter_gradient_notif_order_timeline
+            )
+            else -> container?.background = null
+        }
+    }
+
     private fun bindTrackHistory(element: NotificationUiModel) {
         historyAdapter.updateHistories(element)
     }
@@ -146,6 +156,7 @@ class WidgetNotificationViewHolder constructor(
             bindProgressIndicatorVisibility(element)
             bindHistoryViewTextState(element)
             bindHistoryViewIconState(element)
+            bindContainer(element)
             trackWhenExpanded(element)
         }
     }
