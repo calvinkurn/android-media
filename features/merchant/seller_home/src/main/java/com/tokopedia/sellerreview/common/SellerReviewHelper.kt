@@ -12,7 +12,6 @@ import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
@@ -35,7 +34,6 @@ class SellerReviewHelper @Inject constructor(
 ) {
 
     companion object {
-        private const val QUOTA_CHECK_DELAY = 1000L
         private const val POPUP_DELAY = 500L
         private const val SELLER_APP_ON_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.tokopedia.sellerapp"
         private const val MIN_STARS_TO_RATE_ON_PLAYSTORE = 4
@@ -55,7 +53,6 @@ class SellerReviewHelper @Inject constructor(
         if (!isEnabled || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
         try {
-            delay(QUOTA_CHECK_DELAY)
             val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_ADDED_PRODUCT), false)
             val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_POSTED_FEED), false)
             val hasReplied5Chats = cacheHandler.getStringSet(getUniqueKey(Const.SharedPrefKey.KEY_CHATS_REPLIED_TO), emptySet()).size >= 5
@@ -99,7 +96,9 @@ class SellerReviewHelper @Inject constructor(
             setOnRatingSubmitted(context, fm, it)
         }
 
-        showBottomSheet(fm, ratingBottomSheet)
+        handler.postDelayed({
+            showBottomSheet(fm, ratingBottomSheet)
+        }, POPUP_DELAY)
     }
 
     private fun setOnRatingSubmitted(context: Context, fm: FragmentManager, rating: Int) {
