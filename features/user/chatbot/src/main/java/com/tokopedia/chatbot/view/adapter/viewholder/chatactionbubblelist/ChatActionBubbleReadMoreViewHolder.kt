@@ -12,9 +12,9 @@ class ChatActionBubbleReadMoreViewHolder(itemView: View) : BaseChatActionBubbleV
 
     override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
         if (element.text ==  "Selngkapnya"){
-            arrowUpDown.setImageResource(R.drawable.ic_chevron_down)
+            arrowUpDown.setImageResource(com.tokopedia.design.R.drawable.ic_arrow_down)
         }else{
-            arrowUpDown.setImageResource(R.drawable.ic_chevron_up)
+            arrowUpDown.setImageResource(com.tokopedia.abstraction.R.drawable.ic_arrow_up)
         }
         chatActionMessage.text = element.text
         itemView.setOnClickListener { onSelect.invoke(element.bubbleType)  }

@@ -48,7 +48,6 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
             data.add(ChatActionBubbleViewModel("Sembunyikan", bubbleType = 1))
         } else {
             data.clear()
-//            val list = listOf<ChatActionBubbleViewModel>(dataPool.first(), ChatActionBubbleViewModel(text = "Selngkapnya", bubbleType = 1))
             data.addAll(getFirstFive(dataPool))
             data.add(ChatActionBubbleViewModel(text = "Selngkapnya", bubbleType = 1))
         }
