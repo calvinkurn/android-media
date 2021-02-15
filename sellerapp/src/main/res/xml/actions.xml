@@ -12,4 +12,9 @@
             fulfillmentMode="actions.fulfillment.DEEPLINK"
             urlTemplate="tokopedia-android-internal://sellerapp/sellerhome-som-allorder"/>
     </action>
+    <action intentName="actions.intent.GET_THING">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.DEEPLINK"
+            urlTemplate="sellerapp://seller-search"/>
+    </action>
 </actions>
