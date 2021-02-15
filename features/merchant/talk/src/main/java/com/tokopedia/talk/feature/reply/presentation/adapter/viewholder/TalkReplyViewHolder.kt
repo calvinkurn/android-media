@@ -36,7 +36,6 @@ class TalkReplyViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_talk_reply
         const val IN_VIEWHOLDER = true
-        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
@@ -219,8 +218,7 @@ class TalkReplyViewHolder(view: View,
 
     private fun showSmartReplyLabel(isAutoReplied: Boolean) {
         itemView.replySmartReplyLabel.apply {
-            unlockFeature = UNLOCK_UNIFY_LABEL
-            fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
             showWithCondition(isAutoReplied)
         }
