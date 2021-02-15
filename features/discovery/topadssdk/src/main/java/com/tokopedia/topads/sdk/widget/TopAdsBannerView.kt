@@ -24,7 +24,10 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
@@ -35,6 +38,7 @@ import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
@@ -58,24 +62,28 @@ import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.shop_name
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.apache.commons.text.StringEscapeUtils
-import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by errysuprayogi on 12/28/17.
  */
 
-class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
+private const val NO_TEMPLATE = 0
+private const val SHOP_TEMPLATE = 1
+private const val DIGITAL_TEMPLATE = 2
+private const val LAYOUT_2 = 2
+
+class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
     private var adsListener: TopAdsListener? = null
     private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
     private var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
     private var bannerAdsAdapter: BannerAdsAdapter? = null
-    private val NO_TEMPLATE = 0
-    private val SHOP_TEMPLATE = 1
-    private val DIGITAL_TEMPLATE = 2
-    private val LAYOUT_2 = 2
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
 
@@ -150,11 +158,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 var shop_badge = findViewById<ImageView>(R.id.shop_badge)
                 shop_badge?.let {
-                    if (cpmData?.cpm?.badges!!.size > 0) {
-                        shop_badge.visibility = View.VISIBLE
+                    if (cpmData?.cpm?.badges?.size ?: 0 > 0) {
+                        shop_badge.show()
                         Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
                     } else {
-                        shop_badge.visibility = View.GONE
+                        shop_badge.hide()
                     }
                 }
                 shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
@@ -163,7 +171,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     bindFavorite(cpmData.cpm.cpmShop.isFollowed)
                     btnFollow.setOnClickListener {
                         cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1) }
-                        if(!cpmData.cpm.cpmShop.isFollowed) {
+                        if (!cpmData.cpm.cpmShop.isFollowed) {
                             ImpresionTask(className).execute(cpmData.adClickUrl)
                         }
                     }
@@ -198,22 +206,68 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 val items = ArrayList<Item<*>>()
                 items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
-                if (cpmData?.cpm?.cpmShop?.products?.isNotEmpty() == true) {
-                    for (i in 0 until cpmData.cpm.cpmShop.products.size) {
+                if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
+                    val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
+                    setRecyclerViewSize(productCardModelList)
+                    for (i in 0 until productCardModelList.size) {
                         if (i < 3) {
-                            items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
-                                    appLink, adsClickUrl))
+                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i],
+                                    appLink, cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
                         }
                     }
-                    if (cpmData.cpm.cpmShop.products.size < 3) {
+                    if (productCardModelList.size < 3) {
                         items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
                     }
                 } else {
-                    repeat(3) {items.add(BannerProductShimmerViewModel())}
+                    repeat(3) { items.add(BannerProductShimmerViewModel()) }
                 }
-                bannerAdsAdapter!!.setList(items)
+                bannerAdsAdapter?.setList(items)
             }
         }
+    }
+
+    private fun setRecyclerViewSize(productCardModelList: java.util.ArrayList<ProductCardModel>) {
+        findViewById<RecyclerView>(R.id.list)?.let { recyclerView ->
+            launchCatchError(
+                    block = {
+                        recyclerView.setHasFixedSize(true)
+                        recyclerView.setHeightBasedOnProductCardMaxHeight(productCardModelList)
+                    },
+                    onError = {
+                        it.printStackTrace()
+                    }
+            )
+        }
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(productCardModelList: List<ProductCardModel>) {
+        val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.topads_sdk_headline_ad_width)
+        val maxHeightForGridView = productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
+        val layoutParams = this.layoutParams
+        layoutParams?.height = maxHeightForGridView
+        this.layoutParams = layoutParams
+    }
+
+    private fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
+        return ArrayList<ProductCardModel>().apply {
+            products.map {
+                add(getProductCardViewModel(it))
+            }
+        }
+    }
+
+    private fun getProductCardViewModel(product: Product): ProductCardModel {
+        return ProductCardModel(productImageUrl = product.imageProduct.imageUrl,
+                productName = product.name, discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+                slashedPrice = product.campaign.originalPrice, formattedPrice = product.priceFormat,
+                reviewCount = product.countReviewFormat.toIntOrZero(), ratingCount = product.productRating,
+                ratingString = product.productRatingFormat, countSoldRating = product.headlineProductRatingAverage,
+                freeOngkir = ProductCardModel.FreeOngkir(product.freeOngkir.isActive, product.freeOngkir.imageUrl),
+                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                    product.labelGroupList.map {
+                        add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                    }
+                })
     }
 
     private fun bindFavorite(isFollowed: Boolean) {
@@ -230,7 +284,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
-        val linearLayoutMerchantVoucher = findViewById<LinearLayout?>(R.id.linearLayoutMerchantVoucher) ?: return
+        val linearLayoutMerchantVoucher = findViewById<LinearLayout?>(R.id.linearLayoutMerchantVoucher)
+                ?: return
         val merchantVouchers = cpmData?.cpm?.cpmShop?.merchantVouchers ?: return
 
         linearLayoutMerchantVoucher.removeAllViews()
@@ -484,5 +539,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             str.setSpan(TypefaceSpan("sans-serif"), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main
 
 }
