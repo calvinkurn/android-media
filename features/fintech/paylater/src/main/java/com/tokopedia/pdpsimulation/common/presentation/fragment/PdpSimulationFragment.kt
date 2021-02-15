@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.*
@@ -30,6 +31,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFr
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.simulation.PayLaterSimulationFragment
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
@@ -42,6 +44,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
+    @Inject
+    lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
+
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
@@ -53,7 +58,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
-        BottomSheetNavigator(childFragmentManager)
+        BottomSheetNavigator(childFragmentManager, pdpSimulationAnalytics)
     }
 
     private val productPrice: Int by lazy {
@@ -129,6 +134,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             onRegisterWidgetClicked()
         }
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
+            pdpSimulationAnalytics.get().sendTabChangeEvent(PayLater, tab.getCustomText())
             handleRegisterWidgetVisibility(tab.position)
         }
         payLaterViewPager.onPageSelected { position ->

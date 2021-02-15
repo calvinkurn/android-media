@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
@@ -21,9 +22,12 @@ class PayLaterViewModel @Inject constructor(
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    val payLaterActivityResultLiveData = MutableLiveData<Result<PayLaterProductData>>()
-    val payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
-    val payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
+    private val _payLaterActivityResultLiveData = MutableLiveData<Result<PayLaterProductData>>()
+    val payLaterActivityResultLiveData: LiveData<Result<PayLaterProductData>> = _payLaterActivityResultLiveData
+    private val _payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
+    val payLaterApplicationStatusResultLiveData: LiveData<Result<UserCreditApplicationStatus>> = _payLaterApplicationStatusResultLiveData
+    private val _payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
+    val payLaterSimulationResultLiveData: LiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>> = _payLaterSimulationResultLiveData
     var isPayLaterProductActive = false
 
     fun getPayLaterSimulationData(amount: Int) {
@@ -57,7 +61,7 @@ class PayLaterViewModel @Inject constructor(
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         payLaterTenureMapperUseCase.mapTenureToSimulation(payLaterGetSimulationResponse, onSuccess = {
             when (it) {
-                is StatusSuccess -> payLaterSimulationResultLiveData.value = Success(it.data)
+                is StatusSuccess -> _payLaterSimulationResultLiveData.value = Success(it.data)
                 StatusPayLaterNotAvailable -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
                 StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
             }
@@ -67,7 +71,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onPayLaterSimulationDataError(throwable: Throwable) {
-        payLaterSimulationResultLiveData.value = Fail(throwable)
+        _payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
     private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
@@ -75,7 +79,7 @@ class PayLaterViewModel @Inject constructor(
             when (it) {
                 is StatusAppSuccess -> {
                     isPayLaterProductActive = it.isPayLaterActive
-                    payLaterApplicationStatusResultLiveData.value = Success(it.userCreditApplicationStatus)
+                    _payLaterApplicationStatusResultLiveData.value = Success(it.userCreditApplicationStatus)
                 }
                 StatusFail -> onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
             }
@@ -85,15 +89,15 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onPayLaterApplicationStatusError(throwable: Throwable) {
-        payLaterApplicationStatusResultLiveData.value = Fail(throwable)
+        _payLaterApplicationStatusResultLiveData.value = Fail(throwable)
     }
 
     private fun onPayLaterDataSuccess(productDataList: PayLaterProductData) {
-        payLaterActivityResultLiveData.value = Success(productDataList)
+        _payLaterActivityResultLiveData.value = Success(productDataList)
     }
 
     private fun onPayLaterDataError(throwable: Throwable) {
-        payLaterActivityResultLiveData.value = Fail(throwable)
+        _payLaterActivityResultLiveData.value = Fail(throwable)
     }
 
     fun getPayLaterOptions(): ArrayList<PayLaterItemProductData> {

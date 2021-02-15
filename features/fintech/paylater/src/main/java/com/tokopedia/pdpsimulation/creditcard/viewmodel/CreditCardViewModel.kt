@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.creditcard.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
@@ -23,9 +24,12 @@ class CreditCardViewModel @Inject constructor(
         private val creditCardSimulationMapperUseCase: CreditCardSimulationMapperUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
-    val creditCardSimulationResultLiveData = MutableLiveData<Result<CreditCardSimulationResult>>()
-    val creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
-    val creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
+    private val _creditCardSimulationResultLiveData = MutableLiveData<Result<CreditCardSimulationResult>>()
+    val creditCardSimulationResultLiveData : LiveData<Result<CreditCardSimulationResult>> = _creditCardSimulationResultLiveData
+    private val _creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
+    val creditCardPdpMetaInfoLiveData : LiveData<Result<CreditCardPdpMetaData>> = _creditCardPdpMetaInfoLiveData
+    private val _creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
+    val creditCardBankResultLiveData : LiveData<Result<ArrayList<BankCardListItem>>> = _creditCardBankResultLiveData
 
     fun getCreditCardSimulationData(amount: Float) {
         creditCardSimulationUseCase.cancelJobs()
@@ -59,7 +63,7 @@ class CreditCardViewModel @Inject constructor(
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
         creditCardSimulationMapperUseCase.parseSimulationData(pdpCreditCardSimulationData, onSuccess = {
             when (it) {
-                is StatusApiSuccess -> creditCardSimulationResultLiveData.value = Success(it.data)
+                is StatusApiSuccess -> _creditCardSimulationResultLiveData.value = Success(it.data)
                 StatusApiFail -> onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
                 StatusCCNotAvailable -> onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
             }
@@ -69,27 +73,27 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
-        creditCardSimulationResultLiveData.value = Fail(throwable)
+        _creditCardSimulationResultLiveData.value = Fail(throwable)
     }
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
         creditCardTncMapperUseCase.parseTncData(creditCardPdpMetaData, onSuccess = {
-            creditCardPdpMetaInfoLiveData.value = Success(it)
+            _creditCardPdpMetaInfoLiveData.value = Success(it)
         }, onError = {
-            creditCardPdpMetaInfoLiveData.value = Fail(it)
+            _creditCardPdpMetaInfoLiveData.value = Fail(it)
         })
     }
 
     private fun onPdpInfoMetaDataError(throwable: Throwable) {
-        creditCardPdpMetaInfoLiveData.value = Fail(throwable)
+        _creditCardPdpMetaInfoLiveData.value = Fail(throwable)
     }
 
     private fun onBankCardListDataSuccess(creditCardBankList: ArrayList<BankCardListItem>) {
-        creditCardBankResultLiveData.value = Success(creditCardBankList)
+        _creditCardBankResultLiveData.value = Success(creditCardBankList)
     }
 
     private fun onBankCardListDataError(throwable: Throwable) {
-        creditCardBankResultLiveData.value = Fail(throwable)
+        _creditCardBankResultLiveData.value = Fail(throwable)
     }
 
     fun getRedirectionUrl(): String {

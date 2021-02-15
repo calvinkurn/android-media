@@ -4,7 +4,7 @@ import com.tokopedia.url.TokopediaUrl
 
 const val PRODUCT_PRICE = "price"
 val INTERNAL_URL = "${TokopediaUrl.getInstance().WEB}kartu-kredit/"
-
+const val PAYLATER_PRODUCT = "payLaterProduct"
 
 const val DATA_TYPE_BULLET = "bullet"
 const val DATA_TYPE_MIN_TRANSACTION = "table_min_transaction"
