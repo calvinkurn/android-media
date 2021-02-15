@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -55,9 +56,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -69,7 +68,8 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_START_DAYS = 6L
+        private const val DEFAULT_START_DATE = 6L
+        private const val DEFAULT_END_DATE = 1L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
@@ -94,11 +94,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
-    private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
+    private val mLayoutManager by lazy { StatisticLayoutManager(context, spanCount = 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private val dateFilterBottomSheet by lazy { DateFilterBottomSheet.newInstance() }
-    private val defaultStartDate by lazy { Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS)) }
-    private val defaultEndDate by lazy { Date() }
+    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
+    private val defaultStartDate by lazy {
+        val default = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE))
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate ?: default
+    }
+    private val defaultEndDate by lazy {
+        val default = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate ?: default
+    }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
     private var statisticPage: StatisticPageUiModel? = null
@@ -106,8 +112,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
 
-    private val job = Job()
-    private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private var isPltMonitoringCompleted = false
     private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
     private var performanceMonitoringLineGraphWidget: PerformanceMonitoring? = null
@@ -122,7 +126,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
         statisticPage?.let { page ->
-            coroutineScope.launch {
+            lifecycleScope.launch(Dispatchers.Unconfined) {
                 startLayoutNetworkPerformanceMonitoring()
                 mViewModel.getWidgetLayout(page.pageSource)
             }
@@ -169,6 +173,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        initDateFilterBottomSheet()
+
         if (!getRegularMerchantStatus()) {
             inflater.inflate(R.menu.menu_stc_action_calendar, menu)
         }
@@ -330,7 +336,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultRange() = view?.run {
-        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS.plus(1))
+        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DATE)
         val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
         val subTitle = "$headerSubTitle ($startEndDateFmt)"
 
@@ -438,13 +444,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet
-                .setFragmentManager(childFragmentManager)
-                .setOnApplyChanges {
-                    setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-                    applyDateRange(it)
-                }
-                .show()
+        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
+            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+            applyDateRange(it)
+        }?.show()
     }
 
     private fun applyDateRange(item: DateFilterItem) {
@@ -468,7 +471,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun requestVisibleWidgetsData() {
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        coroutineScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Unconfined) {
             val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
             adapter.data.forEachIndexed { index, widget ->
                 if (index in firstVisible..lastVisible && !widget.isLoaded) {
@@ -730,6 +733,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {
         val tickerData = TickerDataUiModel(tickers = emptyList(), dataKey = TICKER_NAME)
         return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
+    }
+
+    private fun initDateFilterBottomSheet() {
+        if (dateFilterBottomSheet == null) {
+            val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
+            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters)
+        }
     }
 
     private fun startLayoutNetworkPerformanceMonitoring() {

@@ -12,7 +12,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceList
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
-import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -80,7 +80,7 @@ class StatisticActivity : BaseActivity(), FragmentListener, StatisticPerformance
     }
 
     private fun getStatisticPages(): List<StatisticPageUiModel> {
-        return listOf(Const.StatisticPage.getShopStatistic(this), Const.StatisticPage.getBuyerStatistic(this))
+        return listOf(StatisticPageHelper.getShopStatistic(this), StatisticPageHelper.getBuyerStatistic(this))
     }
 
     private fun setupView() {
