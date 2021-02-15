@@ -45,8 +45,4 @@ class LoginUseCaseModule {
         return DynamicBannerUseCase(graphqlUseCase)
     }
 
-    @Provides
-    fun provideSubmitDVTokenUseCase(graphqlUseCase: GraphqlUseCase<Any>): SubmitDVTokenUseCase {
-        return SubmitDVTokenUseCase(graphqlUseCase as GraphqlUseCase<VisorResponse>)
-    }
 }
