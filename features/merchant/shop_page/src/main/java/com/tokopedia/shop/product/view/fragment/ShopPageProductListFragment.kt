@@ -978,18 +978,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         loadInitialData()
     }
 
-    override fun onResume() {
-        loadInitialDataAfterOnViewCreated()
-        super.onResume()
-    }
-
-    private fun loadInitialDataAfterOnViewCreated() {
-        if (isOnViewCreated) {
-            loadInitialData()
-            isOnViewCreated = false
-        }
-    }
-
     private fun getArgumentsData() {
         arguments?.let {
             shopId = it.getString(KEY_SHOP_ID, "")
