@@ -6,25 +6,23 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class HomeRevampUseCase @Inject constructor(
         private val homeRepository: HomeRevampRepository,
         private val homeDataMapper: HomeDataMapper
 ) {
-    fun getHomeData(): Flow<HomeDataModel?> = flow {
+    fun getHomeData(): Flow<HomeDataModel?> {
         var firstTimeDataHasBeenConsumed = false
-        homeRepository.getHomeData().collect { data->
+        return homeRepository.getHomeData().map { data ->
             if (!firstTimeDataHasBeenConsumed) {
-                //first time observe, get latest data from cache
-                emit(homeDataMapper.mapToHomeRevampViewModel(data, true))
                 //fetch new data
                 firstTimeDataHasBeenConsumed = true
+                homeDataMapper.mapToHomeRevampViewModel(data, true)
             }
             //not first time, emit real data from network
-            else emit(homeDataMapper.mapToHomeRevampViewModel(data, false))
+            else homeDataMapper.mapToHomeRevampViewModel(data, false)
         }
     }
 
