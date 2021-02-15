@@ -31,7 +31,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/shipping_editor_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
 
                     <com.tokopedia.unifycomponents.ticker.Ticker
                         android:id="@+id/ticker_shipper_info"
@@ -211,6 +212,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:text="Simpan"
+                android:visibility="gone"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 

@@ -10,6 +10,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -23,9 +24,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.core.common.ui.MaintenancePage.createIntent
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.ui.EditShippingActivity
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.*
 import com.tokopedia.editshipping.util.EditShippingConstant
@@ -114,10 +117,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkWhitelistedUser()
         initViews()
         initAdapter()
         initViewModel()
-        fetchData()
+    }
+
+    private fun checkWhitelistedUser() {
+        viewModel.getWhitelistData(userSession?.shopId.toInt())
     }
 
     private fun initViews() {
@@ -179,6 +186,32 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun initViewModel() {
+        viewModel.shopWhitelist.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    if (it.data.data.eligibilityState == 1) {
+                        swipeRefreshLayout?.isRefreshing = false
+                        fetchData()
+                    } else {
+                        activity?.finish()
+                        val intent = context?.let { context -> EditShippingActivity.createIntent(context) }
+                        startActivityForResult(intent, 1998)
+                    }
+                }
+
+                is ShippingEditorState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
+                }
+
+                else -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        })
+
         viewModel.shipperList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {

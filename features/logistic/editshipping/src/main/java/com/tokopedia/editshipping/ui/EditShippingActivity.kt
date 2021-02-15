@@ -1,5 +1,7 @@
 package com.tokopedia.editshipping.ui
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.annotation.Nullable
@@ -35,6 +37,11 @@ class EditShippingActivity : BaseSimpleActivity() {
 
     override fun getToolbarResourceID(): Int {
         return R.id.shipping_shop_editor_toolbar
+    }
+
+    companion object {
+        @JvmStatic
+        fun createIntent(context: Context) = Intent(context, EditShippingActivity::class.java)
     }
 
 }
