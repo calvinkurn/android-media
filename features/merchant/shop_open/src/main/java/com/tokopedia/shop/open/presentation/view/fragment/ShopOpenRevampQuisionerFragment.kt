@@ -9,9 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
@@ -51,8 +49,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
-import java.net.URLEncoder
 import javax.inject.Inject
 
 class ShopOpenRevampQuisionerFragment :
@@ -63,8 +59,6 @@ class ShopOpenRevampQuisionerFragment :
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
     private lateinit var btnNext: UnifyButton
-    private lateinit var btnBack: ImageView
-    private lateinit var btnSkip: TextView
     private val questionsAndAnswersId = mutableMapOf<Int, MutableList<Int>>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var recyclerView: RecyclerView? = null
@@ -73,8 +67,8 @@ class ShopOpenRevampQuisionerFragment :
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isNeedLocation = false
+    private var header: HeaderUnify? = null
     private lateinit var loading: LoaderUnify
-    private lateinit var toolbar: Toolbar
 
     private var shopId = 0
     private var postCode = ""
@@ -104,11 +98,8 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_quisioner, container, false)
-        toolbar = view.findViewById(R.id.toolbar)
         loading = view.findViewById(R.id.loading)
         btnNext = view.findViewById(R.id.next_button_quisioner_page)
-        btnBack = view.findViewById(R.id.btn_back_quisioner_page)
-        btnSkip = view.findViewById(R.id.btn_skip_quisioner_page)
         recyclerView = view.findViewById(R.id.recycler_view_questions_list)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = ShopOpenRevampQuisionerAdapter(this)
@@ -121,6 +112,7 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbarActions(view)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_SURVEY)
         setupPreconditions()
         showLoader()
@@ -128,16 +120,6 @@ class ShopOpenRevampQuisionerFragment :
         observeSurveyData()
         observeSendSurveyResult()
         observeSaveShipmentLocationData()
-
-        btnBack.setOnClickListener {
-            shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
-            fragmentNavigationInterface?.showExitDialog()
-        }
-
-        btnSkip.setOnClickListener {
-            shopOpenRevampTracking?.clickTextSkipFromSurveyPage()
-            gotoPickLocation()
-        }
 
         btnNext.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
@@ -200,6 +182,22 @@ class ShopOpenRevampQuisionerFragment :
     override fun onResume() {
         super.onResume()
         closeKeyboard()
+    }
+
+    private fun setupToolbarActions(view: View?) {
+        header = view?.findViewById<HeaderUnify>(R.id.toolbar_questioner)?.apply {
+            actionText = getString(R.string.button_label_skip)
+            transparentMode = fragmentNavigationInterface?.isDarkModeOn() == true
+            isShowShadow = false
+            setNavigationOnClickListener {
+                shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
+                fragmentNavigationInterface?.showExitDialog()
+            }
+            actionTextView?.setOnClickListener {
+                shopOpenRevampTracking?.clickTextSkipFromSurveyPage()
+                gotoPickLocation()
+            }
+        }
     }
 
     private fun observeSurveyData() {
@@ -339,14 +337,14 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun showLoader() {
-        toolbar.visibility =  View.INVISIBLE
+        header?.visibility =  View.INVISIBLE
         recyclerView?.visibility = View.INVISIBLE
         btnNext.visibility = View.INVISIBLE
         loading.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
-        toolbar.visibility =  View.VISIBLE
+        header?.visibility =  View.VISIBLE
         recyclerView?.visibility = View.VISIBLE
         btnNext.visibility = View.VISIBLE
         loading.visibility = View.INVISIBLE

@@ -19,6 +19,7 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
             IconList.ID_CART -> listIcon.add(IconList.CartIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_NOTIFICATION -> listIcon.add(IconList.NotificationIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_NAV_GLOBAL -> listIcon.add(IconList.NavGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_SEARCH -> listIcon.add(IconList.SearchGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
 
             //lottiee
             IconList.ID_NAV_LOTTIE_WISHLIST -> listIcon.add(IconList.LottieWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))

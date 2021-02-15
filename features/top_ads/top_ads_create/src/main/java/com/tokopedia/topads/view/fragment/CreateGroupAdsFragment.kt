@@ -14,12 +14,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
-import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
@@ -103,8 +105,17 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
         tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            val sheet = InfoSheetGroupList.newInstance()
-            sheet.show(fragmentManager!!, "")
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.gunakan_grup_iklan_untuk_mengiklankan_produkmu_sekaligus, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.isi_group_iklan_dengan_produk_dalam_kategori_serupa, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.produk_dalam_1_group_akan_menggunakan_kata_kunci_yang_sama, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.setTitle(getString(R.string.apa_itu_group_iklan))
+            tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_GRUP_IKLAN, "")
         }
         group_name_input?.textFieldInput?.addTextChangedListener(object : TextWatcher {
