@@ -19,7 +19,7 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -170,7 +170,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productWholesaleInfoMap?.run {
-                val minPrice = it.data.wholesale?.minBy { it.price.value }?.price?.value ?: return
+                val minPrice = it.data.wholesale?.minByOrNull { it.price.value }?.price?.value ?: return
                 subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
                         ?: ""
             }
@@ -379,7 +379,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel? {
         return listProductRecomMap?.find { data.pageName.contains(it.name) }?.apply {
             recomWidgetData = data
-            cardModel = mapToCardModel(data)
+            cardModel = data.recommendationItemList.toProductCardModels()
             filterData = mapToAnnotateChip(data)
         }
     }
@@ -392,7 +392,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         return listProductRecomMap?.find { it.recomWidgetData?.pageName == data.recomWidgetData?.pageName }?.apply {
             filterData = data.filterData
             recomWidgetData = data.recomWidgetData
-            cardModel = mapToCardModel(data.recomWidgetData)
+            cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels() ?: listOf()
         }
     }
 
@@ -436,41 +436,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             this.isProductWarehouse = isProductWarehouse
             this.isProductInCampaign = isProductInCampaign
             this.isOutOfStock = isOutOfStock
-        }
-    }
-
-    private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
-        if (data == null) return listOf()
-        return data.recommendationItemList.map {
-            ProductCardModel(
-                    slashedPrice = it.slashedPrice,
-                    productName = it.name,
-                    formattedPrice = it.price,
-                    productImageUrl = it.imageUrl,
-                    isTopAds = it.isTopAds,
-                    discountPercentage = it.discountPercentage,
-                    reviewCount = it.countReview,
-                    ratingCount = it.rating,
-                    countSoldRating = it.ratingAverage,
-                    shopLocation = it.location,
-                    isWishlistVisible = false,
-                    isWishlisted = it.isWishlist,
-                    shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it
-                                ?: "")
-                    },
-                    freeOngkir = ProductCardModel.FreeOngkir(
-                            isActive = it.isFreeOngkirActive,
-                            imageUrl = it.freeOngkirImageUrl
-                    ),
-                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
-                        ProductCardModel.LabelGroup(
-                                position = recommendationLabel.position,
-                                title = recommendationLabel.title,
-                                type = recommendationLabel.type
-                        )
-                    }
-            )
         }
     }
 

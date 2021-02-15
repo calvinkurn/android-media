@@ -2,14 +2,12 @@ package com.tokopedia.recommendation_widget_common.domain.coroutines
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-
 import javax.inject.Inject
 
 /**
@@ -26,8 +24,6 @@ constructor(private val graphqlRepository: GraphqlRepository)
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
         graphqlUseCase.setRequestParams(inputParameter.toGqlRequest())
         graphqlUseCase.setGraphqlQuery(GetRecommendationUseCaseRequest.widgetListQuery)
-        return RecommendationEntityMapper.mappingToRecommendationModel(
-                graphqlUseCase.executeOnBackground().productRecommendationWidget?.data?: listOf()
-        )
+        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
     }
 }

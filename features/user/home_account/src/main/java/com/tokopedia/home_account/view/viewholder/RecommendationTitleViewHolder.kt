@@ -6,7 +6,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.RecommendationTitleView
 import kotlinx.android.synthetic.main.home_account_item_recommendation_title.view.*
 
-class ReommendationTitleViewHolder (itemView: View): BaseViewHolder(itemView) {
+class RecommendationTitleViewHolder (itemView: View): BaseViewHolder(itemView) {
 
     fun bind(setting: RecommendationTitleView) {
         with(itemView) {

@@ -1,19 +1,16 @@
 package com.tokopedia.recommendation_widget_common.domain
 
 import android.text.TextUtils
-
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-
-import javax.inject.Inject
-
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * Created by devara fikry on 16/04/19.
@@ -31,11 +28,10 @@ constructor(
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map<List<RecommendationEntity.RecomendationData>> { graphqlResponse ->
+                .map { graphqlResponse ->
                     val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                    entity?.productRecommendationWidget?.data
+                    entity?.productRecommendationWidget?.data?.mappingToRecommendationModel()
                 }
-                .map(RecommendationEntityMapper())
     }
 
     fun getRecomParams(pageNumber: Int,
@@ -86,18 +82,18 @@ constructor(
     }
 
     companion object {
-        val USER_ID = "userID"
-        val X_SOURCE = "xSource"
-        val PAGE_NUMBER = "pageNumber"
-        val X_DEVICE = "xDevice"
-        val PAGE_NAME = "pageName"
-        val QUERY_PARAM = "queryParam"
-        val DEFAULT_VALUE_X_SOURCE = "recom_widget"
-        val DEFAULT_VALUE_X_DEVICE = "android"
-        val DEFAULT_PAGE_NAME = ""
-        val PRODUCT_IDS = "productIDs"
-        val OFFICIAL_STORE = "official-store"
-        val OS = "os"
-        val CATEGORY_IDS = "categoryIDs"
+        const val USER_ID = "userID"
+        const val X_SOURCE = "xSource"
+        const val PAGE_NUMBER = "pageNumber"
+        const val X_DEVICE = "xDevice"
+        const val PAGE_NAME = "pageName"
+        const val QUERY_PARAM = "queryParam"
+        const val DEFAULT_VALUE_X_SOURCE = "recom_widget"
+        const val DEFAULT_VALUE_X_DEVICE = "android"
+        const val DEFAULT_PAGE_NAME = ""
+        const val PRODUCT_IDS = "productIDs"
+        const val OFFICIAL_STORE = "official-store"
+        const val OS = "os"
+        const val CATEGORY_IDS = "categoryIDs"
     }
 }
