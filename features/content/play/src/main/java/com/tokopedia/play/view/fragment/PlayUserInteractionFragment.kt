@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
@@ -66,7 +66,6 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -77,8 +76,8 @@ import javax.inject.Inject
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val trackingQueue: TrackingQueue,
-        private val pipAnalytic: PlayPiPAnalytic
+        private val pipAnalytic: PlayPiPAnalytic,
+        private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -199,11 +198,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        analytic.getTrackingQueue().sendAll()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
-        PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
+        analytic.clickWatchMode()
         triggerImmersive(container.isFullSolid)
         bottomSheet.dismiss()
     }
@@ -271,11 +270,7 @@ class PlayUserInteractionFragment @Inject constructor(
         copyToClipboard(content)
         showLinkCopiedToaster()
 
-        PlayAnalytics.clickCopyLink(
-                channelId = channelId,
-                channelType = playViewModel.channelType,
-                userId = playViewModel.userId
-        )
+        analytic.clickCopyLink()
     }
 
     /**
@@ -304,7 +299,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onSendChatClicked(view: SendChatViewComponent, message: String) {
-        PlayAnalytics.clickSendChat(channelId)
+        analytic.clickSendChat()
         doSendChat(message)
     }
 
@@ -312,7 +307,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * QuickReply View Component Listener
      */
     override fun onQuickReplyClicked(view: QuickReplyViewComponent, replyString: String) {
-        PlayAnalytics.clickQuickReply(channelId)
+        analytic.clickQuickReply()
         doSendChat(replyString)
     }
 
@@ -320,7 +315,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * QuickReply View Component Listener
      */
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
-        PlayAnalytics.clickPinnedMessage(channelId, message, applink, playViewModel.channelType)
+        analytic.clickPinnedMessage(message, applink)
         openPageByApplink(applink)
 
         playViewModel.openPiPBrowsingPage()
@@ -334,11 +329,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * VideoSettings View Component Listener
      */
     override fun onEnterFullscreen(view: VideoSettingsViewComponent) {
-        PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
-                userId = playViewModel.userId,
-                channelId = channelId,
-                channelType = playViewModel.channelType
-        )
+        analytic.clickCtaFullScreenFromPortraitToLandscape()
         enterFullscreen()
     }
 
@@ -350,10 +341,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * ImmersiveBox View Component Listener
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
-        PlayAnalytics.clickWatchArea(
-                channelId = channelId,
-                userId = playViewModel.userId,
-                channelType = playViewModel.channelType,
+        analytic.clickWatchArea(
                 screenOrientation = orientation
         )
         triggerImmersive(currentAlpha == VISIBLE_ALPHA)
@@ -521,7 +509,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     (it.state is PlayViewerVideoState.Buffer && it.state.bufferSource == BufferSource.Broadcaster)) {
                 triggerImmersive(false)
             } else if (it.state == PlayViewerVideoState.Play) {
-                PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
+                analytic.clickPlayVideo()
             } else if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
@@ -791,7 +779,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.channelType)
+        analytic.clickFollowShop(partnerId.toString(), action.value)
         viewModel.doFollow(partnerId, action)
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
@@ -817,7 +805,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openShopPage(partnerId: Long) {
-        PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
+        analytic.clickShop(partnerId.toString())
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
 
         playViewModel.openPiPBrowsingPage()
@@ -844,7 +832,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun shouldOpenCartPage() {
-        PlayAnalytics.clickCartIcon(channelId, playViewModel.channelType)
+        analytic.clickCartIcon()
         viewModel.doInteractionEvent(InteractionEvent.CartPage)
     }
 
@@ -882,7 +870,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 shouldLike = shouldLike
         )
 
-        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
+        analytic.clickLike(shouldLike)
     }
 
     private fun openLoginPage() {
@@ -918,7 +906,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
-        PlayAnalytics.clickPinnedProduct(channelId)
+        analytic.clickPinnedProduct()
         playViewModel.onShowProductSheet(productSheetMaxHeight)
     }
 

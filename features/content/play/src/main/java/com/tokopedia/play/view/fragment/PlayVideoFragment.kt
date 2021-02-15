@@ -16,6 +16,7 @@ import com.tokopedia.floatingwindow.exception.FloatingWindowException
 import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
@@ -55,7 +56,8 @@ import javax.inject.Inject
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         dispatchers: CoroutineDispatcherProvider,
-        private val pipAnalytic: PlayPiPAnalytic
+        private val pipAnalytic: PlayPiPAnalytic,
+        private val analytic: PlayAnalytic
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -188,7 +190,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -235,7 +237,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
     }
 
     private fun initView(view: View) {
@@ -285,7 +287,7 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (!isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
+            if (!isYouTube) videoAnalyticHelper.onNewVideoState(it.state)
             if (playViewModel.videoPlayer.isYouTube) videoView.hide()
             else {
                 videoView.show()

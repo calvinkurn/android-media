@@ -13,14 +13,15 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
@@ -35,7 +36,8 @@ import javax.inject.Inject
  * Created by jegul on 28/04/20
  */
 class PlayYouTubeFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
@@ -94,7 +96,7 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -135,7 +137,7 @@ class PlayYouTubeFragment @Inject constructor(
      * Private methods
      */
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
     }
 
     private fun initView(view: View) {
@@ -155,7 +157,7 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun handleYouTubeVideoState(state: PlayViewerVideoState) {
-        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(state)
     }
 
     private fun setupObserve() {

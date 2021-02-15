@@ -54,6 +54,9 @@ class PlayParentViewModel constructor(
     val userId: String
         get() = userSession.userId
 
+    val sourceType: String
+        get() = handle[KEY_SOURCE_TYPE] ?: ""
+
     /**
      * LiveData
      */
@@ -70,7 +73,7 @@ class PlayParentViewModel constructor(
     private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
             channelId = mStartingChannelId ?: error("Channel ID must be provided"),
             sourceType = GetChannelDetailsWithRecomUseCase.SourceType.getBySource(
-                    sourceType = handle[KEY_SOURCE_TYPE] ?: "",
+                    sourceType = sourceType,
                     sourceId = handle[KEY_SOURCE_ID]
             )
     )
