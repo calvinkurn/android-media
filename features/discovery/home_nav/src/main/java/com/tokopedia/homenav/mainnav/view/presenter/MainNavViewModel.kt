@@ -556,6 +556,7 @@ class MainNavViewModel @Inject constructor(
                 } else {
                     accountAdminInfoUseCase.get().run {
                         isLocationAdmin = userSession.get().isLocationAdmin
+                        setStrategyCloudThenCache()
                         executeOnBackground()
                     }
                 }

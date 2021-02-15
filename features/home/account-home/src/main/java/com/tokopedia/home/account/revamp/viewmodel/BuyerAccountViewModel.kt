@@ -77,10 +77,11 @@ class BuyerAccountViewModel @Inject constructor (
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
             val (adminDataResponse, shopData) =
                     if (userSession.isShopOwner) {
-                        Pair(null, null)
+                        null to null
                     } else {
                         with(accountAdminInfoUseCase) {
                             isLocationAdmin = userSession.isLocationAdmin
+                            setStrategyCloudThenCache()
                             executeOnBackground()
                         }
                     }
