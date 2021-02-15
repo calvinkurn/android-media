@@ -552,9 +552,13 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateShipmentData(data: P2RatesEstimateData?) {
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirUrl: String) {
         updateData(ProductDetailConstant.SHIPMENT) {
-            shipmentData?.rates = data ?: P2RatesEstimateData(p2RatesError = listOf(P2RatesError(errorCode = ERROR_CODE_PRODUCT_ID_NOT_FOUND)))
+            shipmentData?.rates = data
+                    ?: P2RatesEstimateData(p2RatesError = listOf(P2RatesError(errorCode = ERROR_CODE_PRODUCT_ID_NOT_FOUND)))
+            shipmentData?.freeOngkirUrl = freeOngkirUrl
+            shipmentData?.isFullfillment = isFullfillment
+            shipmentData?.isCod = isCod
         }
     }
 

@@ -100,6 +100,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             		}
             		... on pdpDataProductContent {
                       name
+                      isCOD
                       price {
                         value
                       }
@@ -227,6 +228,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         optionID
                         productName
                         productURL
+                        isCOD
                         picture {
                           url
                           url200

@@ -1266,7 +1266,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
-        pdpUiUpdater?.updateShipmentData(viewModel.getP2RatesEstimateByProductId())
+        pdpUiUpdater?.updateShipmentData(
+                viewModel.getP2RatesEstimateByProductId(),
+                viewModel.getMultiOriginByProductId().isFulfillment,
+                viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
+                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
+        )
 
         /*
             If the p2 data is empty, dont update the button
@@ -1686,7 +1691,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         if (it.ratesEstimate.isEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.SHIPMENT)
         } else {
-            pdpUiUpdater?.updateShipmentData(viewModel.getP2RatesEstimateByProductId())
+            pdpUiUpdater?.updateShipmentData(
+                    viewModel.getP2RatesEstimateByProductId(),
+                    viewModel.getMultiOriginByProductId().isFulfillment,
+                    viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
+                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
+            )
         }
 
         if (it.upcomingCampaigns.values.isEmpty()) {

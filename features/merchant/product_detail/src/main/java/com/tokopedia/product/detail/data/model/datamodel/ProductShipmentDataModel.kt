@@ -11,7 +11,10 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductShipmentDataModel(
         val type: String = "",
         val name: String = "",
-        var rates: P2RatesEstimateData = P2RatesEstimateData()
+        var rates: P2RatesEstimateData = P2RatesEstimateData(),
+        var isFullfillment: Boolean = false,
+        var freeOngkirUrl: String = "",
+        var isCod: Boolean = false
 ) : DynamicPdpDataModel {
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
@@ -24,7 +27,10 @@ data class ProductShipmentDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductShipmentDataModel) {
-            rates == rates
+            rates == rates &&
+                    isFullfillment == newData.isFullfillment
+                    && isCod == newData.isCod
+                    && freeOngkirUrl == newData.freeOngkirUrl
         } else {
             false
         }
