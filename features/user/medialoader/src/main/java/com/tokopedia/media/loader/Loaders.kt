@@ -10,7 +10,6 @@ import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
-import com.tokopedia.media.loader.GlideBuilder.loadImage as glideLoadImage
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
@@ -58,7 +57,13 @@ fun ImageView?.clearImage() {
 internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValidContext()) {
         try {
-            glideLoadImage(source, this, properties)
+            GlideBuilder.loadImage(
+                    data = source,
+                    imageView = this,
+                    properties = properties.apply {
+                        useBlurHash(true)
+                    }
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }
