@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
@@ -52,19 +53,22 @@ object GlideBuilder {
 
             when {
                 data is String && !properties.isIcon -> {
+                    // url builder
+                    val source = Loader.urlBuilder(data)
+
                     /*
                     * get the hash of image blur (placeholder) from the URL, example:
                     * https://images.tokopedia.net/samples.png?b=abc123
                     * the hash of blur is abc123
                     * */
-                    val blurHash = data.toUri()?.getQueryParameter(PARAM_BLURHASH)
+                    val blurHash = source.toUri()?.getQueryParameter(PARAM_BLURHASH)
 
                     /*
                     * only track the performance monitoring for a new domain,
                     * which is already using CDN services, 'images.tokopedia.net'.
                     * */
-                    if (data.contains(CDN_IMAGE_URL)) {
-                        tracker = PerformanceTracker.preRender(data, context)
+                    if (source.contains(CDN_IMAGE_URL)) {
+                        tracker = PerformanceTracker.preRender(source, context)
                     }
 
                     builder.build(
@@ -73,7 +77,7 @@ object GlideBuilder {
                             properties = properties,
                             performanceMonitoring = tracker,
                             request = this
-                    ).load(data)
+                    ).load(source)
                 }
                 else -> {
                     builder.build(
