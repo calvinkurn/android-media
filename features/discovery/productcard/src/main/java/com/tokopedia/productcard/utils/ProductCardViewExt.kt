@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -21,12 +20,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.common.LoaderStateListener
-import com.tokopedia.media.loader.common.MediaDataSource
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.TopRightCrop
-import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -106,42 +102,35 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
-            error = R.drawable.placeholder_grey
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+            setErrorDrawable(R.drawable.placeholder_grey)
         }
     }
 }
 internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
-            error = R.drawable.placeholder_grey
-            loaderListener = object : LoaderStateListener {
-                override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                    state.invoke(true)
-                }
-
-                override fun failedLoad(error: MediaException?) {
-                    state.invoke(false)
-                }
-            }
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+            setErrorDrawable(R.drawable.placeholder_grey)
+            listener({ _, _ ->
+                state.invoke(true)
+            }, {
+                state.invoke(false)
+            })
         }
     }
 }
 internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
-            error = R.drawable.placeholder_grey
-            loaderListener = object : LoaderStateListener {
-                override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                    state.invoke(true)
-                }
-
-                override fun failedLoad(error: MediaException?) {
-                    state.invoke(false)
-                }
-            }
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+            setErrorDrawable(R.drawable.placeholder_grey)
+            setPlaceHolder(-1)
+            listener({ _, _ ->
+                state.invoke(true)
+            }, {
+                state.invoke(false)
+            })
         }
     }
 }
@@ -149,10 +138,10 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
 internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
-            error = R.drawable.placeholder_grey
-            transform = CenterCrop()
-            roundedRadius = getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat()
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+            setErrorDrawable(R.drawable.placeholder_grey)
+            transform(CenterCrop())
+            setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
         }
     }
 }
@@ -160,7 +149,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
 internal fun ImageView.loadIcon(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
         }
     }
 }
@@ -168,9 +157,9 @@ internal fun ImageView.loadIcon(url: String?) {
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
     if (url != null && url.isNotEmpty()) {
         loadImage(url) {
-            cacheStrategy = MediaCacheStrategy.RESOURCE
-            error = R.drawable.placeholder_grey
-            transform = TopRightCrop()
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+            setErrorDrawable(R.drawable.placeholder_grey)
+            transform(TopRightCrop())
         }
     }
 }

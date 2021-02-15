@@ -10,7 +10,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shop.R
 import com.tokopedia.shop.review.shop.view.uimodel.ImageUpload
 import java.io.File
@@ -64,7 +64,7 @@ class ImageUploadAdapter(var context: Context) : RecyclerView.Adapter<ImageUploa
     private fun bindImage(holder: ViewHolder, position: Int) {
         try {
             if (list[position].fileLoc == null) {
-                ImageHandler.loadImageRounded2(holder.image.context, holder.image, list[position].picSrc, convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat()))
+                holder.image.loadImageRounded(list[position].picSrc, convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat()))
             } else {
                 Glide.with(holder.image.context)
                         .asBitmap()
