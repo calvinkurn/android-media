@@ -26,6 +26,8 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
+    var isIcon: Boolean = false
+
     fun thumbnailUrl(url: String) = apply {
         this.thumbnailUrl = url
     }

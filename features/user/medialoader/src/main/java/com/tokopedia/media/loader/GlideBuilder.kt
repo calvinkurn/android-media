@@ -50,8 +50,8 @@ object GlideBuilder {
             * */
             automateScaleType(imageView, this)
 
-            when (data) {
-                is String -> {
+            when {
+                data is String && !properties.isIcon -> {
                     /*
                     * get the hash of image blur (placeholder) from the URL, example:
                     * https://images.tokopedia.net/samples.png?b=abc123

@@ -47,6 +47,10 @@ inline fun ImageView.loadImageRounded(
     call(url, Properties().apply(configuration))
 }
 
+fun ImageView.loadIcon(url: String?) = call(url, Properties().apply {
+    isIcon = true
+})
+
 fun ImageView?.clearImage() {
     if (this != null && context.isValidContext()) {
         GlideApp.with(this.context).clear(this)
