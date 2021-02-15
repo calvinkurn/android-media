@@ -16,7 +16,7 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
         private const val SOURCE = "\$source"
 
         val QUERY = """
-            query getAdminType($SOURCE: String) {
+            query getAdminType($SOURCE: String!) {
               getAdminType(source: $SOURCE) {
                 shopID
                 isMultiLocation
