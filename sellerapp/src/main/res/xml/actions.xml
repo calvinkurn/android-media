@@ -16,6 +16,15 @@
     <action intentName="actions.intent.GET_THING">
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="sellerapp://seller-search"/>
+            urlTemplate="sellerapp://seller-search?keyword={?keyword}">
+            <parameter-mapping
+                intentParameter="thing.name"
+                required="true"
+                urlParameter="keyword"/>
+        </fulfillment>
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.DEEPLINK"
+            urlTemplate="sellerapp://seller-search">
+        </fulfillment>
     </action>
 </actions>
