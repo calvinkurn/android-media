@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -68,6 +65,9 @@ class ShopPageViewModelTest {
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
 
     @RelaxedMockK
+    lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
+
+    @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
@@ -107,6 +107,7 @@ class ShopPageViewModelTest {
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 getShopReputationUseCase,
                 toggleFavouriteShopUseCase,
+                shopQuestGeneralTrackerUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
                 getShopProductListUseCase,

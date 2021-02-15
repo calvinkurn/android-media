@@ -111,7 +111,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -185,7 +184,7 @@ class ShopPageFragment :
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
-    var stickyLoginView: StickyLoginView? = null
+    private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
@@ -281,6 +280,7 @@ class ShopPageFragment :
         shopViewModel?.shopImagePath?.removeObservers(this)
         shopViewModel?.shopUnmoderateData?.removeObservers(this)
         shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
+        shopViewModel?.shopShareTracker?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -404,6 +404,27 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     onErrorGetShopPageHeaderContentData(result.throwable)
+                }
+            }
+        })
+
+        shopViewModel?.shopShareTracker?.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    if(!it.data.success) {
+                        ShopUtil.logTimberWarning(
+                                "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                                "shop_id='${shopId}';" +
+                                        "error_message='${it.data.message}';"
+                        )
+                    }
+                }
+                is Fail -> {
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${it.throwable.message}';"
+                    )
                 }
             }
         })
@@ -636,7 +657,7 @@ class ShopPageFragment :
             }
         })
 
-        stickyLoginView?.loadContent()
+        stickyLoginView?.hide()
     }
 
     private fun getInitialData() {
@@ -967,6 +988,8 @@ class ShopPageFragment :
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
+
+        stickyLoginView?.loadContent()
     }
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
@@ -1464,9 +1487,27 @@ class ShopPageFragment :
                                 })
                             }
                         }
-                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
-                        shopShareBottomSheet?.dismiss()
 
+                        // send gql tracker
+                        shopShare.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shopShare) {
+                                        is ShopShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShopShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
+
+                        // send gtm tracker
+                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
+
+                        shopShareBottomSheet?.dismiss()
                     }
 
                     override fun onError(linkerError: LinkerError?) {}

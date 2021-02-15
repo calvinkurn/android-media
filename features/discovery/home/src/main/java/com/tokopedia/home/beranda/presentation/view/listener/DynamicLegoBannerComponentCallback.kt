@@ -5,6 +5,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -69,7 +70,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerSixImageImpression(
-                        channelModel, parentPosition, true
+                        channelModel, parentPosition, isToIris = true
                 ) as HashMap<String, Any>
         )
     }

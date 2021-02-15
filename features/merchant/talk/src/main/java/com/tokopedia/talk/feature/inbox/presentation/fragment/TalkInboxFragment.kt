@@ -65,6 +65,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     companion object {
         const val TAB_PARAM = "tab_param"
+        const val FILTER_PARAM = "filter"
+        const val FILTER_UNREAD = "unread"
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
@@ -248,6 +250,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         initSortFilter()
         initErrorPage()
         initSortFilter()
+        selectUnreadFilterFromCardSA()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -433,20 +436,37 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
+    private fun selectUnreadFilterFromCardSA() {
+        if(GlobalConfig.isSellerApp()) {
+            val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
+            if (filter == FILTER_UNREAD) {
+                val indexReadFilter = talkInboxSortFilter.chipItems.indexOfFirst {  it.title == getString(R.string.inbox_read) }
+                val indexUnreadFilter = talkInboxSortFilter.chipItems.indexOfFirst { it.title == getString(R.string.inbox_unread) }
+                val readFilter = talkInboxSortFilter.chipItems.getOrNull(indexReadFilter)
+                val unreadFilter = talkInboxSortFilter.chipItems.getOrNull(indexUnreadFilter)
+                unreadFilter?.toggle()
+                selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
+                if(unreadFilter?.type == ChipsUnify.TYPE_SELECTED) {
+                    readFilter?.type = ChipsUnify.TYPE_NORMAL
+                }
+            }
+        }
+    }
+
     private fun getFilterList(): ArrayList<SortFilterItem> {
         val readFilter = SortFilterItem(getString(R.string.inbox_read))
         val unreadFilter = SortFilterItem(getString(R.string.inbox_unread))
         readFilter.listener = {
             readFilter.toggle()
             selectFilter(TalkInboxFilter.TalkInboxReadFilter())
-            if (readFilter.type == ChipsUnify.TYPE_SELECTED) {
+            if(readFilter.type == ChipsUnify.TYPE_SELECTED) {
                 unreadFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
         unreadFilter.listener = {
             unreadFilter.toggle()
             selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
-            if (unreadFilter.type == ChipsUnify.TYPE_SELECTED) {
+            if(unreadFilter.type == ChipsUnify.TYPE_SELECTED) {
                 readFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
