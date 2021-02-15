@@ -134,7 +134,7 @@ fun clickOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
     if(reminderModel.source.equals(ReminderEnum.SALAM)) {
         clickReminderWidgetSalam()
     } else {
-        clickReminderWidgetRecharge()
+        clickReminderWidgetRecharge(itemPosition)
     }
 }
 
@@ -288,10 +288,14 @@ private fun clickReminderWidgetSalam(){
     }
 }
 
-private fun clickReminderWidgetRecharge(){
+private fun clickReminderWidgetRecharge(i:Int){
     try {
-        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
-                ViewMatchers.withText("Bayar Sekarang"))).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i-1))
+        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i))
+        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
+                ViewMatchers.withText("Bayar Sekarang")),0)).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
