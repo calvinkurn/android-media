@@ -119,5 +119,5 @@ data class Product(
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
-        val freeShippingExtra: FreeShippingExtra = FreeShippingExtra()
+        val freeShippingExtra: FreeShipping = FreeShipping()
 )
