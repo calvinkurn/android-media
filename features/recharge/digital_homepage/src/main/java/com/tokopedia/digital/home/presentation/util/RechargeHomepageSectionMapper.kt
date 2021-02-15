@@ -79,6 +79,10 @@ object RechargeHomepageSectionMapper {
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it), true)
                         } else null
@@ -94,6 +98,10 @@ object RechargeHomepageSectionMapper {
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageProductBannerModel(it, mapSectionToChannel(it), true)
                         } else null

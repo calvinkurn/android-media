@@ -230,11 +230,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: Int, isCountDownBanner: Boolean) {
+    override fun loadRechargeSectionData(sectionID: Int, isLoadFromCloud: Boolean) {
         if (sectionID >= 0) {
             viewModel.getRechargeHomepageSections(
                     viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), enablePersonalize),
-                    isCountDownBanner
+                    isLoadFromCloud
             )
         }
     }
