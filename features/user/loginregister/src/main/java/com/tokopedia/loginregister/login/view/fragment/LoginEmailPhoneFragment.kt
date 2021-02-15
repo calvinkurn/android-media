@@ -46,8 +46,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CR
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.devicefingerprint.crysp.CryspInstance
-import com.tokopedia.devicefingerprint.crysp.workmanager.CryspWorker
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
@@ -314,7 +312,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
-        CryspInstance.init(requireActivity())
         VisorFingerprintInstance.initToken(requireActivity(), null, null)
     }
 
@@ -750,7 +747,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             setTrackingUserId(userSession.userId)
             setFCM()
             SubmitDeviceWorker.scheduleWorker(this, true)
-            CryspWorker.scheduleWorker(requireContext().applicationContext)
             DataVisorWorker.scheduleWorker(requireContext())
         }
 

@@ -1,6 +1,8 @@
 package com.tokopedia.devicefingerprint.datavisor.usecase
 
 import com.tokopedia.devicefingerprint.datavisor.pojo.VisorResponse
+import com.tokopedia.devicefingerprint.submitdevice.payload.InsertDeviceInfoPayload
+import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -16,35 +18,30 @@ class SubmitDVTokenUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(VisorResponse::class.java)
     }
     companion object {
-
-        const val PARAM_TYPE = "type"
-        const val PARAM_CONTENT = "content"
+        const val PARAM_INPUT = "input"
+        private val query = """
+            mutation subDvcIntlEvent(${'$'}input: SubUDInfRequest!){
+              subUDinf(input: ${'$'}input) {
+                is_error
+              }
+            }
+        """.trimIndent()
     }
 
     private var params: RequestParams = RequestParams.create()
-
-    //region query
-    private val query by lazy {
-        val type = "\$type"
-        val content = "\$content"
-
-        """
-           mutation VisorMutation($type: String!, $content: String!){
-              getDeviceDvDetail(input: {
-                type: $type,
-                content: $content}) {
-                   status
-                   message
-              }
-        }""".trimIndent()
-    }
-    //endregion
 
     override suspend fun executeOnBackground(): VisorResponse {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
+    }
+
+    fun setParams(payload: InsertDeviceInfoPayload) {
+        val params: Map<String, Any?> = mutableMapOf(
+                SubmitDeviceInfoUseCase.PARAM_INPUT to payload
+        )
+        setRequestParams(params)
     }
 
     fun setParams(type: String = "android", token: String) {

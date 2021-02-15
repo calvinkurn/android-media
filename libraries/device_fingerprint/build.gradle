@@ -22,7 +22,6 @@ dependencies {
     implementation files('libs/java_util.jar')
     implementation files('libs/tkpd_util_obs.jar')
     implementation files('libs/vangogh-release.aar')
-    implementation files('libs/CryspSDK.aar')
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
