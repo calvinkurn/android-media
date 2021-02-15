@@ -12,6 +12,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -19,6 +22,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
     var addressList = mutableListOf<RecipientAddressModel>()
     var token: Token? = null
+    private var selectedPos = RecyclerView.NO_POSITION
 
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
@@ -34,7 +38,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     override fun onBindViewHolder(holder: ManageAddressViewHolder, position: Int) {
-        holder.bindData(addressList[position])
+        holder.itemView.isSelected = selectedPos == position
+        holder.bindData(addressList[position], selectedPos == position)
     }
 
     fun addList(data: List<RecipientAddressModel>) {
@@ -50,11 +55,12 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
-        val editButton = itemView.findViewById<Typography>(R.id.action_edit)
-        val lainnyaButton = itemView.findViewById<ImageView>(R.id.label_lainnya)
+        val editButton = itemView.findViewById<UnifyButton>(R.id.action_edit)
+        val lainnyaButton = itemView.findViewById<UnifyImageButton>(R.id.btn_secondary)
+        val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: RecipientAddressModel) {
+        fun bindData(data: RecipientAddressModel, isSelected: Boolean) {
             with(itemView) {
                 val addressStreet = data.street
                 val postalCode = data.postalCode
@@ -74,7 +80,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     tokopedia_note.gone()
                     address_detail.text = data.street + ", " + data.postalCode
                 }
-                setListener(data)
+                setListener(data, isSelected)
 
             }
         }
@@ -92,19 +98,34 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
+                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96))
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
+                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
             }
         }
 
-        private fun setListener(peopleAddress: RecipientAddressModel) {
+        private fun setListener(peopleAddress: RecipientAddressModel, isSelected: Boolean) {
             editButton.setOnClickListener  {
                 listener.onManageAddressEditClicked(peopleAddress)
             }
             lainnyaButton.setOnClickListener {
                 listener.onManageAddressLainnyaClicked(peopleAddress)
+            }
+            cardAddress.setOnClickListener {
+                if (isSelected) {
+                    cardAddress.hasCheckIcon = true
+                    cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                } else {
+                    cardAddress.hasCheckIcon = false
+                    cardAddress.cardType = CardUnify.TYPE_BORDER
+                }
+
+                notifyItemChanged(selectedPos)
+                selectedPos = layoutPosition
+                notifyItemChanged(selectedPos)
             }
         }
     }
