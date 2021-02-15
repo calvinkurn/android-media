@@ -195,33 +195,42 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             else -> View.GONE
         }
         toolbarParent.removeAllViews()
-        if (showOldToolbar) {
-            feed_background_frame.show()
-            feedToolbar = context?.let { FeedMainToolbar(it) }
-            setFeedBackgroundCrossfader()
-            feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
-            })
-            (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
-        } else {
-            feed_background_frame.hide()
-            feedToolbar = context?.let { NavToolbar(it) }
-            (feedToolbar as? NavToolbar)?.let {
-                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
-                it.switchToLightToolbar()
-                it.setContentInsetsAbsolute(0,0)
-                it.setToolbarPageName(FEED_PAGE)
-                viewLifecycleOwner.lifecycle.addObserver(it)
-                it.setIcon(getToolbarIcons())
-                it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
-            }
-        }
+//        if (showOldToolbar) {
+//            initOldToolBar()
+//        } else {
+//            initNewToolBar()
+//        }
+        initNewToolBar()
         toolbarParent.addView(feedToolbar)
+    }
+
+    private fun initNewToolBar() {
+        feed_background_frame.hide()
+        feedToolbar = context?.let { NavToolbar(it) }
+        (feedToolbar as? NavToolbar)?.let {
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+            it.switchToLightToolbar()
+            it.setContentInsetsAbsolute(0,0)
+            it.setToolbarPageName(FEED_PAGE)
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setIcon(getToolbarIcons())
+            it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+        }
+    }
+
+    private fun initOldToolBar() {
+        feed_background_frame.show()
+        feedToolbar = context?.let { FeedMainToolbar(it) }
+        setFeedBackgroundCrossfader()
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
+            }
+        })
+        (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
     }
 
     private fun getToolbarIcons(): IconBuilder {
@@ -231,10 +240,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
         }
-
         icons.apply {
             addIcon(IconList.ID_CART) {}
-            addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+        if(!showOldToolbar){
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
         }
         return icons
     }

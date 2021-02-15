@@ -19,12 +19,16 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_id_card.*
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
+
+    lateinit var tracker: InactivePhoneTracker
 
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
 
@@ -41,8 +45,11 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
+        tracker = InactivePhoneTracker()
 
         btnNext?.setOnClickListener {
+            tracker.clickOnNextButtonIdCardOnboarding()
+
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
             startActivityForResult(intent, REQUEST_CAPTURE_ID_CARD)
         }

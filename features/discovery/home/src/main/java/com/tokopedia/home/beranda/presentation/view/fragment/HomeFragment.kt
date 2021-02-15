@@ -273,13 +273,13 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
-    private lateinit var stickyLoginView: StickyLoginView
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
@@ -301,7 +301,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var positionSticky: IntArray? = IntArray(2)
     private var isLightThemeStatusBar = true
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
@@ -756,6 +755,14 @@ open class HomeFragment : BaseDaggerFragment(),
         context?.let {
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
+
+        getHomeViewModel().setRollanceNavigationType(
+                if (isNavRevamp()) {
+                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                } else {
+                    AbTestPlatform.NAVIGATION_VARIANT_OLD
+                }
+        )
     }
 
     private fun initStickyLogin() {
@@ -776,20 +783,13 @@ open class HomeFragment : BaseDaggerFragment(),
             }
 
             override fun onViewChange(isShowing: Boolean) {
-                if (stickyLoginView.isShowing()) {
-                    positionSticky = stickyLoginView.getLocation()
-                }
                 floatingEggButtonFragment?.let {
                     updateEggBottomMargin(it)
                 }
             }
         })
-        getHomeViewModel().setRollanceNavigationType(
-                if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-                } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
+
+        stickyLoginView?.hide()
     }
 
     private fun scrollToRecommendList() {
@@ -1261,7 +1261,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
-                DynamicIconComponentCallback(context, this)
+                DynamicIconComponentCallback(context, this),
+                Lego6AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2168,10 +2169,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height = 0
+            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             if (isNavOld()) {
                 if (oldToolbar != null) {
-                    height = oldToolbar?.height?:0
+                    height = oldToolbar?.height?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     oldToolbar?.let {
                         if (!it.isShadowApplied()) {
                             height += resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -2180,7 +2181,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             } else if (isNavRevamp()) {
                 navToolbar?.let {
-                    height = navToolbar?.height?:0
+                    height = navToolbar?.height?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     height += resources.getDimensionPixelSize(R.dimen.dp_8)
                 }
             }
@@ -2292,13 +2293,14 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView.height)
+        if (stickyLoginView?.isShowing() == true) {
+            stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
+            val stickyTopLocation = stickyLoginView?.getLocation()?.get(1) ?: 0
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
-                floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+            if (positionEgg[1] + eggHeight > stickyTopLocation) {
+                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
             }
         } else {
             params.setMargins(0, 0, 0, 0)

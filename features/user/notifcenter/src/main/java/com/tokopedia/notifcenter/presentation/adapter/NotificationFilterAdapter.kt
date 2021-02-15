@@ -80,12 +80,12 @@ class NotificationFilterAdapter constructor(
     }
 
     private fun notifyFilterChanged(element: FilterUiModel) {
-        if (isSelected(element)) {
-            selectedFilter = defaultFilter
+        selectedFilter = if (isSelected(element)) {
+            defaultFilter
         } else {
-            selectedFilter = element
+            element
         }
-        filterListener?.onFilterChanged(selectedFilter.tagId)
+        filterListener?.onFilterChanged(selectedFilter.tagId, selectedFilter.tagName)
     }
 
     private fun showFilter(data: NotifcenterFilterResponse) {

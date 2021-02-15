@@ -58,6 +58,9 @@ import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -79,6 +82,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     @Inject
     lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
+
+    var remoteConfig: RemoteConfig? = null
 
     private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rv: RecyclerView? = null
@@ -127,6 +132,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
+        initRemoteConfig()
         viewModel.loadNotificationFilter(containerListener?.role)
     }
 
@@ -149,6 +155,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
+    }
+
+    private fun initRemoteConfig() {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onCreateView(
@@ -335,9 +345,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupFilter() {
         filter?.setFilterListener(
                 object : NotificationFilterView.FilterListener {
-                    override fun onFilterChanged(filterType: Long) {
+                    override fun onFilterChanged(filterType: Long, filterName: String) {
                         viewModel.filter = filterType
                         loadInitialData()
+                        analytic.trackFilterClick(
+                                filterType, filterName, containerListener?.role
+                        )
                     }
                 }
         )
@@ -439,13 +452,21 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
-        val atcPageIntent = getBuyPageIntent(notification, product)
-        startActivity(atcPageIntent)
+        if (usePdp()) {
+            goToPdp(product)
+        } else {
+            val buyPageIntent = getBuyPageIntent(notification, product)
+            startActivity(buyPageIntent)
+        }
     }
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
-        val atcPageIntent = getAtcPageIntent(notification, product)
-        startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+        if (usePdp()) {
+            goToPdp(product)
+        } else {
+            val atcPageIntent = getAtcPageIntent(notification, product)
+            startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+        }
     }
 
     override fun markNotificationAsRead(element: NotificationUiModel) {
@@ -500,6 +521,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun refreshPage() {
         onRetryClicked()
+    }
+
+    override fun trackClickCtaWidget(element: NotificationUiModel) {
+        analytic.trackClickCtaWidget(element, containerListener?.role)
     }
 
     private fun createViewHolderState(
@@ -619,6 +644,19 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                     AddToCartRequestParams.ATC_FROM_NOTIFCENTER
             )
         }
+    }
+
+    private fun usePdp(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
+    }
+
+    private fun goToPdp(product: ProductData?) {
+        if (product == null) return
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productId.toString()
+        )
     }
 
     companion object {
