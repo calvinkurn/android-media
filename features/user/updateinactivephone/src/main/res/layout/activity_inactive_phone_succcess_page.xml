@@ -67,6 +67,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/updateinactivephone_12dp"
     android:layout_marginStart="@dimen/updateinactivephone_12dp"
+    android:visibility="visible"
     app:descriptionText="@string/text_success_ticker"
     app:tickerType="warning"
     app:tickerShapeType="loose"
