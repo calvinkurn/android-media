@@ -14,8 +14,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -33,16 +34,14 @@ import javax.inject.Inject
  * Created by mzennis on 2020-01-10.
  */
 class PlayErrorFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var parentViewModel: PlayParentViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
     private lateinit var imgBack: ImageView
-
-    private val channelId: String
-        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     override fun getScreenName() = "Play Video"
 
@@ -118,24 +117,13 @@ class PlayErrorFragment @Inject constructor(
                 is PageResultState.Success -> container.hide()
             }
         })
-//        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-//            when (it) {
-//                is NetworkResult.Fail -> {
-//                    showGlobalError(it.error)
-//                }
-//                is NetworkResult.Success -> {
-//                    container.hide()
-//                }
-//            }
-//        })
     }
 
     private fun showGlobalError(throwable: Throwable) {
         if (throwable is MessageErrorException) handleKnownServerError(throwable)
         else handleUnknownError(throwable)
 
-        //TODO("Fix this, ask DA")
-//        PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", parentViewModel.channelType)
+        analytic.errorState("$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}")
         container.show()
     }
 

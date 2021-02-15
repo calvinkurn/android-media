@@ -5,41 +5,49 @@ import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
+import com.tokopedia.user.session.UserSessionInterface
 
 
 /**
- * Created by mzennis on 2020-01-02.
+ * Created by mzennis on 15/02/21.
  */
+class PlayAnalytic(
+        private val userSession: UserSessionInterface,
+        private val trackingQueue: TrackingQueue,
+) {
+    
+    private val userId: String 
+        get() = userSession.userId
+    
+    private var channelId: String = ""
+    private var channelType: PlayChannelType = PlayChannelType.Unknown
+    private var sourceType = ""
 
-object PlayAnalytics {
-
-    private const val KEY_EVENT = "event"
-    private const val KEY_EVENT_CATEGORY = "eventCategory"
-    private const val KEY_EVENT_ACTION = "eventAction"
-    private const val KEY_EVENT_LABEL = "eventLabel"
-    private const val KEY_SCREEN_NAME = "screenName"
-    private const val KEY_CURRENT_SITE = "currentSite"
-    private const val KEY_CLIENT_ID = "clientId"
-    private const val KEY_SESSION_IRIS = "sessionIris"
-    private const val KEY_USER_ID = "userId"
-    private const val KEY_BUSINESS_UNIT = "businessUnit"
-
-    private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
-    private const val KEY_TRACK_CLICK_BACK = "clickBack"
-    private const val KEY_TRACK_ADD_TO_CART = "addToCart"
-    private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
-    private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
-    private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
-    private const val KEY_TRACK_BUSINESS_UNIT = "play"
-
-    private const val KEY_TRACK_CLICK = "click"
-    private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
-
-    fun sendScreen(channelId: String, channelType: PlayChannelType) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated("/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}")
+    fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "") {
+        this.channelId = channelId
+        this.channelType = channelType
+        if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.sourceType = sourceType
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
     }
 
-    fun clickLeaveRoom(channelId: String, duration: Long, channelType: PlayChannelType) {
+    /**
+     * User swipe room
+     */
+    fun swipeRoom() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "swipe channel",
+                        KEY_EVENT_LABEL to "${generateSwipeSession()} - $channelId - ${channelType.value} - $sourceType",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun clickLeaveRoom(duration: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_BACK,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -48,7 +56,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickShop(channelId: String, shopId: String, channelType: PlayChannelType) {
+    fun clickShop(shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -57,7 +65,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickFollowShop(channelId: String, shopId: String, action: String, channelType: PlayChannelType) {
+    fun clickFollowShop(shopId: String, action: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -66,14 +74,14 @@ object PlayAnalytics {
         )
     }
 
-    fun clickWatchArea(channelId: String, userId: String, channelType: PlayChannelType, screenOrientation: ScreenOrientation) {
+    fun clickWatchArea(screenOrientation: ScreenOrientation) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "$KEY_TRACK_CLICK watch area",
                         KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${screenOrientation.value}",
-                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -83,7 +91,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPinnedMessage(channelId: String, message: String, appLink: String, channelType: PlayChannelType) {
+    fun clickPinnedMessage(message: String, appLink: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -92,7 +100,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickLike(channelId: String, isLike: Boolean, channelType: PlayChannelType) {
+    fun clickLike(isLike: Boolean) {
         val action = if(isLike) "like" else "unlike"
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
@@ -102,7 +110,7 @@ object PlayAnalytics {
         )
     }
 
-    fun errorState(channelId: String, errorMessage: String, channelType: PlayChannelType) {
+    fun errorState(errorMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -111,7 +119,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickQuickReply(channelId: String) {
+    fun clickQuickReply() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -120,7 +128,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickSendChat(channelId: String) {
+    fun clickSendChat() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -129,7 +137,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickWatchMode(channelId: String, channelType: PlayChannelType) {
+    fun clickWatchMode() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -138,7 +146,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPlayVideo(channelId: String, channelType: PlayChannelType) {
+    fun clickPlayVideo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -147,7 +155,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickCartIcon(channelId: String, channelType: PlayChannelType) {
+    fun clickCartIcon() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -156,7 +164,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPinnedProduct(channelId: String) {
+    fun clickPinnedProduct() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -165,10 +173,7 @@ object PlayAnalytics {
         )
     }
 
-    fun impressionProductList(trackingQueue: TrackingQueue,
-                              channelId: String,
-                              listOfProducts: List<ProductLineUiModel>,
-                              channelType: PlayChannelType) {
+    fun impressionProductList(listOfProducts: List<ProductLineUiModel>) {
         if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
@@ -187,11 +192,8 @@ object PlayAnalytics {
         }
     }
 
-    fun clickProduct(trackingQueue: TrackingQueue,
-                     channelId: String,
-                     product: ProductLineUiModel,
-                     position: Int,
-                     channelType: PlayChannelType) {
+    fun clickProduct(product: ProductLineUiModel,
+                     position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
                         "productClick",
@@ -210,7 +212,7 @@ object PlayAnalytics {
         )
     }
 
-    fun scrollMerchantVoucher(channelId: String, lastPositionViewed: Int) {
+    fun scrollMerchantVoucher(lastPositionViewed: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -219,36 +221,33 @@ object PlayAnalytics {
         )
     }
 
-    fun clickActionProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType, productAction: ProductAction) {
+    fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
         when(productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(channelId, productId, channelType)
-            ProductAction.Buy -> clickBeliButtonProductWithVariant(channelId, productId, channelType)
+            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
+            ProductAction.Buy -> clickBeliButtonProductWithVariant(productId)
         }
     }
 
-    fun clickProductAction(trackingQueue: TrackingQueue,
-                           channelId: String,
-                           productLineUiModel: ProductLineUiModel,
+    fun clickProductAction(productLineUiModel: ProductLineUiModel,
                            cartId: String,
-                           channelType: PlayChannelType,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType) {
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, productLineUiModel, cartId)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, productLineUiModel, cartId)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, productLineUiModel, cartId)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, productLineUiModel, cartId)
                 }
             }
         }
     }
 
-    fun clickSeeToasterAfterAtc(channelId: String, channelType: PlayChannelType) {
+    fun clickSeeToasterAfterAtc() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -259,10 +258,7 @@ object PlayAnalytics {
 
     fun trackVideoBuffering(
             bufferCount: Int,
-            bufferDurationInSecond: Int,
-            channelId: String,
-            userId: String,
-            channelType: PlayChannelType
+            bufferDurationInSecond: Int
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
@@ -270,7 +266,7 @@ object PlayAnalytics {
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "buffer",
                         KEY_EVENT_LABEL to "$bufferCount - $bufferDurationInSecond - $channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -283,14 +279,14 @@ object PlayAnalytics {
     /**
      * User click "full screen" CTA from portrait to landscape video (not triggered when user click from landscape to portrait)
      */
-    fun clickCtaFullScreenFromPortraitToLandscape(userId: String, channelId: String, channelType: PlayChannelType) {
+    fun clickCtaFullScreenFromPortraitToLandscape() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "$KEY_TRACK_CLICK full screen to landscape",
                         KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -303,14 +299,14 @@ object PlayAnalytics {
     /**
      * User tilt/rotate their phone to see in full screen
      */
-    fun userTiltFromPortraitToLandscape(userId: String, channelId: String, channelType: PlayChannelType) {
+    fun userTiltFromPortraitToLandscape() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "rotate phone to full screen",
                         KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$channelId/${channelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -323,7 +319,7 @@ object PlayAnalytics {
     /**
      * User click copy link
      */
-    fun clickCopyLink(channelId: String, channelType: PlayChannelType, userId: String) {
+    fun clickCopyLink() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
@@ -336,6 +332,8 @@ object PlayAnalytics {
                 )
         )
     }
+
+    fun getTrackingQueue() = trackingQueue
 
     /**
      * Private methods
@@ -364,7 +362,7 @@ object PlayAnalytics {
         )
     }
 
-    private fun clickBeliButtonProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType) {
+    private fun clickBeliButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -373,7 +371,7 @@ object PlayAnalytics {
         )
     }
 
-    private fun clickAtcButtonProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType) {
+    private fun clickAtcButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -383,10 +381,8 @@ object PlayAnalytics {
     }
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                    channelId: String,
                                                     product: ProductLineUiModel,
-                                                    cartId: String,
-                                                    channelType: PlayChannelType) {
+                                                    cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -406,10 +402,8 @@ object PlayAnalytics {
     }
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                   channelId: String,
                                                    product: ProductLineUiModel,
-                                                   cartId: String,
-                                                   channelType: PlayChannelType) {
+                                                   cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -429,10 +423,8 @@ object PlayAnalytics {
     }
 
     private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
-                                        channelId: String,
                                         product: ProductLineUiModel,
-                                        cartId: String,
-                                        channelType: PlayChannelType) {
+                                        cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -452,10 +444,8 @@ object PlayAnalytics {
     }
 
     private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
-                                         channelId: String,
                                          product: ProductLineUiModel,
-                                         cartId: String,
-                                         channelType: PlayChannelType) {
+                                         cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -495,5 +485,34 @@ object PlayAnalytics {
                         "dimension40" to "/groupchat - $page"
                 )
         )
+    }
+
+    private fun generateSwipeSession(): String {
+        val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
+        return identifier + System.currentTimeMillis()
+    }
+    
+    companion object {
+        private const val KEY_EVENT = "event"
+        private const val KEY_EVENT_CATEGORY = "eventCategory"
+        private const val KEY_EVENT_ACTION = "eventAction"
+        private const val KEY_EVENT_LABEL = "eventLabel"
+        private const val KEY_SCREEN_NAME = "screenName"
+        private const val KEY_CURRENT_SITE = "currentSite"
+        private const val KEY_CLIENT_ID = "clientId"
+        private const val KEY_SESSION_IRIS = "sessionIris"
+        private const val KEY_USER_ID = "userId"
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+
+        private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
+        private const val KEY_TRACK_CLICK_BACK = "clickBack"
+        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
+        private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
+        private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
+        private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
+        private const val KEY_TRACK_BUSINESS_UNIT = "play"
+
+        private const val KEY_TRACK_CLICK = "click"
+        private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
     }
 }

@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
@@ -58,7 +58,9 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 
 /**
@@ -68,6 +70,7 @@ class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
         private val dispatchers: CoroutineDispatcherProvider,
+        private val analytic: PlayAnalytic,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -112,7 +115,7 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private var hasFetchedChannelInfo: Boolean = false
+//    private var hasFetchedChannelInfo: Boolean = false
 
     override fun getScreenName(): String = "Play"
 
@@ -278,7 +281,9 @@ class PlayFragment @Inject constructor(
     }
 
     private fun onPageFocused() {
+        analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
         playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        sendSwipeRoomAnalytic()
     }
 
     private fun onPageDefocused() {
@@ -378,7 +383,6 @@ class PlayFragment @Inject constructor(
 //                    hasFetchedChannelInfo = true
 //                    loaderPage.hide()
 //                    fragmentErrorViewOnStateChanged(shouldShow = false)
-//                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
 //                }
 //                is NetworkResult.Fail -> {
 //                    loaderPage.hide()
@@ -392,9 +396,9 @@ class PlayFragment @Inject constructor(
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}", playViewModel.channelType)
+                    analytic.errorState("$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}")
                 is PlaySocketInfo.Error ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}", playViewModel.channelType)
+                    analytic.errorState("$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}")
             }
         })
     }
@@ -537,11 +541,7 @@ class PlayFragment @Inject constructor(
     }
 
     fun sendTrackerWhenRotateFullScreen() {
-        PlayAnalytics.userTiltFromPortraitToLandscape(
-                userId = playViewModel.userId,
-                channelId = channelId,
-                channelType = playViewModel.channelType
-        )
+        analytic.userTiltFromPortraitToLandscape()
     }
 
     private fun setBackground(backgroundUrl: String) {
@@ -556,6 +556,10 @@ class PlayFragment @Inject constructor(
 
     private fun doAutoSwipe() {
         playNavigation.navigateToNextPage()
+    }
+
+    private fun sendSwipeRoomAnalytic() {
+        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
     }
 
     //region onStateChanged
