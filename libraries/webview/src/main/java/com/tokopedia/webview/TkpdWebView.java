@@ -7,18 +7,18 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
-import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -26,16 +26,12 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DarkModeUtil;
-import com.tokopedia.utils.view.ViewUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
-import static com.tokopedia.user.session.Constants.GCM_ID;
-import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 /**
  * Created by nisie on 11/30/16.
