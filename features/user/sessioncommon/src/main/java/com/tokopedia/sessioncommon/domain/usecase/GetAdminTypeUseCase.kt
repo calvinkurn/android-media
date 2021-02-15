@@ -32,6 +32,12 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
               }
             }
         """.trimIndent()
+
+        @JvmStatic
+        fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
+                RequestParams.create().apply {
+                    putString(PARAM_SOURCE, source)
+                }
     }
 
     fun execute(subscriber: Subscriber<GraphqlResponse>, source: String = DEFAULT_SOURCE) {
