@@ -58,6 +58,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               eligible
               badge_url
             }
+            free_shipping_extra {
+              eligible
+              badge_url
+            }
             preorder {
               is_preorder
               duration
@@ -198,6 +202,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               diagnostic_id
             }
             free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
               eligible
               badge_url
             }

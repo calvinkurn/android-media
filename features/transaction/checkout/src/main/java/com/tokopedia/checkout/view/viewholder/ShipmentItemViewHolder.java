@@ -52,10 +52,12 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.image.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +168,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private SaveStateDebounceListener saveStateDebounceListener;
     private TextView tvFulfillName;
     private Label labelFulfillment;
+    private ImageUnify imgFulfillmentBadge;
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
     private Label labelPreOrder;
@@ -299,6 +302,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
         labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
+        imgFulfillmentBadge = itemView.findViewById(R.id.iu_image_fulfill);
         tvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
 
         // Shipping Experience
@@ -411,9 +415,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderFulfillment(ShipmentCartItemModel model) {
         labelFulfillment.setVisibility(model.isFulfillment() ? View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(model.getShopLocation())) {
+            if (model.isFulfillment()) {
+                ImageHandler.loadImageWithoutPlaceholder(imgFulfillmentBadge, model.getFulfillmentBadgeUrl());
+                imgFulfillmentBadge.setVisibility(View.VISIBLE);
+            } else {
+                imgFulfillmentBadge.setVisibility(View.GONE);
+            }
             tvFulfillName.setVisibility(View.VISIBLE);
             tvFulfillName.setText(model.getShopLocation());
         } else {
+            imgFulfillmentBadge.setVisibility(View.GONE);
             tvFulfillName.setVisibility(View.GONE);
         }
     }
