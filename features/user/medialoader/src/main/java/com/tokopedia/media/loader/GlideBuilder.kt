@@ -1,179 +1,69 @@
 package com.tokopedia.media.loader
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.graphics.BitmapCompat
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.common.LoaderStateListener
-import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.common.PropertiesBuilder
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.tracker.PerformanceTracker
-import com.tokopedia.media.loader.transform.BlurHashDecoder
-import com.tokopedia.media.loader.transform.CircleCrop
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
-import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
+import com.tokopedia.media.loader.module.GlideRequest
+import com.tokopedia.media.loader.tracker.PerformanceTracker.track as performanceTracker
 
 object GlideBuilder {
 
-    private val exceptionBlurring = listOf(
-            "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-    )
+    private val propertiesBuilder by lazy { PropertiesBuilder() }
 
-    private fun ImageView.resourceError(errorRes: Int) =
-            getDrawable(context, if (errorRes != 0) {
-                errorRes
-            } else {
-                R.drawable.ic_media_default_error
-            })
-
-    private fun glideListener(
-            startTime: Long,
-            listener: LoaderStateListener?,
-            performanceMonitoring: PerformanceMonitoring?
-    ) = object : RequestListener<Bitmap> {
-        override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                isFirstResource: Boolean
-        ): Boolean {
-            listener?.failedLoad(e)
-            return false
-        }
-
-        override fun onResourceReady(
-                resource: Bitmap?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-        ): Boolean {
-            val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it) }?: 0
-            val endTime = System.currentTimeMillis()
-
-            PerformanceTracker.postRender(
-                    performanceMonitoring,
-                    (endTime - startTime).toString(),
-                    fileSize.toString()
-            )
-
-            listener?.successLoad(resource, mapToDataSource(dataSource))
-            return false
+    private fun automateScaleType(
+            imageView: ImageView,
+            request: GlideRequest<Bitmap>
+    ): GlideRequest<Bitmap> {
+        return request.apply {
+            when (imageView.scaleType) {
+                ImageView.ScaleType.FIT_CENTER -> fitCenter()
+                ImageView.ScaleType.CENTER_CROP -> centerCrop()
+                ImageView.ScaleType.CENTER_INSIDE -> centerInside()
+                else -> {}
+            }
         }
     }
 
     @JvmOverloads
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
-        with(properties) {
-            var performanceMonitoring: PerformanceMonitoring? = null
-            val startTime = System.currentTimeMillis()
+        val context = imageView.context
 
-            val localTransform = mutableListOf<Transformation<Bitmap>>()
-            val drawableError = imageView.resourceError(error)
-            val context = imageView.context
-            var source = data
-
-            if (source == null) {
-                imageView.setImageDrawable(drawableError)
-            } else {
-                if (source is String) {
-                    if (source.isEmpty()) {
-                        imageView.loadImage(R.drawable.ic_media_default_error)
-                        return
-                    }
-
-                    source = Loader.urlBuilder(source)
-                    performanceMonitoring = PerformanceTracker.track(source, context)
-                }
-
-                GlideApp.with(context).asBitmap().load(source).apply {
-                    when (imageView.scaleType) {
-                        ImageView.ScaleType.FIT_CENTER -> fitCenter()
-                        ImageView.ScaleType.CENTER_CROP -> centerCrop()
-                        ImageView.ScaleType.CENTER_INSIDE -> centerInside()
-                        else -> {}
-                    }
-
-                    if (placeHolder != 0) {
-                        placeholder(placeHolder)
-                    } else {
-                        if (!isCircular || !imageExcludeList(source)) {
-                            if (source is String) {
-                                blurHash(source) { hash ->
-                                    val bitmapHash = BitmapDrawable(context.resources, blurring(hash))
-                                    thumbnail(thumbnailLoader(context, bitmapHash))
-                                    placeholder(bitmapHash)
-                                }
-                            }
-                        } else {
-                            placeholder(R.drawable.ic_media_default_placeholder)
-                        }
-                    }
-
-                    if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
-                    if (roundedRadius != 0f) localTransform.add(RoundedCorners(roundedRadius.toInt()))
-                    if (isCircular) localTransform.add(CircleCrop())
-                    if (!isAnimate) dontAnimate()
-
-                    cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
-                    overrideSize?.let { override(it.width, it.height) }
-                    decodeFormat?.let { format(mapToDecodeFormat(it)) }
-                    transforms?.let { localTransform.addAll(it) }
-                    transform?.let { localTransform.add(it) }
-                    signatureKey?.let { signature(it) }
-                    drawableError?.let { error(it) }
-
-                    if (localTransform.isNotEmpty()) {
-                        transform(MultiTransformation(localTransform))
-                    }
-
-                    listener(glideListener(startTime, loaderListener, performanceMonitoring))
-
-                }.into(imageView)
-            }
+        if (data == null) {
+            imageView.setImageDrawable(getDrawable(context, properties.error))
         }
-    }
 
-    private fun imageExcludeList(source: Any?): Boolean {
-        return if (source is GlideUrl) exceptionBlurring.contains(source.toStringUrl()) else false
-    }
+        GlideApp.with(context).asBitmap().load(data).apply {
+            automateScaleType(imageView, this)
 
-    private fun blurHash(url: String, blurHash: (String?) -> Unit) {
-        val hash = url.toUri()?.getQueryParameter(PARAM_BLURHASH)
-        blurHash(hash)
-    }
+            when (data) {
+                is String -> {
+                    val source = Loader.urlBuilder(data)
+                    val hash = data.toUri()?.getQueryParameter(PARAM_BLURHASH)
+                    val performanceMonitoring = performanceTracker(source, context)
 
-    private fun blurring(blurHash: String?): Bitmap? {
-        return BlurHashDecoder.decode(
-                blurHash = blurHash,
-                width = 60,
-                height = 20
-        )
-    }
-
-    private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
-        return GlideApp.with(context)
-                .asBitmap()
-                .load(resource)
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    propertiesBuilder.build(
+                            context = context,
+                            blurHash = hash,
+                            properties = properties,
+                            performanceMonitoring = performanceMonitoring,
+                            request = this
+                    )
+                }
+                else -> propertiesBuilder.build(
+                        context = context,
+                        properties = properties,
+                        request = this
+                )
+            }.into(imageView)
+        }
     }
 
     fun loadGifImage(imageView: ImageView, data: String) {

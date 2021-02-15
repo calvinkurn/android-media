@@ -10,13 +10,14 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
         var thumbnailUrl: String = "",
+        var blurHash: Boolean = false,
         var isAnimate: Boolean = false,
         var isCircular: Boolean = false,
         var roundedRadius: Float = 0f,
         var signatureKey: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
         var placeHolder: Int = 0, // R.drawable.ic_media_default_placeholder
-        var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.ALL,
+        var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         var overrideSize: Resize? = null,
         var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
         var loaderListener: LoaderStateListener? = null,
@@ -28,6 +29,7 @@ open class Properties(
         if (this === other) return true
         return other is Properties &&
                 thumbnailUrl == other.thumbnailUrl &&
+                blurHash == other.blurHash &&
                 isAnimate == other.isAnimate &&
                 isCircular == other.isCircular &&
                 roundedRadius == other.roundedRadius &&
@@ -44,6 +46,7 @@ open class Properties(
 
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
+        result = 31 * result + blurHash.hashCode()
         result = 31 * result + isAnimate.hashCode()
         result = 31 * result + isCircular.hashCode()
         result = 31 * result + roundedRadius.hashCode()

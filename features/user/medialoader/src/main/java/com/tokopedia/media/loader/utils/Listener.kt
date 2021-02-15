@@ -1,0 +1,53 @@
+package com.tokopedia.media.loader.utils
+
+import android.graphics.Bitmap
+import androidx.core.graphics.BitmapCompat
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.media.loader.common.LoaderStateListener
+import com.tokopedia.media.loader.common.MediaDataSource
+import com.tokopedia.media.loader.tracker.PerformanceTracker
+import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource as dataSource
+
+object Listener {
+
+    operator fun invoke(
+            startTime: Long,
+            listener: LoaderStateListener?,
+            performanceMonitoring: PerformanceMonitoring?
+    ) = object : RequestListener<Bitmap> {
+        override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Bitmap>?,
+                isFirstResource: Boolean
+        ): Boolean {
+            listener?.failedLoad(e)
+            return false
+        }
+
+        override fun onResourceReady(
+                resource: Bitmap?,
+                model: Any?,
+                target: Target<Bitmap>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+        ): Boolean {
+            val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it).toString() }?: "0"
+            val loadTime = (System.currentTimeMillis() - startTime).toString()
+
+            PerformanceTracker.postRender(
+                    performanceMonitoring,
+                    loadTime,
+                    fileSize
+            )
+
+            listener?.successLoad(resource, dataSource(dataSource))
+            return false
+        }
+    }
+
+}

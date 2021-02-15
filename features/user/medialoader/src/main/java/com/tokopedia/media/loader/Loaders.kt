@@ -24,7 +24,10 @@ fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
-inline fun ImageView.loadImage(url: String?, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
+inline fun ImageView.loadImage(
+        url: String?,
+        crossinline properties: Properties.() -> Unit
+) = call(url, Properties().apply(properties))
 
 fun ImageView.loadImageCircle(url: String) {
     call(url, Properties().apply {
