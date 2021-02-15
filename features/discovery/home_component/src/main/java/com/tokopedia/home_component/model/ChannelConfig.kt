@@ -6,5 +6,6 @@ data class ChannelConfig (
         val hasCloseButton: Boolean = false,
         var serverTimeOffset: Long = 0,
         val createdTimeMillis: String = "",
-        val isAutoRefreshAfterExpired: Boolean = false
+        val isAutoRefreshAfterExpired: Boolean = false,
+        val enableTimeDiffMoreThan24h: Boolean = false
 )

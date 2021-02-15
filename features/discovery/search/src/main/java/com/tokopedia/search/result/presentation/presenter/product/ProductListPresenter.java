@@ -126,6 +126,7 @@ final class ProductListPresenter
     private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
+    private static final List<String> trackRelatedKeywordResponseCodeList = Arrays.asList("3", "6");
     private static final List<String> showInspirationCarouselLayout =
             Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST, LAYOUT_INSPIRATION_CAROUSEL_GRID);
     private static final List<String> showInspirationCardType =
@@ -1287,8 +1288,13 @@ final class ProductListPresenter
     }
 
     private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmViewModel cpmViewModel) {
+        List<Visitable> headlineAdsVisitableList = new ArrayList<>();
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+        headlineAdsVisitableList.add(cpmViewModel);
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+
         Visitable product = productList.get(position - 1);
-        visitableList.add(visitableList.indexOf(product) + 1, cpmViewModel);
+        visitableList.addAll(visitableList.indexOf(product) + 1, headlineAdsVisitableList);
     }
 
     private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage) {
@@ -1853,7 +1859,13 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendProductImpressionTrackingEvent(item);
+        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword());
+    }
+
+    public String getSuggestedRelatedKeyword() {
+        if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
+
+        return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
     }
 
     @Override
@@ -1892,7 +1904,7 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendGTMTrackingProductClick(item, getUserId());
+        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword());
     }
 
     @Override

@@ -27,6 +27,7 @@ object DeeplinkMapperMerchant {
     private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
     private const val PARAM_PRODUCT_ID = "productId"
+    private const val PARAM_SELLER_TAB = "tab"
 
     private const val PARAM_URL = "url"
 
@@ -34,6 +35,16 @@ object DeeplinkMapperMerchant {
         if (deeplink.startsWith(ApplinkConst.REPUTATION)) {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
+
+            if (GlobalConfig.isSellerApp()) {
+                if (parsedUri.getQueryParameter(PARAM_SELLER_TAB)?.isNotBlank() == true) {
+                    return Uri.parse(ApplinkConstInternalMarketplace.INBOX_REPUTATION)
+                            .buildUpon()
+                            .appendQueryParameter(PARAM_SELLER_TAB, parsedUri.getQueryParameter(PARAM_SELLER_TAB))
+                            .build().toString()
+                }
+            }
+
             if (segments.size > 1) {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)
@@ -276,10 +287,10 @@ object DeeplinkMapperMerchant {
         return deeplink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT) && uri.pathSegments.size == 2
     }
 
-    fun getRegisteredProductDetailAffiliate(deeplink: String) : String {
+    fun getRegisteredProductDetailAffiliate(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
 
-        return  UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE, parsedUri.lastPathSegment , "isAffiliate")
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE, parsedUri.lastPathSegment, "isAffiliate")
     }
 
     fun getRegisteredProductDetail(deeplink: String): String {
