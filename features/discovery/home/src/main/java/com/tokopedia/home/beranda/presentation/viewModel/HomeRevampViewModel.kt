@@ -955,7 +955,7 @@ open class HomeRevampViewModel @Inject constructor(
                         _isRequestNetworkLiveData.postValue(Event(false))
                         takeTicker = false
                     }
-                    if (homeDataModel?.list?.size?:0 > 1) {
+                    if (homeDataModel?.list?.size?:0 > 0) {
                         homeDataModel?.let {
                             homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
                         }
