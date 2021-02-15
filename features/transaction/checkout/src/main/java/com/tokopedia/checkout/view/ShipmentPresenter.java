@@ -95,6 +95,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.request.Tokopedia
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -546,6 +547,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (isTradeIn) {
             params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, true);
             params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId != null ? deviceId : "");
+        }
+        ChosenAddress chosenAddress = getCurrentChosenAddress();
+        if (chosenAddress != null) {
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_CHOSEN_ADDRESS, chosenAddress);
         }
         return params;
     }
@@ -2003,4 +2008,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return true;
     }
 
+    private ChosenAddress getCurrentChosenAddress() {
+        // Todo : change to get from cache
+        return null;
+//        return new ChosenAddress();
+    }
 }

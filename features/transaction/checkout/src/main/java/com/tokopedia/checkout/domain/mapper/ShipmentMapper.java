@@ -221,7 +221,6 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setCampaignTimerUi(timerUi);
             }
 
-
             if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {

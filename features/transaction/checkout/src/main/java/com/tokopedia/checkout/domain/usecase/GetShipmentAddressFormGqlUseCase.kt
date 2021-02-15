@@ -30,6 +30,7 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
         const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
         const val PARAM_KEY_DEVICE_ID = "dev_id"
         const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
+        const val PARAM_KEY_CHOSEN_ADDRESS = "chosen_address"
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<CartShipmentAddressFormData> {

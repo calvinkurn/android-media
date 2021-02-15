@@ -131,6 +131,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -2530,7 +2531,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
-        return if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
