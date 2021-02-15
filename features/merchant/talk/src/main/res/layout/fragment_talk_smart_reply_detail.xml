@@ -7,7 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/layout_lvl2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/talkSmartReplyDetailCardContainer"
@@ -103,12 +104,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl8"
             android:enabled="false"
             android:gravity="bottom"
             android:text="@string/smart_reply_detail_save_button"
             android:visibility="gone"
+            app:layout_constraintVertical_bias="1"
             app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailUnavailableStockTextArea"
             app:layout_constraintBottom_toBottomOf="parent" />
 

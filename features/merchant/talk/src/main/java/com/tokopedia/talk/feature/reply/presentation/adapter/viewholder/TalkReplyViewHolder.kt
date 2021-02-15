@@ -218,8 +218,8 @@ class TalkReplyViewHolder(view: View,
 
     private fun showSmartReplyLabel(isAutoReplied: Boolean) {
         itemView.replySmartReplyLabel.apply {
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             showWithCondition(isAutoReplied)
         }
     }
