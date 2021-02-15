@@ -5,24 +5,25 @@ import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
-import com.tokopedia.chatbot.util.ChatBotTimeConverter
+import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 
 /**
  * Created by Hendri on 18/07/18.
  */
-class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: ChatActionListBubbleListener)
-    : BaseChatViewHolder<ChatActionSelectionBubbleViewModel>(itemView), ChatActionBubbleAdapter.OnChatActionSelectedListener {
+class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: ChatActionListBubbleListener, chatLinkHandlerListener: ChatLinkHandlerListener)
+    : BaseChatBotViewHolder<ChatActionSelectionBubbleViewModel>(itemView), ChatActionBubbleAdapter.OnChatActionSelectedListener {
     private val adapter: ChatActionBubbleAdapter
     private var model: ChatActionSelectionBubbleViewModel? = null
-    private var chatActionListSelection:RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
-
+    private var chatActionListSelection: RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     init {
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
@@ -30,22 +31,13 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
         chatActionListSelection.layoutManager = LinearLayoutManager(itemView.context,
                 LinearLayoutManager.VERTICAL, false)
         chatActionListSelection.adapter = adapter
-        chatActionListSelection.addItemDecoration(DividerItemDecoration(itemView.context))
+        chatActionListSelection.addItemDecoration(OptionListRecyclerItemDecorator(itemView.context))
 
     }
-
-    override fun getHourId(): Int {
-        return R.id.hour
-    }
-
-    override fun getHourTime(replyTime: String): String {
-        return ChatBotTimeConverter.getHourTime(replyTime)
-    }
-
-    override fun alwaysShowTime(): Boolean = true
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
         super.bind(viewModel)
+        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
         model = viewModel
         adapter.setDataList(viewModel.chatActionList)
     }
@@ -60,6 +52,8 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
         adapter.clearDataList()
         super.onViewRecycled()
     }
+
+    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
 
     companion object {
         @LayoutRes

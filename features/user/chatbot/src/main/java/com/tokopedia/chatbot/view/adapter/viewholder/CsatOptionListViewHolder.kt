@@ -1,18 +1,18 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.ChatOptionListAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.OPTION_TYPE_CSAT
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
@@ -21,15 +21,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify
 
 class CsatOptionListViewHolder(itemView: View,
-                               private val csatOptionListListener: CsatOptionListListener
-) : BaseChatViewHolder<CsatOptionsViewModel>(itemView) {
+                               private val csatOptionListListener: CsatOptionListListener,
+                               chatLinkHandlerListener: ChatLinkHandlerListener
+) : BaseChatBotViewHolder<CsatOptionsViewModel>(itemView) {
 
     private val adapter: ChatOptionListAdapter
     private var model: CsatOptionsViewModel? = null
     private val chatActionListSelection: RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_csat_option_list_selection)
     private val chatActionBubbleSelectionContainer: CardUnify = itemView.findViewById<CardUnify>(R.id.chat_csat_option_list_container)
-    private val mesage: TextView = itemView.findViewById<TextView>(R.id.message)
-
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     init {
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
@@ -41,15 +41,15 @@ class CsatOptionListViewHolder(itemView: View,
 
     }
 
-    override fun bind(viewModel: CsatOptionsViewModel?) {
+    override fun bind(viewModel: CsatOptionsViewModel) {
         super.bind(viewModel)
+        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
         model = viewModel
-        mesage.text = viewModel?.message
-        if (viewModel?.isSubmited == true) {
+        if (viewModel.isSubmited == true) {
             chatActionBubbleSelectionContainer.hide()
         } else {
             chatActionBubbleSelectionContainer.show()
-            val options = getOptionListViewModelList(viewModel?.csat?.points)
+            val options = getOptionListViewModelList(viewModel.csat?.points)
             adapter.setDataList(options)
         }
     }
@@ -78,20 +78,7 @@ class CsatOptionListViewHolder(itemView: View,
         super.onViewRecycled()
     }
 
-
-    override fun getHourId(): Int {
-        return R.id.hour
-    }
-
-    override fun getDateId(): Int {
-        return R.id.date
-    }
-
-    override fun getHourTime(replyTime: String): String {
-        return ChatBotTimeConverter.getHourTime(replyTime)
-    }
-
-    override fun alwaysShowTime(): Boolean = true
+    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
 
     companion object {
         @LayoutRes

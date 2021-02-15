@@ -14,10 +14,10 @@
         android:layout_marginTop="@dimen/dp_8"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
+        app:typographyType="body_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
         tools:text="13:16 wib" />
 
     <LinearLayout
@@ -45,23 +45,6 @@
             app:showCheckMark="false" />
 
     </LinearLayout>
-
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/chat_csat_option_list_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_3"
-        app:layout_constraintLeft_toLeftOf="@id/custom_chat_layout_container"
-        app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/custom_chat_layout_container">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chat_csat_option_list_selection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_chat_helpfull" />
-    </com.tokopedia.unifycomponents.CardUnify>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

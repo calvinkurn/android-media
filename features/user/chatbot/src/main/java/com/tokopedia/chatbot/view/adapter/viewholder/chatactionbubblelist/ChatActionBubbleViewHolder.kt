@@ -1,23 +1,17 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import android.widget.TextView
-
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
+import com.tokopedia.unifyprinciples.Typography
 
-/**
- * Created by Hendri on 18/07/18.
- */
-class ChatActionBubbleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val chatActionMessage: TextView
+class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolder(itemView) {
+    private val chatActionMessage: Typography = itemView.findViewById(R.id.helpfull_question_option)
 
-    init {
-        chatActionMessage = itemView.findViewById(R.id.chat_action_message)
-    }
-
-    fun bind(element: ChatActionBubbleViewModel) {
+    override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
         chatActionMessage.text = element.text
+        itemView.setOnClickListener { onSelect.invoke(element.bubbleType)  }
     }
 }

@@ -1,24 +1,20 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 
-
-/**
- * @author by nisie on 5/8/18.
- */
-class QuickReplyViewHolder(itemView: View,
-                           private val chatLinkHandlerListener: ChatLinkHandlerListener)
-    : BaseChatBotViewHolder<QuickReplyListViewModel>(itemView) {
+class ChatbotFallbackAttachmentViewHolder(itemView: View,
+                                          private val chatLinkHandlerListener: ChatLinkHandlerListener)
+    : BaseChatBotViewHolder<FallbackAttachmentViewModel>(itemView) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
-    override fun bind(viewModel: QuickReplyListViewModel) {
+    override fun bind(viewModel: FallbackAttachmentViewModel) {
         super.bind(viewModel)
         ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
     }
@@ -26,6 +22,6 @@ class QuickReplyViewHolder(itemView: View,
     override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
 
     companion object {
-        val LAYOUT = R.layout.quick_reply_chat_layout
+        val LAYOUT = R.layout.chatbot_fallback_attachment_layout
     }
 }

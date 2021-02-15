@@ -1,6 +1,9 @@
 package com.tokopedia.chatbot.view.adapter
 
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -15,6 +18,12 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
  * @author by nisie on 27/11/18.
  */
 interface ChatbotTypeFactory : AdapterTypeFactory{
+
+    fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
+
+    fun createViewHolder(
+            parent: ViewGroup,
+            type: Int): AbstractViewHolder<*>
 
     fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int
 

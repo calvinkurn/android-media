@@ -14,24 +14,23 @@
         android:layout_marginTop="@dimen/dp_8"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
+        app:typographyType="body_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
         tools:text="13:16 wib" />
 
     <LinearLayout
-        android:id="@+id/custom_chat_layout_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_12"
-        android:gravity="left"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date"
+        android:gravity="right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/date"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
@@ -41,32 +40,14 @@
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/dp_10"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_10"
-            app:showCheckMark="false" />
+            android:paddingBottom="@dimen/dp_10" />
 
     </LinearLayout>
-
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/chat_csat_option_list_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_3"
-        app:layout_constraintLeft_toLeftOf="@id/custom_chat_layout_container"
-        app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/custom_chat_layout_container">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chat_csat_option_list_selection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_chat_helpfull" />
-    </com.tokopedia.unifycomponents.CardUnify>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
