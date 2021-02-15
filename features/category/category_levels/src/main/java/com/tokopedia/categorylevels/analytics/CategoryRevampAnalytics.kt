@@ -1,5 +1,6 @@
 package com.tokopedia.categorylevels.analytics
 
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -277,6 +278,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     override fun trackClickApplyFilter(mapParameters: Map<String, String>) {
         var label = ""
         for (map in mapParameters) {
+            if(map.key!= ORIGIN_FILTER)
             label = "$label&${map.key}-${map.value}"
         }
         getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))

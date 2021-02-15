@@ -150,7 +150,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         quickFilterViewModel.onApplySortFilter(applySortFilterModel)
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.selectedFilterMapParameter)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.mapParameter)
         quickSortFilter.indicatorCounter = quickFilterViewModel.getSelectedFilterCount()
     }
 
