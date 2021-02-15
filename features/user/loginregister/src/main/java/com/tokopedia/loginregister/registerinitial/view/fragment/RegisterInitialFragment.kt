@@ -1321,7 +1321,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
-            DataVisorWorker.scheduleWorker(requireContext())
+            DataVisorWorker.scheduleWorker(requireContext(), true)
         }
     }
 
