@@ -5,6 +5,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.view.ShipmentContract;
 import com.tokopedia.checkout.view.ShipmentPresenter;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import rx.Subscriber;
 import timber.log.Timber;
@@ -80,6 +81,9 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
                 view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
+                if (!UtilsKt.isNullOrEmpty(cartShipmentAddressFormData.getPopUpMessage())) {
+                    view.showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
+                }
                 view.stopTrace();
             }
         }

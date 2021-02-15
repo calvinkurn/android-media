@@ -715,6 +715,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setGroupAddress(groupAddressListResult);
                 dataResult.setHasError(checkCartHasError(dataResult));
             }
+
+            dataResult.setPopUpMessage(shipmentAddressFormDataResponse.getPopUpMessage());
         }
 
         return dataResult;
