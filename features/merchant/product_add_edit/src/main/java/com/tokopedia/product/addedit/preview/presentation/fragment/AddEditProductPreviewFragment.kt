@@ -74,6 +74,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -148,6 +150,7 @@ class AddEditProductPreviewFragment :
     private var districtId: Int = 0
     private var formattedAddress: String = ""
     private var statusState: Boolean? = null
+    private var productInputModel: ProductInputModel? = null
 
     private var toolbar: Toolbar? = null
 
@@ -490,15 +493,18 @@ class AddEditProductPreviewFragment :
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            statusState = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_PREVIEW)
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
+            if (!productInputModelJson.isNullOrBlank()) {
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    productInputModel = this
+                }
+            }
         }
         super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (productStatusSwitch != null) {
-            outState.putBoolean(KEY_SAVE_INSTANCE_PREVIEW, productStatusSwitch?.isChecked == true)
-        }
+        outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
         super.onSaveInstanceState(outState)
     }
 
@@ -954,18 +960,21 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
-            showProductPhotoPreview(it)
-            showProductDetailPreview(it)
-            if (statusState == null) {
+            if (productInputModel == null) {
+                showProductPhotoPreview(it)
+                showProductDetailPreview(it)
                 updateProductStatusSwitch(it)
+                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+                if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
+                    displayEditMode()
+                }
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
+            } else {
+                viewModel.productInputModel.value = productInputModel
+                checkEnableOrNot()
+                productInputModel = null
             }
-            statusState?.apply { productStatusSwitch?.isChecked = this }
-            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-            if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                displayEditMode()
-            }
-            stopRenderPerformanceMonitoring()
-            stopPerformanceMonitoring()
         })
     }
 

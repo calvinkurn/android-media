@@ -39,7 +39,11 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_DETAIL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
@@ -458,11 +462,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isAdding && viewModel.isFirstMoved) {
-            submitTextView?.text = getString(R.string.action_continue)
-        } else {
-            submitTextView?.text = getString(R.string.action_save)
-        }
+        setupButton()
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
@@ -674,22 +674,32 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         inputAllDataInProductInputModel()
-        outState.putString(KEY_SAVE_INSTANCE_DETAIL, mapObjectToJson(viewModel.productInputModel.detailInputModel))
+        outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(viewModel.productInputModel))
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, viewModel.isAdding)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, viewModel.isEditing)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, viewModel.isDrafting)
+        outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, viewModel.isFirstMoved)
         super.onSaveInstanceState(outState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            val detailInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_DETAIL)
-            if (!detailInputModelJson.isNullOrBlank()) {
-                mapJsonToObject(detailInputModelJson, DetailInputModel::class.java).apply {
-                    viewModel.productInputModel.detailInputModel = this
-                    if (!imageUrlOrPathList.isNullOrEmpty()) {
-                        viewModel.productPhotoPaths = imageUrlOrPathList as MutableList<String>
-                    }
-                    fillProductDetailForm(this)
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
+            viewModel.isAdding = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
+            viewModel.isEditing = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            viewModel.isDrafting = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            viewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+
+            if (!productInputModelJson.isNullOrBlank()) {
+                val productInputModel = mapJsonToObject(productInputModelJson, ProductInputModel::class.java)
+                viewModel.productInputModel = productInputModel
+                if (!productInputModel.detailInputModel.imageUrlOrPathList.isNullOrEmpty()) {
+                    viewModel.productPhotoPaths = productInputModel.detailInputModel.imageUrlOrPathList as MutableList<String>
                 }
+                fillProductDetailForm(productInputModel.detailInputModel)
             }
+
+            setupButton()
         }
         super.onViewStateRestored(savedInstanceState)
     }
@@ -738,6 +748,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setupButton() {
+        if (viewModel.isAdding && viewModel.isFirstMoved) {
+            submitTextView?.text = getString(R.string.action_continue)
+        } else {
+            submitTextView?.text = getString(R.string.action_save)
+        }
     }
 
     private fun removeObservers() {
