@@ -17,7 +17,9 @@ fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
-fun ImageView.loadImage(url: String?) = call(url, Properties())
+fun ImageView.loadImage(url: String?) = call(url, Properties().apply {
+    useBlurHash(true)
+})
 
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
@@ -47,9 +49,12 @@ inline fun ImageView.loadImageRounded(
     call(url, Properties().apply(configuration))
 }
 
-fun ImageView.loadIcon(url: String?) = call(url, Properties().apply {
-    isIcon = true
-})
+fun ImageView.loadIcon(url: String?) = call(
+        url,
+        Properties().apply {
+            isIcon = true
+        }
+)
 
 fun ImageView?.clearImage() {
     if (this != null && context.isValidContext()) {
@@ -64,9 +69,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
             GlideBuilder.loadImage(
                     data = source,
                     imageView = this,
-                    properties = properties.apply {
-                        useBlurHash(true)
-                    }
+                    properties = properties
             )
         } catch (e: Exception) {
             e.printStackTrace()

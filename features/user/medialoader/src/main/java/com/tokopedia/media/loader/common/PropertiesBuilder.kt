@@ -45,7 +45,7 @@ class PropertiesBuilder {
             blurHashPlaceHolder(context, blurHash, this, request)
 
             if (!isAnimate) dontAnimate()
-            if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
+            if (thumbnailUrl.isNotEmpty()) thumbnail(loader(context, thumbnailUrl))
             if (roundedRadius > 0f) _transform.add(RoundedCorners(roundedRadius.toInt()))
             if (isCircular) _transform.add(CircleCrop())
 
@@ -77,17 +77,27 @@ class PropertiesBuilder {
             request: GlideRequest<Bitmap>
     ): GlideRequest<Bitmap> {
         val placeHolder = properties.placeHolder
-        val isCircular = properties.isCircular
         val blurHash = properties.blurHash
 
         return request.apply {
-            if (placeHolder != 0) {
-                placeholder(placeHolder)
-            } else {
-                if ((!isCircular || blurHash) && !hash.isNullOrEmpty()) {
-                    placeholder(BitmapDrawable(context.resources, blurring(hash)))
-                } else {
-                    placeholder(R.drawable.ic_media_default_placeholder)
+            when {
+                /*
+                * validate if the placeholder have default placeholder value, 0.
+                * it will check if the blurHash is active, the placeholder will render
+                * the blurHash image, but if placeholder is 0 and blurHash is inactive,
+                * the placeholder will render the default of built-in placeholder.
+                * */
+                placeHolder == ZERO_PLACEHOLDER -> {
+                    if (blurHash && !hash.isNullOrEmpty()) {
+                        placeholder(BitmapDrawable(context.resources, blurring(hash)))
+                    } else {
+                        placeholder(R.drawable.ic_media_default_placeholder)
+                    }
+                }
+
+                // render the custom placeholder that provided by Properties()
+                placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
+                    placeholder(placeHolder)
                 }
             }
         }
@@ -96,17 +106,21 @@ class PropertiesBuilder {
     private fun blurring(blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = 60,
-                height = 20
+                width = 60, //TODO
+                height = 20 //TODO
         )
     }
 
-    private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
+    private fun loader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
         return GlideApp.with(context)
                 .asBitmap()
                 .load(resource)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+    }
+
+    companion object {
+        private const val ZERO_PLACEHOLDER = 0
     }
 
 }
