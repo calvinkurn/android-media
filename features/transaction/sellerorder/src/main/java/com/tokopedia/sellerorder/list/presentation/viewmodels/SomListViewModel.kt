@@ -22,10 +22,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -243,8 +241,8 @@ class SomListViewModel @Inject constructor(
         }
         getOrderListJob?.cancel()
         getOrderListJob = launchCatchError(block = {
-            somListGetOrderListUseCase.setParams(getOrderListParams)
-            val result = somListGetOrderListUseCase.executeOnBackground()
+            val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
+            val result = somListGetOrderListUseCase.executeOnBackground(params)
             getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first.toLongOrZero()
             _orderListResult.postValue(Success(result.second))
@@ -261,8 +259,8 @@ class SomListViewModel @Inject constructor(
                         search = invoice,
                         nextOrderId = 0L
                 )
-                somListGetOrderListUseCase.setParams(getOrderListParams)
-                val result = somListGetOrderListUseCase.executeOnBackground()
+                val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
+                val result = somListGetOrderListUseCase.executeOnBackground(params)
                 getUserRolesJob()?.join()
                 getFiltersJob?.join()
                 refreshOrderJobs.remove(refreshOrder)

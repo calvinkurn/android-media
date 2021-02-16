@@ -19,28 +19,22 @@ class SomListGetBulkAcceptOrderStatusUseCase @Inject constructor(
 
 
     override suspend fun executeOnBackground(): SomListBulkAcceptOrderStatusUiModel {
-        val params = params.poll()
-        if (params != null) {
-            val gqlRequest = GraphqlRequest(QUERY, SomListGetBulkAcceptOrderStatusResponse.Data::class.java, params.parameters)
-            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, SomListGetBulkAcceptOrderStatusResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-            val errors = gqlResponse.getError(SomListGetBulkAcceptOrderStatusResponse.Data::class.java)
-            if (errors.isNullOrEmpty()) {
-                val response = gqlResponse.getData<SomListGetBulkAcceptOrderStatusResponse.Data>()
-                return mapper.mapResponseToUiModel(response.getMultiAcceptOrderStatus)
-            } else {
-                throw RuntimeException(errors.joinToString(", ") { it.message })
-            }
+        val errors = gqlResponse.getError(SomListGetBulkAcceptOrderStatusResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListGetBulkAcceptOrderStatusResponse.Data>()
+            return mapper.mapResponseToUiModel(response.getMultiAcceptOrderStatus)
         } else {
-            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+            throw RuntimeException(errors.joinToString(", ") { it.message })
         }
     }
 
     fun setParams(param: SomListBulkGetBulkAcceptOrderStatusParam) {
-        val newParams = RequestParams.create().apply {
+        params = RequestParams.create().apply {
             putObject(PARAM_INPUT, param)
         }
-        params.offer(newParams)
     }
 
     companion object {

@@ -197,7 +197,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
         //given
         coEvery {
             somGetUserRoleUseCase.execute()
-        } returns Success(SomGetUserRoleUiModel())
+        } returns SomGetUserRoleUiModel()
 
         //when
         viewModel.loadUserRoles(123456)
@@ -211,7 +211,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
         //given
         coEvery {
             somGetUserRoleUseCase.execute()
-        } returns Fail(Throwable())
+        } throws Throwable()
 
         //when
         viewModel.loadUserRoles(123456)

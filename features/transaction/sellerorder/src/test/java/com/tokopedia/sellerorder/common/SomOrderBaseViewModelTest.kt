@@ -14,6 +14,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,7 +58,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
 
         coEvery {
             somAcceptOrderUseCase.execute()
-        } returns Success(SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(success = 1, listMessage = listMsg)))
+        } returns SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(success = 1, listMessage = listMsg))
 
         viewModel.acceptOrder(orderId, invoice)
 
@@ -85,13 +86,14 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     open fun rejectOrder_shouldReturnSuccess() {
         coEvery {
             somRejectOrderUseCase.execute(any())
-        } returns Success(SomRejectOrderResponse.Data(SomRejectOrderResponse.Data.RejectOrder(success = 1, message = listMsg)))
+        } returns SomRejectOrderResponse.Data(SomRejectOrderResponse.Data.RejectOrder(success = 1, message = listMsg))
 
         viewModel.rejectOrder(SomRejectRequestParam(orderId = orderId), invoice)
 
         assert(viewModel.rejectOrderResult.value is Success)
         assert((viewModel.rejectOrderResult.value as Success<SomRejectOrderResponse.Data>).data.rejectOrder.success == 1)
         assert((viewModel.rejectOrderResult.value as Success<SomRejectOrderResponse.Data>).data.rejectOrder.message.isNotEmpty())
+        Assert.assertEquals(null, null)
     }
 
     @Test
@@ -109,7 +111,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     open fun editAwb_shouldReturnSuccess() {
         coEvery {
             somEditRefNumUseCase.execute()
-        } returns Success(SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
+        } returns SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg))
 
         viewModel.editAwb(orderId, "12345", invoice)
 
@@ -132,7 +134,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     open fun rejectCancelOrder_shouldReturnSuccess() {
         coEvery {
             somRejectCancelOrderUseCase.execute(any())
-        } returns Success(SomRejectCancelOrderResponse.Data())
+        } returns SomRejectCancelOrderResponse.Data()
 
         viewModel.rejectCancelOrder(orderId, invoice)
 

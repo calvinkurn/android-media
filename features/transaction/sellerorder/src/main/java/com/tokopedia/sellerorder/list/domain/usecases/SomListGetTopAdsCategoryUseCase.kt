@@ -11,28 +11,22 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<Int>(gqlRepository) {
 
     override suspend fun executeOnBackground(): Int {
-        val params = params.poll()
-        if (params != null) {
-            val gqlRequest = GraphqlRequest(QUERY, SomListGetShopTopAdsCategoryResponse.Data::class.java, params.parameters)
-            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, SomListGetShopTopAdsCategoryResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-            val errors = gqlResponse.getError(SomListGetShopTopAdsCategoryResponse.Data::class.java)
-            if (errors.isNullOrEmpty()) {
-                val response = gqlResponse.getData<SomListGetShopTopAdsCategoryResponse.Data>()
-                return response.topAdsGetShopInfo.data.category
-            } else {
-                throw RuntimeException(errors.joinToString(", ") { it.message })
-            }
+        val errors = gqlResponse.getError(SomListGetShopTopAdsCategoryResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListGetShopTopAdsCategoryResponse.Data>()
+            return response.topAdsGetShopInfo.data.category
         } else {
-            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+            throw RuntimeException(errors.joinToString(", ") { it.message })
         }
     }
 
     fun setParams(shopId: Int) {
-        val newParams = RequestParams.create().apply {
+        params = RequestParams.create().apply {
             putInt(PARAM_SHOP_ID, shopId)
         }
-        params.offer(newParams)
     }
 
     companion object {

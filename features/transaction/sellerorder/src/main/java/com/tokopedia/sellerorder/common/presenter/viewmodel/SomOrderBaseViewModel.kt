@@ -48,20 +48,20 @@ abstract class SomOrderBaseViewModel(
 
     protected open suspend fun doAcceptOrder(orderId: String, invoice: String) {
         somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
-        _acceptOrderResult.postValue(somAcceptOrderUseCase.execute())
+        _acceptOrderResult.postValue(Success(somAcceptOrderUseCase.execute()))
     }
 
     protected open suspend fun doRejectOrder(rejectOrderRequestParam: SomRejectRequestParam, invoice: String) {
-        _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequestParam))
+        _rejectOrderResult.postValue(Success(somRejectOrderUseCase.execute(rejectOrderRequestParam)))
     }
 
     protected open suspend fun doEditAwb(orderId: String, shippingRef: String, invoice: String) {
         somEditRefNumUseCase.setParams(SomEditRefNumRequestParam(orderId, shippingRef))
-        _editRefNumResult.postValue(somEditRefNumUseCase.execute())
+        _editRefNumResult.postValue(Success(somEditRefNumUseCase.execute()))
     }
 
     protected open suspend fun doRejectCancelOrder(orderId: String, invoice: String) {
-        _rejectCancelOrderResult.postValue(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId)))
+        _rejectCancelOrderResult.postValue(Success(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId))))
     }
 
     fun acceptOrder(orderId: String, invoice: String = "") {
@@ -98,7 +98,7 @@ abstract class SomOrderBaseViewModel(
         if (getUserRolesJob()?.isCompleted != false) {
             setUserRolesJob(launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
-                _userRoleResult.postValue(getUserRoleUseCase.execute())
+                _userRoleResult.postValue(Success(getUserRoleUseCase.execute()))
             }, onError = {
                 _userRoleResult.postValue(Fail(it))
             }))

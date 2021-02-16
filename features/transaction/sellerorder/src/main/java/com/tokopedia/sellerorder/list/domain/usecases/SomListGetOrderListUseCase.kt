@@ -13,7 +13,7 @@ import javax.inject.Inject
 class SomListGetOrderListUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: OrderListMapper
-) : BaseGraphqlUseCase<Pair<String, List<SomListOrderUiModel>>>(gqlRepository) {
+) : BaseGraphqlUseCase<Unit>(gqlRepository) {
 
     private fun getSearchKeyword(params: RequestParams): String {
         params.parameters[PARAM_INPUT]?.let { input ->
@@ -26,30 +26,30 @@ class SomListGetOrderListUseCase @Inject constructor(
         return ""
     }
 
-    override suspend fun executeOnBackground(): Pair<String, List<SomListOrderUiModel>> {
-        val params = params.poll()
-        if (params != null) {
-            val searchKeyword = getSearchKeyword(params)
-            val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
-            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+    suspend fun executeOnBackground(params: RequestParams): Pair<String, List<SomListOrderUiModel>> {
+        val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val searchKeyword = getSearchKeyword(params)
 
-            val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
-            if (errors.isNullOrEmpty()) {
-                val response = gqlResponse.getData<SomListOrderListResponse.Data>()
-                return response.orderList.cursorOrderId to mapper.mapResponseToUiModel(response.orderList.list, searchKeyword)
-            } else {
-                throw RuntimeException(errors.joinToString(", ") { it.message })
-            }
+        val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListOrderListResponse.Data>()
+            return response.orderList.cursorOrderId to mapper.mapResponseToUiModel(response.orderList.list, searchKeyword)
         } else {
-            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+            throw RuntimeException(errors.joinToString(", ") { it.message })
         }
     }
 
-    fun setParams(param: SomListGetOrderListParam) {
-        val newParams = RequestParams.create().apply {
-            putObject(PARAM_INPUT, param)
-        }
-        params.offer(newParams)
+    @Deprecated(
+            message = "This function should not be used to get order list",
+            replaceWith = ReplaceWith("executeOnBackground(param)"),
+            level = DeprecationLevel.ERROR
+    )
+    override suspend fun executeOnBackground() {
+    }
+
+    fun composeParams(param: SomListGetOrderListParam): RequestParams = RequestParams.create().apply {
+        putObject(PARAM_INPUT, param)
     }
 
     companion object {

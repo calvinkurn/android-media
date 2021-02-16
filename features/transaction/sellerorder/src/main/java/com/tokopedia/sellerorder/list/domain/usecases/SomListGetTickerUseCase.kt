@@ -16,28 +16,22 @@ class SomListGetTickerUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<List<TickerData>>(gqlRepository) {
 
     override suspend fun executeOnBackground(): List<TickerData> {
-        val params = params.poll()
-        if (params != null) {
-            val gqlRequest = GraphqlRequest(QUERY, SomListGetTickerResponse.Data::class.java, params.parameters)
-            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, SomListGetTickerResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-            val errors = gqlResponse.getError(SomListGetTickerResponse.Data::class.java)
-            if (errors.isNullOrEmpty()) {
-                val response = gqlResponse.getData<SomListGetTickerResponse.Data>()
-                return mapper.mapResponseToUiModel(response.orderTickers)
-            } else {
-                throw RuntimeException(errors.joinToString(", ") { it.message })
-            }
+        val errors = gqlResponse.getError(SomListGetTickerResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListGetTickerResponse.Data>()
+            return mapper.mapResponseToUiModel(response.orderTickers)
         } else {
-            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+            throw RuntimeException(errors.joinToString(", ") { it.message })
         }
     }
 
     fun setParam(param: SomListGetTickerParam) {
-        val newParams = RequestParams.create().apply {
+        params = RequestParams.create().apply {
             putObject(SomConsts.PARAM_INPUT, param)
         }
-        params.offer(newParams)
     }
 
     companion object {

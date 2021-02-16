@@ -20,10 +20,7 @@ class SomAcceptOrderUseCase @Inject constructor(private val useCase: GraphqlUseC
         useCase.setTypeClass(SomAcceptOrderResponse.Data::class.java)
     }
 
-    suspend fun execute(): Result<SomAcceptOrderResponse.Data> {
-        val acceptOrder = useCase.executeOnBackground()
-        return Success(acceptOrder)
-    }
+    suspend fun execute(): SomAcceptOrderResponse.Data = useCase.executeOnBackground()
 
     fun setParams(orderId: String, shopId: String) {
         useCase.setRequestParams(RequestParams.create().apply {

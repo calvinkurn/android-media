@@ -559,7 +559,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.resetNextOrderId()
 
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } answers {
             if (counter++ == 0) {
                 throw Throwable()
@@ -573,7 +573,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getOrderList()
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && !viewModel.containsFailedRefreshOrder)
@@ -587,7 +587,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getDataOrderListParams().nextOrderId = 100L
 
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } answers {
             if (counter++ == 0) {
                 throw Throwable()
@@ -601,7 +601,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getOrderList()
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && viewModel.containsFailedRefreshOrder)
@@ -611,14 +611,14 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
     fun getOrderList_shouldCancelOldJobAndSuccess() {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } returns ("0" to listOf())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
             getOrderListJob.cancel()
         }
 
@@ -628,13 +628,13 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun getOrderList_shouldFailed() {
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } throws Throwable()
 
         viewModel.getOrderList()
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Fail)
@@ -647,13 +647,13 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         val order = SomListOrderUiModel(searchParam = invoice, orderId = orderId)
 
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } returns ("0" to listOf(order))
 
         viewModel.refreshSelectedOrder(orderId, invoice)
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
 
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
@@ -666,13 +666,13 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         val invoice = "INV/20200922/XX/IX/123456789"
 
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } throws Throwable()
 
         viewModel.refreshSelectedOrder(orderId, invoice)
 
         coVerify {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult is Fail)
@@ -689,13 +689,13 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
             viewModel.isRefreshingAllOrder()
         } returns true
         coEvery {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         } returns ("0" to listOf(order))
 
         viewModel.refreshSelectedOrder(orderId, invoice)
 
         coVerify(inverse = true) {
-            somListGetOrderListUseCase.executeOnBackground()
+            somListGetOrderListUseCase.executeOnBackground(any())
         }
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult == null)
@@ -771,7 +771,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
     fun getUserRoles_shouldSuccess() {
         coEvery {
             getUserRoleUseCase.execute()
-        } returns Success(SomGetUserRoleUiModel())
+        } returns SomGetUserRoleUiModel()
 
         viewModel.getUserRoles()
 
@@ -816,7 +816,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         val getUserRolesJob = mockk<Job>()
         coEvery {
             getUserRoleUseCase.execute()
-        } returns Success(SomGetUserRoleUiModel())
+        } returns SomGetUserRoleUiModel()
 
         every {
             getUserRolesJob.isCompleted

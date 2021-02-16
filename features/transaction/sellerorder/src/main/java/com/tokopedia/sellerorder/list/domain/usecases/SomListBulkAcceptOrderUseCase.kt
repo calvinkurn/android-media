@@ -16,31 +16,25 @@ class SomListBulkAcceptOrderUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<SomListBulkAcceptOrderUiModel>(gqlRepository) {
 
     override suspend fun executeOnBackground(): SomListBulkAcceptOrderUiModel {
-        val params = params.poll()
-        if (params != null) {
-            val gqlRequest = GraphqlRequest(QUERY, SomListBulkAcceptOrderResponse.Data::class.java, params.parameters)
-            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, SomListBulkAcceptOrderResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-            val errors = gqlResponse.getError(SomListBulkAcceptOrderResponse.Data::class.java)
-            if (errors.isNullOrEmpty()) {
-                val response = gqlResponse.getData<SomListBulkAcceptOrderResponse.Data>()
-                return mapper.mapResponseToUiModel(response)
-            } else {
-                throw RuntimeException(errors.joinToString(", ") { it.message })
-            }
+        val errors = gqlResponse.getError(SomListBulkAcceptOrderResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListBulkAcceptOrderResponse.Data>()
+            return mapper.mapResponseToUiModel(response)
         } else {
-            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+            throw RuntimeException(errors.joinToString(", ") { it.message })
         }
     }
 
     fun setParams(orderIds: List<String>, userId: String) {
-        val newParams = RequestParams.create().apply {
+        params = RequestParams.create().apply {
             putObject(PARAM_INPUT, SomListBulkAcceptOrderParam(
                     orderIds = orderIds.joinToString(","),
                     userId = userId
             ))
         }
-        params.offer(newParams)
     }
 
     companion object {

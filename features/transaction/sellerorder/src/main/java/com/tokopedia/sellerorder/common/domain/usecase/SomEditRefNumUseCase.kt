@@ -20,10 +20,7 @@ class SomEditRefNumUseCase @Inject constructor(private val useCase: GraphqlUseCa
         useCase.setTypeClass(SomEditRefNumResponse.Data::class.java)
     }
 
-    suspend fun execute(): Result<SomEditRefNumResponse.Data> {
-        val editAwb = useCase.executeOnBackground()
-        return Success(editAwb)
-    }
+    suspend fun execute(): SomEditRefNumResponse.Data = useCase.executeOnBackground()
 
     fun setParams(params: SomEditRefNumRequestParam) {
         useCase.setRequestParams(RequestParams.create().apply {
