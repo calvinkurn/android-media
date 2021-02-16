@@ -39,9 +39,6 @@ class BannerComponentViewHolder(itemView: View,
     private val layoutManager = LinearCenterLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private val fullLayoutManager = GridLayoutManager(itemView.context, 1)
 
-    // tracker
-    private val impressionStatusList = mutableMapOf<String, Boolean>()
-
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
@@ -157,6 +154,8 @@ class BannerComponentViewHolder(itemView: View,
         val adapter = BannerChannelAdapter(list, this)
         adapter.setItemList(list)
         rvBanner.adapter = adapter
+        layoutManager.scrollToPosition(0)
+        fullLayoutManager.scrollToPosition(0)
     }
 
     private fun setScrollListener() {
@@ -190,19 +189,12 @@ class BannerComponentViewHolder(itemView: View,
     private fun onPromoScrolled(position: Int) {
         channelModel?.let {channel ->
             channel.selectGridInPosition(position) {
-                if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(it.id) && position != -1) {
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
                     bannerListener.onPromoScrolled(channel, it ,position)
-                    impressionStatusList[it.id] = true
                 }
             }
         }
 
-    }
-
-    private fun isBannerImpressed(id: String): Boolean {
-        return if (impressionStatusList.containsKey(id)) {
-            impressionStatusList[id]?:false
-        } else false
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
@@ -226,12 +218,6 @@ class BannerComponentViewHolder(itemView: View,
         } else {
             itemView.home_component_header_view.gone()
         }
-    }
-
-    fun resetImpression(){
-        impressionStatusList.clear()
-        layoutManager.scrollToPosition(0)
-        fullLayoutManager.scrollToPosition(0)
     }
 
     private fun ChannelModel.convertToCircularModel(): List<CircularModel> {
