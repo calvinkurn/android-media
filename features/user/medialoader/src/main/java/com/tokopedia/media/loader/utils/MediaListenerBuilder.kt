@@ -60,7 +60,7 @@ object MediaListenerBuilder {
                 val qualitySettings = Loader.settings.getQualitySetting(Loader.settings.qualitySettings())
                 val ect = urlBuilder.toUri()?.getQueryParameter("ect")?: "4g"
 
-                Log.d("MediaLoader", "$pageName, ${properties.data.toString()}, $qualitySettings, $ect, ${(loadTime.toFloat() / 1000).toString().dropLast(2)}, $fileSize")
+                Log.i("M3diaL04der", "$pageName, ${properties.data.toString()}, $qualitySettings, $ect, $loadTime, $fileSize")
             }
 
             listener?.onLoaded(resource, dataSource(dataSource))
