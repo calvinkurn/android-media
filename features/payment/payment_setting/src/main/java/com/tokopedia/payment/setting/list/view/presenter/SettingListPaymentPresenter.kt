@@ -15,7 +15,7 @@ class SettingListPaymentPresenter @Inject constructor(
     : BaseDaggerPresenter<SettingListPaymentContract.View>(), SettingListPaymentContract.Presenter {
 
     override fun getCreditCardList(resources: Resources) {
-        getCreditCardListUseCase.execute(object : Subscriber<GraphqlResponse>() {
+        /*getCreditCardListUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse?) {
                 if (isViewAttached) {
                     val response = objects?.getData<GQLPaymentQueryResponse>(GQLPaymentQueryResponse::class.java)
@@ -38,7 +38,7 @@ class SettingListPaymentPresenter @Inject constructor(
                 }
             }
 
-        })
+        })*/
     }
 
     override fun checkVerificationPhone() {
@@ -53,6 +53,6 @@ class SettingListPaymentPresenter @Inject constructor(
     }
 
     override fun detachView() {
-        getCreditCardListUseCase.unSubscribe()
+        //getCreditCardListUseCase.unSubscribe()
     }
 }

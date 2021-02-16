@@ -5,8 +5,7 @@ import com.tokopedia.payment.setting.list.view.fragment.SettingListPaymentFragme
 import dagger.Component
 
 @SettingListPaymentScope
-@Component(modules = [SettingListPaymentModule::class,
-    GqlQueryModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [SettingListPaymentModule::class], dependencies = [BaseAppComponent::class])
 interface SettingListPaymentComponent{
     fun inject(settingListPaymentFragment : SettingListPaymentFragment)
 }

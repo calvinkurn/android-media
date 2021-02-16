@@ -17,13 +17,13 @@ class DetailCreditCardPresenter @Inject constructor(
     private val getCCListUseCase = GraphqlUseCase()
 
     override fun detachView() {
-        getCCListUseCase.unsubscribe()
+        //getCCListUseCase.unsubscribe()
         super.detachView()
     }
 
     override fun deleteCreditCard(tokenId: String, resources: Resources?) {
         view.showProgressDialog()
-        gqlDeleteCreditCardQuery.execute(tokenId, object : Subscriber<GraphqlResponse>() {
+        /*gqlDeleteCreditCardQuery.execute(tokenId, object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse?) {
                 objects?.let {
                     if (isViewAttached) {
@@ -48,7 +48,7 @@ class DetailCreditCardPresenter @Inject constructor(
                 }
             }
 
-        })
+        })*/
     }
 
 

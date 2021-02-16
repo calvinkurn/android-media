@@ -18,7 +18,6 @@ import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
-import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
 import com.tokopedia.payment.setting.list.model.PaymentSignature
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
@@ -123,7 +122,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun initInjector() {
-        getComponent(DaggerSettingListPaymentComponent::class.java).inject(this)
+        //getComponent(DaggerSettingListPaymentComponent::class.java).inject(this)
         settingListPaymentPresenter.attachView(this)
     }
 

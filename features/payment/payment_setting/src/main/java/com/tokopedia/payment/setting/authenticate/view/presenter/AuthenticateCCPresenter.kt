@@ -18,7 +18,7 @@ class AuthenticateCCPresenter @Inject constructor(
 
     override fun updateWhiteList(authValue: Int, isNeedCheckOtp: Boolean,
                                  token: String?) {
-        if (authValue == SINGLE_AUTH_VALUE && isNeedCheckOtp) {
+      /*  if (authValue == SINGLE_AUTH_VALUE && isNeedCheckOtp) {
             view?.goToOtpPage(userSession.phoneNumber)
             return
         }
@@ -47,11 +47,11 @@ class AuthenticateCCPresenter @Inject constructor(
                             }
                         }
                     }
-                })
+                })*/
     }
 
     override fun checkWhiteList() {
-        checkUpdateWhiteListCreditCartUseCase.execute(0, false, null,
+       /* checkUpdateWhiteListCreditCartUseCase.execute(0, false, null,
                 object : Subscriber<GraphqlResponse>() {
                     override fun onNext(response: GraphqlResponse?) {
                         if (isViewAttached) {
@@ -75,7 +75,7 @@ class AuthenticateCCPresenter @Inject constructor(
                             }
                         }
                     }
-                })
+                })*/
     }
 
     private fun generateDataListAuth(data: List<WhiteListData>?): List<TypeAuthenticateCreditCard> {
@@ -100,7 +100,7 @@ class AuthenticateCCPresenter @Inject constructor(
 
     private fun initiateDoubleAuthentication(model: WhiteListData): TypeAuthenticateCreditCard {
         val doubleAuthentication = TypeAuthenticateCreditCard()
-        doubleAuthentication.title = view.getString(R.string.payment_authentication_title_2)
+            doubleAuthentication.title = view.getString(R.string.payment_authentication_title_2)
         doubleAuthentication.description = view.getString(R.string.payment_authentication_description_2)
         doubleAuthentication.stateWhenSelected = DOUBLE_AUTH_VALUE
         doubleAuthentication.isSelected = model?.state == DOUBLE_AUTH_VALUE
@@ -108,7 +108,7 @@ class AuthenticateCCPresenter @Inject constructor(
     }
 
     override fun detachView() {
-        checkUpdateWhiteListCreditCartUseCase.unSubscribe()
+        //checkUpdateWhiteListCreditCartUseCase.unSubscribe()
         super.detachView()
     }
 

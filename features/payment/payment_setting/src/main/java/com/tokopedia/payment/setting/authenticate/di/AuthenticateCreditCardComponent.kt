@@ -5,7 +5,7 @@ import com.tokopedia.payment.setting.authenticate.view.fragment.AuthenticateCred
 import dagger.Component
 
 @AuthenticateCCScope
-@Component(modules = [AuthenticateCreditCardModule::class, GqlQueryModule::class],
+@Component(modules = [AuthenticateCreditCardModule::class],
         dependencies = [BaseAppComponent::class])
 interface AuthenticateCreditCardComponent {
     fun inject(authenticateCreditCardFragment: AuthenticateCreditCardFragment)

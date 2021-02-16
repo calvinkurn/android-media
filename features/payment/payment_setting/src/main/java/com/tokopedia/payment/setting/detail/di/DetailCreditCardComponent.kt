@@ -5,8 +5,7 @@ import com.tokopedia.payment.setting.detail.view.fragment.DetailCreditCardFragme
 import dagger.Component
 
 @DetailCreditCardScope
-@Component(modules = [DetailCreditCardModule::class,
-    GqlQueryModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DetailCreditCardModule::class], dependencies = [BaseAppComponent::class])
 interface DetailCreditCardComponent {
     fun inject(detailCreditCardFragment: DetailCreditCardFragment)
 }
