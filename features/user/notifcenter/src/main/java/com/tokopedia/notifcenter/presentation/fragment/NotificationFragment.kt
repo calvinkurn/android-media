@@ -23,6 +23,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -60,9 +62,9 @@ import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -393,6 +395,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         )
     }
 
+    private fun showErrorMessage(msg: String) {
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun showErrorMessage(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
@@ -452,20 +460,54 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
-        if (usePdp()) {
-            goToPdp(product)
-        } else {
-            val buyPageIntent = getBuyPageIntent(notification, product)
-            startActivity(buyPageIntent)
+        doBuyAndAtc(notification, product) {
+            RouteManager.route(context, ApplinkConst.CART)
         }
     }
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
-        if (usePdp()) {
-            goToPdp(product)
-        } else {
-            val atcPageIntent = getAtcPageIntent(notification, product)
-            startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+        doBuyAndAtc(notification, product) {
+            val msg = it.message.getOrNull(0) ?: ""
+            view?.let { view ->
+                Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        view.context.getString(R.string.title_notifcenter_see_cart),
+                        View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.CART)
+                        }
+                ).show()
+            }
+        }
+    }
+
+    private fun doBuyAndAtc(
+            notification: NotificationUiModel,
+            product: ProductData,
+            onSuccess: (response: DataModel) -> Unit = {}
+    ) {
+        val buyParam = getAtcBuyParam(product)
+        viewModel.addProductToCart(buyParam, {
+            onSuccess(it)
+        }, { msg ->
+            showErrorMessage(msg)
+        })
+    }
+
+    private fun getAtcBuyParam(product: ProductData): RequestParams {
+        val addToCartRequestParams = AddToCartRequestParams(
+                productId = product.productId,
+                shopId = product.shop.id.toInt(),
+                quantity = product.minOrder,
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+        )
+        return RequestParams.create().apply {
+            putObject(
+                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                    addToCartRequestParams
+            )
         }
     }
 
@@ -644,19 +686,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                     AddToCartRequestParams.ATC_FROM_NOTIFCENTER
             )
         }
-    }
-
-    private fun usePdp(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
-    }
-
-    private fun goToPdp(product: ProductData?) {
-        if (product == null) return
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                product.productId.toString()
-        )
     }
 
     companion object {

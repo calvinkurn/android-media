@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -59,6 +60,7 @@ class NotificationViewModelTest {
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk(relaxed = true)
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
+    private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
     private val dispatcher = TestDispatcherProvider()
 
@@ -83,6 +85,7 @@ class NotificationViewModelTest {
             topAdsWishlishedUseCase,
             removeWishListUseCase,
             userSessionInterface,
+            addToCartUseCase,
             dispatcher
     )
 
