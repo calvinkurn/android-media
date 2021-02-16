@@ -58,7 +58,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-                        if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
+                        if (FileUtil.getFileSizeInKb(path) > maxFileSize || convertToWebp) {
                             if (FileUtil.isImageType(getView().getContext(), path)) {
                                 String pathResult = "";
                                 //resize image
@@ -81,7 +81,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                 }
                                 return Observable.just(pathResult);
                             } else {
-                                throw new FileSizeAboveMaximumException();
+                                return Observable.just(path);
                             }
                         } else {
                             return Observable.just(path);
