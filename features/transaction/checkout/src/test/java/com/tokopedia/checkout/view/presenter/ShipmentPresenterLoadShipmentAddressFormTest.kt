@@ -144,7 +144,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         verifyOrder {
             view.hideInitialLoading()
-            view.renderNoRecipientAddressShipmentForm(any())
+            view.renderCheckoutPageNoAddress(any())
         }
     }
 

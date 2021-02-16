@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -755,7 +754,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
+    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
         if (shipmentAddressFormData.getKeroDiscomToken() != null &&
                 shipmentAddressFormData.getKeroUnixTime() != 0) {
@@ -769,6 +768,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
         }
 
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
+    }
+
+    @Override
+    public void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1272,13 +1277,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 break;
 
-            case CheckoutConstant.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        false, isOneClickShipment(), isTradeIn(), false,
-                        false, null, getDeviceId(), getCheckoutLeasingId()
-                );
-                break;
-
             case Activity.RESULT_CANCELED:
                 if (getActivity() != null && data == null && shipmentPresenter.getShipmentCartItemModelList() == null) {
                     getActivity().finish();
@@ -1286,6 +1284,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
 
             default:
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                        false, isOneClickShipment(), isTradeIn(), false,
+                        false, null, getDeviceId(), getCheckoutLeasingId()
+                );
                 break;
         }
     }
