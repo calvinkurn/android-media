@@ -7,6 +7,7 @@
     android:clipToPadding="false"
     android:layout_width="match_parent">
     <com.tokopedia.mvcwidget.views.MvcShadowLayout
+        android:id="@+id/mvc_container"
         android:clipChildren="false"
         android:background="@color/white"
         android:layout_marginEnd="@dimen/dp_16"
