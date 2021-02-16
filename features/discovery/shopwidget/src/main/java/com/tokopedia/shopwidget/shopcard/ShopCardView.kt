@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintSet
@@ -13,8 +12,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.shopwidget_shop_card_layout.view.*
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.shopwidget_shop_card_layout.view.*
 
 class ShopCardView: BaseCustomView {
 
@@ -47,8 +47,6 @@ class ShopCardView: BaseCustomView {
         initProductPreview(shopCardModel, shopCardListener)
         initShopVoucherLabel(shopCardModel)
         initShopStatus(shopCardModel)
-
-        finishBindShopItem()
     }
 
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
@@ -89,11 +87,19 @@ class ShopCardView: BaseCustomView {
 
     private fun initShopName(shopCardModel: ShopCardModel) {
         shopWidgetTextViewShopName?.text = MethodChecker.fromHtml(shopCardModel.name)
+
+        setShopNameTopMargin(shopCardModel)
+    }
+
+    private fun setShopNameTopMargin(shopCardModel: ShopCardModel) {
+        val isShopReputationVisible = shopCardModel.reputationImageUri.isNotEmpty()
+        val topMarginDp = if (isShopReputationVisible) 0 else 5
+        setViewMargins(R.id.shopWidgetTextViewShopName, ConstraintSet.TOP, topMarginDp)
     }
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
-        shopWidgetImageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopCardModel.reputationImageUri)
+        shopWidgetImageViewShopReputation?.shouldShowWithAction(shopCardModel.reputationImageUri.isNotEmpty()) {
+            ImageHandler.loadImageThumbs(context, shopWidgetImageViewShopReputation, shopCardModel.reputationImageUri)
         }
     }
 
@@ -160,6 +166,8 @@ class ShopCardView: BaseCustomView {
                     0,
                     shopCardListener
             )
+        } else {
+            clearProductPreviewItem(shopWidgetImageViewShopItemProductImage1, shopWidgetTextViewShopItemProductPrice1)
         }
 
         if (shopCardModel.productList.size > 1) {
@@ -170,6 +178,8 @@ class ShopCardView: BaseCustomView {
                     1,
                     shopCardListener
             )
+        } else {
+            clearProductPreviewItem(shopWidgetImageViewShopItemProductImage2, shopWidgetTextViewShopItemProductPrice2)
         }
 
         if (shopCardModel.productList.size > 2) {
@@ -180,6 +190,8 @@ class ShopCardView: BaseCustomView {
                     2,
                     shopCardListener
             )
+        } else {
+            clearProductPreviewItem(shopWidgetImageViewShopItemProductImage3, shopWidgetTextViewShopItemProductPrice3)
         }
     }
 
@@ -191,7 +203,7 @@ class ShopCardView: BaseCustomView {
             shopCardListener: ShopCardListener
     ) {
         imageViewShopItemProductImage?.let {
-            ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, productPreviewItem.imageUrl)
+            ImageHandler.loadImageRounded2(context, imageViewShopItemProductImage, productPreviewItem.imageUrl, 6.toPx().toFloat())
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->
@@ -205,6 +217,14 @@ class ShopCardView: BaseCustomView {
         }
 
         textViewShopItemProductPrice?.text = MethodChecker.fromHtml(productPreviewItem.priceFormat)
+    }
+
+    private fun clearProductPreviewItem(
+            imageViewShopItemProductImage: AppCompatImageView?,
+            textViewShopItemProductPrice: Typography?,
+    ) {
+        imageViewShopItemProductImage?.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        textViewShopItemProductPrice?.text = ""
     }
 
     private fun initShopVoucherLabel(shopCardModel: ShopCardModel) {
@@ -261,86 +281,10 @@ class ShopCardView: BaseCustomView {
         shopWidgetConstraintLayoutShopStatus?.gone()
     }
 
-    private fun finishBindShopItem() {
-        setTextViewShopNameMargin()
-        setLabelVoucherCashbackMargin()
-        setLabelVoucherConstraints()
-    }
-
-    private fun setTextViewShopNameMargin() {
-        shopWidgetTextViewShopName?.let { textViewShopName ->
-            if(textViewShopName.isVisible) {
-                setViewMargins(textViewShopName.id, ConstraintSet.START, getTextViewShopNameMarginLeft())
-            }
-        }
-    }
-
-    @DimenRes
-    private fun getTextViewShopNameMarginLeft(): Int {
-        return shopWidgetImageViewShopBadge?.let { if (it.isVisible) com.tokopedia.unifyprinciples.R.dimen.unify_space_2 else com.tokopedia.unifyprinciples.R.dimen.unify_space_8 }
-                ?: com.tokopedia.unifyprinciples.R.dimen.unify_space_8
-    }
-
-    private fun setLabelVoucherCashbackMargin() {
-        shopWidgetLabelVoucherCashback?.doIfVisible {
-            if(shopWidgetLabelVoucherFreeShipping.isNullOrNotVisible) {
-                setViewMargins(it.id, ConstraintSet.START, com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-            }
-        }
-    }
-
-    private fun setLabelVoucherConstraints() {
-        val topConstraintViewForLabelVoucher = getTopConstraintViewForLabelVoucher()
-
-        topConstraintViewForLabelVoucher?.let {
-            setLabelVoucherConstraintTop(it)
-        }
-    }
-
-    private fun getTopConstraintViewForLabelVoucher(): View? {
-        return if (shopWidgetTextViewShopItemProductPrice1?.isVisible == true) {
-            shopWidgetTextViewShopItemProductPrice1
-        }
-        else {
-            shopWidgetTextViewShopHasNoProduct
-        }
-    }
-
-    private fun setLabelVoucherConstraintTop(topConstraintViewForLabelVoucher: View) {
-        shopWidgetLabelVoucherFreeShipping?.doIfVisible { labelVoucherFreeShipping ->
-            setViewConstraint(
-                    labelVoucherFreeShipping.id, ConstraintSet.TOP,
-                    topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_4
-            )
-        }
-
-        shopWidgetLabelVoucherCashback?.doIfVisible { labelVoucherCashback ->
-            setViewConstraint(
-                    labelVoucherCashback.id, ConstraintSet.TOP,
-                    topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_4
-            )
-        }
-    }
-
     private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
         applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
-            val marginPixel = getDimensionPixelSize(marginDp)
+            val marginPixel = marginDp.toPx()
             constraintSet.setMargin(viewId, anchor, marginPixel)
-        }
-    }
-
-    private fun setViewConstraint(
-            @IdRes startLayoutId: Int,
-            startSide: Int,
-            @IdRes endLayoutId: Int,
-            endSide: Int,
-            @DimenRes marginDp: Int
-    ) {
-        applyConstraintSetToConstraintLayoutShopCard { constraintSet ->
-            val marginPixel = getDimensionPixelSize(marginDp)
-            constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
 
@@ -353,19 +297,6 @@ class ShopCardView: BaseCustomView {
             constraintSet.clone(it)
             configureConstraintSet(constraintSet)
             constraintSet.applyTo(it)
-        }
-    }
-
-    private fun getDimensionPixelSize(@DimenRes id: Int): Int {
-        return context.resources.getDimensionPixelSize(id)
-    }
-
-    private val View?.isNullOrNotVisible: Boolean
-        get() = this == null || !this.isVisible
-
-    private fun View.doIfVisible(action: (View) -> Unit) {
-        if(this.isVisible) {
-            action(this)
         }
     }
 

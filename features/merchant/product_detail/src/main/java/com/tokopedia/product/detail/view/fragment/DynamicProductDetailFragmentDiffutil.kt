@@ -138,8 +138,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -205,9 +205,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -229,7 +226,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var initToolBarMethod: (() -> Unit)? = null
 
     //Data
-    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
 
     // This productId is only use for backend hit
@@ -262,6 +258,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val adapter by lazy {
+        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
+                .build()
+        ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
+    }
     private var menu: Menu? = null
     private var navToolbar: NavToolbar? = null
     private var toasterWishlistText = ""
@@ -290,22 +291,20 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         super.onViewCreated(view, savedInstanceState)
         initBtnAction()
         navAbTestCondition({ initNavToolbar() }, { initToolbar() })
-        initStickyLogin(view)
         renderInitialAffiliate()
+
+        if (!viewModel.isUserSessionActive) initStickyLogin(view)
     }
 
     override fun onSwipeRefresh() {
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
+        stickyLoginView?.loadContent()
         ticker_occ_layout.gone()
         super.onSwipeRefresh()
     }
 
-    override fun createAdapterInstance(): ProductDetailAdapter {
-        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
-                .build()
-        return ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
-    }
+    override fun createAdapterInstance(): ProductDetailAdapter = adapter
 
     override fun getScreenName(): String = ""
 
@@ -460,7 +459,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-                updateStickyState()
                 updateActionButtonShadow()
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
@@ -485,12 +483,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
-                        updateStickyState()
-                        updateActionButtonShadow()
+                        stickyLoginView?.hide()
                     }
                     if (isFavoriteFromShopPage != wasFavorite) {
                         onSuccessFavoriteShop(true)
@@ -781,10 +777,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            return it.data.getOrNull(1)?.applink ?: ""
-        }
-        return ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
     }
 
     private fun getPPTitleName(): String {
@@ -1110,7 +1103,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     }
                 }
                 if (isAffiliate && productInfo?.basic?.productID?.isNotEmpty() == true) {
-                    productDetailTracking.eventClickWishlistOnAffiliate(
+                    DynamicProductDetailTracking.Click.eventClickWishlistOnAffiliate(
                             viewModel.userId,
                             productInfo.basic.productID)
                 }
@@ -1181,7 +1174,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun goToReviewImagePreview() {
-        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
@@ -1287,7 +1280,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.getDynamicProductInfoP1,
                     pdpUiUpdater?.productNewVariantDataModel,
                     viewModel.variantData,
-                    getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
+                    getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel))
         }
         updateUi()
     }
@@ -1350,9 +1343,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
                 }
             })
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant() ?: false)
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
-                    ?: false)
         }
     }
 
@@ -1456,7 +1448,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateRecommendationData(it.data)
-                updateUi()
+                    updateUi()
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -1757,8 +1749,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             pdpUiUpdater?.removeComponent(ProductDetailConstant.TICKER_INFO)
         }
 
-        updateStickyContent(it.tickerStickyLogin)
-
+        stickyLoginView?.loadContent()
         pdpUiUpdater?.updateDataP3(context, it)
         updateUi()
     }
@@ -2363,69 +2354,23 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        updateStickyState()
-        updateActionButtonShadow()
-        stickyLoginView?.setOnClickListener {
-            goToLogin()
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnLogin(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnLogin(StickyLoginConstant.Page.PDP)
+        stickyLoginView?.page = StickyLoginConstant.Page.PDP
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                goToLogin()
             }
-        }
-        stickyLoginView?.setOnDismissListener(View.OnClickListener {
-            stickyLoginView?.dismiss(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnDismiss(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnDismiss(StickyLoginConstant.Page.PDP)
+
+            override fun onDismiss() {
+
             }
-            updateStickyState()
+
+            override fun onViewChange(isShowing: Boolean) {
+                updateActionButtonShadow()
+            }
         })
-    }
 
-    private fun updateStickyState() {
-        if (tickerDetail == null) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        if (viewModel.isUserSessionActive) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        var isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
-                ?: true
-        if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
-            stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        } else {
-            isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
-                    ?: true
-            if (!isCanShowing) {
-                stickyLoginView?.visibility = View.GONE
-                return
-            }
-
-            this.tickerDetail?.let { stickyLoginView?.setContent(it) }
-            stickyLoginView?.show(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.tracker?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        }
-    }
-
-    private fun updateStickyContent(stickyData: StickyLoginTickerPojo.TickerDetail?) {
-        if (stickyData == null) {
-            stickyLoginView?.hide()
-        } else {
-            this.tickerDetail = stickyData
-            updateStickyState()
-            updateActionButtonShadow()
-        }
+        stickyLoginView?.hide()
     }
 
     private fun goToPdpSellerApp() {
@@ -3060,18 +3005,18 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 setSecondaryCTAText(result.errorReporter.texts.cancelButton)
                 setSecondaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickCloseOnHelpPopUpAtc()
                 }
                 setPrimaryCTAText(result.errorReporter.texts.submitButton)
                 setPrimaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
                     viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragmentDiffutil::onErrorSubmitHelpTicket, this@DynamicProductDetailFragmentDiffutil::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
-            productDetailTracking.eventViewHelpPopUpWhenAtc()
+            DynamicProductDetailTracking.Impression.eventViewHelpPopUpWhenAtc()
         }
     }
 

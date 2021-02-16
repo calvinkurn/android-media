@@ -649,7 +649,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber, this)
+            presenter.likeKol(id, rowNumber, this, isLiked = true)
             if (isOwner.not()) {
                 profileAnalytics.eventClickLike(hasMultipleContent, id.toString(), activityType)
             }
@@ -661,7 +661,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.unlikeKol(id, rowNumber, this)
+            presenter.likeKol(id, rowNumber, this, isLiked = false)
             if (isOwner.not()) {
                 profileAnalytics.eventClickUnlike(hasMultipleContent, id.toString(), activityType)
             }
@@ -1334,15 +1334,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun followUnfollowUser(userId: Int, follow: Boolean, source: String) {
         if (userSession.isLoggedIn) {
+            presenter.followKol(userId, follow)
             if (follow) {
-                presenter.followKol(userId)
                 if (source == FOLLOW_HEADER) {
                     profileAnalytics.eventClickFollow(isOwner, userId.toString())
                 } else if (source == FOLLOW_FOOTER) {
                     profileAnalytics.eventClickFollowFooter(isOwner, userId.toString())
                 }
             } else {
-                presenter.unfollowKol(userId)
                 if (source == FOLLOW_HEADER) {
                     profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
                 } else if (source == FOLLOW_FOOTER) {

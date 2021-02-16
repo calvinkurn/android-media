@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
@@ -16,8 +14,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
@@ -39,24 +35,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
-        topAdsHeadlineViewModel.getTopAdsHeadlineDate(params)
-        topAdsHeadlineViewModel.getHeadlineAdsLiveData().observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.displayAds.data.isNotEmpty()) {
-                        onSuccess?.invoke(it.data.displayAds)
-                        displayAds(it.data.displayAds)
-                    } else {
-                        onError?.invoke()
-                    }
-                }
-
-                is Fail -> {
-                    it.throwable.printStackTrace()
-                    onError?.invoke()
-                }
-            }
-        })
+        topAdsHeadlineViewModel.getTopAdsHeadlineDate(params, onSuccess, onError)
     }
 
     fun displayAds(cpmModel: CpmModel) {

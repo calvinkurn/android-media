@@ -31,7 +31,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -64,7 +64,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         }
 
         @JvmStatic
-        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+        fun createIntent(context: Context, productId: Long) = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }

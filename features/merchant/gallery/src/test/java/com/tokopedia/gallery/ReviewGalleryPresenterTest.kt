@@ -6,23 +6,15 @@ import com.tokopedia.gallery.domain.GetImageReviewUseCase
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl
 import com.tokopedia.gallery.subscriber.GetImageReviewSubscriber
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.gallery.viewmodel.ImageReviewListModel
 import com.tokopedia.usecase.RequestParams
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-
-import org.junit.Before
-import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
-import java.util.ArrayList
+import org.mockito.ArgumentCaptor
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -38,7 +30,7 @@ class ReviewGalleryPresenterTest : Spek ({
         val galleryView: GalleryView = mock()
         val reviewGalleryPresenter = ReviewGalleryPresenterImpl(getImageReviewUseCase, galleryView)
 
-        val productId = 1234
+        val productId = 1234L
         val page = 1
 
         val requestParams = ArgumentCaptor.forClass(RequestParams::class.java)

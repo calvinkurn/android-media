@@ -1,0 +1,38 @@
+{
+  "readme": "Reminder Widget recharge impression, click, and close",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "creative_url": ""
+        }
+      ],
+      "eventCategory": "homepage-digital",
+      "event": "view_item",
+      "eventAction": "impression on digital bills",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "creative_url": ""
+        }
+      ],
+      "eventCategory": "homepage-digital",
+      "event": "select_content",
+      "eventAction": "click on digital bills",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}"
+    }
+  ]
+}

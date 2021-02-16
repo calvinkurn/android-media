@@ -18,6 +18,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/topTicker"
+                app:closeButtonVisibility="gone"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"/>
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
@@ -26,7 +36,7 @@
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/topTicker" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_success"
@@ -121,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/Unify_N700_96"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/tvInstallmentInfo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/ivNext"
                     app:layout_constraintTop_toTopOf="parent"
@@ -138,9 +148,29 @@
                     android:layout_width="@dimen/layout_lvl3"
                     android:layout_height="@dimen/layout_lvl3"
                     android:scaleType="center"
+                    app:unify_image_corner_radius = "0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvInstallmentInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:visibility="gone"
+                    android:paddingStart="@dimen/spacing_lvl3"
+                    android:paddingLeft="@dimen/spacing_lvl3"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ivNext"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTotalAmount"
+                    app:typographyType="body_3"
+                    tools:text="Cicilan X3" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
