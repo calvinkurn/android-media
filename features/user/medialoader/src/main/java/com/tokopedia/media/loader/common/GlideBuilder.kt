@@ -76,28 +76,31 @@ class GlideBuilder {
             properties: Properties,
             request: GlideRequest<Bitmap>
     ): GlideRequest<Bitmap> {
+        val isCircular = properties.isCircular
         val placeHolder = properties.placeHolder
         val blurHash = properties.blurHash
 
         return request.apply {
-            when {
-                /*
-                * validate if the placeholder have default placeholder value, 0.
-                * it will check if the blurHash is active, the placeholder will render
-                * the blurHash image, but if placeholder is 0 and blurHash is inactive,
-                * the placeholder will render the default of built-in placeholder.
-                * */
-                placeHolder == ZERO_PLACEHOLDER -> {
-                    if (blurHash && !hash.isNullOrEmpty()) {
-                        placeholder(BitmapDrawable(context.resources, blurring(hash)))
-                    } else {
-                        placeholder(R.drawable.ic_media_default_placeholder)
+            if (!isCircular) {
+                when {
+                    /*
+                    * validate if the placeholder have default placeholder value, 0.
+                    * it will check if the blurHash is active, the placeholder will render
+                    * the blurHash image, but if placeholder is 0 and blurHash is inactive,
+                    * the placeholder will render the default of built-in placeholder.
+                    * */
+                    placeHolder == ZERO_PLACEHOLDER -> {
+                        if (blurHash && !hash.isNullOrEmpty()) {
+                            placeholder(BitmapDrawable(context.resources, blurring(hash)))
+                        } else {
+                            placeholder(R.drawable.ic_media_default_placeholder)
+                        }
                     }
-                }
 
-                // render the custom placeholder that provided by Properties()
-                placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
-                    placeholder(placeHolder)
+                    // render the custom placeholder that provided by Properties()
+                    placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
+                        placeholder(placeHolder)
+                    }
                 }
             }
         }
