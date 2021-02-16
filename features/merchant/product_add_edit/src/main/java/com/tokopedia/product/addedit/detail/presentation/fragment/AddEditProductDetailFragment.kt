@@ -673,12 +673,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        inputAllDataInProductInputModel()
-        outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(viewModel.productInputModel))
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, viewModel.isAdding)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, viewModel.isEditing)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, viewModel.isDrafting)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, viewModel.isFirstMoved)
+        if (isCurrentFragmentVisible()) {
+            inputAllDataInProductInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(viewModel.productInputModel))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, viewModel.isAdding)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, viewModel.isEditing)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, viewModel.isDrafting)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, viewModel.isFirstMoved)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -748,6 +750,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun isCurrentFragmentVisible(): Boolean {
+        return childFragmentManager.fragments.any {
+            it.javaClass == AddEditProductDetailFragment::class.java && it.isVisible
+        }
     }
 
     private fun setupButton() {

@@ -306,12 +306,14 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        inputAllDataInInputModel()
-        outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
+        if (isCurrentFragmentVisible()) {
+            inputAllDataInInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -337,6 +339,12 @@ class AddEditProductDescriptionFragment:
             }
         }
         super.onViewStateRestored(savedInstanceState)
+    }
+
+    private fun isCurrentFragmentVisible(): Boolean {
+        return childFragmentManager.fragments.any {
+            it.javaClass == AddEditProductDescriptionFragment::class.java && it.isVisible
+        }
     }
 
     private fun sendClickAddProductVariant() {

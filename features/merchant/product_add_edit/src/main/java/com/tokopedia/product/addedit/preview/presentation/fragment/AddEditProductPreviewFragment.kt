@@ -504,7 +504,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (childFragmentManager.fragments.any {it.javaClass == AddEditProductPreviewFragment::class.java && it.isVisible}) {
+        if (isCurrentFragmentVisible()) {
             outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
         }
         super.onSaveInstanceState(outState)
@@ -649,6 +649,12 @@ class AddEditProductPreviewFragment :
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun isCurrentFragmentVisible(): Boolean {
+        return childFragmentManager.fragments.any {
+            it.javaClass == AddEditProductPreviewFragment::class.java && it.isVisible
+        }
     }
 
     private fun onSuccessSetCashback() {

@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
+import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
@@ -179,12 +180,14 @@ class AddEditProductShipmentFragment:
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        inputAllDataInProductInputModel()
-        outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(productInputModel))
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, shipmentViewModel.isAddMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, shipmentViewModel.isEditMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, shipmentViewModel.isDraftMode)
-        outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, shipmentViewModel.isFirstMoved)
+        if (isCurrentFragmentVisible()) {
+            inputAllDataInProductInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(productInputModel))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, shipmentViewModel.isAddMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, shipmentViewModel.isEditMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, shipmentViewModel.isDraftMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, shipmentViewModel.isFirstMoved)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -266,6 +269,12 @@ class AddEditProductShipmentFragment:
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
             setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
+        }
+    }
+
+    private fun isCurrentFragmentVisible(): Boolean {
+        return childFragmentManager.fragments.any {
+            it.javaClass == AddEditProductShipmentFragment::class.java && it.isVisible
         }
     }
 
