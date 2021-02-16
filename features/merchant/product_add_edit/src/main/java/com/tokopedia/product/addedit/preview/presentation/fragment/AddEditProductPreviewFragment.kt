@@ -733,39 +733,38 @@ class AddEditProductPreviewFragment :
                 //only update data on preview page
                 when (dataBackPressed) {
                     DETAIL_DATA -> {
-                        productInputModel?.let { displayAddModeDetail(it) }
-                        productInputModel?.requestCode?.set(0, DETAIL_DATA)
+                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                        viewModel.productInputModel.value?.requestCode?.set(0, DETAIL_DATA)
                         checkEnableOrNot()
                         return@Observer
                     }
                     DESCRIPTION_DATA -> {
-                        productInputModel?.let { displayAddModeDetail(it) }
-                        productInputModel?.requestCode?.set(1, DESCRIPTION_DATA)
+                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                        viewModel.productInputModel.value?.requestCode?.set(1, DESCRIPTION_DATA)
                         checkEnableOrNot()
                         return@Observer
                     }
                     SHIPMENT_DATA -> {
-                        productInputModel?.let { displayAddModeDetail(it) }
-                        productInputModel?.requestCode?.set(2, SHIPMENT_DATA)
+                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                        viewModel.productInputModel.value?.requestCode?.set(2, SHIPMENT_DATA)
                         checkEnableOrNot()
                         return@Observer
                     }
                     NO_DATA -> {
-                        productInputModel?.let { displayAddModeDetail(it) }
+                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                         checkEnableOrNot()
                         return@Observer
                     }
                 }
                 //upload the product to the server
+                val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
                 context?.let {
-                    productInputModel?.let { model ->
-                        val validateMessage = viewModel.validateProductInput(model.detailInputModel)
-                        if (validateMessage.isEmpty()) {
-                            startProductAddService(model)
-                            Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
-                        } else {
-                            view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
-                        }
+                    val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
+                    if (validateMessage.isEmpty()) {
+                        startProductAddService(productInputModel)
+                        Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                    } else {
+                        view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
                     }
                 }
             }
@@ -817,6 +816,7 @@ class AddEditProductPreviewFragment :
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
+            viewModel.productInputModel.value = productInputModel
         }
     }
 
