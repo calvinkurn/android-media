@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.usecase.RequestParams
+import java.net.URLEncoder
 
 class CategoryGqlPageRepository(private val departmentName: String,
                                 private val departmentId: String,
@@ -19,8 +20,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val INTERMEDIARY = "intermediary"
         const val IDENTIFIER = "identifier"
         const val SAFESEARCH = "safeSearch"
-        const val SEARCH_APPLINK= "tokopedia://search-autocomplete"
+        const val SEARCH_APPLINK= "tokopedia://search"
         const val DOMAIN_URL_LIVE = "https://www.tokopedia.com/"
+        const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED= 1
         const val INDEX_ONE = "1"
         const val INDEX_TWO = "2"
@@ -33,7 +35,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
                         identifier = departmentId, name = data.name, type = "", path = data.url, id = data.id ?: 0,
-                        searchApplink = SEARCH_APPLINK,
+                        searchApplink = "${SEARCH_APPLINK}/searchbox?hint=Cari di ${encodeURL(data.name)}&navsource=catpage&srp_page_id=${data.id}&srp_page_title=${encodeURL(data.name)}",
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,
                         origin = AdultManager.ORIGIN_CATEGORY_PAGE,
@@ -77,5 +79,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
         request.putBoolean(INTERMEDIARY, false)
         request.putBoolean(SAFESEARCH, false)
         return request.parameters
+    }
+
+    private fun encodeURL(url : String?) : String {
+        return URLEncoder.encode(url, ENCODING_UTF_8)
     }
 }
