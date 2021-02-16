@@ -7,7 +7,7 @@ class ProductAttachmentAttributes {
 
     @SerializedName("product_id")
     @Expose
-    val productId: String = ""
+    val productId: String = "0"
     @SerializedName("product_profile")
     @Expose
     val productProfile: ProductProfile = ProductProfile()

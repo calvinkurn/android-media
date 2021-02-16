@@ -10,7 +10,7 @@ data class ProductData(
         var productUrl: String? = "",
         var shopUrl: String? = "",
         var shopName: String = "",
-        var productId: String = "",
+        var productId: String = "0",
         var productImageUrl: String? = "",
         var productShareDescription: String = "",
         val PLACEHOLDER_NAME: String = "{{name}}",
