@@ -10,6 +10,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.FileUtil.writeBufferToFile
 import com.tokopedia.utils.file.FileUtil.writeStreamToFile
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -114,6 +115,7 @@ object ImageProcessingUtil {
             val exif = ExifInterface(path!!)
             exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         } catch (e: Throwable) {
+            Timber.w("P1#IMAGE_UTIL_CATCH#getOrientation;error='$e'")
             ExifInterface.ORIENTATION_NORMAL
         }
     }
@@ -323,6 +325,7 @@ object ImageProcessingUtil {
             out.flush()
             out.close()
         } catch (e: Throwable) {
+            Timber.w("P1#IMAGE_UTIL_CATCH#writeToTkpdImage;error='$e'")
             return null
         }
         return file
@@ -437,6 +440,7 @@ object ImageProcessingUtil {
             System.gc()
             file?.absolutePath ?: imagePath
         } catch (e: Throwable) {
+            Timber.w("P1#IMAGE_UTIL_CATCH#resizeBitmap;error='$e'")
             imagePath
         }
     }
