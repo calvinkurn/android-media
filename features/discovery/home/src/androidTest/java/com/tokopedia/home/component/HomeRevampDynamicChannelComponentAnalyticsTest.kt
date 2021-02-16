@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
@@ -31,9 +32,9 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
-class HomeDynamicChannelComponentAnalyticsTest {
+class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
@@ -202,21 +203,6 @@ class HomeDynamicChannelComponentAnalyticsTest {
         }
 
         getAssertHomepageScreen(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
-    }
-
-    @Test
-    fun testHPB() {
-        initTest()
-
-        doActivityTest(BannerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickHPBSection(viewHolder)
-        }
-
-        getAssertHPB(gtmLogDBSource, context)
 
         onFinishTest()
 
