@@ -50,10 +50,10 @@
     <dimen name="product_card_text_rating_string_margin_top">2dp</dimen>
     <dimen name="product_card_text_rating_string_height">18dp</dimen>
 
-    <dimen name="product_card_image_rating_star_margin_top">4dp</dimen>
+    <dimen name="product_card_image_rating_star_margin_top">3dp</dimen>
     <dimen name="product_card_image_rating_star_height">18dp</dimen>
 
-    <dimen name="product_card_text_review_count_margin_top">3dp</dimen>
+    <dimen name="product_card_text_review_count_margin_top">2dp</dimen>
     <dimen name="product_card_text_review_count_height">18dp</dimen>
 
     <dimen name="product_card_text_view_integrity_margin_top">2dp</dimen>

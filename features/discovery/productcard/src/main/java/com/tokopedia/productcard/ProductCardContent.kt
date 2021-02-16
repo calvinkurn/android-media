@@ -35,8 +35,8 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
-    renderTextDilayaniTokoCabang(productCardModel)
     renderShopBadge(productCardModel)
+    renderTextDilayaniTokoCabang(productCardModel)
     renderTextShopLocation(productCardModel)
     renderRating(productCardModel)
     renderTextReview(productCardModel)
@@ -229,14 +229,17 @@ private fun View.renderTextDilayaniTokoCabang(productCardModel: ProductCardModel
     if (productCardModel.willShowFulfillment()) {
         val labelGroup = productCardModel.getLabelFulfillment() ?: return
 
-        imageTokoCabang?.show()
-        imageTokoCabang?.loadIcon(labelGroup.imageUrl)
+        imageFulfillment?.show()
+        imageFulfillment?.loadIcon(labelGroup.imageUrl)
 
-        textViewTokoCabang?.initLabelGroup(productCardModel.getLabelFulfillment())
+        dividerFulfillment?.showWithCondition(imageShopBadge.visibility == View.VISIBLE)
+
+        textViewFulfillment?.initLabelGroup(productCardModel.getLabelFulfillment())
     }
     else {
-        imageTokoCabang?.hide()
-        textViewTokoCabang?.initLabelGroup(null)
+        imageFulfillment?.hide()
+        dividerFulfillment?.hide()
+        textViewFulfillment?.initLabelGroup(null)
     }
 }
 
