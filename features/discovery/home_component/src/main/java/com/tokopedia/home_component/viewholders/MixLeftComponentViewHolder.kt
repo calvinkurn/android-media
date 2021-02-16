@@ -220,7 +220,8 @@ class MixLeftComponentViewHolder (itemView: View,
                                 ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
-                                        type = it.type
+                                        type = it.type,
+                                        imageUrl = it.url
                                 )
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(

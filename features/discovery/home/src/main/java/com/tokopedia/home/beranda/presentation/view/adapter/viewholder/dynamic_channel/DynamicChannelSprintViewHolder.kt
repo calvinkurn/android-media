@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.beranda.data.mapper.factory.toProductCardModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
@@ -19,12 +20,9 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -63,7 +61,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4),
+                        itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4),
                         false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
@@ -78,7 +76,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
                 if (payload == DynamicChannelDataModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
-                    channel?.let {
+                    channel.let {
                         backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
                 }
@@ -113,7 +111,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     channel,
                     getLayoutType(channel),
                     countDownView,
-                    channel.showPromoBadge ?: false,
+                    channel.showPromoBadge,
                     computeBlankSpaceConfig(channel))
             recyclerView.adapter = adapter
         } else {
@@ -158,7 +156,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 val grid = grids[position]
                 holder.thematicCardView.run {
                     applyCarousel()
-                    setProductModel(convertData(grid))
+                    setProductModel(grid.toProductCardModel())
                     setOnClickListener {
                         HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
@@ -176,34 +174,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         fun setItems(channel: DynamicHomeChannel.Channels) {
             grids = channel.grids
             notifyDataSetChanged()
-        }
-
-        fun convertData(element: DynamicHomeChannel.Grid): ProductCardModel {
-            return ProductCardModel(
-                    slashedPrice = element.slashedPrice,
-                    productName = element.name,
-                    formattedPrice = element.price,
-                    productImageUrl = element.imageUrl,
-                    discountPercentage = element.discount,
-                    pdpViewCount = element.productViewCountFormatted,
-                    stockBarLabel = element.label,
-                    stockBarPercentage = element.soldPercentage,
-                    labelGroupList = element.labelGroup.map {
-                        ProductCardModel.LabelGroup(
-                                position = it.position,
-                                title = it.title,
-                                type = it.type
-                        )
-                    },
-                    freeOngkir = ProductCardModel.FreeOngkir(
-                            element.freeOngkir.isActive,
-                            element.freeOngkir.imageUrl
-                    ),
-                    isOutOfStock = element.isOutOfStock,
-                    ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
-                    reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
-                    countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat.toString() else ""
-            )
         }
     }
 
