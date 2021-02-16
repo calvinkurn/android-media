@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
+import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -35,8 +36,7 @@ class BannerComponentViewHolder(itemView: View,
         CircularListener, CoroutineScope {
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
-    private val layoutManager = LinearCenterLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-    private val fullLayoutManager = GridLayoutManager(itemView.context, 1)
+    private val layoutManager = PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
     // tracker
     private val impressionStatusList = mutableMapOf<Int, Boolean>()
@@ -143,7 +143,7 @@ class BannerComponentViewHolder(itemView: View,
         val snapHelper: SnapHelper = LinearSnapHelper()
         rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
-        rvBanner.layoutManager = if (list.size > 1) layoutManager else fullLayoutManager
+        rvBanner.layoutManager = layoutManager
         rvBanner.clearOnScrollListeners()
         rvBanner.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -164,6 +164,8 @@ class BannerComponentViewHolder(itemView: View,
             rvBanner.addItemDecoration(BannerChannelDecoration())
         }
         val adapter = BannerChannelAdapter(list, this)
+        adapter.setIsInfinite(true)
+        layoutManager.scrollToPosition(1)
         adapter.setItemList(list)
         rvBanner.adapter = adapter
     }
