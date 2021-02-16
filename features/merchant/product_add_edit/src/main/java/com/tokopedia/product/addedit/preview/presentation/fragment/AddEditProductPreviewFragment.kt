@@ -821,6 +821,9 @@ class AddEditProductPreviewFragment :
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
+            if (isDrafting() || isEditing()) {
+                productInputModel = viewModel.productInputModel.value
+            }
         }
     }
 
