@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.OrderListMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -10,15 +11,13 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class SomListGetOrderListUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<SomListOrderListResponse.Data>,
+        private val gqlRepository: GraphqlRepository,
         private val mapper: OrderListMapper
-) : BaseGraphqlUseCase() {
+) : BaseGraphqlUseCase<Pair<String, List<SomListOrderUiModel>>>(gqlRepository) {
 
-    init {
-        useCase.setGraphqlQuery(QUERY)
-    }
+    var count = 0
 
-    private fun getSearchKeyword(): String {
+    private fun getSearchKeyword(params: RequestParams): String {
         params.parameters[PARAM_INPUT]?.let { input ->
             return if (input is SomListGetOrderListParam) {
                 input.search
@@ -29,19 +28,30 @@ class SomListGetOrderListUseCase @Inject constructor(
         return ""
     }
 
-    suspend fun execute(): Pair<String, List<SomListOrderUiModel>> {
-        useCase.setTypeClass(SomListOrderListResponse.Data::class.java)
-        useCase.setRequestParams(params.parameters)
-        val searchKeyword = getSearchKeyword()
+    override suspend fun executeOnBackground(): Pair<String, List<SomListOrderUiModel>> {
+        val params = params.poll()
+        if (params != null) {
+            val searchKeyword = getSearchKeyword(params)
+            val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
+            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-        val result = useCase.executeOnBackground().orderList
-        return result.cursorOrderId to mapper.mapResponseToUiModel(result.list, searchKeyword)
+            val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
+            if (errors.isNullOrEmpty()) {
+                val response = gqlResponse.getData<SomListOrderListResponse.Data>()
+                return response.orderList.cursorOrderId to mapper.mapResponseToUiModel(response.orderList.list, searchKeyword)
+            } else {
+                throw RuntimeException(errors.joinToString(", ") { it.message })
+            }
+        } else {
+            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+        }
     }
 
-    fun setParam(param: SomListGetOrderListParam) {
-        params = RequestParams.create().apply {
+    fun setParams(param: SomListGetOrderListParam) {
+        val newParams = RequestParams.create().apply {
             putObject(PARAM_INPUT, param)
         }
+        params.offer(newParams)
     }
 
     companion object {

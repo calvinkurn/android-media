@@ -1,8 +1,11 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.BulkAcceptOrderStatusMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListBulkAcceptOrderResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetBulkAcceptOrderStatusResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
@@ -10,24 +13,34 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class SomListGetBulkAcceptOrderStatusUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<SomListGetBulkAcceptOrderStatusResponse.Data>,
+        private val gqlRepository: GraphqlRepository,
         private val mapper: BulkAcceptOrderStatusMapper
-) : BaseGraphqlUseCase() {
+) : BaseGraphqlUseCase<SomListBulkAcceptOrderStatusUiModel>(gqlRepository) {
 
-    init {
-        useCase.setGraphqlQuery(QUERY)
-        useCase.setTypeClass(SomListGetBulkAcceptOrderStatusResponse.Data::class.java)
-    }
 
-    suspend fun execute(): SomListBulkAcceptOrderStatusUiModel {
-        useCase.setRequestParams(params.parameters)
-        return mapper.mapResponseToUiModel(useCase.executeOnBackground().getMultiAcceptOrderStatus)
+    override suspend fun executeOnBackground(): SomListBulkAcceptOrderStatusUiModel {
+        val params = params.poll()
+        if (params != null) {
+            val gqlRequest = GraphqlRequest(QUERY, SomListGetBulkAcceptOrderStatusResponse.Data::class.java, params.parameters)
+            val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+
+            val errors = gqlResponse.getError(SomListGetBulkAcceptOrderStatusResponse.Data::class.java)
+            if (errors.isNullOrEmpty()) {
+                val response = gqlResponse.getData<SomListGetBulkAcceptOrderStatusResponse.Data>()
+                return mapper.mapResponseToUiModel(response.getMultiAcceptOrderStatus)
+            } else {
+                throw RuntimeException(errors.joinToString(", ") { it.message })
+            }
+        } else {
+            throw RuntimeException(ERROR_MESSAGE_PARAM_NOT_FOUND)
+        }
     }
 
     fun setParams(param: SomListBulkGetBulkAcceptOrderStatusParam) {
-        params = RequestParams.create().apply {
+        val newParams = RequestParams.create().apply {
             putObject(PARAM_INPUT, param)
         }
+        params.offer(newParams)
     }
 
     companion object {
