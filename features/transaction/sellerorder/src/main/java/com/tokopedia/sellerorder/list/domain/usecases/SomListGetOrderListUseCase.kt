@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.OrderListMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class SomListGetOrderListUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: OrderListMapper
-) : BaseGraphqlUseCase<Unit>(gqlRepository) {
+) {
 
     private fun getSearchKeyword(params: RequestParams): String {
         params.parameters[PARAM_INPUT]?.let { input ->
@@ -33,19 +34,11 @@ class SomListGetOrderListUseCase @Inject constructor(
 
         val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<SomListOrderListResponse.Data>()
+            val response = gqlResponse.getData<SomListOrderListResponse.Data>(SomListOrderListResponse.Data::class.java)
             return response.orderList.cursorOrderId to mapper.mapResponseToUiModel(response.orderList.list, searchKeyword)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
-    }
-
-    @Deprecated(
-            message = "This function should not be used to get order list",
-            replaceWith = ReplaceWith("executeOnBackground(param)"),
-            level = DeprecationLevel.ERROR
-    )
-    override suspend fun executeOnBackground() {
     }
 
     fun composeParams(param: SomListGetOrderListParam): RequestParams = RequestParams.create().apply {
