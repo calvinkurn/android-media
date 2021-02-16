@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections(
@@ -22,7 +23,7 @@ data class RechargeHomepageSections(
     data class Section(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
             @SerializedName("object_id")
             @Expose
             val objectId: String = "",
@@ -55,7 +56,7 @@ data class RechargeHomepageSections(
     data class Item(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
             @SerializedName("object_id")
             @Expose
             val objectId: String = "",
@@ -123,7 +124,7 @@ interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFa
 
 data class RechargeHomepageBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -144,7 +145,7 @@ data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSection
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -161,7 +162,7 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -178,7 +179,7 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -195,7 +196,7 @@ data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -212,7 +213,7 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -230,7 +231,7 @@ data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSectio
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -247,7 +248,7 @@ data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSection
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -264,7 +265,7 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -282,7 +283,7 @@ data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSecti
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -299,7 +300,7 @@ data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSec
     }
 
     override fun visitableId(): Int {
-        return section.id
+        return section.id.toIntOrZero()
     }
 
     override fun equalsWith(b: Any?): Boolean {

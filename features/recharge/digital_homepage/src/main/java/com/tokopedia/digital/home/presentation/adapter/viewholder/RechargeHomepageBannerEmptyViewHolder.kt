@@ -12,6 +12,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.view_recharge_home_banner_empty.view.*
 
 /**
@@ -24,7 +25,7 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
     override fun bind(element: RechargeHomepageBannerEmptyModel) {
         val section = element.section
         if (section.title.isEmpty() && section.subtitle.isEmpty()) {
-            listener.loadRechargeSectionData(section.id)
+            listener.loadRechargeSectionData(section.id.toIntOrZero())
         } else {
             with(itemView) {
                 if (section.title.isNotEmpty()) {
