@@ -36,7 +36,7 @@ internal object LoaderApi {
     @JvmOverloads
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
         var tracker: PerformanceMonitoring? = null
-        val context = imageView.context
+        val context = Loader.context()?: imageView.context
 
         if (data == null) {
             // if the data source is null, the image will be render the error drawable
