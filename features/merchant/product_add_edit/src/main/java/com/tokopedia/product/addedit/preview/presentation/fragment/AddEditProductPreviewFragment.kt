@@ -971,11 +971,10 @@ class AddEditProductPreviewFragment :
             } else if (productInputModel != null && statusState) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
-                productInputModel = null
+                statusState = false
             } else {
                 viewModel.productInputModel.value = productInputModel
                 productInputModel?.apply { renderUiPreviewPage(this) }
-                productInputModel = null
             }
         })
     }
