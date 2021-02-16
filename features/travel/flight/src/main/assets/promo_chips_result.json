@@ -1,0 +1,39 @@
+{
+  "data": {
+    "flightLowestPrice": {
+      "data": [
+        {
+          "date": "20210204",
+          "airlinePrices": [
+            {
+              "airlineID": "ID",
+              "price": "Rp 563.000",
+              "priceNumeric": 563000
+            },
+            {
+              "airlineID": "JT",
+              "price": "Rp 424.000",
+              "priceNumeric": 424000
+            }
+          ]
+        },
+        {
+          "date": "20210205",
+          "airlinePrices": [
+            {
+              "airlineID": "ID",
+              "price": "Rp 563.000",
+              "priceNumeric": 563000
+            },
+            {
+              "airlineID": "JT",
+              "price": "Rp 424.000",
+              "priceNumeric": 424000
+            }
+          ]
+        }
+      ],
+      "errors": []
+    }
+  }
+}

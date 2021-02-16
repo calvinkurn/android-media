@@ -1,7 +1,10 @@
 package com.tokopedia.flight.searchV4.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.common.travel.constant.TravelSortOption
@@ -13,6 +16,8 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.model.FlightPromoChipsModel
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
@@ -29,6 +34,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -77,6 +84,20 @@ class FlightSearchViewModel @Inject constructor(
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
+
+    /** daerah kekuasaan promo chips */
+    private val mutablePromoData = MutableLiveData<Result<List<AirlinePrice>>>()
+    val promoData: LiveData<Result<List<AirlinePrice>>>
+        get() = mutablePromoData
+
+    fun getPromoTemp(context: Context){
+        val g = Gson()
+        val dataResponseType = object : TypeToken<FlightPromoChipsModel>() {
+        }.type
+        val dataResponse = g.fromJson<FlightPromoChipsModel>(loadJSONFromAsset(context), dataResponseType)
+        mutablePromoData.postValue(Success(dataResponse.data.flightLowestPrice.data[0].airlinePrices))
+    }
+    /** akhir daerah kekuasaan promo chips */
 
     val progress = MutableLiveData<Int>()
     private var isSearchViewSent: Boolean = false
@@ -458,10 +479,28 @@ class FlightSearchViewModel @Inject constructor(
                 )
             }
 
+    fun loadJSONFromAsset(context: Context): String? {
+        var json: String? = null
+        try {
+            val `is` = context.assets.open(FLIGHT_PROMO_CHIPS)
+            val size = `is`.available()
+            val buffer = ByteArray(size)
+            `is`.read(buffer)
+            `is`.close()
+            json = String(buffer, Charset.forName("UTF-8"))
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        }
+
+        return json
+    }
+
     companion object {
         private const val DEFAULT_PROGRESS_VALUE = 0
         private const val MAX_PROGRESS = 100
         private const val FILTER_SORT_ITEM_SIZE = 4
+        val FLIGHT_PROMO_CHIPS = "promo_chips_result.json"
     }
 
 }

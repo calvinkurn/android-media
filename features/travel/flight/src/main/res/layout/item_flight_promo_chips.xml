@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    android:id="@+id/card_promo_chips"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_230"
+    android:layout_height="wrap_content"
+    app:card_type="border"
+    android:elevation="@dimen/flight_dp_8"
+    android:background="@color/Unify_N0"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.flight.common.view.FlightMultiAirlineView
+            android:id="@+id/iv_multiairline_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_flight_promo_chips_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"
+            app:typographyType="body_3"
+            android:lines="2"
+            android:text="@string/flight_srp_promo_chips_content_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_multiairline_logo"
+            app:layout_constraintTop_toTopOf="@+id/iv_multiairline_logo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_flight_promo_chip_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="12dp"
+            app:typographyType="body_3"
+            android:text="@string/flight_srp_promo_chips_start"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_multiairline_logo"
+            app:layout_constraintTop_toBottomOf="@+id/tv_flight_promo_chips_title"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_flight_promo_chips_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_flight_promo_chip_start"
+            app:layout_constraintTop_toTopOf="@+id/tv_flight_promo_chip_start"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="heading_5"
+            tools:text="@string/flight_promo_chips_starting_price" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_flight_promo_chips_person"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
+            android:text="@string/flight_srp_promo_chips_person"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_flight_promo_chips_price"
+            app:layout_constraintTop_toTopOf="@+id/tv_flight_promo_chip_start"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
