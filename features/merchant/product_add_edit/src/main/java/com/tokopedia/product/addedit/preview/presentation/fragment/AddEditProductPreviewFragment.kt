@@ -150,6 +150,7 @@ class AddEditProductPreviewFragment :
     private var districtId: Int = 0
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
+    private var isViewVisible = true
 
     private var toolbar: Toolbar? = null
 
@@ -504,7 +505,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isCurrentFragmentVisible()) {
+        if (isViewVisible) {
             outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
         }
         super.onSaveInstanceState(outState)
@@ -512,6 +513,7 @@ class AddEditProductPreviewFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isViewVisible = false
         removeObservers()
     }
 
