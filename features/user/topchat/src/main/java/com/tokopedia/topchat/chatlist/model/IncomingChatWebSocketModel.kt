@@ -63,8 +63,18 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = "") : Base
     }
 
     fun isForOtherRole(@RoleType currentRole: Int, userId: String): Boolean {
+        return isFromOtherToOppositeRole(currentRole, userId) ||
+                isFromMyselfToOppositeRole(currentRole, userId)
+    }
+
+    private fun isFromOtherToOppositeRole(@RoleType currentRole: Int, userId: String): Boolean {
         val fromRole = mapWsRoleToRoleType() ?: return true
         return fromRole == currentRole && getToId() == userId && getContactId() != userId
+    }
+
+    private fun isFromMyselfToOppositeRole(@RoleType currentRole: Int, userId: String): Boolean {
+        val fromRole = mapWsRoleToRoleType() ?: return true
+        return fromRole != currentRole && getToId() == userId && getContactId() == userId
     }
 
     private fun mapWsRoleToRoleType(): Int? {

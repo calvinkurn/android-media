@@ -318,6 +318,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private void onSuccessImageTakenFromCamera(File file) {
+        if (file == null) {
+            return;
+        }
         //crop the bitmap if it is not aligned with the expected ratio
         if (isOneOneRatio()) {
             initCropPresenter();

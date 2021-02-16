@@ -107,20 +107,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
             val list = findViewById<RecyclerView>(R.id.list)
-            val container = findViewById<View>(R.id.container)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
             list.addOnScrollListener(CustomScrollListner(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
-            if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
-            } else if (cpmData.cpm.cpmShop.isOfficial) {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
-            } else {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
-            }
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmData, appLink, adsClickUrl)
@@ -128,6 +120,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
         if (isEligible(cpmData)) {
+            val container = findViewById<View>(R.id.container)
             val list = findViewById<RecyclerView?>(R.id.list)
             val shopDetail = findViewById<View?>(R.id.shop_detail)
             val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
@@ -136,13 +129,24 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 list?.gone()
                 shopDetail?.gone()
                 adsBannerShopCardView?.visible()
+                container?.setBackgroundResource(0)
+                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }
-            else {
+            else if (cpmData != null) {
                 list?.visible()
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
+                (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 12.toPx(), 0, 0)
+
+                if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
+                } else if (cpmData.cpm.cpmShop.isOfficial) {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
+                } else {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
+                }
 
                 var shop_badge = findViewById<ImageView>(R.id.shop_badge)
                 shop_badge?.let {
