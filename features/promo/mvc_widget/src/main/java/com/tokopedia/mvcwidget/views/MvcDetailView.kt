@@ -174,16 +174,19 @@ class MvcDetailView @JvmOverloads constructor(
     }
 
     fun setupData(response: TokopointsCatalogMVCListResponse) {
+        var removeTickerTopMargin = false
         val tempList = arrayListOf<MvcListItem>()
         response.data?.followWidget?.let {
             if (it.isShown == true) {
                 tempList.add(it)
+            }else{
+                removeTickerTopMargin = true
             }
         }
 
         val shopName = response.data?.shopName
         if (!shopName.isNullOrEmpty()) {
-            tempList.add(TickerText(shopName))
+            tempList.add(TickerText(shopName, removeTickerTopMargin))
         }
 
         response.data?.catalogList?.forEach {
