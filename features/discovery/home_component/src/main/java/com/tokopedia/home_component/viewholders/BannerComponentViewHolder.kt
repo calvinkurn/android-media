@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+
 /**
  * @author by devarafikry on 11/28/20.
  */
@@ -39,7 +40,7 @@ class BannerComponentViewHolder(itemView: View,
     private val layoutManager = PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
     // tracker
-    private val impressionStatusList = mutableMapOf<Int, Boolean>()
+    private val impressionStatusList = mutableMapOf<String, Boolean>()
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -98,9 +99,10 @@ class BannerComponentViewHolder(itemView: View,
     private fun setViewPortImpression(element: BannerDataModel) {
         if (!element.isCache) {
             itemView.addOnImpressionListener(holder = element, onView = {
+                setScrollListener()
                 element.channelModel?.let {
                     bannerListener?.onChannelBannerImpressed(it, adapterPosition)
-                    if (element.channelModel.channelGrids.size?:0 > 1) {
+                    if (it.channelGrids.size?:0 > 1) {
                         onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
                     } else {
                         onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
@@ -144,16 +146,28 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun initBanner(list: List<CircularModel>){
-        val snapHelper: SnapHelper = LinearSnapHelper()
+        val snapHelper: SnapHelper = PagerSnapHelper()
         rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = layoutManager
+
+        if (rvBanner.itemDecorationCount == 0) {
+            rvBanner.addItemDecoration(BannerChannelDecoration())
+        }
+        val adapter = BannerChannelAdapter(list, this)
+        adapter.setItemList(list)
+        rvBanner.adapter = adapter
+    }
+
+    private fun setScrollListener() {
         rvBanner.clearOnScrollListeners()
-        rvBanner.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        rvBanner.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when(newState) {
+                when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
-                        onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+                        if (recyclerView.isShown) {
+                            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+                        }
                         onPageDragStateChanged(false)
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
@@ -163,15 +177,6 @@ class BannerComponentViewHolder(itemView: View,
                 }
             }
         })
-
-        if (rvBanner.itemDecorationCount == 0) {
-            rvBanner.addItemDecoration(BannerChannelDecoration())
-        }
-        val adapter = BannerChannelAdapter(list, this)
-        adapter.setIsInfinite(true)
-        layoutManager.scrollToPosition(1)
-        adapter.setItemList(list)
-        rvBanner.adapter = adapter
     }
 
     override fun onClick(position: Int) {
@@ -183,19 +188,20 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(position) && position != -1) {
-            channelModel?.let {channel ->
-                channel.selectGridInPosition(position) {
+        channelModel?.let {channel ->
+            channel.selectGridInPosition(position) {
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(it.id) && position != -1) {
                     bannerListener.onPromoScrolled(channel, it ,position)
+                    impressionStatusList[it.id] = true
                 }
-                impressionStatusList.put(position, true)
             }
         }
+
     }
 
-    private fun isBannerImpressed(position: Int): Boolean {
-        return if (impressionStatusList.size > position && position != -1) {
-            impressionStatusList[position]?:false
+    private fun isBannerImpressed(id: String): Boolean {
+        return if (impressionStatusList.containsKey(id)) {
+            impressionStatusList[id]?:false
         } else false
     }
 
@@ -225,6 +231,7 @@ class BannerComponentViewHolder(itemView: View,
     fun resetImpression(){
         impressionStatusList.clear()
         layoutManager.scrollToPosition(0)
+        fullLayoutManager.scrollToPosition(0)
     }
 
     private fun ChannelModel.convertToCircularModel(): List<CircularModel> {
@@ -241,8 +248,6 @@ class BannerComponentViewHolder(itemView: View,
             this.channelGrids[position]
         } else null
     }
-
-
 
     companion object {
         @LayoutRes
