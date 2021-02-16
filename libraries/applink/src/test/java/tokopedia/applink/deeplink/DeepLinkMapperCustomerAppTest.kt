@@ -1282,12 +1282,6 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check inbox appLink then should return tokopedia internal inbox in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
-    }
-
-    @Test
     fun `check smc referral appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.SMC_REFERRAL, "")
     }

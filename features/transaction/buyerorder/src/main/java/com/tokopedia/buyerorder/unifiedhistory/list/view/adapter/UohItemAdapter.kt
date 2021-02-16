@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_EMPTY
@@ -121,15 +120,11 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoader() {
-        val oldList = listTypeData
         listTypeData.clear()
         for (x in 0 until 5) {
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
-        val newList = listTypeData
-        val diffUtil = UohDiffUtil(oldList, newList)
-        val diffResult = DiffUtil.calculateDiff(diffUtil)
-        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
@@ -161,13 +156,8 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun appendList(list: List<UohTypeData>) {
-        val oldList = listTypeData
         listTypeData.addAll(list)
-        val newList = listTypeData
-
-        val diffUtil = UohDiffUtil(oldList, newList)
-        val diffResult = DiffUtil.calculateDiff(diffUtil)
-        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     fun setActionListener(fragment: UohListFragment) {

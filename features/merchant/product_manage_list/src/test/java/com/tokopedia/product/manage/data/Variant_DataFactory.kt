@@ -76,25 +76,9 @@ fun createEditVariantResult(
         productName: String = "Produk",
         variants: List<ProductVariant> = emptyList(),
         selections: List<Selection> = emptyList(),
-        sizeCharts: List<Picture> = emptyList()
+        sizeCharts: List<Picture> = emptyList(),
+        editStock: Boolean = false,
+        editStatus: Boolean = false
 ): EditVariantResult {
-    return EditVariantResult(productId, productName, variants, selections, sizeCharts)
-}
-
-private fun createShopOwnerAccess(): ProductManageAccess {
-    return ProductManageAccess(
-        addProduct = true,
-        editProduct = true,
-        etalaseList = true,
-        multiSelect = true,
-        editPrice = true,
-        editStock = true,
-        duplicateProduct = true,
-        setStockReminder = true,
-        deleteProduct = true,
-        setTopAds = true,
-        setCashBack = true,
-        setFeatured = true,
-        productList = true
-    )
+    return EditVariantResult(productId, productName, variants, selections, sizeCharts, editStock, editStatus)
 }

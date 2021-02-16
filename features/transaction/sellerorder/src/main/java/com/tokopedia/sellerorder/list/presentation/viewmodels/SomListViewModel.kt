@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -15,8 +16,6 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,8 +39,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
-        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase
+        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
@@ -78,9 +76,9 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
-    private val _isOrderManageEligible = MutableLiveData<Result<Boolean>>()
-    val isOrderManageEligible: LiveData<Result<Boolean>>
-        get() = _isOrderManageEligible
+    private val _isAdminEligible = MutableLiveData<Result<Boolean>>()
+    val isAdminEligible: LiveData<Result<Boolean>>
+        get() = _isAdminEligible
 
     private val _canShowOrderData = MutableLiveData<Boolean>().apply {
         value = true
@@ -96,6 +94,8 @@ class SomListViewModel @Inject constructor(
             }
         }
     }
+
+    private var getAdminPermissionJob: Job? = null
 
     init {
         bulkAcceptOrderStatusResult.apply {
@@ -180,11 +180,11 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun getFilters() {
+    fun getFilters(refreshOrders: Boolean) {
         launchCatchError(block = {
-            val filterResult = somListGetFilterListUseCase.execute()
+            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
-                _filterResult.postValue(filterResult)
+                _filterResult.postValue(somListGetFilterListUseCase.execute().apply { data.refreshOrder = refreshOrders })
             }
         }, onError = {
             _filterResult.postValue(Fail(it))
@@ -194,6 +194,7 @@ class SomListViewModel @Inject constructor(
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
             val waitingPaymentResult = somListGetWaitingPaymentUseCase.execute()
+            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
                 _waitingPaymentCounterResult.postValue(waitingPaymentResult)
             }
@@ -208,7 +209,8 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()
-            getOrderListParams.nextOrderId = result.first
+            getAdminPermissionJob?.join()
+            getOrderListParams.nextOrderId = result.first.toLongOrZero()
             if (_canShowOrderData.value == true) {
                 _orderListResult.postValue(Success(result.second))
             }
@@ -268,10 +270,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun resetNextOrderId() {
-        getOrderListParams.nextOrderId = 0
+        getOrderListParams.nextOrderId = 0L
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
 
     fun getDataOrderListParams() = getOrderListParams
 
@@ -288,31 +290,19 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        when {
-            userSession.isShopOwner -> {
-                _isOrderManageEligible.postValue(Success(true))
-                _canShowOrderData.postValue(true)
-            }
-            userSession.isShopAdmin -> {
-                launchCatchError(
-                        block = {
-                            val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                            authorizeAccessUseCase.execute(requestParams).let { isEligible ->
-                                _isOrderManageEligible.postValue(Success(isEligible))
-                                _canShowOrderData.postValue(isEligible)
-                            }
-                        },
-                        onError = {
-                            _isOrderManageEligible.postValue(Fail(it))
-                            _canShowOrderData.postValue(false)
-                        }
-                )
-            }
-            else -> {
-                _isOrderManageEligible.postValue(Success(false))
-                _canShowOrderData.postValue(false)
-            }
-        }
+//        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
+//            getAdminPermissionJob = launchCatchError(
+//                    block = {
+//                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+//                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
+//                            _isAdminEligible.postValue(Success(isEligible ?: false))
+//                            _canShowOrderData.postValue(isEligible)
+//                        }
+//                    },
+//                    onError = {
+//                        _isAdminEligible.postValue(Fail(it))
+//                    }
+//            )
+//        }
     }
-
 }

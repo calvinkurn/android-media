@@ -326,8 +326,9 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private fun toggleSaveButton() {
-        vp2_campaign_stock?.run {
-            val isMainStockTab = currentItem == MAIN_TAB_POSITION
+        tabs_campaign_stock?.run {
+            val selectedTabPosition = getUnifyTabLayout().selectedTabPosition
+            val isMainStockTab = selectedTabPosition == MAIN_TAB_POSITION
             mViewModel.toggleSaveButton(isMainStockTab)
         }
     }
