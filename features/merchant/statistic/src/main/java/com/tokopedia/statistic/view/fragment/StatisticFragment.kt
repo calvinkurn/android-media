@@ -148,6 +148,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeUserRole()
         observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(mViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
+        observeWidgetData(mViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
@@ -395,6 +396,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getLineGraphWidgetData(dataKeys)
     }
 
+    private fun fetchMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
+        mViewModel.getMultiLineGraphWidgetData(dataKeys)
+    }
+
     private fun fetchProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
@@ -507,6 +514,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
         groupedWidgets[WidgetType.CARD]?.run { fetchCardData(this) }
         groupedWidgets[WidgetType.LINE_GRAPH]?.run { fetchLineGraphData(this) }
+        groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { fetchMultiLineGraphData(this) }
         groupedWidgets[WidgetType.PROGRESS]?.run { fetchProgressData(this) }
         groupedWidgets[WidgetType.CAROUSEL]?.run { fetchCarouselData(this) }
         groupedWidgets[WidgetType.POST_LIST]?.run { fetchPostData(this) }
