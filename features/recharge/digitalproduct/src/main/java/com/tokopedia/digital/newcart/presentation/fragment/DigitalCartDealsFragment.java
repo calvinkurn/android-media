@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,7 +60,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private static final long DEFAULT_MAX_DIM = 200;
     private static final long DEFAULT_DELAY_ONBOARD = 800;
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarLayout;
     private TabLayout dealTabLayout;
     private ViewPager dealViewPager;
     private LinearLayout dealContainer;
@@ -130,7 +129,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_digital_deals_cart, container, false);
-        progressBar = view.findViewById(R.id.progress_bar);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         dealTabLayout = view.findViewById(R.id.tab_deal);
         dealViewPager = view.findViewById(R.id.pager_deals);
         dealContainer = view.findViewById(R.id.deal_container);
@@ -168,7 +167,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderGetCategoriesLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -184,7 +183,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void hideGetCategoriesLoading() {
-        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -395,7 +394,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void showFullpageLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -406,7 +405,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void hideFullpageLoading() {
-        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override

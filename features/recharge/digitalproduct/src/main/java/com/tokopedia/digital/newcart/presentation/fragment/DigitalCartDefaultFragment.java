@@ -3,15 +3,16 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.R;
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  */
 public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implements DigitalCartDefaultContract.View {
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarLayout;
     private RelativeLayout containerLayout;
     private AppCompatTextView categoryTextView;
 
@@ -81,7 +82,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     protected void setupView(View view) {
-        progressBar = view.findViewById(R.id.progress_bar);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         emptyState = view.findViewById(R.id.empty_state);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
@@ -103,7 +104,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void showFullPageLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -113,12 +114,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void hideFullPageLoading() {
-        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
-        progressBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
         super.showError(message);
     }
 

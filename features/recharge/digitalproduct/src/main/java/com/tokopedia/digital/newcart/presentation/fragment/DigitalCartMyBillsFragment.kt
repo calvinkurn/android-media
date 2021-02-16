@@ -3,14 +3,14 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital.R
@@ -32,7 +32,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         DigitalCartMyBillsContract.View,
         DigitalCartMyBillsView.OnMoreInfoClickListener {
 
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarLayout: FrameLayout
     private lateinit var containerLayout: RelativeLayout
     private lateinit var categoryTextView: AppCompatTextView
     private lateinit var mybillSubscription: DigitalCartMyBillsView
@@ -48,7 +48,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     private var interactionListener: InteractionListener? = null
 
     override fun setupView(view: View?) {
-        progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBarLayout = view!!.findViewById<FrameLayout>(R.id.progress_bar_layout)
         containerLayout = view.findViewById<RelativeLayout>(R.id.container)
         categoryTextView = view.findViewById<AppCompatTextView>(R.id.tv_category_name)
         detailHolderView = view.findViewById<DigitalCartDetailHolderView>(R.id.view_cart_detail)
@@ -106,7 +106,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     }
 
     override fun showFullPageLoading() {
-        progressBar.visibility = View.VISIBLE
+        progressBarLayout.visibility = View.VISIBLE
     }
 
     override fun showCartView() {
@@ -114,7 +114,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     }
 
     override fun hideFullPageLoading() {
-        progressBar.visibility = View.GONE
+        progressBarLayout.visibility = View.GONE
     }
 
     override fun getScreenName(): String = ""
