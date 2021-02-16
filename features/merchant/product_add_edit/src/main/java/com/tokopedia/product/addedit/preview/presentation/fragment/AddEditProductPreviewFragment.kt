@@ -149,7 +149,7 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
-    private var statusState: Boolean? = null
+    private var statusState: Boolean = false
     private var productInputModel: ProductInputModel? = null
 
     private var toolbar: Toolbar? = null
@@ -499,6 +499,7 @@ class AddEditProductPreviewFragment :
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     productInputModel = this
                 }
+                statusState = true
             }
         }
         super.onViewStateRestored(savedInstanceState)
@@ -813,7 +814,7 @@ class AddEditProductPreviewFragment :
     private fun updateProductInputModelOfCacheManagerId(bundle: Bundle) {
         val cacheManagerId = bundle.getString(BUNDLE_CACHE_MANAGER_ID) ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
-            viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+            productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
         }
     }
@@ -961,23 +962,31 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
-            //check whether productInputModel has value from savedInstanceState or not
+            //check whether productInputModel has value from savedInstanceState or from backPressed
             if (productInputModel == null) {
-                showProductPhotoPreview(it)
-                showProductDetailPreview(it)
-                updateProductStatusSwitch(it)
-                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-                if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                    displayEditMode()
-                }
+                renderUiPreviewPage(it)
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-            } else {
+            } else if (productInputModel != null) {
+                viewModel.productInputModel.value = productInputModel
+                productInputModel?.apply { renderUiPreviewPage(this) }
+                productInputModel = null
+            } else if (productInputModel != null && statusState) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
                 productInputModel = null
             }
         })
+    }
+
+    private fun renderUiPreviewPage(productInputModel: ProductInputModel) {
+        showProductPhotoPreview(productInputModel)
+        showProductDetailPreview(productInputModel)
+        updateProductStatusSwitch(productInputModel)
+        showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+        if (viewModel.getDraftId() != 0L || productInputModel.productId != 0L || viewModel.getProductId().isNotBlank()) {
+            displayEditMode()
+        }
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
