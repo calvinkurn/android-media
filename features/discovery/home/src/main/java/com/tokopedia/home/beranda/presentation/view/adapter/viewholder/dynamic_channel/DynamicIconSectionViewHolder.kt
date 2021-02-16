@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Point
 import android.view.*
 import android.widget.LinearLayout
@@ -28,9 +27,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.common.LoaderStateListener
-import com.tokopedia.media.loader.common.MediaDataSource
-import com.tokopedia.media.loader.utils.MediaException
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -105,14 +101,10 @@ class DynamicIconSectionViewHolder(val view: View,
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : LoaderStateListener {
-                override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
-                    holder.shimmeringIcon.hide()
-                }
-
-                override fun failedLoad(error: MediaException?) {
-                    holder.shimmeringIcon.show()
-                }
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, {
+                holder.shimmeringIcon.hide()
+            }, onFailed = {
+                holder.shimmeringIcon.show()
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
