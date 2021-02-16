@@ -652,7 +652,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun isCurrentFragmentVisible(): Boolean {
-        return fragmentManager?.fragments?.firstOrNull()?.isVisible == true
+        return fragmentManager?.fragments?.firstOrNull()?.javaClass == AddEditProductPreviewFragment::class.java && isVisible
     }
 
     private fun onSuccessSetCashback() {

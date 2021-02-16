@@ -272,7 +272,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun isCurrentFragmentVisible(): Boolean {
-        return fragmentManager?.fragments?.firstOrNull()?.isVisible == true
+        return fragmentManager?.fragments?.firstOrNull()?.javaClass == AddEditProductShipmentFragment::class.java && isVisible
     }
 
     private fun setupOnBackPressed() {
