@@ -149,7 +149,6 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
-    private var statusState: Boolean = false
     private var productInputModel: ProductInputModel? = null
 
     private var toolbar: Toolbar? = null
@@ -961,18 +960,17 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
-            //check whether productInputModel has value from savedInstanceState or from backPressed
-            if (productInputModel == null) {
-                showProductPhotoPreview(it)
-                showProductDetailPreview(it)
-                updateProductStatusSwitch(it)
-                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-                if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                    displayEditMode()
-                }
-                stopRenderPerformanceMonitoring()
-                stopPerformanceMonitoring()
-            } else {
+            showProductPhotoPreview(it)
+            showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
+            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+            if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
+                displayEditMode()
+            }
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
+            //check whether productInputModel has value from savedInstanceState
+            if (productInputModel != null) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
                 productInputModel = null
