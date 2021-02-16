@@ -85,6 +85,7 @@ object AddToCartOccExternalAnalytics {
                                                 PARAM_URL to response.url,
                                                 PARAM_CATEGORY_ID to response.categoryId,
                                                 PARAM_DIMENSION_82 to response.categoryId,
+                                                // TODO: 16/02/21 ANALYTICS
                                                 PARAM_DIMENSION_83 to if (response.isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                                         ))
                                 )
