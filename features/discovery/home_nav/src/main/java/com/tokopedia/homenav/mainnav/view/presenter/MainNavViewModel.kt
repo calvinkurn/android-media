@@ -558,7 +558,7 @@ class MainNavViewModel @Inject constructor(
                     Pair(null, null)
                 } else {
                     accountAdminInfoUseCase.get().run {
-                        requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
+                        requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
                         isLocationAdmin = userSession.get().isLocationAdmin
                         setStrategyCloudThenCache()
                         executeOnBackground()
