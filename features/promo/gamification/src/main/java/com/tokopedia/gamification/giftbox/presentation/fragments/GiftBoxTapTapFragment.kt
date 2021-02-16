@@ -434,11 +434,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         viewModel.couponLiveData.observe(viewLifecycleOwner, Observer { result ->
             when (result.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
-                    if (result.data?.couponMap != null) {
+                    if (result.data?.couponDetailList != null) {
                         benefitItems.forEach {
                             if (it.first.benefitType == BenefitType.COUPON && !it.first.referenceID.isNullOrEmpty()) {
-                                val couponDetail = result.data.couponMap["id_${it.first.referenceID}"]
-                                rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                val refId = it.first.referenceID
+                                val couponDetail = result.data.couponDetailList.find { coupon->coupon.referenceId == refId }
+                                if(couponDetail!=null) {
+                                    rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                }
                             } else if (it.first.benefitType == OVO) {
                                 rewardItems.add(RewardSummaryItem(null, it.first))
                             }
