@@ -85,8 +85,8 @@ class MonthPickerViewHolder(
         var selectedMonth: Date? = element.startDate
 
         val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            if (selectedMonth != null) {
-                time = selectedMonth
+            selectedMonth?.let {
+                time = it
             }
         }
 
