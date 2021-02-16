@@ -4,8 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
-import android.view.Display
-import android.view.WindowManager
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.FileUtil.writeBufferToFile
@@ -17,8 +16,6 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.jvm.Throws
 import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Utility collection for Image Processing
@@ -44,6 +41,9 @@ object ImageProcessingUtil {
     const val DEF_SMALL_HEIGHT = 816
 
     const val DEFAULT_DIRECTORY = "Tokopedia/"
+
+    private const val LOG_ERROR_TAG = "P1#IMAGE_UTIL#"
+    private const val LOG_ERROR_MAX_LIMIT = 1000
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
         val height = options.outHeight
@@ -115,7 +115,7 @@ object ImageProcessingUtil {
             val exif = ExifInterface(path!!)
             exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         } catch (e: Throwable) {
-            Timber.w("P1#IMAGE_UTIL_CATCH#getOrientation;error='$e'")
+            logError("getOrientation", e)
             ExifInterface.ORIENTATION_NORMAL
         }
     }
@@ -325,7 +325,7 @@ object ImageProcessingUtil {
             out.flush()
             out.close()
         } catch (e: Throwable) {
-            Timber.w("P1#IMAGE_UTIL_CATCH#writeToTkpdImage;error='$e'")
+            logError("writeToTkpdImage", e)
             return null
         }
         return file
@@ -440,8 +440,14 @@ object ImageProcessingUtil {
             System.gc()
             file?.absolutePath ?: imagePath
         } catch (e: Throwable) {
-            Timber.w("P1#IMAGE_UTIL_CATCH#resizeBitmap;error='$e'")
+            logError("resizeBitmap", e)
             imagePath
         }
+    }
+
+    private fun logError(logTitle: String, throwable: Throwable) {
+        Timber.w("${LOG_ERROR_TAG}${logTitle};reason='${throwable.message.orEmpty()
+                .take(LOG_ERROR_MAX_LIMIT)}';data='${Log.getStackTraceString(throwable)
+                .take(LOG_ERROR_MAX_LIMIT)}'")
     }
 }
