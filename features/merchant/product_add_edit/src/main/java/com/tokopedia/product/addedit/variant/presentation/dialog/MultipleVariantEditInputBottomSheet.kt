@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
@@ -17,7 +15,6 @@ import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
 
@@ -87,7 +84,6 @@ class MultipleVariantEditInputBottomSheet(
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
-
         contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()

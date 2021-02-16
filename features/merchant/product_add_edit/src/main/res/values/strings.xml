@@ -298,13 +298,6 @@
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
-    
-    <!-- Admin Revamp -->
-    <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
-    <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
-    <string name="ticker_edit_variant_main_location">Hanya mengubah stok varian di lokasi utama. Atur stok varian lokasi lain lewat desktop, ya.</string>
-    <string name="message_edit_product_stock_only_main_location">Hanya menampilkan dan mengubah stok di lokasi utama. Alokasikan stok lokasi lain di desktop, ya.</string>
-    <string name="message_add_product_stock_only_main_location">Stok akan dialokasikan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
 
     <!-- Location Validation -->
     <string name="label_for_toaster_success_set_shop_location">Yay, berhasil menambah lokasi pengiriman.</string>
