@@ -20,6 +20,7 @@ object CampaignStockMapper {
                 it.id.toIntOrZero()
             })
         }
+        val isAllStockEmpty = sellableList.all { it.stock.toIntOrZero() == 0 }
         return sellableSequence
                 .filter { sellable ->
                     productVariantSequence.any { product -> product.id == sellable.productId } }
@@ -31,7 +32,10 @@ object CampaignStockMapper {
                             productId = sellable.productId,
                             productName = sellable.productName,
                             stock = sellable.stock,
-                            isActive = variant.status == ProductStatus.ACTIVE)
+                            isActive = variant.status == ProductStatus.ACTIVE,
+                            isAllStockEmpty = isAllStockEmpty,
+                            access = variant.access
+                        )
                 }
                 .toList()
     }

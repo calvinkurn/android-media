@@ -95,4 +95,6 @@
     <string name="seller_home_loading">Loading...</string>
     <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
+    <string name="sah_stock_location_ticker_title">Hanya menampilkan stok lokasi utama</string>
+    <string name="sah_stock_location_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
 </resources>
