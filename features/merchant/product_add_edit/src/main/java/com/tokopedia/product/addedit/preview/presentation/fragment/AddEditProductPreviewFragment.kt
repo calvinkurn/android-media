@@ -287,6 +287,7 @@ class AddEditProductPreviewFragment :
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
+        // view visible to check whether current fragment is visible or not
         isViewVisible = true
 
         // action button
@@ -653,10 +654,6 @@ class AddEditProductPreviewFragment :
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
-    }
-
-    private fun isCurrentFragmentVisible(): Boolean {
-        return fragmentManager?.fragments?.firstOrNull()?.javaClass == AddEditProductPreviewFragment::class.java && isVisible
     }
 
     private fun onSuccessSetCashback() {

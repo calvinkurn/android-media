@@ -76,6 +76,7 @@ class AddEditProductShipmentFragment:
     private var productInputModel: ProductInputModel? = null
     private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
+    private var isViewVisible = false
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -129,6 +130,9 @@ class AddEditProductShipmentFragment:
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
+        // view visible to check whether current fragment is visible or not
+        isViewVisible = true
+
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
@@ -179,7 +183,7 @@ class AddEditProductShipmentFragment:
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isCurrentFragmentVisible()) {
+        if (isViewVisible) {
             inputAllDataInProductInputModel()
             outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(productInputModel))
             outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, shipmentViewModel.isAddMode)
@@ -214,6 +218,11 @@ class AddEditProductShipmentFragment:
         super.onResume()
         btnEnd?.isLoading = false
         btnSave?.isLoading = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isViewVisible = false
     }
 
     override fun startPerformanceMonitoring() {
@@ -269,10 +278,6 @@ class AddEditProductShipmentFragment:
         } else {
             setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
         }
-    }
-
-    private fun isCurrentFragmentVisible(): Boolean {
-        return fragmentManager?.fragments?.firstOrNull()?.javaClass == AddEditProductShipmentFragment::class.java && isVisible
     }
 
     private fun setupOnBackPressed() {

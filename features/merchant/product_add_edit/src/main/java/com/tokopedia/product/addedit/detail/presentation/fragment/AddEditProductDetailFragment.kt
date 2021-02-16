@@ -137,6 +137,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
     private var hasCategoryFromPicker = false
+    private var isViewVisible = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -271,6 +272,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
+        // view visible to check whether current fragment is visible or not
+        isViewVisible = true
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -673,7 +677,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isCurrentFragmentVisible()) {
+        if (isViewVisible) {
             inputAllDataInProductInputModel()
             outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(viewModel.productInputModel))
             outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, viewModel.isAdding)
@@ -708,6 +712,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isViewVisible = false
         removeObservers()
     }
 
@@ -750,10 +755,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
-    }
-
-    private fun isCurrentFragmentVisible(): Boolean {
-        return fragmentManager?.fragments?.firstOrNull()?.javaClass == AddEditProductDetailFragment::class.java && isVisible
     }
 
     private fun setupButton() {
