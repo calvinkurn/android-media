@@ -19,7 +19,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
-import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.common.feature.variant.di.QuickEditVariantComponent
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -62,7 +61,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         observeClickSaveBtn()
         observeViewState()
 
-        getProductVariants(productId)
+        getData(productId)
     }
 
     override fun onAttach(context: Context) {
@@ -108,14 +107,16 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupBottomSheet() {
-        val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        bottomSheetHeader.setPadding(padding, padding, padding, padding)
+        val horizontalSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val topSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val bottomSpacing = context?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3).orZero()
+        bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, bottomSpacing)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
     private fun setupErrorView(productId: String) {
         errorView.setType(GlobalError.NO_CONNECTION)
-        errorView.setActionClickListener { getProductVariants(productId) }
+        errorView.setActionClickListener { getData(productId) }
         errorView.errorDescription.text = getString(R.string.product_manage_error_description)
         errorView.errorTitle.hide()
     }
@@ -126,15 +127,14 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         }
     }
 
-    private fun getProductVariants(productId: String) {
-        viewModel.getProductVariants(productId)
+    private fun getData(productId: String) {
+        viewModel.getData(productId)
     }
 
     private fun observeGetVariant() {
         observe(viewModel.getProductVariantsResult) {
             val variants = it.variants
             adapter?.addElement(variants)
-            showHideSaveBtn(variants)
             collapseBottomSheet()
         }
     }
@@ -158,6 +158,10 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
                 errorViewContainer.hide()
             }
         }
+
+        observe(viewModel.showSaveBtn) {
+            btnSave.showWithCondition(it)
+        }
     }
 
     private fun expandBottomSheet() {
@@ -175,9 +179,5 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
             }
             layoutParams = params
         }
-    }
-
-    private fun showHideSaveBtn(variants: List<ProductVariant>) {
-        btnSave.showWithCondition(variants.isNotEmpty())
     }
 }
