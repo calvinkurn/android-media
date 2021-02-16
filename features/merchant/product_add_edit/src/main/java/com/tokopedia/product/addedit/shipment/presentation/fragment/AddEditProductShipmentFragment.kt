@@ -28,7 +28,6 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
-import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
@@ -273,9 +272,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun isCurrentFragmentVisible(): Boolean {
-        return childFragmentManager.fragments.any {
-            it.javaClass == AddEditProductShipmentFragment::class.java && it.isVisible
-        }
+        return fragmentManager?.fragments?.firstOrNull()?.isVisible == true
     }
 
     private fun setupOnBackPressed() {

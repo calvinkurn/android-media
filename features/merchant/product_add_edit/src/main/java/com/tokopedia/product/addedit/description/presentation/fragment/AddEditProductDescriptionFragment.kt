@@ -341,12 +341,6 @@ class AddEditProductDescriptionFragment:
         super.onViewStateRestored(savedInstanceState)
     }
 
-    private fun isCurrentFragmentVisible(): Boolean {
-        return childFragmentManager.fragments.any {
-            it.javaClass == AddEditProductDescriptionFragment::class.java && it.isVisible
-        }
-    }
-
     private fun sendClickAddProductVariant() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickAddProductVariant(shopId)
@@ -406,6 +400,10 @@ class AddEditProductDescriptionFragment:
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun isCurrentFragmentVisible(): Boolean {
+        return fragmentManager?.fragments?.firstOrNull()?.isVisible == true
     }
 
     private fun removeObservers() {

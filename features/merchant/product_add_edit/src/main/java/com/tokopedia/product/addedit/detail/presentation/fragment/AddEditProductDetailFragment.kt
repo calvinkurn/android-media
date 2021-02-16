@@ -753,9 +753,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun isCurrentFragmentVisible(): Boolean {
-        return childFragmentManager.fragments.any {
-            it.javaClass == AddEditProductDetailFragment::class.java && it.isVisible
-        }
+        return fragmentManager?.fragments?.firstOrNull()?.isVisible == true
     }
 
     private fun setupButton() {
