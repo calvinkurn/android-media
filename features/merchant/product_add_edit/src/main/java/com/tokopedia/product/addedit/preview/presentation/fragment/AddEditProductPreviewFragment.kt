@@ -504,7 +504,9 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        if (childFragmentManager.fragments.any {it.javaClass == AddEditProductPreviewFragment::class.java && it.isVisible}) {
+            outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        }
         super.onSaveInstanceState(outState)
     }
 
