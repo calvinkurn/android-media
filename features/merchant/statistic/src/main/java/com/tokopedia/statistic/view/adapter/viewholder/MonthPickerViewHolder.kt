@@ -91,7 +91,7 @@ class MonthPickerViewHolder(
         }
 
         val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            element.endDate?.let {
+            element.monthPickerMaxDate?.let {
                 time = it
             }
         }

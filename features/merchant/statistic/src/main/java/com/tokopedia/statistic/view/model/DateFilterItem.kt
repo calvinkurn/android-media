@@ -137,7 +137,8 @@ sealed class DateFilterItem(
             override val label: String,
             override var startDate: Date? = null,
             override var endDate: Date? = null,
-            override var isSelected: Boolean = false
+            override var isSelected: Boolean = false,
+            val monthPickerMaxDate: Date? = null
     ) : DateFilterItem(type = TYPE_PER_MONTH) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {

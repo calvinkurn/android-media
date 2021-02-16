@@ -130,10 +130,10 @@ object StatisticPageHelper {
             Date()
         } else {
             Date().apply {
-                val last30DaysMillis = TimeUnit.DAYS.toMillis(30)
-                time = time.minus(last30DaysMillis)
+                val millisOf31Days = TimeUnit.DAYS.toMillis(31)
+                time = time.minus(millisOf31Days)
             }
         }
-        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = defaultDate, endDate = defaultDate)
+        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = defaultDate, endDate = defaultDate, monthPickerMaxDate = defaultDate)
     }
 }
