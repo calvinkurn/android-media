@@ -65,7 +65,10 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         initData()
         initViews()
         setCustomTabText(context,tab_layout_specs)
-        view_pager_specs.setCurrentItem(1)
+        if(openPage == SPECIFICATION)
+            view_pager_specs.currentItem = 1
+        else
+            view_pager_specs.currentItem = 0
     }
 
     private fun initData(){
