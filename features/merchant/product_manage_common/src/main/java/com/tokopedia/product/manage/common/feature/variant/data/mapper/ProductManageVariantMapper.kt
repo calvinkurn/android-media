@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
@@ -15,7 +14,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 
 object ProductManageVariantMapper {
 
-    fun mapToVariantsResult(response: GetProductV3, access: ProductManageAccess): GetVariantResult {
+    fun mapToVariantsResult(response: GetProductV3): GetVariantResult {
         val variant = response.variant
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
@@ -33,7 +32,7 @@ object ProductManageVariantMapper {
                 it.sku,
                 it.stock,
                 it.pictures,
-                access
+                response.isAllStockEmpty()
             )
         }
 

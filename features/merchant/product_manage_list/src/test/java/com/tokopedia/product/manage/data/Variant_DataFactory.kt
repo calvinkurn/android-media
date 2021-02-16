@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.data
 
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
 import com.tokopedia.product.manage.common.feature.variant.data.model.Option
@@ -54,9 +53,9 @@ fun createProductVariant(
         sku: String = "sku",
         stock: Int = 0,
         pictures: List<Picture> = emptyList(),
-        access: ProductManageAccess = createShopOwnerAccess()
+        isAllStockEmpty: Boolean = true
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, access)
+    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, isAllStockEmpty)
 }
 
 fun createGetVariantResponse(
@@ -78,22 +77,4 @@ fun createEditVariantResult(
         sizeCharts: List<Picture> = emptyList()
 ): EditVariantResult {
     return EditVariantResult(productId, productName, variants, selections, sizeCharts)
-}
-
-private fun createShopOwnerAccess(): ProductManageAccess {
-    return ProductManageAccess(
-        addProduct = true,
-        editProduct = true,
-        etalaseList = true,
-        multiSelect = true,
-        editPrice = true,
-        editStock = true,
-        duplicateProduct = true,
-        setStockReminder = true,
-        deleteProduct = true,
-        setTopAds = true,
-        setCashBack = true,
-        setFeatured = true,
-        productList = true
-    )
 }

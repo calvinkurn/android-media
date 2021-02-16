@@ -196,9 +196,6 @@ class AddEditProductPreviewFragment :
     //loading
     private var loadingLayout: MotionLayout? = null
 
-    // admin multi location ticker
-    private var multiLocationTicker: Ticker? = null
-
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
@@ -338,9 +335,6 @@ class AddEditProductPreviewFragment :
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
 
-        // admin revamp
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
-
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
             // tracking
@@ -473,8 +467,6 @@ class AddEditProductPreviewFragment :
             checkEnableOrNot()
         }
 
-        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
-
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -485,7 +477,6 @@ class AddEditProductPreviewFragment :
         observeIsLoading()
         observeValidationMessage()
         observeSaveProductDraft()
-        observeAdminPermission()
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
 
@@ -1073,25 +1064,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun observeAdminPermission() {
-        viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    result.data.let { isEligible ->
-                        if (!isEligible) {
-                            // TODO: Show not eligible page. Will wait for PM. For now, exit the page
-                            activity?.finish()
-                        }
-                    }
-                }
-                is Fail -> {
-                    showGetProductErrorToast(viewModel.getProductId())
-                }
-            }
-
-        }
-    }
-
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1100,7 +1072,6 @@ class AddEditProductPreviewFragment :
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
-        viewModel.isProductManageAuthorized.removeObservers(this)
         viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)

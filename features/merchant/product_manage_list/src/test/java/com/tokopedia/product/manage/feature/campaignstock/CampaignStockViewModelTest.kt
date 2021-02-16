@@ -65,7 +65,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(VariantStockAllocationResult(
-                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, access),
+                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3),
                 getStockAllocationData,
                 otherCampaignStockData))
 

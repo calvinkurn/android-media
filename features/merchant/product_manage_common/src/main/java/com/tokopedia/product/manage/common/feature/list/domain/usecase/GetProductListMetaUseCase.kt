@@ -15,7 +15,7 @@ class GetProductListMetaUseCase @Inject constructor(
             val shopID = "\$shopID"
             """
             query ProductListMeta($shopID : String!){
-                ProductListMeta(shopID:$shopID, extraInfo:["rbac"]){
+                ProductListMeta(shopID:$shopID){
                     header{
                         processTime
                         messages

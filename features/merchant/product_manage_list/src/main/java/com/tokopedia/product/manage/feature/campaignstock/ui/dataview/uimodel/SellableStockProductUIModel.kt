@@ -2,9 +2,6 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import kotlinx.android.parcel.Parcelize
 
@@ -13,14 +10,8 @@ data class SellableStockProductUIModel(
         val productId: String,
         val productName: String,
         var stock: String,
-        var isActive: Boolean,
-        val access: ProductManageAccess
-        ): Parcelable, Visitable<CampaignStockTypeFactory> {
+        var isActive: Boolean): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
             typeFactory.type(this)
-
-    fun isStockEmpty(): Boolean {
-        return stock.toIntOrZero() == 0
-    }
 }

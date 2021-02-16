@@ -6,8 +6,6 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
@@ -61,7 +59,6 @@ class SellableStockProductViewHolder(itemView: View?,
                     ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
                 }
             }
-            switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
     }
 
@@ -97,22 +94,6 @@ class SellableStockProductViewHolder(itemView: View?,
         }
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true)
-        }
-
-        setupStockEditor(element)
-    }
-
-    private fun setupStockEditor(element: SellableStockProductUIModel) {
-        val canEditStock = element.access.editStock
-
-        if(canEditStock) {
-            itemView.qte_campaign_stock_variant_editor.show()
-            itemView.textStock.hide()
-        } else {
-
-            itemView.qte_campaign_stock_variant_editor.hide()
-            itemView.textStock.show()
-            itemView.textStock.text = element.stock
         }
     }
 

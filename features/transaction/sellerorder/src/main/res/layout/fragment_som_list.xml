@@ -240,7 +240,7 @@
 
     <!-- admin no permission error view -->
 
-    <com.tokopedia.globalerror.GlobalError
+    <com.tokopedia.shop.common.AdminNoPermissionView
         android:id="@+id/somAdminPermissionView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

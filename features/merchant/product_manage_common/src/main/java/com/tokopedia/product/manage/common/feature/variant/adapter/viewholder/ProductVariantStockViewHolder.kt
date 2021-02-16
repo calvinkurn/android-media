@@ -7,8 +7,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.R
@@ -46,6 +44,7 @@ class ProductVariantStockViewHolder(
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
+        setupStockHint(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -59,24 +58,9 @@ class ProductVariantStockViewHolder(
         setAddButtonClickListener(variant)
         setSubtractButtonClickListener(variant)
         addStockEditorTextChangedListener(variant)
-        setupStockEditor(variant)
-    }
-
-    private fun setupStockEditor(variant: ProductVariant) {
-        val canEditStock = variant.access.editStock
-
-        if(canEditStock) {
-            itemView.quantityEditorStock.show()
-            itemView.textStock.hide()
-        } else {
-            itemView.quantityEditorStock.hide()
-            itemView.textStock.show()
-            itemView.textStock.text = variant.stock.toString()
-        }
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {
-        val canEditProduct = variant.access.editProduct
         itemView.switchStatus.setOnCheckedChangeListener(null)
         itemView.switchStatus.isChecked = variant.isActive()
         itemView.switchStatus.setOnCheckedChangeListener { _, isChecked ->
@@ -90,12 +74,16 @@ class ProductVariantStockViewHolder(
                 listener.onStatusChanged(variant.id, status)
             }, STATUS_SWITCH_DELAY)
         }
-        itemView.switchStatus.isEnabled = canEditProduct
     }
 
     private fun setupStatusLabel(variant: ProductVariant) {
         val shouldShow = variant.isInactive() || variant.isEmpty()
         itemView.labelInactive.showWithCondition(shouldShow)
+    }
+
+    private fun setupStockHint(variant: ProductVariant) {
+        val shouldShow = variant.isEmpty() && !variant.isAllStockEmpty
+        itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
     private fun setStockMinMaxValue() {
@@ -179,11 +167,12 @@ class ProductVariantStockViewHolder(
                 if(stock <= MAXIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
-                    listener.onStockBtnClicked()
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
+                setupStockHint(variant)
                 setupStatusLabel(variant)
+                listener.onStockBtnClicked()
             }
         }
     }
@@ -204,11 +193,12 @@ class ProductVariantStockViewHolder(
                 if(stock >= MINIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
-                    listener.onStockBtnClicked()
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
+                setupStockHint(variant)
                 setupStatusLabel(variant)
+                listener.onStockBtnClicked()
             }
         }
     }

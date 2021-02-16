@@ -4,14 +4,12 @@ import android.text.InputFilter
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.textwatcher.StockEditorTextWatcher
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import kotlinx.android.synthetic.main.item_campaign_stock_total_editor.view.*
 
@@ -26,17 +24,8 @@ class TotalStockEditorViewHolder(itemView: View?,
         private const val MAXIMUM_LENGTH = 7
     }
 
-    private val stockEditor by lazy { itemView?.qte_campaign_stock_amount }
-    private val emptyStockInfo by lazy { itemView?.emptyStockInfo }
-    private val textStock by lazy { itemView?.textStock }
-
-    private val stockTextWatcher by lazy {
-        StockEditorTextWatcher(stockEditor, onTotalStockChanged)
-    }
-
-    override fun bind(stock: TotalStockEditorUiModel) {
-        stockEditor?.setElement(stock)
-        emptyStockInfo?.showWithCondition(stock.isEmpty())
+    override fun bind(element: TotalStockEditorUiModel) {
+        itemView.qte_campaign_stock_amount?.setElement(element)
     }
 
     private fun QuantityEditorUnify.setElement(element: TotalStockEditorUiModel) {
@@ -45,9 +34,18 @@ class TotalStockEditorViewHolder(itemView: View?,
         minValue = EditProductConstant.MINIMUM_STOCK
         maxValue = EditProductConstant.MAXIMUM_STOCK
 
-        removeEditorTextListener()
         setValue(element.totalStock)
-        addEditorTextListener()
+
+        editText.afterTextChanged {
+            val input = it
+            val stock = if(input.isNotEmpty()) {
+                input.toInt()
+            } else {
+                EditProductConstant.MINIMUM_STOCK
+            }
+            toggleQuantityEditorBtn(stock)
+            onTotalStockChanged(stock)
+        }
 
         editText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -60,27 +58,17 @@ class TotalStockEditorViewHolder(itemView: View?,
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
-        setupStockEditor(element)
     }
 
-    private fun QuantityEditorUnify.removeEditorTextListener() {
-        editText.removeTextChangedListener(stockTextWatcher)
+    private fun QuantityEditorUnify.toggleQuantityEditorBtn(stock: Int) {
+        val enableAddBtn = stock < EditProductConstant.MAXIMUM_STOCK
+        val enableSubtractBtn = stock > EditProductConstant.MINIMUM_STOCK
+
+        addButton.isEnabled = enableAddBtn
+        subtractButton.isEnabled = enableSubtractBtn
     }
 
-    private fun QuantityEditorUnify.addEditorTextListener() {
-        editText.addTextChangedListener(stockTextWatcher)
-    }
-
-    private fun setupStockEditor(element: TotalStockEditorUiModel) {
-        val canEditStock = element.access?.editStock == true
-
-        if(canEditStock) {
-            stockEditor?.show()
-            textStock?.hide()
-        } else {
-            stockEditor?.hide()
-            textStock?.show()
-            textStock?.text = element.totalStock.toString()
-        }
+    private fun String.toInt(): Int {
+        return replace(".", "").toIntOrZero()
     }
 }

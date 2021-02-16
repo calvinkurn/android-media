@@ -10,21 +10,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
-import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.CampaignStockTickerUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignMainStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
@@ -35,7 +32,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                            sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                            isActive: Boolean,
                            stock: Int,
-                           access: ProductManageAccess,
                            campaignStockListener: CampaignStockListener): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
@@ -43,7 +39,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     putBoolean(EXTRA_IS_ACTIVE, isActive)
                     putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
-                    putParcelable(EXTRA_PRODUCT_MANAGE_ACCESS, access)
                 }
                 this.campaignStockListener = campaignStockListener
             }
@@ -53,14 +48,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         private const val EXTRA_IS_VARIANT = "extra_is_variant"
         private const val EXTRA_IS_ACTIVE = "extra_is_active"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
-        private const val EXTRA_PRODUCT_MANAGE_ACCESS = "extra_product_manage_access"
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private val mViewModel: CampaignMainStockViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(CampaignMainStockViewModel::class.java)
@@ -81,8 +72,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private val sellableProductList by lazy {
         arguments?.getParcelableArrayList<SellableStockProductUIModel>(EXTRA_SELLABLE_PRODUCT_LIST)?.toList().orEmpty()
     }
-
-    private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_PRODUCT_MANAGE_ACCESS) }
+    
+    private val variantStockWarningTicker by lazy {
+        StockTickerInfoUiModel(false, sellableProductList.any { it.stock.toIntOrZero() == 0 })
+    }
 
     private var campaignStockListener: CampaignStockListener? = null
 
@@ -134,66 +127,30 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private fun setupView(view: View) {
         view.setBackgroundColor(Color.TRANSPARENT)
         setupAdapterModels(isVariant)
-        setStockAvailability()
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
         if (isVariant) {
-            val isAllStockEmpty = sellableProductList.all { it.isStockEmpty() }
-            val tickerUiModel = createTickerUiModel(isAllStockEmpty)
-            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
-                add(tickerUiModel)
+            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>(variantStockWarningTicker).apply {
                 addAll(sellableProductList)
             }
             renderList(variantList)
         } else {
-            val tickerUiModel = createTickerUiModel(false)
-            val productList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
-                add(tickerUiModel)
-                addAll(listOf(
-                    ActiveProductSwitchUiModel(isActive, access),
-                    TotalStockEditorUiModel(stockCount.orZero(), access)
-                ))
-            }
-            renderList(productList)
+            renderList(listOf(
+                    ActiveProductSwitchUiModel(isActive),
+                    TotalStockEditorUiModel(stockCount.orZero())
+            ))
         }
     }
 
-    private fun setStockAvailability() {
-        mViewModel.setStockAvailability(sellableProductList)
-    }
-
-    private fun createTickerUiModel(isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
-        val isMultiLocationShop = userSession.isMultiLocationShop
-        val canEditStock = access?.editStock == true
-
-        val tickerList = mapToTickerList(isMultiLocationShop, canEditStock, isAllStockEmpty)
-        val tickerData = mapToTickerData(context, tickerList)
-
-        return CampaignStockTickerUiModel(tickerData)
-    }
-
     private fun observeVariantStock() {
-        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer { isAllStockEmpty ->
-            val shouldShowWarning = isAllStockEmpty && isVariant
-            showVariantWarningTickerWithCondition(shouldShowWarning)
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer {
+            showVariantWarningTickerWithCondition(it)
         })
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
-        updateStockEditorItem(totalStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
-    }
-
-    private fun updateStockEditorItem(totalStock: Int) {
-        adapter.apply {
-            data.firstOrNull { it is TotalStockEditorUiModel }?.let {
-                val item = TotalStockEditorUiModel(totalStock, access)
-                val index = data.indexOf(it)
-                data[index] = item
-                notifyItemChanged(index)
-            }
-        }
     }
 
     private fun onActiveStockChanged(isActive: Boolean) {
@@ -210,11 +167,13 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
-        adapter.data.firstOrNull { it is CampaignStockTickerUiModel }?.let {
-            val tickerUiModel = createTickerUiModel(shouldShowWarning)
-            val index = adapter.data.indexOf(it)
-            adapter.data[index] = tickerUiModel
-            adapter.notifyItemChanged(index)
+        adapter.data.indexOf(variantStockWarningTicker).let { warningIndex ->
+            (adapter.data.getOrNull(warningIndex) as? StockTickerInfoUiModel)?.run {
+                if (hasEmptyVariantStock != shouldShowWarning) {
+                    hasEmptyVariantStock = shouldShowWarning
+                    adapter.notifyItemChanged(warningIndex)
+                }
+            }
         }
     }
 

@@ -42,7 +42,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData("1")
+        viewModel.getProductVariants("1")
 
         val productVariants = listOf(
             createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
@@ -50,8 +50,8 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
 
-//        viewModel.getDataResult
-//            .verifyValueEquals(expectedResult)
+        viewModel.getProductVariantsResult
+            .verifyValueEquals(expectedResult)
 
         verifyHideProgressBar()
     }
@@ -62,7 +62,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData("1")
+        viewModel.getProductVariants("1")
 
         verifyHideProgressBar()
         verifyShowErrorView()
@@ -74,7 +74,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenError(error)
 
-        viewModel.getData("1")
+        viewModel.getProductVariants("1")
 
         verifyHideProgressBar()
         verifyShowErrorView()
@@ -92,7 +92,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData(productId)
+        viewModel.getProductVariants(productId)
         viewModel.setVariantPrice("2", 300)
         viewModel.setVariantPrice("1", 150)
 
@@ -118,13 +118,13 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData(productId)
+        viewModel.getProductVariants(productId)
         viewModel.setVariantStock("2", 5)
         viewModel.setVariantStock("1", 4)
 
         val productVariants = listOf(
-            createProductVariant(id = "1", stock = 4),
-            createProductVariant(id = "2", stock = 5)
+            createProductVariant(id = "1", stock = 4, isAllStockEmpty = false),
+            createProductVariant(id = "2", stock = 5, isAllStockEmpty = false)
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
@@ -144,7 +144,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData(productId)
+        viewModel.getProductVariants(productId)
         viewModel.setVariantStatus("2", ProductStatus.ACTIVE)
         viewModel.setVariantStatus("1", ProductStatus.INACTIVE)
 
@@ -178,11 +178,11 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData(productId)
-//        viewModel.setTickerList()
-//
-//        viewModel.showEmptyStockTicker
-//            .verifyValueEquals(true)
+        viewModel.getProductVariants(productId)
+        viewModel.setStockWarningTicker()
+
+        viewModel.showStockTicker
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -197,11 +197,11 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getData(productId)
-//        viewModel.setTickerList()
+        viewModel.getProductVariants(productId)
+        viewModel.setStockWarningTicker()
 
-//        viewModel.showEmptyStockTicker
-//            .verifyValueEquals(false)
+        viewModel.showStockTicker
+            .verifyValueEquals(false)
     }
 
     private fun onGetProductVariant_thenReturn(response: GetProductVariantResponse) {
