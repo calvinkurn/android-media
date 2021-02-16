@@ -276,7 +276,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc))
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
-                viewEmptyState.setImageDrawable(resources.getDrawable(R.drawable.ic_digital_checkout_failed_transaction))
+                viewEmptyState.setImageUrl(TRANSACTION_FAILED_IMG_URL)
                 viewEmptyState.setDescription(message)
             }
 
@@ -552,6 +552,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
         private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
+
+        private const val TRANSACTION_FAILED_IMG_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png"
 
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
