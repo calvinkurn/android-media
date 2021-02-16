@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import kotlin.jvm.Throws
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -120,6 +121,7 @@ object ImageProcessingUtil {
     @JvmOverloads
     @JvmStatic
     fun trimBitmap(imagePath: String?, expectedRatio: Float, currentRatio: Float, needCheckRotate: Boolean,
+                   compressFormat: CompressFormat = imagePath.getCompressFormat(),
                    targetRelativeDirectory: String? = DEFAULT_DIRECTORY): String? {
         val bitmapToEdit: Bitmap = getBitmapFromPath(imagePath, DEF_WIDTH, DEF_HEIGHT, needCheckRotate)
                 ?: return null
@@ -146,7 +148,7 @@ object ImageProcessingUtil {
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, Rect(left, top, right, bottom),
                     Rect(0, 0, expectedWidth, expectedHeight), null)
-            val file = writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat(), targetRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, compressFormat, targetRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
