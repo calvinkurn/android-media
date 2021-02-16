@@ -36,6 +36,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -150,6 +152,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         generateSellerAppNetworkKeys();
         initRemoteConfig();
         initCacheManager();
+        initMedialoader();
 
         TrackApp.initTrackApp(this);
 
@@ -178,6 +181,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void initCacheManager(){
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
+    }
+
+    private void initMedialoader() {
+        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        Loader.initialize(getApplicationContext());
     }
 
     private void setVersionName(){
