@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.domain.mapper;
 
 import com.tokopedia.checkout.data.model.response.shipment_address_form.FreeShipping;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.Preorder;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentInformation;
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse;
@@ -422,7 +421,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
                             }
                             TokoCabangInfo tokoCabangInfo = groupShop.getTokoCabangInfo();
-                            if (groupShop.isFulfillment() && tokoCabangInfo != null) {
+                            if (tokoCabangInfo != null) {
                                 groupShopResult.setFulfillmentBadgeUrl(tokoCabangInfo.getBadgeUrl());
                                 groupShopResult.setFulfillmentName(tokoCabangInfo.getMessage());
                             }
