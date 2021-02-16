@@ -35,7 +35,8 @@ class CategoryFullFilterRepository @Inject constructor() : BaseRepository(), Fil
                 filters.add(Filter(
                         title = filter.title,
                         options = options,
-                        templateName = filter.templateName
+                        templateName = filter.templateName,
+                        search = Search(1, filter.search.placeholder)
                 ))
             }
         }
