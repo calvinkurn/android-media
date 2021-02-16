@@ -21,12 +21,8 @@ class SomEditRefNumUseCase @Inject constructor(private val useCase: GraphqlUseCa
     }
 
     suspend fun execute(): Result<SomEditRefNumResponse.Data> {
-        return try {
-            val editAwb = useCase.executeOnBackground()
-            Success(editAwb)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+        val editAwb = useCase.executeOnBackground()
+        return Success(editAwb)
     }
 
     fun setParams(params: SomEditRefNumRequestParam) {

@@ -23,12 +23,8 @@ class SomRejectCancelOrderUseCase @Inject constructor(private val useCase: Graph
     suspend fun execute(rejectOrderRequest: SomRejectCancelOrderRequest): Result<SomRejectCancelOrderResponse.Data> {
         useCase.setRequestParams(generateParam(rejectOrderRequest))
 
-        return try {
-            val rejectOrder = useCase.executeOnBackground()
-            Success(rejectOrder)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+        val rejectOrder = useCase.executeOnBackground()
+        return Success(rejectOrder)
     }
 
     private fun generateParam(rejectCancelOrderRequest: SomRejectCancelOrderRequest): Map<String, SomRejectCancelOrderRequest> {

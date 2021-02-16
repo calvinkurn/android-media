@@ -17,12 +17,8 @@ class SomGetUserRoleUseCase @Inject constructor(
         useCase.setGraphqlQuery(QUERY)
         useCase.setTypeClass(SomGetUserRoleResponse::class.java)
 
-        return try {
-            val result = mapper.mapDomainToUiModel(useCase.executeOnBackground().goldGetUserShopInfo?.data)
-            Success(result)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+        val result = mapper.mapDomainToUiModel(useCase.executeOnBackground().goldGetUserShopInfo?.data)
+        return Success(result)
     }
 
     fun setUserId(userId: Int) {

@@ -44,7 +44,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
-) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     companion object {
@@ -173,12 +173,16 @@ class SomListViewModel @Inject constructor(
     }
 
     private fun cancelAllRefreshOrderJobs() {
-        refreshOrderJobs.forEach { it.job?.cancel() }
+        refreshOrderJobs.forEach { it.job.cancel() }
         refreshOrderJobs.clear()
     }
 
     private fun clearCompletedRefreshOrderJob() {
         refreshOrderJobs = ArrayList(refreshOrderJobs.filterNot { it.job.isCompleted })
+    }
+
+    private fun isLoadInitialData(): Boolean {
+        return getOrderListParams.nextOrderId == 0L
     }
 
     fun bulkAcceptOrder(orderIds: List<String>) {
@@ -233,12 +237,12 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getOrderList() {
-        if (getOrderListParams.nextOrderId == 0L) {
+        if (isLoadInitialData()) {
             containsFailedRefreshOrder = false
+            cancelAllRefreshOrderJobs()
         }
         getOrderListJob?.cancel()
         getOrderListJob = launchCatchError(block = {
-            cancelAllRefreshOrderJobs()
             somListGetOrderListUseCase.setParams(getOrderListParams)
             val result = somListGetOrderListUseCase.executeOnBackground()
             getUserRolesJob()?.join()
@@ -261,15 +265,11 @@ class SomListViewModel @Inject constructor(
                 val result = somListGetOrderListUseCase.executeOnBackground()
                 getUserRolesJob()?.join()
                 getFiltersJob?.join()
-                withContext(Dispatchers.Main) {
-                    refreshOrderJobs.remove(refreshOrder)
-                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
-                }
+                refreshOrderJobs.remove(refreshOrder)
+                _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
             }, onError = {
-                withContext(Dispatchers.Main) {
-                    _refreshOrderResult.value = Fail(it)
-                    containsFailedRefreshOrder = true
-                }
+                _refreshOrderResult.value = Fail(it)
+                containsFailedRefreshOrder = true
             })
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
