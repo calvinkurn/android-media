@@ -150,7 +150,7 @@ class AddEditProductPreviewFragment :
     private var districtId: Int = 0
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
-    private var isViewVisible = true
+    private var isViewVisible = false
 
     private var toolbar: Toolbar? = null
 
@@ -286,6 +286,8 @@ class AddEditProductPreviewFragment :
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
+
+        isViewVisible = true
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
