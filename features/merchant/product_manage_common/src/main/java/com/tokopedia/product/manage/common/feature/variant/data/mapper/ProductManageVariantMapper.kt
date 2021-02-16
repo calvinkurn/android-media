@@ -56,8 +56,8 @@ object ProductManageVariantMapper {
         var editStatus = false
 
         currentProductVariantList.forEachIndexed { index, variant ->
-            val variantStockInput = variants[index].stock
-            val variantStatusInput = variants[index].status
+            val variantStockInput = variants.getOrNull(index)?.stock
+            val variantStatusInput = variants.getOrNull(index)?.status
 
             if(variantStockInput != variant.stock) {
                 editStock = true
