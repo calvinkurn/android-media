@@ -752,7 +752,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         showDoneLoading();
 
         initImageCropPresenter();
-        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true);
+        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true, convertToWebp);
     }
 
     @Override
