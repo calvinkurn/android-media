@@ -192,7 +192,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
@@ -202,7 +202,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return com.tokopedia.product.addedit.R.id.recycler_view
+        return R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

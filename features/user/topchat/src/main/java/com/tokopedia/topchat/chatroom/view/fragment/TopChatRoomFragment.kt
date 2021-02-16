@@ -17,6 +17,7 @@ import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -93,6 +94,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.MessageTextWatcher
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -107,6 +109,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
+import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -115,6 +118,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -130,8 +135,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener,
-        BroadcastSpamHandlerViewHolder.Listener, RoomSettingFraudAlertViewHolder.Listener,
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
+        SearchListener, BroadcastSpamHandlerViewHolder.Listener,
+        RoomSettingFraudAlertViewHolder.Listener,
         ReviewViewHolder.Listener {
 
     @Inject
@@ -148,6 +154,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var session: UserSessionInterface
+
+    @Inject
+    lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var alertDialog: Dialog
@@ -187,6 +196,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
     private var chatBackground: ImageView? = null
+    private var textWatcher: MessageTextWatcher? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -201,10 +211,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initReplyTextWatcher()
             initStickerView()
             initFbNewUnreadMessage()
             initTextComposeBackground()
         }
+    }
+
+    private fun initReplyTextWatcher() {
+        textWatcher = MessageTextWatcher(this)
+        composeArea?.addTextChangedListener(textWatcher)
     }
 
     private fun initTextComposeBackground() {
@@ -832,6 +848,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendMessage(message: String? = null) {
+        textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
@@ -890,6 +907,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
             clearEditText()
+            sellerReviewHelper.hasRepliedChat = true
         }
     }
 
@@ -1017,6 +1035,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 } else {
                     presenter.startCompressImages(model)
                 }
+                sellerReviewHelper.hasRepliedChat = true
             }
         }
     }
@@ -1127,14 +1146,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = getBuyPageIntent(element)
-        startActivity(buyPageIntent)
+        if (usePdp()) {
+            goToPdp(element.productId.toString())
+        } else {
+            val buyPageIntent = getBuyPageIntent(element)
+            startActivity(buyPageIntent)
+        }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = getAtcPageIntent(element)
-        startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
+        if (usePdp()) {
+            goToPdp(element.productId.toString())
+        } else {
+            val atcPageIntent = getAtcPageIntent(element)
+            startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
+        }
     }
 
     override fun onGoToShop() {
@@ -1301,6 +1328,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        lifecycleScope.launch(Dispatchers.IO) {
+            sellerReviewHelper.saveMessageId(messageId)
         }
     }
 
@@ -1756,6 +1790,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackReviewCardClick(element: ReviewUiModel) {
         analytics.trackReviewCardClick(element, isSeller(), session.userId)
+    }
+
+    private fun usePdp(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
+    }
+
+    private fun goToPdp(productId: String?) {
+        if (productId == null) return
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+        )
     }
 
     companion object {
