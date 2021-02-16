@@ -34,7 +34,6 @@ dependencies {
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.sellerHomeCommon)
     implementation project(rootProject.ext.features.sellerMenuCommon)
-    implementation project(rootProject.ext.features.sessioncommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
