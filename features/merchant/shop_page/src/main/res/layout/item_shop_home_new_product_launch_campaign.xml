@@ -32,6 +32,7 @@
         android:id="@+id/image_tnc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="null"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_2"
@@ -73,7 +74,7 @@
         app:typographyType="body_3"
         tools:text="12 orang tertarik dengan barang inias adas das as das as dasd as das d" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
         android:id="@+id/banner_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

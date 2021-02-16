@@ -18,14 +18,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
-import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
@@ -42,6 +40,7 @@ import com.tokopedia.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
+import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -111,7 +110,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         }
     }
 
-    private fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
+    private fun initAttrsInBg(attributeSet: AttributeSet): Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
     }
 
@@ -147,6 +146,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     private fun initView() {
         initInjector()
+        updateDarkMode()
         setContent(content, highlight)
 
         if (leftImage != null) {
@@ -166,10 +166,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
             stickyLoginAction.onClick()
         }
-
-        layoutContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            stickyLoginAction.onViewChange(isShowing())
-        }
     }
 
     private fun initInjector() {
@@ -188,7 +184,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     private fun initObserver(lifecycleOwner: LifecycleOwner) {
         viewModel.stickyContent.observe(lifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     setContent(it.data.tickerDataModels[0])
                     if (isOnDelay(page)) {
@@ -358,22 +354,19 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         }
     }
 
-    private fun show() {
-        if (isDarkModeOn()) {
-            onDarkMode()
-        } else {
-            onLightMode()
-        }
-
+    fun show() {
+        updateDarkMode()
         this.visibility = View.VISIBLE
         layoutContainer.show()
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
     }
 
-    private fun hide() {
-        this.visibility = View.GONE
-        layoutContainer.hide()
-        if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
+    fun hide() {
+        if (isShowing()) {
+            this.visibility = View.GONE
+            layoutContainer.hide()
+            if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
+        }
     }
 
     /**
@@ -394,11 +387,20 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         textContent.setContent("$TEXT_RE_LOGIN $name")
 
         profilePicture?.let {
-            imageViewLeft.loadImageCircle(it)
+            imageViewLeft.type = ImageUnify.TYPE_CIRCLE
+            imageViewLeft.setImageUrl(it)
         }
 
         trackerLoginReminder.viewOnPage(page)
         show()
+    }
+
+    private fun updateDarkMode() {
+        if (isDarkModeOn()) {
+            onDarkMode()
+        } else {
+            onLightMode()
+        }
     }
 
     override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
