@@ -38,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams.Companion.ATC_FROM_TOPCHAT
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -1099,21 +1100,43 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        doBuy(element)
+        doBuyAndAtc(element) {
+            RouteManager.route(context, ApplinkConst.CART)
+        }
     }
 
-    private fun doBuy(element: ProductAttachmentViewModel) {
-        val buyParam = getBuyParam(element)
-        presenter.addProductToCart(buyParam, {
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        analytics.eventClickAddToCartProductAttachment(element, session)
+        doBuyAndAtc(element) {
             val msg = it.message.getOrNull(0) ?: ""
-            showToasterMsg(msg)
-            RouteManager.route(context, ApplinkConst.CART)
+            view?.let { view ->
+                Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        "Lihat Keranjang",
+                        View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.CART)
+                        }
+                ).show()
+            }
+        }
+    }
+
+    private fun doBuyAndAtc(
+            element: ProductAttachmentViewModel,
+            onSuccess: (response: DataModel) -> Unit = {}
+    ) {
+        val buyParam = getAtcBuyParam(element)
+        presenter.addProductToCart(buyParam, {
+            onSuccess(it)
         }, { msg ->
             showToasterError(msg)
         })
     }
 
-    private fun getBuyParam(element: ProductAttachmentViewModel): RequestParams {
+    private fun getAtcBuyParam(element: ProductAttachmentViewModel): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
                 productId = element.productId,
                 shopId = element.shopId.toInt(),
@@ -1125,16 +1148,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                     addToCartRequestParams
             )
-        }
-    }
-
-    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        analytics.eventClickAddToCartProductAttachment(element, session)
-        if (usePdp()) {
-            goToPdp(element.productId.toString())
-        } else {
-            val atcPageIntent = getAtcPageIntent(element)
-            startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
         }
     }
 
@@ -1630,13 +1643,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
-    private fun showToasterMsg(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    .show()
-        }
-    }
-
     private fun showToasterConfirmation(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
@@ -1744,19 +1750,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackReviewCardClick(element: ReviewUiModel) {
         analytics.trackReviewCardClick(element, isSeller(), session.userId)
-    }
-
-    private fun usePdp(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
-    }
-
-    private fun goToPdp(productId: String?) {
-        if (productId == null) return
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-        )
     }
 
     companion object {
