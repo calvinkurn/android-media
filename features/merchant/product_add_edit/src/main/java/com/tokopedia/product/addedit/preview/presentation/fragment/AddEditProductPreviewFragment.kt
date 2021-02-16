@@ -814,9 +814,10 @@ class AddEditProductPreviewFragment :
     private fun updateProductInputModelOfCacheManagerId(bundle: Bundle) {
         val cacheManagerId = bundle.getString(BUNDLE_CACHE_MANAGER_ID) ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
+            viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                    ?: ProductInputModel()
             productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
-            viewModel.productInputModel.value = productInputModel
         }
     }
 
@@ -965,28 +966,21 @@ class AddEditProductPreviewFragment :
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             //check whether productInputModel has value from savedInstanceState or from backPressed
             if (productInputModel == null) {
-                renderUiPreviewPage(it)
+                showProductPhotoPreview(it)
+                showProductDetailPreview(it)
+                updateProductStatusSwitch(it)
+                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+                if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
+                    displayEditMode()
+                }
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-            } else if (productInputModel != null && statusState) {
-                viewModel.productInputModel.value = productInputModel
-                checkEnableOrNot()
-                statusState = false
             } else {
                 viewModel.productInputModel.value = productInputModel
-                productInputModel?.apply { renderUiPreviewPage(this) }
+                checkEnableOrNot()
+                productInputModel = null
             }
         })
-    }
-
-    private fun renderUiPreviewPage(productInputModel: ProductInputModel) {
-        showProductPhotoPreview(productInputModel)
-        showProductDetailPreview(productInputModel)
-        updateProductStatusSwitch(productInputModel)
-        showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-        if (viewModel.getDraftId() != 0L || productInputModel.productId != 0L || viewModel.getProductId().isNotBlank()) {
-            displayEditMode()
-        }
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
