@@ -224,23 +224,29 @@ class DynamicChannelHeaderView: FrameLayout {
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                val currentDate = Date()
-                val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
-                val serverTime = Date()
-                serverTime.time = currentMillisecond
-                val timeDiff = getTimeDiff(serverTime, expiredTime)
-                countDownView?.targetDate = timeDiff
-                countDownView?.onFinish = {
-                    listener?.onChannelExpired(channel)
-                }
+                countDownView?.run {
+                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty()){
+                        TimerUnifySingle.VARIANT_ALTERNATE
+                    } else {
+                        TimerUnifySingle.VARIANT_MAIN
+                    }
 
-                if(channel.channelHeader.backColor.isNotEmpty()){
-                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
-                } else {
-                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
-                }
+                    visibility = View.VISIBLE
 
-                countDownView?.visibility = View.VISIBLE
+                    // calculate date diff
+                    targetDate = Calendar.getInstance().apply {
+                        val currentDate = Date()
+                        val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
+                        val timeDiff = expiredTime.time - currentMillisecond
+                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+                    }
+                    onFinish = {
+                        listener?.onChannelExpired(channel)
+                    }
+
+                }
             }
         } else {
             countDownView?.let {
@@ -250,10 +256,11 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
-        if (channel.channelHeader.backColor.isNotEmpty()) {
+        val backgroundColor = "#0000ff"
+        if (backgroundColor.isNotEmpty()) {
             stubSeeAllButton?.gone()
             stubSeeAllButtonUnify?.gone()
-            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+            titleContainer.setBackgroundColor(Color.parseColor(backgroundColor))
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
@@ -268,9 +275,7 @@ class DynamicChannelHeaderView: FrameLayout {
         var diff = endTime.time - startTime.time
         if (diff < 0) diff = 0
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR, (diff / (60 * 60 * 1000) % 24).toInt())
-        calendar.add(Calendar.MINUTE, (diff / (60 * 1000) % 60).toInt())
-        calendar.add(Calendar.SECOND, (diff / 1000 % 60).toInt())
+        calendar.timeInMillis = diff
         return calendar
     }
 
