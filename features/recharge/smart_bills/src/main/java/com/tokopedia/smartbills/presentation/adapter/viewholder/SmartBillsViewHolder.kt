@@ -83,33 +83,29 @@ class SmartBillsViewHolder(val view: View,
                 }
             }
 
+            if(!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0){
+                tv_due_message.apply {
+                    text = element.dueMessage.text
+                    setTextColor(getDueUrgencyColor(element.dueMessage.type, context))
+                }
+            } else {
+                tv_due_message.gone()
+            }
+
             if(!element.dueDateLabel.text.isNullOrEmpty() && element.dueDateLabel.type != 0){
                 tv_due_date_label.apply {
                     text = element.dueDateLabel.text
                     setTextColor(getDueUrgencyColor(element.dueDateLabel.type, context))
                     setWeight(Typography.BOLD)
                 }
-            } else {
-                tv_due_date_label.gone()
-            }
-
-            if(!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0){
-                tv_due_message.apply {
-                    text = element.dueMessage.text
-                    setTextColor(getDueUrgencyColor(element.dueMessage.type, context))
-                    setWeight(Typography.BOLD)
-                }
 
                 iv_urgency_icon.apply {
-                    setImageResource(getDueUrgencyIcon(element.dueMessage.type))
+                    setImageResource(getDueUrgencyIcon(element.dueDateLabel.type))
                 }
-
             } else {
-                tv_due_message.gone()
+                tv_due_date_label.gone()
                 iv_urgency_icon.gone()
             }
-
-
         }
     }
 

@@ -129,13 +129,13 @@ object SmartBillsQueries {
                       "isChecked": true,
                       "DueDate": "",
                       "DueMessage": {
-                        "Type": 2,
-                        "Text": "Bayar Sebelum"
-                      },
-                      "DueDateLabel": {
-                        "Type": 2,
-                        "Text": "15 Februari"
-                      }
+                          "Type": 1,
+                          "Text": "Bayar Sekarang"
+                        },
+                        "DueDateLabel": {
+                          "Type": 3,
+                          "Text": "14 Februari"
+                        }
                     },
                     {
                       "index": 1,
@@ -167,13 +167,13 @@ object SmartBillsQueries {
                       "isChecked": true,
                       "DueDate": "",
                       "DueMessage": {
-                        "Type": 1,
-                        "Text": "Bayar Sebelum"
-                      },
-                      "DueDateLabel": {
-                        "Type": 1,
-                        "Text": "10 Februari"
-                      }
+                          "Type": 1,
+                          "Text": "Bayar Sebelum"
+                        },
+                        "DueDateLabel": {
+                          "Type": 2,
+                          "Text": "16 Februari"
+                        }
                     }
                   ]
                 }
