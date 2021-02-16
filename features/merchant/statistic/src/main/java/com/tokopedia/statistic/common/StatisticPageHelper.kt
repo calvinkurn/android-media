@@ -8,6 +8,7 @@ import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 15/02/21
@@ -61,21 +62,21 @@ object StatisticPageHelper {
 
     private fun getShopDateFilters(context: Context): List<DateFilterItem> = listOf(
             getDateRangeItemToday(context),
-            getDateFilterItemClick(context, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
-            getDateFilterItemClick(context, Const.DAYS_29, Const.DAY_0, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+            getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
+            getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_29, Const.DAY_0, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
             DateFilterItem.Divider,
             getDateFilterPerDay(context),
-            getDateFilterPerWeek(context),
-            getFilterPerMonth(context),
+            getDateFilterPerWeek(context, false),
+            getFilterPerMonth(context, true),
             DateFilterItem.ApplyButton
     )
 
     private fun getBuyerDateFilters(context: Context): List<DateFilterItem> = listOf(
-            getDateFilterItemClick(context, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-            getDateFilterItemClick(context, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+            getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
+            getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
             DateFilterItem.Divider,
-            getDateFilterPerWeek(context),
-            getFilterPerMonth(context),
+            getDateFilterPerWeek(context, true),
+            getFilterPerMonth(context, false),
             DateFilterItem.ApplyButton
     )
 
@@ -85,8 +86,8 @@ object StatisticPageHelper {
         return DateFilterItem.Click(label, today, today, false, DateFilterItem.TYPE_TODAY)
     }
 
-    private fun getDateFilterItemClick(context: Context, startPastDays: Int, endPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {
-        val label: String = context.getString(R.string.stc_last_n_days, startPastDays)
+    private fun getDateFilterItemClick(context: Context, lastNDaysLabel: Int, startPastDays: Int, endPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {
+        val label: String = context.getString(R.string.stc_last_n_days, lastNDaysLabel)
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(startPastDays.toLong()))
         val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(endPastDays.toLong()))
         return DateFilterItem.Click(label, startDate, endDate, isSelected, type, showBottomBorder)
@@ -95,10 +96,10 @@ object StatisticPageHelper {
     private fun getDateFilterPerDay(context: Context): DateFilterItem.Pick {
         val label = context.getString(R.string.stc_per_day)
         val today = Date()
-        return DateFilterItem.Pick(label, today, today, type = DateFilterItem.TYPE_PER_DAY)
+        return DateFilterItem.Pick(label, today, today, type = DateFilterItem.TYPE_PER_DAY, calendarPickerMaxDate = today)
     }
 
-    private fun getDateFilterPerWeek(context: Context): DateFilterItem.Pick {
+    private fun getDateFilterPerWeek(context: Context, isOnlyCompletedWeek: Boolean): DateFilterItem.Pick {
         val calendar: Calendar = Calendar.getInstance()
         with(calendar) {
             firstDayOfWeek = Calendar.MONDAY
@@ -108,14 +109,31 @@ object StatisticPageHelper {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
-        val firstDateOfWeek = calendar.time
-        val lastDateOfWeek = Date()
+        var firstDateOfWeek = calendar.time
+        var lastDateOfWeek = Date()
+
+        if (isOnlyCompletedWeek) {
+            val sevenDaysMillis = TimeUnit.DAYS.toMillis(7)
+            val sixDaysMillis = TimeUnit.DAYS.toMillis(6)
+            val firstDateOfWeekTimeStamp = calendar.time.time.minus(sevenDaysMillis)
+            firstDateOfWeek = Date(firstDateOfWeekTimeStamp)
+            lastDateOfWeek = Date(firstDateOfWeekTimeStamp.plus(sixDaysMillis))
+        }
+
         val label = context.getString(R.string.stc_per_week)
-        return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK)
+        return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK, calendarPickerMaxDate = lastDateOfWeek)
     }
 
-    private fun getFilterPerMonth(context: Context): DateFilterItem.MonthPickerItem {
+    private fun getFilterPerMonth(context: Context, canSelectOnGoingMonth: Boolean): DateFilterItem.MonthPickerItem {
         val perMonthLabel = context.getString(R.string.stc_per_month)
-        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = Date(), endDate = Date())
+        val defaultDate: Date = if (canSelectOnGoingMonth) {
+            Date()
+        } else {
+            Date().apply {
+                val last30DaysMillis = TimeUnit.DAYS.toMillis(30)
+                time = time.minus(last30DaysMillis)
+            }
+        }
+        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = defaultDate, endDate = defaultDate)
     }
 }

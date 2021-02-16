@@ -107,7 +107,8 @@ sealed class DateFilterItem(
             override var startDate: Date? = null,
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
-            override val type: Int
+            override val type: Int,
+            val calendarPickerMaxDate: Date? = null
     ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {

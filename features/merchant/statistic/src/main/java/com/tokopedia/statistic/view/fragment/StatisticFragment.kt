@@ -68,7 +68,6 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_START_DATE = 6L
         private const val DEFAULT_END_DATE = 1L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
@@ -98,12 +97,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
-        val default = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE))
-        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate ?: default
+        val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_6.toLong()))
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate ?: defaultStartDate
     }
     private val defaultEndDate by lazy {
-        val default = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
-        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate ?: default
+        val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate ?: defaultEndDate
     }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
@@ -336,7 +335,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultRange() = view?.run {
-        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DATE)
+        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
         val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
         val subTitle = "$headerSubTitle ($startEndDateFmt)"
 
