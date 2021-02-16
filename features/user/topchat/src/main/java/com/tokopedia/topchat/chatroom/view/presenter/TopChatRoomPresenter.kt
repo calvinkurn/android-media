@@ -63,6 +63,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -732,16 +733,19 @@ open class TopChatRoomPresenter @Inject constructor(
                     val atcResponse = addToCartUseCase.createObservable(requestParams)
                             .toBlocking()
                             .single().data
-                    // if fail, data.success == 0
-                    if (atcResponse.success == 1) {
-                        onSuccessAddToCart(atcResponse)
-                    } else {
-                        onError(atcResponse.message.getOrNull(0) ?: "")
+                    withContext(dispatchers.Main) {
+                        if (atcResponse.success == 1) {
+                            onSuccessAddToCart(atcResponse)
+                        } else {
+                            onError(atcResponse.message.getOrNull(0) ?: "")
+                        }
                     }
                 },
                 onError = {
-                    it.message?.let { errorMsg ->
-                        onError(errorMsg)
+                    withContext(dispatchers.Main) {
+                        it.message?.let { errorMsg ->
+                            onError(errorMsg)
+                        }
                     }
                 }
         )
