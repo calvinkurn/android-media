@@ -17,13 +17,9 @@ fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
-fun ImageView.loadImage(url: String?) = call(url, Properties().apply {
-    useBlurHash(true)
-})
-
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
-fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
+fun ImageView.loadImage(url: String?) = call(url, Properties())
 
 inline fun ImageView.loadImage(
         url: String?,
@@ -48,6 +44,8 @@ inline fun ImageView.loadImageRounded(
         }) {
     call(url, Properties().apply(configuration))
 }
+
+fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
 fun ImageView.loadIcon(url: String?) = call(
         url,
