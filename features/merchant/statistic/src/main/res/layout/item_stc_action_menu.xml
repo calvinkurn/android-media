@@ -32,7 +32,7 @@
     <View
         android:id="@+id/hotLineStcActionMenu"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/shc_dimen_0_8dp"
+        android:layout_height="@dimen/shc_dimen_1dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/shc_dimen_18dp"
         android:background="@color/Unify_N75"
