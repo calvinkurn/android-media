@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.common.feature.list.view.mapper
 
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.ADD_PRODUCT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.BROADCAST_CHAT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.DELETE_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.DUPLICATE_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_PRICE
@@ -34,7 +35,8 @@ object ProductManageAccessMapper {
             accessIds.contains(SET_TOP_ADS),
             accessIds.contains(SET_CASHBACK),
             accessIds.contains(SET_FEATURED),
-            accessIds.contains(PRODUCT_LIST)
+            accessIds.contains(PRODUCT_LIST),
+            accessIds.contains(BROADCAST_CHAT)
         )
     }
 
@@ -52,7 +54,27 @@ object ProductManageAccessMapper {
             setTopAds = true,
             setCashBack = true,
             setFeatured = true,
-            productList = true
+            productList = true,
+            broadcastChat = true
+        )
+    }
+
+    fun mapDefaultProductManageAccess(): ProductManageAccess {
+        return ProductManageAccess(
+            addProduct = false,
+            editProduct = false,
+            etalaseList = false,
+            multiSelect = false,
+            editPrice = false,
+            editStock = false,
+            duplicateProduct = false,
+            setStockReminder = false,
+            deleteProduct = false,
+            setTopAds = false,
+            setCashBack = false,
+            setFeatured = false,
+            productList = false,
+            broadcastChat = false
         )
     }
 }

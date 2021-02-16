@@ -52,12 +52,13 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         super.onViewCreated(view, savedInstanceState)
         val productId = arguments?.getString(EXTRA_PRODUCT_ID).orEmpty()
 
+        setupSaveBtn()
         setupVariantList()
         setupBottomSheet()
         setupErrorView(productId)
 
         observeGetVariant()
-        observeEditVariant()
+        observeClickSaveBtn()
         observeViewState()
 
         getData(productId)
@@ -120,9 +121,9 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         errorView.errorTitle.hide()
     }
 
-    private fun setupSaveBtn(result: EditVariantResult) {
+    private fun setupSaveBtn() {
         btnSave.setOnClickListener {
-            onSaveButtonClicked(result)
+            viewModel.saveVariants()
         }
     }
 
@@ -138,9 +139,9 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         }
     }
 
-    private fun observeEditVariant() {
-        observe(viewModel.editVariantResult) {
-            setupSaveBtn(it)
+    private fun observeClickSaveBtn() {
+        observe(viewModel.onClickSaveButton) {
+            onSaveButtonClicked(it)
         }
     }
 

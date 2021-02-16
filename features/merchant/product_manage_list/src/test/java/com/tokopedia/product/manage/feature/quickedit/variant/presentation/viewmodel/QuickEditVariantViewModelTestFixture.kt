@@ -6,11 +6,12 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.viewmode
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 
-abstract class QuickEditVariantViewModelTestFixture {
+open class QuickEditVariantViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -25,11 +26,17 @@ abstract class QuickEditVariantViewModelTestFixture {
         getProductVariantUseCase = mockk(relaxed = true)
         getProductManageAccessUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+
         viewModel = QuickEditVariantViewModel(
                 getProductVariantUseCase,
                 getProductManageAccessUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
+        onGetIsShopOwner_thenReturn(true)
     }
- }
+
+    protected fun onGetIsShopOwner_thenReturn(isShopOwner: Boolean) {
+        every { userSession.isShopOwner } returns isShopOwner
+    }
+}

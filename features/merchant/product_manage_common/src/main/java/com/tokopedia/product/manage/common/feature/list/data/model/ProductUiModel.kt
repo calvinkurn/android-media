@@ -27,7 +27,6 @@ data class ProductUiModel(
     }
 
     fun isVariant(): Boolean = isVariant == true
-    fun isNotVariant(): Boolean = isVariant != true
 
     fun isActive(): Boolean = status == ProductStatus.ACTIVE
     fun isInactive(): Boolean = status == ProductStatus.INACTIVE
@@ -37,6 +36,5 @@ data class ProductUiModel(
     fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true
 
     fun hasEditPriceAccess() = access?.editPrice == true
-    fun hasEditStockAccess() = access?.editStock == true
     fun hasEditProductAccess() = access?.editProduct == true
 }

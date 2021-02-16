@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.common.feature.quickedit.stock.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
@@ -43,13 +42,12 @@ class ProductManageQuickEditStockViewModel @Inject constructor(
         _status.value = status
     }
 
-    fun getStockTicker(access: ProductManageAccess?) {
-        val canEditStock = access?.editStock == true
+    fun getStockTicker(hasEditStockAccess: Boolean) {
         val multiLocationShop = userSession.isMultiLocationShop
 
         val tickerType = when {
-            multiLocationShop && canEditStock -> MultiLocationTicker
-            multiLocationShop && !canEditStock -> ManageStockNoAccessTicker
+            multiLocationShop && hasEditStockAccess -> MultiLocationTicker
+            multiLocationShop && !hasEditStockAccess -> ManageStockNoAccessTicker
             else -> NoTicker
         }
         _stockTicker.value = tickerType
