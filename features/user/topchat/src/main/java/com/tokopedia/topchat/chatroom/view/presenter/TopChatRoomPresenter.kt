@@ -31,6 +31,8 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -69,6 +71,7 @@ import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -118,6 +121,7 @@ class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
+    private var remoteConfig: RemoteConfig? = null
 
     init {
         mSubscription = CompositeSubscription()
@@ -336,10 +340,36 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun startUploadImages(it: ImageUploadViewModel) {
-        view?.addDummyMessage(it)
-        UploadImageChatService.dummyMap[thisMessageId]?.add(it)
-        UploadImageChatService.enqueueWork(view.context, it, thisMessageId)
+    override fun startUploadImages(image: ImageUploadViewModel) {
+        if(isEnableUploadImageService()) {
+            view?.addDummyMessage(image)
+            UploadImageChatService.dummyMap[thisMessageId]?.add(image)
+            UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
+        } else {
+            processDummyMessage(image)
+            uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+        }
+    }
+
+    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
+        when (networkMode) {
+            MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
+            MODE_API -> sendImageByApi(uploadId, image)
+        }
+    }
+
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
+    }
+
+    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
+        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
+        sendMessageWebSocket(requestParams)
+    }
+
+    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
+        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
+        sendByApi(requestParams, image)
     }
 
     override fun isUploading(): Boolean {
@@ -771,11 +801,24 @@ class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
+    private fun isEnableUploadImageService(): Boolean {
+        val result =  try {
+            if(remoteConfig == null) {
+                remoteConfig = FirebaseRemoteConfigImpl(view.context)
+            }
+            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
+        } catch (ex: Exception) {
+            false
+        }
+        return result
+    }
+
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
     companion object {
         const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
+        const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service";
     }
 }

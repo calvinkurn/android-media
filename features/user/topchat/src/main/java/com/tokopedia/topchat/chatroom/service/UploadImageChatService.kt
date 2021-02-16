@@ -108,9 +108,6 @@ class UploadImageChatService: JobIntentService() {
             }
 
             override fun onError(e: Throwable) {
-                val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, e)
-                notificationManager?.onFailedUpload(errorMessage)
-                removeDummyOnList(dummyMessage)
                 image?.let {
                     onErrorUploadImage(e, it)
                 }
@@ -139,6 +136,11 @@ class UploadImageChatService: JobIntentService() {
 
         result.putExtras(bundle)
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
+
+        removeDummyOnList(image)
+
+        val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, throwable)
+        notificationManager?.onFailedUpload(errorMessage)
     }
 
     @Synchronized
