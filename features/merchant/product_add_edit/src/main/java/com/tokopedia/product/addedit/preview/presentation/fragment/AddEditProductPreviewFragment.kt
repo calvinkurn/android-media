@@ -968,13 +968,13 @@ class AddEditProductPreviewFragment :
                 renderUiPreviewPage(it)
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-            } else if (productInputModel != null) {
-                viewModel.productInputModel.value = productInputModel
-                productInputModel?.apply { renderUiPreviewPage(this) }
-                productInputModel = null
             } else if (productInputModel != null && statusState) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
+                productInputModel = null
+            } else {
+                viewModel.productInputModel.value = productInputModel
+                productInputModel?.apply { renderUiPreviewPage(this) }
                 productInputModel = null
             }
         })
