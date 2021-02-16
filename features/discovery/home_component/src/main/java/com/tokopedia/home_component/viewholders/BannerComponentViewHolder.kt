@@ -74,8 +74,6 @@ class BannerComponentViewHolder(itemView: View,
                 resumeAutoScroll()
             }
         })
-
-        parentRecyclerViewPool?.let { rvBanner.setRecycledViewPool(parentRecyclerViewPool) }
     }
 
     override fun bind(element: BannerDataModel) {

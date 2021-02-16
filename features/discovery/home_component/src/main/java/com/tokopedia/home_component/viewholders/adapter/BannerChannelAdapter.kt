@@ -9,7 +9,6 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPagerAdapter
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home_component.R
-import com.tokopedia.unifycomponents.ImageUnify
 
 class BannerChannelAdapter(val itemList: List<CircularModel>, listener: CircularListener) : CircularViewPagerAdapter(itemList, listener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CircularViewHolder {
@@ -23,7 +22,7 @@ class BannerChannelImageViewHolder(itemView: View): CircularViewHolder(itemView)
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
     override fun bind(item: CircularModel, listener: CircularListener) {
-        itemView.findViewById<ImageUnify>(R.id.image_banner_homepage).setImageUrl(url = item.url, heightRatio = 1/3f)
-        itemView.findViewById<ImageUnify>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(url = item.url)
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
     }
 }
