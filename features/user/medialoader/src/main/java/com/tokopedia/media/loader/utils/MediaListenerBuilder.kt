@@ -13,9 +13,9 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource as dataSource
 
-object Listener {
+object MediaListenerBuilder {
 
-    operator fun invoke(
+    fun callback(
             context: Context,
             properties: Properties,
             startTime: Long,
@@ -55,7 +55,7 @@ object Listener {
                 val pageName = context.javaClass.name
                 val pageCanonicalName = context.javaClass.canonicalName
 
-                println("$pageName,$pageCanonicalName,${properties.data.toString()},$loadTime")
+                println("MediaLoader => $pageName,$pageCanonicalName,${properties.data.toString()},$loadTime")
             }
 
             return false

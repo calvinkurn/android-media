@@ -16,7 +16,7 @@ import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
-import com.tokopedia.media.loader.utils.Listener.invoke as callbackListener
+import com.tokopedia.media.loader.utils.MediaListenerBuilder.callback as callbackListener
 
 class GlideBuilder {
 
