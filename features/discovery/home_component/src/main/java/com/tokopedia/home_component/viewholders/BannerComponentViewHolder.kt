@@ -81,11 +81,6 @@ class BannerComponentViewHolder(itemView: View,
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            if (element.channelModel?.channelGrids?.size?:0 > 1) {
-                onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
-            } else {
-                onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
-            }
 
             channelModel?.let { it ->
                 this.isCache = element.isCache
@@ -105,6 +100,11 @@ class BannerComponentViewHolder(itemView: View,
             itemView.addOnImpressionListener(holder = element, onView = {
                 element.channelModel?.let {
                     bannerListener?.onChannelBannerImpressed(it, adapterPosition)
+                    if (element.channelModel.channelGrids.size?:0 > 1) {
+                        onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+                    } else {
+                        onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
+                    }
                 }
             })
         }
