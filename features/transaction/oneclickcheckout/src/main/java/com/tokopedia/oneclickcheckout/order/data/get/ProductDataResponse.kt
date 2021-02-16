@@ -102,6 +102,8 @@ data class ProductDataResponse(
         val isBlacklisted: Boolean = false,
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_extra")
+        val freeShippingExtra: FreeShipping = FreeShipping(),
         @SerializedName("booking_stock")
         val bookingStock: Int = 0,
         @SerializedName("product_preorder")
