@@ -499,7 +499,6 @@ class AddEditProductPreviewFragment :
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     productInputModel = this
                 }
-                statusState = true
             }
         }
         super.onViewStateRestored(savedInstanceState)
@@ -815,8 +814,6 @@ class AddEditProductPreviewFragment :
         val cacheManagerId = bundle.getString(BUNDLE_CACHE_MANAGER_ID) ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
-                    ?: ProductInputModel()
-            productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
         }
     }
