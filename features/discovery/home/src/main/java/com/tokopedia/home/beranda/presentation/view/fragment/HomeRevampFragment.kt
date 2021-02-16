@@ -1004,7 +1004,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
@@ -1016,7 +1016,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if(status == Result.Status.ERROR_GENERAL) {
                 showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else {
                 showLoading()
             }
@@ -1154,6 +1154,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let {
             getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
                 getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeHomeNotif() {
+        context?.let {
+            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
+                if (!useNewInbox) {
+                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
+                }
+                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
             })
         }
     }
@@ -1586,6 +1598,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         getHomeViewModel().showTicker()
+        observeHomeNotif()
+        pageLoadTimeCallback?.invalidate()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -2172,11 +2186,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    if (!useNewInbox) {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-                    }
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
-                    navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
+                    getHomeViewModel().setHomeNotif(
+                            notificationCount, inboxCount, cartCount
+                    )
                 }
         )
     }
