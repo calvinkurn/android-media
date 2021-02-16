@@ -1,7 +1,6 @@
 package com.tokopedia.utils.permission
 
 
-import android.content.ContentProvider
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
