@@ -14,7 +14,7 @@ object Loader {
     private lateinit var context: Context
     private lateinit var remoteConfig: RemoteConfig
 
-    private val settings by lazy {
+    val settings by lazy {
         MediaSettingPreferences(context)
     }
 

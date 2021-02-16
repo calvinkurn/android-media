@@ -13,6 +13,7 @@ object PerformanceTracker {
     private const val IMAGE_URL = "image_url"
     private const val QUALITY_SETTING = "image_quality_setting"
     private const val DATE_TIME = "date_time"
+    private const val PAGE_NAME = "page_name"
     private const val LOAD_TIME = "load_time"
     private const val FILE_SIZE = "file_size"
 
@@ -29,7 +30,13 @@ object PerformanceTracker {
         }
     }
 
-    fun postRender(performanceMonitoring: PerformanceMonitoring?, loadTime: String, fileSize: String) {
+    fun postRender(
+            performanceMonitoring: PerformanceMonitoring?,
+            pageName: String,
+            loadTime: String,
+            fileSize: String
+    ) {
+        performanceMonitoring?.putCustomAttribute(PAGE_NAME, pageName)
         performanceMonitoring?.putCustomAttribute(LOAD_TIME, loadTime)
         performanceMonitoring?.putCustomAttribute(FILE_SIZE, fileSize)
 
