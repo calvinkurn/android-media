@@ -28,33 +28,24 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
-    lateinit var promoCouponView: PromoCouponView
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
-        val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(64).toInt())
-        this.layoutParams = lp
         initViews()
-
-        val startPadding = 0
-        val topPadding = dpToPx(8).toInt() - promoCouponView.topPadding
-        setPadding(startPadding, topPadding, startPadding, 0)
-
         setClicks()
     }
 
     private fun initViews() {
         tvTitle = this.findViewById(R.id.tvTitle)
-        promoCouponView = this.findViewById(R.id.promo_coupon_view)
         tvSubTitle = this.findViewById(R.id.tvSubTitle)
         imageChevron = this.findViewById(R.id.image_chevron)
         imageCoupon = this.findViewById(R.id.image_coupon)
     }
 
     private fun setClicks() {
-        promoCouponView.setOnClickListener {
+        setOnClickListener {
             val bottomSheet = BottomSheetUnify()
 
             bottomSheet.setTitle(context.getString(R.string.mvc_daftar_kupon_toko))
