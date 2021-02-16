@@ -1,21 +1,20 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.setMargin
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.promoui.common.PromoCouponView
 import com.tokopedia.promoui.common.dpToPx
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
 
@@ -46,28 +45,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         setOnClickListener {
-            val bottomSheet = BottomSheetUnify()
-
-            bottomSheet.setTitle(context.getString(R.string.mvc_daftar_kupon_toko))
-            val childView = MvcDetailView(context)
-            bottomSheet.setChild(childView)
-            bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
-            childView.show(shopId, isMainContainerSetFitsSystemWindows)
-            bottomSheet.setShowListener {
-                val imageMargin = dpToPx(20).toInt()
-                bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)
-                bottomSheet.bottomSheetClose.setImageResource(R.drawable.mvc_dialog_close)
-                bottomSheet.bottomSheetClose.setMargin(imageMargin, 0, dpToPx(20).toInt(), 0)
-            }
-            imageChevron.isEnabled = false
-            bottomSheet.setOnDismissListener {
-                imageChevron.isEnabled = true
-            }
-
+            val intent = Intent(context, TransParentActivity::class.java)
+            intent.putExtra(TransParentActivity.SHOP_ID, shopId)
+            context.startActivity(intent)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows:Boolean = false) {
+    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false) {
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()
