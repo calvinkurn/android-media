@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -194,6 +195,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
+    private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
 
@@ -255,6 +257,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
+        rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
     }
@@ -1109,7 +1112,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         analytics.eventClickAddToCartProductAttachment(element, session)
         doBuyAndAtc(element) {
             val msg = it.message.getOrNull(0) ?: ""
-            view?.let { view ->
+            rvContainer?.let { view ->
                 Toaster.build(
                         view,
                         msg,
