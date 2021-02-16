@@ -77,11 +77,8 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementBills.Response>()
 
-            val gson = Gson()
-            var bills = gson.fromJson(SmartBillsQueries.compound, RechargeStatementBills.Response::class.java)
-
             if (data.response != null) {
-                mutableStatementBills.postValue(Success(bills.response!!))
+                mutableStatementBills.postValue(Success(data.response))
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }
