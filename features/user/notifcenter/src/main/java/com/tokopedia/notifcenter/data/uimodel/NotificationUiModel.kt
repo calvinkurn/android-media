@@ -80,7 +80,9 @@ data class NotificationUiModel(
         @SerializedName("widget")
         val widget: Widget = Widget(),
         @SerializedName("is_last_journey")
-        val isLastJourney: Boolean = false
+        val isLastJourney: Boolean = false,
+        @SerializedName("unique_id")
+        val order_id: String = ""
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient

@@ -285,7 +285,7 @@ class NotificationAnalytic @Inject constructor(
     }
 
     private fun getEventLabelNotifWidget(notification: NotificationUiModel): String {
-        return "${notification.templateKey} - ${notification.notifId}"
+        return "${notification.templateKey} - ${notification.notifId} - ${notification.order_id}"
     }
 
     private fun getRoleString(@RoleType role: Int): String {
