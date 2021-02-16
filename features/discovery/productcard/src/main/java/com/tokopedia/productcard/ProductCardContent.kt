@@ -232,7 +232,7 @@ private fun View.renderTextDilayaniTokoCabang(productCardModel: ProductCardModel
         imageFulfillment?.show()
         imageFulfillment?.loadIcon(labelGroup.imageUrl)
 
-        dividerFulfillment?.showWithCondition(imageShopBadge.visibility == View.VISIBLE)
+        dividerFulfillment?.showWithCondition(productCardModel.isShowShopBadge())
 
         textViewFulfillment?.initLabelGroup(productCardModel.getLabelFulfillment())
     }
