@@ -23,6 +23,8 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 const val RPC_FILTER_KEY = "rpc_"
+const val DEFAULT_SORT_ID = "23"
+const val SORT_KEY = "ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
@@ -49,6 +51,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     init {
         fetchQuickFilters()
+        addDefaultToSearchParameter()
     }
 
     fun fetchQuickFilters() {
@@ -81,6 +84,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         getTargetComponent()?.let { component ->
             components.selectedFilters = selectedFilter
             components.selectedSort = selectedSort
+            component.selectedFilters = selectedFilter
+            component.selectedSort = selectedSort
             launchCatchError(block = {
                 if (quickFilterUseCase.onFilterApplied(component, selectedFilter, selectedSort)) {
                     syncData.value = true
@@ -148,6 +153,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
+        setSelectedSort(components.filterController.getParameter())
         reloadData()
     }
 
@@ -156,8 +162,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         components.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
     }
 
-    private fun setSelectedSort(selectedSortMapParameter: Map<String, String>) {
-        selectedSort.putAll(selectedSortMapParameter)
+    private fun setSelectedSort(mapParameter: Map<String, String>) {
+        if(mapParameter.containsKey(SORT_KEY))
+            selectedSort[SORT_KEY] = mapParameter[SORT_KEY] ?: error("")
     }
 
     private fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
@@ -176,8 +183,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
+    private fun addDefaultToSearchParameter() {
+        if(!components.searchParameter.contains(SORT_KEY))
+            components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
+    }
+
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        setSelectedSort(applySortFilterModel.selectedSortMapParameter)
+        setSelectedSort(applySortFilterModel.mapParameter)
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
         setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
         reloadData()
@@ -185,6 +197,14 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun getUserId(): String? {
         return UserSession(application).userId
+    }
+
+    fun getSelectedFilterCount() : Int {
+        return if(!components.searchParameter.contains(SORT_KEY) || components.searchParameter.get(SORT_KEY) == DEFAULT_SORT_ID) {
+            components.filterController.filterViewStateSet.size
+        } else {
+            components.filterController.filterViewStateSet.size + 1
+        }
     }
 
     fun filterProductsCount(selectedFilterMapParameter: Map<String, String>) {
