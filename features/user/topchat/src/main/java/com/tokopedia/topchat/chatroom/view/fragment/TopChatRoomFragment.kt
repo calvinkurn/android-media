@@ -1118,7 +1118,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         msg,
                         Toaster.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        "Lihat Keranjang",
+                        view.context.getString(R.string.title_topchat_see_cart),
                         View.OnClickListener {
                             RouteManager.route(context, ApplinkConst.CART)
                         }
