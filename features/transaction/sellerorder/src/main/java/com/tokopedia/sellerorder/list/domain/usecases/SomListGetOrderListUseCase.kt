@@ -8,7 +8,6 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SomListGetOrderListUseCase @Inject constructor(
@@ -32,7 +31,6 @@ class SomListGetOrderListUseCase @Inject constructor(
         if (params != null) {
             val searchKeyword = getSearchKeyword(params)
             val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
-            delay(5000)
             val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
             val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
