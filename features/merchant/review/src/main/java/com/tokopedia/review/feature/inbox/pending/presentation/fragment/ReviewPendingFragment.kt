@@ -252,6 +252,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         ReviewTracking.onClickDismissIncentiveOvoTracker(subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        reviewInboxListener?.reloadCounter()
+    }
+
     private fun initView() {
         setupErrorPage()
         setupEmptyState()
