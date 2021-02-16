@@ -115,8 +115,7 @@
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="review_pending_tab_title">Menunggu Diulas (%s)</string>
-    <string name="review_pending_tab_title_no_count">Menunggu Diulas</string>
+    <string name="review_pending_tab_title">Menunggu Diulas</string>
     <string name="review_pending_network_error_retry_button">Coba Lagi</string>
     <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
     <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>

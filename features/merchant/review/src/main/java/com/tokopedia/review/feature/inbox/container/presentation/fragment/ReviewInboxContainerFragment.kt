@@ -26,16 +26,19 @@ import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
 import com.tokopedia.review.feature.inbox.container.di.ReviewInboxContainerComponent
 import com.tokopedia.review.feature.inbox.container.presentation.adapter.ReviewInboxContainerAdapter
+import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract {
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener {
 
     companion object {
         const val PENDING_TAB_INDEX = 0
         const val HISTORY_TAB_INDEX = 1
         const val SELLER_TAB_INDEX = 2
+        const val HIDE_TAB_COUNTER = -1
 
         fun createNewInstance(tab: String) : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
@@ -121,7 +124,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             setupViewPager(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)))
         } else {
             observeReviewTabs()
-            viewModel.getTabCounter()
+            getCounterData()
         }
         setupTabLayout()
     }
@@ -138,13 +141,21 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         }
     }
 
+    override fun reloadCounter() {
+        getCounterData()
+    }
+
+    private fun getCounterData() {
+        viewModel.getTabCounter()
+    }
+
     private fun setupSellerAdapter(bundle: Bundle) {
         val tabs: List<ReviewInboxTabs> = listOf(ReviewInboxTabs.ReviewRatingProduct, ReviewInboxTabs.ReviewBuyer, ReviewInboxTabs.ReviewPenaltyAndReward)
-        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this, bundle)
+        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this, this, bundle)
     }
 
     private fun setupBuyerAdapter() {
-        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this) }
+        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this, this, null) }
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
@@ -217,14 +228,12 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private fun observeReviewTabs() {
         viewModel.reviewTabs.observe(viewLifecycleOwner, Observer { tabs ->
             val tabTitles = mutableListOf<String>()
+            var counter = 0
             tabs.forEach { tab ->
                 when (tab) {
                     is ReviewInboxTabs.ReviewInboxPending -> {
-                        if (tab.counter.isNotBlank() && tab.counter.toIntOrZero() != 0) {
-                            tabTitles.add(getString(R.string.review_pending_tab_title, tab.counter))
-                        } else {
-                            tabTitles.add(getString(R.string.review_pending_tab_title_no_count))
-                        }
+                        tabTitles.add(getString(R.string.review_pending_tab_title))
+                        counter = (if (tab.counter.isNotBlank() && tab.counter.toIntOrZero() != 0) tab.counter.toIntOrZero() else HIDE_TAB_COUNTER)
                     }
                     is ReviewInboxTabs.ReviewInboxHistory -> {
                         tabTitles.add(getString(R.string.review_history_tab_title))
@@ -234,10 +243,17 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                     }
                 }
             }
-            setupBuyerAdapter()
-            setupViewPager(tabTitles)
-            selectTab()
+            if(reviewInboxTabs.tabLayout.tabCount == 0) {
+                setupBuyerAdapter()
+                setupViewPager(tabTitles)
+                selectTab()
+            }
+            updateCounter(counter)
         })
+    }
+
+    private fun updateCounter(counter: Int) {
+        reviewInboxTabs.tabLayout.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 
     private fun getDataFromArguments() {

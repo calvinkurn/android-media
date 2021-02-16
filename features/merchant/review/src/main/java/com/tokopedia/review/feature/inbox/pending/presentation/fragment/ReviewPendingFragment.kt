@@ -35,6 +35,7 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
+import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
@@ -63,8 +64,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     companion object {
         const val CREATE_REVIEW_REQUEST_CODE = 420
-        fun createNewInstance(): ReviewPendingFragment {
-            return ReviewPendingFragment()
+        fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
+            return ReviewPendingFragment().apply {
+                this.reviewInboxListener = reviewInboxListener
+            }
         }
     }
 
@@ -73,6 +76,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var reviewInboxListener: ReviewInboxListener? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -215,6 +219,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
             loadInitialData()
+            reviewInboxListener?.reloadCounter()
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
