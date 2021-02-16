@@ -16,8 +16,5 @@ class Product {
     @SerializedName("product_page_url")
     @Expose
     var productPageUrl: String? = null
-    @SerializedName("product_price")
-    @Expose
-    var productPrice = 0
 
 }

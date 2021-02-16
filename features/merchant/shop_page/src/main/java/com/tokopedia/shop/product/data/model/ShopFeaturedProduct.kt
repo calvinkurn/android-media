@@ -37,7 +37,7 @@ data class ShopFeaturedProduct(
 
         @SerializedName("parent_id")
         @Expose
-        val parentId: Int = 0,
+        val parentId: String = "",
 
         @SerializedName("percentage_amount")
         @Expose

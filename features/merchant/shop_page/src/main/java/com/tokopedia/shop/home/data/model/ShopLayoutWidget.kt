@@ -131,7 +131,7 @@ data class ShopLayoutWidget(
 
             data class Product(
                     @SerializedName("id")
-                    val id: Int = -1,
+                    val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("url")
