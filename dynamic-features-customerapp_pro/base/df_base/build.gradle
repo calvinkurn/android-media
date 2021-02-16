@@ -138,6 +138,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.inbox)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)

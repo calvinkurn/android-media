@@ -20,6 +20,7 @@ import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
@@ -34,6 +35,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
+
+    override fun getTopTickerView(): Ticker? = topTicker
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
@@ -109,7 +112,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
-        tvSeePaymentMethods.setOnClickListener { openHowTOPay(thanksPageData) }
+        tvSeePaymentMethods.setOnClickListener { openHowToPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
         tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
     }

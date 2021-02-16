@@ -2,10 +2,7 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
@@ -32,14 +29,15 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
-                                private val homeComponentListener: HomeComponentListener?
+                                private val homeComponentListener: HomeComponentListener?,
+                                private val parentRecyclerViewPool: RecyclerView.RecycledViewPool?
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         CircularListener, CoroutineScope {
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
-    private val adapter = BannerChannelAdapter(listOf(), this)
     private val layoutManager = LinearCenterLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private val fullLayoutManager = GridLayoutManager(itemView.context, 1)
 
     // tracker
     private val impressionStatusList = mutableMapOf<Int, Boolean>()
@@ -84,7 +82,11 @@ class BannerComponentViewHolder(itemView: View,
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+            if (element.channelModel?.channelGrids?.size?:0 > 1) {
+                onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+            } else {
+                onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
+            }
 
             channelModel?.let { it ->
                 this.isCache = element.isCache
@@ -110,20 +112,7 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     override fun bind(element: BannerDataModel, payloads: MutableList<Any>) {
-        try {
-            setHeaderComponent(element)
-            setViewPortImpression(element)
-            channelModel = element.channelModel
-            this.isCache = element.isCache
-
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
-            element.channelModel?.let {
-                val gridCount = it.channelGrids.size
-                adapter.setItemList(it.convertToCircularModel())
-            }
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        bind(element)
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -157,8 +146,9 @@ class BannerComponentViewHolder(itemView: View,
 
     private fun initBanner(list: List<CircularModel>){
         val snapHelper: SnapHelper = LinearSnapHelper()
+        rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
-        rvBanner.layoutManager = layoutManager
+        rvBanner.layoutManager = if (list.size > 1) layoutManager else fullLayoutManager
         rvBanner.clearOnScrollListeners()
         rvBanner.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -178,6 +168,7 @@ class BannerComponentViewHolder(itemView: View,
         if (rvBanner.itemDecorationCount == 0) {
             rvBanner.addItemDecoration(BannerChannelDecoration())
         }
+        val adapter = BannerChannelAdapter(list, this)
         adapter.setItemList(list)
         rvBanner.adapter = adapter
     }

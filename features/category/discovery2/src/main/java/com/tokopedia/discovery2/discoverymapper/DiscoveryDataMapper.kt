@@ -228,6 +228,8 @@ class DiscoveryDataMapper {
     private fun setSlashPrice(dataItem: DataItem): String {
         if(dataItem.discountedPrice.isNullOrEmpty()){
             return ""
+        }else if(dataItem.discountedPrice == dataItem.price){
+            return ""
         }
         return dataItem.price ?: ""
     }
