@@ -81,7 +81,7 @@ class BuyerAccountViewModel @Inject constructor (
                         null to null
                     } else {
                         with(accountAdminInfoUseCase) {
-                            requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
+                            requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
                             isLocationAdmin = userSession.isLocationAdmin
                             setStrategyCloudThenCache()
                             executeOnBackground()
