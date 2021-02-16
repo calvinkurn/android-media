@@ -86,7 +86,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private TextView reviewNotifBtn;
-    private TextView btnAidlStatus;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleTimberDevOption;
@@ -148,7 +147,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
-            bindAidlService();
 
             Intent intent = getIntent();
             Uri uri = null;
@@ -171,51 +169,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         } else {
             finish();
         }
-    }
-
-    private void bindAidlService() {
-        PushNotificationApi.bindService(this,
-                (s, bundle) -> {
-                    onAidlReceive(s, bundle);
-                    return null;
-                },
-                () -> {
-                    onAidlError();
-                    return null;
-                });
-    }
-
-    // TODO: deleted
-    private String userSessionData(Bundle data) {
-        String message = "";
-        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN) + "\n";
-        if (data.getBoolean(UserKey.IS_LOGIN)) {
-            message += "Name -> " + data.getString(UserKey.NAME) + "\n";
-            message += "Email -> " + data.getString(UserKey.EMAIL) + "\n";
-        }
-
-        return message;
-    }
-
-    // TODO: deleted
-    private void onAidlReceive(String tag, Bundle data) {
-        String message = "";
-        if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
-            if (GlobalConfig.isSellerApp()) {
-                message += "SellerApp \n";
-            } else {
-                message += "MainApp \n";
-            }
-
-            message += userSessionData(data);
-        }
-
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    // TODO: deleted
-    private void onAidlError() {
-        Toast.makeText(this, "dev-opt: onAidlError", Toast.LENGTH_LONG).show();
     }
 
     private void handleUri(Uri uri) {
@@ -276,7 +229,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
 
         reviewNotifBtn = findViewById(R.id.review_notification);
-        btnAidlStatus = findViewById(R.id.aidl_status);
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
@@ -513,8 +465,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777, notifReview);
         });
-
-        btnAidlStatus.setOnClickListener(v -> bindAidlService());
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
         toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
