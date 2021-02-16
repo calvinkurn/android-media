@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import java.util.*
@@ -131,9 +132,9 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.resetImpression()
         }
-        val listOfBannerComponent = currentList.filterIsInstance(BannerComponentViewHolder::class.java)
+        val listOfBannerComponent = currentList.filterIsInstance(BannerDataModel::class.java)
         listOfBannerComponent.map {
-            it.resetImpression()
+            (getViewHolder(currentList.indexOf(it)) as? BannerComponentViewHolder)?.resetImpression()
         }
     }
 
