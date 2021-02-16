@@ -21,6 +21,7 @@ internal object GetProductList {
                 stock
                 stockReserved
                 hasStockReserved
+                isCampaign
                 cashback
                 status
                 featured

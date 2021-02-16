@@ -20,7 +20,8 @@ data class ProductUiModel(
         val isChecked: Boolean,
         val hasStockReserved: Boolean,
         val topAdsInfo: TopAdsInfo?,
-        val access: ProductManageAccess?
+        val access: ProductManageAccess?,
+        val isCampaign: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
