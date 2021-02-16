@@ -40,7 +40,7 @@ data class ProductData(
         @SerializedName("price_idr")
         val priceIdr: Double = 0.0,
         @SerializedName("product_id")
-        val productId: String = "",
+        val productId: String = "0",
         @SerializedName("rating")
         val rating: Int = 0,
         @SerializedName("shop")
