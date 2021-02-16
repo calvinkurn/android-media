@@ -171,6 +171,51 @@
         tools:text="Town Location"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/dividerFulfillment"
+        android:layout_width="3dp"
+        android:layout_height="3dp"
+        android:layout_marginStart="@dimen/dp_2"
+        android:background="@drawable/product_card_toko_cabang_divider"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/imageShopBadge"
+        app:layout_constraintTop_toTopOf="@id/imageShopBadge"
+        app:layout_constraintBottom_toBottomOf="@id/imageShopBadge"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageFulfillment"
+        android:contentDescription="@string/content_desc_tokoCabang"
+        android:layout_width="@dimen/product_card_toko_cabang_badge_width"
+        android:layout_height="@dimen/product_card_toko_cabang_badge_width"
+        android:layout_marginTop="@dimen/product_card_toko_cabang_margin_top"
+        app:layout_goneMarginStart="@dimen/dp_0"
+        android:layout_marginStart="@dimen/dp_2"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/dividerFulfillment"
+        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewFulfillment"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/product_card_text_toko_cabang_height"
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginTop="@dimen/product_card_text_toko_cabang_margin_top"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageFulfillment"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:layout_goneMarginStart="@dimen/dp_0"
+        app:layout_goneMarginLeft="@dimen/dp_0"
+        app:typographyType="body_3"
+        tools:text="TokoCabang"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/linearLayoutImageRating"
         android:layout_width="wrap_content"
@@ -180,7 +225,7 @@
         android:gravity="center"
         android:layout_marginTop="@dimen/product_card_image_rating_star_margin_top"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:layout_constraintTop_toBottomOf="@id/textViewFulfillment"
         tools:visibility="visible">
 
         <ImageView
@@ -240,7 +285,7 @@
         android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/linearLayoutImageRating"
-        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:layout_constraintTop_toBottomOf="@id/textViewFulfillment"
         app:typographyType="body_3"
         tools:text="(60)"
         tools:visibility="visible" />
@@ -286,7 +331,7 @@
         app:typographyType="body_3"
         tools:text="4.8"
         tools:visibility="visible" />
-    
+
     <View
         android:id="@+id/salesRatingFloatLine"
         android:layout_width="@dimen/dp_1"

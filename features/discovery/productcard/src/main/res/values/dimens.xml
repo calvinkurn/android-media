@@ -100,4 +100,11 @@
     <dimen name="product_card_label_best_seller_height">20dp</dimen>
     <dimen name="product_card_label_best_seller_margintop">8dp</dimen>
 
+    <dimen name="product_card_toko_cabang_margin_top">5dp</dimen>
+    <dimen name="product_card_toko_cabang_badge_height">12dp</dimen>
+    <dimen name="product_card_toko_cabang_badge_width">16dp</dimen>
+
+    <dimen name="product_card_text_toko_cabang_margin_top">4dp</dimen>
+    <dimen name="product_card_text_toko_cabang_height">18dp</dimen>
+
 </resources>
