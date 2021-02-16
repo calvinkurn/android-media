@@ -60,12 +60,8 @@ import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.shop_name
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.apache.commons.text.StringEscapeUtils
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -76,7 +72,7 @@ private const val SHOP_TEMPLATE = 1
 private const val DIGITAL_TEMPLATE = 2
 private const val LAYOUT_2 = 2
 
-class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
+class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var adsListener: TopAdsListener? = null
     private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
     private var impressionListener: TopAdsItemImpressionListener? = null
@@ -458,7 +454,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
     }
 
     private fun isResponseValid(data: CpmData): Boolean {
-        return !data.cpm.cta.isEmpty() && !data.cpm.promotedText.isEmpty()
+        return data.cpm.cta.isNotEmpty() && data.cpm.promotedText.isNotEmpty()
     }
 
     override fun onCanceled() {
@@ -494,14 +490,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
         private val TAG = TopAdsBannerView::class.java.simpleName
 
         fun escapeHTML(s: String): String {
-            try {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     Html.fromHtml(StringEscapeUtils.unescapeHtml4(s), Html.FROM_HTML_MODE_LEGACY).toString()
                 } else {
                     Html.fromHtml(StringEscapeUtils.unescapeHtml4(s)).toString()
                 }
             } catch (e: Exception) {
-                return ""
+                ""
             }
 
         }
@@ -514,8 +510,5 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View, CoroutineScope {
             str.setSpan(TypefaceSpan("sans-serif"), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Main
 
 }
