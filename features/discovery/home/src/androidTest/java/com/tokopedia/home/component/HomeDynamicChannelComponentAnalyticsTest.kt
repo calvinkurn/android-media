@@ -131,7 +131,8 @@ class HomeDynamicChannelComponentAnalyticsTest {
         doActivityTest(
                 listOf(
                         DynamicLegoBannerViewHolder::class.simpleName!!,
-                        Lego4AutoBannerViewHolder::class.simpleName!!)
+                        Lego4AutoBannerViewHolder::class.simpleName!!,
+                        DynamicLegoBannerSixAutoViewHolder::class.simpleName!!)
         ){ viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnLegoBannerSection(viewHolder, i)
         }
