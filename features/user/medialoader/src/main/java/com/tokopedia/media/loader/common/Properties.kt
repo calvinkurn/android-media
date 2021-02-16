@@ -11,7 +11,7 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
         var thumbnailUrl: String = "",
-        var blurHash: Boolean = false,
+        var blurHash: Boolean = true,
         var isAnimate: Boolean = false,
         var isCircular: Boolean = false,
         var roundedRadius: Float = 0f,
