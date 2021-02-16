@@ -27,7 +27,6 @@ import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
-
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
@@ -36,6 +35,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
+    renderTextDilayaniTokoCabang(productCardModel)
     renderShopBadge(productCardModel)
     renderTextShopLocation(productCardModel)
     renderRating(productCardModel)
@@ -225,6 +225,21 @@ private fun ProductCardModel.getPriceToRender(): String {
     return if (priceRange.isNotEmpty()) priceRange else formattedPrice
 }
 
+private fun View.renderTextDilayaniTokoCabang(productCardModel: ProductCardModel) {
+    if (productCardModel.willShowFulfillment()) {
+        val labelGroup = productCardModel.getLabelFulfillment() ?: return
+
+        imageTokoCabang?.show()
+        imageTokoCabang?.loadIcon(labelGroup.imageUrl)
+
+        textViewTokoCabang?.initLabelGroup(productCardModel.getLabelFulfillment())
+    }
+    else {
+        imageTokoCabang?.hide()
+        textViewTokoCabang?.initLabelGroup(null)
+    }
+}
+
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
     imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
@@ -233,7 +248,7 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
-    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
+    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty() && !productCardModel.willShowFulfillment()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
     }
 }
@@ -387,5 +402,3 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
     else
         textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
-
-

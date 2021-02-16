@@ -22,6 +22,7 @@ internal const val LABEL_INTEGRITY = "integrity"
 internal const val LABEL_SHIPPING = "shipping"
 internal const val LABEL_CAMPAIGN = "campaign"
 internal const val LABEL_BEST_SELLER = "best_seller"
+internal const val LABEL_FULFILLMENT = "fulfillment"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
