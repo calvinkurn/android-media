@@ -13,7 +13,6 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerDataModel
@@ -102,10 +101,8 @@ class BannerComponentViewHolder(itemView: View,
                 setScrollListener()
                 element.channelModel?.let {
                     bannerListener?.onChannelBannerImpressed(it, adapterPosition)
-                    if (it.channelGrids.size?:0 > 1) {
+                    if (it.channelGrids.size > 1) {
                         onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
-                    } else {
-                        onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
                     }
                 }
             })
@@ -231,7 +228,6 @@ class BannerComponentViewHolder(itemView: View,
     fun resetImpression(){
         impressionStatusList.clear()
         layoutManager.scrollToPosition(0)
-        fullLayoutManager.scrollToPosition(0)
     }
 
     private fun ChannelModel.convertToCircularModel(): List<CircularModel> {
