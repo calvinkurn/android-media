@@ -20,6 +20,7 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -278,6 +279,23 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
 
         getAssertCategoryWidget(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testRechargeBUWidget() {
+        initTest()
+
+        login()
+
+        doActivityTest(RechargeBUWidgetMixLeftViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            checkRechargeBUWidget(viewHolder, i)
+        }
+
+        getAssertRechargeBUWidget(gtmLogDBSource, context)
 
         onFinishTest()
 

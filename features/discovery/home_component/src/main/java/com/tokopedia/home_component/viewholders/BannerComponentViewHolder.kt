@@ -29,7 +29,8 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
-                                private val homeComponentListener: HomeComponentListener?
+                                private val homeComponentListener: HomeComponentListener?,
+                                private val parentRecyclerViewPool: RecyclerView.RecycledViewPool?
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         CircularListener, CoroutineScope {
@@ -81,7 +82,11 @@ class BannerComponentViewHolder(itemView: View,
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+            if (element.channelModel?.channelGrids?.size?:0 > 1) {
+                onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+            } else {
+                onPromoScrolled(fullLayoutManager.findFirstCompletelyVisibleItemPosition())
+            }
 
             channelModel?.let { it ->
                 this.isCache = element.isCache

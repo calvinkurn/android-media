@@ -37,14 +37,16 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     }
 
     private fun setupDynamicIcon(type: Int, dynamicIcons: List<DynamicIconComponent.DynamicIcon>){
-        adapter.submitList(dynamicIcons)
-        adapter.updatePosition(adapterPosition)
-        adapter.setType(type)
-        itemView.dynamic_icon_recycler_view.adapter = adapter
-        setupLayoutManager(
-            isScrollItem = dynamicIcons.size > SCROLLABLE_ITEM,
-            spanCount = dynamicIcons.size
-        )
+        if (dynamicIcons.isNotEmpty()) {
+            adapter.submitList(dynamicIcons)
+            adapter.updatePosition(adapterPosition)
+            adapter.setType(type)
+            itemView.dynamic_icon_recycler_view.adapter = adapter
+            setupLayoutManager(
+                    isScrollItem = dynamicIcons.size > SCROLLABLE_ITEM,
+                    spanCount = dynamicIcons.size
+            )
+        }
     }
 
     private fun setupImpression(element: DynamicIconComponentDataModel){
