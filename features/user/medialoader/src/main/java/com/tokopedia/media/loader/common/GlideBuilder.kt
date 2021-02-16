@@ -63,6 +63,8 @@ class GlideBuilder {
             }
 
             listener(callbackListener(
+                    context,
+                    properties,
                     startTimeRequest,
                     loaderListener,
                     performanceMonitoring

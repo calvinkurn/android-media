@@ -65,9 +65,11 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValidContext()) {
         try {
             LoaderApi.loadImage(
-                    data = source,
                     imageView = this,
-                    properties = properties
+                    properties = properties.apply {
+                        // passing the image source (url, uri, etc.)
+                        setSource(source)
+                    }
             )
         } catch (e: Exception) {
             e.printStackTrace()

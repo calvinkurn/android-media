@@ -18,8 +18,6 @@ object Loader {
         MediaSettingPreferences(context)
     }
 
-    fun context(): Context? = context
-
     @JvmStatic
     fun initialize(context: Context) {
         this.context = context

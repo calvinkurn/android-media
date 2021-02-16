@@ -9,8 +9,8 @@ import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.GlideBuilder
+import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
@@ -34,11 +34,11 @@ internal object LoaderApi {
     }
 
     @JvmOverloads
-    fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
+    fun loadImage(imageView: ImageView, properties: Properties) {
         var tracker: PerformanceMonitoring? = null
-        val context = Loader.context()?: imageView.context
+        val context = imageView.context
 
-        if (data == null) {
+        if (properties.data == null) {
             // if the data source is null, the image will be render the error drawable
             imageView.setImageDrawable(getDrawable(context, properties.error))
             return
@@ -52,9 +52,9 @@ internal object LoaderApi {
             automateScaleType(imageView, this)
 
             when {
-                data is String && !properties.isIcon -> {
+                properties.data is String && !properties.isIcon -> {
                     // url builder
-                    val source = Loader.urlBuilder(data)
+                    val source = Loader.urlBuilder(properties.data.toString())
 
                     /*
                     * get the hash of image blur (placeholder) from the URL, example:
@@ -84,7 +84,7 @@ internal object LoaderApi {
                             context = context,
                             properties = properties,
                             request = this
-                    ).load(data)
+                    ).load(properties.data)
                 }
 
             }.into(imageView)

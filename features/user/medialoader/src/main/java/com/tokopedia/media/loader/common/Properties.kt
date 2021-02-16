@@ -10,6 +10,7 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
+        var data: Any? = null,
         var thumbnailUrl: String = "",
         var blurHash: Boolean = true,
         var isAnimate: Boolean = false,
@@ -17,7 +18,7 @@ open class Properties(
         var roundedRadius: Float = 0f,
         var signatureKey: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
-        var placeHolder: Int = 0, // R.drawable.ic_media_default_placeholder
+        var placeHolder: Int = 0,
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         var overrideSize: Resize? = null,
         var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
@@ -27,6 +28,10 @@ open class Properties(
 ) {
 
     var isIcon: Boolean = false
+
+    fun setSource(data: Any?) = apply {
+        this.data = data
+    }
 
     fun thumbnailUrl(url: String) = apply {
         this.thumbnailUrl = url
