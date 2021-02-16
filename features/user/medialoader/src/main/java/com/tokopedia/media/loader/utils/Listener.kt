@@ -7,8 +7,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.media.loader.common.LoaderStateListener
-import com.tokopedia.media.loader.common.MediaDataSource
+import com.tokopedia.media.loader.common.MediaListener
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource as dataSource
 
@@ -16,7 +15,7 @@ object Listener {
 
     operator fun invoke(
             startTime: Long,
-            listener: LoaderStateListener?,
+            listener: MediaListener?,
             performanceMonitoring: PerformanceMonitoring?
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
@@ -25,7 +24,7 @@ object Listener {
                 target: Target<Bitmap>?,
                 isFirstResource: Boolean
         ): Boolean {
-            listener?.failedLoad(e)
+            listener?.onFailed(e)
             return false
         }
 
@@ -45,7 +44,7 @@ object Listener {
                     fileSize
             )
 
-            listener?.successLoad(resource, dataSource(dataSource))
+            listener?.onLoaded(resource, dataSource(dataSource))
             return false
         }
     }

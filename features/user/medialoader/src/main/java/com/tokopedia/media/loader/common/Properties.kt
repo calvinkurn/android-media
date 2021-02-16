@@ -21,7 +21,7 @@ open class Properties(
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         var overrideSize: Resize? = null,
         var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
-        var loaderListener: LoaderStateListener? = null,
+        var loaderListener: MediaListener? = null,
         var transform: Transformation<Bitmap>? = null,
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
@@ -76,12 +76,12 @@ open class Properties(
             onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
             onError: (MediaException?) -> Unit = { _ -> }
     ) = apply {
-        this.loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
+        this.loaderListener = object : MediaListener {
+            override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
                 onSuccess(resource, dataSource)
             }
 
-            override fun failedLoad(error: MediaException?) {
+            override fun onFailed(error: MediaException?) {
                 onError(error)
             }
         }

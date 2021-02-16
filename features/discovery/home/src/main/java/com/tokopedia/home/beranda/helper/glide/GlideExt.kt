@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
-import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource
+import com.tokopedia.media.loader.common.MediaListener
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
@@ -28,16 +28,16 @@ const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 fun ImageView.loadGif(url: String) = loadAsGif(url)
 
-fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
+fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setCacheStrategy(MediaCacheStrategy.RESOURCE)
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
-            listener?.successLoad(resource, dataSource)
+            listener?.onLoaded(resource, dataSource)
         }, {
             GlideErrorLogHelper().logError(context, it, url)
-            listener?.failedLoad(it)
+            listener?.onFailed(it)
         })
     }
 }
@@ -69,17 +69,24 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
     }
 }
 
-fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
+fun ImageView.loadMiniImage(
+        url: String,
+        width: Int,
+        height: Int,
+        fpmItemLabel: String = "",
+        onLoaded: () -> Unit,
+        onFailed: () -> Unit
+){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
         decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
         overrideSize(Resize(width, height))
         listener({ resource, dataSource ->
-            listener?.successLoad(resource, dataSource)
+            onLoaded()
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         }, {
-            listener?.failedLoad(it)
+            onFailed()
         })
     }
 }
