@@ -1763,6 +1763,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
+        if(!it.merchantVoucherSummary.isShown) {
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.mvcSummaryData)
+        }
+
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }

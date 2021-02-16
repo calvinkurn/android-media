@@ -110,6 +110,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
+    val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
+        get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo:Boolean) {
         dataP1?.let {
             basicContentMap?.run {
@@ -284,6 +287,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             productMerchantVoucherMap?.run {
                 voucherData = ArrayList(it.vouchers)
+            }
+
+            mvcSummaryData?.run {
+                title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
+                subTitle = it.merchantVoucherSummary.subTitle
+                imageURL = it.merchantVoucherSummary.imageURL
+                isShown = it.merchantVoucherSummary.isShown
+                shopId = it.shopInfo.shopCore.shopID
             }
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
