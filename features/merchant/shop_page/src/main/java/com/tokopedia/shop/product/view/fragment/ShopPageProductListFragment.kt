@@ -754,18 +754,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun loadInitialData() {
-        if (isOnViewCreated && isShopProductTabSelected()) {
-            isLoadingNewProductData = true
-            shopProductAdapter.clearAllElements()
-            stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
-            showLoading()
-            initialProductListData?.let{
-                viewModel.setInitialProductList(shopId, it)
-            }
-            viewModel.getShopFilterData(shopId)
-            isOnViewCreated = false
+        isLoadingNewProductData = true
+        shopProductAdapter.clearAllElements()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
+        showLoading()
+        initialProductListData?.let{
+            viewModel.setInitialProductList(shopId, it)
         }
+        viewModel.getShopFilterData(shopId)
+        isOnViewCreated = false
     }
 
     private fun promoClicked(url: String?) {
@@ -975,7 +973,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
-        loadInitialData()
     }
 
     override fun onResume() {
