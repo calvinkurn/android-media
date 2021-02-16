@@ -65,7 +65,7 @@ data class ComponentsItem(
         var couponAppliedClicked: Boolean = false,
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
-        var design: String = "",
+        var design: String = "v1",
         val filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
