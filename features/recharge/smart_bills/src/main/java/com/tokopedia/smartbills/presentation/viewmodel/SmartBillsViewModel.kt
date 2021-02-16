@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
@@ -76,8 +77,11 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementBills.Response>()
 
+            val gson = Gson()
+            var bills = gson.fromJson(SmartBillsQueries.compound, RechargeStatementBills.Response::class.java)
+
             if (data.response != null) {
-                mutableStatementBills.postValue(Success(data.response))
+                mutableStatementBills.postValue(Success(bills.response!!))
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }

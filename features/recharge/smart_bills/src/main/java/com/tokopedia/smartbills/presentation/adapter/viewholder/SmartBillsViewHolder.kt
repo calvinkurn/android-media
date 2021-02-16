@@ -1,16 +1,20 @@
 package com.tokopedia.smartbills.presentation.adapter.viewholder
 
+import android.content.Context
 import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
 /**
@@ -78,6 +82,34 @@ class SmartBillsViewHolder(val view: View,
                     ticker_smart_bills_item_error.hide()
                 }
             }
+
+            if(!element.dueDateLabel.text.isNullOrEmpty() && element.dueDateLabel.type != 0){
+                tv_due_date_label.apply {
+                    text = element.dueDateLabel.text
+                    setTextColor(getDueUrgencyColor(element.dueDateLabel.type, context))
+                    setWeight(Typography.BOLD)
+                }
+            } else {
+                tv_due_date_label.gone()
+            }
+
+            if(!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0){
+                tv_due_message.apply {
+                    text = element.dueMessage.text
+                    setTextColor(getDueUrgencyColor(element.dueMessage.type, context))
+                    setWeight(Typography.BOLD)
+                }
+
+                iv_urgency_icon.apply {
+                    setImageResource(getDueUrgencyIcon(element.dueMessage.type))
+                }
+
+            } else {
+                tv_due_message.gone()
+                iv_urgency_icon.gone()
+            }
+
+
         }
     }
 
@@ -87,6 +119,24 @@ class SmartBillsViewHolder(val view: View,
 
     interface DetailListener {
         fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
+    }
+
+    private fun getDueUrgencyColor(type: Int, context: Context): Int {
+        return when(type){
+            1 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T600)
+            2 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            3 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+            else -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        }
+    }
+
+    private fun getDueUrgencyIcon(type: Int): Int {
+        return when(type){
+            1 -> R.drawable.ic_countdown_black
+            2 -> R.drawable.ic_countdown_yellow
+            3 -> R.drawable.ic_countdown_red
+            else -> R.drawable.ic_countdown_black
+        }
     }
 
 }
