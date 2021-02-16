@@ -12,13 +12,12 @@ data class OtherCampaignStockData(
         @SerializedName("pictures")
         val pictureList: List<CampaignStockPicture> = listOf(),
         @SerializedName("status")
-        val status: String = "",
+        val status: ProductStatus = ProductStatus.ACTIVE,
         @SerializedName("stock")
         val stock: Int = 0
 ){
 
-        fun getIsActive() =
-                status == ProductStatus.ACTIVE.name
+        fun getIsActive() = status == ProductStatus.ACTIVE
 }
 
 data class CampaignStockPicture(

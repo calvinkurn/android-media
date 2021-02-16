@@ -54,6 +54,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         private const val EXTRA_IS_ACTIVE = "extra_is_active"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
         private const val EXTRA_PRODUCT_MANAGE_ACCESS = "extra_product_manage_access"
+
+        private const val ITEM_TICKER_POSITION = 0
     }
 
     @Inject
@@ -93,6 +95,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeVariantStock()
+        observeStockInfo()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,25 +141,19 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
-        if (isVariant) {
-            val isAllStockEmpty = sellableProductList.all { it.isStockEmpty() }
-            val tickerUiModel = createTickerUiModel(isAllStockEmpty)
-            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
-                add(tickerUiModel)
+        val items = if (isVariant) {
+            mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 addAll(sellableProductList)
             }
-            renderList(variantList)
         } else {
-            val tickerUiModel = createTickerUiModel(false)
-            val productList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
-                add(tickerUiModel)
+            mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 addAll(listOf(
                     ActiveProductSwitchUiModel(isActive, access),
                     TotalStockEditorUiModel(stockCount.orZero(), access)
                 ))
             }
-            renderList(productList)
         }
+        renderList(items)
     }
 
     private fun setStockAvailability() {
@@ -178,6 +175,26 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             val shouldShowWarning = isAllStockEmpty && isVariant
             showVariantWarningTickerWithCondition(shouldShowWarning)
         })
+    }
+
+    private fun observeStockInfo() {
+        mViewModel.showStockInfo.observe(viewLifecycleOwner, Observer { showStockInfo ->
+            showHideStockInfo(showStockInfo)
+        })
+    }
+
+    private fun showHideStockInfo(showStockInfo: Boolean) {
+        adapter.apply {
+            data.filterIsInstance<SellableStockProductUIModel>().forEach {
+                val index = data.indexOf(it)
+                data[index] = if (showStockInfo) {
+                    it.copy(isAllStockEmpty = false)
+                } else {
+                    it.copy(isAllStockEmpty = true)
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
@@ -210,11 +227,18 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
-        adapter.data.firstOrNull { it is CampaignStockTickerUiModel }?.let {
+        with(adapter) {
+            val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
             val tickerUiModel = createTickerUiModel(shouldShowWarning)
-            val index = adapter.data.indexOf(it)
-            adapter.data[index] = tickerUiModel
-            adapter.notifyItemChanged(index)
+
+            if(ticker == null) {
+                data.add(ITEM_TICKER_POSITION, tickerUiModel)
+                notifyItemInserted(ITEM_TICKER_POSITION)
+            } else {
+                val index = data.indexOf(ticker)
+                data[index] = tickerUiModel
+                notifyItemChanged(index)
+            }
         }
     }
 

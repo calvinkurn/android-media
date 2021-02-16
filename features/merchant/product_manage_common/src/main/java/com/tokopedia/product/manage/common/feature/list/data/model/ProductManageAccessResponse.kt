@@ -12,7 +12,7 @@ data class ProductManageAccessResponse(
     data class Response(
         @Expose
         @SerializedName("header")
-        val header: Header,
+        val header: Header = Header(),
         @Expose
         @SerializedName("data")
         val data: Data
@@ -21,16 +21,16 @@ data class ProductManageAccessResponse(
     data class Header(
         @Expose
         @SerializedName("processTime")
-        val processTime: Float,
+        val processTime: Float = 0f,
         @Expose
         @SerializedName("messages")
-        val messages: List<String>,
+        val messages: List<String> = listOf(),
         @Expose
         @SerializedName("reason")
-        val reason: String,
+        val reason: String = "",
         @Expose
         @SerializedName("errorCode")
-        val errorCode: String
+        val errorCode: String = ""
     )
 
     data class Data(

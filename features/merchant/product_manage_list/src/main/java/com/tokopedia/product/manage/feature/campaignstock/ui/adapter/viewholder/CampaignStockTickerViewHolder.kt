@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.CampaignStockTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -15,7 +14,7 @@ class CampaignStockTickerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_product_manage_ticker
+        val LAYOUT = com.tokopedia.product.manage.common.R.layout.layout_product_manage_ticker
     }
 
     override fun bind(data: CampaignStockTickerUiModel) {
@@ -26,7 +25,7 @@ class CampaignStockTickerViewHolder(
     }
 
     private fun setupTicker(data: CampaignStockTickerUiModel) {
-        itemView.findViewById<Ticker>(R.id.ticker).apply {
+        itemView.findViewById<Ticker>(com.tokopedia.product.manage.common.R.id.ticker).apply {
             val tickerList = data.tickerList
             val adapter = TickerPagerAdapter(context, tickerList)
             addPagerView(adapter, tickerList)
@@ -34,15 +33,15 @@ class CampaignStockTickerViewHolder(
     }
 
     private fun setupLayout() {
-        itemView.findViewById<Ticker>(R.id.ticker).apply {
-            val topMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-            val horizontalMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        itemView.findViewById<Ticker>(com.tokopedia.product.manage.common.R.id.ticker).apply {
+            val topMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val horizontalMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             setMargin(horizontalMargin, topMargin, horizontalMargin, 0)
         }
     }
 
     private fun initView(block: () -> Unit) {
-        itemView.findViewById<Ticker>(R.id.ticker).post {
+        itemView.findViewById<Ticker>(com.tokopedia.product.manage.common.R.id.ticker).post {
             block.invoke()
         }
     }
