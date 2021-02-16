@@ -369,9 +369,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onResume() {
+        loadInitialDataAfterOnViewCreated()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+    }
+
+    private fun loadInitialDataAfterOnViewCreated() {
+        if (isLoadInitialData) {
+            loadInitialData()
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -415,22 +422,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
-            shopHomeAdapter.clearAllElements()
-            recycler_view.visible()
-            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-            globalError_shopPage.hide()
-            showLoading()
-            shopHomeAdapter.isOwner = isOwner
-            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-            viewModel?.getShopPageHomeData(
-                    shopId,
-                    shopProductFilterParameter ?: ShopProductFilterParameter(),
-                    initialProductListData
-            )
-            isLoadInitialData = false
-        }
+        shopHomeAdapter.clearAllElements()
+        recycler_view.visible()
+        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+        globalError_shopPage.hide()
+        showLoading()
+        shopHomeAdapter.isOwner = isOwner
+        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+        viewModel?.getShopPageHomeData(
+                shopId,
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                initialProductListData
+        )
+        isLoadInitialData = false
     }
 
     private fun getIntentData() {
