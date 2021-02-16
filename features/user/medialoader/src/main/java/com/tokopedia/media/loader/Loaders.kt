@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
-import com.tokopedia.media.loader.GlideBuilder.loadGifImage
+import com.tokopedia.media.loader.LoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
@@ -66,13 +66,19 @@ fun ImageView?.clearImage() {
 internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValidContext()) {
         try {
-            GlideBuilder.loadImage(
+            LoaderApi.loadImage(
                     data = source,
                     imageView = this,
                     properties = properties
             )
         } catch (e: Exception) {
             e.printStackTrace()
+
+            /*
+            * don't let the imageView haven't image
+            * render with error drawable
+            * */
+            this.loadImage(R.drawable.ic_media_default_error)
         }
     }
 }

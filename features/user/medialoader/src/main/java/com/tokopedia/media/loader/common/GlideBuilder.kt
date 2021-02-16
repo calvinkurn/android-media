@@ -18,7 +18,7 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDisk
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 import com.tokopedia.media.loader.utils.Listener.invoke as callbackListener
 
-class PropertiesBuilder {
+class GlideBuilder {
 
     /*
     * The transformation mechanism carried out by medialoader is

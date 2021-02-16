@@ -10,14 +10,14 @@ import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.common.PropertiesBuilder
+import com.tokopedia.media.loader.common.GlideBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 
-object GlideBuilder {
+internal object LoaderApi {
 
-    private val builder by lazy { PropertiesBuilder() }
+    private val builder by lazy { GlideBuilder() }
 
     private fun automateScaleType(
             imageView: ImageView,
@@ -92,6 +92,7 @@ object GlideBuilder {
     }
 
     // temporarily the GIF loader
+    // TODO: change with .loadImage() instead
     fun loadGifImage(imageView: ImageView, data: String) {
         with(imageView) {
             GlideApp.with(context)
