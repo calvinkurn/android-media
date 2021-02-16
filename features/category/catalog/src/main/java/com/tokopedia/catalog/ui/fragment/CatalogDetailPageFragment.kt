@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.show
@@ -107,6 +109,10 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
+
+//        Handler().postDelayed({
+//            CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
+//        },3000)
     }
 
     private fun initViews() {
@@ -177,11 +183,12 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    private fun viewMoreSpecifications() {
+    private fun viewMoreClicked(openPage : String) {
         CatalogDetailPageAnalytics.trackEventClickSpecification()
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
                 catalogUiUpdater?.productInfoMap?.description ?: "",
-                catalogUiUpdater?.specificationsMap?.specificationsList ?: arrayListOf<SpecificationsComponentData>()
+                catalogUiUpdater?.specificationsMap?.specificationsList ?: arrayListOf()
+                ,openPage
         )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
@@ -228,6 +235,10 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onViewMoreSpecificationsClick() {
-        viewMoreSpecifications()
+        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+    }
+
+    override fun onViewMoreDescriptionClick() {
+        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 }

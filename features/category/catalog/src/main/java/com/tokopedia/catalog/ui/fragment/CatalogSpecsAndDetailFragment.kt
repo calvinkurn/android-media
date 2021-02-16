@@ -99,7 +99,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
     private fun setDescriptionView(description: String?) {
         context?.let { context ->
             val headerView = Typography(context)
-            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             headerView.apply {
                 layoutParams = params
                 text = MethodChecker.fromHtml(description).toString()

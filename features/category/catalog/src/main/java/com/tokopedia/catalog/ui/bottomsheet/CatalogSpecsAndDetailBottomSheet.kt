@@ -4,16 +4,12 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specification
 class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
 
     var list: ArrayList<Fragment> = ArrayList()
+    var openPage : String? = DESCRIPTION
 
     init {
         isFullpage = true
@@ -40,11 +37,14 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     companion object {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
-        fun newInstance(description: String, specifications: ArrayList<SpecificationsComponentData>): CatalogSpecsAndDetailBottomSheet {
+        const val OPEN_PAGE = "OPEN_PAGE"
+        fun newInstance(description: String, specifications: ArrayList<SpecificationsComponentData>,
+        openPage : String): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
+                    putString(OPEN_PAGE,openPage)
                 }
             }
         }
@@ -74,6 +74,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         if(arguments!=null){
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
+            openPage = arguments?.getString(OPEN_PAGE)
         }
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
@@ -93,9 +94,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 }.attach()
             }
             tabLayout?.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-
-                }
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                     tab?.position?.let { adapter.setUnSelectView(tabLayout,it) }
@@ -133,7 +132,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_description)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,R.color.catalog_N700_44))
+                setTextColor(MethodChecker.getColor(context,R.color.catalog_green))
             }
 
             val tabTwo = Typography(context)

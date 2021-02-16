@@ -24,7 +24,7 @@ class CatalogSpecificationsContainerViewHolder(private val view : View,
         specificationsRV.layoutManager = layoutManager
         specificationsAdapter = CatalogSpecificationsAdapter(element.specificationsList, catalogDetailListener)
         specificationsRV.adapter = specificationsAdapter!!
-        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_more).setOnClickListener {
+        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_more_specifications).setOnClickListener {
             catalogDetailListener.onViewMoreSpecificationsClick()
         }
     }

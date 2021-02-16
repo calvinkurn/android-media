@@ -58,10 +58,10 @@ data class CatalogResponseData (
                     @SerializedName( "max")
                     val max: Long,
 
-                    @SerializedName( "min_fmt")
+                    @SerializedName( "minFmt")
                     val minFmt: String,
 
-                    @SerializedName( "max_fmt")
+                    @SerializedName( "maxFmt")
                     val maxFmt: String,
 
                     @SerializedName( "date")

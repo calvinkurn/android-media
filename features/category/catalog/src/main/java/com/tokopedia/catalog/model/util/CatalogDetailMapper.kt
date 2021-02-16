@@ -17,7 +17,7 @@ object CatalogDetailMapper {
         catalogGetDetailModular.basicInfo.run {
             listOfComponents.add(CatalogInfoDataModel(name = "Catalog Info",type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, tag = tag,
-                    priceRange = "${marketPrice[0].minFmt ?: marketPrice[0].min} - ${marketPrice[0].maxFmt ?: marketPrice[0].max}" ,
+                    priceRange = "${marketPrice[0].minFmt} - ${marketPrice[0].maxFmt}" ,
                     description = description, images = catalogGetDetailModular.basicInfo.catalogImage))
         }
 
@@ -47,7 +47,7 @@ object CatalogDetailMapper {
 
     fun getDummyCatalogData() : CatalogResponseData{
 
-        val longDesc = "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro."
+        val longDesc = "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro. \n Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro."
         val catalogImageList = arrayListOf<CatalogImage>()
         catalogImageList.add(CatalogImage(
                 "https://media.wired.com/photos/5fa5e735ba670daaf8e97a91/1:1/w_1502,h_1502,c_limit/GEAR-MAX-Apple-iPhone-12-Pro-Max-SOURCE-Apple.jpg",
