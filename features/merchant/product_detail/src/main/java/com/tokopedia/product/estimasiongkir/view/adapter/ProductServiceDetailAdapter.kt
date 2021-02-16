@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 
@@ -40,8 +40,16 @@ class ProductServiceDetailAdapter : RecyclerView.Adapter<ProductServiceDetailAda
         fun bind(product: ProductServiceDetailDataModel) = with(itemView) {
             serviceDetailName?.text = context.getString(R.string.location_dot_builder, product.serviceProductName)
             serviceDetailPrice?.text = product.serviceProductPrice
-            serviceDetailEstimation?.text = context.getString(R.string.pdp_shipping_estimation_builder, product.serviceProductEstimation)
-            codLabel?.showWithCondition(product.isCod)
+            serviceDetailEstimation?.shouldShowWithAction(product.serviceProductEstimation.isNotEmpty()) {
+                serviceDetailEstimation.text = context.getString(R.string.pdp_shipping_estimation_builder, product.serviceProductEstimation)
+            }
+            codLabel?.shouldShowWithAction(product.isCod) {
+                if (product.codText.isEmpty()) {
+                    codLabel.setLabel(context.getString(R.string.pdp_shipping_available_cod_label))
+                } else {
+                    codLabel.text = product.codText
+                }
+            }
         }
     }
 }

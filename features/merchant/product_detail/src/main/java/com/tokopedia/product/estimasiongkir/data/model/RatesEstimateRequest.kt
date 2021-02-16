@@ -12,7 +12,9 @@ data class RatesEstimateRequest(
         val shopId: String = "",
         val productId: String = "",
         val productWeightUnit: String = "",
-        val isFreeOngkir: Boolean = false
+        val isFreeOngkir: Boolean = false,
+        val isFullfillment: Boolean = false
+//TODO new free ongkir url
 ) {
     fun getWeightRequest(): Float {
         return if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)

@@ -32,7 +32,6 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDI
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
-import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
@@ -110,7 +109,10 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
                         shippingFrom = "${address.districtName}, ${address.provinceName}",
                         weight = weightString,
                         isFreeOngkir = sharedViewModelData?.isFreeOngkir ?: false,
-                        freeOngkirEstimation = ""
+                        freeOngkirEstimation = "",
+                        freeOngkirImageUrl = "",
+                        freeOngkirPrice = "",
+                        isFullfillment = sharedViewModelData?.isFullfillment ?: false
                 )
                 val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(it.data.rates)
                 productServiceData.add(0, productShippingHeader)
@@ -139,7 +141,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
         return rates.services.map { service ->
             val servicesDetail = service.products.map {
-                ProductServiceDetailDataModel(it.name, it.texts.etd, it.price.priceFmt, it.cod.isCodAvailable == 1)
+                ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text)
             }
             ProductShippingServiceDataModel(service.id.toLong(), service.name, servicesDetail)
         }.toMutableList()

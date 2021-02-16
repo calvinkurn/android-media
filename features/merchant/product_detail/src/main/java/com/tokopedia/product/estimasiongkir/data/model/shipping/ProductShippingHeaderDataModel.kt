@@ -12,7 +12,10 @@ data class ProductShippingHeaderDataModel(
         val shippingFrom: String = "",
         val weight: String = "",
         val isFreeOngkir: Boolean = false,
-        val freeOngkirEstimation: String = ""
+        val freeOngkirEstimation: String = "",
+        val freeOngkirPrice: String = "",
+        val freeOngkirImageUrl: String = "",
+        val isFullfillment: Boolean = false
 ) : ProductShippingVisitable {
     override fun uniqueId(): Long = id
 

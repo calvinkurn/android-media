@@ -3,8 +3,8 @@ package com.tokopedia.product.estimasiongkir.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
@@ -27,7 +27,7 @@ class ProductShippingHeaderViewHolder(view: View) : AbstractViewHolder<ProductSh
 
     override fun bind(element: ProductShippingHeaderDataModel) {
         renderShipmentTrack(element.shippingTo, element.shippingFrom)
-        renderBo(element.isFreeOngkir, element.freeOngkirEstimation)
+        renderBo(element.isFreeOngkir, element.freeOngkirEstimation, element.freeOngkirImageUrl, element.freeOngkirPrice)
         renderWeight(element.weight)
     }
 
@@ -35,15 +35,20 @@ class ProductShippingHeaderViewHolder(view: View) : AbstractViewHolder<ProductSh
         txtWeight?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_shipping_weight_builder, weightFormatted)).spannedString
     }
 
-    private fun renderBo(freeOngkir: Boolean, freeOngkirEstimation: String) = with(itemView) {
-        txtFreeOngkirPrice?.showWithCondition(freeOngkir)
-        imgFreeOngkir?.showWithCondition(freeOngkir)
+    private fun renderBo(freeOngkir: Boolean, freeOngkirEstimation: String, freeOngkirImageUrl: String, freeOngkirPrice: String) = with(itemView) {
+        txtFreeOngkirPrice?.shouldShowWithAction(freeOngkir && freeOngkirPrice.isNotEmpty()) {
+            txtFreeOngkirPrice.text = freeOngkirPrice
+        }
+        imgFreeOngkir?.shouldShowWithAction(freeOngkir && freeOngkirImageUrl.isNotEmpty()) {
+            imgFreeOngkir.loadImage(freeOngkirImageUrl)
+        }
         txtFreeOngkirEstimation?.shouldShowWithAction(freeOngkirEstimation.isNotEmpty()) {
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
     }
 
     private fun renderShipmentTrack(shippingTo: String, shippingFrom: String) = with(itemView) {
+        //TODO get local first
         txtShippingTo?.text = context.getString(R.string.pdp_shipping_to_builder, shippingTo).boldOrLinkText(false, context, shippingTo to {})
         txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, shippingFrom).boldOrLinkText(false, context, shippingFrom to {})
     }

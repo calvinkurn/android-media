@@ -13,8 +13,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError.Companion.ERROR_CODE_PRODUCT_ID_NOT_FOUND
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -554,11 +552,11 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirUrl: String) {
         updateData(ProductDetailConstant.SHIPMENT) {
-            shipmentData?.rates = data
-                    ?: P2RatesEstimateData(p2RatesError = listOf(P2RatesError(errorCode = ERROR_CODE_PRODUCT_ID_NOT_FOUND)))
+            shipmentData?.rates = data ?: P2RatesEstimateData()
             shipmentData?.freeOngkirUrl = freeOngkirUrl
             shipmentData?.isFullfillment = isFullfillment
             shipmentData?.isCod = isCod
+            shipmentData?.shouldShowShipmentError = data == null
         }
     }
 

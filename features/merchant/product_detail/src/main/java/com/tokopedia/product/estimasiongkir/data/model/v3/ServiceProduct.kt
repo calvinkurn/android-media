@@ -60,6 +60,10 @@ data class ServiceProduct(
         @Expose
         val etd: ETD = ETD(),
 
+        @SerializedName("eta")
+        @Expose
+        val eta: ETA = ETA(),
+
         @SerializedName("texts")
         @Expose
         val texts: Texts = Texts(),

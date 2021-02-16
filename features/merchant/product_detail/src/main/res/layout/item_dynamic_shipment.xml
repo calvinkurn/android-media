@@ -173,4 +173,13 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/local_load_pdp_shipment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_local_load_title="@string/variant_failed_load"
+        app:unify_local_load_description="@string/variant_failed_load_description"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 </LinearLayout>

@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -27,6 +28,8 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private val shipmentLoadingContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shimmer_shipment_container)
     private val shipmentContentContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shipment_container)
+    private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
+
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentSubtitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_subtitle)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
@@ -39,15 +42,32 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
-        if (data.title.isEmpty()) {
-            showShipmentLoading()
-        } else {
-            hideShipmentLoading()
-        }
+        when {
+            element.shouldShowShipmentError -> {
+                // data rates not found
+                showLocalLoad()
+            }
+            data.title.isEmpty() -> {
+                // still render from p1,rates is'nt hit yet
+                showShipmentLoading()
+            }
+            else -> {
+                // receive rates data
+                itemView.setOnClickListener {
 
-        renderText(data)
-        renderTokoCabang(element.isFullfillment)
-        renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.isFullfillment, element.freeOngkirUrl)
+                }
+                hideShipmentLoading()
+                renderText(data)
+                renderTokoCabang(element.isFullfillment)
+                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.isFullfillment, element.freeOngkirUrl)
+            }
+        }
+    }
+
+    private fun showLocalLoad() = with(itemView) {
+        shipmentLoadingContainer?.hide()
+        shipmentContentContainer?.hide()
+        shipmentLocalLoad?.show()
     }
 
     private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean, isFullfillment: Boolean, freeOngkirUrl: String) = with(itemView) {
@@ -113,11 +133,13 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun showShipmentLoading() = with(itemView) {
+        shipmentLocalLoad?.hide()
         shipmentContentContainer?.hide()
         shipmentLoadingContainer?.show()
     }
 
     private fun hideShipmentLoading() = with(itemView) {
+        shipmentLocalLoad?.hide()
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.show()
     }

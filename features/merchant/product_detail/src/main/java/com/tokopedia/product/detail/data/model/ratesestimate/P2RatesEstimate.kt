@@ -67,8 +67,4 @@ data class P2RatesError(
         @SerializedName("DevMessage")
         @Expose
         val devMessage: String = ""
-) {
-    companion object {
-        const val ERROR_CODE_PRODUCT_ID_NOT_FOUND = 123213
-    }
-}
+)
