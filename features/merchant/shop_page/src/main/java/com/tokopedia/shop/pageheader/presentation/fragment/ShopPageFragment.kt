@@ -66,12 +66,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -92,6 +94,7 @@ import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
@@ -108,7 +111,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -182,7 +184,7 @@ class ShopPageFragment :
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
-    var stickyLoginView: StickyLoginView? = null
+    private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
@@ -246,6 +248,7 @@ class ShopPageFragment :
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
+    private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -275,6 +278,9 @@ class ShopPageFragment :
         shopViewModel?.shopPageP1Data?.removeObservers(this)
         shopViewModel?.shopPageHeaderContentData?.removeObservers(this)
         shopViewModel?.shopImagePath?.removeObservers(this)
+        shopViewModel?.shopUnmoderateData?.removeObservers(this)
+        shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
+        shopViewModel?.shopShareTracker?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -402,6 +408,27 @@ class ShopPageFragment :
             }
         })
 
+        shopViewModel?.shopShareTracker?.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    if(!it.data.success) {
+                        ShopUtil.logTimberWarning(
+                                "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                                "shop_id='${shopId}';" +
+                                        "error_message='${it.data.message}';"
+                        )
+                    }
+                }
+                is Fail -> {
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${it.throwable.message}';"
+                    )
+                }
+            }
+        })
+
         shopViewModel?.shopImagePath?.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
@@ -409,6 +436,58 @@ class ShopPageFragment :
                     init(this@ShopPageFragment)
                 }
                 shopShareBottomSheet?.show(fragmentManager)
+            }
+        })
+
+        shopViewModel?.shopUnmoderateData?.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    onCompleteSendRequestOpenModerate()
+                    it.data.moderateShop?.let { moderateShop ->
+                        if(moderateShop.success) {
+                            showToasterShopUnmoderate(
+                                    getString(R.string.shop_page_header_request_unmoderate_success_message),
+                                    Toaster.TYPE_NORMAL
+                            )
+                        } else {
+                            showToasterShopUnmoderate(moderateShop.message, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+                is Fail -> {
+                    onCompleteSendRequestOpenModerate()
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_REQ_UNMODERATE_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${errorMessage}'" +
+                                    ";error_trace='${Log.getStackTraceString(it.throwable)}'"
+                    )
+                    showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        })
+
+        shopViewModel?.shopModerateRequestStatus?.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    val moderateStatusRequestResponse = it.data.shopModerateRequestStatus
+                    if(moderateStatusRequestResponse.error.message.isEmpty()) {
+                        onCompleteCheckRequestModerateStatus(moderateStatusRequestResponse.result)
+                    } else  {
+                        showToasterShopUnmoderate(moderateStatusRequestResponse.error.message, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_CHECK_MODERATE_STATUS_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${errorMessage}'" +
+                                    ";error_trace='${Log.getStackTraceString(it.throwable)}'"
+                    )
+                    showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
+                }
             }
         })
 
@@ -578,7 +657,7 @@ class ShopPageFragment :
             }
         })
 
-        stickyLoginView?.loadContent()
+        stickyLoginView?.hide()
     }
 
     private fun getInitialData() {
@@ -911,6 +990,8 @@ class ShopPageFragment :
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
+
+        stickyLoginView?.loadContent()
     }
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
@@ -1317,6 +1398,36 @@ class ShopPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
+    override fun onSendRequestOpenModerate(choosenOptionValue : String) {
+        shopViewModel?.sendRequestUnmoderateShop(
+                shopId = shopId.toDoubleOrZero(),
+                optionValue = choosenOptionValue
+        )
+    }
+
+    override fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet) {
+        shopUnmoderateBottomSheet = bottomSheet
+        shopUnmoderateBottomSheet?.show(fragmentManager)
+        shopUnmoderateBottomSheet?.showLoading()
+        shopViewModel?.checkShopRequestModerateStatus()
+    }
+
+    override fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult) {
+        when (moderateStatusResult.status) {
+            ShopModerateRequestStatusCode.SHOP_MODERATED, ShopModerateRequestStatusCode.SHOP_MODERATION_REQUEST_REJECTED -> {
+                shopUnmoderateBottomSheet?.showOptionList()
+            }
+            ShopModerateRequestStatusCode.SHOP_REQUESTING_OPEN_MODERATE -> {
+                shopUnmoderateBottomSheet?.showModerateStatus()
+            }
+        }
+    }
+
+    override fun onCompleteSendRequestOpenModerate() {
+        shopUnmoderateBottomSheet?.setLoadingButton(false)
+        shopUnmoderateBottomSheet?.dismiss()
+    }
+
     override fun onCloseBottomSheet() {
         shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
     }
@@ -1378,9 +1489,27 @@ class ShopPageFragment :
                                 })
                             }
                         }
-                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
-                        shopShareBottomSheet?.dismiss()
 
+                        // send gql tracker
+                        shopShare.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shopShare) {
+                                        is ShopShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShopShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
+
+                        // send gtm tracker
+                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
+
+                        shopShareBottomSheet?.dismiss()
                     }
 
                     override fun onError(linkerError: LinkerError?) {}
@@ -1487,6 +1616,15 @@ class ShopPageFragment :
                 getString(R.string.shop_page_play_widget_sgc_video_deleted),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showToasterShopUnmoderate(message: String, type: Int) {
+        Toaster.build(
+                requireView(),
+                message,
+                Toaster.LENGTH_SHORT,
+                type
         ).show()
     }
 
