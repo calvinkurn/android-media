@@ -47,6 +47,8 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
@@ -151,7 +153,6 @@ class AddEditProductPreviewFragment :
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isViewVisible = false
-    private var observeProduct = false
 
     private var toolbar: Toolbar? = null
 
@@ -290,7 +291,6 @@ class AddEditProductPreviewFragment :
 
         // view visible to check whether current fragment is visible or not
         isViewVisible = true
-        observeProduct = true
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -973,23 +973,19 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
-            if (observeProduct) {
-                showProductPhotoPreview(it)
-                showProductDetailPreview(it)
-                updateProductStatusSwitch(it)
-                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-                if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                    displayEditMode()
-                }
-                stopRenderPerformanceMonitoring()
-                stopPerformanceMonitoring()
-                observeProduct = false
+            showProductPhotoPreview(it)
+            showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
+            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+            if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
+                displayEditMode()
             }
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
             //check whether productInputModel has value from savedInstanceState
             if (productInputModel != null) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
-                observeProduct = true
                 productInputModel = null
             }
         })
