@@ -201,21 +201,26 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     it.status.isEmpty() -> showEmpty()
                     it.status.isError() -> showGetListError(it.exception)
                     it.status.isSuccess() -> {
-                        if (it.data?.isNotEmpty() == true) {
-                            it.data[0].let {
-                                activity?.run {
-                                    (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                        it.data?.let { pair ->
+                            val recommendationItems = pair.first
+                            if (recommendationItems.isNotEmpty()) {
+                                recommendationItems.getOrNull(0)?.let {
+                                    activity?.run {
+                                        (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                    }
                                 }
+                                hasNextPage = pair.second
+                                renderList(mapDataModel(recommendationItems), pair.second)
+                                if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
+                            }else{
+                                hideLoading()
+                                hasNextPage = false
+                                updateScrollListenerState(false)
+                                showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }
-                            hasNextPage = true
-                            renderList(mapDataModel(it.data), true)
-                        }else{
-                            hasNextPage = false
-                            hideLoading()
-                            updateScrollListenerState(false)
-                            showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                         }
                     }
+                    else -> {}
                 }
             }
         })
@@ -224,6 +229,9 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             if (it.status.isSuccess()) {
                 it.data?.let { data ->
                     sortFilterView?.show()
+                    val popularOption = data.filterAndSort.filterChip.map { it.copy(
+                            options = it.options.filter { it.isPopular }
+                    ) }
                     setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
                 }
             } else if(it.status.isLoading()){
@@ -358,7 +366,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
             val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
             sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
-            sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.filter { it.title in filters.map { it.title } }.getCountSelected() + selectedSort
+            sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.getOptions().getCountSelected() + selectedSort
         }
     }
 
@@ -378,8 +386,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
-        item.toggleSelected()
+        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
@@ -471,7 +478,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
+        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, source, productId)
         filterSortBottomSheet = null
         val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
         val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")

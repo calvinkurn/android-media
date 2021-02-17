@@ -26,6 +26,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
+import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
@@ -289,7 +290,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().TYPE == Env.STAGING, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()

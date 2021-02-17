@@ -17,6 +17,7 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.ID_CARD
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SELFIE
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_SUCCESS
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.filePath
 import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
@@ -24,6 +25,7 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.cameraview.FileType
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneSuccessPageActivity
 import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneDataUploadViewModel
@@ -36,6 +38,9 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userDataTemp: UserDataTemporary
+
+    @Inject
+    lateinit var tracker: InactivePhoneTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,11 +72,13 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext?.setOnClickListener {
+            showLoading()
             if (!isPhoneValid()) {
+                hideLoading()
                 return@setOnClickListener
             }
 
-            showLoading()
+            tracker.clickOnButtonSubmitUploadData()
             viewModel.userValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail(), userDataTemp.getIndex())
         }
 
@@ -85,6 +92,10 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             startActivityForResult(intent, InactivePhoneConstant.REQUEST_CAPTURE_SELFIE)
         }
 
+        textPhoneNumber?.setOnClickListener {
+            tracker.clickOnTextViewInputNewPhoneNumber()
+        }
+
         setImage(imgIdCard, CameraViewMode.ID_CARD.id)
         setImage(imgSelfie, CameraViewMode.SELFIE.id)
     }
@@ -93,7 +104,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         viewModel.phoneValidation.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.validation.status == 1) {
+                    if (it.data.validation.status == STATUS_SUCCESS) {
                         doUploadImage(FileType.ID_CARD, ID_CARD)
                     }
                 }

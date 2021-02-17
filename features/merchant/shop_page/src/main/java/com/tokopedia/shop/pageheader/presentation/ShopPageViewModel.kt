@@ -15,11 +15,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
@@ -43,18 +46,18 @@ import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopRe
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
+import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -75,10 +78,12 @@ class ShopPageViewModel @Inject constructor(
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
-        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
+        private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
+        private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val firebaseRemoteConfig: RemoteConfig,
@@ -100,6 +105,10 @@ class ShopPageViewModel @Inject constructor(
     val userShopId: String
         get() = userSessionInterface.shopId
 
+    private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
+    val shopShareTracker : LiveData<Result<ShopQuestGeneralTracker>>
+        get() = _shopShareTracker
+
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
@@ -114,6 +123,16 @@ class ShopPageViewModel @Inject constructor(
 
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
+
+    private val _shopUnmoderateData = MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
+    val shopUnmoderateData : LiveData<Result<ShopRequestUnmoderateSuccessResponse>>
+        get() = _shopUnmoderateData
+
+    private val _shopModerateRequestStatus = MutableLiveData<Result<ShopModerateRequestData>>()
+    val shopModerateRequestStatus : LiveData<Result<ShopModerateRequestData>>
+        get() = _shopModerateRequestStatus
+
+
     private val TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
 
     fun getShopPageTabData(
@@ -219,6 +238,29 @@ class ShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
+    fun checkShopRequestModerateStatus() {
+        launchCatchError(dispatcherProvider.io, {
+            val shopModerateRequestStatusUseCase = shopModerateRequestStatusUseCase.get()
+            val shopModerateRequestStatusResponse = shopModerateRequestStatusUseCase.executeOnBackground()
+            _shopModerateRequestStatus.postValue(Success(shopModerateRequestStatusResponse))
+        }) {
+            _shopModerateRequestStatus.postValue(Fail(it))
+        }
+    }
+
+    fun sendRequestUnmoderateShop(shopId : Double, optionValue : String) {
+        launchCatchError(dispatcherProvider.io, {
+            val shopUnmoderateUseCase = shopRequestUnmoderateUseCase.get().apply {
+                params = ShopRequestUnmoderateUseCase.createRequestParams(shopId, optionValue)
+            }
+            val shopUnmoderateResponse = shopUnmoderateUseCase.executeOnBackground()
+            _shopUnmoderateData.postValue(Success(shopUnmoderateResponse))
+
+        }) {
+            _shopUnmoderateData.postValue(Fail(it))
+        }
+    }
+
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
         launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
@@ -238,6 +280,23 @@ class ShopPageViewModel @Inject constructor(
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    fun sendShopShareTracker(shopId : String, channel : String) {
+        launchCatchError(dispatcherProvider.io, {
+            val useCase = shopQuestGeneralTrackerUseCase.get()
+            useCase.params = ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = ShopPageConstant.SHOP_SHARE_GQL_TRACKER_ACTION,
+                    source = ShopPageConstant.SHOP_SHARE_GQL_TRACKER_SOURCE,
+                    channel = channel,
+                    input = ShopQuestGeneralTrackerInput(shopId)
+            )
+            val shopShareTrackerResponse = useCase.executeOnBackground()
+            _shopShareTracker.postValue(Success(shopShareTrackerResponse))
+
+        }) {
+            _shopShareTracker.postValue(Fail(it))
+        }
     }
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
@@ -287,33 +346,6 @@ class ShopPageViewModel @Inject constructor(
         }, onError = {
             _followShopData.postValue(Fail(it))
         })
-    }
-
-    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.get().setParams(StickyLoginConstant.Page.SHOP)
-        stickyLoginUseCase.get().execute(
-                onSuccess = {
-                    if (it.response.tickers.isNotEmpty()) {
-                        for (tickerDetail in it.response.tickers) {
-                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                onSuccess.invoke(tickerDetail)
-                                return@execute
-                            }
-                        }
-                        onError?.invoke(Throwable(""))
-                    } else {
-                        onError?.invoke(Throwable(DATA_NOT_FOUND))
-                    }
-                },
-                onError = {
-                    onError?.invoke(it)
-                }
-        )
-    }
-
-    override fun flush() {
-        super.flush()
-        stickyLoginUseCase.get().cancelJobs()
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/talkInboxProductThumbnail"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkInboxProductName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl7"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toEndOf="@id/talkInboxProductThumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/talkInboxProductThumbnail"
+        tools:visibility="visible"
+        tools:text="iPhone Xs 256GB Garansi Resmi - Space Gray LALLALLA"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkInboxMessage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginEnd="@dimen/layout_lvl7"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="@id/talkInboxProductName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/talkInboxProductName"
+        tools:visibility="visible"
+        tools:text="Hi mau tanya klo beli produk ini ada bonusnya gak ya? Soalnya lagi mau bonus nih"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkInboxAnswerCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="@id/talkInboxMessage"
+        app:layout_constraintTop_toBottomOf="@id/talkInboxMessage"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkInboxDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/talkInboxAnswerCount"
+        app:layout_constraintTop_toTopOf="@id/talkInboxAnswerCount"/>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/talkInboxNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="@id/talkInboxAnswerCount"
+        app:notificationType="none_type"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/talk_inbox_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="talkInboxNotification, talkInboxAnswerCount, talkInboxMessage"
+        tools:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_19"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_barrier" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

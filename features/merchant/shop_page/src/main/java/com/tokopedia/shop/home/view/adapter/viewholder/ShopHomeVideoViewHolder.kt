@@ -14,10 +14,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
+import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
@@ -38,7 +38,7 @@ class ShopHomeVideoViewHolder(
         const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
 
-    private var youTubeThumbnailShopPageImageUnify: ImageUnify? = null
+    private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
     private var loaderImageView: LoaderImageView? = null
     private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
@@ -86,7 +86,13 @@ class ShopHomeVideoViewHolder(
                     }
                     isSuccess
                 }
-                youTubeThumbnailShopPageImageUnify?.urlSrc = highResVideoThumbnailUrl
+                youTubeThumbnailShopPageImageUnify?.apply {
+                    try {
+                        if (context.isValidGlideContext())
+                            urlSrc = highResVideoThumbnailUrl
+                    } catch (e: Throwable) {
+                    }
+                }
             } else {
                 groupVideoError?.visible()
                 loaderImageView?.gone()

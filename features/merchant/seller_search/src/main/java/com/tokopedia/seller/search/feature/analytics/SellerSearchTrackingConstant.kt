@@ -14,6 +14,7 @@ object SellerSearchTrackingConstant {
 
     const val CLICK_SEARCH = "clickSearch"
     const val GLOBAL_SEARCH = "global search"
+    const val SUGGESTED_SEARCH = "suggested search"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val PHYSICAL_GOODS = "physical goods"
     const val CLICK_BACK_BUTTON = "click back button"

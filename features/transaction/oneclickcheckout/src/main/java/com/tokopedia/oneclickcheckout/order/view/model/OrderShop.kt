@@ -21,6 +21,7 @@ data class OrderShop(
         var provinceId: Int = 0,
         var cityId: Int = 0,
         var cityName: String = "",
+        var isFulfillment: Boolean = false,
         var shopShipment: List<ShopShipment> = emptyList(),
         var errors: List<String> = emptyList()
 )

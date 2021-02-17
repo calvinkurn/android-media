@@ -2,7 +2,9 @@ package com.tokopedia.product.addedit.preview.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,7 +14,6 @@ import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
@@ -92,13 +93,8 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
 
-        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
-            setSupportActionBar(it)
-        }
+        updateActivityToolbar()
         setupNavController()
     }
 
@@ -118,5 +114,21 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
         navController.setGraph(com.tokopedia.product.addedit.R.navigation.product_add_edit_navigation, bundle)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            updateActivityToolbar()
+        }
+    }
+
+    private fun updateActivityToolbar() {
+        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
+            setSupportActionBar(it)
+            // set to dark mode color support
+            val color = androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+        }
     }
 }
