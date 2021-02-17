@@ -498,15 +498,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             override fun afterTextChanged(editable: Editable) {
                 viewModel.isProductNameChanged = true
                 Handler().postDelayed({ viewModel.validateProductNameInput(editable.toString()) }, DEBOUNCE_DELAY_MILLIS)
+                if (needToSetCategoryName && editable.isNotBlank()) {
+                    needToSetCategoryName = false
+                }
             }
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                if (needToSetCategoryName) {
-                    needToSetCategoryName = false
-                }
-            }
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
         // product price text change listener
@@ -1277,7 +1276,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
                 // show category recommendations to the product that has no variants
-                if (viewModel.isAdding && !viewModel.hasVariants) {
+                if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
                     viewModel.getCategoryRecommendation(productNameInput)
                 }
             } else {
