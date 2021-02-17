@@ -498,6 +498,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             override fun afterTextChanged(editable: Editable) {
                 viewModel.isProductNameChanged = true
                 Handler().postDelayed({ viewModel.validateProductNameInput(editable.toString()) }, DEBOUNCE_DELAY_MILLIS)
+                // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
                 if (needToSetCategoryName && editable.isNotBlank()) {
                     needToSetCategoryName = false
                 }
@@ -710,6 +711,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 fillProductDetailForm(productInputModel.detailInputModel)
                 setupButton()
             }
+            // only need set category, no need to get category list
             needToSetCategoryName = true
         }
         super.onViewStateRestored(savedInstanceState)
@@ -908,6 +910,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
 
+                    // only need set category, no need to get category list
                     needToSetCategoryName = true
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
@@ -1275,14 +1278,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
-                // show category recommendations to the product that has no variants
+                // show category recommendations to the product that has no variants and no category name before
                 if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
                     viewModel.getCategoryRecommendation(productNameInput)
                 }
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
-                // keep the category if the product has variants
+                // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
