@@ -132,10 +132,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.resetImpression()
         }
-        val listOfBannerComponent = currentList.filterIsInstance(BannerDataModel::class.java)
-        listOfBannerComponent.map {
-            (getViewHolder(currentList.indexOf(it)) as? BannerComponentViewHolder)?.resetImpression()
-        }
     }
 
     /**
