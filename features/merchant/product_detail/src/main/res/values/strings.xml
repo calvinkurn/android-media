@@ -273,8 +273,10 @@
     <string name="pdp_shipping_available_cod_label">Bisa COD</string>
     <string name="pdp_shipping_estimation_builder">Estimasi tiba %1s</string>
     <string name="pdp_shipping_to_builder">Dikirim ke %1s</string>
+    <string name="pdp_shipping_to_simple_builder">Dikirim %1s</string>
     <string name="pdp_shipping_from_builder">Dari %1s</string>
     <string name="pdp_shipping_weight_builder"><![CDATA[Berat satuan: <b>%1s</b>]]></string>
+    <string name="pdp_html_bracket"><![CDATA[%1s]]></string>
 
     <string name="pdp_shipping_cod_label">COD</string>
     <string name="pdp_shipping_instant_label">Instan</string>
@@ -282,5 +284,6 @@
     <string name="pdp_shipping_choose_courier_label">Lihat Pilihan Kurir</string>
     <string name="pdp_shipping_other_courier_label">Kurir lainnya:</string>
     <string name="pdp_shipping_khusus_label">Khusus:</string>
+    <string name="pdp_tokocabang_label">TokoCabang</string>
 
 </resources>

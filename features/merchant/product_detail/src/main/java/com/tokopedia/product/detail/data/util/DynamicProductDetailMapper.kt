@@ -90,6 +90,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.REPORT -> {
                     listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.SHIPMENT -> {
+                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

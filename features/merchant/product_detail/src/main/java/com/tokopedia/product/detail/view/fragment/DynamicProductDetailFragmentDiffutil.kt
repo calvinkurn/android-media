@@ -250,6 +250,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
     private var alreadyHitVideoTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
+    private var shouldRefreshShippingBottomSheet = false
 
     //View
     private var varToolbar: Toolbar? = null
@@ -300,6 +301,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onSwipeRefresh() {
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
+        shouldRefreshShippingBottomSheet = true
         stickyLoginView?.loadContent()
         ticker_occ_layout.gone()
         super.onSwipeRefresh()
@@ -741,8 +743,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         productP3Resp.addressModel?.postalCode ?: "",
                         productP3Resp.addressModel?.districtName ?: "",
                         viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-//                onShipmentClicked()
-                openShipmentClickedBottomSheet()
+                onShipmentClicked()
             }
             ProductDetailConstant.TRADE_IN -> {
                 DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -1885,7 +1886,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    private fun openShipmentClickedBottomSheet() {
+    override fun openShipmentClickedBottomSheet() {
         viewModel.getDynamicProductInfoP1?.let {
             if (sharedViewModel == null) {
                 sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
@@ -1898,8 +1899,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     it.basic.shopID,
                     it.basic.productID,
                     it.basic.weightUnit,
-                    it.data.isFreeOngkir.isActive
+                    it.data.isFreeOngkir.isActive,
+                    viewModel.getMultiOriginByProductId().isFulfillment,
+                    shouldRefreshShippingBottomSheet
             ))
+            shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()
             shippingBs.show(getProductFragmentManager())
         }

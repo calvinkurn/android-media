@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
@@ -20,6 +21,7 @@ import com.tokopedia.product.detail.data.util.LABEL_KG
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
@@ -31,19 +33,22 @@ import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
+import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import kotlinx.android.synthetic.main.bs_product_shipping_rate_estimate.view.*
 import javax.inject.Inject
 
 
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
+class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDetailShippingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var viewModel: RatesEstimationDetailViewModel? = null
+    private var viewModel: RatesEstimationBoeViewModel? = null
     private var adapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
 
@@ -82,7 +87,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
 
     private fun initViewModel() {
         if (::viewModelFactory.isInitialized) {
-            viewModel = ViewModelProvider(this, viewModelFactory).get(RatesEstimationDetailViewModel::class.java)
+            viewModel = ViewModelProvider(this, viewModelFactory).get(RatesEstimationBoeViewModel::class.java)
         }
     }
 
@@ -93,33 +98,13 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
     private fun observeData() {
         val sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
         sharedViewModel.rateEstimateRequest.observeOnce(this) {
-            viewModel?.getCostEstimation(it.getWeightRequest(), it.shopDomain, it.origin, it.shopId, it.productId)
+            viewModel?.setRatesRequest(it)
         }
 
-        viewModel?.rateEstResp?.observe(this) {
+        viewModel?.ratesVisitableResult?.observe(this) {
             it.doSuccessOrFail({
-                val address = it.data.address
-                val shop = it.data.shop
-                val sharedViewModelData = sharedViewModel.rateEstimateRequest.value
-                val weightString = context?.getString(R.string.double_string_builder, sharedViewModelData?.productWeight?.numberFormatted(), if (sharedViewModelData?.productWeightUnit?.toLowerCase() == KG)
-                    LABEL_KG else LABEL_GRAM) ?: ""
-                val productShippingHeader = ProductShippingHeaderDataModel(
-                        id = 1,
-                        shippingTo = shop.cityName,
-                        shippingFrom = "${address.districtName}, ${address.provinceName}",
-                        weight = weightString,
-                        isFreeOngkir = sharedViewModelData?.isFreeOngkir ?: false,
-                        freeOngkirEstimation = "",
-                        freeOngkirImageUrl = "",
-                        freeOngkirPrice = "",
-                        isFullfillment = sharedViewModelData?.isFullfillment ?: false
-                )
-                val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(it.data.rates)
-                productServiceData.add(0, productShippingHeader)
-
-                adapter?.submitList(productServiceData.toList())
+                adapter?.submitList(it.data)
             }) {
-
             }
         }
     }
@@ -132,19 +117,13 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment() {
         val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
                 .build()
 
-        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl())
+        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this))
 
         rv?.adapter = adapter
         adapter?.submitList(listOf(ProductShippingShimmerDataModel()))
     }
 
-    private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
-        return rates.services.map { service ->
-            val servicesDetail = service.products.map {
-                ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text)
-            }
-            ProductShippingServiceDataModel(service.id.toLong(), service.name, servicesDetail)
-        }.toMutableList()
+    override fun onChooseAddressClicked() {
+        view?.showToasterSuccess("Clicked bottom sheet")
     }
-
 }

@@ -44,13 +44,14 @@
             tools:text="Bebas Ongkir Extra (Rp0)" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_pdp_shipment_subtitle"
+            android:id="@+id/txt_pdp_shipment_destination"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,10 +68,11 @@
             android:layout_marginEnd="24dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_destination"
             app:typographyType="body_3"
             tools:text="Estimasi tiba besok"
             tools:visibility="visible" />
@@ -84,6 +86,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/pdp_shipping_khusus_label"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_estimation"
@@ -97,14 +100,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="24dp"
+            android:drawablePadding="2dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:text="@string/pdp_tokocabang_label"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_khusus"
             app:layout_constraintStart_toEndOf="@+id/txt_pdp_shipment_khusus"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_khusus"
             app:typographyType="body_3"
-            tools:text="TokoCabang"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -117,6 +122,7 @@
             android:maxLines="1"
             android:text="@string/pdp_shipping_other_courier_label"
             android:visibility="gone"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_khusus"
             app:typographyType="body_3"
@@ -129,6 +135,7 @@
             android:layout_marginStart="8dp"
             android:scaleType="centerInside"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
             app:layout_constraintStart_toEndOf="@+id/txt_pdp_shipment_other_courier"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
             tools:src="@drawable/ic_free_shipping"
@@ -142,6 +149,7 @@
             android:text="@string/pdp_shipping_instant_label"
             android:visibility="gone"
             app:labelType="general_light_grey"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
             app:layout_constraintStart_toEndOf="@+id/ic_pdp_shipment_bo"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
             tools:visibility="visible" />
@@ -154,6 +162,7 @@
             android:text="@string/pdp_shipping_cod_label"
             android:visibility="gone"
             app:labelType="general_light_grey"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
             app:layout_constraintStart_toEndOf="@+id/label_pdp_shipment_instant"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
             tools:visibility="visible" />
@@ -163,8 +172,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,9 +186,9 @@
         android:id="@+id/local_load_pdp_shipment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_local_load_title="@string/variant_failed_load"
-        app:unify_local_load_description="@string/variant_failed_load_description"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        app:unify_local_load_description="@string/variant_failed_load_description"
+        app:unify_local_load_title="@string/variant_failed_load"
+        tools:visibility="visible" />
 
 </LinearLayout>

@@ -1929,6 +1929,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun openShipmentClickedBottomSheet() {
+
+    }
+
     private fun onShipmentClicked() {
         if (viewModel.isUserSessionActive) {
             val productP3value = viewModel.productInfoP3.value

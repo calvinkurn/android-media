@@ -10,11 +10,12 @@ import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingS
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingHeaderViewHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingServiceViewHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.viewholder.ProductShippingShimmerViewHolder
+import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
 
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductShippingFactoryImpl : BaseAdapterTypeFactory(), ProductShippingFactory {
+class ProductShippingFactoryImpl(val listener: ProductDetailShippingListener) : BaseAdapterTypeFactory(), ProductShippingFactory {
     override fun type(dataProduct: ProductShippingHeaderDataModel): Int {
         return ProductShippingHeaderViewHolder.LAYOUT
     }
@@ -29,7 +30,7 @@ class ProductShippingFactoryImpl : BaseAdapterTypeFactory(), ProductShippingFact
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ProductShippingHeaderViewHolder.LAYOUT -> ProductShippingHeaderViewHolder(view)
+            ProductShippingHeaderViewHolder.LAYOUT -> ProductShippingHeaderViewHolder(view, listener)
             ProductShippingServiceViewHolder.LAYOUT -> ProductShippingServiceViewHolder(view)
             ProductShippingShimmerViewHolder.LAYOUT -> ProductShippingShimmerViewHolder(view)
             else -> return super.createViewHolder(view, type)
