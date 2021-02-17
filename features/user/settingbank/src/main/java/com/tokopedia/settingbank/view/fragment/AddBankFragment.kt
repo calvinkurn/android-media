@@ -232,7 +232,7 @@ class AddBankFragment : BaseDaggerFragment() {
         when (data) {
             is AccountNameFinalValidationSuccess -> {
                 add_account_button.isEnabled = true
-                wrapperManualAccountHolderName.error = null
+                showManualAccountNameError(null)
                 if (data.checkAccountAction == ActionValidateAccountName) {
                     builder.setAccountName(data.accountHolderName, true)
                     openConfirmationPopUp()
@@ -250,36 +250,14 @@ class AddBankFragment : BaseDaggerFragment() {
                 groupAccountNameAuto.gone()
                 wrapperManualAccountHolderName.visible()
                 wrapperBankAccountNumber.editText.setText(data.accountName)
-                wrapperManualAccountHolderName.error = data.message
+                showManualAccountNameError(data.message)
             }
 
             is AccountNameCheckError -> {
                 add_account_button.isEnabled = false
                 wrapperBankAccountNumber.editText.setText(data.accountName)
                 wrapperBankAccountNumber.isEnabled = false
-                wrapperManualAccountHolderName.error = data.message
-            }
-        }
-    }
-
-    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
-        context?.let { context ->
-            val errorMessage = when (throwable) {
-                is AddBankAccountException -> throwable.errorMessage
-                else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
-            }
-            showErrorOnUI(errorMessage, retry)
-        }
-    }
-
-    private fun showErrorOnUI(message: String, retry: (() -> Unit)?) {
-        view?.let { view ->
-            retry?.let {
-                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() }).show()
-            } ?: run {
-                Toaster.build(view, message,
-                        Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                showManualAccountNameError(data.message)
             }
         }
     }
@@ -517,6 +495,25 @@ class AddBankFragment : BaseDaggerFragment() {
             } else {
                 tncBottomSheet = BankTNCBottomSheet(activity!!)
                 tncBottomSheet.show(templateData)
+            }
+        }
+    }
+
+    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let { context ->
+            val errorMessage = when (throwable) {
+                is AddBankAccountException -> throwable.errorMessage
+                else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
+            }
+            view?.let { view ->
+                retry?.let {
+                    Toaster.build(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                            getString(R.string.sbank_promo_coba_lagi),
+                            View.OnClickListener { retry.invoke() }).show()
+                } ?: run {
+                    Toaster.build(view, errorMessage,
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
             }
         }
     }
