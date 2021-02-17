@@ -58,12 +58,14 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_RECOMMENDATION_LIST = 14
         const val TYPE_PRODUCT_HIGHLIGHT = 11
         const val TYPE_CATEGORY_WIDGET = 15
+        const val TYPE_2_GRID_LEGO = 16
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC

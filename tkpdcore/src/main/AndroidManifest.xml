@@ -56,9 +56,6 @@
         <!-- META DATA REGISTRY -->
         <!-- ======================================================= -->
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-        <meta-data
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
 

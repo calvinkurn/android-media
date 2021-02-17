@@ -270,14 +270,6 @@ class DynamicChannelHeaderView: FrameLayout {
 
     }
 
-    private fun getTimeDiff(startTime: Date, endTime: Date): Calendar {
-        var diff = endTime.time - startTime.time
-        if (diff < 0) diff = 0
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = diff
-        return calendar
-    }
-
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
         return channel.channelHeader.getLink().isNotEmpty()
     }

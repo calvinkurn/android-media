@@ -21,8 +21,8 @@ import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
-import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
@@ -98,6 +98,7 @@ class AccountHeaderViewHolder(itemView: View,
         val tvOvoShimmer: View = layoutLogin.findViewById(R.id.tv_ovo_shimmer)
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
+        val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
@@ -168,29 +169,20 @@ class AccountHeaderViewHolder(itemView: View,
         //shop info error state
         if (!element.isGetShopError && element.shopName.isNotEmpty()) {
             tvShopInfo.visible()
-            var subtext = ""
-            var fulltext = ""
-            if (element.isGetShopError) {
-                subtext = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_SHOP_TRY).toString()
-                fulltext = String.format(AccountHeaderDataModel.ERROR_TEXT_SHOP, subtext)
-            } else {
-                subtext = MethodChecker.fromHtml(element.shopName).toString()
-                fulltext = String.format(TEXT_TOKO_SAYA, subtext)
-                tvShopInfo.setOnClickListener { onShopClicked() }
-            }
-
-            tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
+            tvShopTitle.visible()
+            tvShopInfo.setText(element.shopName, TextView.BufferType.SPANNABLE)
             val str = tvShopInfo.text as Spannable
-            val i = fulltext.indexOf(subtext)
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
+            tvShopTitle.gone()
             btnTryAgainShopInfo.gone()
             shimmerShopInfo.visible()
         } else if (element.isGetShopError) {
             btnTryAgainShopInfo.visible()
             tvShopInfo.visible()
+            tvShopTitle.visible()
             shimmerShopInfo.gone()
 
             tvShopInfo.text = getString(R.string.error_state_shop_info)

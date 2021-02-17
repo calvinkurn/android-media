@@ -57,6 +57,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
                 if (lastReview != clickAt) {
                     listener?.onClick(clickAt)
                 }
+                listener?.onRatingSelected(clickAt)
             }
         }
 
@@ -148,6 +149,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     }
 
     interface AnimatedReputationListener {
-        fun onClick(position: Int)
+        fun onClick(position: Int) {}
+        fun onRatingSelected(rating: Int) {}
     }
 }

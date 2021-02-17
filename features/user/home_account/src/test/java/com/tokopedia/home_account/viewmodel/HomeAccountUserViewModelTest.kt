@@ -110,28 +110,23 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Execute saveLocallyAttributes`() {
-        val debitInstantModel = mockk<DebitInstantModel>(relaxed = true)
         val debitInstandData = mockk<DebitInstantData>(relaxed = true)
+        val debitInstantModel = mockk<DebitInstantModel>(relaxed = true)
 
         every { debitInstandData.redirectUrl } returns "redirect"
         every { debitInstantModel.data } returns debitInstandData
 
         /* When */
-        val response = UserAccountDataModel(vccUserStatus = VccUserStatus().apply {
-            status = "status"
-            redirectionUrl = "http://redirect"
-        }, wallet = WalletModel().apply {
-            isLinked = true
-        }, profile = ProfileModel().apply {
-            isPhoneVerified = true
-        }, isAffiliate = true,
-        debitInstant = debitInstantModel)
+        val response = UserAccountDataModel(
+                wallet = WalletModel().apply { isLinked = true },
+                profile = ProfileModel().apply { isPhoneVerified = true },
+                isAffiliate = true,
+                debitInstant = debitInstantModel
+        )
 
         viewModel.saveLocallyAttributes(response)
+
         verify {
-            walletPref.saveWallet(response.wallet)
-            walletPref.tokoSwipeUrl = response.vccUserStatus.redirectionUrl
-            walletPref.saveVccUserStatus(response.vccUserStatus)
             userSession.setIsMSISDNVerified(response.profile.isPhoneVerified)
             userSession.setIsAffiliateStatus(response.isAffiliate)
         }
