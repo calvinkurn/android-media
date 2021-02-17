@@ -9,8 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -29,8 +31,8 @@ class ChooseAddressBottomSheet: BottomSheetUnify(), HasComponent<ChooseAddressCo
     private var chooseAddressLayout: ConstraintLayout? = null
     private var noAddressLayout: ConstraintLayout? = null
     private var loginLayout: ConstraintLayout? = null
-    private var buttonLogin: UnifyButton? = null
-    private var buttonAddAddress: UnifyButton? = null
+    private var buttonLogin: IconUnify? = null
+    private var buttonAddAddress: IconUnify? = null
     private var fm: FragmentManager? = null
 
     /*test no address with this*/
@@ -96,7 +98,7 @@ class ChooseAddressBottomSheet: BottomSheetUnify(), HasComponent<ChooseAddressCo
 
     private fun renderButton() {
         buttonLogin?.setOnClickListener {
-
+            startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         }
 
         buttonAddAddress?.setOnClickListener {

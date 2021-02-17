@@ -24,6 +24,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -73,6 +74,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
+    private var chooseAddressWidget: ChooseAddressWidget? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -146,11 +148,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
+        chooseAddressWidget = view?.findViewById(R.id.choose_address_widget)
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
+        fragmentManager?.let { chooseAddressWidget?.setBindFragmentManager(it) }
+
         initScrollListener()
+
     }
 
     private fun initViewModel() {
