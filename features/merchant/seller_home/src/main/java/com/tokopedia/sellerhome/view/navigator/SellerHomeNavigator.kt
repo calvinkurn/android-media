@@ -225,18 +225,14 @@ class SellerHomeNavigator(
     }
 
     private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
-        val tag = fragment?.let {
-            it::class.java.canonicalName
+        hideAllPages(transaction)
+        fragment?.let {
+            transaction.show(it)
         }
-        fm.fragments.forEach { frag ->
-            (tag?.equals(frag::class.java.canonicalName, true) == true).let { isFragmentExist ->
-                if (isFragmentExist) {
-                    transaction.show(frag)
-                } else {
-                    transaction.hide(frag)
-                }
-            }
-        }
+    }
+
+    private fun hideAllPages(transaction: FragmentTransaction) {
+        fm.fragments.forEach { transaction.hide(it) }
     }
 
     private fun setSelectedPage(@FragmentType page: Int) {
