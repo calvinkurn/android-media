@@ -44,7 +44,7 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     }
 }
 
-internal fun ImageView.glideClear(context: Context) {
+internal fun ImageView.glideClear() {
     this.clearImage()
 }
 
