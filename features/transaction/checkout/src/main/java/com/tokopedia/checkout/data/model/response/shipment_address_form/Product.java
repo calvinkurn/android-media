@@ -296,7 +296,7 @@ public class Product {
     }
 
     public FreeShipping getFreeShippingExtra() {
-        return freeShipping;
+        return freeShippingExtra;
     }
 
     public ProductTicker getProductTicker() {

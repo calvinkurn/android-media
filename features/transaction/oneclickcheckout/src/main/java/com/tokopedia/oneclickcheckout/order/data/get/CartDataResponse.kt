@@ -20,7 +20,7 @@ data class CartDataResponse(
         @SerializedName("payment_profile")
         val paymentProfile: String = "",
         @SerializedName("purchase_protection_plan_data")
-        val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse,
+        val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse(),
         @SerializedName("toko_cabang")
         val tokoCabangInfo: TokoCabangInfo = TokoCabangInfo()
 )

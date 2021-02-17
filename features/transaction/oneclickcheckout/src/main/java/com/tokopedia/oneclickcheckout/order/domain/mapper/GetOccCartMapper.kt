@@ -32,7 +32,7 @@ class GetOccCartMapper @Inject constructor() {
             }
             shop = generateOrderShop(cart.shop).apply {
                 errors = cart.errors
-                isFulfillment = cart.warehouse.isFulfillment
+                isFulfillment = cart.warehouse.isFulfillment || true
                 if (isFulfillment) {
                     fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
                     cityName = cart.tokoCabangInfo.message
@@ -132,7 +132,8 @@ class GetOccCartMapper @Inject constructor() {
                     freeOngkirImg = product.freeShippingExtra.badgeUrl
                 }
                 else -> {
-                    isFreeOngkirExtra = product.freeShippingExtra.eligible
+//                    isFreeOngkirExtra = product.freeShippingExtra.eligible
+                    isFreeOngkirExtra = product.freeShipping.eligible
                     isFreeOngkir = product.freeShipping.eligible
                     freeOngkirImg = product.freeShipping.badgeUrl
                 }
@@ -307,6 +308,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
+        var isEnable = revamp.isEnable
+        return OccRevampData(isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }
