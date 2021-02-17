@@ -1290,6 +1290,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             if (needToSetCategoryName) {
                 productCategoryLayout?.show()
+                if (productCategoryName.isBlank()) {
+                    productCategoryName = viewModel.productInputModel.detailInputModel.categoryName
+                }
                 productCategoryRecListView?.setToDisplayText(productCategoryName, requireContext())
             }
             // reset name selection status
