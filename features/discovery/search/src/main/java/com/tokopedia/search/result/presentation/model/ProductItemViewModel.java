@@ -7,12 +7,14 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.utils.text.currency.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
@@ -414,8 +416,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
+                "dimension58", hasLabelGroupFulfillment(),
                 "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
-                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
+                "dimension83", setFreeOngkirDataLayer(),
                 "dimension87", "search result",
                 "dimension88", "search - product",
                 "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
@@ -425,8 +428,34 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         );
     }
 
+    private String setFreeOngkirDataLayer() {
+        boolean isFreeOngkirActive = isFreeOngkirActive();
+
+        if (isFreeOngkirActive && hasLabelGroupFulfillment()) {
+            return "bebas ongkir extra";
+        }
+        else if (isFreeOngkirActive) {
+            return "bebas ongkir";
+        }
+        else {
+            return "none / other";
+        }
+    }
+
     private boolean isFreeOngkirActive() {
         return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
+    }
+
+    private boolean hasLabelGroupFulfillment() {
+        Iterator<LabelGroupViewModel> labelGroupListIterator = labelGroupList.iterator();
+        while(labelGroupListIterator.hasNext()) {
+            LabelGroupViewModel data = labelGroupListIterator.next();
+
+            if (data.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT)) return true;
+
+            labelGroupListIterator.remove();
+        }
+        return false;
     }
 
     private String getActionFieldString() {
