@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16">
 
         <ImageView
             android:id="@+id/img_location_state"
@@ -77,8 +78,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/receiver_name"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,8 +92,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/receiver_number"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,8 +106,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/address_detail"
             android:textColor="@color/Unify_N700_96"
@@ -126,8 +121,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tokopedia_note"
             android:visibility="gone"
@@ -167,19 +160,20 @@
             android:paddingBottom="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_8"/>
+            android:layout_marginBottom="@dimen/dp_16"/>
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_secondary"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_10"
+            app:layout_constraintStart_toEndOf="@id/action_edit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/action_edit"
             app:layout_constraintBottom_toBottomOf="@id/action_edit"
-            app:srcCompat="@drawable/ic_more_horiz"
-            app:unifyImageButtonVariant="ghost"/>
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

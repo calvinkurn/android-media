@@ -1,22 +1,28 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
+
 
 class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterListener) : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
@@ -56,8 +62,9 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
         val editButton = itemView.findViewById<UnifyButton>(R.id.action_edit)
-        val lainnyaButton = itemView.findViewById<UnifyImageButton>(R.id.btn_secondary)
+        val lainnyaButton = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
+        val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: RecipientAddressModel, isSelected: Boolean) {
@@ -80,6 +87,9 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     tokopedia_note.gone()
                     address_detail.text = data.street + ", " + data.postalCode
                 }
+                val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
+                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
+                lainnyaButton.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
                 setListener(data, isSelected)
 
             }
@@ -88,8 +98,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         private fun setPrimary(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.addressStatus == 2) {
                 itemView.lbl_main_address.visible()
+                itemView.btn_secondary.gone()
             } else {
                 itemView.lbl_main_address.gone()
+                itemView.btn_secondary.visible()
             }
         }
 
