@@ -47,6 +47,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -115,6 +116,12 @@ import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
@@ -163,7 +170,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
-        PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener {
+        PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener,
+        ShareCallback {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -184,6 +192,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterRefresh: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
+
+    private lateinit var shareData: LinkerData
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -1247,16 +1257,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                               description: String, url: String,
                               imageUrl: String) {
         activity?.let {
-
-            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
-                override fun onShareItemClicked(packageName: String) {
-
-                }
-            },"", imageUrl, url, description, title)
-        }.also {
-            fragmentManager?.run {
-                it?.show(this)
-            }
+            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+                    .setName(title)
+                    .setDescription(description)
+                    .setImgUri(imageUrl)
+                    .setUri(url)
+                    .setType(LinkerData.FEED_TYPE)
+                    .build()
+            val linkerShareData = DataMapper().getLinkerShareData(shareData)
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
+                    0,
+                    linkerShareData,
+                    this
+            ))
         }
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
@@ -2089,5 +2102,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowClick(positionInFeed: Int, shopId: String) {
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
+    }
+
+    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+        ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+            override fun onShareItemClicked(packageName: String) {
+
+            }
+        }, "", shareData.imgUri, linkerShareData?.url?:"", shareData.description, shareData.name).also {
+            fragmentManager?.run {
+                it.show(this)
+            }
+        }
+    }
+
+    override fun onError(linkerError: LinkerError?) {
+
     }
 }
