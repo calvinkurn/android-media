@@ -9,6 +9,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
+const val ERROR_MSG = "Oops, ada sedikit gangguan. Coba daftar lagi, ya."
+const val ERROR_NULL_RESPONSE = "Response is null"
+
 class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher,
                                              val catalogMVCListUseCase: CatalogMVCListUseCase,
                                              val membershipRegisterUseCase: MembershipRegisterUseCase,
@@ -32,7 +35,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
                 membershipCardID = response.data?.followWidget?.membershipCardID
                 listLiveData.postValue(LiveDataResult.success(response))
             } else {
-                listLiveData.postValue(LiveDataResult.error(Exception("Response is null")))
+                listLiveData.postValue(LiveDataResult.error(Exception(ERROR_NULL_RESPONSE)))
             }
         }, onError = {
             listLiveData.postValue(LiveDataResult.error(it))
@@ -49,12 +52,10 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
                 membershipLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
                 getListData(shopId)
             } else {
-                //todo Rahul wait for final message from PO
-                membershipLiveData.postValue(LiveDataResult.error(Exception("Oops, ada sedikit gangguan. Coba daftar lagi, ya.")))
+                membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
             }
         }, onError = {
-            //todo Rahul wait for final message from PO
-            membershipLiveData.postValue(LiveDataResult.error(Exception("Oops, ada sedikit gangguan. Coba daftar lagi, ya.")))
+            membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
         })
     }
 
@@ -67,10 +68,10 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
                 followLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
                 getListData(shopId)
             } else {
-                followLiveData.postValue(LiveDataResult.error(Exception("Oops, ada sedikit gangguan. Coba daftar lagi, ya.")))
+                followLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
             }
         }, onError = {
-            followLiveData.postValue(LiveDataResult.error(Exception("Oops, ada sedikit gangguan. Coba daftar lagi, ya.")))
+            followLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
         })
     }
 }
