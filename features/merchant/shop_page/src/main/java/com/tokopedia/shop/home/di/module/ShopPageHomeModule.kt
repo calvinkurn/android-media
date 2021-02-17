@@ -138,6 +138,7 @@ class ShopPageHomeModule {
                           position
                           type
                           title
+                          url
                         }
                       }
                     }
@@ -257,6 +258,7 @@ class ShopPageHomeModule {
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData
