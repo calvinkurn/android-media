@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -63,6 +64,9 @@ class FeedTopAdsVerificationTest {
         when (val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)) {
             is TopadsShopViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.topads.sdk.R.id.recommendationRv, 0)
+            }
+            is TopAdsHeadlineViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.topads.sdk.R.id.list, 0)
             }
         }
     }
