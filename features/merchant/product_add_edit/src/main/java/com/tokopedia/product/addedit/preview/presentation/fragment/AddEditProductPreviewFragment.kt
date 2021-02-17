@@ -152,7 +152,7 @@ class AddEditProductPreviewFragment :
     private var districtId: Int = 0
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
-    private var isViewVisible = false
+    private var isFragmentVisible = false
 
     private var toolbar: Toolbar? = null
 
@@ -289,8 +289,8 @@ class AddEditProductPreviewFragment :
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
-        // view visible to check whether current fragment is visible or not
-        isViewVisible = true
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -510,7 +510,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isViewVisible) {
+        if (isFragmentVisible) {
             outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
         }
         super.onSaveInstanceState(outState)
@@ -518,7 +518,7 @@ class AddEditProductPreviewFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isViewVisible = false
+        isFragmentVisible = false
         removeObservers()
     }
 

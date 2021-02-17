@@ -76,7 +76,7 @@ class AddEditProductShipmentFragment:
     private var productInputModel: ProductInputModel? = null
     private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
-    private var isViewVisible = false
+    private var isFragmentVisible = false
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -130,8 +130,8 @@ class AddEditProductShipmentFragment:
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        // view visible to check whether current fragment is visible or not
-        isViewVisible = true
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
@@ -183,7 +183,7 @@ class AddEditProductShipmentFragment:
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isViewVisible) {
+        if (isFragmentVisible) {
             inputAllDataInProductInputModel()
             outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(productInputModel))
             outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, shipmentViewModel.isAddMode)
@@ -222,7 +222,7 @@ class AddEditProductShipmentFragment:
 
     override fun onDestroy() {
         super.onDestroy()
-        isViewVisible = false
+        isFragmentVisible = false
     }
 
     override fun startPerformanceMonitoring() {

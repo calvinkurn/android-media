@@ -94,7 +94,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-    private var isViewVisible = false
+    private var isFragmentVisible = false
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -219,8 +219,8 @@ class AddEditProductDescriptionFragment:
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        // view visible to check whether current fragment is visible or not
-        isViewVisible = true
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription?.textFieldInput?.apply {
@@ -310,7 +310,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (isViewVisible) {
+        if (isFragmentVisible) {
             inputAllDataInInputModel()
             outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
             outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
@@ -355,7 +355,7 @@ class AddEditProductDescriptionFragment:
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isViewVisible = false
+        isFragmentVisible = false
         removeObservers()
     }
 
