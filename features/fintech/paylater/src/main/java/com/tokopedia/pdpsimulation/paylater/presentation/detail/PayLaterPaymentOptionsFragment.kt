@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Companion.PAY_LATER_REGISTER_ACTION
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Companion.PAY_LATER_USAGE_ACTION
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
-import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PayLaterPaymentOptionsFragment : Fragment() {
 
+    private var isUsageType: Boolean = false
     private val responseData by lazy {
         arguments?.getParcelable<PayLaterItemProductData>(PAY_LATER_PARTNER_DATA)
     }
@@ -53,37 +55,72 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
-            PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
+            openActionBottomSheet()
         }
 
         btnSeeMore.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString(PayLaterFaqBottomSheet.FAQ_SEE_MORE_URL, responseData?.partnerFaqUrl)
-            bundle.putParcelableArrayList(PayLaterFaqBottomSheet.FAQ_DATA, responseData?.partnerFaqList)
-            PayLaterFaqBottomSheet.show(bundle, childFragmentManager)
+            openFaqBottomSheet()
+        }
+    }
+
+    private fun openActionBottomSheet() {
+        val bundle = Bundle()
+        bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, responseData)
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+            it.sendAnalytics(PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                    responseData?.partnerName ?: "",
+                    if (isUsageType) PAY_LATER_USAGE_ACTION else PAY_LATER_REGISTER_ACTION))
+
+            it.openBottomSheet(
+                    bundle, PayLaterActionStepsBottomSheet::class.java)
+        }
+    }
+
+    private fun openFaqBottomSheet() {
+        val bundle = Bundle()
+        bundle.putString(PayLaterFaqBottomSheet.FAQ_SEE_MORE_URL, responseData?.partnerFaqUrl)
+        bundle.putParcelableArrayList(PayLaterFaqBottomSheet.FAQ_DATA, responseData?.partnerFaqList)
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+            it.sendAnalytics(PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
+                    responseData?.partnerName ?: "",
+                    btnSeeMore.text.toString()
+            ))
+            it.openBottomSheet(
+                    bundle, PayLaterFaqBottomSheet::class.java)
         }
     }
 
     private fun setData() {
-        tvTitlePaymentPartner.text = responseData?.partnerName
-        responseData?.subHeader?.let {
-            if (it.isNotEmpty()) {
-                tvSubTitlePaylaterPartner.text = it
-                tvSubTitlePaylaterPartner.visible()
+        responseData?.let { data ->
+            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, applicationStatusData)) {
+                is UsageStepsPartnerType -> {
+                    isUsageType = true
+                    btnHowToUse.text = context?.getString(R.string.pay_later_see_how_to_use)
+                }
+                else -> {
+                    isUsageType = false
+                    btnHowToUse.text = context?.getString(R.string.pay_later_see_how_to_register)
+                }
             }
+
+            tvTitlePaymentPartner.text = data.partnerName
+            data.subHeader?.let {
+                if (it.isNotEmpty()) {
+                    tvSubTitlePaylaterPartner.text = it
+                    tvSubTitlePaylaterPartner.visible()
+                }
+            }
+            applicationStatusData?.let {
+                setLabelData(it)
+            }
+            setPartnerImage(data)
         }
-        applicationStatusData?.let {
-            setLabelData(it)
-        }
-        setPartnerImage()
     }
 
-    private fun setPartnerImage() {
+    private fun setPartnerImage(data: PayLaterItemProductData) {
         val imageUrl: String? = if (context.isDarkMode())
-            responseData?.partnerImgDarkUrl
-        else responseData?.partnerImgLightUrl
+            data.partnerImgDarkUrl
+        else data.partnerImgLightUrl
 
         if (!imageUrl.isNullOrEmpty())
             ivPaylaterPartner.loadImage(imageUrl)

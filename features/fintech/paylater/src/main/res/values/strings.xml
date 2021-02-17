@@ -45,8 +45,9 @@
     <!-- PayLater Products Detail Page -->
     <string name="pay_later_title_detail">Ketahui lebih banyak soal PayLater</string>
     <string name="kredivo">Kredivo</string>
-    <string name="pay_later_see_how_to_use">Lihat Cara Pakai</string>
-    <string name="pay_later_see_more">Lihat Lebih Lengkap</string>
+    <string name="pay_later_see_how_to_register">Lihat Cara Daftar</string>
+    <string name="pay_later_see_how_to_use">Lihat Cara Gunakan</string>
+    <string name="pay_later_see_more">Pelajari Lebih Lanjut</string>
     <string name="pay_later_faq_see_more">Lihat Lebih Banyak</string>
     <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
 

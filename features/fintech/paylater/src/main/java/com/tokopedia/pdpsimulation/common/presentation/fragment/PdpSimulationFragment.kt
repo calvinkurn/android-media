@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.*
@@ -58,7 +59,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
-        BottomSheetNavigator(childFragmentManager, pdpSimulationAnalytics)
+        BottomSheetNavigator(childFragmentManager)
     }
 
     private val productPrice: Int by lazy {
@@ -134,7 +135,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             onRegisterWidgetClicked()
         }
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
-            pdpSimulationAnalytics.get().sendTabChangeEvent(PayLater, tab.getCustomText())
+            sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(paymentMode, tab.getCustomText()))
             handleRegisterWidgetVisibility(tab.position)
         }
         payLaterViewPager.onPageSelected { position ->
@@ -191,6 +192,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun onRegisterWidgetClicked() {
         if (payLaterDataList.isNotEmpty()) {
+            pdpSimulationAnalytics.get().sendPdpSimulationEvent(PdpSimulationEvent.PayLater.RegisterWidgetClickEvent("click"))
             openBottomSheet(populatePayLaterBundle(), PayLaterSignupBottomSheet::class.java)
         }
     }
@@ -223,6 +225,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
         bottomSheetNavigator.showBottomSheet(modelClass, bundle, this)
+    }
+
+    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
+        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
     }
 
     override fun switchPaymentMode() {

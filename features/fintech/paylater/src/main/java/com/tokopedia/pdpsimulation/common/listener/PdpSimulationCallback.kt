@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.common.listener
 
 import android.os.Bundle
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 
 interface PdpSimulationCallback {
     fun showNoNetworkView()
@@ -9,4 +10,5 @@ interface PdpSimulationCallback {
     fun showRegisterWidget()
     fun onRegisterWidgetClicked()
     fun getSimulationProductInfo()
+    fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent)
 }

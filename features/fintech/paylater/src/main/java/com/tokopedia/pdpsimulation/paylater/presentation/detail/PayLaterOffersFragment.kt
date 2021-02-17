@@ -37,7 +37,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private val pagerAdapter: PayLaterOfferPagerAdapter by lazy {
         PayLaterOfferPagerAdapter(childFragmentManager, 0)
     }
-    private var pdpSimulationCallback: PdpSimulationCallback? = null
+    var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)

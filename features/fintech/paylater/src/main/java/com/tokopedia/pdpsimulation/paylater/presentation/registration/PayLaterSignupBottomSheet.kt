@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.constants.PAYLATER_PRODUCT
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
@@ -101,6 +101,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun initAdapter() {
         baseList.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent(payLaterData.partnerName ?: ""))
             openBottomSheet(payLaterData, payLaterApplicationStatus)
             dismiss()
         }
@@ -137,7 +138,6 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     ) {
         val bundle = Bundle()
         productItemData.let { data ->
-            bundle.putString(PAYLATER_PRODUCT, productItemData.partnerName)
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
                 is ProcessingApplicationPartnerType ->
                     openVerificationBottomSheet(bundle, partnerApplicationDetail)
