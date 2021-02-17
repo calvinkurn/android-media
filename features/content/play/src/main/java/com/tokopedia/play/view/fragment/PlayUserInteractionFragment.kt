@@ -694,7 +694,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeOnboarding() {
-        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
             if (!orientation.isLandscape) onboardingView.showAnimated()
         })
     }

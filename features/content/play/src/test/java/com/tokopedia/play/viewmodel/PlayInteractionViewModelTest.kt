@@ -12,7 +12,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +41,6 @@ class PlayInteractionViewModelTest {
     private val mockPostLikeUseCase: PostLikeUseCase = mockk(relaxed = true)
     private val mockPostFollowPartnerUseCase: PostFollowPartnerUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockPlayPreference: PlayPreference = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val likeModelBuilder = PlayLikeModelBuilder()
@@ -56,8 +54,7 @@ class PlayInteractionViewModelTest {
                 mockPostLikeUseCase,
                 mockPostFollowPartnerUseCase,
                 userSession,
-                dispatchers,
-                mockPlayPreference
+                dispatchers
         )
     }
 

@@ -2,7 +2,6 @@ package com.tokopedia.play.robot.play.result
 
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.robot.RobotResult
-import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 
 /**
@@ -50,6 +49,9 @@ class PlayViewModelRobotResult(
 
     val newChatResult: PlayNewChatResult
         get() = PlayNewChatResult { viewModel.observableNewChat.getOrAwaitValue() }
+
+    val onboardingResult: PlayOnboardingResult
+        get() = PlayOnboardingResult { viewModel.observableOnboarding.getOrAwaitValue() }
 
     /**
      * Field
