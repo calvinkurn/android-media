@@ -2,7 +2,6 @@ package com.tokopedia.media.loader.utils
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.core.graphics.BitmapCompat
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -10,12 +9,12 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
-import com.tokopedia.media.common.data.MediaSettingPreferences
-import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
+import com.tokopedia.media.loader.BuildConfig
 import com.tokopedia.media.loader.common.MediaListener
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.tracker.PerformanceTracker
+import java.lang.Exception
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource as dataSource
 
 object MediaListenerBuilder {
@@ -56,12 +55,15 @@ object MediaListenerBuilder {
             )
 
             // TODO: Remove
-            if (properties.data is String) {
-                val urlBuilder = Loader.urlBuilder(properties.data.toString())
-                val qualitySettings = Loader.settings.getQualitySetting(Loader.settings.qualitySettings())
-                val ect = urlBuilder.toUri()?.getQueryParameter("ect")?: "4g"
+            if (BuildConfig.DEBUG && properties.data is String) {
+                try {
+                    val urlBuilder = Loader.urlBuilder(properties.data.toString())
+                    val qualitySettings = Loader.settings.getQualitySetting(Loader.settings.qualitySettings())
+                    val ect = urlBuilder.toUri()?.getQueryParameter("ect")?: "4g"
 
-                Log.i("M3diaL04der", "$pageName, ${properties.data.toString()}, $qualitySettings, $ect, $loadTime, $fileSize")
+                    println("MediaLoader => $pageName, ${properties.data.toString()}, $qualitySettings, $ect, $loadTime, $fileSize")
+                    println("MediaLoader => properties: $properties")
+                } catch (e: Exception) {}
             }
 
             listener?.onLoaded(resource, dataSource(dataSource))
