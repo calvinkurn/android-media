@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.view.fragment.edit.SimpleEditProductBottom
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.*
+import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -65,6 +66,15 @@ abstract class PlayBroadcastSetupFragmentModule {
     @IntoMap
     @FragmentKey(PlayGalleryImagePickerBottomSheet::class)
     abstract fun getGalleryImagePickerBottomSheet(fragment: PlayGalleryImagePickerBottomSheet): Fragment
+
+
+    /**
+     * Title & Tags
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayTitleAndTagsSetupFragment::class)
+    abstract fun getPlayTitleAndTagsSetupFragment(fragment: PlayTitleAndTagsSetupFragment): Fragment
 
     /**
      * Edit Container

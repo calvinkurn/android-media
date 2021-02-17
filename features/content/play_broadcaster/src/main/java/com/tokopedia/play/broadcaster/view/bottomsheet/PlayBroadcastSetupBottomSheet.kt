@@ -29,6 +29,7 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFr
 import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.extension.cleanBackstack
 import com.tokopedia.play_common.util.extension.compatTransitionName
@@ -44,7 +45,9 @@ class PlayBroadcastSetupBottomSheet(
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
         ProductSetupListener,
-        PlayCoverSetupFragment.Listener {
+        PlayCoverSetupFragment.Listener,
+        PlayTitleAndTagsSetupFragment.Listener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -139,6 +142,14 @@ class PlayBroadcastSetupBottomSheet(
     }
 
     override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        navigateToFragment(
+                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
+        )
+
+        return null
+    }
+
+    override suspend fun onTitleAndTagsSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
         val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
         return if (error == null) {
             dismiss()
@@ -154,6 +165,7 @@ class PlayBroadcastSetupBottomSheet(
             is PlayEtalasePickerFragment -> childFragment.setListener(this)
             is PlayEtalaseDetailFragment -> childFragment.setListener(this)
             is PlayCoverSetupFragment -> childFragment.setListener(this)
+            is PlayTitleAndTagsSetupFragment -> childFragment.setListener(this)
         }
     }
 
