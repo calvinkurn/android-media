@@ -5,11 +5,11 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverCropEditBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.edit.ProductSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.SimpleEditProductBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

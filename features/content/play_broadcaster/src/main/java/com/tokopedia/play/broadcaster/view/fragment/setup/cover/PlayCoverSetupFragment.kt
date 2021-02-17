@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment
+package com.tokopedia.play.broadcaster.view.fragment.setup.cover
 
 import android.Manifest
 import android.content.Intent

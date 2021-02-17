@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment
+package com.tokopedia.play.broadcaster.view.fragment.setup.etalase
 
 import android.os.Bundle
 import android.view.LayoutInflater

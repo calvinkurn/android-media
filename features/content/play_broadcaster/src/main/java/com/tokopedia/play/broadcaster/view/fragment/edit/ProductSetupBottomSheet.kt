@@ -27,8 +27,8 @@ import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
