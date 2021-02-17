@@ -5,15 +5,15 @@
     android:id="@+id/rl_item_duration_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground">
 
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
+        android:background="@color/Unify_N0"
         android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
         <FrameLayout
@@ -25,8 +25,8 @@
                 android:id="@+id/layout_mvc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_marginBottom="@dimen/dp_4">
 
                 <ImageView
                     android:id="@+id/img_mvc"
@@ -43,12 +43,12 @@
                     android:layout_toEndOf="@id/img_mvc"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:textColor="@color/Unify_G500"
-                    app:layout_constraintBottom_toBottomOf="@id/img_mvc"
-                    app:layout_constraintStart_toEndOf="@id/img_mvc"
-                    app:layout_constraintTop_toTopOf="@id/img_mvc"
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
-                    tools:text="@string/tv_mvc_text" />
+                    tools:text="@string/tv_mvc_text"
+                    app:layout_constraintStart_toEndOf="@id/img_mvc"
+                    app:layout_constraintTop_toTopOf="@id/img_mvc"
+                    app:layout_constraintBottom_toBottomOf="@id/img_mvc"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -88,12 +88,12 @@
             android:id="@+id/lbl_cod_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_duration_or_price"
-            android:layout_alignBottom="@id/tv_duration_or_price"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_toEndOf="@+id/tv_duration_or_price"
             android:layout_toRightOf="@+id/tv_duration_or_price"
+            android:layout_alignBottom="@id/tv_duration_or_price"
+            android:layout_alignTop="@id/tv_duration_or_price"
             android:text="@string/tersedia_bayar_di_tempat"
             android:visibility="gone"
             app:labelType="general_light_green" />
@@ -103,10 +103,10 @@
             android:id="@+id/lbl_cod_available_eta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_duration_or_price"
             android:layout_marginTop="@dimen/dp_4"
-            android:text="@string/tersedia_bayar_di_tempat"
+            android:layout_below="@+id/tv_duration_or_price"
             android:visibility="gone"
+            android:text="@string/tersedia_bayar_di_tempat"
             app:labelType="general_light_green" />
 
         <!--price in old view, duration in ETA-->
@@ -124,8 +124,8 @@
             android:id="@+id/lbl_ontime_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_price_or_duration"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_below="@+id/tv_price_or_duration"
             android:text="@string/jaminan_tepat_waktu"
             android:visibility="gone"
             app:labelType="general_light_green" />
@@ -187,8 +187,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tv_duration_or_price"
             android:layout_alignParentRight="true"
-            android:contentDescription="@string/content_img_check"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check"
+            android:contentDescription="@string/content_img_check"/>
 
     </RelativeLayout>
 

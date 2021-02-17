@@ -306,7 +306,6 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
-        // TODO: 16/02/21 FOR HIT RATES & ANALYTICS
         cartItemModel.setFreeShippingExtra(product.isFreeShippingExtra());
         cartItemModel.setFreeShipping(product.isFreeShipping());
         cartItemModel.setShowTicker(product.isShowTicker());

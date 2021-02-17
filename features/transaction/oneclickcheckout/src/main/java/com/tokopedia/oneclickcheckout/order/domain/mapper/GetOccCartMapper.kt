@@ -32,9 +32,9 @@ class GetOccCartMapper @Inject constructor() {
             }
             shop = generateOrderShop(cart.shop).apply {
                 errors = cart.errors
-                isFulfillment = cart.warehouse.isFulfillment || true
+                isFulfillment = cart.warehouse.isFulfillment
+                fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
                 if (isFulfillment) {
-                    fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
                     cityName = cart.tokoCabangInfo.message
                 }
             }
@@ -124,19 +124,12 @@ class GetOccCartMapper @Inject constructor() {
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
-            // TODO: 16/02/21 FOR HIT RATES
-            when {
-                product.freeShippingExtra.eligible -> {
-                    isFreeOngkirExtra = true
-                    isFreeOngkir = false
-                    freeOngkirImg = product.freeShippingExtra.badgeUrl
-                }
-                else -> {
-//                    isFreeOngkirExtra = product.freeShippingExtra.eligible
-                    isFreeOngkirExtra = product.freeShipping.eligible
-                    isFreeOngkir = product.freeShipping.eligible
-                    freeOngkirImg = product.freeShipping.badgeUrl
-                }
+            isFreeOngkirExtra = product.freeShippingExtra.eligible
+            isFreeOngkir = product.freeShipping.eligible
+            freeOngkirImg = when {
+                isFreeOngkirExtra -> product.freeShippingExtra.badgeUrl
+                isFreeOngkir -> product.freeShipping.badgeUrl
+                else -> ""
             }
             wholesalePrice = mapWholesalePrice(product.wholesalePrice)
             notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) {

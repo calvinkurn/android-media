@@ -332,20 +332,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else ""
             it.isCheckboxState = cartDetail.isCheckboxState
             it.priceOriginal = cartDetail.product.productOriginalPrice
-            when {
-                cartDetail.product.freeShippingExtra.eligible && cartDetail.product.freeShippingExtra.badgeUrl.isNotBlank() -> {
-                    it.isFreeShippingExtra = true
-                    it.isFreeShipping = false
-                }
-                cartDetail.product.freeShipping.eligible && cartDetail.product.freeShipping.badgeUrl.isNotBlank() -> {
-                    it.isFreeShippingExtra = false
-                    it.isFreeShipping = true
-                }
-                else -> {
-                    it.isFreeShippingExtra = false
-                    it.isFreeShipping = false
-                }
-            }
+            it.isFreeShippingExtra = cartDetail.product.freeShippingExtra.eligible
+            it.isFreeShipping = cartDetail.product.freeShipping.eligible
             it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
             it.productInformation = cartDetail.product.productInformation
             it.warningMessage = cartDetail.product.productWarningMessage

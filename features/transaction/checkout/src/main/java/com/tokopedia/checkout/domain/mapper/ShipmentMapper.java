@@ -613,17 +613,11 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setTickerMessage(product.getProductTicker().getMessage());
                                     }
 
-                                    if (product.getFreeShippingExtra() != null && product.getFreeShippingExtra().getEligible() &&
-                                            !UtilsKt.isNullOrEmpty(product.getFreeShippingExtra().getBadgeUrl())) {
+                                    if (product.getFreeShippingExtra() != null && product.getFreeShippingExtra().getEligible()) {
                                         productResult.setFreeShippingExtra(true);
-                                        productResult.setFreeShipping(false);
-                                    } else if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
-                                            !UtilsKt.isNullOrEmpty(product.getFreeShipping().getBadgeUrl())) {
-                                        productResult.setFreeShippingExtra(false);
+                                    }
+                                    if (product.getFreeShipping() != null && product.getFreeShipping().getEligible()) {
                                         productResult.setFreeShipping(true);
-                                    } else {
-                                        productResult.setFreeShippingExtra(false);
-                                        productResult.setFreeShipping(false);
                                     }
 
                                     if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
