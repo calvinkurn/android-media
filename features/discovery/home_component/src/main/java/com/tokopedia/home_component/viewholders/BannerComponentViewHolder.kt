@@ -48,7 +48,7 @@ class BannerComponentViewHolder(itemView: View,
     private var channelModel: ChannelModel? = null
 
     //set to true if you want to activate auto-scroll
-    private var isAutoScroll = false
+    private var isAutoScroll = true
     private var interval = 5000
     private var currentPagePosition = 0
 
