@@ -46,7 +46,13 @@ class ChooseAddressWidget: ConstraintLayout {
     }
 
     private fun initChooseAddressFlow() {
+        if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
+            val data = chooseAddressPref?.getLocalCacheData()
+            textChosenAddress?.text = data?.label
 
+        } else {
+            //hit get local choose address
+        }
     }
 
     fun setBindFragmentManager(fragment: FragmentManager) {
@@ -55,18 +61,18 @@ class ChooseAddressWidget: ConstraintLayout {
         }
     }
 
- /*   fun getLocalCacheData() {
+/*    fun getLocalCacheData() {
         if (chooseAddressPref?.checkLocalCache()?.isNotEmpty() == true) {
             val data = chooseAddressPref?.getLocalCacheData()
             chooseAddressWidgetListener?.onGetChosenAddress(data)
         }
-    }*/
+    }
 
     fun checkLocalCache() {
         if (chooseAddressPref?.checkLocalCache()?.isNotEmpty() == true) {
             chooseAddressWidgetListener?.onCheckLocalCache(true)
         } else chooseAddressWidgetListener?.onCheckLocalCache(false)
-    }
+    }*/
 
 
 }
