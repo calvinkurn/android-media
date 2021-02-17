@@ -16,5 +16,5 @@ object ReviewInboxConstants {
     const val HISTORY_TAB = "history"
     const val SELLER_TAB = "seller"
     const val PARAM_SOURCE = "pageSource"
-    const val DEFAULT_SOURCE = "applink"
+    const val DEFAULT_SOURCE = "app link"
 }
