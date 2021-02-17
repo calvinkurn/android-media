@@ -21,6 +21,15 @@ class UpdateProductStockWarehouseUseCase @Inject constructor(graphqlRepository: 
 
         @JvmStatic
         fun createRequestParams(shopId: String,
+                                productId: String,
+                                warehouseId: String,
+                                stock: String): RequestParams {
+            val products = listOf(ProductStock(productId, stock))
+            return createRequestParams(shopId, warehouseId, products)
+        }
+
+        @JvmStatic
+        fun createRequestParams(shopId: String,
                                 warehouseId: String,
                                 products: List<ProductStock>): RequestParams {
             return RequestParams.create().apply {
