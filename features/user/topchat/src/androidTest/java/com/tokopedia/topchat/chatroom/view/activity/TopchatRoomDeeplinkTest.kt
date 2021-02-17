@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -9,9 +8,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,7 +51,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, msgId)
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, msgId)
     }
 
@@ -65,7 +64,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exShopId)
     }
 
@@ -80,7 +79,7 @@ class TopchatRoomDeeplinkTest {
         )
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exShopId)
     }
 
@@ -95,7 +94,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exShopId)
         verifyQueryParameter(intent, keyCustomMsg, customMsg)
     }
@@ -112,7 +111,7 @@ class TopchatRoomDeeplinkTest {
         )
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exShopId)
         verifyQueryParameter(intent, "customMessage", customMsg)
     }
@@ -126,7 +125,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exUserId)
     }
 
@@ -141,7 +140,7 @@ class TopchatRoomDeeplinkTest {
         )
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, userId)
     }
 
@@ -156,7 +155,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exUserId)
         verifyQueryParameter(intent, keyCustomMsg, customMsg)
     }
@@ -173,7 +172,7 @@ class TopchatRoomDeeplinkTest {
         )
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exUserId)
         verifyQueryParameter(intent, "customMessage", customMsg)
     }
@@ -187,7 +186,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exMessageId)
     }
 
@@ -202,43 +201,8 @@ class TopchatRoomDeeplinkTest {
         )
 
         // Then
-        verifyDeeplink(intent, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, msgId)
-    }
-
-    private fun verifyDeeplink(
-            intent: Intent,
-            applink: String,
-            canonicalName: String
-    ) {
-        val resolvedActivities = context.packageManager
-                .queryIntentActivities(intent, PackageManager.MATCH_ALL)
-
-        val resolverActivityMissing = resolvedActivities.none {
-            it.activityInfo.packageName == context.packageName &&
-                    it.activityInfo.name == topchat
-        }
-
-        if (resolverActivityMissing) {
-            Assert.fail("$applink is not resolved for $canonicalName")
-        }
-    }
-
-    private fun verifyDeeplink(
-            intent: Intent,
-            canonicalName: String
-    ) {
-        val resolvedActivities = context.packageManager
-                .queryIntentActivities(intent, PackageManager.MATCH_ALL)
-
-        val resolverActivityMissing = resolvedActivities.none {
-            it.activityInfo.packageName == context.packageName &&
-                    it.activityInfo.name == topchat
-        }
-
-        if (resolverActivityMissing) {
-            Assert.fail("intent is not resolved for $canonicalName")
-        }
     }
 
     private fun verifyLastPathSegment(
