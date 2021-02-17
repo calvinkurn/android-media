@@ -1826,16 +1826,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     //Success upload image with service
     private fun onSuccessUploadImageWS(intent: Intent) {
-        val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-        removeDummy(image)
+        if(messageId == getResultMessageId(intent)) {
+            val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
+            removeDummy(image)
+        }
     }
 
     //Error upload image with service
     private fun onErrorUploadImageWS(intent: Intent) {
-        val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
-        val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-        showToasterError(errorMessage)
-        removeDummy(image)
+        if(messageId == getResultMessageId(intent)) {
+            val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
+            val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
+            showToasterError(errorMessage)
+            removeDummy(image)
+        }
+    }
+
+    private fun getResultMessageId(intent: Intent): String {
+        return intent.getStringExtra(UploadImageChatService.MESSAGE_ID)?: ""
     }
 
     private fun unregisterUploadImageReceiver() {

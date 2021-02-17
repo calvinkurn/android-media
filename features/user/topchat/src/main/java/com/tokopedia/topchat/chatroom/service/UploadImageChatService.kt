@@ -9,6 +9,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
@@ -61,16 +63,22 @@ class UploadImageChatService: JobIntentService() {
         if (notificationManager == null) {
             notificationManager = object: UploadImageNotificationManager(this@UploadImageChatService) {
                 override fun getSuccessIntent(): PendingIntent {
-                    val intent = Intent()
+                    val intent = createChatRoomIntent()
                     return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, 0)
                 }
 
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
-                    val intent = Intent()
+                    val intent = createChatRoomIntent()
                     return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, 0)
                 }
             }
         }
+    }
+
+    private fun createChatRoomIntent(): Intent {
+        val intent = RouteManager.getIntent(this, ApplinkConst.TOPCHAT, messageId)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        return intent
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -119,6 +127,7 @@ class UploadImageChatService: JobIntentService() {
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
 
         val bundle = Bundle()
+        bundle.putString(MESSAGE_ID, messageId)
         bundle.putSerializable(IMAGE, image)
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
 
@@ -130,6 +139,7 @@ class UploadImageChatService: JobIntentService() {
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
 
         val bundle = Bundle()
+        bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(ERROR_MESSAGE, ErrorHandler.getErrorMessage(this, throwable))
         bundle.putSerializable(IMAGE, image)
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
