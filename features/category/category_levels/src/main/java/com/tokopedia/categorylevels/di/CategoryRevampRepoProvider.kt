@@ -12,6 +12,7 @@ import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -43,5 +44,9 @@ class CategoryRevampRepoProvider(val departmentName: String, val departmentId: S
 
     override fun provideEmptyStateRepository(): EmptyStateRepository {
         return CategoryEmptyStateRepository()
+    }
+
+    override fun provideFilterRepository(): FilterRepository {
+        return DaggerCategoryRevampComponent.builder().build().getCategoryFullFilterRepository()
     }
 }
