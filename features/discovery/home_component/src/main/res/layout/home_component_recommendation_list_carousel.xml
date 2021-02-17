@@ -90,8 +90,8 @@
             android:id="@+id/buy_again_close_image_view"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/home_component_margin_default"
+            android:layout_marginRight="@dimen/home_component_margin_default"
             app:srcCompat="@drawable/recommendation_list_carousel_ic_close_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
