@@ -16,12 +16,6 @@ class GtmRepo(val dao: GtmLogDao) {
     private var hasNext = true
     private var q = ""
 
-    suspend fun getLogs(@AnalyticsSource analyticsSource: String = AnalyticsSource.ALL): List<GtmLogDB> {
-        return withContext(Dispatchers.IO) {
-            dao.getAll(analyticsSource)
-        }
-    }
-
     suspend fun search(query: String): List<GtmLogDB> {
         searchIndex = 0
         hasNext = true
@@ -34,6 +28,12 @@ class GtmRepo(val dao: GtmLogDao) {
         if (!hasNext) return inMemoryCache
         searchIndex += PER_PAGE
         return queryAndSave()
+    }
+
+    suspend fun getLogs(@AnalyticsSource analyticsSource: String = AnalyticsSource.ALL): List<GtmLogDB> {
+        return withContext(Dispatchers.IO) {
+            dao.getAll(analyticsSource)
+        }
     }
 
     private suspend fun queryAndSave(): List<GtmLogDB> = withContext(Dispatchers.IO) {
