@@ -260,6 +260,7 @@ open class HomeRevampViewModel @Inject constructor(
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
+        _isRequestNetworkLiveData.value = Event(true)
         initFlow()
     }
 
@@ -883,18 +884,15 @@ open class HomeRevampViewModel @Inject constructor(
 // ===========================================================================================
 
     private fun initFlow() {
-        _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
                     var homeData = takeHomeTicker(homeDataModel)
                     if (homeData?.isProcessingDynamicChannle == false) {
                         homeData = evaluateAvailableComponent(homeData)
-                    } else {
-                        _isRequestNetworkLiveData.postValue(Event(false))
                     }
-
                     homeData?.let {
                         if (it.list.isEmpty()) {
                             Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
