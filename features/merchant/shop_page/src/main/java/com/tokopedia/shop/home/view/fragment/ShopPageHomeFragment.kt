@@ -249,7 +249,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         override val coroutineContext: CoroutineContext
             get() = viewJob + dispatcher.main
     }
-    private var isLoadInitialData = false
+    private var isLoadInitialData = true
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData : ShopProduct.GetShopProduct? = null
 
@@ -338,8 +338,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
-        isLoadInitialData = true
-        loadInitialData()
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -378,6 +376,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun loadInitialDataAfterOnViewCreated() {
         if (isLoadInitialData) {
             loadInitialData()
+            isLoadInitialData = false
         }
     }
 
@@ -386,7 +385,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
-        loadInitialData()
     }
 
     override fun onPause() {
@@ -435,7 +433,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 initialProductListData
         )
-        isLoadInitialData = false
     }
 
     private fun getIntentData() {
