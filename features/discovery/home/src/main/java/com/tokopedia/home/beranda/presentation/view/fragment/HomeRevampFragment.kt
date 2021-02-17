@@ -16,6 +16,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -96,6 +97,8 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
+import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
@@ -240,6 +243,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
         private const val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
 
+        private const val DELAY_TOASTER_RESET_PASSWORD = 5000
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
             val fragment = HomeRevampFragment()
@@ -279,7 +284,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
-    private lateinit var stickyLoginView: StickyLoginView
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -287,6 +291,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var backgroundViewImage: ImageView
+    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
@@ -308,7 +313,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var positionSticky: IntArray? = IntArray(2)
     private var isLightThemeStatusBar = true
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
@@ -771,13 +775,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     AbTestPlatform.NAVIGATION_VARIANT_REVAMP
                 } else {
                     AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
+                }
+        )
+
+        if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
 
     private fun initStickyLogin() {
-        stickyLoginView.page = StickyLoginConstant.Page.HOME
-        stickyLoginView.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView.setStickyAction(object : StickyLoginAction {
+        stickyLoginView?.page = StickyLoginConstant.Page.HOME
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
@@ -792,20 +799,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
 
             override fun onViewChange(isShowing: Boolean) {
-                if (stickyLoginView.isShowing()) {
-                    positionSticky = stickyLoginView.getLocation()
-                }
                 floatingEggButtonFragment?.let {
                     updateEggBottomMargin(it)
                 }
             }
         })
-        getHomeViewModel().setRollanceNavigationType(
-                if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-                } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
+
+        stickyLoginView?.hide()
     }
 
     private fun scrollToRecommendList() {
@@ -1004,7 +1004,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
@@ -1016,7 +1016,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if(status == Result.Status.ERROR_GENERAL) {
                 showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else {
                 showLoading()
             }
@@ -1158,6 +1158,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeHomeNotif() {
+        context?.let {
+            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
+                if (!useNewInbox) {
+                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
+                }
+                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data, isProcessingAtf) && getPageLoadTimeCallback() != null) {
@@ -1286,7 +1298,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
-                DynamicIconComponentCallback(context, this)
+                DynamicIconComponentCallback(context, this),
+                Lego6AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1521,7 +1534,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1538,7 +1551,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1580,11 +1593,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         getHomeViewModel().showTicker()
+        observeHomeNotif()
+        pageLoadTimeCallback?.invalidate()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -2171,11 +2186,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    if (!useNewInbox) {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-                    }
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
-                    navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
+                    getHomeViewModel().setHomeNotif(
+                            notificationCount, inboxCount, cartCount
+                    )
                 }
         )
     }
@@ -2309,13 +2322,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView.height)
+        if (stickyLoginView?.isShowing() == true) {
+            stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
+            val stickyTopLocation = stickyLoginView?.getLocation()?.get(1) ?: 0
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
-                floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+            if (positionEgg[1] + eggHeight > stickyTopLocation) {
+                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
             }
         } else {
             params.setMargins(0, 0, 0, 0)
@@ -2550,5 +2564,44 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
             startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
+    }
+
+    private fun isSuccessReset(): Boolean {
+        context?.let {
+            val isResetPasswordSuccess = it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE).getBoolean(IS_SUCCESS_RESET, false)
+            if (isResetPasswordSuccess) {
+                saveStateReset(false)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun saveStateReset(state: Boolean) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE)
+            sharedPrefs.run {
+                edit().putBoolean(IS_SUCCESS_RESET, state).apply()
+            }
+        }
+    }
+
+    private fun showSuccessResetPasswordDialog() {
+        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+        Toaster.build(root,
+                getString(R.string.text_dialog_success_reset_password),
+                DELAY_TOASTER_RESET_PASSWORD,
+                TYPE_NORMAL,
+                getString(R.string.cta_dialog_success_reset_password),
+                View.OnClickListener {
+                    saveStateReset(false)
+                    onGoToLogin()
+                }
+        ).addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                saveStateReset(false)
+            }
+        }).show()
     }
 }
