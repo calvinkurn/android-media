@@ -135,12 +135,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                tvSeeDetailToggle.visibility = View.GONE
-            } else {
-                tvSeeDetailToggle.visibility = View.VISIBLE
-                cartDetailInfoAdapter.setAdditionalInfoItems(it)
-            }
+            cartDetailInfoAdapter.setAdditionalInfoItems(it)
+            tvSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
