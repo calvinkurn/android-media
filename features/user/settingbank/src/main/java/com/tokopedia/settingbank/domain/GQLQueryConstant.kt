@@ -35,15 +35,21 @@ const val GQL_GET_TERMS_CONDITION = """query RichieGetTNCBankAccount(${'$'}type 
                                         }"""
 
 const val GQL_CHECK_ACCOUNT_NUMBER ="""query CheckAccountNumber(${'$'}bankId : Int!,
-                                        ${'$'}accountNumber:String!){
+                                        ${'$'}accountNumber:String!,
+                                        ${'$'}editedAccountName:String,
+                                        ${'$'}action:String){
                                         CheckAccountNumber(bankID:${'$'}bankId,
-                                            accountNumber:${'$'}accountNumber){
+                                            accountNumber:${'$'}accountNumber,
+                                            editedAccountName:${'$'}editedAccountName,
+                                            action:${'$'}action){
                                                successCode,
                                                message,
                                                bankID,
                                                accountNumber,
                                                bankName,
-                                               accountName
+                                               accountName,
+                                               isValidBankAccount,
+                                               allowedToEdit
                                          }
                                     }"""
 

@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class CheckAccountResponse(
         @SerializedName("CheckAccountNumber")
         @Expose
-        val checkAccountNumber: CheckAccountNumber
+        val checkAccountData: CheckAccountData
 
 )
 
-data class CheckAccountNumber(
+data class CheckAccountData(
         @SerializedName("successCode")
         @Expose
         val successCode: Int,
@@ -29,6 +29,12 @@ data class CheckAccountNumber(
         val bankName: String? = null,
         @SerializedName("accountName")
         @Expose
-        val accountHolderName: String? = null
+        val accountHolderName: String? = null,
+        @SerializedName("isValidBankAccount")
+        @Expose
+        val isValidBankAccount: Boolean,
+        @SerializedName("allowedToEdit")
+        @Expose
+        val allowedToEdit: Boolean
 
 )

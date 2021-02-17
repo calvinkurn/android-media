@@ -47,11 +47,11 @@ class ValidateAccountNumberUseCase @Inject constructor() : UseCase<ValidateAccou
     private fun validateBankAccountNumber(abbreviation: String, numberStr: String): ValidateAccountNumberState {
         val bankType = getBankTypeFromAbbreviation(abbreviation)
         return when (numberStr.length) {
-            0 -> ValidateAccountNumberSuccess(isCheckEnable = false, clearAccountHolderName = true,
+            0 -> ValidateAccountNumberSuccess(isCheckEnable = false,
                     isAddBankButtonEnable = false)
-            in 1..bankType.count -> ValidateAccountNumberSuccess(isCheckEnable = true, clearAccountHolderName = true,
+            in 1..bankType.count -> ValidateAccountNumberSuccess(isCheckEnable = true,
                     isAddBankButtonEnable = false)
-            else -> ValidateAccountNumberSuccess(isCheckEnable = true, clearAccountHolderName = true,
+            else -> ValidateAccountNumberSuccess(isCheckEnable = true,
                     isAddBankButtonEnable = false)
         }
     }

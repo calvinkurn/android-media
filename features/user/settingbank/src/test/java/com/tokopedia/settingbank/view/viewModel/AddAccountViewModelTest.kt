@@ -21,7 +21,6 @@ class AddAccountViewModelTest {
     private val addBankAccountUseCase: dagger.Lazy<AddBankAccountUseCase> = mockk()
     private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase> = mockk()
     private val checkBankAccountUseCase: dagger.Lazy<CheckBankAccountUseCase> = mockk()
-    private val validateAccountNameUseCase: dagger.Lazy<ValidateAccountNameUseCase> = mockk()
     private val validateAccountNumberUseCase: dagger.Lazy<ValidateAccountNumberUseCase> = mockk()
 
     private lateinit var viewModel: AddAccountViewModel
@@ -31,7 +30,7 @@ class AddAccountViewModelTest {
     fun setup() {
         viewModel = spyk(AddAccountViewModel(addBankAccountUseCase,
                 termsAndConditionUseCase,
-                checkBankAccountUseCase, validateAccountNameUseCase,
+                checkBankAccountUseCase,
                 validateAccountNumberUseCase, TestCoroutineDispatcher()))
     }
 
@@ -57,28 +56,7 @@ class AddAccountViewModelTest {
         assert(viewModel.addBankAccountLiveData.value is Fail)
     }
 
-    @Test
-    fun `validateManualAccountName success`() {
-        val result = mockk<OnAccountNameValidated>()
-        coEvery { validateAccountNameUseCase.get().validateAccountHolderNameLength(any(), any()) }
-                .coAnswers {
-                    secondArg<(AccountNameValidationResult) -> Unit>().invoke(result)
-                }
-        viewModel.validateManualAccountName("")
-        assert(viewModel.accountNameValidationResult.value is OnAccountNameValidated)
-    }
-
-    @Test
-    fun `validateManualAccountName Fail`() {
-        val result = mockk<OnAccountValidationFailed>()
-        coEvery { validateAccountNameUseCase.get().validateAccountHolderNameLength(any(), any()) }
-                .coAnswers {
-                    secondArg<(AccountNameValidationResult) -> Unit>().invoke(result)
-                }
-        viewModel.validateManualAccountName("")
-        assert(viewModel.accountNameValidationResult.value is OnAccountValidationFailed)
-    }
-
+/*
 
     @Test
     fun `checkAccountNumber Success`() {
@@ -112,6 +90,7 @@ class AddAccountViewModelTest {
         viewModel.checkAccountNumber(1, "")
         assert(viewModel.accountCheckState.value is OnCheckAccountError)
     }
+*/
 
 
     @Test

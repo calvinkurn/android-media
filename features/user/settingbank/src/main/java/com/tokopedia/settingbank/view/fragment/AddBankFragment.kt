@@ -1,7 +1,6 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.*
@@ -65,6 +64,8 @@ class AddBankFragment : BaseDaggerFragment() {
 
     var isFragmentRestored: Boolean = false
 
+    var checkAccountNameState: CheckAccountNameState? = null
+
     lateinit var bank: Bank
 
     override fun initInjector() {
@@ -85,6 +86,11 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun initViewModels() {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
+    }
+
     private fun restoreBuilderAndBank(bundle: Bundle) {
         if (bundle.containsKey(ARG_OUT_BANK)) {
             isFragmentRestored = true
@@ -103,11 +109,6 @@ class AddBankFragment : BaseDaggerFragment() {
                 }
             }
         }
-    }
-
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -165,7 +166,7 @@ class AddBankFragment : BaseDaggerFragment() {
             addBankAccountLiveData.removeObservers(viewLifecycleOwner)
             termsAndConditionLiveData.removeObservers(viewLifecycleOwner)
             validateAccountNumberStateLiveData.removeObservers(viewLifecycleOwner)
-            accountCheckState.removeObservers(viewLifecycleOwner)
+            checkAccountDataLiveData.removeObservers(viewLifecycleOwner)
             accountNameValidationResult.removeObservers(viewLifecycleOwner)
         }
     }
@@ -182,23 +183,13 @@ class AddBankFragment : BaseDaggerFragment() {
                 return@Observer
             }
             when (it) {
-                is OnNOBankSelected -> setAccountNumberError(getString(R.string.sbank_select_bank))
+                is OnNOBankSelected -> {
+                    hideAccountHolderNameUI()
+                    setAccountNumberError(getString(R.string.sbank_select_bank))
+                }
                 is ValidateAccountNumberSuccess -> {
                     setAccountNumberError(null)
                     onValidateAccountNumber(it)
-                }
-            }
-        })
-
-
-        addAccountViewModel.accountNameValidationResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is OnAccountValidationFailed -> showManualAccountNameError(
-                        getString(R.string.sbank_name_char_limit_error))
-                is OnAccountNameValidated -> {
-                    builder.setAccountName(it.name, true)
-                    showManualAccountNameError(null)
-                    openConfirmationPopUp()
                 }
             }
         })
@@ -226,33 +217,62 @@ class AddBankFragment : BaseDaggerFragment() {
             }
         })
 
-
-        addAccountViewModel.accountCheckState.observe(viewLifecycleOwner, Observer {
+        addAccountViewModel.checkAccountDataLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OnCheckAccountError -> showError(it.throwable, null)
-                is OnAccountCheckSuccess -> {
-                    onAccountCheckSuccess(it.accountHolderName)
-                }
-                is OnErrorInAccountNumber -> {
-                    setAccountNumberError(it.errorMessage)
-                }
+                is Success ->
+                    handleCheckAccountState(it.data)
+                is Fail -> showError(it.throwable, null)
             }
         })
     }
 
+    private fun handleCheckAccountState(data: CheckAccountNameState) {
+        btnPeriksa.isEnabled = false
+        this.checkAccountNameState = data
+        when (data) {
+            is AccountNameFinalValidationSuccess -> {
+                add_account_button.isEnabled = true
+                wrapperManualAccountHolderName.error = null
+                if (data.checkAccountAction == ActionValidateAccountName) {
+                    builder.setAccountName(data.accountHolderName, true)
+                    openConfirmationPopUp()
+                } else {
+                    builder.setAccountName(data.accountHolderName, false)
+                    tvAccountHolderName.text = data.accountHolderName
+                    wrapperManualAccountHolderName.gone()
+                    groupAccountNameAuto.visible()
+                }
+            }
 
-    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
-        context?.let { context ->
-            if (throwable is AddBankAccountException) {
-                showErrorOnUI(context, throwable.errorMessage, retry)
-            } else {
-                val errorMessage = SettingBankErrorHandler.getErrorMessage(context, throwable)
-                showErrorOnUI(context, errorMessage, retry)
+            is EditableAccountName -> {
+                add_account_button.isEnabled = true
+                builder.isManual(true)
+                groupAccountNameAuto.gone()
+                wrapperManualAccountHolderName.visible()
+                wrapperBankAccountNumber.editText.setText(data.accountName)
+                wrapperManualAccountHolderName.error = data.message
+            }
+
+            is AccountNameCheckError -> {
+                add_account_button.isEnabled = false
+                wrapperBankAccountNumber.editText.setText(data.accountName)
+                wrapperBankAccountNumber.isEnabled = false
+                wrapperManualAccountHolderName.error = data.message
             }
         }
     }
 
-    private fun showErrorOnUI(context: Context, message: String, retry: (() -> Unit)?) {
+    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let { context ->
+            val errorMessage = when (throwable) {
+                is AddBankAccountException -> throwable.errorMessage
+                else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
+            }
+            showErrorOnUI(errorMessage, retry)
+        }
+    }
+
+    private fun showErrorOnUI(message: String, retry: (() -> Unit)?) {
         view?.let { view ->
             retry?.let {
                 Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
@@ -261,35 +281,6 @@ class AddBankFragment : BaseDaggerFragment() {
                 Toaster.build(view, message,
                         Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             }
-        }
-    }
-
-
-    private fun onBankSuccessfullyAdded(addBankResponse: AddBankResponse) {
-        val intent = Intent()
-        val bundle = Bundle()
-        val data = addBankResponse.data
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID, data.accountId.toString())
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME, data.accountName)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO, data.accountNumber)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_ID, data.bankId.toString())
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_NAME, builder.build().bankName)
-        intent.putExtras(bundle)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
-    }
-
-    private fun onClickAddBankAccount() {
-        try {
-            val request = builder.build()
-            if (request.isManual) {
-                bankSettingAnalytics.eventOnManualNameSimpanClick()
-                addAccountViewModel.validateManualAccountName(etManualAccountHolderName.text.toString())
-            } else {
-                bankSettingAnalytics.eventOnAutoNameSimpanClick()
-                openPinVerification()
-            }
-        } catch (e: Exception) {
         }
     }
 
@@ -315,45 +306,171 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
         btnPeriksa.isEnabled = onTextChanged.isCheckEnable
         add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
-        if (onTextChanged.clearAccountHolderName) {
-            builder.setAccountNumber(etBankAccountNumber.text.toString())
-            groupAccountNameAuto.gone()
-            tvAccountHolderName.text = ""
-            btnPeriksa.isEnabled = onTextChanged.isCheckEnable
-            add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
-            etManualAccountHolderName.setText("")
-            wrapperManualAccountHolderName.error = null
-            wrapperManualAccountHolderName.gone()
-        }
-    }
-
-    private fun onAccountCheckSuccess(accountHolderName: String?) {
-        btnPeriksa.isEnabled = false
-        add_account_button.isEnabled = true
-        setAccountNumberError(null)
-        accountHolderName?.let {
-            if (it.isEmpty()) {
-                builder.isManual(true)
-                openManualNameEntryView()
-            } else {
-                builder.isManual(false)
-                builder.setAccountName(accountHolderName, false)
-                tvAccountHolderName.text = accountHolderName
-                wrapperManualAccountHolderName.gone()
-                groupAccountNameAuto.visible()
-            }
-        } ?: run {
-            openManualNameEntryView()
-        }
-    }
-
-    private fun openManualNameEntryView() {
-        groupAccountNameAuto.gone()
-        wrapperManualAccountHolderName.visible()
+        builder.setAccountNumber(etBankAccountNumber.text.toString())
+        btnPeriksa.isEnabled = onTextChanged.isCheckEnable
+        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
+        hideAccountHolderNameUI()
     }
 
     private fun setAccountNumberError(errorStr: String?) {
         wrapperBankAccountNumber.error = errorStr
+    }
+
+    private fun hideAccountHolderNameUI() {
+        tvAccountHolderName.text = ""
+        etManualAccountHolderName.setText("")
+        wrapperManualAccountHolderName.error = null
+        wrapperManualAccountHolderName.gone()
+        groupAccountNameAuto.gone()
+    }
+
+    fun onBankSelected(selectedBank: Bank) {
+        bank = selectedBank
+        this.checkAccountNameState = null
+        setBankName()
+        etBankAccountNumber.setText("")
+        setAccountNumberInputFilter()
+        hideAccountHolderNameUI()
+    }
+
+    private fun setAccountNumberInputFilter() {
+        if (::bank.isInitialized) {
+            val abbreviation = bank.abbreviation?.let { it } ?: ""
+            val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
+            val filterArray = arrayOfNulls<InputFilter>(1)
+            filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
+            etBankAccountNumber.filters = filterArray
+        }
+    }
+
+    private fun setBankName() {
+        if (::bank.isInitialized) {
+            builder.bank(bank.bankID, bank.bankName)
+            etBankName.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
+        }
+    }
+
+    private fun onClickAddBankAccount() {
+        if (!::bank.isInitialized) {
+            openBankListForSelection()
+        } else
+            try {
+                if (checkAccountNameState is AccountNameFinalValidationSuccess) {
+                    bankSettingAnalytics.eventOnAutoNameSimpanClick()
+                    openConfirmationPopUp()
+                } else if (checkAccountNameState is EditableAccountName) {
+                    val accountHolderName = etManualAccountHolderName.text.toString()
+                    bankSettingAnalytics.eventOnManualNameSimpanClick()
+                    if (accountHolderName.length in 3..128) {
+                        addAccountViewModel.validateEditedAccountInfo(bank.bankID,
+                                etBankAccountNumber.text.toString(),
+                                accountHolderName)
+                    } else {
+                        showManualAccountNameError(
+                                getString(R.string.sbank_name_char_limit_error))
+                    }
+                }
+            } catch (e: Exception) {
+            }
+    }
+
+    private fun openConfirmationPopUp() {
+        activity?.let { it ->
+            val addBankRequest = builder.build()
+            val dialogBuilder = AlertDialog.Builder(it)
+            val inflater = activity!!.layoutInflater
+            val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
+            (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_confirm_add_bank_account)
+            val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
+                    addBankRequest.accountNo, addBankRequest.accountName)
+            (dialogView.findViewById(R.id.description) as TextView).text = description
+            dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+                bankSettingAnalytics.eventDialogConfirmAddAccountClick()
+                confirmationDialog.dismiss()
+                openPinVerification()
+            }
+            dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
+                if (::confirmationDialog.isInitialized)
+                    confirmationDialog.dismiss()
+            }
+            confirmationDialog = dialogBuilder.setView(dialogView).show()
+        }
+
+    }
+
+    private fun openPinVerification() {
+        val OTP_TYPE_ADD_BANK_ACCOUNT = 12
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_OTP)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_OTP -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    requestAddBankAccount()
+                }
+            }
+        }
+    }
+
+    private fun requestAddBankAccount() {
+        try {
+            progress_bar.visible()
+            addAccountViewModel.addBank(builder.build())
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun onBankSuccessfullyAdded(addBankResponse: AddBankResponse) {
+        val intent = Intent()
+        val bundle = Bundle()
+        val data = addBankResponse.data
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID, data.accountId.toString())
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME, data.accountName)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO, data.accountNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_ID, data.bankId.toString())
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_NAME, builder.build().bankName)
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::bank.isInitialized) {
+            outState.putParcelable(ARG_OUT_BANK, bank)
+            if (!builder.getAccountNumber().isNullOrBlank()) {
+                outState.putString(ARG_OUT_ACCOUNT_NUMBER, builder.getAccountNumber())
+                if (!builder.getAccountName().isNullOrBlank()) {
+                    outState.putString(ARG_OUT_ACCOUNT_HOLDER_NAME, builder.getAccountName())
+                    outState.putBoolean(ARG_OUT_ACCOUNT_NAME_IS_MANUAL, builder.isManual())
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val ARG_OUT_BANK = "ARG_OUT_BANK"
+        const val ARG_OUT_ACCOUNT_NUMBER = "ARG_OUT_ACCOUNT_NUMBER"
+        const val ARG_OUT_ACCOUNT_HOLDER_NAME = "ARG_OUT_ACCOUNT_HOLDER_NAME"
+        const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
+    }
+
+    private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        s?.let {
+            addAccountViewModel.validateAccountNumber(bank, s.toString())
+        } ?: run {
+            addAccountViewModel.validateAccountNumber(bank, "")
+        }
     }
 
     private fun setTncText() {
@@ -402,125 +519,6 @@ class AddBankFragment : BaseDaggerFragment() {
                 tncBottomSheet.show(templateData)
             }
         }
-    }
-
-    fun onBankSelected(selectedBank: Bank) {
-        bank = selectedBank
-        notifyAccountNumberWatcher()
-        hideAccountHolderName()
-        setBankName()
-        setAccountNumberInputFilter()
-    }
-
-    private fun setAccountNumberInputFilter() {
-        if (::bank.isInitialized) {
-            val abbreviation = bank.abbreviation?.let { it } ?: ""
-            val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
-            val filterArray = arrayOfNulls<InputFilter>(1)
-            filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
-            etBankAccountNumber.filters = filterArray
-        }
-    }
-
-    private fun notifyAccountNumberWatcher() {
-        etBankAccountNumber.setText("")
-    }
-
-    private fun hideAccountHolderName() {
-        etManualAccountHolderName.setText("")
-        wrapperManualAccountHolderName.gone()
-        groupAccountNameAuto.gone()
-    }
-
-    private fun setBankName() {
-        if (::bank.isInitialized) {
-            builder.bank(bank.bankID, bank.bankName)
-            etBankName.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
-        }
-    }
-
-    private fun openConfirmationPopUp() {
-        val addBankRequest = builder.build()
-        val dialogBuilder = AlertDialog.Builder(activity!!)
-        val inflater = activity!!.layoutInflater
-        val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_confirm_add_bank_account)
-        val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
-                addBankRequest.accountNo, addBankRequest.accountName)
-        (dialogView.findViewById(R.id.description) as TextView).text = description
-        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
-            bankSettingAnalytics.eventDialogConfirmAddAccountClick()
-            confirmationDialog.dismiss()
-            openPinVerification()
-        }
-        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
-            if (::confirmationDialog.isInitialized)
-                confirmationDialog.dismiss()
-        }
-        confirmationDialog = dialogBuilder.setView(dialogView).show()
-    }
-
-    private fun openPinVerification() {
-        val OTP_TYPE_ADD_BANK_ACCOUNT = 12
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
-        val bundle = Bundle()
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_OTP)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_OTP -> onResultRequestOtp(resultCode)
-        }
-    }
-
-    private fun onResultRequestOtp(resultCode: Int) {
-        if (resultCode == Activity.RESULT_OK) {
-            requestAddBankAccount()
-        }
-    }
-
-    private fun requestAddBankAccount() {
-        try {
-            progress_bar.visible()
-            addAccountViewModel.addBank(builder.build())
-        } catch (e: Exception) {
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (::bank.isInitialized) {
-            outState.putParcelable(ARG_OUT_BANK, bank)
-            if (!builder.getAccountNumber().isNullOrBlank()) {
-                outState.putString(ARG_OUT_ACCOUNT_NUMBER, builder.getAccountNumber())
-                if (!builder.getAccountName().isNullOrBlank()) {
-                    outState.putString(ARG_OUT_ACCOUNT_HOLDER_NAME, builder.getAccountName())
-                    outState.putBoolean(ARG_OUT_ACCOUNT_NAME_IS_MANUAL, builder.isManual())
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val ARG_OUT_BANK = "ARG_OUT_BANK"
-        const val ARG_OUT_ACCOUNT_NUMBER = "ARG_OUT_ACCOUNT_NUMBER"
-        const val ARG_OUT_ACCOUNT_HOLDER_NAME = "ARG_OUT_ACCOUNT_HOLDER_NAME"
-        const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
-    }
-
-     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-         s?.let {
-             addAccountViewModel.validateAccountNumber(bank, s.toString())
-         }?:run {
-             addAccountViewModel.validateAccountNumber(bank, "")
-         }
     }
 
 }

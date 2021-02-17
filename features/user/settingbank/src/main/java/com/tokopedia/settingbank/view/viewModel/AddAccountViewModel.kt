@@ -6,9 +6,12 @@ import com.tokopedia.settingbank.domain.model.AddBankRequest
 import com.tokopedia.settingbank.domain.model.AddBankResponse
 import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.domain.model.TemplateData
-import com.tokopedia.settingbank.domain.usecase.*
-import com.tokopedia.settingbank.view.viewState.AccountCheckState
+import com.tokopedia.settingbank.domain.usecase.AddBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.CheckBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.TermsAndConditionUseCase
+import com.tokopedia.settingbank.domain.usecase.ValidateAccountNumberUseCase
 import com.tokopedia.settingbank.view.viewState.AccountNameValidationResult
+import com.tokopedia.settingbank.view.viewState.CheckAccountNameState
 import com.tokopedia.settingbank.view.viewState.ValidateAccountNumberState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,15 +23,15 @@ class AddAccountViewModel @Inject constructor(
         private val addBankAccountUseCase: dagger.Lazy<AddBankAccountUseCase>,
         private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase>,
         private val checkBankAccountUseCase: dagger.Lazy<CheckBankAccountUseCase>,
-        private val validateAccountNameUseCase: dagger.Lazy<ValidateAccountNameUseCase>,
         private val validateAccountNumberUseCase: dagger.Lazy<ValidateAccountNumberUseCase>,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val addBankAccountLiveData = MutableLiveData<Result<AddBankResponse>>()
     val termsAndConditionLiveData = MutableLiveData<Result<TemplateData>>()
     val validateAccountNumberStateLiveData = MutableLiveData<ValidateAccountNumberState>()
-    val accountCheckState = MutableLiveData<AccountCheckState>()
     val accountNameValidationResult = MutableLiveData<AccountNameValidationResult>()
+
+    val checkAccountDataLiveData = MutableLiveData<Result<CheckAccountNameState>>()
 
     fun addBank(addBankRequest: AddBankRequest) {
         addBankAccountUseCase.get().addBankAccount(addBankRequest, {
@@ -38,17 +41,26 @@ class AddAccountViewModel @Inject constructor(
         })
     }
 
-    fun validateManualAccountName(accountHolderName: String) {
-        validateAccountNameUseCase.get().validateAccountHolderNameLength(accountHolderName
-        ) {
-            accountNameValidationResult.postValue(it)
-        }
+    fun checkAccountNumber(bankId: Long, accountNumber: String?) {
+        checkBankAccountUseCase.get().checkAccountNumber(bankId, accountNumber,
+                {
+                    checkAccountDataLiveData.postValue(Success(it))
+                },
+                {
+                    checkAccountDataLiveData.postValue(Fail(it))
+                }
+        )
     }
 
-    fun checkAccountNumber(bankId: Long, accountNumber: String?) {
-        checkBankAccountUseCase.get().checkBankAccount(bankId, accountNumber) {
-            accountCheckState.postValue(it)
-        }
+    fun validateEditedAccountInfo(bankId: Long, accountNumber: String?, editedAccountName: String?) {
+        checkBankAccountUseCase.get().validateAccountNumber(bankId, accountNumber, editedAccountName,
+                {
+                    checkAccountDataLiveData.postValue(Success(it))
+                },
+                {
+                    checkAccountDataLiveData.postValue(Fail(it))
+                }
+        )
     }
 
     fun loadTermsAndCondition() {
@@ -66,13 +78,11 @@ class AddAccountViewModel @Inject constructor(
         }
     }
 
-
     override fun onCleared() {
         validateAccountNumberUseCase.get().cancelJobs()
         addBankAccountUseCase.get().cancelJobs()
         termsAndConditionUseCase.get().cancelJobs()
         checkBankAccountUseCase.get().cancelJobs()
-        validateAccountNameUseCase.get().cancelJobs()
         super.onCleared()
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.settingbank.view.viewState
 
 sealed class ValidateAccountNumberState
 data class ValidateAccountNumberSuccess(val isCheckEnable: Boolean,
-                         val clearAccountHolderName: Boolean,
                          val isAddBankButtonEnable: Boolean) : ValidateAccountNumberState()
 
 object OnNOBankSelected : ValidateAccountNumberState()
