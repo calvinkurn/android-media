@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
@@ -37,6 +37,7 @@ import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
@@ -118,11 +119,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
             loadData()
-        }
-
-        digital_homepage_order_list.setOnClickListener {
-            rechargeHomepageAnalytics.eventClickOrderList()
-            RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
         }
 
         // Recharge Branch Event
@@ -213,7 +209,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
 
         viewModel.rechargeHomepageSectionSkeleton.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) adapter.showGetListError(it.throwable)
+            when (it) {
+                is Success -> renderSearchBarView(it.data)
+                is Fail -> adapter.showGetListError(it.throwable)
+            }
         })
 
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
@@ -381,7 +380,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (sectionIds.isNotEmpty()) {
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
                     requireContext(), platformId, enablePersonalize,
-                    sectionIds))
+                    sectionIds, viewModel.getSearchBarPlaceholder()))
         }
     }
 
@@ -393,6 +392,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         swipe_refresh_layout.isEnabled = true
         swipe_refresh_layout.isRefreshing = false
         adapter.hideLoading()
+    }
+
+    private fun renderSearchBarView(rechargeHomepageSectionSkeleton: RechargeHomepageSectionSkeleton) {
+        digital_homepage_search_view.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
+        digital_homepage_order_list.setOnClickListener {
+            rechargeHomepageAnalytics.eventClickOrderList()
+            RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
+        }
     }
 
     companion object {
