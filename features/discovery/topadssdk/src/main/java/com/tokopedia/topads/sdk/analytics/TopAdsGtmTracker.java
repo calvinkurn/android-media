@@ -17,9 +17,10 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.collections.CollectionsKt;
 
 /**
  * Author errysuprayogi on 24,January,2019
@@ -333,15 +334,7 @@ public class TopAdsGtmTracker {
     }
 
     private static boolean hasLabelGroupFulfillment(List<LabelGroup> labelGroupList) {
-        Iterator<LabelGroup> labelGroupListIterator = labelGroupList.iterator();
-        while(labelGroupListIterator.hasNext()) {
-            LabelGroup data = labelGroupListIterator.next();
-
-            if (data.getPosition().equals("fulfillment")) return true;
-
-            labelGroupListIterator.remove();
-        }
-        return false;
+        return CollectionsKt.any(labelGroupList, labelGroup -> labelGroup.getPosition().equals("fulfillment"));
     }
 
     public void eventInboxProductClick(Context context, Product product, int position, String recommendationType) {

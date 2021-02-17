@@ -14,8 +14,9 @@ import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.utils.text.currency.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import kotlin.collections.CollectionsKt;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
 
@@ -447,15 +448,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     private boolean hasLabelGroupFulfillment() {
-        Iterator<LabelGroupViewModel> labelGroupListIterator = labelGroupList.iterator();
-        while(labelGroupListIterator.hasNext()) {
-            LabelGroupViewModel data = labelGroupListIterator.next();
-
-            if (data.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT)) return true;
-
-            labelGroupListIterator.remove();
-        }
-        return false;
+        return CollectionsKt.any(labelGroupList, labelGroupViewModel -> labelGroupViewModel.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT));
     }
 
     private String getActionFieldString() {
