@@ -58,13 +58,33 @@
                 app:typographyWeight="bold"
                 tools:text="Pascabayar" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_smart_bills_item_description"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                app:typographyType="body_3"
-                tools:text="081298587943 - Telkomsel" />
+                android:orientation="horizontal"
+                >
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_bill_name"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/layout_lvl8"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="Kos Bulanan" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="081298587943" />
+
+            </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_item_price"

@@ -36,12 +36,23 @@ class SmartBillsViewHolder(val view: View,
         with(view) {
             tv_smart_bills_item_title.text = String.format("%s - %s", element.categoryName, element.productName)
             val description = if(element.billName.isNotEmpty()){
-                String.format(getString(R.string.smart_bills_item_description),
-                        element.billName, element.clientNumber)
+                String.format(getString(R.string.smart_bills_item_description), element.clientNumber)
             }else {
                 element.clientNumber
             }
-            tv_smart_bills_item_description.text = description
+
+            tv_smart_bills_item_description_bill_name.apply {
+                if (element.billName.isNotEmpty()){
+                    text = element.billName
+                } else {
+                    gone()
+                }
+            }
+
+            tv_smart_bills_item_description_number.apply {
+                text = description
+            }
+
             tv_smart_bills_item_price.text = element.amountText
             ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
 
