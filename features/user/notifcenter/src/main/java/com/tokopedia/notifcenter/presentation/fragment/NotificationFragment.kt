@@ -501,7 +501,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 productId = product.productId,
                 shopId = product.shop.id.toInt(),
                 quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
         )
         return RequestParams.create().apply {
             putObject(
