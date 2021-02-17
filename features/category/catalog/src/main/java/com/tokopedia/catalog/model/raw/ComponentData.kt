@@ -6,11 +6,15 @@ import kotlinx.android.parcel.Parcelize
 
 data class ComponentData(
         @SerializedName("name")
-        val name : String,
+        val name : String?,
+        @SerializedName("key")
+        val key: String?,
+        @SerializedName("value")
+        val value: String?,
         @SerializedName("icon")
-        val icon: String,
+        val icon: String?,
         @SerializedName("row")
-        val specificationsRow : List<SpecificationsRow> = listOf()
+        val specificationsRow : List<SpecificationsRow>? = listOf()
 
 ){
     @Parcelize
@@ -24,8 +28,16 @@ data class ComponentData(
 }
 
 @Parcelize
-data class SpecificationsComponentData(
-        val name : String,
-        val icon : String,
-        val specificationsRow : List<ComponentData.SpecificationsRow> = listOf()) : Parcelable{
+data class FullSpecificationsComponentData(
+        val name : String?,
+        val icon : String?,
+        val specificationsRow : List<ComponentData.SpecificationsRow>?) : Parcelable{
+}
+
+
+@Parcelize
+data class TopSpecificationsComponentData(
+        val key : String?,
+        val value : String?,
+        val icon : String?) : Parcelable{
 }

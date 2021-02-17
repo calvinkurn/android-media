@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.raw.SpecificationsComponentData
+import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DoubleTextView
 import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment.*
@@ -24,7 +24,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
 
-        fun newInstance(type: Int, description: String?, specifications: ArrayList<SpecificationsComponentData>?): CatalogSpecsAndDetailFragment {
+        fun newInstance(type: Int, description: String?, specifications: ArrayList<FullSpecificationsComponentData>?): CatalogSpecsAndDetailFragment {
             return CatalogSpecsAndDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(TYPE, type)
@@ -43,7 +43,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var description: String? = null
-        var specifications: ArrayList<SpecificationsComponentData>? = null
+        var specifications: ArrayList<FullSpecificationsComponentData>? = null
 
         if (arguments != null) {
             type = requireArguments().getInt(TYPE, 0)
@@ -59,9 +59,12 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         }
     }
 
-    private fun setSpecificationView(specifications: ArrayList<SpecificationsComponentData>) {
+    private fun setSpecificationView(specifications: ArrayList<FullSpecificationsComponentData>) {
         linear_layout.removeAllViews()
         for(specs in specifications){
+            if(specs.specificationsRow == null){
+                return
+            }
             context?.let { context ->
                 val headerView = Typography(context)
                 headerView.apply {
@@ -70,7 +73,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     typeface = Typeface.DEFAULT_BOLD
                 }
                 linear_layout.addView(headerView)
-                for(row in specs.specificationsRow){
+                specs.specificationsRow.forEachIndexed { index, row ->
                     val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                     doubleTextView.apply {
                         setTopText(MethodChecker.fromHtml(row.key).toString())
@@ -78,20 +81,29 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                         setBottomLinearLayoutWeight(0.5f)
                         setTopTextColor(MethodChecker.getColor(context, R.color.catalog_N700_44))
                         setBottomTextSize(14.0f)
-                        setBottomTextColor(MethodChecker.getColor(context, R.color.catalog_grey_796))
+                        setBottomTextColor(MethodChecker.getColor(context, R.color.catalog_clr_31353b))
                         doubleTextView.setBottomTextStyle("")
                         //setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
                         setBottomText(MethodChecker.fromHtml(row.value))
                     }
-                   linear_layout.addView(doubleTextView)
+                    if(0 == index){
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_16))
+                    }else {
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_8))
+                    }
+                    linear_layout.addView(doubleTextView)
+                    val lineView = View(context)
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lineView.minimumHeight = 2
+                    lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.catalog_grey_line))
+                    if(specs.specificationsRow.size - 1 == index){
+                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(R.dimen.dp_22))
+                    }else {
+                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(R.dimen.dp_1))
+                    }
+                    lineView.layoutParams = params
+                    linear_layout.addView(lineView)
                 }
-                val lineView = View(context)
-                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                lineView.minimumHeight = 3
-                lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.catalog_grey_line))
-                params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_16), 0, resources.getDimensionPixelOffset(R.dimen.dp_16))
-                lineView.layoutParams = params
-                linear_layout.addView(lineView)
             }
         }
     }

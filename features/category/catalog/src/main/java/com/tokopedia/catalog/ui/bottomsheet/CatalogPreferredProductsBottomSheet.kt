@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.raw.SpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 

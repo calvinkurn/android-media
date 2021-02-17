@@ -1,12 +1,10 @@
 package com.tokopedia.catalog.model.util
 
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogResponseData
-import com.tokopedia.catalog.model.raw.ComponentData
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.SpecificationsComponentData
+import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
+import com.tokopedia.catalog.model.raw.*
 
 object CatalogDetailMapper {
 
@@ -23,13 +21,14 @@ object CatalogDetailMapper {
 
         catalogGetDetailModular.components.forEachIndexed { index, component ->
             when(component.type){
-                CatalogConstant.CATALOG_SPECIFICATION -> {
-                    val crudeSpecificationsData = component.data
-                    val specifications = arrayListOf<SpecificationsComponentData>()
-                    crudeSpecificationsData.forEachIndexed { indexComponentData, componentData ->
-                        specifications.add(SpecificationsComponentData(componentData.name,componentData.icon,componentData.specificationsRow))
+                CatalogConstant.TOP_SPECIFICATIONS -> {
+                    val crudeTopSpecificationsData = component.data
+                    val topSpecsArray = arrayListOf<TopSpecificationsComponentData>()
+                    crudeTopSpecificationsData.forEachIndexed { indexComponentData, componentData ->
+                        topSpecsArray.add(TopSpecificationsComponentData(componentData.key,
+                                componentData.value, componentData.icon))
                     }
-                    listOfComponents.add(CatalogSpecificationDataModel(name = component.name, type = component.type , specificationsList = specifications))
+                    listOfComponents.add(CatalogTopSpecificationDataModel(name = component.name, type = component.type , topSpecificationsList = topSpecsArray))
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
@@ -43,6 +42,24 @@ object CatalogDetailMapper {
         }
 
         return listOfComponents
+    }
+
+    fun getFullSpecificationsModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogFullSpecificationDataModel{
+        var catalogFullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
+        catalogGetDetailModular.components.forEachIndexed { index, component ->
+            when (component.type) {
+                CatalogConstant.FULL_CATALOG_SPECIFICATION -> {
+                    val crudeSpecificationsData = component.data
+                    val specifications = arrayListOf<FullSpecificationsComponentData>()
+                    crudeSpecificationsData.forEachIndexed { indexComponentData, componentData ->
+                        specifications.add(FullSpecificationsComponentData(componentData.name,
+                                componentData.icon, componentData.specificationsRow ?: arrayListOf()))
+                    }
+                    catalogFullSpecificationDataModel =  CatalogFullSpecificationDataModel(fullSpecificationsList = specifications)
+                }
+            }
+        }
+        return catalogFullSpecificationDataModel
     }
 
     fun getDummyCatalogData() : CatalogResponseData{
@@ -91,7 +108,27 @@ object CatalogDetailMapper {
                 "Desain kokoh dari iPhone 5s",
                 longDesc
         ))
+
+
+
         val componentList = arrayListOf<CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component>()
+
+        // Top Specifications
+        val topsSpecifications = arrayListOf<ComponentData>()
+        topsSpecifications.add(ComponentData(null,"Network","HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
+        topsSpecifications.add(ComponentData(null,"Operating System","iOS 2.0","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
+        topsSpecifications.add(ComponentData(null,"Network","HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
+        topsSpecifications.add(ComponentData(null,"Operating System","iOS 2.0","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
+        componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
+                1,
+                "Catalog Top Spec",
+                "catalog-spec-horizontal-scroll",
+                false,
+                topsSpecifications
+        ))
+
+
+        // Full Specifications
         val values = "23 Oktober 2020"
         val row = ComponentData.SpecificationsRow(
                 "Tanggal",
@@ -101,6 +138,8 @@ object CatalogDetailMapper {
         rows.add(row)
         val specification = ComponentData(
                 "Rilis",
+                null,
+                null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/home-house-homepage-building-20.png",
                 rows,
         )
@@ -113,8 +152,10 @@ object CatalogDetailMapper {
         rows2.add(row2)
         val specification2 = ComponentData(
                 "Jaringan",
+                null,
+                null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
-                rows2,
+                rows2
         )
 
         val values3 = "146.7 x 71.5 x 7.4 mm (5.78 x 2.81 x 0.29 in)"
@@ -139,6 +180,8 @@ object CatalogDetailMapper {
         rows3.add(row5)
         val specification3 = ComponentData(
                 "Body",
+                null,
+                null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 rows3,
         )
@@ -149,9 +192,9 @@ object CatalogDetailMapper {
         specifications.add(specification3)
         specifications.add(specification)
         componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
-                1,
+                2,
                 "Catalog Spec",
-                "catalog-spec-horizontal-scroll",
+                "catalog-spec-full-data",
                 false,
                 specifications
         ))
@@ -172,5 +215,4 @@ object CatalogDetailMapper {
         val catalogGetDetailModular = CatalogResponseData.CatalogGetDetailModular(basicInfo,componentList)
         return CatalogResponseData(catalogGetDetailModular)
     }
-
 }

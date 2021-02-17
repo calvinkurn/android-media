@@ -25,6 +25,7 @@ class CatalogDetailUseCase @Inject constructor(private val catalogDetailReposito
 
     private fun mapIntoModel(data :  CatalogResponseData) : CatalogDetailDataModel{
         val components = CatalogDetailMapper.mapIntoVisitable(data.catalogGetDetailModular)
-        return CatalogDetailDataModel(components)
+        val fullSpecificationDataModel = CatalogDetailMapper.getFullSpecificationsModel(data.catalogGetDetailModular)
+        return CatalogDetailDataModel(fullSpecificationDataModel,components)
     }
 }

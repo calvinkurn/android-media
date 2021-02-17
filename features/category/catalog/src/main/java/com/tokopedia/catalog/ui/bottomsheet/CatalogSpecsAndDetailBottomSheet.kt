@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
-import com.tokopedia.catalog.model.raw.SpecificationsComponentData
+import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -38,8 +38,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
-        fun newInstance(description: String, specifications: ArrayList<SpecificationsComponentData>,
-        openPage : String): CatalogSpecsAndDetailBottomSheet {
+        fun newInstance(description: String, specifications: ArrayList<FullSpecificationsComponentData>,
+                        openPage : String): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(DESCRIPTION, description)
@@ -73,7 +73,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
 
     private fun initData(){
         var description: String? = null
-        var specifications: ArrayList<SpecificationsComponentData>? = null
+        var specifications: ArrayList<FullSpecificationsComponentData>? = null
         if(arguments!=null){
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)

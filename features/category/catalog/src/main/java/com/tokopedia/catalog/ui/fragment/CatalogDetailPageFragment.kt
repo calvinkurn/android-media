@@ -1,16 +1,13 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,13 +22,11 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogSpecificationDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.SpecificationsComponentData
+import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
-import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.show
@@ -41,7 +36,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
@@ -54,6 +48,7 @@ class CatalogDetailPageFragment : Fragment(),
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
 
     private var catalogUiUpdater: CatalogUiUpdater? = CatalogUiUpdater(mutableMapOf())
+    private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
     private lateinit var fragment: CatalogGalleryFragment
@@ -101,7 +96,7 @@ class CatalogDetailPageFragment : Fragment(),
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
             showShimmer()
@@ -126,6 +121,7 @@ class CatalogDetailPageFragment : Fragment(),
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater?.updateModel(component)
                     }
+                    fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
                 }
                 is Fail -> {
@@ -149,7 +145,6 @@ class CatalogDetailPageFragment : Fragment(),
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
-            //setupSearchbar(listOf(HintData(getString(R.string.pdp_search_hint, ""))))
             show()
         }
     }
@@ -187,7 +182,7 @@ class CatalogDetailPageFragment : Fragment(),
         CatalogDetailPageAnalytics.trackEventClickSpecification()
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
                 catalogUiUpdater?.productInfoMap?.description ?: "",
-                catalogUiUpdater?.specificationsMap?.specificationsList ?: arrayListOf()
+                fullSpecificationDataModel.fullSpecificationsList
                 ,openPage
         )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
