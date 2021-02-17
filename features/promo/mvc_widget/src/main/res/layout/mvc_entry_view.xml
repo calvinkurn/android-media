@@ -43,7 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                android:text="Ada Cashback hingga Rp100.000" />
+                tools:text="Ada Cashback hingga Rp100.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSubTitle"
@@ -54,7 +54,7 @@
                 app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle"
                 app:typographyType="body_3"
-                android:text="Masih ada 6 Kupon Toko lainnya!" />
+                tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_chevron"
