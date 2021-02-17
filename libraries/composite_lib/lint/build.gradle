@@ -28,7 +28,7 @@ project.ext {
 
 jar{
     manifest{
-        attributes 'Lint-Registry-V2': 'com.tokopedia.linter.IssueRegistry'
+        attributes 'Lint-Registry-v2': 'com.tokopedia.linter.IssueRegistry'
     }
 }
 apply from: '../publish_local.gradle'

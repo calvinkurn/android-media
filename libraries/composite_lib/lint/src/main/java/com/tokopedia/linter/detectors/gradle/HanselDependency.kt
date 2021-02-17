@@ -71,7 +71,7 @@ fun getHanselObject(filePath: String) = mapGraleFileTOHansel[filePath] ?: Hansle
 fun checkHanselPresent(filePath: String, context: Context) {
     if (!getHanselObject(filePath).isHanselAdded()) {
         context.report(
-                HANSEL_REQUIRED, Location.create(context.file), "HANSLE PLUGIN SHOULD BE INCLUDED"
+                HANSEL_REQUIRED, Location.create(context.file, SourcePosition(3,0,0)), "HANSLE PLUGIN SHOULD BE INCLUDED"
         )
     }
 }
