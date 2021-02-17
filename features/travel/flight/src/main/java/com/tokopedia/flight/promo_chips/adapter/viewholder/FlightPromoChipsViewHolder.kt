@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.item_flight_promo_chips.view.*
 
 /**
@@ -15,7 +16,6 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
 : AbstractViewHolder<AirlinePrice>(itemView) {
 
     lateinit var adapter: FlightPromoChipsAdapter
-    var lastID: String = ""
 
     companion object {
         val LAYOUT = R.layout.item_flight_promo_chips
@@ -24,25 +24,37 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
     override fun bind(element: AirlinePrice) {
         with(itemView){
             tv_flight_promo_chips_price.text = element.price
-            iv_multiairline_logo.setAirlineLogo(null)
-            card_promo_chips.setOnClickListener {
-                if (lastID != element.airlineID){
-                    selected()
-                    onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
-                } else{
-                  unselect()
-                }
-                lastID = element.airlineID
+            tv_flight_promo_chips_line2.text = context.resources.getString(R.string.flight_srp_promo_chips_content_line2, element.shortName)
+            iv_multiairline_logo.setAirlineLogo(element.logo)
+            setSelectedItem(element)
+            setFilteredAirline(element)
+        }
+    }
+
+    private fun changePromoChipsState(selected: Boolean){
+        with(itemView){
+            if (selected){
+                card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER_ACTIVE)
+            }else{
+                card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER)
             }
         }
     }
 
-    fun selected(){
-        itemView.card_promo_chips.changeTypeWithTransition(3)
+
+    private fun setSelectedItem(element: AirlinePrice){
+        with(itemView){
+            if (::adapter.isInitialized) {
+                card_promo_chips.setOnClickListener {
+                    element.isSelected = !element.isSelected
+                    onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
+                    changePromoChipsState(element.isSelected)
+                }
+            }
+        }
     }
 
-    fun unselect(){
-        itemView.card_promo_chips.changeTypeWithTransition(1)
+    private fun setFilteredAirline(element: AirlinePrice) {
     }
 
     interface OnFlightPromoChipsListener{

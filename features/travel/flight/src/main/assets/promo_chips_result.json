@@ -6,12 +6,16 @@
           "date": "20210204",
           "airlinePrices": [
             {
-              "airlineID": "ID",
+              "airlineID": "KD",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_eb67de59-0115-4f58-a060-a029c2c941b7.png",
+              "shortName": "Kalstar Aviation",
               "price": "Rp 563.000",
               "priceNumeric": 563000
             },
             {
-              "airlineID": "JT",
+              "airlineID": "JS",
+              "logo": null,
+              "shortName": "Air Koryo",
               "price": "Rp 424.000",
               "priceNumeric": 424000
             }
@@ -21,12 +25,16 @@
           "date": "20210205",
           "airlinePrices": [
             {
-              "airlineID": "ID",
+              "airlineID": "KD",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_eb67de59-0115-4f58-a060-a029c2c941b7.png",
+              "shortName": "Kalstar Aviation",
               "price": "Rp 563.000",
               "priceNumeric": 563000
             },
             {
-              "airlineID": "JT",
+              "airlineID": "JS",
+              "logo": null,
+              "shortName": "Air Koryo",
               "price": "Rp 424.000",
               "priceNumeric": 424000
             }

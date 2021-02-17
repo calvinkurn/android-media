@@ -84,8 +84,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private val filterItems = arrayListOf<SortFilterItem>()
 
-    private lateinit var flightPromoChips: FlightPromoChips
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -98,11 +96,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewRoot = inflater.inflate(getLayout(), container, false)
-        flightPromoChips = viewRoot.findViewById(R.id.flight_promo_chips_view)
-        return viewRoot
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(getLayout(), container, false)
 
     override fun onResume() {
         super.onResume()
@@ -113,6 +107,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        flight_promo_chips_view.init()
 
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
             stopTrace()
@@ -322,6 +318,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
+
+        if (flightFilterModel?.airlineList!!.isNotEmpty()){
+
+        }
+        /** tambahin disini kalo di filter di highlight ijo if filter model airline
+         add listener aja**/
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
@@ -767,7 +769,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
         override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
-            flight_promo_chips_view.selectPromo(position)
+            if(airlinePrice.isSelected){
+                flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
+            }else{
+                flightSearchViewModel.filterModel.airlineList = mutableListOf()
+            }
+            clearAllData()
+            fetchSortAndFilterData()
         }
     }
 

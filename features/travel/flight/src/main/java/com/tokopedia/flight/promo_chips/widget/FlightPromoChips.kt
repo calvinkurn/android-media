@@ -18,21 +18,18 @@ import com.tokopedia.flight.promo_chips.model.AirlinePrice
  */
 
 class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
-    private val recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FlightPromoChipsAdapter
     private lateinit var listener: PromoChipsListener
 
-    init {
+    fun init (){
         val view = View.inflate(context, R.layout.include_flight_promo_chips, this)
+        view.setBackgroundResource(R.drawable.bg_flight_promo_chips_container)
         recyclerView = view.findViewById(R.id.recycler_view_promo_chips)
     }
 
     fun setListener(listener: PromoChipsListener) {
         this.listener = listener
-    }
-
-    fun selectPromo(position: Int) {
-        adapter.selectPromo(position)
     }
 
     fun renderPromoList(airlineList: List<AirlinePrice>) {

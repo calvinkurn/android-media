@@ -44,6 +44,11 @@
 
         <include layout="@layout/include_flight_quick_filter" />
 
+        <com.tokopedia.flight.promo_chips.widget.FlightPromoChips
+            android:id="@+id/flight_promo_chips_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
