@@ -36,6 +36,8 @@ import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewMod
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -211,7 +213,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         viewModel.rechargeHomepageSectionSkeleton.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderSearchBarView(it.data)
-                is Fail -> adapter.showGetListError(it.throwable)
+                is Fail -> {
+                    adapter.showGetListError(it.throwable)
+                    digital_homepage_toolbar.hide()
+                }
             }
         })
 
@@ -229,6 +234,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun loadData() {
         adapter.showLoading()
+        digital_homepage_toolbar.hide()
         viewModel.getRechargeHomepageSectionSkeleton(
                 viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
                 swipe_refresh_layout.isRefreshing
@@ -395,6 +401,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun renderSearchBarView(rechargeHomepageSectionSkeleton: RechargeHomepageSectionSkeleton) {
+        digital_homepage_toolbar.show()
         digital_homepage_search_view.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
         digital_homepage_order_list.setOnClickListener {
             rechargeHomepageAnalytics.eventClickOrderList()
