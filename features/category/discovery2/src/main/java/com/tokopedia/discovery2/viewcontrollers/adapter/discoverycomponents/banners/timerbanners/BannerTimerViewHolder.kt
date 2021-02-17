@@ -17,8 +17,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.transform.FitCenter
+import com.tokopedia.media.loader.loadImageFitCenter
 
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView, fragment.viewLifecycleOwner) {
 
@@ -65,9 +64,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     private fun configureTimerUI() {
         bannerTimerViewModel.getComponent().let {
             if (!it.data.isNullOrEmpty()) {
-                bannerImageView.loadImage(it.data?.firstOrNull()?.backgroundUrlMobile ?: "") {
-                    transform(FitCenter())
-                }
+                bannerImageView.loadImageFitCenter(it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
                 timeTextFontColour = getTimerFontColour(it)
                 timeBoxColour = getTimerBoxColour(it)
                 setTimerUI(DAYS)
