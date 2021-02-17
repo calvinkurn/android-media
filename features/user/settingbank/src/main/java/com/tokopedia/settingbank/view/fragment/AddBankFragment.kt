@@ -355,12 +355,17 @@ class AddBankFragment : BaseDaggerFragment() {
                     bankSettingAnalytics.eventOnAutoNameSimpanClick()
                     openConfirmationPopUp()
                 } else if (checkAccountNameState is EditableAccountName) {
-                    val accountHolderName = etManualAccountHolderName.text.toString()
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
-                    if (accountHolderName.length in 3..128) {
-                        addAccountViewModel.validateEditedAccountInfo(bank.bankID,
-                                etBankAccountNumber.text.toString(),
-                                accountHolderName)
+                    val accountHolderName = etManualAccountHolderName.text.toString()
+                    if (isAccountNameLengthValid(accountHolderName)) {
+                        if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
+                            builder.setAccountName(accountHolderName, true)
+                            openConfirmationPopUp()
+                        } else {
+                            addAccountViewModel.validateEditedAccountInfo(bank.bankID,
+                                    etBankAccountNumber.text.toString(),
+                                    accountHolderName)
+                        }
                     } else {
                         showManualAccountNameError(
                                 getString(R.string.sbank_name_char_limit_error))
@@ -368,6 +373,13 @@ class AddBankFragment : BaseDaggerFragment() {
                 }
             } catch (e: Exception) {
             }
+    }
+
+    private fun isAccountNameLengthValid(accountHolderName: String): Boolean {
+        if (accountHolderName.length in 3..128) {
+            return true
+        }
+        return false
     }
 
     private fun openConfirmationPopUp() {

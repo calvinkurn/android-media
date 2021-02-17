@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.settingbank.domain.GQL_CHECK_ACCOUNT_NUMBER
-import com.tokopedia.settingbank.domain.model.CheckAccountData
 import com.tokopedia.settingbank.domain.model.CheckAccountResponse
 import com.tokopedia.settingbank.view.viewState.*
 import javax.inject.Inject
@@ -57,6 +56,7 @@ class CheckBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRepo
                 if (checkAccountData.isValidBankAccount) {
                     if(checkAccountData.allowedToEdit){
                         onSuccess(EditableAccountName(checkAccountData.accountHolderName ?: "",
+                                true,
                                 checkAccountData.message))
                     }else {
                         if (action == ACTION_VALIDATE) {
@@ -70,6 +70,7 @@ class CheckBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRepo
                     }
                 } else {
                     onSuccess(EditableAccountName(checkAccountData.accountHolderName ?: "",
+                            false,
                             checkAccountData.message))
                 }
             } else if (checkAccountData.successCode == 400) {
