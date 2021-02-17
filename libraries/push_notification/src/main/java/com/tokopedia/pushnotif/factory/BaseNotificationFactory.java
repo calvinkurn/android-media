@@ -201,10 +201,10 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Uri getRingtoneUri(Context context) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N){
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        } else {
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N){
             return RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
+        } else {
+            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
     }
 }
