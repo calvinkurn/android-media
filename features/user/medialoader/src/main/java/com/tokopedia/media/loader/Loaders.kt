@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.tokopedia.media.loader.LoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
@@ -19,7 +20,11 @@ fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
-fun ImageView.loadImage(url: String?) = call(url, Properties())
+fun ImageView.loadImage(url: String?) = this.loadImage(url) {}
+
+fun ImageView.loadImageFitCenter(url: String?) = this.loadImage(url) { transform(FitCenter()) }
+
+fun ImageView.loadImageWithoutPlaceholder(url: String?) = this.loadImage(url) { setPlaceHolder(-1) }
 
 inline fun ImageView.loadImage(
         url: String?,
