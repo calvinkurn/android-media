@@ -40,7 +40,7 @@ class PltHomeDynamicChannelPerformanceTest {
             super.beforeActivityLaunched()
             disableCoachMark()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
+            setupTotalSizeInterceptor(listOf("dynamicPosition", "getDynamicChannel"))
             setupRemoteConfig()
             setupIdlingResource()
             Thread.sleep(2000)
