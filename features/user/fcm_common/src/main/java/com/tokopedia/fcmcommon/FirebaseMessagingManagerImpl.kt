@@ -17,8 +17,16 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 ) : FirebaseMessagingManager {
 
     override fun onNewToken(newToken: String?) {
-        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
-        updateTokenOnServer(newToken)
+//        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
+        if(newToken == null) return
+        if(isNewToken(newToken)){
+            if(userSession.isLoggedIn){
+                updateTokenOnServer(newToken)
+            } else {
+                setDeviceId(newToken)
+            }
+        }
+
     }
 
     override fun isNewToken(token: String): Boolean {
