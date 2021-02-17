@@ -70,18 +70,13 @@ class PltHomeDynamicChannelPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    @Before
-    fun deleteDatabase() {
-        activityRule. activity.deleteDatabase("HomeCache.db")
-    }
-
     @Test
     fun testPageLoadTimePerformance() {
         onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
         activityRule.activity.finishAndRemoveTask()
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
