@@ -262,7 +262,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             Bundle bundle = new Bundle();
             bundle.putStringArrayList("EXTRA_IMAGE_URL_LIST", listLocation);
             bundle.putInt("EXTRA_DEFAULT_POSITION", position);
-            bundle.putInt("EXTRA_PRODUCT_ID", Integer.valueOf(element.getProductId()));
+            bundle.putString("EXTRA_PRODUCT_ID", element.getProductId());
             RouteManager.route(
                     getContext(),
                     bundle,
