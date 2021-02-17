@@ -2,28 +2,35 @@ package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.ui.viewholder.AnalyticsDebuggerViewHolder
 
-class DebuggerListAdapter() : RecyclerView.Adapter<DebuggerListViewHolder>() {
-
-    private val data: MutableList<GtmLogDB> = mutableListOf()
+class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebuggerListViewHolder {
         val vh = LayoutInflater.from(parent.context).inflate(AnalyticsDebuggerViewHolder.LAYOUT, parent, false)
         return DebuggerListViewHolder(vh)
     }
 
-    override fun getItemCount(): Int = data.size
-
     override fun onBindViewHolder(holder: DebuggerListViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(getItem(position))
     }
 
-    fun submitList(logs: List<GtmLogDB>) {
-        data.clear()
-        data.addAll(logs)
-        notifyDataSetChanged()
+    override fun submitList(list: List<GtmLogDB>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
+
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<GtmLogDB>() {
+            override fun areItemsTheSame(oldItem: GtmLogDB, newItem: GtmLogDB): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: GtmLogDB, newItem: GtmLogDB): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

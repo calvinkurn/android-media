@@ -13,27 +13,27 @@ import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewMo
 const val GTM_LOG_TABLE_NAME = "gtm_log"
 
 @Entity(tableName = GTM_LOG_TABLE_NAME)
-class GtmLogDB {
+data class GtmLogDB (
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    var id: Long = 0,
 
     @ColumnInfo(name = "data")
-    var data: String? = null
+    var data: String? = null,
 
     @ColumnInfo(name = "name")
-    var name: String? = null
+    var name: String? = null,
 
     @ColumnInfo(name = "category")
-    var category: String? = null
+    var category: String? = null,
 
     @ColumnInfo(name = "timestamp")
-    var timestamp: Long = 0
+    var timestamp: Long = 0,
 
     @ColumnInfo(name = "source")
     @AnalyticsSource
     var source: String? = null
-}
+)
 
 fun GtmLogDB.toUiClass(): AnalyticsDebuggerViewModel {
     return AnalyticsDebuggerViewModel(
