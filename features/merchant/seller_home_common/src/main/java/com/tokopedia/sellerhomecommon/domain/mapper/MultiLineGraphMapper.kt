@@ -53,17 +53,18 @@ class MultiLineGraphMapper @Inject constructor() {
     }
 
     private fun getLinePeriods(lineMetricModel: MultiTrendLineMetricModel): LinePeriodUiModel {
-        val currentPeriodeSize = lineMetricModel.line?.currentPeriode?.size ?: 0
-        val lastPeriodeSize = lineMetricModel.line?.lastPeriode?.size ?: 0
-        val lowestSize = currentPeriodeSize.coerceAtMost(lastPeriodeSize)
+        val empty = 0
+        val currentPeriodeAxisSize = lineMetricModel.line?.currentPeriode?.size ?: empty
+        val lastPeriodeAxisSize = lineMetricModel.line?.lastPeriode?.size ?: empty
+        val lowestSize = currentPeriodeAxisSize.coerceAtMost(lastPeriodeAxisSize)
 
-        val currentPeriode = if (lowestSize != 0) {
+        val currentPeriode = if (lowestSize != empty) {
             lineMetricModel.line?.currentPeriode.takeOrDefault(lowestSize)
         } else {
             lineMetricModel.line?.currentPeriode.orEmpty()
         }
 
-        val lastPeriode = if (lowestSize != 0) {
+        val lastPeriode = if (lowestSize != empty) {
             lineMetricModel.line?.lastPeriode.takeOrDefault(lowestSize)
         } else {
             lineMetricModel.line?.lastPeriode.orEmpty()
