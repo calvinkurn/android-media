@@ -150,10 +150,6 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFirstRecommendation()
 
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
-
         val result = viewModel.firstRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Success(expectedResult))
     }
@@ -167,10 +163,6 @@ class HomeAccountUserViewModelTest {
         } returns expectedResult
 
         viewModel.getRecommendation(testPage)
-
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
 
         val result = viewModel.getRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Success(expectedResult.recommendationItemList))
@@ -198,10 +190,6 @@ class HomeAccountUserViewModelTest {
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)
-
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
 
         val result = viewModel.getRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
