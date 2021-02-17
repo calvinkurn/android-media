@@ -52,7 +52,8 @@
                 android:layout_width="@dimen/product_card_flashsale_width"
                 android:clickable="true"
                 android:focusable="true"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/content_desc_mix_left" />
 
         </FrameLayout>
 

@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="@+id/deals_count_down"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.tokopedia.design.countdown.CountDownView
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/deals_count_down"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_width="0dp"

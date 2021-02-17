@@ -11,7 +11,8 @@
         android:id="@+id/header_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/sprint_card_item" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/channel_title_container"
