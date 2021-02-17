@@ -256,11 +256,10 @@ class DynamicChannelHeaderView: FrameLayout {
     }
 
     private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
-        val backgroundColor = "#0000ff"
-        if (backgroundColor.isNotEmpty()) {
+        if (channel.channelHeader.backColor.isNotEmpty()) {
             stubSeeAllButton?.gone()
             stubSeeAllButtonUnify?.gone()
-            titleContainer.setBackgroundColor(Color.parseColor(backgroundColor))
+            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
