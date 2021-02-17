@@ -13,9 +13,9 @@ data class StatusMessage(
         @SerializedName("status")
         @Expose
         val status: String = "",
-        @SerializedName("message")
+        @SerializedName("error_message")
         @Expose
-        val message: String = ""
+        val errorMessage: String = ""
 ) {
-        var isSuccess = status == "OK" && message == "success"
+        var isSuccess = status == "true" && errorMessage.isEmpty()
 }
