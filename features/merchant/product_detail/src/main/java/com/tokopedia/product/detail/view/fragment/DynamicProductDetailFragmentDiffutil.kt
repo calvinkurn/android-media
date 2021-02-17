@@ -361,6 +361,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
         }
+        sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
@@ -978,7 +979,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onVideoFullScreenClicked() {
         activity?.let { activity ->
             productVideoCoordinator?.let {
-                sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
                 val trackerData = viewModel.getDynamicProductInfoP1
                 it.pauseVideoAndSaveLastPosition()
                 sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
@@ -1271,7 +1271,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
+                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: "",
+                viewModel.getDynamicProductInfoP1?.isProductParent ?: false
         )
 
         /*
@@ -1696,7 +1697,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.getP2RatesEstimateByProductId(),
                     viewModel.getMultiOriginByProductId().isFulfillment,
                     viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
+                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: "",
+                    viewModel.getDynamicProductInfoP1?.isProductParent ?: false
             )
         }
 
@@ -1888,9 +1890,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun openShipmentClickedBottomSheet() {
         viewModel.getDynamicProductInfoP1?.let {
-            if (sharedViewModel == null) {
-                sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
-            }
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     it.basic.weight.toFloat(),
                     viewModel.getShopInfo().shopCore.domain,

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -27,6 +28,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLoadingContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shimmer_shipment_container)
     private val shipmentContentContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shipment_container)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
+    private val shipmentSeparator: View? = itemView.findViewById(R.id.pdp_shipment_separator)
 
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
@@ -40,6 +42,17 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
+
+        if (element.shouldShowShipmentError && element.isProductParent) {
+            // if product parent, we dont want to show this component
+            shipmentSeparator?.gone()
+            itemView.layoutParams.height = 0
+            return
+        } else {
+            shipmentSeparator?.show()
+            itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
         when {
             element.shouldShowShipmentError -> {
                 // data rates not found
@@ -146,4 +159,5 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.show()
     }
+
 }

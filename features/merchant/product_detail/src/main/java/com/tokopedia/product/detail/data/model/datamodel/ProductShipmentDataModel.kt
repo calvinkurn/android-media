@@ -15,7 +15,8 @@ data class ProductShipmentDataModel(
         var isFullfillment: Boolean = false,
         var freeOngkirUrl: String = "",
         var isCod: Boolean = false,
-        var shouldShowShipmentError: Boolean = false
+        var shouldShowShipmentError: Boolean = false,
+        var isProductParent: Boolean = false
 ) : DynamicPdpDataModel {
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
@@ -33,6 +34,7 @@ data class ProductShipmentDataModel(
                     && isCod == newData.isCod
                     && freeOngkirUrl == newData.freeOngkirUrl
                     && shouldShowShipmentError == newData.shouldShowShipmentError
+                    && isProductParent == newData.isProductParent
         } else {
             false
         }

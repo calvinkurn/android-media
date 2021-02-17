@@ -1,10 +1,8 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
 import android.app.Dialog
-import android.os.Bundle
-import android.util.Log
+import android.content.DialogInterface
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -12,31 +10,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.KG
-import com.tokopedia.product.detail.data.util.LABEL_GRAM
-import com.tokopedia.product.detail.data.util.LABEL_KG
-import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
+import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
-import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
-import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
-import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.bs_product_shipping_rate_estimate.view.*
 import javax.inject.Inject
 
 
@@ -51,11 +38,14 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private var viewModel: RatesEstimationBoeViewModel? = null
     private var adapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
+    private val sharedViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
+    }
 
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         val view = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
-        setupBottomSheet(dialog)
+        setupBottomSheet(dialog, view)
 
         dialog.run {
             setupRecyclerView(view)
@@ -66,7 +56,11 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         }
     }
 
-    private fun setupBottomSheet(dialog: Dialog) {
+    private fun setupBottomSheet(dialog: Dialog, view: View) {
+        val closeBtn = view.findViewById<IconUnify>(R.id.shipment_bottom_sheet_close)
+        closeBtn.setOnClickListener {
+            dismiss()
+        }
         val dialogFragment = dialog as BottomSheetDialog
         dialogFragment.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialogFragment.behavior.skipCollapsed = true
@@ -96,7 +90,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
 
     private fun observeData() {
-        val sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
         sharedViewModel.rateEstimateRequest.observeOnce(this) {
             viewModel?.setRatesRequest(it)
         }
