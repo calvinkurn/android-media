@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
@@ -70,11 +69,7 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun renderImage(element: HomeWidget.ContentItemTab?) {
-        element?.imageUrl?.let {
-            itemView.icon.loadImage(it) {
-                cacheStrategy = MediaCacheStrategy.RESOURCE
-            }
-        }
+        element?.imageUrl?.let { itemView.icon.loadImage(it) }
     }
 
     open fun renderProduct(element: HomeWidget.ContentItemTab?) {

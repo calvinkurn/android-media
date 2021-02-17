@@ -102,7 +102,6 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
             setErrorDrawable(R.drawable.placeholder_grey)
         }
     }
@@ -110,7 +109,6 @@ internal fun ImageView.loadImage(url: String?) {
 internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
             setErrorDrawable(R.drawable.placeholder_grey)
             listener({ _, _ ->
                 state.invoke(true)
@@ -123,7 +121,6 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
 internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
             setErrorDrawable(R.drawable.placeholder_grey)
             setPlaceHolder(-1)
             listener({ _, _ ->
@@ -138,7 +135,6 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
 internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
             setErrorDrawable(R.drawable.placeholder_grey)
             transform(CenterCrop())
             setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
@@ -146,18 +142,9 @@ internal fun ImageView.loadImageRounded(url: String?) {
     }
 }
 
-internal fun ImageView.loadIcon(url: String?) {
-    if (url != null && url.isNotEmpty()) {
-        this.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
-        }
-    }
-}
-
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
     if (url != null && url.isNotEmpty()) {
         loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
             setErrorDrawable(R.drawable.placeholder_grey)
             transform(TopRightCrop())
         }

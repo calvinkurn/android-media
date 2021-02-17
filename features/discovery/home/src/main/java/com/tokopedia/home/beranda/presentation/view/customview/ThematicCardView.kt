@@ -31,8 +31,6 @@ import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Label
@@ -317,11 +315,7 @@ class ThematicCardView : BaseCustomView {
     }
 
     fun setImageProductUrl(imageUrl: String) {
-        imageProduct?.let {
-            it.loadImage(imageUrl) {
-                cacheStrategy = MediaCacheStrategy.RESOURCE
-            }
-        }
+        imageProduct?.let { it.loadImage(imageUrl) }
     }
 
     fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -10,11 +10,10 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.transform.RoundedCorners
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
-import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -32,7 +31,6 @@ fun ImageView.loadGif(url: String) = loadAsGif(url)
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
             listener?.onLoaded(resource, dataSource)
@@ -47,8 +45,6 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transform(FitCenter())
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
@@ -62,8 +58,6 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadIcon(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transform(FitCenter())
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
@@ -76,8 +70,6 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
@@ -89,8 +81,6 @@ fun ImageView.loadImageRoundedWithoutBlurHash(url: String, roundedRadius: Int, f
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         useBlurHash(false)
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
@@ -109,7 +99,6 @@ fun ImageView.loadMiniImage(
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
         overrideSize(Resize(width, height))
         listener({ resource, dataSource ->
             onLoaded()
@@ -122,25 +111,17 @@ fun ImageView.loadMiniImage(
 
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
         setPlaceHolder(R.drawable.placeholder_grey)
         transforms(listOf(RoundedCorners(15), CenterCrop()))
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
     }
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
-    this.loadImage(url) {
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
-        setPlaceHolder(-1)
-    }
+    this.loadImageWithoutPlaceholder(url)
 }
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
-        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
-        setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transform(CenterCrop())
         setPlaceHolder(placeholder)
     }

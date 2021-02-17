@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.baseList)
     // Unify
