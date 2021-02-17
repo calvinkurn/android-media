@@ -743,11 +743,7 @@ public class TopChatAnalytics {
         );
         itemBundle.putString(EE_PARAM_SHOP_NAME, setValueOrDefault(shopName));
         itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(""));
-        itemBundle.putString(
-                EE_PARAM_CATEGORY_ID, setValueOrDefault(
-                        String.valueOf(element.getCampaignId())
-                )
-        );
+        itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(""));
         itemBundle.putInt(EE_PARAM_QUANTITY, element.getMinOrder());
         itemBundle.putDouble(EE_PARAM_PRICE, element.getPriceInt());
         itemBundle.putString(EE_PARAM_PICTURE, element.getProductImage());

@@ -80,6 +80,10 @@ data class ProductData(
         }
     }
 
+    fun hasFreeShipping(): Boolean {
+        return shop.freeShippingIcon.isNotEmpty()
+    }
+
     companion object {
         const val BUTTON_TYPE_BUY = 0
         const val BUTTON_TYPE_REMINDER = 1
