@@ -2,6 +2,7 @@ package com.tokopedia.orderhistory.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.FileUtil
 import com.tokopedia.orderhistory.TestCoroutineContextDispatcher
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
@@ -24,6 +25,7 @@ class OrderHistoryViewModelTest {
     private val testDispatcher: TestCoroutineContextDispatcher = TestCoroutineContextDispatcher()
     private val productHistoryUseCase: GetProductOrderHistoryUseCase = mockk(relaxed = true)
     private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
+    private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
     private lateinit var viewModel: OrderHistoryViewModel
 
@@ -39,7 +41,12 @@ class OrderHistoryViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = OrderHistoryViewModel(testDispatcher, productHistoryUseCase, addWishListUseCase)
+        viewModel = OrderHistoryViewModel(
+                testDispatcher,
+                productHistoryUseCase,
+                addWishListUseCase,
+                addToCartUseCase
+        )
     }
 
     @Test

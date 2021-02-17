@@ -122,6 +122,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     override fun onClickBuyAgain(product: Product) {
         val buyParam = getAtcBuyParam(product)
         viewModel.addProductToCart(buyParam, {
+            analytic.trackSuccessDoBuy(product, it)
             RouteManager.route(context, ApplinkConst.CART)
         }, { msg ->
             showErrorMessage(msg)
