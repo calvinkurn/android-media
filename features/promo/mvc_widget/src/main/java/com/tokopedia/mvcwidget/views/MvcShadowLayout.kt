@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
+import com.tokopedia.promoui.common.R
 import com.tokopedia.promoui.common.dpToPx
 
 class MvcShadowLayout @JvmOverloads constructor(
@@ -16,9 +18,9 @@ class MvcShadowLayout @JvmOverloads constructor(
     var xOffsetBottomLeft = -xOffsetBottomRight
 
 
-    var yOffsetTopRight = dpToPx(5)          //SeekBarThree
+    var yOffsetTopRight = dpToPx(9)          //SeekBarThree
     var yOffsetTopLeft = yOffsetTopRight
-    var yOffsetBottomLeft = -dpToPx(4)                          //SeekBarFour
+    var yOffsetBottomLeft = -dpToPx(8)                          //SeekBarFour
     var yOffsetBottomRight = yOffsetBottomLeft
 
     override fun readAttrs(attrs: AttributeSet?) {
@@ -26,6 +28,7 @@ class MvcShadowLayout @JvmOverloads constructor(
         enableShadow = true
         shadowStrokeWidth = dpToPx(3)
         blurRadius = dpToPx(8)
+        shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
     }
 
     override fun drawShadow(canvas: Canvas) {
