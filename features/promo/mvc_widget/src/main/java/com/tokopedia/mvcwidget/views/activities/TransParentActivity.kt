@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget.views.activities
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -10,6 +11,7 @@ import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSession
 
 class TransParentActivity : BaseActivity() {
@@ -34,6 +36,11 @@ class TransParentActivity : BaseActivity() {
 
     fun showMvcDetailDialog() {
         val bottomSheet = BottomSheetUnify()
+        bottomSheet.isDragable = true
+        bottomSheet.isHideable = true
+        bottomSheet.showKnob = true
+        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels/2).toDp()
+        bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
 
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
         val childView = MvcDetailView(this)
@@ -42,7 +49,7 @@ class TransParentActivity : BaseActivity() {
         childView.show(shopId, false)
         bottomSheet.setShowListener {
             val imageMargin = dpToPx(20).toInt()
-            bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)
+            bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
             bottomSheet.bottomSheetClose.setImageResource(R.drawable.mvc_dialog_close)
             bottomSheet.bottomSheetClose.setMargin(imageMargin, 0, dpToPx(20).toInt(), 0)
         }
