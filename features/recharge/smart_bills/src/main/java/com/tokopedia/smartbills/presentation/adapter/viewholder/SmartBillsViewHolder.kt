@@ -34,7 +34,19 @@ class SmartBillsViewHolder(val view: View,
     override fun bind(element: RechargeBills) {
         super.bind(element)
         with(view) {
-            tv_smart_bills_item_title.text = String.format("%s - %s", element.categoryName, element.productName)
+
+            val title = when{
+                (element.categoryName.isNotEmpty() && element.productName.isNotEmpty()) -> String.format("%s - %s", element.categoryName, element.productName)
+                (element.categoryName.isNullOrEmpty() && element.productName.isNotEmpty()) -> element.productName
+                (element.categoryName.isNotEmpty() && element.productName.isNullOrEmpty()) -> element.categoryName
+                else -> ""
+            }
+
+            tv_smart_bills_item_title.apply {
+                if (title.isNotEmpty()) text = title
+                else gone()
+            }
+
             val description = if(element.billName.isNotEmpty()){
                 String.format(getString(R.string.smart_bills_item_description), element.clientNumber)
             }else {
@@ -44,13 +56,13 @@ class SmartBillsViewHolder(val view: View,
             tv_smart_bills_item_description_bill_name.apply {
                 if (element.billName.isNotEmpty()){
                     text = element.billName
-                } else {
-                    gone()
-                }
+                } else gone()
             }
 
             tv_smart_bills_item_description_number.apply {
-                text = description
+                if(element.clientNumber.isNotEmpty()){
+                    text = description
+                } else gone()
             }
 
             tv_smart_bills_item_price.text = element.amountText
