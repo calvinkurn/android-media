@@ -194,7 +194,7 @@ object ShopPageProductListMapper {
 
     fun mapRestrictionEngineResponseToModel(restrictionEngineResponse: RestrictionEngineDataResponse?): RestrictionEngineModel {
         return RestrictionEngineModel().apply {
-            productId = restrictionEngineResponse?.productId ?: 0
+            productId = restrictionEngineResponse?.productId.toIntOrZero()
             status = restrictionEngineResponse?.status ?: ""
             val list : MutableList<Actions> = mutableListOf()
             restrictionEngineResponse?.actions?.map {
