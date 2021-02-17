@@ -1488,7 +1488,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1505,7 +1505,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1542,7 +1542,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnBoarding()
         })
