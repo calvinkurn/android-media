@@ -70,17 +70,18 @@ class MultiLineGraphMapper @Inject constructor() {
             lineMetricModel.line?.lastPeriode.orEmpty()
         }
 
+        val minValueOfY = 0f
         return LinePeriodUiModel(
                 currentPeriod = currentPeriode.map { period ->
                     XYAxisUiModel(
-                            yVal = period.yVal ?: 0f,
+                            yVal = period.yVal ?: minValueOfY,
                             yLabel = period.yLabel.orEmpty(),
                             xLabel = period.xLabel.orEmpty()
                     )
                 },
                 lastPeriod = lastPeriode.map { period ->
                     XYAxisUiModel(
-                            yVal = period.yVal ?: 0f,
+                            yVal = period.yVal ?: minValueOfY,
                             yLabel = period.yLabel.orEmpty(),
                             xLabel = period.xLabel.orEmpty()
                     )
