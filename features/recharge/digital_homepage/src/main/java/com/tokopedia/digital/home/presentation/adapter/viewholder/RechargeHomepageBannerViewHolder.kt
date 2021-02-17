@@ -39,8 +39,9 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     }
 
     private fun initSeeAllPromo(section: RechargeHomepageSections.Section) {
-        if (section.applink.isNotEmpty()) {
+        if (section.textLink.isNotEmpty()) {
             itemView.see_all_promo.show()
+            itemView.see_all_promo.text = section.textLink
             itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
         } else {
             itemView.see_all_promo.hide()
