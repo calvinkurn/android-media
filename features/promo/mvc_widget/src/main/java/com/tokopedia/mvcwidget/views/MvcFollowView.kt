@@ -117,14 +117,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     }
 
     fun setData(followWidget: FollowWidget) {
-        //todo Rahul remove this hardcoded text
         val t = followWidget.content ?: ""
-//        val t = "<b>Jadi member toko untuk dapat kupon:</b>" +
-//                "<ul>" +
-//                "  <li>Cashback 10% hingga Rp500.000</li>" +
-//                "  <li>Cashback 10% hingga Rp500.000</li>" +
-//                "  <li>Cashback 10% hingga Rp500.000</li>" +
-//                "</ul>"
         followWidget.content?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 tvTitle.text = HtmlUtil.fromHtml(t).trim()
@@ -150,7 +143,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             return
         }
         val bottomsheet = BottomSheetUnify()
-        bottomsheet.setTitle("Tentang Toko Member")
+        bottomsheet.setTitle(context.getString(R.string.mvc_tentang_toko_member))
         bottomsheet.showCloseIcon = false
         bottomsheet.showKnob = true
         bottomsheet.isDragable = true
@@ -160,7 +153,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
 
         val child = View.inflate(activity, R.layout.mvc_tokomember_bm, null)
         val itemViewList = arrayListOf<View>()
-        followWidget.membershipHowTo!!.forEach { memberShipItem ->
+        followWidget.membershipHowTo.forEach { memberShipItem ->
             if (memberShipItem != null) {
                 val item = View.inflate(activity, R.layout.mvc_carousel_item, null)
                 val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

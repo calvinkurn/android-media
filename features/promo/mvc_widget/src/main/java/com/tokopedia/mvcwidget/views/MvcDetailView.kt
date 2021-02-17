@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -50,6 +51,7 @@ class MvcDetailView @JvmOverloads constructor(
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
+        rv.layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
 
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
@@ -174,16 +176,19 @@ class MvcDetailView @JvmOverloads constructor(
     }
 
     fun setupData(response: TokopointsCatalogMVCListResponse) {
+        var removeTickerTopMargin = false
         val tempList = arrayListOf<MvcListItem>()
         response.data?.followWidget?.let {
             if (it.isShown == true) {
                 tempList.add(it)
+            }else{
+                removeTickerTopMargin = true
             }
         }
 
         val shopName = response.data?.shopName
         if (!shopName.isNullOrEmpty()) {
-            tempList.add(TickerText(shopName))
+            tempList.add(TickerText(shopName, removeTickerTopMargin))
         }
 
         response.data?.catalogList?.forEach {
