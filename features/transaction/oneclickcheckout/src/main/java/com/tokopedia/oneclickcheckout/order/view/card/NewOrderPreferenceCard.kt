@@ -175,7 +175,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+                    tvShippingCourier?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
