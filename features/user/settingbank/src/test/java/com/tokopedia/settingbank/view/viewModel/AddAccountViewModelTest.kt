@@ -56,42 +56,95 @@ class AddAccountViewModelTest {
         assert(viewModel.addBankAccountLiveData.value is Fail)
     }
 
-/*
-
     @Test
-    fun `checkAccountNumber Success`() {
-        val result = mockk<OnAccountCheckSuccess>()
-        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+    fun `checkAccountNumber success`() {
+        val result = mockk<EditableAccountName>()
+        coEvery { checkBankAccountUseCase.get().checkAccountNumber(any(), any(), any(), any()) }
                 .coAnswers {
-                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                    thirdArg<(CheckAccountNameState) -> Unit>().invoke(result)
                 }
-        viewModel.checkAccountNumber(1, "")
-        assert(viewModel.accountCheckState.value is OnAccountCheckSuccess)
+        viewModel.checkAccountNumber(120L, "")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
     }
 
     @Test
-    fun `checkAccountNumber Failed with error message`() {
-        val result = mockk<OnErrorInAccountNumber>()
-        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+    fun `checkAccountNumber success with error`() {
+        val result = mockk<AccountNameCheckError>()
+        coEvery { checkBankAccountUseCase.get().checkAccountNumber(any(), any(), any(), any()) }
                 .coAnswers {
-                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                    thirdArg<(CheckAccountNameState) -> Unit>().invoke(result)
                 }
-        viewModel.checkAccountNumber(1, "")
-        assert(viewModel.accountCheckState.value is OnErrorInAccountNumber)
+        viewModel.checkAccountNumber(120L, "")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
     }
 
     @Test
-    fun `checkAccountNumber GQL Request Failed`() {
-        val result = mockk<OnCheckAccountError>()
-        coEvery { checkBankAccountUseCase.get().checkBankAccount(any(), any(), any()) }
+    fun `checkAccountNumber success with validated account`() {
+        val result = mockk<AccountNameFinalValidationSuccess>()
+        coEvery { checkBankAccountUseCase.get().checkAccountNumber(any(), any(), any(), any()) }
                 .coAnswers {
-                    thirdArg<(AccountCheckState) -> Unit>().invoke(result)
+                    thirdArg<(CheckAccountNameState) -> Unit>().invoke(result)
                 }
-        viewModel.checkAccountNumber(1, "")
-        assert(viewModel.accountCheckState.value is OnCheckAccountError)
+        viewModel.checkAccountNumber(120L, "")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
     }
-*/
 
+    @Test
+    fun `checkAccountNumber Fail`() {
+        val result = mockk<Throwable>()
+        coEvery { checkBankAccountUseCase.get().checkAccountNumber(any(), any(), any(), any()) }
+                .coAnswers {
+                    lastArg<(Throwable) -> Unit>().invoke(result)
+                }
+        viewModel.checkAccountNumber(120L, "")
+        assert(viewModel.checkAccountDataLiveData.value is Fail)
+    }
+
+    @Test
+    fun `validateEditedAccountInfo success`() {
+        val result = mockk<EditableAccountName>()
+        coEvery { checkBankAccountUseCase.get().validateAccountNumber(any(), any(), any(), any(), any())  }
+                .coAnswers {
+                    val fourthArg = arg<(CheckAccountNameState) -> Unit>(n = 3)
+                    fourthArg.invoke(result)
+                }
+        viewModel.validateEditedAccountInfo(120L, "","")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
+    }
+    @Test
+    fun `validateEditedAccountInfo success with error`() {
+        val result = mockk<AccountNameCheckError>()
+        coEvery { checkBankAccountUseCase.get().validateAccountNumber(any(), any(), any(), any(), any())  }
+                .coAnswers {
+                    val fourthArg = arg<(CheckAccountNameState) -> Unit>(n = 3)
+                    fourthArg.invoke(result)
+                }
+        viewModel.validateEditedAccountInfo(120L, "","")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
+    }
+
+    @Test
+    fun `validateEditedAccountInfo success with validated account`() {
+        val result = mockk<AccountNameFinalValidationSuccess>()
+        coEvery { checkBankAccountUseCase.get().validateAccountNumber(any(), any(), any(), any(), any())  }
+                .coAnswers {
+                    val fourthArg = arg<(CheckAccountNameState) -> Unit>(n = 3)
+                    fourthArg.invoke(result)
+                }
+        viewModel.validateEditedAccountInfo(120L, "","")
+        assert(viewModel.checkAccountDataLiveData.value is Success)
+    }
+
+    @Test
+    fun `validateEditedAccountInfo Fail`() {
+        val result = mockk<Throwable>()
+        coEvery { checkBankAccountUseCase.get().validateAccountNumber(any(), any(), any(), any(), any()) }
+                .coAnswers {
+                    lastArg<(Throwable) -> Unit>().invoke(result)
+                }
+        viewModel.validateEditedAccountInfo(120L, "","")
+        assert(viewModel.checkAccountDataLiveData.value is Fail)
+    }
 
     @Test
     fun `loadTermsAndCondition Success`() {
