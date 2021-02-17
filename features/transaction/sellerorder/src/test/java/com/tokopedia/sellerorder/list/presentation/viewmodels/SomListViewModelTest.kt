@@ -761,4 +761,11 @@ class SomListViewModelTest {
         viewModel.isMultiSelectEnabled = mockMultiSelectEnabled
         assertEquals(viewModel.isMultiSelectEnabled, mockMultiSelectEnabled)
     }
+
+    @Test
+    fun setSearchParamTest() {
+        val searchParam = "Produk pembasmi hama"
+        viewModel.setSearchParam(searchParam)
+        assertEquals(viewModel.getDataOrderListParams().search, searchParam)
+    }
 }

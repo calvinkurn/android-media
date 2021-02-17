@@ -8,6 +8,7 @@ import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.helper.TestHtmlTextTransformer
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -15,7 +16,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -24,7 +24,6 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.assertj.core.api.Assertions
@@ -74,6 +73,8 @@ class PlayViewModelTest {
     private val mockCartCount = 1
     private val mockProductTagging = modelBuilder.buildProductTagging()
 
+    private val playUiMapper: PlayUiMapper = PlayUiMapper(TestHtmlTextTransformer())
+
     private lateinit var playViewModel: PlayViewModel
 
     @Before
@@ -95,7 +96,8 @@ class PlayViewModelTest {
                 userSession,
                 dispatchers,
                 mockk(relaxed = true),
-                mockk(relaxed = true)
+                mockk(relaxed = true),
+                playUiMapper
         )
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
@@ -324,7 +326,7 @@ class PlayViewModelTest {
     fun `given product tag item use case is success, when get product tag item, then product sheet content should have correct value`() {
         val expectedModel = modelBuilder.buildProductTagging()
         val expectedResult = PlayResult.Success(
-                PlayUiMapper.mapProductSheet(
+                playUiMapper.mapProductSheet(
                         mockChannel.configuration.pinnedProduct.titleBottomSheet,
                         mockChannel.partner.id.toLongOrZero(),
                         expectedModel)
@@ -371,7 +373,7 @@ class PlayViewModelTest {
         coEvery { userSession.profilePicture } returns "picture"
 
         val messages = "mock chat"
-        val expectedModel = PlayUiMapper.mapPlayChat(userSession.userId,
+        val expectedModel = playUiMapper.mapPlayChat(userSession.userId,
                 PlayChat(
                         message = messages,
                         user = PlayChat.UserData(
@@ -398,7 +400,7 @@ class PlayViewModelTest {
         coEvery { userSession.profilePicture } returns "picture"
 
         val messages = "mock chat"
-        val expectedModel = PlayUiMapper.mapPlayChat(userSession.userId,
+        val expectedModel = playUiMapper.mapPlayChat(userSession.userId,
                 PlayChat(
                         message = messages,
                         user = PlayChat.UserData(

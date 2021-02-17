@@ -207,9 +207,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -1128,7 +1125,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
                 if (isAffiliate && productInfo?.basic?.productID?.isNotEmpty() == true) {
-                    productDetailTracking.eventClickWishlistOnAffiliate(
+                    DynamicProductDetailTracking.Click.eventClickWishlistOnAffiliate(
                             viewModel.userId,
                             productInfo.basic.productID)
                 }
@@ -1199,7 +1196,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToReviewImagePreview() {
-        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
@@ -3096,18 +3093,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 setSecondaryCTAText(result.errorReporter.texts.cancelButton)
                 setSecondaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickCloseOnHelpPopUpAtc()
                 }
                 setPrimaryCTAText(result.errorReporter.texts.submitButton)
                 setPrimaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
                     viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragment::onErrorSubmitHelpTicket, this@DynamicProductDetailFragment::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
-            productDetailTracking.eventViewHelpPopUpWhenAtc()
+            DynamicProductDetailTracking.Impression.eventViewHelpPopUpWhenAtc()
         }
     }
 

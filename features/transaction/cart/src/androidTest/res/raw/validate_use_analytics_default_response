@@ -1,0 +1,164 @@
+[
+  {
+    "data": {
+      "validate_use_promo_revamp": {
+        "status": "OK",
+        "message": [],
+        "error_code": "200",
+        "code": "200000",
+        "promo": {
+          "global_success": true,
+          "message": {
+            "state": "green",
+            "color": "#ade3af",
+            "text": "Kamu berpotensi dapat cashback sebesar Rp200.000 setelah pesanan selesai"
+          },
+          "success": true,
+          "codes": [
+            "CVGC598GS30H02JEEWF"
+          ],
+          "promo_code_id": 0,
+          "title_description": "Cashback Tokopedia hingga Rp200.000",
+          "discount_amount": 0,
+          "cashback_wallet_amount": 200000,
+          "cashback_advocate_referral_amount": 0,
+          "cashback_voucher_description": "",
+          "invoice_description": "",
+          "gateway_id": "",
+          "is_coupon": 1,
+          "coupon_description": "",
+          "is_tokopedia_gerai": false,
+          "voucher_orders": [],
+          "benefit_details": [
+            {
+              "code": "",
+              "type": "",
+              "order_id": 0,
+              "unique_id": "",
+              "discount_amount": 0,
+              "discount_details": [],
+              "cashback_amount": 0,
+              "cashback_details": [],
+              "promo_type": {
+                "is_bebas_ongkir": false,
+                "is_exclusive_shipping": false
+              },
+              "benefit_product_details": []
+            },
+            {
+              "code": "CVGC598GS30H02JEEWF",
+              "type": "",
+              "order_id": 1,
+              "unique_id": "1060299-0-1240295",
+              "discount_amount": 0,
+              "discount_details": [],
+              "cashback_amount": 200000,
+              "cashback_details": [
+                {
+                  "amount_idr": 200000,
+                  "amount_points": 200000,
+                  "benefit_type": "cashback"
+                }
+              ],
+              "promo_type": {
+                "is_bebas_ongkir": false,
+                "is_exclusive_shipping": false
+              },
+              "benefit_product_details": [
+                {
+                  "product_id": 0,
+                  "cashback_amount": 0,
+                  "cashback_amount_idr": 0,
+                  "discount_amount": 0,
+                  "is_bebas_ongkir": false
+                },
+                {
+                  "product_id": 1443779879,
+                  "cashback_amount": 0,
+                  "cashback_amount_idr": 0,
+                  "discount_amount": 0,
+                  "is_bebas_ongkir": false
+                }
+              ]
+            }
+          ],
+          "benefit_summary_info": {
+            "final_benefit_text": "Total benefit anda: ",
+            "final_benefit_amount": 200000,
+            "final_benefit_amount_str": "Rp200.000",
+            "summaries": [
+              {
+                "description": "Total cashback: ",
+                "type": "cashback",
+                "amount_str": "Rp200.000",
+                "amount": 200000,
+                "section_name": "Cashback",
+                "section_description": "",
+                "details": [
+                  {
+                    "section_name": "",
+                    "description": "Total Cashback OVO Points ",
+                    "type": "ovo_points",
+                    "amount": 200000,
+                    "amount_str": "Rp200.000",
+                    "points": 200000,
+                    "points_str": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "clashing_info_detail": {
+            "clash_message": "",
+            "clash_reason": "",
+            "is_clashed_promos": false,
+            "options": []
+          },
+          "tracking_details": [
+            {
+              "product_id": 1443779879,
+              "promo_codes_tracking": "CVGC",
+              "promo_details_tracking": "G:1:200000:green"
+            }
+          ],
+          "tokopoints_detail": {
+            "conversion_rate": {
+              "rate": 0,
+              "points_coefficient": 0,
+              "external_currency_coefficient": 0
+            }
+          },
+          "ticker_info": {
+            "unique_id": "",
+            "status_code": 0,
+            "message": ""
+          },
+          "additional_info": {
+            "message_info": {
+              "message": "Kamu bisa hemat Rp200.000",
+              "detail": "1 promo dipakai"
+            },
+            "error_detail": {
+              "message": ""
+            },
+            "empty_cart_info": {
+              "image_url": "",
+              "message": "",
+              "detail": ""
+            },
+            "usage_summaries": [
+              {
+                "description": "Cashback OVO Points",
+                "type": "cashback",
+                "amount_str": "200.000",
+                "amount": 200000
+              }
+            ],
+            "sp_ids": [],
+            "promo_sp_ids": []
+          }
+        }
+      }
+    }
+  }
+]
