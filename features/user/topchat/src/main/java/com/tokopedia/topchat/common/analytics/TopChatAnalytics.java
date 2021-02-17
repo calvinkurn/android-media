@@ -50,6 +50,7 @@ import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalyti
 import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE;
 import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_URL;
 import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_BEBAS_ONGKIR;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_ITEMS;
 import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER;
 
 /**
@@ -761,7 +762,7 @@ public class TopChatAnalytics {
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL);
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, eventAction);
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, element.getAtcDimension40(sourcePage));
-        eventDataLayer.putParcelableArrayList("items", new ArrayList<Bundle>() {{
+        eventDataLayer.putParcelableArrayList(EE_VALUE_ITEMS, new ArrayList<Bundle>() {{
             add(itemBundle);
         }});
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
