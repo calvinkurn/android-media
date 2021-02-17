@@ -30,7 +30,7 @@ class SomGetUserRoleUseCase @Inject constructor(
     }
 
     companion object {
-        private const val QUERY = "query UserRole(\$userID: Int!){\n" +
+        private const val QUERY = "query GetUserRole(\$userID: Int!){\n" +
                 "  GoldGetUserShopInfo(userID:\$userID) {\n" +
                 "    Data {\n" +
                 "      Roles\n" +

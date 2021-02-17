@@ -160,7 +160,9 @@ class ChatListAdapter constructor(
             index: Int,
             newChat: IncomingChatWebSocketModel,
             readStatus: Int,
-            pinnedMsgId: Set<String>
+            pinnedMsgId: Set<String>,
+            counterIncrement: Int = 1,
+            shouldUpdateReadStatus: Boolean = false
     ) {
         val isChatPinned = pinnedMsgId.contains(newChat.msgId)
         val newChatIndex = if (isChatPinned) {
@@ -168,7 +170,13 @@ class ChatListAdapter constructor(
         } else {
             pinnedMsgId.size
         }
-        updateChatPojo(index, newChat, readStatus)
+        updateChatPojo(
+                index = index,
+                newChat = newChat,
+                readStatus = readStatus,
+                counterIncrement = counterIncrement,
+                shouldUpdateReadStatus = shouldUpdateReadStatus
+        )
         if (index != newChatIndex) {
             visitables.moveTo(index, newChatIndex)
             notifyItemMoved(index, newChatIndex)
@@ -205,7 +213,9 @@ class ChatListAdapter constructor(
     private fun updateChatPojo(
             index: Int,
             newChat: IncomingChatWebSocketModel,
-            readStatus: Int
+            readStatus: Int,
+            counterIncrement: Int = 1,
+            shouldUpdateReadStatus: Boolean = false
     ) {
         if (index >= visitables.size) return
         visitables[index].apply {
@@ -217,13 +227,21 @@ class ChatListAdapter constructor(
                     listener.increaseNotificationCounter()
                 }
                 attributes?.lastReplyMessage = newChat.message
-                attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
-                attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
-                attributes?.readStatus = readStatus
+                if (shouldUpdateReadStatus) {
+                    attributes?.unreads = attributes?.unreads.toZeroIfNull() + counterIncrement
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + counterIncrement
+                    attributes?.readStatus = readStatus
+                }
                 attributes?.lastReplyTimeStr = newChat.time
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 attributes?.label = ""
             }
+        }
+    }
+
+    fun findChat(newChat: IncomingChatWebSocketModel): Int {
+        return list.indexOfFirst { chat ->
+            return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
         }
     }
 
