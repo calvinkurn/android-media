@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:context=".newcart.presentation.fragment.DigitalCartMyBillsFragment">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/container"
@@ -33,9 +40,9 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_category_name"
+                        app:typographyType="heading_4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:typographyType="heading_4"
                         tools:text="Listrik PLN" />
 
                     <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView
@@ -96,18 +103,4 @@
             android:layout_gravity="bottom" />
 
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/progress_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/Neutral_N0">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
 </RelativeLayout>

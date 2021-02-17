@@ -8,15 +8,21 @@
     android:orientation="vertical"
     tools:context=".newcart.presentation.fragment.DigitalCartDefaultFragment">
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        xmlns:emptyState="http://schemas.android.com/apk/res-auto"
+    <com.tokopedia.empty_state.EmptyStateUnify xmlns:emptyState="http://schemas.android.com/apk/res-auto"
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
         emptyState:unifyEmptyStateOrientation="vertical"
-        emptyState:unifyEmptyStateType="page"/>
+        emptyState:unifyEmptyStateType="page" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/container"
@@ -78,19 +84,4 @@
             android:layout_gravity="bottom" />
 
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/progress_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/Neutral_N0">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
 </RelativeLayout>

@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.applink.RouteManager
@@ -32,7 +32,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         DigitalCartMyBillsContract.View,
         DigitalCartMyBillsView.OnMoreInfoClickListener {
 
-    private lateinit var progressBarLayout: FrameLayout
+    private lateinit var progressBar: ProgressBar
     private lateinit var containerLayout: RelativeLayout
     private lateinit var categoryTextView: AppCompatTextView
     private lateinit var mybillSubscription: DigitalCartMyBillsView
@@ -48,7 +48,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     private var interactionListener: InteractionListener? = null
 
     override fun setupView(view: View?) {
-        progressBarLayout = view!!.findViewById<FrameLayout>(R.id.progress_bar_layout)
+        progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
         containerLayout = view.findViewById<RelativeLayout>(R.id.container)
         categoryTextView = view.findViewById<AppCompatTextView>(R.id.tv_category_name)
         detailHolderView = view.findViewById<DigitalCartDetailHolderView>(R.id.view_cart_detail)
@@ -106,7 +106,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     }
 
     override fun showFullPageLoading() {
-        progressBarLayout.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun showCartView() {
@@ -114,7 +114,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     }
 
     override fun hideFullPageLoading() {
-        progressBarLayout.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     override fun getScreenName(): String = ""

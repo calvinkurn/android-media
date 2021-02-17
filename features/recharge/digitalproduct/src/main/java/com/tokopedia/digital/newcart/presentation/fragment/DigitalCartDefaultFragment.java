@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  */
 public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implements DigitalCartDefaultContract.View {
 
-    private FrameLayout progressBarLayout;
+    private ProgressBar progressBar;
     private RelativeLayout containerLayout;
     private AppCompatTextView categoryTextView;
 
@@ -82,7 +82,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     protected void setupView(View view) {
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        progressBar = view.findViewById(R.id.progress_bar);
         emptyState = view.findViewById(R.id.empty_state);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
@@ -104,7 +104,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void showFullPageLoading() {
-        progressBarLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -114,12 +114,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void hideFullPageLoading() {
-        progressBarLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
-        progressBarLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         super.showError(message);
     }
 
