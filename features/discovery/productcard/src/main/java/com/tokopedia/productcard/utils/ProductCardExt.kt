@@ -44,7 +44,7 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     }
 }
 
-internal fun ImageView.glideClear() {
+internal fun ImageView.glideClear(context: Context) {
     this.clearImage()
 }
 
@@ -102,14 +102,14 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setErrorDrawable(R.drawable.placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
         }
     }
 }
 internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setErrorDrawable(R.drawable.placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             listener({ _, _ ->
                 state.invoke(true)
             }, {
@@ -121,7 +121,7 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
 internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setErrorDrawable(R.drawable.placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             setPlaceHolder(-1)
             listener({ _, _ ->
                 state.invoke(true)
@@ -135,7 +135,7 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
 internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setErrorDrawable(R.drawable.placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             transform(CenterCrop())
             setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
         }
@@ -145,7 +145,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
     if (url != null && url.isNotEmpty()) {
         loadImage(url) {
-            setErrorDrawable(R.drawable.placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             transform(TopRightCrop())
         }
     }
