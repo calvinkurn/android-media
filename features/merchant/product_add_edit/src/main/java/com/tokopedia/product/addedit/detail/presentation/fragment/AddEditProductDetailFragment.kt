@@ -138,7 +138,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var countTouchPhoto = 0
     private var hasCategoryFromPicker = false
     private var isViewVisible = false
-    private var needToUpdateCategories = true
+    private var needToSetCategoryName = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -502,7 +502,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                if (needToSetCategoryName) {
+                    needToSetCategoryName = false
+                }
+            }
         })
 
         // product price text change listener
@@ -707,7 +711,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 fillProductDetailForm(productInputModel.detailInputModel)
                 setupButton()
             }
-            needToUpdateCategories = false
+            needToSetCategoryName = true
         }
         super.onViewStateRestored(savedInstanceState)
     }
@@ -905,7 +909,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
 
-                    needToUpdateCategories = false
+                    needToSetCategoryName = true
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -1274,21 +1278,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
                 // show category recommendations to the product that has no variants
                 if (viewModel.isAdding && !viewModel.hasVariants) {
-                    if (needToUpdateCategories) {
-                        viewModel.getCategoryRecommendation(productNameInput)
-                    }
-                    needToUpdateCategories = true
+                    viewModel.getCategoryRecommendation(productNameInput)
                 }
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 // keep the category if the product has variants
                 if (viewModel.isAdding && !viewModel.hasVariants) {
-                    if (needToUpdateCategories) {
-                        productCategoryRecListView?.setData(ArrayList(emptyList()))
-                    }
-                    needToUpdateCategories = true
+                    productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
+            }
+
+            if (needToSetCategoryName) {
+                productCategoryLayout?.show()
+                productCategoryRecListView?.setToDisplayText(productCategoryName, requireContext())
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false
