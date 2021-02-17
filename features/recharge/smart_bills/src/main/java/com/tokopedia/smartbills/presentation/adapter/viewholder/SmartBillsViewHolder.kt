@@ -35,10 +35,10 @@ class SmartBillsViewHolder(val view: View,
         super.bind(element)
         with(view) {
             tv_smart_bills_item_title.text = String.format("%s - %s", element.categoryName, element.productName)
-            val description = if (element.operatorName.isNotEmpty()) {
+            val description = if(element.billName.isNotEmpty()){
                 String.format(getString(R.string.smart_bills_item_description),
-                        element.clientNumber, element.operatorName)
-            } else {
+                        element.billName, element.clientNumber)
+            }else {
                 element.clientNumber
             }
             tv_smart_bills_item_description.text = description
