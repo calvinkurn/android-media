@@ -197,6 +197,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
+    private var topchatViewState: TopChatViewStateImpl? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -370,7 +371,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 view, this, this, this,
                 this, this, this, this,
                 (activity as BaseChatToolbarActivity).getToolbar(), analytics
-        )
+        ).also {
+            topchatViewState = it
+        }
     }
 
     override fun initInjector() {
@@ -1079,6 +1082,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
         doBuyAndAtc(element) {
+            analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getBuyEventAction()
+            )
             RouteManager.route(context, ApplinkConst.CART)
         }
     }
@@ -1086,6 +1094,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
         doBuyAndAtc(element) {
+            analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getAtcEventAction()
+            )
             val msg = it.message.getOrNull(0) ?: ""
             rvContainer?.let { view ->
                 Toaster.build(
