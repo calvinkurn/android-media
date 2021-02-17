@@ -77,6 +77,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var reviewInboxListener: ReviewInboxListener? = null
+    private var source: String = ""
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -99,11 +100,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun trackCardClicked(reputationId: Long, productId: Long, isEligible: Boolean) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible)
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible, source)
     }
 
     override fun trackStarsClicked(reputationId: Long, productId: Long, rating: Int, isEligible: Boolean) {
-        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible)
+        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible, source)
     }
 
     override fun onStarsClicked(reputationId: Long, productId: Long, rating: Int, inboxReviewId: Long, seen: Boolean) {
@@ -255,6 +256,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         reviewInboxListener?.reloadCounter()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getSourceData()
     }
 
     private fun initView() {
@@ -419,6 +425,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         .build()
                         .toString())
         startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+    }
+
+    private fun getSourceData() {
+        source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 
 }

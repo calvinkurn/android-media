@@ -40,10 +40,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         const val SELLER_TAB_INDEX = 2
         const val HIDE_TAB_COUNTER = -1
 
-        fun createNewInstance(tab: String) : ReviewInboxContainerFragment{
+        fun createNewInstance(tab: String, source: String) : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewInboxConstants.PARAM_TAB, tab)
+                    putString(ReviewInboxConstants.PARAM_SOURCE, source)
                 }
             }
         }
@@ -55,6 +56,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var previouslySelectedTab = 0
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var tab = ""
+    private var source = ""
 
     override fun getScreenName(): String {
         return ""
@@ -155,7 +157,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun setupBuyerAdapter() {
-        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this, this, null) }
+        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it, this, this, getSourceBundle()) }
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
@@ -258,6 +260,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun getDataFromArguments() {
         tab = arguments?.getString(ReviewInboxConstants.PARAM_TAB, "") ?: ""
+        source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
+    }
+
+    private fun getSourceBundle(): Bundle {
+        return Bundle().apply { putString(ReviewInboxConstants.PARAM_SOURCE, source) }
     }
 
     private fun initToolbar() {

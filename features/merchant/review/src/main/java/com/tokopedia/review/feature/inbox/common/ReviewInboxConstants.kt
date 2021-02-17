@@ -15,4 +15,6 @@ object ReviewInboxConstants {
     const val PENDING_TAB = "waiting-review"
     const val HISTORY_TAB = "history"
     const val SELLER_TAB = "seller"
+    const val PARAM_SOURCE = "pageSource"
+    const val DEFAULT_SOURCE = "applink"
 }

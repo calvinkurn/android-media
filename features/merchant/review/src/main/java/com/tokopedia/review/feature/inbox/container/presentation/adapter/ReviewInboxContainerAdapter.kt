@@ -28,7 +28,9 @@ class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
     override fun createFragment(position: Int): Fragment {
         return when(tabs[position]) {
             is ReviewInboxTabs.ReviewInboxPending -> {
-                ReviewPendingFragment.createNewInstance(reviewInboxListener)
+                val fragment = ReviewPendingFragment.createNewInstance(reviewInboxListener)
+                fragment.arguments = bundle
+                fragment
             }
             is ReviewInboxTabs.ReviewInboxHistory -> {
                 ReviewHistoryFragment.createNewInstance()
