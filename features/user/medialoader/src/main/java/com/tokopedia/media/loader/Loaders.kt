@@ -54,19 +54,21 @@ inline fun ImageView.loadImageRounded(
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
-fun ImageView.loadIcon(url: String?) = call(
-        url,
-        Properties().apply {
-            useBlurHash(false)
+inline fun ImageView.loadIcon(
+        url: String?,
+        crossinline properties: Properties.() -> Unit
+) = call(url, Properties().apply(properties).also {
+    it.useBlurHash(false)
 
-            /*
-            * loadIcon() extension must be haven't placeholder,
-            * the loader effect should be handled by team by
-            * using own shimmering.
-            * */
-            setPlaceHolder(-1)
-        }
-)
+     /*
+     * loadIcon() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    it.setPlaceHolder(-1)
+})
+
+fun ImageView.loadIcon(url: String?) = this.loadIcon(url) {}
 
 fun ImageView?.clearImage() {
     if (this != null && context.isValidContext()) {
