@@ -31,7 +31,7 @@ public class TopAdsInfoBottomSheet {
         TopAdsInfoBottomSheet frag = new TopAdsInfoBottomSheet();
         frag.dialog = new BottomSheetDialog(context);
         frag.dialog.setContentView(R.layout.promoted_info_dialog);
-        frag.closeButton = frag.dialog.findViewById(com.tokopedia.topads.sdk.R.id.close_but);
+        frag.closeButton = frag.dialog.findViewById(R.id.close_but);
         frag.moreButton = frag.dialog.findViewById(R.id.more);
         frag.setView(context);
         return frag;

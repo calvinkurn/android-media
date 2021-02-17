@@ -191,7 +191,7 @@ class FollowRecomAdapter(
                 ivProfile.loadImageCircle(element.avatar)
             } else {
                 ivProfile.setImageDrawable(
-                        MethodChecker.getDrawable(itemView.context, com.tokopedia.topads.sdk.R.drawable.error_drawable)
+                        MethodChecker.getDrawable(itemView.context, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                 )
             }
 

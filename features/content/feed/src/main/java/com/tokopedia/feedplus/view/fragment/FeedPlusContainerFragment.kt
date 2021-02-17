@@ -407,8 +407,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setFeedBackgroundCrossfader() {
-        searchBarTransitionRange = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_50)
-        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_100)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.searchbar_tansition_range)
+        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.searchbar_start_tansition_offsite)
         activity?.let {
             val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
             val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)

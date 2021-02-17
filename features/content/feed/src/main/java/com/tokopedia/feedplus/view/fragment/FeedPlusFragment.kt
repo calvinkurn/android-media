@@ -981,7 +981,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
-        dialog.setBtnOk(getString(com.tokopedia.design.R.string.button_delete))
+        dialog.setBtnOk(getString(R.string.feed_delete))
         dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         dialog.setOnOkClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
@@ -1015,7 +1015,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.design.R.string.label_close)) }
+            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close)) }
     }
 
     override fun onGoToLogin() {
