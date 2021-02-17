@@ -20,6 +20,7 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -225,6 +226,36 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testCloseReminderWidget(){
+        initTest()
+
+        doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+        }
+
+        getAssertCloseReminderWidget(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testReminderWidget(){
+        initTest()
+
+        doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            clickOnReminderWidget(viewHolder, i, homeRecycleView)
+        }
+
+        getAssertReminderWidget(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
     fun testRecommendationFeedProductNonLogin() {
         initTest()
 
@@ -254,6 +285,23 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
+    @Test
+    fun testRechargeBUWidget() {
+        initTest()
+
+        login()
+
+        doActivityTest(RechargeBUWidgetMixLeftViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            checkRechargeBUWidget(viewHolder, i)
+        }
+
+        getAssertRechargeBUWidget(gtmLogDBSource, context)
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()
@@ -277,6 +325,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)
             if (viewHolder != null && viewClass.simpleName == viewHolder.javaClass.simpleName) {
                 isTypeClass.invoke(viewHolder, i)
+            }
+        }
+        endActivityTest()
+    }
+
+    private fun <T: Any> doActivityTest(viewClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int, recycleView: RecyclerView)-> Unit) {
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
+        countLoop@ for (i in 0 until itemCount)  {
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)
+            if (viewHolder != null && viewClass.simpleName == viewHolder.javaClass.simpleName) {
+                isTypeClass.invoke(viewHolder, i, homeRecyclerView)
             }
         }
         endActivityTest()
