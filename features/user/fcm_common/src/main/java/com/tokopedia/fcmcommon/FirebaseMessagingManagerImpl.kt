@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             updateFcmTokenUseCase(params, {
                 if (it.updateTokenSuccess()) {
                     saveNewTokenToPref(newToken)
+                    userSession.deviceId = newToken
                     listener?.onSuccess()
                 }
             }, {
