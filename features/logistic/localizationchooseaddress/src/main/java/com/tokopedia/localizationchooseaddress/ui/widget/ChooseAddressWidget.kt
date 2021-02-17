@@ -30,7 +30,17 @@ class ChooseAddressWidget: ConstraintLayout {
     interface ChooseAddressWidgetListener {
         fun onCheckLocalCache(state: Boolean)
         fun onGetChosenAddress(data: LocalCacheModel?)
+
+
+        fun onUserChoosenAddress() // ini yang dari bottomshet dan UI harus implement
+        fun onChoosenAddressUpdatedFromBackground() // ini yg background kita hit dan update cache, tapi UI optional untuk lakuin sesuatu. contoh pas non login cache kosong.
+        fun onFeatureActive(acrtive: Boolean)
+        /*
+        gak perlu balikin data apapun. datanya nanti biar mereka tetep ambil dari util kita,
+        misal ChooseAddressUtils.getLatestChoosenAddress()
+        */
     }
+
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -43,15 +53,29 @@ class ChooseAddressWidget: ConstraintLayout {
 
         textChosenAddress = findViewById(R.id.text_chosen_address)
         buttonChooseAddress = findViewById(R.id.btn_arrow)
+
+        checkRollence()
     }
 
+    private fun checkRollence(){
+        // check rollence. kalo udah panggil listener, biar host page yang atur show or hide
+        chooseAddressWidgetListener.onFeatureActive(true)
+    }
+
+    public fun updateWidget(){
+        textChosenAddress.setText("ambil dari local chace")
+    }
+
+
     private fun initChooseAddressFlow() {
+
         if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
             val data = chooseAddressPref?.getLocalCacheData()
             textChosenAddress?.text = data?.label
 
         } else {
-            //hit get local choose address
+            //hit get local choose address, setelah selesai dan kita berhasil simpen di local cache
+            chooseAddressWidgetListener.onChoosenAddressUpdatedFromBackground()
         }
     }
 
@@ -60,6 +84,8 @@ class ChooseAddressWidget: ConstraintLayout {
             ChooseAddressBottomSheet().show(fragment)
         }
     }
+
+
 
 /*    fun getLocalCacheData() {
         if (chooseAddressPref?.checkLocalCache()?.isNotEmpty() == true) {
