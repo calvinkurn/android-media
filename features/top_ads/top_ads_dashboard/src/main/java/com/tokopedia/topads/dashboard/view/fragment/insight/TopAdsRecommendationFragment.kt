@@ -10,7 +10,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DAILY_BUDGET
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_CURRENT_TAB
 import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
@@ -39,12 +45,14 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countKey = 0
     private var countProduct = 0
     private var countBid = 0
+    private var index = 0
 
     companion object {
         const val HEIGHT = "addp_bar_height"
-        fun createInstance(height: Int?): TopAdsRecommendationFragment {
+        fun createInstance(height: Int?, redirectToTabInsight: Int): TopAdsRecommendationFragment {
             val bundle = Bundle()
             bundle.putInt(HEIGHT, height ?: 0)
+            bundle.putInt(PARAM_CURRENT_TAB, redirectToTabInsight)
             val fragment = TopAdsRecommendationFragment()
             fragment.arguments = bundle
             return fragment
@@ -138,14 +146,88 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun renderViewPager() {
         loderRecom?.visibility = View.GONE
         view_pager.adapter = getViewPagerAdapter()
+        val page = arguments?.getInt(PARAM_CURRENT_TAB)
+        if (ifPageAvailable(page)) {
+            if (page == CONST_0)
+                index = CONST_0
+            if (page == CONST_1) {
+                index = if (isDailyBudgetFirst())
+                    CONST_0
+                else
+                    CONST_1
+            }
+            if (page == CONST_2) {
+                if (isKeywordFirst())
+                    index = CONST_0
+                index = if (isKeywordsecond())
+                    CONST_1
+                else
+                    CONST_2
+            }
+        }
+        view_pager?.currentItem = index
+        topAdsInsightTabAdapter?.setSelectedTitle(index)
         view_pager.disableScroll(true)
+    }
+
+    private fun ifPageAvailable(page: Int?): Boolean {
+        return when (page) {
+            CONST_0 -> isProductAvailable()
+            CONST_1 -> isDailyBudgetAvailable()
+            CONST_2 -> isKeywordAvailable()
+            else -> false
+        }
+    }
+
+    private fun isKeywordAvailable(): Boolean {
+        if (topAdsInsightTabAdapter?.itemCount ?: 0 >= CONST_1)
+            return when (topAdsInsightTabAdapter?.itemCount) {
+                CONST_1 -> {
+                    isKeywordFirst()
+                }
+                CONST_2 -> {
+                    return !(!isKeywordFirst() && !isKeywordsecond())
+                }
+                else -> true
+            }
+        return false
+    }
+
+    private fun isDailyBudgetAvailable(): Boolean {
+        if (topAdsInsightTabAdapter?.itemCount ?: 0 >= CONST_1)
+            return if (topAdsInsightTabAdapter?.itemCount == CONST_1) {
+                isDailyBudgetFirst()
+            } else{
+                !(!isDailyBudgetFirst() && !isDailyBudgetsecond())
+            }
+        return false
+    }
+
+    private fun isDailyBudgetFirst(): Boolean {
+        return topAdsInsightTabAdapter?.getTab()?.get(CONST_0)?.contains(DAILY_BUDGET) == true
+    }
+    private fun isDailyBudgetsecond(): Boolean {
+        return topAdsInsightTabAdapter?.getTab()?.get(CONST_1)?.contains(DAILY_BUDGET) == true
+    }
+
+    private fun isKeywordFirst(): Boolean {
+        return topAdsInsightTabAdapter?.getTab()?.get(CONST_0)?.contains(KATA_KUNCI) == true
+    }
+    private fun isKeywordsecond(): Boolean {
+        return topAdsInsightTabAdapter?.getTab()?.get(CONST_1)?.contains(KATA_KUNCI) == true
+    }
+
+    private fun isProductAvailable(): Boolean {
+        if (topAdsInsightTabAdapter?.itemCount ?: 0 >= CONST_1)
+            return topAdsInsightTabAdapter?.getTab()?.get(CONST_0)?.contains(PRODUK) == true
+        return false
     }
 
     fun setCount(count: Int, type: Int) {
         when (type) {
-            0 -> topAdsInsightTabAdapter?.setTabTitles(resources, count, countBid, countKey)
-            1 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, count, countKey)
-            2 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, count)
+            CONST_0-> topAdsInsightTabAdapter?.setTabTitles(resources, count, countBid, countKey)
+            CONST_1 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, count, countKey)
+            CONST_2 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, count)
         }
     }
 
@@ -169,7 +251,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setEmptyProduct(){
+    fun setEmptyProduct() {
         countProduct = 0
     }
 
