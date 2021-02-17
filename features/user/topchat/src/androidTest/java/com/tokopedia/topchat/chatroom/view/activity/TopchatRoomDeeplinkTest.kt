@@ -38,7 +38,7 @@ class TopchatRoomDeeplinkTest {
         val intent = RouteManager.getIntent(context, applink)
 
         // Then
-        verifyDeeplink(intent, applink, topchat)
+        assertThat(intent, isPointingTo(topchat))
         verifyLastPathSegment(intent, exMessageId)
     }
 
