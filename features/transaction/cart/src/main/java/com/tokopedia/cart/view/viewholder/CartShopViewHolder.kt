@@ -134,7 +134,7 @@ class CartShopViewHolder(itemView: View,
 
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
-            if (cartShopHolderData.shopGroupAvailableData.isFulfillment) {
+            if (cartShopHolderData.shopGroupAvailableData.isFulfillment && cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl.isNotEmpty()) {
                 imgFulfillmentBadge.show()
                 imgFulfillmentBadge.setImageUrl(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
             } else {
