@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.detail
 
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -25,7 +25,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineDispatchersProvider
     private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
@@ -44,10 +44,10 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     @Before
     override fun setUp() {
         super.setUp()
-        viewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
-                somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
-                somRejectCancelOrderUseCase)
+        viewModel = SomDetailViewModel(somAcceptOrderUseCase, somRejectOrderUseCase, somEditRefNumUseCase,
+                somRejectCancelOrderUseCase, userSessionInterface, dispatcher,
+                somGetOrderDetailUseCase, somReasonRejectUseCase, somSetDeliveredUseCase,
+                somGetUserRoleUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products("123")
         listProducts = arrayListOf(product1).toMutableList()
