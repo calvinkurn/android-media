@@ -633,7 +633,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomOrderEditAwbBottomSheet().apply {
             setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
                 override fun onEditAwbButtonClicked(cancelNotes: String) {
-                    viewModel.editAwb(orderId, cancelNotes)
+                    val invoice = getOrderBy(orderId)
+                    viewModel.editAwb(orderId, cancelNotes, invoice)
                 }
             })
             show(this@SomListFragment.childFragmentManager, SomOrderEditAwbBottomSheet.TAG)
@@ -1604,13 +1605,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun rejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
-            viewModel.rejectOrder(orderRejectRequestParam)
+            val invoice = getOrderBy(orderRejectRequestParam.orderId)
+            viewModel.rejectOrder(orderRejectRequestParam, invoice)
         }
     }
 
     private fun rejectCancelOrder(orderId: String) {
         if (orderId.isNotBlank()) {
-            viewModel.rejectCancelOrder(orderId)
+            val invoice = getOrderBy(orderId)
+            viewModel.rejectCancelOrder(orderId, invoice)
         }
     }
 
