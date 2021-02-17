@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/home_component_margin_default"
             android:paddingRight="@dimen/dp_8"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
