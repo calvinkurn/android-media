@@ -69,7 +69,6 @@ class ShipmentDataConverterTest {
                 GroupAddress().apply {
                     groupShop = listOf(
                             GroupShop().apply {
-                                isFulfillment = false
                                 shipmentInformationData = ShipmentInformationData(freeShippingExtra = FreeShippingData(true, expectedBadgeUrl))
                                 shop = Shop()
                             }
@@ -93,7 +92,6 @@ class ShipmentDataConverterTest {
                 GroupAddress().apply {
                     groupShop = listOf(
                             GroupShop().apply {
-                                isFulfillment = false
                                 shipmentInformationData = ShipmentInformationData(freeShipping = FreeShippingData(true, expectedBadgeUrl))
                                 shop = Shop()
                             }
@@ -116,7 +114,6 @@ class ShipmentDataConverterTest {
                 GroupAddress().apply {
                     groupShop = listOf(
                             GroupShop().apply {
-                                isFulfillment = false
                                 shipmentInformationData = ShipmentInformationData()
                                 shop = Shop()
                             }

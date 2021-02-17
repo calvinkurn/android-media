@@ -119,39 +119,25 @@ object CartMapperV3Test : Spek({
         lateinit var cartDataListResponse: CartDataListResponse
         lateinit var result: CartListData
 
-        val tokoCabangResponse = TokoCabangInfo("tokocabang", "img.tokocabang.com")
-        val shopLocation = "shop location"
         val freeShippingBadgeUrl = "bebas.ongkir.com"
         val freeShippingExtraBadgeUrl = "bebas.ongkir.extra.com"
 
-        Scenario("Shop is not fulfillment and no Bebas Ongkir") {
+        Scenario("Shop is has no Bebas Ongkir") {
 
-            Given("Not Fulfillment Shop and no Bebas Ongkir") {
+            Given("Shop with no Bebas Ongkir") {
                 cartDataListResponse = CartDataListResponse(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
-                                                isFulFillment = false,
-                                                shipmentInformation = ShipmentInformation(
-                                                        shopLocation = shopLocation
-                                                )
+                                                shipmentInformation = ShipmentInformation()
                                         )
                                 )
-                        ),
-                        tokoCabangInfo = tokoCabangResponse
+                        )
                 )
             }
 
             When("map response") {
                 result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
-            }
-
-            Then("should have isFulfillment false") {
-                assertEquals(false, result.shopGroupAvailableDataList.first().isFulfillment)
-            }
-
-            Then("should have shop location as fulfillment name") {
-                assertEquals(shopLocation, result.shopGroupAvailableDataList.first().fulfillmentName)
             }
 
             Then("should have empty string as free shipping badge url") {
@@ -159,35 +145,24 @@ object CartMapperV3Test : Spek({
             }
         }
 
-        Scenario("Shop is not fulfillment and have Bebas Ongkir") {
+        Scenario("Shop have Bebas Ongkir") {
 
-            Given("Not Fulfillment Shop and have Bebas Ongkir") {
+            Given("Shop have Bebas Ongkir") {
                 cartDataListResponse = CartDataListResponse(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
-                                                isFulFillment = false,
                                                 shipmentInformation = ShipmentInformation(
-                                                        shopLocation = shopLocation,
                                                         freeShipping = FreeShipping(true, freeShippingBadgeUrl)
                                                 )
                                         )
                                 )
-                        ),
-                        tokoCabangInfo = tokoCabangResponse
+                        )
                 )
             }
 
             When("map response") {
                 result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
-            }
-
-            Then("should have isFulfillment false") {
-                assertEquals(false, result.shopGroupAvailableDataList.first().isFulfillment)
-            }
-
-            Then("should have shop location as fulfillment name") {
-                assertEquals(shopLocation, result.shopGroupAvailableDataList.first().fulfillmentName)
             }
 
             Then("should have bebas ongkir url as free shipping badge url") {
@@ -195,9 +170,74 @@ object CartMapperV3Test : Spek({
             }
         }
 
-        Scenario("Shop is fulfillment and no Bebas Ongkir") {
+        Scenario("Shop have Bebas Ongkir Extra") {
 
-            Given("Fulfillment Shop and no Bebas Ongkir") {
+            Given("Shop have Bebas Ongkir Extra") {
+                cartDataListResponse = CartDataListResponse(
+                        availableSection = AvailableSection(
+                                availableGroupGroups = listOf(
+                                        AvailableGroup(
+                                                shipmentInformation = ShipmentInformation(
+                                                        freeShippingExtra = FreeShipping(true, freeShippingExtraBadgeUrl)
+                                                )
+                                        )
+                                )
+                        )
+                )
+            }
+
+            When("map response") {
+                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+            }
+
+            Then("should have bebas ongkir extra url as free shipping badge url") {
+                assertEquals(freeShippingExtraBadgeUrl, result.shopGroupAvailableDataList.first().freeShippingBadgeUrl)
+            }
+        }
+    }
+
+    Feature("Fulfillment") {
+
+        lateinit var cartDataListResponse: CartDataListResponse
+        lateinit var result: CartListData
+
+        val tokoCabangResponse = TokoCabangInfo("tokocabang", "img.tokocabang.com")
+        val shopLocation = "shop location"
+
+        Scenario("Shop is not fulfillment") {
+
+            Given("Not Fulfillment Shop") {
+                cartDataListResponse = CartDataListResponse(
+                        availableSection = AvailableSection(
+                                availableGroupGroups = listOf(
+                                        AvailableGroup(
+                                                isFulFillment = false,
+                                                shipmentInformation = ShipmentInformation(
+                                                        shopLocation = shopLocation
+                                                )
+                                        )
+                                )
+                        ),
+                        tokoCabangInfo = tokoCabangResponse
+                )
+            }
+
+            When("map response") {
+                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+            }
+
+            Then("should have isFulfillment false") {
+                assertEquals(false, result.shopGroupAvailableDataList.first().isFulfillment)
+            }
+
+            Then("should have shop location as fulfillment name") {
+                assertEquals(shopLocation, result.shopGroupAvailableDataList.first().fulfillmentName)
+            }
+        }
+
+        Scenario("Shop is fulfillment") {
+
+            Given("Fulfillment Shop") {
                 cartDataListResponse = CartDataListResponse(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
@@ -227,50 +267,6 @@ object CartMapperV3Test : Spek({
 
             Then("should have tokocabang badge url as fulfillment badge url") {
                 assertEquals(tokoCabangResponse.badgeUrl, result.shopGroupAvailableDataList.first().fulfillmentBadgeUrl)
-            }
-
-            Then("should have empty string as free shipping badge url") {
-                assertEquals("", result.shopGroupAvailableDataList.first().freeShippingBadgeUrl)
-            }
-        }
-
-        Scenario("Shop is fulfillment and have Bebas Ongkir Extra") {
-
-            Given("Fulfillment Shop and have Bebas Ongkir Extra") {
-                cartDataListResponse = CartDataListResponse(
-                        availableSection = AvailableSection(
-                                availableGroupGroups = listOf(
-                                        AvailableGroup(
-                                                isFulFillment = true,
-                                                shipmentInformation = ShipmentInformation(
-                                                        shopLocation = shopLocation,
-                                                        freeShippingExtra = FreeShipping(true, freeShippingExtraBadgeUrl)
-                                                )
-                                        )
-                                )
-                        ),
-                        tokoCabangInfo = tokoCabangResponse
-                )
-            }
-
-            When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
-            }
-
-            Then("should have isFulfillment true") {
-                assertEquals(true, result.shopGroupAvailableDataList.first().isFulfillment)
-            }
-
-            Then("should have tokocabang as fulfillment name") {
-                assertEquals(tokoCabangResponse.message, result.shopGroupAvailableDataList.first().fulfillmentName)
-            }
-
-            Then("should have tokocabang badge url as fulfillment badge url") {
-                assertEquals(tokoCabangResponse.badgeUrl, result.shopGroupAvailableDataList.first().fulfillmentBadgeUrl)
-            }
-
-            Then("should have bebas ongkir extra url as free shipping badge url") {
-                assertEquals(freeShippingExtraBadgeUrl, result.shopGroupAvailableDataList.first().freeShippingBadgeUrl)
             }
         }
     }
