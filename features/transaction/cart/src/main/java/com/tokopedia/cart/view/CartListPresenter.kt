@@ -130,7 +130,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val params = getCartListSimplifiedUseCase?.buildParams(cartId, null)
+            val params = getCartListSimplifiedUseCase?.buildParams(cartId)
             val requestParams = RequestParams.create()
             requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, params)
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
@@ -227,7 +227,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
-                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId, null)
+                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId)
                 requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, cartParams)
 
                 compositeSubscription.add(

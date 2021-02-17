@@ -1,6 +1,5 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.tokopedia.cart.data.model.request.AdditionalParams
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
@@ -8,6 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.KEY_CHOSEN_ADDRESS
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.getChosenAddress
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -32,11 +33,13 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
         const val PARAM_VALUE_ID = "id"
     }
 
-    fun buildParams(cartId: String, additionalParams: AdditionalParams?): Map<String, Any?> {
+    fun buildParams(cartId: String): Map<String, Any?> {
         return mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_SELECTED_CART_ID to cartId,
-                PARAM_KEY_ADDITIONAL to additionalParams
+                PARAM_KEY_ADDITIONAL to mapOf(
+                        KEY_CHOSEN_ADDRESS to getChosenAddress()
+                )
         )
     }
 

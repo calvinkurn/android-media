@@ -98,18 +98,18 @@ public class ShipmentDataConverter {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         if (defaultAddress != null) {
-            recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
+            recipientAddress.setId(defaultAddress.getAddressId());
             recipientAddress.setAddressStatus(defaultAddress.getStatus());
             recipientAddress.setAddressName(defaultAddress.getAddressName());
             recipientAddress.setCountryName(defaultAddress.getCountry());
             recipientAddress.setProvinceName(defaultAddress.getProvinceName());
             recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
             recipientAddress.setCityName(defaultAddress.getCityName());
-            recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
+            recipientAddress.setDestinationDistrictId(defaultAddress.getDistrictId());
             recipientAddress.setStreet(defaultAddress.getAddress());
             recipientAddress.setPostalCode(defaultAddress.getPostalCode());
-            recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
-            recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
+            recipientAddress.setCityId(defaultAddress.getCityId());
+            recipientAddress.setProvinceId(defaultAddress.getProvinceId());
 
             recipientAddress.setRecipientName(defaultAddress.getReceiverName());
             recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
@@ -119,7 +119,7 @@ public class ShipmentDataConverter {
                     defaultAddress.getLongitude() : null);
 
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
-            recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
+            recipientAddress.setCornerId(defaultAddress.getCornerId());
             recipientAddress.setTradeIn(isTradeIn);
             recipientAddress.setCornerAddress(defaultAddress.isCorner());
         }
