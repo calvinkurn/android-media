@@ -427,6 +427,28 @@
                     ]
                   }
                 ]
+              },
+              "warehouse": {
+                "warehouse_id": 2034,
+                "partner_id": 0,
+                "shop_id": 480176,
+                "warehouse_name": "Shop Location",
+                "district_id": 3608,
+                "district_name": "Danurejan",
+                "city_id": 257,
+                "city_name": "Kota Yogyakarta",
+                "province_id": 16,
+                "province_name": "D.I. Yogyakarta",
+                "status": 1,
+                "postal_code": "55212",
+                "is_default": 1,
+                "latlon": "-7.7932901,110.3696069",
+                "latitude": "-7.7932901",
+                "longitude": "110.3696069",
+                "email": "",
+                "address_detail": "kecamatan danurejan 55212",
+                "country_name": "Indonesia",
+                "is_fulfillment": false
               }
             }
           ],

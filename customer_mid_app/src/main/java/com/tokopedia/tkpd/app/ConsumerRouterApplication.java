@@ -8,10 +8,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -45,7 +52,12 @@ import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
@@ -69,6 +81,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
@@ -145,6 +158,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+
+    private FirebaseMessagingManager fcmManager;
 
     @Override
     public void onCreate() {
@@ -397,8 +412,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-        sessionRefresh.gcmUpdate();
+        String accessToken = accessTokenRefresh.refreshToken();
+        doRelogin(accessToken);
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     @Override
@@ -506,10 +525,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.gcmUpdate();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if(isOldGcmUpdate()) {
+                sessionRefresh.gcmUpdate();
+            } else {
+                if(fcmManager == null) {
+                    provideFcmManager();
+                }
+                newGcmUpdate(sessionRefresh);
+            }
+        } catch (IOException e) {}
+    }
+
+    private void newGcmUpdate(SessionRefresh sessionRefresh) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    try {
+                        sessionRefresh.gcmUpdate();
+                    } catch (IOException e) {}
+                } else {
+                    fcmManager.onNewToken(task.getResult().getToken());
+                }
+            }
+        });
     }
 
     @Override
@@ -638,5 +677,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);
+    }
+
+    private void provideFcmManager() {
+        fcmManager = new FirebaseMessagingManagerImpl(
+                new UpdateFcmTokenUseCase(
+                        new GraphqlUseCase<>(GraphqlInteractor.getInstance().getGraphqlRepository()),
+                        GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
+                ),
+                PreferenceManager.getDefaultSharedPreferences(context),
+                new UserSession(context)
+        );
     }
 }
