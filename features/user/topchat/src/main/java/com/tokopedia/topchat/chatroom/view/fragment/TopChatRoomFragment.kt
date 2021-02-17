@@ -178,7 +178,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    private val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
     private val REQUEST_ATTACH_INVOICE = 116
     private val REQUEST_ATTACH_VOUCHER = 117
     private val REQUEST_REPORT_USER = 118
@@ -931,7 +930,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             REQUEST_CODE_CHAT_IMAGE -> onReturnFromChooseImage(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
-            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
@@ -1026,29 +1024,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.initAttachmentPreview()
     }
 
-    private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
-        if (resultCode != RESULT_OK) return
-        if (data == null) return
-        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
-                ?: return
-        view?.let {
-            Toaster.showNormalWithAction(
-                    it,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    getString(R.string.chat_check_cart),
-                    onClickSeeButtonOnAtcSuccessToaster()
-            )
-        }
-    }
-
-    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
-        return View.OnClickListener {
-            analytics.eventClickSeeButtonOnAtcSuccessToaster()
-            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
-        }
-    }
-
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && data != null) {
             getViewState().isShopFollowed = data.getBooleanExtra(EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
@@ -1120,6 +1095,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         Toaster.TYPE_NORMAL,
                         view.context.getString(R.string.title_topchat_see_cart),
                         View.OnClickListener {
+                            analytics.eventClickSeeButtonOnAtcSuccessToaster()
                             RouteManager.route(context, ApplinkConst.CART)
                         }
                 ).show()
