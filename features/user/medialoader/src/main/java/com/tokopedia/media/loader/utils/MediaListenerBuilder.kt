@@ -55,6 +55,7 @@ object MediaListenerBuilder {
                     fileSize
             )
 
+            // TODO: Remove
             if (properties.data is String) {
                 val urlBuilder = Loader.urlBuilder(properties.data.toString())
                 val qualitySettings = Loader.settings.getQualitySetting(Loader.settings.qualitySettings())
