@@ -138,6 +138,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var countTouchPhoto = 0
     private var hasCategoryFromPicker = false
     private var isViewVisible = false
+    private var needToUpdateCategories = true
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -706,6 +707,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 fillProductDetailForm(productInputModel.detailInputModel)
                 setupButton()
             }
+            needToUpdateCategories = false
         }
         super.onViewStateRestored(savedInstanceState)
     }
@@ -902,6 +904,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
+
+                    needToUpdateCategories = false
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -1269,12 +1273,22 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
                 // show category recommendations to the product that has no variants
-                if (viewModel.isAdding && !viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
+                if (viewModel.isAdding && !viewModel.hasVariants) {
+                    if (needToUpdateCategories) {
+                        viewModel.getCategoryRecommendation(productNameInput)
+                    }
+                    needToUpdateCategories = true
+                }
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 // keep the category if the product has variants
-                if (viewModel.isAdding && !viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
+                if (viewModel.isAdding && !viewModel.hasVariants) {
+                    if (needToUpdateCategories) {
+                        productCategoryRecListView?.setData(ArrayList(emptyList()))
+                    }
+                    needToUpdateCategories = true
+                }
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false
