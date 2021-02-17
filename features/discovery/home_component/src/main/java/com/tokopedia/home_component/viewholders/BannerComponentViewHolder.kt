@@ -144,6 +144,7 @@ class BannerComponentViewHolder(itemView: View,
         rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = layoutManager
+        rvBanner.clearOnScrollListeners()
 
         if (rvBanner.itemDecorationCount == 0) {
             rvBanner.addItemDecoration(BannerChannelDecoration())
