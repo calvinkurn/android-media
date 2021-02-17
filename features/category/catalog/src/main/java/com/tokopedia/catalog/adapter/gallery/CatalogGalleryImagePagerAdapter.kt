@@ -1,9 +1,9 @@
 package com.tokopedia.catalog.adapter.gallery
 
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage

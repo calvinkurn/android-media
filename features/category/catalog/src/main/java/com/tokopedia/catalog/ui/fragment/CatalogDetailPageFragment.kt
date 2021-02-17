@@ -24,7 +24,6 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
