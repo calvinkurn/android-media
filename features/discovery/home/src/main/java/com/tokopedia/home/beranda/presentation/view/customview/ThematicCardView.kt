@@ -26,8 +26,8 @@ import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_THEMATIC_CARD_VIEW
+import com.tokopedia.home.beranda.helper.glide.loadIconFitCenter
 import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -291,7 +291,7 @@ class ThematicCardView : BaseCustomView {
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, skeleton_imageFreeOngkirPromo, blankSpaceConfig.freeOngkir) {
-            it.loadImageFitCenter(imageUrl)
+            it.loadIconFitCenter(imageUrl)
         }
     }
 

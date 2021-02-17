@@ -8,6 +8,7 @@ import com.tokopedia.media.loader.common.MediaDataSource
 import com.tokopedia.media.loader.common.MediaListener
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
@@ -57,9 +58,37 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     }
 }
 
+fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+    this.loadIcon(url) {
+        setPlaceHolder(R.drawable.placeholder_grey)
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        transform(FitCenter())
+        listener({ resource, dataSource ->
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+        }, {
+            GlideErrorLogHelper().logError(context, it, url)
+        })
+    }
+}
+
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
+        listener({ resource, dataSource ->
+            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+        })
+    }
+}
+
+fun ImageView.loadImageRoundedWithoutBlurHash(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+    this.loadImage(url) {
+        useBlurHash(false)
         decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
         setCacheStrategy(MediaCacheStrategy.RESOURCE)
         transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))

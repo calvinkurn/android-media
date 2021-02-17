@@ -13,7 +13,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
-import com.tokopedia.home.beranda.helper.glide.loadImageRounded
+import com.tokopedia.home.beranda.helper.glide.loadImageRoundedWithoutBlurHash
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
 import com.tokopedia.unifyprinciples.Typography
@@ -70,7 +70,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
         override fun onBindViewHolder(holder: CategoryWidgetItemViewHolder, position: Int) {
             val grid = grids[position]
-            holder.categoryImageView.loadImageRounded(grid.imageUrl, 8, FPM_CATEGORY_WIDGET_ITEM)
+            holder.categoryImageView.loadImageRoundedWithoutBlurHash(grid.imageUrl, 8, FPM_CATEGORY_WIDGET_ITEM)
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(
