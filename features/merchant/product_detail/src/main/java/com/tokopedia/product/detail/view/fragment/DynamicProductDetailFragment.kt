@@ -311,7 +311,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isLoadingInitialData = true
         ticker_occ_layout.gone()
         loadProductData(true)
-        stickyLoginView?.loadContent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -299,7 +299,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onSwipeRefresh() {
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
-        stickyLoginView?.loadContent()
         ticker_occ_layout.gone()
         super.onSwipeRefresh()
     }
