@@ -72,7 +72,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             updateFcmTokenUseCase(params, {
                 if (it.updateTokenSuccess()) {
                     saveNewTokenToPref(newToken)
-                    userSession.deviceId = newToken
+                    setDeviceId(newToken)
                     listener?.onSuccess()
                 }
             }, {
@@ -85,6 +85,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             listener?.onError(exception)
             logFailUpdateFcmToken(exception, newToken)
         }
+    }
+
+    private fun setDeviceId(newToken: String) {
+        userSession.deviceId = newToken
     }
 
     private fun logFailUpdateFcmToken(error: Throwable, token: String) {
