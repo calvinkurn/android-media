@@ -231,34 +231,52 @@ class AddBankFragment : BaseDaggerFragment() {
         this.checkAccountNameState = data
         when (data) {
             is AccountNameFinalValidationSuccess -> {
-                add_account_button.isEnabled = true
-                showManualAccountNameError(null)
-                if (data.checkAccountAction == ActionValidateAccountName) {
-                    builder.setAccountName(data.accountHolderName, true)
-                    openConfirmationPopUp()
-                } else {
-                    builder.setAccountName(data.accountHolderName, false)
-                    tvAccountHolderName.text = data.accountHolderName
-                    wrapperManualAccountHolderName.gone()
-                    groupAccountNameAuto.visible()
-                }
+                onAccountNumberAndNameValidationSuccess(data)
             }
 
             is EditableAccountName -> {
-                add_account_button.isEnabled = true
-                builder.isManual(true)
-                groupAccountNameAuto.gone()
-                wrapperManualAccountHolderName.visible()
-                wrapperBankAccountNumber.editText.setText(data.accountName)
-                showManualAccountNameError(data.message)
+                onEditableAccountFound(data)
             }
 
             is AccountNameCheckError -> {
-                add_account_button.isEnabled = false
-                wrapperBankAccountNumber.editText.setText(data.accountName)
-                wrapperBankAccountNumber.isEnabled = false
-                showManualAccountNameError(data.message)
+                onAccountNumberCheckError(data)
             }
+        }
+    }
+
+    private fun onAccountNumberAndNameValidationSuccess(data: AccountNameFinalValidationSuccess) {
+        add_account_button.isEnabled = true
+        showManualAccountNameError(null)
+        if (data.checkAccountAction == ActionValidateAccountName) {
+            builder.setAccountName(data.accountHolderName, true)
+            openConfirmationPopUp()
+        } else {
+            builder.setAccountName(data.accountHolderName, false)
+            tvAccountHolderName.text = data.accountHolderName
+            wrapperManualAccountHolderName.gone()
+            groupAccountNameAuto.visible()
+        }
+    }
+
+    private fun onEditableAccountFound(data: EditableAccountName) {
+        builder.isManual(true)
+        add_account_button.isEnabled = true
+        groupAccountNameAuto.gone()
+        wrapperManualAccountHolderName.visible()
+        wrapperManualAccountHolderName.editText.setText(data.accountName)
+        showManualAccountNameError(data.message)
+    }
+
+    private fun onAccountNumberCheckError(data: AccountNameCheckError) {
+        add_account_button.isEnabled = false
+        if (data.accountName.isEmpty()) {
+            setAccountNumberError(data.message)
+        } else {
+            groupAccountNameAuto.gone()
+            wrapperManualAccountHolderName.visible()
+            wrapperManualAccountHolderName.editText.setText(data.accountName)
+            wrapperManualAccountHolderName.isEnabled = false
+            showManualAccountNameError(data.message)
         }
     }
 

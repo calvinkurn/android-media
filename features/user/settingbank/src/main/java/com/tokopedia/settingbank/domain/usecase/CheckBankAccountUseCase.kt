@@ -55,13 +55,18 @@ class CheckBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRepo
             val checkAccountData = it.checkAccountData
             if (checkAccountData.successCode == 200) {
                 if (checkAccountData.isValidBankAccount) {
-                    if (action == ACTION_VALIDATE) {
-                        onSuccess(AccountNameFinalValidationSuccess(editedAccountName
-                                ?: "", ActionValidateAccountName))
-                    } else {
-                        onSuccess(AccountNameFinalValidationSuccess(checkAccountData.accountHolderName
-                                ?: "",
-                                ActionCheckAccountAccountName))
+                    if(checkAccountData.allowedToEdit){
+                        onSuccess(EditableAccountName(checkAccountData.accountHolderName ?: "",
+                                checkAccountData.message))
+                    }else {
+                        if (action == ACTION_VALIDATE) {
+                            onSuccess(AccountNameFinalValidationSuccess(editedAccountName
+                                    ?: "", ActionValidateAccountName))
+                        } else {
+                            onSuccess(AccountNameFinalValidationSuccess(checkAccountData.accountHolderName
+                                    ?: "",
+                                    ActionCheckAccountAccountName))
+                        }
                     }
                 } else {
                     onSuccess(EditableAccountName(checkAccountData.accountHolderName ?: "",
