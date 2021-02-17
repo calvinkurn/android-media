@@ -20,6 +20,7 @@ import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
+import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.time.TimeHelper
 
@@ -45,6 +46,7 @@ class WidgetNotificationViewHolder constructor(
             R.id.group_progress_indicator
     )
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
+    private val containerUnify: ContainerUnify? = itemView?.findViewById(R.id.unify_container)
     private val historyAdapter: HistoryAdapter = HistoryAdapter()
 
     private val height_46 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_46)
@@ -80,16 +82,11 @@ class WidgetNotificationViewHolder constructor(
         bindHistoryBox(element)
         bindMessage(element)
         bindPaddingBottom(element)
+        bindContainerUnify(element)
     }
 
-    override fun bindContainer(element: NotificationUiModel) {
-        when {
-            !element.isRead() -> container?.setBackgroundColor(clickedColor)
-            element.isHistoryVisible -> container?.setBackgroundResource(
-                    R.drawable.bg_notifcenter_gradient_notif_order_timeline
-            )
-            else -> container?.background = null
-        }
+    private fun bindContainerUnify(element: NotificationUiModel) {
+        containerUnify?.showWithCondition(element.isRead() && element.isHistoryVisible)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
@@ -156,7 +153,7 @@ class WidgetNotificationViewHolder constructor(
             bindProgressIndicatorVisibility(element)
             bindHistoryViewTextState(element)
             bindHistoryViewIconState(element)
-            bindContainer(element)
+            bindContainerUnify(element)
             trackWhenExpanded(element)
         }
     }

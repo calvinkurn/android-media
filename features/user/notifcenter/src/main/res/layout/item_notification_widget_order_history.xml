@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/notification_container"
     style="@style/BaseNotification_Container"
-    android:paddingBottom="@dimen/unify_space_0"
-    tools:background="@drawable/bg_notifcenter_gradient_notif_order_timeline">
+    android:paddingBottom="@dimen/unify_space_0">
+
+    <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/unify_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:container_color="BLUE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_icon"
