@@ -9,9 +9,11 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelpe
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
+import com.tokopedia.loginregister.common.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Named
 
@@ -32,6 +34,19 @@ class MockLoginmodule {
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
+    }
+
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return object : DispatcherProvider {
+            override fun io(): CoroutineDispatcher {
+                return IO
+            }
+
+            override fun ui(): CoroutineDispatcher {
+                return Main
+            }
+        }
     }
 
     @Provides
