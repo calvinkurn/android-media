@@ -176,6 +176,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun setupTabLayout() {
+        reviewInboxTabs.customTabGravity = TabLayout.GRAVITY_FILL
         reviewInboxTabs.customTabMode = TabLayout.MODE_SCROLLABLE
         reviewInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {

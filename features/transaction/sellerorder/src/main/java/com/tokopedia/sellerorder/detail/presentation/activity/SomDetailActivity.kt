@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -16,7 +17,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
@@ -27,7 +30,7 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailActivity : BaseSimpleActivity(), HasComponent<SomDetailComponent> {
+class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
 
     companion object {
         @JvmStatic
@@ -73,6 +76,12 @@ class SomDetailActivity : BaseSimpleActivity(), HasComponent<SomDetailComponent>
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
+        setResult(Activity.RESULT_OK, result)
+        finish()
     }
 
     private fun onChatClicked() {

@@ -18,7 +18,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.linker)

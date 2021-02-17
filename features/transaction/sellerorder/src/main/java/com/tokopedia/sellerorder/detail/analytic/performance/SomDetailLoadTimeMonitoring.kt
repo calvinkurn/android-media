@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.detail.analytic.performance
 
-import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 
 class SomDetailLoadTimeMonitoring : LoadTimeMonitoring() {

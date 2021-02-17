@@ -10,6 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:titleTextColor="@color/Unify_N700"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
@@ -26,7 +27,6 @@
             android:focusable="true"
             android:padding="@dimen/layout_lvl1"
             android:text="@string/action_done"
-            android:visibility="gone"
             tools:visibility="visible" />
 
     </androidx.appcompat.widget.Toolbar>

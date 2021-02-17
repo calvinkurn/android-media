@@ -101,7 +101,6 @@
 /features/merchant/seller_app_widget/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home/                         @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_common/                  @tokopedia/android-minionstuart-dev
-/features/merchant/seller_home_navigation_common/       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_menu/                         @tokopedia/android-minionstuart-dev
 /features/merchant/seller_menu_common/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_onboarding/                   @tokopedia/android-minionstuart-dev
@@ -121,6 +120,7 @@
 /features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/digital_brizzi                       @tokopedia/android-minionmark-dev
+/features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
@@ -162,6 +162,8 @@
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/chat_common/                     		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
+/features/user/inbox/                         		    @tokopedia/android-minionkevin-dev
+/features/user/inbox_common/                         	@tokopedia/android-minionkevin-dev
 /features/user/orderhistory/                         	@tokopedia/android-minionkevin-dev
 /features/user/topchat_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
@@ -282,6 +284,7 @@
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
 /libraries/logger/										@tokopedia/android-core-dev
+/libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/mediauploader/			                    @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev

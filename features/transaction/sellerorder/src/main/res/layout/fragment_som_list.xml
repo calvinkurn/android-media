@@ -30,28 +30,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tickerType="announcement" />
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_corner"
-        android:clickable="true"
-        android:focusable="true"
-        android:textColorHint="@color/Unify_N200"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginRight="15dp"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-        app:siv_search_hint="@string/hint_search_product"
-        app:siv_search_icon="@drawable/unify_search_ic" />
+        app:search_bar_placeholder="@string/som_list_hint_search_product"
+        app:search_bar_show_icon="false" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sortFilterSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/som_list_sort_filter_horizontal_padding"
-        android:layout_marginTop="4.5dp"
+        android:layout_marginTop="@dimen/som_list_sort_filter_padding_top"
         android:layout_marginEnd="@dimen/layout_lvl0"
         android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
@@ -178,8 +173,7 @@
         android:id="@+id/sortFilterShimmer1"
         android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
         android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
-        android:layout_marginStart="@dimen/som_list_sort_filter_shimmer_margin_start"
-        android:layout_marginTop="@dimen/som_list_sort_filter_shimmer_margin_top"
+        android:layout_marginTop="@dimen/som_list_sort_filter_padding_top"
         app:corners="32"
         app:layout_constraintStart_toStartOf="@id/searchBarSomList"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />

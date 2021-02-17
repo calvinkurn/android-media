@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -48,7 +49,9 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
 }
 
 internal fun ImageView.glideClear(context: Context) {
-    Glide.with(context).clear(this)
+    if (context.isValidGlideContext()) {
+        Glide.with(context).clear(this)
+    }
 }
 
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
@@ -107,8 +110,8 @@ internal fun ImageView.loadImage(url: String?) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .placeholder(R.drawable.product_card_placeholder_grey)
+                .error(R.drawable.product_card_placeholder_grey)
                 .into(this)
     }
 }
@@ -117,8 +120,8 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .placeholder(R.drawable.product_card_placeholder_grey)
+                .error(R.drawable.product_card_placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -138,7 +141,7 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(R.drawable.product_card_placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -160,8 +163,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
                 .load(url)
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .placeholder(R.drawable.product_card_placeholder_grey)
+                .error(R.drawable.product_card_placeholder_grey)
                 .into(this)
     }
 }
@@ -181,8 +184,8 @@ internal fun ImageView.loadImageTopRightCrop(url: String?) {
                 .load(url)
                 .transform(TopRightCrop())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .placeholder(R.drawable.product_card_placeholder_grey)
+                .error(R.drawable.product_card_placeholder_grey)
                 .into(this)
     }
 }
