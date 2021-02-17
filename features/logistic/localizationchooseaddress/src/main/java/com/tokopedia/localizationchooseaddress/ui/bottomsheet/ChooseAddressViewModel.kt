@@ -8,6 +8,8 @@ import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepo
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListModel
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +20,16 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     val chosenAddressList: LiveData<Result<List<ChosenAddressModel>>>
         get() = _chosenAddressList
 
+    private val _test = MutableLiveData<Result<String>>()
+    val test: LiveData<Result<String>>
+        get() = _test
+
+
     fun getChosenAddressList() {
         viewModelScope.launch {
-            val getChosenAddressList = chooseAddressRepo.getChosenAddressList()
-            _chosenAddressList.value = Result.success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response     ))
+//            val getChosenAddressList = chooseAddressRepo.getChosenAddressList()
+            _test.value = Success("ivan fadhila")
+//            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
         }
     }
 

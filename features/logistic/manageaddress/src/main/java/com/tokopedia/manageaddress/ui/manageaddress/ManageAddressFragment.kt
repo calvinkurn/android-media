@@ -153,7 +153,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
-        fragmentManager?.let { chooseAddressWidget?.setBindFragmentManager(it) }
+        fragmentManager?.let { chooseAddressWidget?.setBindFragmentManager(it, this ) }
 
         initScrollListener()
 

@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListModel
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    var addressList = mutableListOf<ChosenAddressModel>()
+    var addressList = mutableListOf(ChosenAddressModel(), ChosenAddressModel())
 
     interface AddressListItemAdapterListener {
         fun onItemClicked(address: ChosenAddressModel)
