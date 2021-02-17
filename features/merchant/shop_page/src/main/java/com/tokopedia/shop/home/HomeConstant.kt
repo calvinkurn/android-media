@@ -18,6 +18,7 @@ object WidgetType {
     const val VOUCHER = "promo"
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
+    const val PERSONALIZATION = "perso"
 }
 
 object WidgetName {
@@ -29,6 +30,7 @@ object WidgetName {
     const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
+    const val PRODUCT_RECOMMENDATION = "recent_activity"
     const val VOUCHER = "voucher"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
 }
