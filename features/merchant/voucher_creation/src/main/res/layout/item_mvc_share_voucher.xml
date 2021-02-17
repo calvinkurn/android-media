@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_dimen_14dp"
         android:layout_marginBottom="@dimen/mvc_dimen_14dp"
+        android:contentDescription="@string/mvc_ic_social_media_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
