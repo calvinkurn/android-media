@@ -29,7 +29,7 @@ class TextFieldTitleComponent(
         val finalText = "${getString(R.string.play_title_input_label)}$asterisk"
         val spanBuilder = SpannableStringBuilder(finalText)
         spanBuilder.setSpan(
-                ForegroundColorSpan(getColor(unifyR.color.Red_R500)),
+                ForegroundColorSpan(getColor(unifyR.color.Unify_R500)),
                 finalText.indexOf(asterisk),
                 finalText.length,
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
