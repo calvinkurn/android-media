@@ -446,8 +446,12 @@ object ImageProcessingUtil {
     }
 
     private fun logError(logTitle: String, throwable: Throwable) {
-        Timber.w("${LOG_ERROR_TAG}${logTitle};reason='${throwable.message.orEmpty()
-                .take(LOG_ERROR_MAX_LIMIT)}';data='${Log.getStackTraceString(throwable)
-                .take(LOG_ERROR_MAX_LIMIT)}'")
+        val stacktrace = Log.getStackTraceString(throwable)
+        Timber.w("${LOG_ERROR_TAG}${logTitle};reason='${limitAndCleanString(throwable.message)
+        }';data='${limitAndCleanString(stacktrace)}'")
+    }
+
+    private fun limitAndCleanString(string: String?): String {
+        return string.orEmpty().replace("'", "").take(LOG_ERROR_MAX_LIMIT)
     }
 }
