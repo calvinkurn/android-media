@@ -11,14 +11,15 @@ import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
-import com.tokopedia.play.view.uimodel.mapper.*
+import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -51,7 +52,8 @@ class PlayViewModelRobot(
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         dispatchers: CoroutineDispatcherProvider,
-        remoteConfig: RemoteConfig
+        remoteConfig: RemoteConfig,
+        playPreference: PlayPreference
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -78,7 +80,8 @@ class PlayViewModelRobot(
                 playUiModelMapper,
                 userSession,
                 dispatchers,
-                remoteConfig
+                remoteConfig,
+                playPreference,
         )
     }
 
@@ -201,6 +204,7 @@ fun givenPlayViewModelRobot(
         userSession: UserSessionInterface = mockk(relaxed = true),
         dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider,
         remoteConfig: RemoteConfig = mockk(relaxed = true),
+        playPreference: PlayPreference = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -222,7 +226,8 @@ fun givenPlayViewModelRobot(
             playUiModelMapper = playUiModelMapper,
             userSession = userSession,
             dispatchers = dispatchers,
-            remoteConfig = remoteConfig
+            remoteConfig = remoteConfig,
+            playPreference = playPreference
     ).apply(fn)
 }
 

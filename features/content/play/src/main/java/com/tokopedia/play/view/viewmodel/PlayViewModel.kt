@@ -19,10 +19,11 @@ import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
@@ -31,6 +32,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -60,7 +62,8 @@ class PlayViewModel @Inject constructor(
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val remoteConfig: RemoteConfig
+        private val remoteConfig: RemoteConfig,
+        private val playPreference: PlayPreference,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -97,6 +100,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableLikeStatusInfo
     val observableEventPiP: LiveData<Event<PiPMode>>
         get() = _observableEventPiP
+    val observableOnboarding: LiveData<Event<Unit>>
+        get() = _observableOnboarding
 
     val videoOrientation: VideoOrientation
         get() {
@@ -225,6 +230,7 @@ class PlayViewModel @Inject constructor(
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
+    private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -488,6 +494,7 @@ class PlayViewModel @Inject constructor(
         mChannelData = channelData
         handleStatusInfo(channelData.statusInfo)
         handleChannelInfo(channelData.channelInfo)
+        handleOnboarding(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handleShareInfo(channelData.shareInfo)
@@ -751,6 +758,18 @@ class PlayViewModel @Inject constructor(
         _observableVideoMeta.value = videoMetaInfo.copy(videoPlayer = newVidPlayer)
     }
 
+    private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
+        val userId = userSession.userId
+        if (!playPreference.isOnboardingShown(userId) && !videoMetaInfo.videoPlayer.isYouTube) {
+            viewModelScope.launch(dispatchers.main) {
+                delay(ONBOARDING_DELAY)
+                _observableOnboarding.value = Event(Unit)
+
+                playPreference.setOnboardingShown(userId)
+            }
+        }
+    }
+
     private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
         _observableShareInfo.value = shareInfo
     }
@@ -996,5 +1015,6 @@ class PlayViewModel @Inject constructor(
 
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
+        private const val ONBOARDING_DELAY = 5000L
     }
 }
