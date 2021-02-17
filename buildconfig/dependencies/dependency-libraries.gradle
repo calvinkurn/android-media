@@ -67,6 +67,7 @@ ext {
             instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
             irisSession             : ":libraries:iris_session",
+            keys                    : ":libraries:keys",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
             liveness_lib            : ":libraries:liveness_lib",

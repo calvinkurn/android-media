@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">core_legacy</string>
-        <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
     <string name="title_new_ticket">Tiket Anda telah dibalas</string>
     <string name="title_transaction_order_delivered">Produk Terkirim</string>
     <string name="title_transaction_update_resi">Perbarui Resi</string>

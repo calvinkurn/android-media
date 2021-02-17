@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">product_detail</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
-
     <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>

@@ -1196,7 +1196,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToReviewImagePreview() {
-        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
