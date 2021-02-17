@@ -103,5 +103,7 @@ data class ProductDataResponse(
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("booking_stock")
-        val bookingStock: Int = 0
+        val bookingStock: Int = 0,
+        @SerializedName("product_preorder")
+        val productPreorder: ProductPreorderResponse = ProductPreorderResponse()
 )

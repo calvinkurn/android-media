@@ -28,7 +28,6 @@ object SettingConstant {
     const val SETTING_SHOP_SHIPMENT_ID = 25
     const val SETTING_SHOP_NOTE_ID = 26
     const val SETTING_TOKOCASH_ID = 31
-    const val SETTING_OVO_PAY_LATER_ID = 25
     const val SETTING_SALDO_ID = 32
     const val SETTING_BANK_ACCOUNT_ID = 33
     const val SETTING_CREDIT_CARD_ID = 34
