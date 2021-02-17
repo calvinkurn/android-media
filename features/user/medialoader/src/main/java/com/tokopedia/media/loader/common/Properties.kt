@@ -27,8 +27,6 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
-    var isIcon: Boolean = false
-
     fun setSource(data: Any?) = apply {
         this.data = data
     }

@@ -29,6 +29,13 @@ inline fun ImageView.loadImage(
 fun ImageView.loadImageCircle(url: String) {
     call(url, Properties().apply {
         isCircular(true)
+
+        /*
+        * loadImageCircle() extension must be haven't placeholder,
+        * the loader effect should be handled by team by
+        * using own shimmering.
+        * */
+        setPlaceHolder(-1)
     })
 }
 
@@ -50,7 +57,14 @@ fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 fun ImageView.loadIcon(url: String?) = call(
         url,
         Properties().apply {
-            isIcon = true
+            useBlurHash(false)
+
+            /*
+            * loadIcon() extension must be haven't placeholder,
+            * the loader effect should be handled by team by
+            * using own shimmering.
+            * */
+            setPlaceHolder(-1)
         }
 )
 

@@ -38,6 +38,8 @@ class GlideBuilder {
         val startTimeRequest = System.currentTimeMillis()
 
         with(properties) {
+            error(error)
+
             /*
             * because the medialoader placeholder has a different behavior,
             * a builder is needed to handle it. the type of placeholder following:
@@ -56,8 +58,7 @@ class GlideBuilder {
             transform?.let { _transform.add(it) }
             signatureKey?.let { signature(it) }
 
-            error(error)
-
+            // bulk transforms from transformList
             if (_transform.isNotEmpty()) {
                 transform(MultiTransformation(_transform))
             }
@@ -78,32 +79,28 @@ class GlideBuilder {
             properties: Properties,
             request: GlideRequest<Bitmap>
     ): GlideRequest<Bitmap> {
-        val isCircular = properties.isCircular
         val placeHolder = properties.placeHolder
         val blurHash = properties.blurHash
-        val isIcon = properties.isIcon
 
         return request.apply {
-            if (!isCircular && !isIcon) {
-                when {
-                    /*
-                    * validate if the placeholder have default placeholder value, 0.
-                    * it will check if the blurHash is active, the placeholder will render
-                    * the blurHash image, but if placeholder is 0 and blurHash is inactive,
-                    * the placeholder will render the default of built-in placeholder.
-                    * */
-                    placeHolder == ZERO_PLACEHOLDER -> {
-                        if (blurHash && !hash.isNullOrEmpty()) {
-                            placeholder(BitmapDrawable(context.resources, blurring(hash)))
-                        } else {
-                            placeholder(R.drawable.ic_media_default_placeholder)
-                        }
+            when {
+                /*
+                * validate if the placeholder have default placeholder value, 0.
+                * it will check if the blurHash is active, the placeholder will render
+                * the blurHash image, but if placeholder is 0 and blurHash is inactive,
+                * the placeholder will render the default of built-in placeholder.
+                * */
+                placeHolder == ZERO_PLACEHOLDER -> {
+                    if (blurHash && !hash.isNullOrEmpty()) {
+                        placeholder(BitmapDrawable(context.resources, blurring(hash)))
+                    } else {
+                        placeholder(R.drawable.ic_media_default_placeholder)
                     }
+                }
 
-                    // render the custom placeholder that provided by Properties()
-                    placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
-                        placeholder(placeHolder)
-                    }
+                // render the custom placeholder that provided by Properties()
+                placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
+                    placeholder(placeHolder)
                 }
             }
         }
