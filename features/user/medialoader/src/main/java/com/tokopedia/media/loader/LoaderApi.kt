@@ -51,8 +51,8 @@ internal object LoaderApi {
             * */
             automateScaleType(imageView, this)
 
-            when {
-                properties.data is String && !properties.isIcon -> {
+            when(properties.data) {
+                is String -> {
                     // url builder
                     val source = Loader.urlBuilder(properties.data.toString())
 

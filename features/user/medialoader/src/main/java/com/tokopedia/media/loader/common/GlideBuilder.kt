@@ -81,9 +81,10 @@ class GlideBuilder {
         val isCircular = properties.isCircular
         val placeHolder = properties.placeHolder
         val blurHash = properties.blurHash
+        val isIcon = properties.isIcon
 
         return request.apply {
-            if (!isCircular) {
+            if (!isCircular && !isIcon) {
                 when {
                     /*
                     * validate if the placeholder have default placeholder value, 0.
