@@ -20,6 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val shippingDurationList = mutableListOf<ServicesItem>()
+    private var isNewFlow = false
 
     companion object {
         private const val SHIPPING_DURATION_VIEW_TYPE = 1
@@ -27,7 +28,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         private const val LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE = 3
     }
 
-    fun renderData(data: List<ServicesItem>) {
+    fun renderData(data: List<ServicesItem>, isNewFlow: Boolean) {
+        this.isNewFlow = isNewFlow
         shippingDurationList.clear()
         shippingDurationList.addAll(data)
         notifyDataSetChanged()
@@ -63,7 +65,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         if (servicesItem is ServicesItemModelNoPrice) {
             (holder as ShippingDurationViewHolder).bind(servicesItem)
         } else if (servicesItem is ServicesItemModel) {
-            (holder as ShippingDurationViewHolder).bind(servicesItem)
+            (holder as ShippingDurationViewHolder).bind(servicesItem, isNewFlow)
         } else if (servicesItem is LogisticPromoInfo) {
             (holder as LogisticPromoInfoViewHolder).bind(servicesItem)
         }
@@ -92,13 +94,30 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
         }
 
-        fun bind(data: ServicesItemModel) {
-            itemShippingText.text = data.servicesName
-            if (data.texts?.textRangePrice?.isNotBlank() == true) {
-                itemShippingPrice.text = data.texts?.textRangePrice
+        fun bind(data: ServicesItemModel, isNewFlow: Boolean) {
+            val shouldShowEta = isNewFlow && data.texts?.textEta != null
+            if (shouldShowEta) {
+                if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                    itemShippingText.text = "${data.servicesName} (${data.texts?.textRangePrice})"
+                } else {
+                    itemShippingText.text = data.servicesName
+                }
+                itemShippingText.setType(Typography.BODY_2)
+                if (data.texts?.textEta?.isNotEmpty() == true) {
+                    itemShippingPrice.text = data.texts?.textEta
+                } else {
+                    itemShippingPrice.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                }
                 itemShippingPrice.visible()
             } else {
-                itemShippingPrice.gone()
+                itemShippingText.text = data.servicesName
+                itemShippingText.setType(Typography.BODY_1)
+                if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                    itemShippingPrice.text = data.texts?.textRangePrice
+                    itemShippingPrice.visible()
+                } else {
+                    itemShippingPrice.gone()
+                }
             }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
@@ -115,7 +134,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
-                isCourierInstantOrSameday(data.servicesId) -> {
+                !shouldShowEta && isCourierInstantOrSameday(data.servicesId) -> {
                     itemList.alpha = 1f
                     itemShippingError.gone()
                     itemShippingRadio.visible()
