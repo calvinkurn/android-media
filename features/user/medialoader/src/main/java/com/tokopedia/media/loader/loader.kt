@@ -12,6 +12,13 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
+fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
+
+fun ImageView.loadAsGif(
+        url: String,
+        properties: Properties.() -> Unit
+) = loadGifImage(this, url, Properties().apply(properties))
+
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
 fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
@@ -56,8 +63,6 @@ inline fun ImageView.loadImageRounded(
         }) {
     call(url, Properties().apply(configuration))
 }
-
-fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
 inline fun ImageView.loadIcon(
         url: String?,

@@ -3,7 +3,7 @@ package com.tokopedia.media.loader
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.MultiTransformation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 
 internal object LoaderApi {
 
@@ -92,14 +93,14 @@ internal object LoaderApi {
     }
 
     // temporarily the GIF loader
-    // TODO: change with .loadImage() instead
-    fun loadGifImage(imageView: ImageView, data: String) {
+    fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
         with(imageView) {
-            GlideApp.with(context)
-                    .asGif()
-                    .load(data)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(this)
+            GlideApp.with(context).asGif().load(data).apply {
+                properties.cacheStrategy?.let {
+                    diskCacheStrategy(mapToDiskCacheStrategy(it))
+                    transform(MultiTransformation(properties.transforms as MutableList))
+                }
+            }.into(this)
         }
     }
 
