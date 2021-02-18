@@ -34,7 +34,7 @@
             android:id="@+id/ll_btn"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_12"
             android:background="@drawable/mvc_bg_border_green"
             android:orientation="horizontal"
             android:paddingStart="@dimen/dp_15"

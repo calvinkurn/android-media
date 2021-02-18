@@ -11,13 +11,12 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
@@ -103,7 +102,8 @@ class ShopHomeVoucherViewHolder(
                             imageUrl = model.data.imageURL ?: ""
                     ),
                             shopId = model.data.shopId ?: "0",
-                            isMainContainerSetFitsSystemWindows = false
+                            isMainContainerSetFitsSystemWindows = false,
+                            source = MvcSource.SHOP
                     )
                 }
             }

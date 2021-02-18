@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
@@ -30,7 +31,8 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
                     imageUrl = model.data.imageURL ?: ""
             ),
                     shopId = model.data.shopId ?: "0",
-                    isMainContainerSetFitsSystemWindows = false
+                    isMainContainerSetFitsSystemWindows = false,
+                    source = MvcSource.SHOP
             )
         }
     }

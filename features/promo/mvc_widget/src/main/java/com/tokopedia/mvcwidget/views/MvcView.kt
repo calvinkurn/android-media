@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -50,7 +51,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false) {
+    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source:Int) {
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()

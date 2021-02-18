@@ -39,6 +39,7 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.isDragable = true
         bottomSheet.isHideable = true
         bottomSheet.showKnob = true
+        bottomSheet.showCloseIcon = false
         bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels/2).toDp()
         bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
 
@@ -48,10 +49,9 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
         childView.show(shopId, false)
         bottomSheet.setShowListener {
-            val imageMargin = dpToPx(20).toInt()
+            val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
-            bottomSheet.bottomSheetClose.setImageResource(R.drawable.mvc_dialog_close)
-            bottomSheet.bottomSheetClose.setMargin(imageMargin, 0, dpToPx(20).toInt(), 0)
+            bottomSheet.bottomSheetTitle.setMargin(titleMargin, 0, 0, 0)
         }
 
         bottomSheet.setOnDismissListener {
