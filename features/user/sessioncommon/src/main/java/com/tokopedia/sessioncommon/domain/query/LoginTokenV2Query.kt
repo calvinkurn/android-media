@@ -19,7 +19,7 @@ object LoginTokenV2Query {
                     grant_type: $grantType
                     username: $username
                     password: $password
-                    hash: $hash
+                    h: $hash
                 }
             ) {
                 acc_sid
