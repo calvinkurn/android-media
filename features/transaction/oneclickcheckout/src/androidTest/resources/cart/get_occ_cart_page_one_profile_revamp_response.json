@@ -458,6 +458,8 @@
                 "link": "http://pref-ecs.tokopedia.com"
               }
             },
+            "profile_revamp_wording": "Template Beli Langsung",
+            "is_recom": false,
             "profile_id": 1,
             "status": 2,
             "address": {
