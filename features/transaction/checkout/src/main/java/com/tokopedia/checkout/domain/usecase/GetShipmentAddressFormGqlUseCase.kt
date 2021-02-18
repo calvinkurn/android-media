@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.addChosenAddressParam
+import com.tokopedia.localizationchooseaddress.util.request.addChosenAddressParam
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

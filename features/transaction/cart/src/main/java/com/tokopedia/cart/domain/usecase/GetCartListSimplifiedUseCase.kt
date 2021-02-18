@@ -7,8 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.KEY_CHOSEN_ADDRESS
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.getChosenAddress
+import com.tokopedia.localizationchooseaddress.util.request.KEY_CHOSEN_ADDRESS
+import com.tokopedia.localizationchooseaddress.util.request.getChosenAddress
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

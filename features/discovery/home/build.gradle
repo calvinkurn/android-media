@@ -48,6 +48,7 @@ android {
 dependencies {
     // Feature
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.discoveryCommon)
