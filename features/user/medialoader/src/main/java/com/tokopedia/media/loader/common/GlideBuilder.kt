@@ -44,12 +44,12 @@ abstract class GlideBuilder<T> {
                 dontAnimate()
             }
 
-            cacheStrategy?.let { diskCacheStrategy(MediaCacheStrategy.mapToDiskCacheStrategy(it)) }
+            cacheStrategy?.let { diskCacheStrategy(MediaCacheStrategy.mapTo(it)) }
+            decodeFormat?.let { format(MediaDecodeFormat.mapTo(it)) }
             overrideSize?.let { override(it.width, it.height) }
-            decodeFormat?.let { format(MediaDecodeFormat.mapToDecodeFormat(it)) }
             signatureKey?.let { signature(it) }
 
-            // bulk transforms from transformList
+            // bulk transforms from transformList with MultiTransform
             if (_transform.isNotEmpty()) {
                 transform(MultiTransformation(_transform))
             }

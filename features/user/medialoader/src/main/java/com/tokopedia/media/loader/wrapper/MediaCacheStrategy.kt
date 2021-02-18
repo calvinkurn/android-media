@@ -10,7 +10,7 @@ enum class MediaCacheStrategy {
     AUTOMATIC;
 
     companion object {
-        fun mapToDiskCacheStrategy(cacheStrategy: MediaCacheStrategy): DiskCacheStrategy {
+        fun mapTo(cacheStrategy: MediaCacheStrategy): DiskCacheStrategy {
             return when (cacheStrategy) {
                 ALL -> DiskCacheStrategy.ALL
                 NONE -> DiskCacheStrategy.NONE

@@ -3,19 +3,17 @@ package com.tokopedia.media.loader
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.load.MultiTransformation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.common.builder.GlideBitmapBuilder
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.common.builder.GlideBitmapBuilder
 import com.tokopedia.media.loader.common.builder.GlideGifBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 
 internal object LoaderApi {
 

@@ -8,7 +8,7 @@ enum class MediaDecodeFormat {
     DEFAULT;
 
     companion object {
-        fun mapToDecodeFormat(decodeFormat: MediaDecodeFormat): DecodeFormat {
+        fun mapTo(decodeFormat: MediaDecodeFormat): DecodeFormat {
             return when(decodeFormat) {
                 PREFER_ARGB_8888 -> DecodeFormat.PREFER_ARGB_8888
                 PREFER_RGB_565 -> DecodeFormat.PREFER_RGB_565
