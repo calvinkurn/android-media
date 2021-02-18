@@ -51,6 +51,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.linker.LinkerManager
@@ -340,7 +341,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     if (item.image.isNotEmpty()) {
                         val tab = bottomTabHolder.tabLayout.newTab()
                         tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
-                            findViewById<ImageUnify>(R.id.tab_image).setImageUrl(item.image)
+                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
                             findViewById<Typography>(R.id.tab_text).apply {
                                 text = item.name
                                 setTextColor(getTabTextColor(this.context, item.fontColor))
