@@ -86,6 +86,19 @@ fun ImageView.loadImageWithoutPlaceholder(url: String){
     this.loadImageWithoutPlaceholder(url)
 }
 
+fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+    this.loadImageWithoutPlaceholder(url) {
+        listener({ _, mediaDataSource ->
+            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            listener?.successLoad()
+        }, {
+            GlideErrorLogHelper().logError(context, it, url)
+            listener?.failedLoad()
+        })
+    }
+}
+
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
         setPlaceHolder(placeholder)
