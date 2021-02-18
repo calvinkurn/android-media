@@ -140,7 +140,7 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductStockbar(soldPercentage: Int, label: String) {
         if (label.isNotEmpty()) {
-            itemView.deals_stockbar.progress = soldPercentage
+            itemView.deals_stockbar.setValue(soldPercentage)
             itemView.deals_stockbar_label.text = label
         } else {
             itemView.deals_stockbar.visibility = View.GONE
