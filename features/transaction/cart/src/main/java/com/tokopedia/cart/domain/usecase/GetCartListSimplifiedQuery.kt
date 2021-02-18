@@ -253,10 +253,10 @@ fun getQueryCartRevamp(): String {
                         eligible
                         badge_url
                       }
-                      #free_shipping_extra {
-                      #  eligible
-                      #  badge_url
-                      #}
+                      free_shipping_extra {
+                        eligible
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -506,10 +506,10 @@ fun getQueryCartRevamp(): String {
                         eligible
                         badge_url
                       }
-                      #free_shipping_extra {
-                      #  eligible
-                      #  badge_url
-                      #}
+                      free_shipping_extra {
+                        eligible
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
