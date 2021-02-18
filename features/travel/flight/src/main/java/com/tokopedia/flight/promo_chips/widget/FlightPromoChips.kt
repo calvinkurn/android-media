@@ -41,10 +41,6 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
             override fun onItemClicked(airlinePrice: AirlinePrice, adapterPosition: Int) {
                 listener.onClickPromoChips(airlinePrice, adapterPosition)
             }
-
-            override fun onUnselectItemClicked(adapterPosition: Int) {
-                listener.onClickUnselectPromoChips(adapterPosition)
-            }
         }))
 
         recyclerView.adapter = adapter
@@ -58,8 +54,11 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.clearList()
     }
 
+    fun setItemActive(position: Int){
+        adapter.setSelectedProduct(position)
+    }
+
     interface PromoChipsListener{
         fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int)
-        fun onClickUnselectPromoChips(position: Int)
     }
 }

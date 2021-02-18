@@ -109,7 +109,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        flight_promo_chips_view.init()
+        initPromoChips()
 
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
             stopTrace()
@@ -160,24 +160,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         })
-
-        /** temp buat load JSON aja <mock> */
-        flightSearchViewModel.getPromoTemp(requireContext())
-        flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    if (it.data.isNotEmpty()) {
-                        flight_promo_chips_view.renderPromoList(it.data)
-                    }else{
-                        flight_promo_chips_view.hidePromoList()
-                    }
-                }
-                is Fail ->{
-                    flight_promo_chips_view.hidePromoList()
-                }
-            }
-        })
-        flight_promo_chips_view.setListener(promoChipsListener)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -766,15 +748,30 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    fun initPromoChips(){
+        flight_promo_chips_view.init()
+        /** temp buat load JSON aja <mock> */
+        flightSearchViewModel.getPromoTemp(requireContext())
+        flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    if (it.data.isNotEmpty()) {
+                        flight_promo_chips_view.renderPromoList(it.data)
+                    }else{
+                        flight_promo_chips_view.hidePromoList()
+                    }
+                }
+                is Fail ->{
+                    flight_promo_chips_view.hidePromoList()
+                }
+            }
+        })
+        flight_promo_chips_view.setListener(promoChipsListener)
+    }
+
     private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
         override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
             flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
-            clearAllData()
-            fetchSortAndFilterData()
-        }
-
-        override fun onClickUnselectPromoChips(position: Int) {
-            flightSearchViewModel.filterModel.airlineList = mutableListOf()
             clearAllData()
             fetchSortAndFilterData()
         }

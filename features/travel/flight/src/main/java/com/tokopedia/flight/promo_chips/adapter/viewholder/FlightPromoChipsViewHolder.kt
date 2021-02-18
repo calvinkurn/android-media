@@ -56,17 +56,16 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                     if (adapter.selectedPosition != adapterPosition) {
                         onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
                         adapter.setSelectedProduct(adapterPosition)
-                    } else {
-                        onFlightPromoChipsListener.onUnselectItemClicked(adapterPosition)
-                        changePromoChipsState(false)
                     }
                 }
             }
         }
     }
 
+    fun highlight(element: AirlinePrice){
+    }
+
     interface OnFlightPromoChipsListener{
         fun onItemClicked(airlinePrice: AirlinePrice, adapterPosition: Int)
-        fun onUnselectItemClicked(adapterPosition: Int)
     }
 }
