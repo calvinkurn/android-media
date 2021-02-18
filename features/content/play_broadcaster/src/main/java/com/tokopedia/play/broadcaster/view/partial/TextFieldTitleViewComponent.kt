@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import androidx.annotation.IdRes
@@ -16,13 +18,30 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class TextFieldTitleViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
+        listener: Listener
 ) : ViewComponent(container, idRes) {
 
     private val textField: TextFieldUnify = rootView as TextFieldUnify
 
     init {
         textField.textFieldWrapper.hint = getTitleLabelText()
+        textField.textFieldInput.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s != null) listener.onTitleInputChanged(this@TextFieldTitleViewComponent, s.toString())
+            }
+        })
     }
+
+    fun getText() = textField.textFieldInput.text.toString()
 
     private fun getTitleLabelText(): CharSequence {
         val asterisk = '*'
@@ -36,5 +55,10 @@ class TextFieldTitleViewComponent(
         )
 
         return spanBuilder
+    }
+
+    interface Listener {
+
+        fun onTitleInputChanged(view: TextFieldTitleViewComponent, title: String)
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -24,7 +26,7 @@ class TextFieldAddTagViewComponent(
             if (actionId == EditorInfo.IME_ACTION_DONE
                     || event.action == KeyEvent.ACTION_DOWN
                     && event.keyCode == KeyEvent.KEYCODE_ENTER) {
-                listener.onTagEntered(this, view.text.toString())
+                listener.onTagSubmitted(this, view.text.toString())
                 view.text = ""
                 return@setOnEditorActionListener true
             }
@@ -34,6 +36,6 @@ class TextFieldAddTagViewComponent(
 
     interface Listener {
 
-        fun onTagEntered(view: TextFieldAddTagViewComponent, tag: String)
+        fun onTagSubmitted(view: TextFieldAddTagViewComponent, tag: String)
     }
 }

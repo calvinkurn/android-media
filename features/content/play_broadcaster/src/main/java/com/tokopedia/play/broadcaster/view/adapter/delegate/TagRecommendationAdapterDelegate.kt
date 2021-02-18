@@ -8,13 +8,15 @@ import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
 /**
  * Created by jegul on 18/02/21
  */
-class TagRecommendationAdapterDelegate : TypedAdapterDelegate<String, String, TagRecommendationViewHolder>(TagRecommendationViewHolder.LAYOUT) {
+class TagRecommendationAdapterDelegate(
+        private val listener: TagRecommendationViewHolder.Listener
+) : TypedAdapterDelegate<String, String, TagRecommendationViewHolder>(TagRecommendationViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: String, holder: TagRecommendationViewHolder) {
         holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TagRecommendationViewHolder {
-        return TagRecommendationViewHolder(basicView)
+        return TagRecommendationViewHolder(basicView, listener)
     }
 }

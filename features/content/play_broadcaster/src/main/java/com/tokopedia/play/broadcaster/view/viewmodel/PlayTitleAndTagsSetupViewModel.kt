@@ -29,6 +29,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
     }
 
     fun addTag(tag: String) {
+        if(!isValidTag(tag)) return
+
         addedTags.add(tag)
         refreshAddedTags()
     }
@@ -36,6 +38,14 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
     fun removeTag(tag: String) {
         addedTags.remove(tag)
         refreshAddedTags()
+    }
+
+    fun isValidTitle(title: String): Boolean {
+        return title.isNotEmpty() && title.length <= 32
+    }
+
+    private fun isValidTag(tag: String): Boolean {
+        return tag.length in 2..32
     }
 
     private fun refreshAddedTags() {
