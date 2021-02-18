@@ -23,12 +23,6 @@ class TopchatRoomBuyerUxTest : TopchatRoomTest() {
             WebSocketResponse::class.java
     )
 
-    @ExperimentalCoroutinesApi
-    @Before
-    override fun before() {
-        super.before()
-    }
-
     @Test
     fun sent_text_to_ws_and_got_response_from_ws() {
         // Given
