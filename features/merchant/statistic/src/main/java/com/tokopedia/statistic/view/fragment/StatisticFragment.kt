@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -41,7 +40,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
-import com.tokopedia.statistic.di.DaggerStatisticComponent
+import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
@@ -98,11 +97,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_6.toLong()))
-        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate ?: defaultStartDate
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
+                ?: defaultStartDate
     }
     private val defaultEndDate by lazy {
         val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
-        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate ?: defaultEndDate
+        return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
+                ?: defaultEndDate
     }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
@@ -198,10 +199,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
-        DaggerStatisticComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        getComponent(StatisticComponent::class.java).inject(this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {}
