@@ -1,9 +1,10 @@
 package com.tokopedia.media.loader
 
-import android.graphics.Bitmap
+import android.content.Context
 import android.os.Handler
+import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
@@ -11,56 +12,28 @@ import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.builder.GlideBitmapBuilder
-import com.tokopedia.media.loader.common.builder.GlideGifBuilder
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
+import com.tokopedia.media.loader.utils.MediaTarget
 
-internal object LoaderApi {
+object MediaLoaderTarget {
 
     private val bitmapBuilder by lazy { GlideBitmapBuilder() }
-    private val gifBuilder by lazy { GlideGifBuilder() }
-
     private val handler by lazy { Handler() }
 
-    private fun automateScaleType(
-            imageView: ImageView,
-            request: GlideRequest<Bitmap>
-    ): GlideRequest<Bitmap> {
-        return request.apply {
-            when (imageView.scaleType) {
-                ImageView.ScaleType.FIT_CENTER -> fitCenter()
-                ImageView.ScaleType.CENTER_CROP -> centerCrop()
-                ImageView.ScaleType.CENTER_INSIDE -> centerInside()
-                else -> {}
-            }
-        }
-    }
-
-    @JvmOverloads
-    fun loadImage(imageView: ImageView, properties: Properties) {
+    fun <T: View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
         var tracker: PerformanceMonitoring? = null
-        val context = imageView.context
 
         // handling empty url
-        if (properties.data is String && properties.data.toString().isEmpty()) {
-            return
-        }
+        if (properties.data is String && properties.data.toString().isEmpty()) return
 
-        if (properties.data == null) {
+        if (target is ImageView && properties.data == null) {
             // if the data source is null, the image will be render the error drawable
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            target.setImageDrawable(AppCompatResources.getDrawable(context, properties.error))
             return
         }
 
         GlideApp.with(context).asBitmap().apply {
-
-            /*
-             * automateScaleType mean, the image will be scaled automatically
-             * based on scaleType attribute which is already defined on ImageView
-             * */
-            automateScaleType(imageView, this)
-
             val request = when(properties.data) {
                 is String -> {
                     // url builder
@@ -99,21 +72,8 @@ internal object LoaderApi {
             }
 
             handler.postDelayed({
-                request.into(imageView)
+                request.into(target)
             }, properties.renderDelay)
-        }
-    }
-
-    // temporarily the GIF loader
-    fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
-        val context = imageView.context
-
-        if (context.isValid()) {
-            GlideApp.with(context)
-                    .asGif()
-                    .load(data)
-                    .apply { gifBuilder.build(properties, this) }
-                    .into(imageView)
         }
     }
 

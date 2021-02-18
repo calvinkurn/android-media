@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
-import com.tokopedia.media.loader.ImageLoader;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.home.explore.view.adapter.datamodel.MyShopDataModel;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.GM_TITLE;
@@ -80,7 +80,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopDataModel> {
     public void bind(MyShopDataModel element) {
         ShopData data = element.getShopData();
         titleTxt.setText(MethodChecker.fromHtml(data.getShopName()));
-        ImageLoader.loadImage(imageView, data.getLogo());
+        JvmMediaLoader.loadImage(imageView, data.getLogo());
         if (data.getIsOfficial() == 1) {
             badgeTxt.setText(getString(R.string.official_store));
             badgeImage.setImageResource(R.drawable.ic_official);

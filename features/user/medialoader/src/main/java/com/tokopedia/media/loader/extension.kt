@@ -7,14 +7,14 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.media.loader.LoaderApi.loadGifImage
+import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
-import com.tokopedia.media.loader.LoaderApi.loadImage as loadImageBuilder
-import com.tokopedia.media.loader.LoaderViewTarget.loadImage as loadImageWithTarget
+import com.tokopedia.media.loader.MediaLoaderApi.loadImage as loadImageBuilder
+import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTarget
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
 
