@@ -10,7 +10,7 @@ object LoginTokenV2Query {
     private const val grantType = "\$grant_type"
     private const val username = "\$username"
     private const val password = "\$password"
-    private const val hash = "\$hash"
+    private const val hash = "\$h"
 
     val loginEmailQuery: String = """
         mutation login_email_v2($grantType: String!, $username: String!, $password: String!, $hash: String!){
