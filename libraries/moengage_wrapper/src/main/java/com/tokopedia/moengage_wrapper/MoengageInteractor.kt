@@ -14,8 +14,8 @@ import com.moengage.pushbase.push.MoEngageNotificationUtils
 import com.tokopedia.moengage_wrapper.cache.MoengageWrapperCacheHandler
 import com.tokopedia.moengage_wrapper.constants.Constants
 import com.tokopedia.moengage_wrapper.interfaces.*
-import com.tokopedia.moengage_wrapper.util.DateFormatUtils
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.time.DateFormatUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber

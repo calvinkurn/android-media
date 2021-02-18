@@ -1,4 +1,4 @@
-package com.tokopedia.moengage_wrapper.util
+package com.tokopedia.utils.time
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
