@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.cassava.debugger
+package com.tokopedia.analyticsdebugger.debugger.ui.fragment
 
 import android.content.ClipData
 import android.content.ClipboardManager

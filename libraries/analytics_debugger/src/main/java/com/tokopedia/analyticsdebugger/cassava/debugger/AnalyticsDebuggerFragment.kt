@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -17,6 +19,7 @@ import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
 import com.tokopedia.analyticsdebugger.cassava.throttleFirst
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
+import com.tokopedia.analyticsdebugger.validator.Utils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -33,7 +36,11 @@ class AnalyticsDebuggerFragment : Fragment() {
 
     private val listAdapter = DebuggerListAdapter().apply {
         setItemClickListener {
-            // go to detail
+            val bundle = bundleOf(
+                    "name" to it.name,
+                    "timestamp" to Utils.getTimeStampFormat(it.timestamp),
+                    "datum" to it.data)
+            findNavController().navigate(R.id.action_analyticsDebuggerFragment_to_analyticsDebuggerDetailFragment, bundle)
         }
     }
 
