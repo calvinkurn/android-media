@@ -325,6 +325,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val gson = Gson()
     private var coachmarkIsShowing = false
     private var useNewInbox = false
+    private val bannerCarouselCallback = BannerComponentCallback(context, this)
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -945,7 +946,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
             if (isNeedRefresh) {
-                adapter?.resetImpressionHomeBanner()
+                bannerCarouselCallback.resetImpression()
             }
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
@@ -1279,7 +1280,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 this,
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
-                BannerComponentCallback(context, this),
+                bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
                 Lego6AutoBannerComponentCallback(context, this)
         )
@@ -1506,7 +1507,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        adapter?.resetImpressionHomeBanner()
+        bannerCarouselCallback.resetImpression()
         resetFeedState()
         removeNetworkError()
         if (this::viewModel.isInitialized) {
