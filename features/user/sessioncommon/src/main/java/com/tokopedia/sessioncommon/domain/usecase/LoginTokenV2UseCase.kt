@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.query.LoginTokenV2Query
-import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -27,9 +26,9 @@ class LoginTokenV2UseCase @Inject constructor(private val graphqlUseCase: Graphq
     private val params = RequestParams.create()
 
     fun setParams(email: String, password: String, hash: String) {
-        params.putString(PARAM_USERNAME, TokenGenerator().encode(email))
+        params.putString(PARAM_USERNAME, email)
         params.putString(PARAM_PASSWORD, password)
-        params.putString(PARAM_GRANT_TYPE, TokenGenerator().encode(TYPE_PASSWORD))
+        params.putString(PARAM_GRANT_TYPE, "password")
         params.putString(PARAM_HASH, hash)
     }
 
