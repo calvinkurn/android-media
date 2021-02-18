@@ -22,6 +22,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int) {}
     open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
+    open fun trackPlayWidgetImpression(componentsItem : ComponentsItem,userID: String?) {}
+    open fun trackPlayWidgetClick(componentsItem : ComponentsItem,userID: String?,destinationURL: String?) {}
     open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}

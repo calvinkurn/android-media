@@ -44,6 +44,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -61,6 +62,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -81,6 +83,7 @@ import java.net.UnknownHostException
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
+private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
@@ -117,7 +120,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var pinnedAlreadyScrolled = false
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
-
 
 
     companion object {
@@ -157,7 +159,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun initInjector() {
         with(context) {
-            if(this is DiscoveryActivity) {
+            if (this is DiscoveryActivity) {
                 this.discoveryComponent
                         .inject(this@DiscoveryFragment)
             }
@@ -396,21 +398,23 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerDataMapper(data), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if(linkerShareData.url != null) {
+                if (linkerShareData.url != null) {
                     Utils.shareData(activity, data?.share?.description, linkerShareData.url)
                 }
             }
+
             override fun onError(linkerError: LinkerError) {
                 Utils.shareData(activity, data?.share?.description, data?.share?.url)
             }
         }))
     }
 
-    private fun linkerDataMapper(data : PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoComponentQuery)
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url
+                ?: "", discoComponentQuery)
         linkerData.description = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
@@ -569,6 +573,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         showVerificationBottomSheet()
     }
 
+    fun openPlay(componentPosition: Int = -1, appLink: String) {
+        this.componentPosition = componentPosition
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -592,6 +602,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 if (resultCode == Activity.RESULT_OK) {
                     refreshPage()
                 }
+            }
+            OPEN_PLAY_CHANNEL -> {
+                if (data == null)
+                    return
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
+                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {

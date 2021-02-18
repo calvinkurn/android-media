@@ -123,6 +123,53 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
+    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?,destinationURL: String?) {
+        val list = ArrayList<Map<String, Any>>()
+//        list.add(mapOf(
+//                KEY_ID to it.id.toString(),
+//                KEY_NAME to "/$pagePath - $pageType - ${it.positionForParentItem + 1} - $SUB_CATEGORY_NAVIGATION",
+//                KEY_CREATIVE to (it.name ?: EMPTY_STRING),
+//                KEY_POSITION to position + 1
+//        )
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, "${componentsItem.name
+                ?: EMPTY_STRING} - ${componentsItem.creativeName?: EMPTY_STRING} - ${destinationURL?: EMPTY_STRING}")
+
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removeDashPageIdentifier(pageIdentifier)
+        map[USER_ID] = userID ?: EMPTY_STRING
+        val map2 = map as HashMap<String,Any>
+//        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?) {
+        val list = ArrayList<Map<String, Any>>()
+//        list.add(mapOf(
+//                KEY_ID to it.id.toString(),
+//                KEY_NAME to "/$pagePath - $pageType - ${it.positionForParentItem + 1} - $SUB_CATEGORY_NAVIGATION",
+//                KEY_CREATIVE to (it.name ?: EMPTY_STRING),
+//                KEY_POSITION to position + 1
+//        )
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER, componentsItem.name
+                ?: EMPTY_STRING)
+
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removeDashPageIdentifier(pageIdentifier)
+        map[USER_ID] = userID ?: EMPTY_STRING
+//        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
     override fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_CATEGORY_NAVIGATION, eventLabel = "${categoryItem?.id} - ${categoryItem?.name}")
         val list = ArrayList<Map<String, Any>>()

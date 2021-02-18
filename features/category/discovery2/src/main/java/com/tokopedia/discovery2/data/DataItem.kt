@@ -134,7 +134,7 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
+        val fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -366,6 +366,9 @@ data class DataItem(
 
         @SerializedName("carousel_component_id")
         var flashTimerTargetComponent: String = "",
+
+        @SerializedName("play_id")
+        var playWidgetPlayID: String? = null,
 
         var shopAdsClickURL: String? = "",
 
