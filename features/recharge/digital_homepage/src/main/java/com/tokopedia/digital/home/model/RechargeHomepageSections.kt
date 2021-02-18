@@ -41,6 +41,9 @@ data class RechargeHomepageSections(
             @SerializedName("app_link")
             @Expose
             val applink: String = "",
+            @SerializedName("text_link")
+            @Expose
+            val textLink: String = "",
             @SerializedName("media_url")
             @Expose
             val mediaUrl: String = "",

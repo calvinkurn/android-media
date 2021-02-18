@@ -107,8 +107,8 @@ class RechargeHomepageViewModelTest {
 
         // Sections
         val sectionsResponse = RechargeHomepageSections(listOf(
-                RechargeHomepageSections.Section(1, "1", "Test", "test", "TOP_ICONS", listOf(), "", "",
-                        "", listOf(RechargeHomepageSections.Item(1, "1", "Test1", "test1")
+                RechargeHomepageSections.Section(1, "1", "Test", "test", "TOP_ICONS", listOf(), "", "Lihat semua",
+                        "", "", listOf(RechargeHomepageSections.Item(1, "1", "Test1", "test1")
                 ))))
         val sectionResult = HashMap<Type, Any>()
         val sectionObjectType = RechargeHomepageSections.Response::class.java
@@ -128,6 +128,7 @@ class RechargeHomepageViewModelTest {
             assertEquals(section.title, "Test")
             assertEquals(section.subtitle, "test")
             assertEquals(section.template, "TOP_ICONS")
+            assertEquals(section.textLink, "Lihat semua")
             assert(section.items.isNotEmpty())
             val item = section.items[0]
             assertEquals(item.title, "Test1")
