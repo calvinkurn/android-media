@@ -329,6 +329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val gson = Gson()
     private var coachmarkIsShowing = false
     private var useNewInbox = false
+    private val bannerCarouselCallback = BannerComponentCallback(context, this)
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -951,7 +952,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
             if (isNeedRefresh) {
-                adapter?.resetImpressionHomeBanner()
+                bannerCarouselCallback.resetImpression()
             }
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
@@ -1004,7 +1005,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
@@ -1016,7 +1017,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if(status == Result.Status.ERROR_GENERAL) {
                 showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
-                pageLoadTimeCallback?.invalidate()
+                onPageLoadTimeEnd()
             } else {
                 showLoading()
             }
@@ -1158,6 +1159,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeHomeNotif() {
+        context?.let {
+            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
+                if (!useNewInbox) {
+                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
+                }
+                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data, isProcessingAtf) && getPageLoadTimeCallback() != null) {
@@ -1285,7 +1298,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 this,
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
-                BannerComponentCallback(context, this),
+                bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
                 Lego6AutoBannerComponentCallback(context, this)
         )
@@ -1512,7 +1525,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        adapter?.resetImpressionHomeBanner()
+        bannerCarouselCallback.resetImpression()
         resetFeedState()
         removeNetworkError()
         if (this::viewModel.isInitialized) {
@@ -1586,6 +1599,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         getHomeViewModel().showTicker()
+        observeHomeNotif()
+        pageLoadTimeCallback?.invalidate()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -2172,11 +2187,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    if (!useNewInbox) {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-                    }
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
-                    navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
+                    getHomeViewModel().setHomeNotif(
+                            notificationCount, inboxCount, cartCount
+                    )
                 }
         )
     }

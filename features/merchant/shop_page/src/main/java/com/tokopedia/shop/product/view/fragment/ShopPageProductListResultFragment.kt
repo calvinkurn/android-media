@@ -313,7 +313,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     userId = userIdFromSession
                     dataRequest = mutableListOf(
                         RestrictionEngineDataRequest(
-                                product = RestrictionEngineDataRequestProduct(productID = 0),
+                                product = RestrictionEngineDataRequestProduct(productID = 0.toString()),
                                 shop = RestrictionEngineDataRequestShop(shopID = shopId.toIntOrZero()),
                                 campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId)
                         )
