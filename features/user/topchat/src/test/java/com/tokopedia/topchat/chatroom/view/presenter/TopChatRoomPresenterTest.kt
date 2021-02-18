@@ -257,7 +257,7 @@ class TopChatRoomPresenterTest {
 
         private fun generateResultProduct(): ResultProduct {
             return ResultProduct(
-                    exProductId.toInt(),
+                    exProductId,
                     "https://tokopedia.com/product/url",
                     exImageUrl,
                     "Rp12000",

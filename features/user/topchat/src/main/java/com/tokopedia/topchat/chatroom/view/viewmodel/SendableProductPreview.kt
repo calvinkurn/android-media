@@ -36,7 +36,7 @@ class SendableProductPreview(
 
     private fun generateResultProduct(): ResultProduct {
         return ResultProduct(
-                productPreview.id.toInt(),
+                productPreview.id,
                 productPreview.url,
                 productPreview.imageUrl,
                 productPreview.price,

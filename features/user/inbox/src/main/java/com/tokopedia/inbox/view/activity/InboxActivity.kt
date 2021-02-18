@@ -290,30 +290,42 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                                 previousIndex: Int ->
                     analytic.trackShowOnBoardingOnStep(role, currentIndex)
                     analytic.trackClickOnBoardingCta(role, previousIndex, direction)
-                    if (currentIndex == 2) {
-                        onBoardingCoachMark?.isDismissed = true
-                        switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
-                        switcher?.setShowListener {
-                            anchors.last().anchorView = switcher!!.bottomSheetWrapper
-                            Handler().postDelayed({
-                                onBoardingCoachMark?.isDismissed = false
-                                onBoardingCoachMark?.showCoachMark(anchors, index = 2)
-                            }, 250)
-                        }
-                    } else if (currentIndex == 1) {
-                        switcher?.dialog?.let {
-                            onBoardingCoachMark?.isDismissed = true
-                            if (it.isShowing) {
-                                switcher?.dismiss()
-                            }
-                            Handler().postDelayed({
-                                onBoardingCoachMark?.isDismissed = false
-                                onBoardingCoachMark?.showCoachMark(anchors, index = 1)
-                            }, 250)
-                        }
-                    }
+                    onChangeOnBoardingStep(currentIndex, anchors)
                 }
         ))
+    }
+
+    private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
+        if (currentIndex == 2) {
+            onBoardingCoachMark?.isDismissed = true
+            switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            switcher?.setShowListener {
+                switcher?.let {
+                    anchors.last().anchorView = it.bottomSheetWrapper
+                    Handler().postDelayed({
+                        showDelayedOnBoarding(anchors, 2)
+                    }, 250)
+                }
+            }
+        } else if (currentIndex == 1) {
+            switcher?.dialog?.let {
+                onBoardingCoachMark?.isDismissed = true
+                if (it.isShowing) {
+                    switcher?.dismiss()
+                }
+                Handler().postDelayed({
+                    showDelayedOnBoarding(anchors, 1)
+                }, 250)
+            }
+        }
+    }
+
+    private fun showDelayedOnBoarding(
+            anchors: ArrayList<CoachMark2Item>,
+            index: Int
+    ) {
+        onBoardingCoachMark?.isDismissed = false
+        onBoardingCoachMark?.showCoachMark(anchors, index = index)
     }
 
     private fun showOnBoardingBuyer() {

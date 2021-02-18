@@ -28,17 +28,6 @@
        }
      }
    }
-   vcc_user_status {
-       status
-       redirection_url
-       message_header
-       message_body
-       message_button_name
-       message_url
-       icon
-       title
-       body
-   }
    openDebitSettings {
        data {
          redirectURL

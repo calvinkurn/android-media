@@ -180,8 +180,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_REPORT_USER = 118
     private val REQUEST_REVIEW = 119
 
-    private var seenAttachedProduct = HashSet<Long>()
-    private var seenAttachedBannedProduct = HashSet<Long>()
+    private var seenAttachedProduct = HashSet<String>()
+    private var seenAttachedBannedProduct = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
