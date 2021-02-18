@@ -4,4 +4,23 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <application>
+        <activity android:name=".uitest.MediaActivity"
+            android:label="Medialoader"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="tokopedia-android-internal"
+                    android:host="global"
+                    android:path="/media-catalogue"/>
+            </intent-filter>
+        </activity>
+    </application>
+
 </manifest>
