@@ -11,8 +11,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.addChosenAddressParam
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.getChosenAddress
 import java.util.*
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.data.update
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddress
 
 data class UpdateCartOccRequest(
         @SerializedName("cart")

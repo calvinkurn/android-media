@@ -9,7 +9,7 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.addChosenAddressParam
+import com.tokopedia.localizationchooseaddress.util.request.addChosenAddressParam
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

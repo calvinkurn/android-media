@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.request.getChosenAddress
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -46,6 +47,7 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
     }
 
     private fun getParams(addToCartRequest: AddToCartOccRequestParams): Map<String, Any> {
+        addToCartRequest.chosenAddress = getChosenAddress()
         return mapOf(PARAM to addToCartRequest)
     }
 }
