@@ -14,7 +14,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.data.mapper.factory.toProductCardModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.convertData
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.helper.toStringFormat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
