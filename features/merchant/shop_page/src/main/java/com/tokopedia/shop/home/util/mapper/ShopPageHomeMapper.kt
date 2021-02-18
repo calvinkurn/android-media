@@ -98,8 +98,7 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage,
                 slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = shopHomeProductViewModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
@@ -126,7 +125,7 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage.takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 slashedPrice = shopHomeProductViewModel.originalPrice.orEmpty().takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
+                countSoldRating = shopHomeProductViewModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
