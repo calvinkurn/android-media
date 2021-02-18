@@ -33,7 +33,6 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
         fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel)
-        fun onSelectAddressItem()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -46,8 +45,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
     override fun onBindViewHolder(holder: ManageAddressViewHolder, position: Int) {
         holder.itemView.isClickable = true
-        holder.itemView.isSelected = selectedPos == position
-        holder.bindData(addressList[position], selectedPos == position)
+        holder.bindData(addressList[position])
     }
 
     fun addList(data: List<RecipientAddressModel>) {
@@ -69,7 +67,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: RecipientAddressModel, isSelected: Boolean) {
+        fun bindData(data: RecipientAddressModel) {
             with(itemView) {
                 val addressStreet = data.street
                 val postalCode = data.postalCode
@@ -92,8 +90,16 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
                 val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
                 lainnyaButton.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
-                setListener(data, isSelected)
 
+                val cardSelected = selectedPos == layoutPosition
+                cardAddress.hasCheckIcon = cardSelected
+                if (cardSelected) {
+                    cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                } else {
+                    cardAddress.cardType = CardUnify.TYPE_BORDER
+                }
+
+                setListener(itemView, data)
             }
         }
 
@@ -121,7 +127,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
             }
         }
 
-        private fun setListener(peopleAddress: RecipientAddressModel, isSelected: Boolean) {
+        private fun setListener(itemView: View, peopleAddress: RecipientAddressModel) {
             editButton.setOnClickListener  {
                 listener.onManageAddressEditClicked(peopleAddress)
             }
@@ -129,19 +135,9 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 listener.onManageAddressLainnyaClicked(peopleAddress)
             }
             cardAddress.setOnClickListener {
-                val prevPos = selectedPos
-                println("++ isSelected = $isSelected, prevPos = $prevPos, selectedPos1 = $selectedPos, layoutPosition = $layoutPosition")
+                notifyItemChanged(selectedPos)
                 selectedPos = layoutPosition
-                println("++ isSelected = $isSelected, prevPos = $prevPos, selectedPos2 = $selectedPos, layoutPosition = $layoutPosition")
-
-                if (selectedPos == layoutPosition) {
-                    cardAddress.hasCheckIcon = true
-                    cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                } else {
-                    cardAddress.hasCheckIcon = false
-                    cardAddress.cardType = CardUnify.TYPE_BORDER
-                }
-                listener.onSelectAddressItem()
+                notifyItemChanged(layoutPosition)
             }
         }
     }

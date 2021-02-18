@@ -61,9 +61,9 @@ class DiscomActivityTest {
         onView(withId(R.id.edit_text_search)).perform(typeText(testQuery), closeSoftKeyboard())
 
         // Bad, can't implement idling resource on baselistfragment's search delay
-        // Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
+        Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
 
-        onView(withId(R.id.recycler_view)).perform(scrollTo())
+        onView(withId(R.id.recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         assertThat(activityRule.activityResult, hasResultCode(Activity.RESULT_OK))

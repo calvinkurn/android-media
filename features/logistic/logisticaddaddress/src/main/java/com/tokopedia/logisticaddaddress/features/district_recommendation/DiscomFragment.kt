@@ -121,6 +121,9 @@ PopularCityAdapter.ActionListener {
             dividerCurrLocation?.visibility = View.GONE
             llDiscomPopularCity?.visibility = View.GONE
         }
+
+        // setMessageSection(true)
+        // setSwipeRefreshSection(true, isLocalization == true)
     }
 
     override fun getSearchInputViewResourceId(): Int {
@@ -164,7 +167,6 @@ PopularCityAdapter.ActionListener {
     }
 
     private fun setBackAddressResult(address: Address, latitude: String, longitude: String) {
-        println("++ latitude = $latitude, longitude = $longitude")
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
@@ -201,9 +203,6 @@ PopularCityAdapter.ActionListener {
         super.renderList(list, hasNextPage)
 
         llDiscomPopularCity?.visibility = View.GONE
-        tvMessage?.text = getString(R.string.message_advice_search_address)
-        setMessageSection(true)
-        setSwipeRefreshSection(true, isLocalization == true)
 
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
@@ -213,8 +212,8 @@ PopularCityAdapter.ActionListener {
 
     override fun setLoadingState(active: Boolean) {
         setMessageSection(false)
-        setSwipeRefreshSection(false, isLocalization == true)
-        if (active)
+        setSwipeRefreshSection(isLocalization == true, isLocalization == true)
+        if (isLocalization == true)
             super.showLoading()
         else
             super.hideLoading()
@@ -222,7 +221,7 @@ PopularCityAdapter.ActionListener {
 
     override fun showEmpty() {
         tvMessage!!.text = getString(R.string.message_search_address_no_result)
-        setSwipeRefreshSection(true, isLocalization == true)
+        setSwipeRefreshSection(isLocalization == true, isLocalization == true)
     }
 
     private fun showInitialLoadMessage() {
@@ -255,7 +254,7 @@ PopularCityAdapter.ActionListener {
     }
 
     private fun setSwipeRefreshSection(active: Boolean, isLocalization: Boolean) {
-        if (!isLocalization) {
+        if (isLocalization) {
             swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
         } else {
             swipeRefreshLayout?.visibility = if (active) View.GONE else View.VISIBLE
