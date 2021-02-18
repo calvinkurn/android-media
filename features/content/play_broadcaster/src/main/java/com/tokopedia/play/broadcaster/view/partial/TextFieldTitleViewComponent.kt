@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created by jegul on 17/02/21
  */
-class TextFieldTitleComponent(
+class TextFieldTitleViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
 ) : ViewComponent(container, idRes) {

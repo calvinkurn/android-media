@@ -25,21 +25,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
         app:text_field_label_static="true"
-        app:text_field_counter="38"
+        app:text_field_counter="32"
         />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_tags_instruction"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/play_dp_26"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="@string/play_tags_info_text"
+        android:text="@string/play_tags_instruction_text"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_field_title"
         app:typographyType="body_3"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tags_recommendation"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_tags_instruction"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_tag"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_dp_30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_tags_recommendation"
+        app:text_field_counter="32"
+        app:text_field_label="@string/play_add_tag_hint"
+        app:text_field_label_static="true"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tags_added"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_dp_22"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_field_tag"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

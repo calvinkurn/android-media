@@ -74,7 +74,8 @@
     <!--Title & Tags-->
     <string name="play_title_and_tags_title">Tambah Judul &amp; Tag</string>
     <string name="play_title_input_label">Judul Siaran</string>
-    <string name="play_tags_info_text">Pilih atau tulis tag untuk bantu videomu lebih mudah ditemukan berdasarkan kategori yang dicari penonton.</string>
+    <string name="play_tags_instruction_text">Pilih atau tulis tag untuk bantu videomu lebih mudah ditemukan berdasarkan kategori yang dicari penonton.</string>
+    <string name="play_add_tag_hint">Tulis Tag</string>
 
     <string name="play_camera_cancel_label">Cancel</string>
     <string name="play_camera_timer_label">Timer</string>
