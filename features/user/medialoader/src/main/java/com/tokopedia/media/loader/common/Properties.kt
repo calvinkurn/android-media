@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
         var data: Any? = null,
+        var renderDelay: Long = 0L,
         var thumbnailUrl: String = "",
         var blurHash: Boolean = true,
         var isAnimate: Boolean = false,
@@ -27,11 +28,11 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
-    var loadTime: String = ""
-    var delay: Long = 0L
+    // getting the load time on listener
+    internal var loadTime: String = ""
 
-    fun setDelay(timeInMilis: Long) = apply {
-        this.delay = timeInMilis
+    fun setDelay(timeInMs: Long) = apply {
+        this.renderDelay = timeInMs
     }
 
     fun setSource(data: Any?) = apply {
@@ -108,6 +109,8 @@ open class Properties(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
+                renderDelay == other.renderDelay &&
+                loadTime == other.loadTime &&
                 thumbnailUrl == other.thumbnailUrl &&
                 blurHash == other.blurHash &&
                 isAnimate == other.isAnimate &&
@@ -126,6 +129,8 @@ open class Properties(
 
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
+        result = 31 * result + renderDelay.hashCode()
+        result = 31 * result + loadTime.hashCode()
         result = 31 * result + blurHash.hashCode()
         result = 31 * result + isAnimate.hashCode()
         result = 31 * result + isCircular.hashCode()
@@ -144,6 +149,7 @@ open class Properties(
 
     override fun toString(): String {
         return "source: $data,\n" +
+                "load time: $loadTime,\n" +
                 "transform: ${transform?.javaClass?.name},\n" +
                 "transforms: ${transforms?.size},\n" +
                 "placeholder: $placeHolder,\n" +
