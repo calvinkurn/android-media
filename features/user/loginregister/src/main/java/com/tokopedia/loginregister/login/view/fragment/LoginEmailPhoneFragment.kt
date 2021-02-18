@@ -885,7 +885,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    override fun onEmailExist(email: String) {
+    override fun onEmailExist(email: String, useHash: Boolean) {
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
@@ -1498,7 +1498,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 if (it.isExist) {
                     if (!it.isPending) {
                         userSession.setTempLoginEmail(partialRegisterInputView.textValue)
-                        onEmailExist(it.view)
+                        onEmailExist(it.view, it.useHash)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
                     }

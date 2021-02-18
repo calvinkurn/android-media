@@ -30,20 +30,25 @@ import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
+import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.util.RSAUtils
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * @author by nisie on 18/01/19.
@@ -55,6 +60,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    GetFacebookCredentialUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
+                                                   private val loginTokenV2UseCase: LoginTokenV2UseCase,
+                                                   private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
@@ -189,7 +196,43 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 4 : If name contains blocked word, go to add name
      * Step 5 : Proceed to home
      */
-    override fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
+
+    fun loginEmailV2(email: String, password: String, useHash: Boolean = false) {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+        launchCatchError(coroutineContext, {
+            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(keyData.key.isNotEmpty()) {
+                val encryptedPassword = RSAUtils().encrypt(password, keyData.key, useHash)
+                loginTokenV2UseCase.setParams(email, encryptedPassword, keyData.hash)
+                loginTokenV2UseCase.executeOnBackground().run {
+                    LoginV2Mapper(this, userSession,
+                            onSuccessLoginToken = {
+                                view.onSuccessLoginEmail(it)
+                            },
+                            onErrorLoginToken = {
+                                view.onErrorLoginEmail(email)
+                            },
+                            onShowPopupError = {
+                                view.showPopup().invoke(it.loginToken.popupError)
+                            },
+                            onGoToActivationPage = {
+                                view.onGoToActivationPage(email)
+                            },
+                            onGoToSecurityQuestion = {
+                                view.onGoToSecurityQuestion(email)
+                            }
+                    )
+                }
+            }
+            else {
+                view.onErrorLoginEmail(email)
+            }
+        }, {
+            view.onErrorLoginEmail(email)
+        })
+    }
+
+    override fun loginEmail(email: String, password: String, isSmartLock: Boolean, useHash: Boolean) {
         view?.let { view ->
             if (isSmartLock) {
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
@@ -200,16 +243,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             view.resetError()
             if (isValid(email, password)) {
                 view.showLoadingLogin()
-                loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
-                        email, password), LoginTokenSubscriber(userSession,
-                        { view.onSuccessLoginEmail(it) },
-                        view.onErrorLoginEmail(email),
-                        { view.showPopup().invoke(it.loginToken.popupError) },
-                        view.onGoToActivationPage(email),
-                        view.onGoToSecurityQuestion(email),
-                        onFinished = {
-                            idlingResourceProvider?.decrement()
-                        }))
+                loginEmailV2(email, password, useHash)
             } else {
                 viewEmailPhone.stopTrace()
                 idlingResourceProvider?.decrement()
