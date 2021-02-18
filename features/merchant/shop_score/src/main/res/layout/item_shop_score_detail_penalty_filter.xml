@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/dp_12"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSectionDetailPenalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Detail Pelanggaran"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPeriodDetailPenalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionDetailPenalty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_3"
+        tools:text="Periode 5 Jun - 6 Aug"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivDetailPenaltyFilter"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:padding="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvSectionDetailPenalty"
+        app:layout_constraintBottom_toBottomOf="@id/tvPeriodDetailPenalty"
+        tools:src="@drawable/ic_calendar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        tools:text="INV/20210126/XX/V/553738285" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/sortFilterDetailPenalty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/tvPeriodDetailPenalty"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

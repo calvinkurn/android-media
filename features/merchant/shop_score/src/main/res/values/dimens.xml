@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="shop_performance_promo_creation_icon_size">52dp</dimen>
+    <dimen name="promo_promo_creation_card_top_margin">28dp</dimen>
+    <dimen name="power_merchant_benefit_icon_size">22dp</dimen>
+    <dimen name="pm_reputation_icon_height">14dp</dimen>
+</resources>

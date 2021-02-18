@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardPromoCreation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/promo_promo_creation_card_top_margin"
+        android:clipToPadding="false"
+        app:card_type="shadow"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/layout_lvl1"
+            android:paddingEnd="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/layout_lvl1">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvRecommendedPromoTitle"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6"
+                tools:text="Broadcast Chat" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvRecommendedPromoDescription"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:paddingBottom="@dimen/layout_lvl2"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRecommendedPromoTitle"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/cardContent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cardContent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRecommendedPromo"
+            android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
+            android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_squircle"
+            android:padding="@dimen/dp_12"
+            app:srcCompat="@drawable/ic_topads_color" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

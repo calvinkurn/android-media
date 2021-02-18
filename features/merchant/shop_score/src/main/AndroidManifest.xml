@@ -5,7 +5,7 @@
     <application
         android:hasCode="true">
         <activity
-            android:name=".view.activity.ShopScoreDetailActivity"
+            android:name="com.tokopedia.shop.score.detail.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shopscore"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
