@@ -13,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.getChosenAddress
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
@@ -115,7 +116,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
                     orderPreference.preference.address.addressId.toString()
             )
-            return UpdateCartOccRequest(arrayListOf(cart), profile)
+            return UpdateCartOccRequest(arrayListOf(cart), profile, getChosenAddress())
         }
         return null
     }

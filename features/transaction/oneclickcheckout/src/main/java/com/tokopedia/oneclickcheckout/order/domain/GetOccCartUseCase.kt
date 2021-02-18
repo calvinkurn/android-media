@@ -16,13 +16,15 @@ import javax.inject.Inject
 class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
 
     fun createRequestParams(source: String): RequestParams {
-        return RequestParams.create().apply {
+        val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
+        addChosenAddressParam(params)
+
+        return params
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
-        addChosenAddressParam(params)
         val graphqlRequest = GET_OCC_CART_PAGE_QUERY
         val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
