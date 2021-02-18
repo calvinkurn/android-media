@@ -35,7 +35,6 @@ class AnalyticsDebuggerFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var searchView: TextInputEditText
-    private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +51,6 @@ class AnalyticsDebuggerFragment : Fragment() {
         swipeLayout = view.findViewById(R.id.swipe_refresh_layout)
         searchView = view.findViewById(R.id.search_input_view)
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: ""
-        viewModel.searchLogs(query)
         initSearch(query)
         initRecyclerView()
         swipeLayout.setOnRefreshListener {
@@ -61,7 +59,6 @@ class AnalyticsDebuggerFragment : Fragment() {
 
         viewModel.logData.observe(viewLifecycleOwner, Observer {
             listAdapter.submitList(it)
-            isLoading = false
             swipeLayout.isRefreshing = false
         })
     }
@@ -69,11 +66,6 @@ class AnalyticsDebuggerFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_analytics_debugger, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        recyclerView.clearOnScrollListeners()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -133,7 +125,7 @@ class AnalyticsDebuggerFragment : Fragment() {
                     }
                 }
                 recyclerView.addOnScrollListener(cb)
-                awaitClose { recyclerView.clearOnScrollListeners()}
+                awaitClose { recyclerView.clearOnScrollListeners() }
             }.throttleFirst(1000).collect {
                 Log.d(TAG, "initRecyclerView: firing requetsmore")
                 viewModel.listScrolled()
