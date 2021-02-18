@@ -166,11 +166,24 @@ public class RouteManager {
      * @return
      */
     public static Fragment instantiateFragment(@NonNull AppCompatActivity activity, @NonNull String className, @Nullable Bundle extras) {
-        Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
-        if (extras != null) {
-            fragment.setArguments(extras);
+        if(isClassExist(className)) {
+            Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
+            if (extras != null) {
+                fragment.setArguments(extras);
+            }
+            return fragment;
+        } else {
+            return null;
         }
-        return fragment;
+    }
+
+    private static boolean isClassExist(String className) {
+        try  {
+            Class.forName(className);
+            return true;
+        }  catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     /**
