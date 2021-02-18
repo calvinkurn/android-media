@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import com.tokopedia.checkout.data.model.response.shipment_address_form.FreeShipping;
+import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentInformation;
+import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
@@ -416,22 +419,31 @@ public class ShipmentMapper implements IShipmentMapper {
                             groupShopResult.setFulfillment(groupShop.isFulfillment());
                             if (groupShop.getWarehouse() != null) {
                                 groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
-                                groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
+                            }
+                            TokoCabangInfo tokoCabangInfo = groupShop.getTokoCabangInfo();
+                            if (tokoCabangInfo != null) {
+                                groupShopResult.setFulfillmentBadgeUrl(tokoCabangInfo.getBadgeUrl());
+                                groupShopResult.setFulfillmentName(tokoCabangInfo.getMessage());
                             }
 
-                            if (groupShop.getShipmentInformation() != null) {
+                            ShipmentInformation shipmentInformation = groupShop.getShipmentInformation();
+                            if (shipmentInformation != null) {
                                 FreeShippingData freeShippingData = new FreeShippingData();
-                                freeShippingData.setBadgeUrl(groupShop.getShipmentInformation().getFreeShipping().getBadgeUrl());
-                                freeShippingData.setEligible(groupShop.getShipmentInformation().getFreeShipping().getEligible());
+                                freeShippingData.setBadgeUrl(shipmentInformation.getFreeShipping().getBadgeUrl());
+                                freeShippingData.setEligible(shipmentInformation.getFreeShipping().getEligible());
+
+                                FreeShipping freeShippingExtra = shipmentInformation.getFreeShippingExtra();
+                                FreeShippingData freeShippingExtraData = new FreeShippingData(freeShippingExtra.getEligible(), freeShippingExtra.getBadgeUrl());
 
                                 PreorderData preorderData = new PreorderData();
-                                preorderData.setDuration(groupShop.getShipmentInformation().getPreorder().getDuration());
-                                preorderData.setPreorder(groupShop.getShipmentInformation().getPreorder().isPreorder());
+                                preorderData.setDuration(shipmentInformation.getPreorder().getDuration());
+                                preorderData.setPreorder(shipmentInformation.getPreorder().isPreorder());
 
                                 ShipmentInformationData shipmentInformationData = new ShipmentInformationData();
-                                shipmentInformationData.setEstimation(groupShop.getShipmentInformation().getEstimation());
-                                shipmentInformationData.setShopLocation(groupShop.getShipmentInformation().getShopLocation());
+                                shipmentInformationData.setEstimation(shipmentInformation.getEstimation());
+                                shipmentInformationData.setShopLocation(shipmentInformation.getShopLocation());
                                 shipmentInformationData.setFreeShipping(freeShippingData);
+                                shipmentInformationData.setFreeShippingExtra(freeShippingExtraData);
                                 shipmentInformationData.setPreorder(preorderData);
 
                                 groupShopResult.setShipmentInformationData(shipmentInformationData);
@@ -601,10 +613,11 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setTickerMessage(product.getProductTicker().getMessage());
                                     }
 
-                                    if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
-                                            !UtilsKt.isNullOrEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    if (product.getFreeShippingExtra() != null && product.getFreeShippingExtra().getEligible()) {
+                                        productResult.setFreeShippingExtra(true);
+                                    }
+                                    if (product.getFreeShipping() != null && product.getFreeShipping().getEligible()) {
                                         productResult.setFreeShipping(true);
-                                        productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
                                     }
 
                                     if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {

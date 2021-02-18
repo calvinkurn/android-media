@@ -2064,6 +2064,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Product product = new Product();
                 product.setProductId(cartItemModel.getProductId());
                 product.setFreeShipping(cartItemModel.isFreeShipping());
+                product.setFreeShippingTc(cartItemModel.isFreeShippingExtra());
 
                 products.add(product);
             }
