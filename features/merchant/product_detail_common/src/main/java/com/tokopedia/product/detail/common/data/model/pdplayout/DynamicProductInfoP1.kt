@@ -66,15 +66,6 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val isProductParent: Boolean
-        get() {
-            return if (isProductVariant()) {
-                basic.productID == data.variant.parentID
-            } else {
-                false
-            }
-        }
-
     fun checkImei(imeiRemoteConfig: Boolean): Boolean {
         return imeiRemoteConfig && data.campaign.isCheckImei
     }

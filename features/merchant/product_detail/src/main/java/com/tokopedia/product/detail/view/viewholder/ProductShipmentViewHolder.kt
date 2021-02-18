@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -42,16 +41,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
-
-        if (element.shouldShowShipmentError && element.isProductParent) {
-            // if product parent, we dont want to show this component
-            shipmentSeparator?.gone()
-            itemView.layoutParams.height = 0
-            return
-        } else {
-            shipmentSeparator?.show()
-            itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
 
         when {
             element.shouldShowShipmentError -> {

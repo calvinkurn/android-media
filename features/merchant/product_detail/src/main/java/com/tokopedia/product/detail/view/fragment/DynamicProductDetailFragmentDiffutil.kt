@@ -1271,8 +1271,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: "",
-                viewModel.getDynamicProductInfoP1?.isProductParent ?: false
+                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
         )
 
         /*
@@ -1697,8 +1696,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.getP2RatesEstimateByProductId(),
                     viewModel.getMultiOriginByProductId().isFulfillment,
                     viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: "",
-                    viewModel.getDynamicProductInfoP1?.isProductParent ?: false
+                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
             )
         }
 

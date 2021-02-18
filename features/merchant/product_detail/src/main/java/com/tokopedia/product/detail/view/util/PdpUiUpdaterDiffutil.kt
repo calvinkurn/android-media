@@ -550,14 +550,13 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirUrl: String, isProductParent: Boolean) {
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirUrl: String) {
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
             shipmentData?.freeOngkirUrl = freeOngkirUrl
             shipmentData?.isFullfillment = isFullfillment
             shipmentData?.isCod = isCod
             shipmentData?.shouldShowShipmentError = data == null
-            shipmentData?.isProductParent = isProductParent
         }
     }
 
