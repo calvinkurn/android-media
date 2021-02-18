@@ -170,6 +170,15 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             }
             addItem(autoAdsView)
             addItem(manualAutoAds)
+            autoAds?.setOnClickListener {
+                if (adStatus == AUTO) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+                    startActivityForResult(intent, AUTO_ADS_DISABLED)
+                }
+                if (adStatus == MANUAL || adStatus == NO_ADS) {
+                    RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                }
+            }
         }
     }
 

@@ -20,7 +20,6 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
@@ -86,11 +85,9 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
-        if(!isDataChanged){
-            tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
-        }
         val list: MutableList<FragmentTabItem> = mutableListOf()
-        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(KATA_KUNCI)
         tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
@@ -251,10 +248,6 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
     fun setKeywordCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
-    }
-
-    fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_1)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

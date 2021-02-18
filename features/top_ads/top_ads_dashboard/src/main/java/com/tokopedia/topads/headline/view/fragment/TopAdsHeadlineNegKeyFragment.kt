@@ -25,7 +25,6 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterT
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
-import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
@@ -231,7 +230,6 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
         } else {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
         }
-        (activity as TopAdsHeadlineAdDetailViewActivity).setNegKeywordCount(0)
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
@@ -242,6 +240,5 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
             adapter.items.add(NegKeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
-        (activity as TopAdsHeadlineAdDetailViewActivity).setNegKeywordCount(adapter.itemCount)
     }
 }

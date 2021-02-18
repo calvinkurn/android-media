@@ -83,9 +83,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
         selectDate.setOnClickListener {
             showBottomSheet()
         }
-        initStatisticComponent()
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
-
     }
 
     private fun showBottomSheet() {
@@ -122,7 +120,6 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
         setDateRangeText(position)
         loadChildStatisticsData()
     }
-
 
     private fun initStatisticComponent() {
         val tabLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

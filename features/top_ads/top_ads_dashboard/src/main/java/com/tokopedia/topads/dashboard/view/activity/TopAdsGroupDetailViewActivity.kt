@@ -96,9 +96,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
-        tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
-        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
-        tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
+        tab_layout?.addNewTab(PRODUK)
+        tab_layout?.addNewTab(KATA_KUNCI)
+        tab_layout?.addNewTab(NEG_KATA_KUNCI)
         tab_layout?.customTabMode = TabLayout.MODE_FIXED
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
@@ -200,6 +200,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK)
+                setResult(Activity.RESULT_OK)
                 loadData()
         }
     }
@@ -238,9 +239,11 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     fun setProductCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
+
     fun setKeywordCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
+
     fun setNegKeywordCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
