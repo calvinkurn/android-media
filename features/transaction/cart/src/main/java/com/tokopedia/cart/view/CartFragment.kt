@@ -1953,7 +1953,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderTickerAnnouncement(cartListData: CartListData) {
         val tickerData = cartListData.tickerData
         if (tickerData?.isValid(CART_PAGE) == true) {
-            cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id.toString(), tickerData.message))
+            cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id, tickerData.message))
         }
     }
 
