@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.statistic.di.StatisticScope
-import com.tokopedia.statistic.domain.model.CheckWhitelistedStatusModel
+import com.tokopedia.statistic.domain.model.CheckWhitelistedStatusResponse
 import com.tokopedia.usecase.RequestParams
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -29,12 +29,12 @@ class CheckWhitelistedStatusUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(tenMinutes)
                 .build()
-        val gqlRequest = GraphqlRequest(QUERY, CheckWhitelistedStatusModel::class.java)
+        val gqlRequest = GraphqlRequest(QUERY, CheckWhitelistedStatusResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
-        val errors: List<GraphqlError>? = gqlResponse.getError(CheckWhitelistedStatusModel::class.java)
+        val errors: List<GraphqlError>? = gqlResponse.getError(CheckWhitelistedStatusResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<CheckWhitelistedStatusModel>()
-            return data.isWhitelisted
+            val response = gqlResponse.getData<CheckWhitelistedStatusResponse>()
+            return response.whitelistedStatus.isWhitelisted
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

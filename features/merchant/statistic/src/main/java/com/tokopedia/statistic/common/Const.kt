@@ -13,6 +13,8 @@ object Const {
     const val DAYS_29 = 29
     const val DAYS_30 = 30
 
+    const val WHITE_LIST_KEY_BUYER_INSIGHT = "buyer-insight-apps"
+
     object PageSource {
         const val SHOP_INSIGHT = "shop-insight"
         const val BUYER_INSIGHT = "buyer-insight"
