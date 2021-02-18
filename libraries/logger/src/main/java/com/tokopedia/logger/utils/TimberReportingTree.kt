@@ -18,13 +18,6 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     var versionName: String = ""
     var versionCode: Int = 0
     var installerPackageName: String? = ""
-        set(value) {
-            field = if (value == PLAYSTORE_PACKAGE_NAME) {
-                "1"
-            } else {
-                value
-            }
-        }
     var tagMaps: HashMap<String, Tag> = hashMapOf()
 
     init {
@@ -168,8 +161,6 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
         const val PRIORITY_ONLINE = 2
         const val PRIORITY_OFFLINE = 1
-
-        const val PLAYSTORE_PACKAGE_NAME = "com.android.vending"
     }
 
 }
