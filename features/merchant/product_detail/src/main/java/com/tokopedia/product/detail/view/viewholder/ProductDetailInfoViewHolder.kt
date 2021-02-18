@@ -50,7 +50,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             val textDesc = if (descFormatted.length > DESCRIPTION_LIMIT) {
-                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), ""))
+                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), " "))
             } else descFormatted
 
             product_detail_info_description.text = textDesc

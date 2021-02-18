@@ -12,6 +12,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
@@ -53,7 +54,7 @@ public class MoengageAnalytics extends ContextAnalytics {
           */
         MoEngage moEngage =
                 new MoEngage.Builder(getContext(),
-                        getContext().getResources().getString(R.string.key_moengage))
+                        Keys.getMoengageKey(getContext()))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
