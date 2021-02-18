@@ -1,12 +1,13 @@
 package com.tokopedia.localizationchooseaddress.ui.widget
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,16 +17,17 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddress
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChooseAddressWidget: ConstraintLayout {
+class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -40,22 +42,11 @@ class ChooseAddressWidget: ConstraintLayout {
 
     lateinit var viewModel: ChooseAddressViewModel
 
-    private val chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
-    private val localCacheData: LocalCacheModel? = null
-
-    interface ChooseAddressWidgetListener {
-        fun onUserChoosenAddress() // ini yang dari bottomshet dan UI harus implement
-        fun onChoosenAddressUpdatedFromBackground() // ini yg background kita hit dan update cache, tapi UI optional untuk lakuin sesuatu. contoh pas non login cache kosong.
-        fun onFeatureActive(acrtive: Boolean)
-        /*
-        gak perlu balikin data apapun. datanya nanti biar mereka tetep ambil dari util kita,
-        misal ChooseAddressUtils.getLatestChoosenAddress()
-        */
-    }
-
+    private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
+        initInjector()
         initViews()
     }
 
@@ -76,31 +67,76 @@ class ChooseAddressWidget: ConstraintLayout {
         viewModel.test.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    Toast.makeText(context, it.data, Toast.LENGTH_LONG).show()
+                    //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
+                    chooseAddressPref?.setLocalCache(LocalCacheModel(address_id = "123", city_id = "123", district_id = "123", lat = "", long = "", label = "Tokopedia Tower" ))
+                    chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
                 }
             }
 
         })
 
-       /* viewModel.chosenAddressList.observeForever( Observer {
+        viewModel.getChosenAddress.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressId == 0) {
+                        viewModel.getDefaultChosenAddress()
+                    } else {
+                        chooseAddressPref?.setLocalCache(setChosenAddressToLocalCache(it.data))
+                        chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
+                    }
+                }
+            }
+        })
 
-        })*/
+        viewModel.getDefaultAddress.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressData.addressId == 0) {
+                        //set to Jakarta Pusat -> waiting for data
+                    } else {
+                        chooseAddressPref?.setLocalCache(setDefaultAddressToLocalCache(it.data.addressData))
+                        chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
+                    }
+                }
+            }
+        })
     }
-
-/*    fun onDetach() {
-        viewModel.chosenAddressList.removeObserver(this)
-    }*/
 
     private fun checkRollence(){
         // check rollence. kalo udah panggil listener, biar host page yang atur show or hide
         chooseAddressWidgetListener?.onFeatureActive(true)
     }
 
-    fun updateWidget(){
-        textChosenAddress?.text = "ambil dari local chace"
+    private fun setChosenAddressToLocalCache(data: ChosenAddressModel): LocalCacheModel {
+        return LocalCacheModel(
+                address_id = data.addressId.toString(),
+                city_id = data.cityId.toString(),
+                district_id = data.districtId.toString(),
+                lat = data.latitude,
+                long = data.longitude,
+                label = data.addressName
+        )
     }
 
-    fun getComponent(): ChooseAddressComponent {
+    private fun setDefaultAddressToLocalCache(data: DefaultChosenAddress): LocalCacheModel {
+        return LocalCacheModel(
+                address_id = data.addressId.toString(),
+                city_id = data.cityId.toString(),
+                district_id = data.districtId.toString(),
+                lat = data.latitude,
+                long = data.longitude,
+                label = data.addressName
+        )
+    }
+
+    fun updateWidget(){
+        val data = chooseAddressPref?.getLocalCacheData()
+        val label = SpannableString(data?.label)
+        label.setSpan(StyleSpan(Typeface.BOLD), 0, label.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textChosenAddress?.text = context.getString(R.string.txt_send_to) + label
+    }
+
+    private fun getComponent(): ChooseAddressComponent {
         return DaggerChooseAddressComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
@@ -109,26 +145,40 @@ class ChooseAddressWidget: ConstraintLayout {
     private fun initChooseAddressFlow() {
 
         if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
-            val data = chooseAddressPref?.getLocalCacheData()
-            textChosenAddress?.text = data?.label
-
+            updateWidget()
         } else {
-            textChosenAddress?.text = "Pilih alamat pengiriman"
-            //hit viewmodel
-            viewModel.getChosenAddressList()
-            //hit get local choose address, setelah selesai dan kita berhasil simpen di local cache
-            chooseAddressWidgetListener?.onChoosenAddressUpdatedFromBackground()
+            textChosenAddress?.text = context.getString(R.string.txt_label_default)
+            viewModel.getStateChosenAddress()
         }
     }
 
-    fun setBindFragmentManager(fm: FragmentManager, fragment: Fragment) {
-        initInjector()
-        viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
+    fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
+        this.chooseAddressWidgetListener = listener
+        val fragment = chooseAddressWidgetListener?.getHostFragment()
+        if (fragment != null) {
+            viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
+        }
+
         initChooseAddressFlow()
         initObservers()
+
         buttonChooseAddress?.setOnClickListener {
-            ChooseAddressBottomSheet().show(fm)
+            val fragment = chooseAddressWidgetListener?.getHostFragment()
+            ChooseAddressBottomSheet(this).show(fragment?.fragmentManager)
         }
     }
+
+    override fun onAddressChosen() {
+        chooseAddressWidgetListener?.onUserChosenAddress()
+    }
+
+    interface ChooseAddressWidgetListener {
+        fun onUserChosenAddress() // ini yang dari bottomshet dan UI harus implement
+        fun onChosenAddressUpdatedFromBackground() // ini yg background kita hit dan update cache, tapi UI optional untuk lakuin sesuatu. contoh pas non login cache kosong.
+        fun onFeatureActive(active: Boolean)
+        fun getHostFragment(): Fragment
+        fun getSrcData(): String
+    }
+
 
 }

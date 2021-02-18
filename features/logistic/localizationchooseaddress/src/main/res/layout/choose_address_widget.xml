@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_chosen_address"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_12"
@@ -29,7 +29,9 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="Dikirim ke "
-        android:textSize="@dimen/unify_font_12"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toTopOf="parent"

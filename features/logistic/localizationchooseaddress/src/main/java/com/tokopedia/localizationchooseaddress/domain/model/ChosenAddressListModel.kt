@@ -1,10 +1,10 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
-class ChosenAddressListModel (
-        var chosenAddressList: List<ChosenAddressModel> = listOf()
+data class ChosenAddressListModel (
+        var chosenAddressList: List<ChosenAddressList> = listOf()
 )
 
-class ChosenAddressModel(
+data class ChosenAddressList(
         var addressId: String = "",
         var receiverName: String = "Tokopedia",
         var addressname: String = "Tokopedia tower",

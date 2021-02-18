@@ -1,6 +1,6 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
-class LocalCacheModel (
+data class LocalCacheModel (
         var address_id: String = "",
         var city_id: String = "",
         var district_id: String = "",

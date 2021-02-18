@@ -23,12 +23,13 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ChooseAddressBottomSheet: BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
+class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -145,7 +146,11 @@ class ChooseAddressBottomSheet: BottomSheetUnify(), HasComponent<ChooseAddressCo
     }
 
     override fun onItemClicked(address: ChosenAddressModel) {
-        TODO("Not yet implemented")
+        listener?.onAddressChosen()
+    }
+
+    interface ChooseAddressBottomSheetListener {
+        fun onAddressChosen()
     }
 
 }

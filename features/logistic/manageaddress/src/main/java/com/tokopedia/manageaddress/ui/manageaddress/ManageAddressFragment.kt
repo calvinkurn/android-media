@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -51,7 +52,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener, ChooseAddressWidget.ChooseAddressWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -153,7 +154,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
-        fragmentManager?.let { chooseAddressWidget?.setBindFragmentManager(it, this ) }
+        chooseAddressWidget?.bindChooseAddress(this)
 
         initScrollListener()
 
@@ -375,5 +376,25 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         fun newInstance(): ManageAddressFragment {
             return ManageAddressFragment()
         }
+    }
+
+    override fun onUserChosenAddress() {
+        //
+    }
+
+    override fun onChosenAddressUpdatedFromBackground() {
+        //
+    }
+
+    override fun onFeatureActive(active: Boolean) {
+        //
+    }
+
+    override fun getHostFragment(): ManageAddressFragment {
+        return this
+    }
+
+    override fun getSrcData(): String {
+        return "address"
     }
 }
