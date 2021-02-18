@@ -69,7 +69,7 @@
                 android:paddingRight="@dimen/dp_20"
                 android:text="@string/label_choose_payment"
                 app:unifyButtonSize="medium"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="filled" />
 
         </LinearLayout>

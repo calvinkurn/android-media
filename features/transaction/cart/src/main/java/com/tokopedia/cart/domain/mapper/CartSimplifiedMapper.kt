@@ -10,7 +10,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOW
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -70,7 +69,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
-        cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 

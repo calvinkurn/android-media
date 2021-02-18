@@ -17,9 +17,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       open_prerequisite_site
       eligible_new_shipping_experience
-      ab_test_button {
-        enable
-      }
       group_address {
         errors
         user_address {

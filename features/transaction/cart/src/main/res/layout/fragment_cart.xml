@@ -180,7 +180,7 @@
                                 android:contentDescription="@string/content_desc_go_to_courier_page_button"
                                 android:gravity="center_vertical"
                                 app:unifyButtonSize="medium"
-                                app:unifyButtonType="transaction"
+                                app:unifyButtonType="main"
                                 app:unifyButtonVariant="filled"
                                 tools:text="Checkout" />
 

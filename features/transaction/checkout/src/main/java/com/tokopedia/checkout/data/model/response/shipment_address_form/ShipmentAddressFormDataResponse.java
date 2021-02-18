@@ -2,7 +2,6 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
@@ -84,9 +83,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("eligible_new_shipping_experience")
     @Expose
     private boolean eligibleNewShippingExperience;
-    @SerializedName("ab_test_button")
-    @Expose
-    private ABTestButtonResponse abTestButton;
 
     public List<String> getErrors() {
         return errors;
@@ -176,9 +172,5 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isEligibleNewShippingExperience() {
         return eligibleNewShippingExperience;
-    }
-
-    public ABTestButtonResponse getAbTestButton() {
-        return abTestButton;
     }
 }

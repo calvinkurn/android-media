@@ -24,7 +24,6 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.tv_total_payment, model.totalPrice, itemView.tv_total_payment.context.getString(R.string.content_desc_tv_total_payment))
-        itemView.btn_select_payment_method.buttonType = model.abTestButton.getUnifyButtonType()
 
         itemView.btn_select_payment_method?.let {
             compositeSubscription.add(

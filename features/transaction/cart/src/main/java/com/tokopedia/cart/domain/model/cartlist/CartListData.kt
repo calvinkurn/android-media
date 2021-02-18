@@ -1,10 +1,9 @@
 package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -30,8 +29,7 @@ data class CartListData(
         var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData(),
         var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var showLessUnavailableDataWording: String = "",
-        var showMoreUnavailableDataWording: String = "",
-        var abTestButton: ABTestButton = ABTestButton()
+        var showMoreUnavailableDataWording: String = ""
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
