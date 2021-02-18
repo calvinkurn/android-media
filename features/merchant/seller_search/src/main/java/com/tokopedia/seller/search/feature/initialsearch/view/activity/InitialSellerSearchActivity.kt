@@ -96,7 +96,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
-        onQueryTextChangeListener(getKeywordFromIntent())
+        setKeywordSearchBarView(getKeywordFromIntent())
     }
 
     private fun initView() {
