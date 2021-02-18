@@ -8,6 +8,8 @@ import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -37,6 +39,11 @@ class LoginUseCaseModule {
     fun provideStatusFingerprintGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<StatusFingerprintpojo> = GraphqlUseCase(graphqlRepository)
 
+    @Provides
+    fun provideLoginTokenUseCaseV2(graphqlRepository: GraphqlRepository): LoginTokenV2UseCase {
+        val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
+        return LoginTokenV2UseCase(useCase)
+    }
 
     @Provides
     fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
