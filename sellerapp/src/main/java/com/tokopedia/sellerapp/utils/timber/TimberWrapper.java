@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.model.ScalyrConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
@@ -41,12 +42,6 @@ public class TimberWrapper {
                     98, 48, 101, 51, 45, 100, 98, 54, 55, 101, 55, 57, 98, 51, 97, 51, 51
             }),
     };
-
-    private static final String SCALYR_TOKEN = new String(new char[]{
-            48, 73, 89, 47, 83, 70, 70, 107, 72, 74, 50, 110, 98, 97, 112, 80, 78, 97, 100,
-            76, 80, 84, 88, 113, 70, 115, 69, 82, 71, 69, 103, 49, 87, 66, 49, 121, 49,
-            119, 120, 81, 53, 119, 51, 115, 45
-    });
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_seller_app_log_config";
 
@@ -99,6 +94,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-seller-app-p%s", priority);
         String parser = String.format("android-seller-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }

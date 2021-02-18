@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         app:typographyType="body_3"
+        android:textColor="@color/mvcw_6831353B"
         tools:text="Berakhir dalam 10 hari • Sisa 20 kupon" />
 
     <View

@@ -17,6 +17,7 @@ import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
@@ -39,7 +40,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
         itemView.tv_product_name.text = data.productName
         itemView.text_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
-        itemView.iu_image_product.setImageUrl(data.productImage)
+        itemView.iu_image_product.loadImage(data.productImage)
         if (data.data?.originData?.variant?.isNotBlank() == true) {
             itemView.text_product_variant.text = data.data?.originData?.variant
             itemView.text_product_variant.show()

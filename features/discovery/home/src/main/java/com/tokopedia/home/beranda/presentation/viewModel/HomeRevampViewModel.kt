@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +19,6 @@ import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamto
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
@@ -33,12 +33,14 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.util.*
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -52,6 +54,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -59,13 +64,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recharge_component.model.WidgetSource
-import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,7 +105,6 @@ open class HomeRevampViewModel @Inject constructor(
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
-        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
@@ -149,10 +147,6 @@ open class HomeRevampViewModel @Inject constructor(
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
     private val _searchHint: MutableLiveData<SearchPlaceholder> = MutableLiveData()
-
-    val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
-        get() = _stickyLogin
-    private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
 
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
@@ -217,6 +211,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _rechargeBUWidgetLiveData = MutableLiveData<Event<RechargePerso>>()
     val rechargeBUWidgetLiveData: LiveData<Event<RechargePerso>> get() = _rechargeBUWidgetLiveData
 
+    private val _homeNotifLiveData = MutableLiveData<HomeNotifModel>()
+    val homeNotifLiveData: LiveData<HomeNotifModel> get() = _homeNotifLiveData
+
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
@@ -226,7 +223,6 @@ open class HomeRevampViewModel @Inject constructor(
 // ============================================================================================
 
     private var getHomeDataJob: Job? = null
-    private var getStickyLoginJob: Job? = null
     private var getSearchHintJob: Job? = null
     private var getPlayWidgetJob: Job? = null
     private var getTokopointJob: Job? = null
@@ -256,6 +252,8 @@ open class HomeRevampViewModel @Inject constructor(
     private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
 
+    private var homeFlowDataCancelled = false
+
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var onRefreshState = true
@@ -263,10 +261,12 @@ open class HomeRevampViewModel @Inject constructor(
     private var homeTicker: Pair<Int, TickerDataModel>? = null
     private var takeTicker = true
 
+    private var homeNotifModel = HomeNotifModel()
+
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
-        initFlow()
+        initCacheData()
     }
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
@@ -466,7 +466,7 @@ open class HomeRevampViewModel @Inject constructor(
                     headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
                 }
                 headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-                homeHeaderOvoDataModel?.headerDataModel = headerDataModel
+                homeHeaderOvoDataModel.headerDataModel = headerDataModel
                 homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
             }
         }
@@ -524,7 +524,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getPlayBanner(position: Int){
         val playBanner =
-                if (position < homeVisitableListData.size ?: -1
+                if (position < homeVisitableListData.size
                         && homeVisitableListData.get(position) is PlayCardDataModel)
                     homeVisitableListData.getOrNull(position) as PlayCardDataModel
                 else homeVisitableListData.find { it is PlayCardDataModel }
@@ -552,7 +552,7 @@ open class HomeRevampViewModel @Inject constructor(
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        homeVisitableListData.withIndex()?.find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
+        homeVisitableListData.withIndex().find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this))
         }
     }
@@ -573,7 +573,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun insertSuggestedReview(suggestedProductReview: SuggestedProductReview) {
         val findReviewViewModel = homeVisitableListData.find { visitable -> visitable is ReviewDataModel }
-        val indexOfReviewViewModel = homeVisitableListData.indexOf(findReviewViewModel) ?: -1
+        val indexOfReviewViewModel = homeVisitableListData.indexOf(findReviewViewModel)
         if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewDataModel){
             val newFindReviewViewModel = findReviewViewModel.copy(
                     suggestedProductReview = suggestedProductReview
@@ -671,9 +671,9 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun removeViewHolderAtPosition(position: Int) {
-        if(position != -1 && position < ( homeVisitableListData.size ?: 0)) {
+        if(position != -1 && position < homeVisitableListData.size) {
             val detectViewHolder = homeVisitableListData[position]
-            detectViewHolder?.let {
+            detectViewHolder.let {
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, position, this))
             }
         }
@@ -881,15 +881,39 @@ open class HomeRevampViewModel @Inject constructor(
         return homeDataModel
     }
 
-    fun getRecommendationFeedSectionPosition() = (homeVisitableListData.size?:0)-1
+    fun getRecommendationFeedSectionPosition() = homeVisitableListData.size -1
 
 // ===========================================================================================
 // ===================================== API CONTROLLER ======================================
 // ================================= PLEASE SORT BY NAME A-Z =================================
 // ===========================================================================================
 
-    private fun initFlow() {
+    private fun initCacheData() {
         _isRequestNetworkLiveData.value = Event(true)
+
+        launch {
+            val homeCacheData = homeUseCase.get().getHomeCachedData()
+            homeCacheData?.let {
+                homeVisitableListData = it.list.toMutableList()
+                _homeLiveData.postValue(it)
+
+                if (it.list.size > 1) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
+                    takeTicker = false
+                }
+                if (it.list.size == 1) {
+                    val initialHomeDataModel = HomeDataModel(list = listOf(
+                            HomeHeaderOvoDataModel(),
+                            HomeInitialShimmerDataModel()
+                    ))
+                    homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                }
+            }
+            initFlow()
+        }
+    }
+
+    private fun initFlow() {
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
@@ -902,6 +926,11 @@ open class HomeRevampViewModel @Inject constructor(
                     }
 
                     homeData?.let {
+                        if (it.list.isEmpty()) {
+                            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
+                                    "reason='Visitables is empty';" +
+                                    "data='isProcessingDynamicChannel=${it.isProcessingDynamicChannle}, isProcessingAtf=${it.isProcessingAtf}, isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
+                        }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
 
                         //initialize master list data here
@@ -920,24 +949,42 @@ open class HomeRevampViewModel @Inject constructor(
                         getRecommendationWidget()
                         getTopAdsBannerData()
                     }
-                    _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>() ?: listOf()))
+                    _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>()))
                 } else if (onRefreshState) {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                         takeTicker = false
                     }
-                    homeDataModel?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                    if (homeDataModel?.list?.size?:0 > 0) {
+                        homeDataModel?.let {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
                     }
                     refreshHomeData()
                 }
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+        }.invokeOnCompletion {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_cancelled_init_flow;reason='${it?.message?:"No error propagated"
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            homeFlowDataCancelled = true
         }
     }
 
     fun refreshHomeData() {
+        if (homeFlowDataCancelled) {
+            initFlow()
+            homeFlowDataCancelled = false
+        }
+
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
@@ -954,6 +1001,10 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
         }
     }
 
@@ -987,7 +1038,7 @@ open class HomeRevampViewModel @Inject constructor(
         buWidgetJob = launchCatchError(coroutineContext, block = {
             getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
-            homeVisitableListData.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+            homeVisitableListData.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = data)
@@ -995,7 +1046,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }){
             // show error
-            homeVisitableListData.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+            homeVisitableListData.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = listOf())
@@ -1017,7 +1068,7 @@ open class HomeRevampViewModel @Inject constructor(
                 var lastIndex = position
                 val dynamicData = homeVisitableListData.getOrNull(lastIndex)
                 if(dynamicData !is DynamicChannelDataModel && dynamicData != dynamicChannelDataModel){
-                    lastIndex = homeVisitableListData.indexOf(dynamicChannelDataModel) ?: -1
+                    lastIndex = homeVisitableListData.indexOf(dynamicChannelDataModel)
                 }
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, lastIndex, this@HomeRevampViewModel))
                 visitableList.reversed().forEach {
@@ -1040,7 +1091,7 @@ open class HomeRevampViewModel @Inject constructor(
                 var lastIndex = position
                 val dynamicData = homeVisitableListData.getOrNull(lastIndex)
                 if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
-                    lastIndex = homeVisitableListData.indexOf(visitable) ?: -1
+                    lastIndex = homeVisitableListData.indexOf(visitable)
                 }
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, lastIndex, this@HomeRevampViewModel))
                 visitableList.reversed().forEach {
@@ -1118,14 +1169,12 @@ open class HomeRevampViewModel @Inject constructor(
         if (getTabRecommendationJob != null) return
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
-            val findRetryModel = homeVisitableListData.withIndex()?.find {
-                data -> data.value is HomeRetryModel
+            val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
             }
             val findRecommendationModel = homeVisitableListData.find {
                 data -> data is HomeRecommendationFeedDataModel
             }
-            val findLoadingModel = homeVisitableListData.withIndex()?.find {
-                data -> data.value is HomeLoadingMoreModel
+            val findLoadingModel = homeVisitableListData.withIndex().find { data -> data.value is HomeLoadingMoreModel
             }
 
             if (findRecommendationModel != null) return@launchCatchError
@@ -1141,11 +1190,9 @@ open class HomeRevampViewModel @Inject constructor(
             ))
 
         }){
-            val findRetryModel = homeVisitableListData.withIndex()?.find {
-                data -> data.value is HomeRetryModel
+            val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findLoadingModel = homeVisitableListData.withIndex()?.find {
-                data -> data.value is HomeLoadingMoreModel
+            val findLoadingModel = homeVisitableListData.withIndex().find { data -> data.value is HomeLoadingMoreModel
             }
             homeProcessor.get().sendWithQueueMethod(listOf(
                     AddWidgetCommand(HomeRetryModel(), -1, this@HomeRevampViewModel),
@@ -1227,15 +1274,22 @@ open class HomeRevampViewModel @Inject constructor(
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
-                homeVisitableListData.withIndex()?.find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(popularKeywordList = resultList), indexedData.index, this@HomeRevampViewModel))
+                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(popularKeywordList = resultList, isErrorLoad = false), indexedData.index, this@HomeRevampViewModel))
                     }
                 }
             }
-        }){
-            it.printStackTrace()
+        }){ throwable ->
+            homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                val oldData = indexedData.value
+                if (oldData is PopularKeywordListDataModel) {
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(isErrorLoad = true), indexedData.index, this@HomeRevampViewModel))
+                }
+            }
+
+            throwable.printStackTrace()
         }
     }
 
@@ -1249,7 +1303,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        homeVisitableListData.withIndex()?.filter { it.value is FeaturedShopDataModel }?.forEach { indexed ->
+        homeVisitableListData.withIndex().filter { it.value is FeaturedShopDataModel }.forEach { indexed ->
             val featuredShopDataModel = indexed.value as FeaturedShopDataModel
             launchCatchError(coroutineContext, block={
                 getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
@@ -1288,25 +1342,6 @@ open class HomeRevampViewModel @Inject constructor(
                     productClickUrl = it.adClickUrl,
                     imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
             )
-        }
-    }
-
-    fun getStickyContent() {
-        if(getStickyLoginJob?.isActive == true) return
-        getStickyLoginJob = launchCatchError(coroutineContext, block = {
-            stickyLoginUseCase.get().setParam(RequestParams.create().apply {
-                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.toString())
-            })
-            val response = stickyLoginUseCase.get().executeOnBackground()
-            val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
-            if(data == null){
-                _stickyLogin.postValue(Result.error(Exception()))
-            } else {
-                _stickyLogin.postValue(Result.success(data))
-            }
-
-        }){
-            _stickyLogin.postValue(Result.error(it))
         }
     }
 
@@ -1435,10 +1470,10 @@ open class HomeRevampViewModel @Inject constructor(
     fun getUserName() = userSession.get().name ?: ""
 
     // ============================================================================================
-// ================================ Live Data Controller ======================================
-// ============================================================================================
+    // ================================ Live Data Controller ======================================
+    // ============================================================================================
     override suspend fun updateWidget(visitable: Visitable<*>, position: Int) {
-        val newList = homeVisitableListData
+        val newList = homeVisitableListData.toMutableList()
         logChannelUpdate("Update channel: (Update widget ${visitable.javaClass.simpleName})")
         if (position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java) {
             newList[position] = visitable
@@ -1454,9 +1489,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
-        var addedPosition = position
-
-        val newList = homeVisitableListData
+        val newList = homeVisitableListData.toMutableList()
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
 
@@ -1466,14 +1499,14 @@ open class HomeRevampViewModel @Inject constructor(
             return
         }
 
-        if((addedPosition == -1 || addedPosition > newList.size)) newList.add(visitable)
-        else newList.add(addedPosition, visitable)
+        if((position == -1 || position > newList.size)) newList.add(visitable)
+        else newList.add(position, visitable)
         homeVisitableListData = newList
         _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
     }
 
     override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
-        val newList = homeVisitableListData.toMutableList() ?: mutableListOf()
+        val newList = homeVisitableListData.toMutableList()
         logChannelUpdate("Update channel: (Remove widget ${visitable.javaClass.simpleName} | ${getVisitableId(visitable)})")
         newList.find {getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
@@ -1484,7 +1517,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-        homeVisitableListData = homeDataModel?.list?.toMutableList()?:mutableListOf()
+        homeVisitableListData = homeDataModel.list.toMutableList()
         _homeLiveData.postValue(homeDataModel)
     }
 
@@ -1547,6 +1580,15 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setHomeNotif(notifCount: Int, messageCount: Int, cartCount: Int) {
+        homeNotifModel = HomeNotifModel(
+                notifCount = notifCount,
+                messageCount = messageCount,
+                cartCount = cartCount
+        )
+        _homeNotifLiveData.value = homeNotifModel
     }
 
 // ============================================================================================

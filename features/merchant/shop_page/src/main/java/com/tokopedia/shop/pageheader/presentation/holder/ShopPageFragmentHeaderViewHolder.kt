@@ -18,6 +18,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -28,6 +29,7 @@ import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -70,7 +72,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location_icon.setImageResource(locationImageIcon)
             view.shop_page_main_profile_location_icon.show()
             view.shop_page_main_profile_location.show()
-            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location));
+            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location))
         }else{
             view.shop_page_main_profile_location_icon.hide()
             view.shop_page_main_profile_location.hide()
@@ -212,9 +214,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
-        view.tickerShopStatus.setHtmlDescription(shopPageHeaderDataModel.statusMessage)
+        view.tickerShopStatus.setHtmlDescription(
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
+                } else {
+                    shopPageHeaderDataModel.statusMessage
+                }
+        )
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                // set tracker data based on shop status
                 when (shopPageHeaderDataModel.shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
@@ -234,7 +243,15 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                 ))
                     }
                 }
-                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
+                    // linkUrl is from appended moderate description, show bottomsheet to request open moderate
+                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                        init(listener)
+                    })
+                } else {
+                    // original url, open web view
+                    listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                }
             }
 
             override fun onDismiss() {}
@@ -245,6 +262,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
         }
+    }
+
+    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
+        // append action text to request open moderation
+        val appendedText = context.getString(
+                R.string.shop_page_header_request_unmoderate_appended_text,
+                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
+                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
+        )
+        return originalStatusMessage + appendedText
     }
 
     private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
@@ -376,6 +403,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun onStartLiveStreamingClicked()
         fun saveFirstTimeVisit()
         fun isFirstTimeVisit(): Boolean?
+        fun onSendRequestOpenModerate(optionValue : String)
+        fun onCompleteSendRequestOpenModerate()
+        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
+        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
     }
 
 

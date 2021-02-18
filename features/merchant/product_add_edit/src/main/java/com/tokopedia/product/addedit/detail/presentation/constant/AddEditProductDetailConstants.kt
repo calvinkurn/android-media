@@ -9,6 +9,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_CATEGORY = 1
         const val REQUEST_CODE_SHOP_LOCATION = 2
         const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
+        const val REQUEST_CODE_SPECIFICATION = 4
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
@@ -29,6 +30,7 @@ class AddEditProductDetailConstants {
         const val MIN_PREORDER_DURATION = 1
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13
+        const val MAX_SPECIFICATION_COUNTER = 5
         const val PARAM_SET_CASHBACK_VALUE = "cashback"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
         const val PARAM_SET_CASHBACK_PRODUCT_NAME = "product_name"

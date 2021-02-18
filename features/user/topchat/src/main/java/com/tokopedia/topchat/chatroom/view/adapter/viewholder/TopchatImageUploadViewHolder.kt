@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
@@ -80,7 +81,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let {
-            attachmentUnify?.setImageUrl(it)
+            ImageHandler.LoadImage(attachmentUnify, it)
         }
     }
 

@@ -13,7 +13,10 @@ import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
@@ -27,9 +30,10 @@ import com.tokopedia.unifyprinciples.Typography
 class ShopHomeVoucherViewHolder(
         itemView: View,
         private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
-) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView){
+) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {
+        fun onVoucherItemImpressed()
         fun onVoucherReloaded()
     }
 
@@ -79,6 +83,7 @@ class ShopHomeVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
+                shopHomeVoucherViewHolderListener.onVoucherItemImpressed()
                 merchantVoucherShimmering?.hide()
                 merchantVoucherWidget?.show()
                 merchantVoucherReload?.hide()
@@ -91,7 +96,8 @@ class ShopHomeVoucherViewHolder(
                             imageUrl = model.data.imageURL ?: ""
                     ),
                             shopId = model.data.shopId ?: "0",
-                            isMainContainerSetFitsSystemWindows = false
+                            isMainContainerSetFitsSystemWindows = false,
+                            source = MvcSource.SHOP
                     )
                 }
             }

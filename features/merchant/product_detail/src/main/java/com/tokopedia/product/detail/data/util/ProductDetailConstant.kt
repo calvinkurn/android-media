@@ -118,6 +118,7 @@ object ProductDetailConstant {
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
+    const val MVC = "mvc"
 
 
     //Arguments
@@ -180,4 +181,9 @@ object ProductDetailConstant {
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
 
+
+    //General Ticker
+    const val LAYOUT_FLOATING = "floating"
+    const val PARAMS_PAGE = "page"
+    const val PARAMS_PAGE_PDP = "pdp"
 }

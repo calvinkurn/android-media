@@ -259,6 +259,17 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         );
     }
 
+    public void clickFollowUnfollowShopWithoutShopFollower(
+            boolean isFollow,
+            CustomDimensionShopPage customDimensionShopPage) {
+        String followUnfollow = isFollow ? FOLLOW : UNFOLLOW;
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                joinSpace(CLICK, followUnfollow),
+                "",
+                customDimensionShopPage);
+    }
+
     public void viewToasterFollow(
             Boolean isSuccess,
             String shopId,

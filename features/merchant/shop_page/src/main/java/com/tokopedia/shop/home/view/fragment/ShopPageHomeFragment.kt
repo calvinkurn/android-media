@@ -964,6 +964,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getMerchantVoucherCoupon(shopId)
     }
 
+    override fun onVoucherItemImpressed() {
+        // implement tracker
+    }
+
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
@@ -1755,6 +1759,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     showLinkCopiedToaster()
                     playWidgetActionBottomSheet.dismiss()
                 }
+            )
+        }
+        if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
+            bottomSheetActionList.add(
+                    PlayWidgetSellerActionBottomSheet.Action(
+                            R.drawable.ic_play_widget_sgc_performance,
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                            context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()) {
+                        shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
+                        RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
+                        playWidgetActionBottomSheet.dismiss()
+                    }
             )
         }
         bottomSheetActionList.add(
