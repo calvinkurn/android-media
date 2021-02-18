@@ -101,12 +101,10 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun status(methodNme: String, properties: Properties) {
-        txtStatus.text = """
-            method = $methodNme\n
-            url = $url \n
-            load_time(ms) = ${properties.loadTime}\n\n
-            $properties
-        """.trimIndent()
+        txtStatus?.text = "method = $methodNme \n" +
+                "url = $url \n" +
+                "load_time(ms) = ${properties.loadTime} \n\n" +
+                "$properties"
     }
 
 }

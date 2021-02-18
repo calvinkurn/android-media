@@ -143,17 +143,15 @@ open class Properties(
     }
 
     override fun toString(): String {
-        return """
-            source: $data,\n
-            transform: ${transform?.javaClass?.name},\n
-            transforms: ${transforms?.size},\n
-            placeholder: $placeHolder,\n
-            error: $error,\n
-            blurhash: $blurHash,\n
-            isAnimate: $isAnimate,\n
-            isCircular: $isCircular,\n
-            roundedRadius: $roundedRadius,\n
-        """.trimIndent()
+        return "source: $data,\n" +
+                "transform: ${transform?.javaClass?.name},\n" +
+                "transforms: ${transforms?.size},\n" +
+                "placeholder: $placeHolder,\n" +
+                "error: $error,\n" +
+                "blurhash: $blurHash,\n" +
+                "isAnimate: $isAnimate,\n" +
+                "isCircular: $isCircular,\n" +
+                "roundedRadius: $roundedRadius,\n"
     }
 
 }
