@@ -78,7 +78,8 @@
                     android:layout_width="@dimen/layout_lvl2"
                     android:layout_height="@dimen/layout_lvl2"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    app:unify_image_corner_radius="0" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_fulfill_district"

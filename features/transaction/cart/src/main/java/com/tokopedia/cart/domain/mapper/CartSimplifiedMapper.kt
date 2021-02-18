@@ -69,6 +69,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
+        cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
         cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
 
@@ -126,6 +127,20 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             sellerCashbackWording = shoppingSummary.sellerCashbackWording
         }
     }
+
+    private fun mapPromoSummaryData(promoSummary: PromoSummary): PromoSummaryData =
+            PromoSummaryData(
+                    title = promoSummary.title,
+                    details = promoSummary.details.map {
+                        PromoSummaryDetailData(
+                                description = it.description,
+                                type = it.type,
+                                amountStr = it.amountStr,
+                                amount = it.amount,
+                                currencyDetailStr = it.currencyDetailStr
+                        )
+                    }.toList()
+            )
 
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
         val ticker = tickers[0]

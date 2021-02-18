@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse
@@ -36,6 +37,9 @@ data class CartDataListResponse(
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("shopping_summary")
         val shoppingSummary: ShoppingSummary = ShoppingSummary(),
+        @SerializedName("promo_summary")
+        @Expose
+        val promoSummary: PromoSummary = PromoSummary(),
         @SerializedName("fulfillment_message")
         val fulfillmentMessage: String = "",
         @SerializedName("toko_cabang")
