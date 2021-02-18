@@ -9,7 +9,7 @@ object GenerateKeyQuery {
     private const val module = "\$module"
 
     val generateKeyQuery: String = """
-        mutation generate_key($module: String!) {
+        query generate_key($module: String!) {
             generate_key(module: $module) {
                 key
                 server_timestamp
