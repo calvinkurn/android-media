@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -48,7 +49,9 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
 }
 
 internal fun ImageView.glideClear(context: Context) {
-    Glide.with(context).clear(this)
+    if (context.isValidGlideContext()) {
+        Glide.with(context).clear(this)
+    }
 }
 
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
