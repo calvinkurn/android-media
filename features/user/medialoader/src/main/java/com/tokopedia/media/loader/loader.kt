@@ -33,6 +33,13 @@ fun ImageView.loadImageFitCenter(url: String?) = this.loadImage(url) { transform
 
 fun ImageView.loadImageWithoutPlaceholder(url: String?) = this.loadImage(url) { setPlaceHolder(-1) }
 
+fun ImageView.loadImageWithoutPlaceholder(
+        url: String?,
+        properties: Properties.() -> Unit
+) = call(url, Properties().apply(properties).also {
+    it.setPlaceHolder(-1)
+})
+
 inline fun ImageView.loadImage(
         url: String?,
         crossinline properties: Properties.() -> Unit
