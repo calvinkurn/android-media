@@ -116,7 +116,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
 
     private fun setUpBackground(section: RechargeHomepageSections.Section) {
         itemView.parallax_image.loadImage(section.mediaUrl)
-        itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
+        if (section.label1.isNotEmpty()) itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
     }
 
     private fun setUpList(section: RechargeHomepageSections.Section) {
