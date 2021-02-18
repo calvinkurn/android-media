@@ -557,6 +557,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun goToSellerSettings() {
+        talkInboxTracking.eventClickSettings(viewModel.getShopId(), viewModel.getUserId())
         RouteManager.route(context, ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS)
     }
 

@@ -27,4 +27,5 @@ object TalkInboxTrackingConstants {
     const val EVENT_ACTION_IMPRESS_ITEM = "view - talk on inbox talk"
     const val CREATIVE_MESSAGE_STATUS = "message status:%s"
     const val EE_NAME = "inbox-talk/%s"
+    const val EVENT_ACTION_CLICK_SETTINGS = "${TalkTrackingConstants.EVENT_ACTION_CLICK} diskusi settings"
 }

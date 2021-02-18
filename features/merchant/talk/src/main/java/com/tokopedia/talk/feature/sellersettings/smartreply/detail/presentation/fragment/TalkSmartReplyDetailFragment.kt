@@ -25,7 +25,9 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
+import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.analytics.TalkSmartReplyDetailTracking
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.widget.TalkSmartReplyDetailCard
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -179,7 +181,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             when (it) {
                 is Success -> {
                     when {
-                        viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == false-> {
+                        viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == false -> {
                             showToaster(getString(R.string.smart_reply_success_activate), false)
                         }
                         !viewModel.isSmartReplyOn -> {
@@ -243,10 +245,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun initButton() {
-        talkSmartReplyDetailSubmitButton?.apply {
-            setOnClickListener {
-                saveSmartReplySettings()
-            }
+        talkSmartReplyDetailSubmitButton?.setOnClickListener {
+            TalkSmartReplyDetailTracking.eventClickSave(getShopId(), getUserId())
+            saveSmartReplySettings()
         }
     }
 
@@ -292,5 +293,13 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplyDetailAvailableStockTextArea = view.findViewById(R.id.talkSmartReplyDetailAvailableStockTextArea)
         talkSmartReplyDetailUnavailableStockTextArea = view.findViewById(R.id.talkSmartReplyDetailUnavailableStockTextArea)
         talkSmartReplyDetailSubmitButton = view.findViewById(R.id.talkSmartReplyDetailSubmitButton)
+    }
+
+    private fun getUserId(): String {
+        return (activity as? UserSessionListener)?.getUserId() ?: ""
+    }
+
+    private fun getShopId(): String {
+        return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 }

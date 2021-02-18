@@ -6,17 +6,27 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.di.DaggerTalkComponent
+import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class TalkSellerSettingsActivity : BaseSimpleActivity() {
+class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, UserSessionListener {
 
     companion object {
         const val KEY_NAVIGATION_PARAM = "navigation"
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var navigationParam: String = ""
 
@@ -31,9 +41,15 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         getDataFromApplink()
         setupNavController()
+    }
+
+    override fun getComponent(): TalkComponent {
+        return DaggerTalkComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
     }
 
     override fun onBackPressed() {
@@ -41,6 +57,14 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
             goToInbox()
         }
         super.onBackPressed()
+    }
+
+    override fun getShopId(): String {
+        return userSession.shopId
+    }
+
+    override fun getUserId(): String {
+        return userSession.userId
     }
 
     private fun goToInbox() {

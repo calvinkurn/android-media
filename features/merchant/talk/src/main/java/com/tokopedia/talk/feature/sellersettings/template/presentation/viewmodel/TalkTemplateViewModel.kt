@@ -7,8 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
-import com.tokopedia.talk.feature.sellersettings.template.data.TemplateMutationResult
-import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.*
+import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.ArrangeTemplateUseCase
+import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.EnableTemplateUseCase
+import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.GetAllTemplatesUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,13 +31,13 @@ class TalkTemplateViewModel @Inject constructor(
         get() = _templateMutation
 
     fun arrangeTemplate(originalIndex: Int, moveTo: Int, isSeller: Boolean) {
-        if(originalIndex == moveTo) {
+        if (originalIndex == moveTo) {
             return
         }
         launchCatchError(block = {
             arrangeTemplateUseCase.setParams(originalIndex, moveTo, isSeller)
             val response = arrangeTemplateUseCase.executeOnBackground()
-            if(response.chatMoveTemplate.success.isMutationSuccess()) {
+            if (response.chatMoveTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
@@ -50,8 +51,8 @@ class TalkTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             enableTemplateUseCase.setParams(isEnable)
             val response = enableTemplateUseCase.executeOnBackground()
-            if(response.chatToggleTemplate.success.isMutationSuccess()) {
-                _templateMutation.postValue(if(isEnable) TalkTemplateMutationResults.TemplateActivateSuccess else TalkTemplateMutationResults.TemplateDeactivateSuccess)
+            if (response.chatToggleTemplate.success.isMutationSuccess()) {
+                _templateMutation.postValue(if (isEnable) TalkTemplateMutationResults.TemplateActivateSuccess else TalkTemplateMutationResults.TemplateDeactivateSuccess)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
             }

@@ -19,6 +19,8 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
+import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
@@ -209,6 +211,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun setupAddTemplateButton() {
         talkTemplateListAddButton?.setOnClickListener {
+            TalkTemplateTracking.eventClickAddTemplate(getShopId(), getUserId())
             goToAdd()
         }
     }
@@ -298,6 +301,14 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         talkTemplateListAddButton = view.findViewById(R.id.talkTemplateListAddButton)
         talkTemplateListSwitch = view.findViewById(R.id.talkTemplateListSwitch)
         talkTemplateListLoading = view.findViewById(R.id.talkTemplateListLoading)
+    }
+
+    private fun getUserId(): String {
+        return (activity as? UserSessionListener)?.getUserId() ?: ""
+    }
+
+    private fun getShopId(): String {
+        return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 
 }

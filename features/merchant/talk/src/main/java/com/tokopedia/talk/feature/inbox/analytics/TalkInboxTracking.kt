@@ -5,6 +5,7 @@ import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
+import com.tokopedia.talk.feature.sellersettings.common.analytics.TalkSellerSettingsTrackingConstants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -82,7 +83,7 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickThreadEcommerce(inboxType: String, talkId: String, userId: String, position: Int, isUnread: Boolean)  {
+    fun eventClickThreadEcommerce(inboxType: String, talkId: String, userId: String, position: Int, isUnread: Boolean) {
         val itemBundle = Bundle().apply {
             putString(TalkTrackingConstants.TRACKING_ID, talkId)
             putString(TalkTrackingConstants.TRACKING_NAME, String.format(TalkInboxTrackingConstants.EE_NAME, getInboxType(inboxType)))
@@ -136,6 +137,27 @@ class TalkInboxTracking @Inject constructor() {
                                 )
                         )
                 )
+        )
+    }
+
+    fun eventClickSellerFilter(shopId: String, userId: String) {
+        tracker.sendGeneralEvent(getSellerSettingsTrackingMap(shopId, userId, TalkInboxTrackingConstants.EVENT_ACTION_CLICK_FILTER, getEventCategoryInbox(TalkInboxTab.SHOP_TAB)))
+    }
+
+    fun eventClickSettings(shopId: String, userId: String) {
+        tracker.sendGeneralEvent(getSellerSettingsTrackingMap(shopId, userId, TalkInboxTrackingConstants.EVENT_ACTION_CLICK_SETTINGS, getEventCategoryInbox(TalkInboxTab.SHOP_TAB)))
+    }
+
+    private fun getSellerSettingsTrackingMap(shopId: String, userId: String, eventAction: String, eventCategory: String, eventLabel: String = ""): Map<String, String> {
+        return mapOf(
+                TalkTrackingConstants.TRACKING_EVENT to TalkSellerSettingsTrackingConstants.EVENT_INBOX_TALK,
+                TalkTrackingConstants.TRACKING_SHOP_ID to shopId,
+                TalkTrackingConstants.TRACKING_USER_ID to userId,
+                TalkTrackingConstants.TRACKING_EVENT_ACTION to eventAction,
+                TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK_INBOX,
+                TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
+                TalkTrackingConstants.TRACKING_EVENT_CATEGORY to eventCategory,
+                TalkTrackingConstants.TRACKING_EVENT_LABEL to eventLabel
         )
     }
 

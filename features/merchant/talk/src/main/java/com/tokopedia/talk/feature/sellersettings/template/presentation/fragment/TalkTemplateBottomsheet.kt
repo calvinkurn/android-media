@@ -13,6 +13,8 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
+import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
@@ -126,6 +128,9 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private fun initButton(view: View) {
         talkEditTemplateSaveButton = view.findViewById(R.id.talkEditTemplateSaveButton)
         talkEditTemplateSaveButton?.setOnClickListener {
+            if(!isEditMode) {
+                TalkTemplateTracking.eventClickAddTemplateInBottomSheet(getShopId(), getUserId())
+            }
             saveTemplate()
         }
     }
@@ -198,5 +203,13 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 })
             }
         }
+    }
+
+    private fun getUserId(): String {
+        return (activity as? UserSessionListener)?.getUserId() ?: ""
+    }
+
+    private fun getShopId(): String {
+        return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 }

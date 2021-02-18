@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.tokopedia.TalkInstance
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
@@ -14,9 +16,14 @@ import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrati
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
+import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
+import com.tokopedia.talk.feature.sellersettings.settings.analytics.TalkSettingsTracking
+import com.tokopedia.talk.feature.sellersettings.settings.analytics.TalkSettingsTrackingConstants
+import com.tokopedia.talk.feature.sellersettings.settings.presentation.di.DaggerTalkSettingsComponent
+import com.tokopedia.talk.feature.sellersettings.settings.presentation.di.TalkSettingsComponent
 import com.tokopedia.talk.feature.sellersettings.settings.presentation.widget.TalkSettingsOption
 
-class TalkSettingsFragment : Fragment() {
+class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComponent> {
 
     companion object {
         const val SMART_REPLY_NAVIGATION = "smartReply"
@@ -34,6 +41,23 @@ class TalkSettingsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_settings, container, false)
+    }
+
+    override fun getComponent(): TalkSettingsComponent? {
+        return activity?.run {
+            DaggerTalkSettingsComponent
+                    .builder()
+                    .talkComponent(TalkInstance.getComponent(application))
+                    .build()
+        }
+    }
+
+    override fun getScreenName(): String {
+        return TalkSettingsTrackingConstants.EVENT_CATEGORY_SETTINGS
+    }
+
+    override fun initInjector() {
+        component?.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,9 +85,11 @@ class TalkSettingsFragment : Fragment() {
 
     private fun setNavigation() {
         talkSettingsTemplateOption?.setOnClickListener {
+            TalkSettingsTracking.eventClickOptionTemplate(getShopId(), getUserId())
             goToTemplate()
         }
         talkSettingsSmartReplyOption?.setOnClickListener {
+            TalkSettingsTracking.eventClickOptionSmartReply(getShopId(), getUserId())
             goToSmartReply()
         }
     }
@@ -126,6 +152,14 @@ class TalkSettingsFragment : Fragment() {
     private fun bindViewReferences(view: View) {
         talkSettingsTemplateOption = view.findViewById(R.id.talkSettingsTemplateOption)
         talkSettingsSmartReplyOption = view.findViewById(R.id.talkSettingsSmartReplyOption)
+    }
+
+    private fun getUserId(): String {
+        return (activity as? UserSessionListener)?.getUserId() ?: ""
+    }
+
+    private fun getShopId(): String {
+        return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 
 }

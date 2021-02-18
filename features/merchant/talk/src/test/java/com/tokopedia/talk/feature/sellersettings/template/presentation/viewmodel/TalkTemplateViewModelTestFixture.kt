@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.viewmode
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -11,13 +12,7 @@ import org.junit.Rule
 abstract class TalkTemplateViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var addTemplateUseCase: AddTemplateUseCase
-
-    @RelaxedMockK
     lateinit var arrangeTemplateUseCase: ArrangeTemplateUseCase
-
-    @RelaxedMockK
-    lateinit var deleteSpecificTemplateUseCase: DeleteSpecificTemplateUseCase
 
     @RelaxedMockK
     lateinit var enableTemplateUseCase: EnableTemplateUseCase
