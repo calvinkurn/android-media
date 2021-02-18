@@ -1,6 +1,5 @@
 package com.tokopedia.cart.view
 
-import android.os.Build
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -894,10 +893,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPromoCode(cartItemData.originData?.promoCodes ?: "")
             setPromoDetails(cartItemData.originData?.promoDetails ?: "")
             setDimension83(
-                    if (cartItemData.originData?.isFreeShipping == true) {
-                        EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                    } else {
-                        EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                    when {
+                        cartItemData.originData?.isFreeShippingExtra == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
+                        cartItemData.originData?.isFreeShipping == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
+                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
             setCampaignId(cartItemData.originData?.campaignId?.toString() ?: "0")

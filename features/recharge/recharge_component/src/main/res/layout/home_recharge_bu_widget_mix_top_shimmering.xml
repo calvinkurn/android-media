@@ -18,7 +18,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl5"
         app:corners="8"
-        app:custom_color="@color/Neutral_N0"
+        app:custom_color="@color/Unify_N0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:corners="8"
-        app:custom_color="@color/Neutral_N0"
+        app:custom_color="@color/Unify_N0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bu_widget_mix_top_header" />
 
@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:corners="16"
-        app:custom_color="@color/Neutral_N0"
+        app:custom_color="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
