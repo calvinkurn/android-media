@@ -63,7 +63,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
                          private val bannerComponentListener: BannerComponentListener,
-                         private val dynamicIconComponentListener: DynamicIconComponentListener
+                         private val dynamicIconComponentListener: DynamicIconComponentListener,
+                         private val legoSixAutoListener: Lego6AutoBannerListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -169,6 +170,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     //Home-Component
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
+        return DynamicLegoBannerSixAutoViewHolder.LAYOUT
     }
 
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
@@ -405,7 +410,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                    BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+                    BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, parentRecycledViewPool)
             DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
             ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
@@ -415,6 +420,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
             ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
             HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
+            DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
+                    DynamicLegoBannerSixAutoViewHolder(
+                            view,
+                            legoSixAutoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
