@@ -13,7 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 
 class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
@@ -33,8 +33,7 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
                 val itemData = it.data?.get(0)
                 positionForParentAdapter = itemData?.positionForParentItem ?: -1
                 itemData?.let { item ->
-                    tabImageView.loadImage(item.backgroundImage
-                            ?: "")
+                    tabImageView.loadImageFitCenter(item.backgroundImage ?: "")
                     item.name?.let { name ->
                         setTabText(name)
                     }
