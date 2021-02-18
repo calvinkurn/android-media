@@ -11,7 +11,6 @@ import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -23,19 +22,19 @@ object RechargeHomepageSectionMapper {
         // Remove empty sections
         var sections = oldData.toMutableList()
         val updatedSections = newData.sections.filter { it.items.isNotEmpty() }
-        val requestIDs = newData.requestIDs
+        val requestIDs = newData.requestIDs.map { it.toString() }
         when (updatedSections.size) {
             0 -> {
                 // Remove sections
-                sections = sections.filter { it.id.toIntOrZero() !in requestIDs }.toMutableList()
+                sections = sections.filter { it.id !in requestIDs }.toMutableList()
             }
             1 -> {
                 // One on one mapping; remove other IDs except the first one
                 if (requestIDs.size > 1) {
                     val indexes = requestIDs.subList(1, requestIDs.size)
-                    sections = sections.filter { it.id.toIntOrZero() !in indexes }.toMutableList()
+                    sections = sections.filter { it.id !in indexes }.toMutableList()
                 }
-                val index = sections.indexOfFirst { it.id.toIntOrZero() == requestIDs.first() }
+                val index = sections.indexOfFirst { it.id == requestIDs.first() }
                 sections[index] = updatedSections.first()
             }
             else -> {
@@ -45,9 +44,9 @@ object RechargeHomepageSectionMapper {
                  */
                 if (requestIDs.size > 1) {
                     val indexes = requestIDs.subList(1, requestIDs.size)
-                    sections = sections.filter { it.id.toIntOrZero() !in indexes }.toMutableList()
+                    sections = sections.filter { it.id !in indexes }.toMutableList()
                 }
-                val index = sections.indexOfFirst { it.id.toIntOrZero() == requestIDs.first() }
+                val index = sections.indexOfFirst { it.id == requestIDs.first() }
                 sections.removeAt(index)
                 sections.addAll(index, updatedSections)
             }
@@ -61,7 +60,7 @@ object RechargeHomepageSectionMapper {
 
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
         return sections.mapNotNull {
-            val id = it.id.toString()
+            val id = it.id
             with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
