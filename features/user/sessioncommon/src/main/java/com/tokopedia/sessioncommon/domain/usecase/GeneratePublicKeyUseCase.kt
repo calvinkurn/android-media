@@ -23,7 +23,7 @@ class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<Genera
     }
 
     override suspend fun executeOnBackground(): GenerateKeyPojo {
-        params.putString(PARAM_MODULE, "module")
+        params.putString(PARAM_MODULE, "pwd")
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
