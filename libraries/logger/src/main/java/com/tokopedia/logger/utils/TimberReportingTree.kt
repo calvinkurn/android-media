@@ -32,18 +32,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     fun setClientLogs(clientLogs: List<String>?) {
-        if (clientLogs == null || clientLogs.isEmpty()) {
-            LogManager.logentriesEnabled = true
-            LogManager.scalyrEnabled = false
-            LogManager.isPrimaryLogentries = true
-            LogManager.isPrimaryScalyr = false
-        } else {
-            // curently logentries are always enabled.
-            LogManager.logentriesEnabled = clientLogs.contains(Constants.CLIENT_LOGENTRIES)
-            LogManager.scalyrEnabled = clientLogs.contains(Constants.CLIENT_SCALYR)
-            LogManager.isPrimaryLogentries = (clientLogs[0] == Constants.CLIENT_LOGENTRIES)
-            LogManager.isPrimaryScalyr = (clientLogs[0] == Constants.CLIENT_SCALYR)
-        }
+        // noop. only has 1 client now.
     }
 
     fun setQueryLimits(queryLimit: List<Int>?) {
