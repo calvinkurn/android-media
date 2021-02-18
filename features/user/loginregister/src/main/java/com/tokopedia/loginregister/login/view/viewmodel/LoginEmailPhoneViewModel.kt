@@ -243,9 +243,18 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 email, password), LoginTokenSubscriber(userSession,
                 { mutableLoginTokenResponse.value = Success(it) },
                 { mutableLoginTokenResponse.value = Fail(it) },
-                { showPopup(it.loginToken.popupError) },
-                { onGoToActivationPage(email) },
-                { onGoToSecurityQuestion(email) },
+                {
+                    showPopup(it.loginToken.popupError)
+                    idlingResourceProvider?.decrement()
+                },
+                {
+                    onGoToActivationPage(email)
+                    idlingResourceProvider?.decrement()
+                },
+                {
+                    onGoToSecurityQuestion(email)
+                    idlingResourceProvider?.decrement()
+                },
                 { idlingResourceProvider?.decrement() }
         ))
     }
@@ -262,12 +271,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getTickerInfo() {
+        idlingResourceProvider?.increment()
         launchCatchError(coroutineContext, {
             val params = TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE)
             val ticker = tickerInfoUseCase.createObservable(params).toBlocking().single()
             mutableGetTickerInfoResponse.value = Success(ticker)
+            idlingResourceProvider?.decrement()
         }, {
             mutableGetTickerInfoResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         })
     }
 
@@ -281,14 +293,17 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getDynamicBannerData(page: String) {
+        idlingResourceProvider?.increment()
         launchCatchError(coroutineContext, {
             val params = DynamicBannerUseCase.createRequestParams(page)
             dynamicBannerUseCase.createParams(params)
             dynamicBannerUseCase.executeOnBackground().run {
                 mutableDynamicBannerResponse.postValue(Success(this))
             }
+            idlingResourceProvider?.decrement()
         }, {
             mutableDynamicBannerResponse.postValue(Fail(it))
+            idlingResourceProvider?.decrement()
         })
     }
 

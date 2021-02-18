@@ -22,23 +22,23 @@ import javax.inject.Named
  * @author by nisie on 10/10/18.
  */
 @Module
-class LoginModule {
+open class LoginModule {
     @LoginScope
     @Provides
     @Named(LOGIN_CACHE)
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+    open fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, LOGIN_CACHE)
     }
 
     @LoginScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher {
+    open fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
     }
 
     @LoginScope
     @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
+    open fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
         override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
@@ -46,7 +46,7 @@ class LoginModule {
     @LoginScope
     @Provides
     @RequiresApi(Build.VERSION_CODES.M)
-    fun provideCryptographyUtils(): Cryptography? {
+    open fun provideCryptographyUtils(): Cryptography? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             CryptographyUtils()
         } else null
@@ -54,13 +54,13 @@ class LoginModule {
 
     @LoginScope
     @Provides
-    fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
+    open fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
         return FingerprintPreferenceHelper(context)
     }
 
     @LoginScope
     @Provides
-    fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
+    open fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
         return SocmedBottomSheet(context)
     }
 
