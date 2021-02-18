@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+
 
 class TopAdsHeadlineViewModel : ViewModel() {
 
