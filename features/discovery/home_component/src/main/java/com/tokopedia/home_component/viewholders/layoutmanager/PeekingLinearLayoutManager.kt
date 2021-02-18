@@ -33,5 +33,5 @@ class PeekingLinearLayoutManager : LinearLayoutManager {
 
     private val verticalSpace get() = height - paddingTop - paddingBottom
 
-    private val ratio = 0.92f // change to 0.7f for 70%
+    private val ratio = 0.90f // change to 0.7f for 70%
 }

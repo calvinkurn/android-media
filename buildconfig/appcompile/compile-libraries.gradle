@@ -34,6 +34,7 @@ include 'libraries:imageuploader'
 
 include "libraries:inappupdate"
 include "libraries:smart_recycler_diffutil_helper"
+include "libraries:keys"
 include "libraries:kotlin_extensions"
 include "libraries:liveness_lib"
 include 'libraries:locationmanager'
