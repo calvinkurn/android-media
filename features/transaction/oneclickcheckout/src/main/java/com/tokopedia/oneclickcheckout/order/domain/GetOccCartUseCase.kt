@@ -9,6 +9,7 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.addChosenAddressParam
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
+        addChosenAddressParam(params)
         val graphqlRequest = GET_OCC_CART_PAGE_QUERY
         val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
