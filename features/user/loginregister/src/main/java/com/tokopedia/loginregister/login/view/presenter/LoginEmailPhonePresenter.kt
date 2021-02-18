@@ -211,16 +211,16 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                 view.onSuccessLoginEmail(it)
                             },
                             onErrorLoginToken = {
-                                view.onErrorLoginEmail(email)
+                                view.onErrorLoginEmail(email).invoke(it)
                             },
                             onShowPopupError = {
                                 view.showPopup().invoke(it.loginToken.popupError)
                             },
                             onGoToActivationPage = {
-                                view.onGoToActivationPage(email)
+                                view.onGoToActivationPage(email).invoke(it)
                             },
                             onGoToSecurityQuestion = {
-                                view.onGoToSecurityQuestion(email)
+                                view.onGoToSecurityQuestion(email).invoke()
                             }
                     )
                 }
