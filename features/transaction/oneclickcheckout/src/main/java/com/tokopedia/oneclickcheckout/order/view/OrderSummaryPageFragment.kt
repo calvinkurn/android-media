@@ -181,7 +181,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
                 REQUEST_CODE_OVO_TOP_UP -> refresh()
                 REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(resultCode, data)
+                REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
             }
+        }
+    }
+
+    private fun onResultFromAddressList(resultCode: Int) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            activity?.finish()
+        } else {
+            refresh()
         }
     }
 
@@ -281,6 +290,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
+        viewModel.addressState.observe(viewLifecycleOwner, {
+            validateAddressState(it)
+        })
+
         viewModel.orderPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
@@ -864,6 +877,39 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
                         startActivityForResult(intent, REQUEST_CODE_PROMO)
                     }
+                }
+            }
+        }
+    }
+
+    private fun validateAddressState(addressState: AddressState) {
+        if (addressState.popupMessage.isNotBlank()) {
+            view?.let {
+                Toaster.build(it, addressState.popupMessage).show()
+            }
+        }
+        when (addressState.state) {
+            AddressState.STATE_ADDRESS_ID_MATCH_DEFAULT_OCC -> {
+                // Normal flow
+            }
+            AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC -> {
+                // Normal flow
+            }
+            AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC -> {
+                // Normal flow
+            }
+            AddressState.STATE_DISTRICT_ID_MATCH_DEFAULT_OCC -> {
+                // Normal flow
+            }
+            AddressState.STATE_DISTRICT_ID_MATCH_NON_DEFAULT_OCC -> {
+                // Normal flow
+            }
+            AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC -> {
+                if (addressState.errorCode == AddressState.IS_ERROR) {
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+                    startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
+                } else {
+                    // Normal flow
                 }
             }
         }
@@ -1508,6 +1554,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_ADD_ADDRESS = 18
 
         const val REQUEST_CODE_EDIT_PAYMENT = 19
+
+        const val REQUEST_CODE_OPEN_ADDRESS_LIST = 20
 
         const val QUERY_PRODUCT_ID = "product_id"
 

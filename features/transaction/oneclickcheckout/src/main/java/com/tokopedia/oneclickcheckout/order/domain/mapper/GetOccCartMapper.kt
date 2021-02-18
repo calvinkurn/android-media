@@ -43,7 +43,11 @@ class GetOccCartMapper @Inject constructor() {
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
-                mapOccRevamp(data.revamp))
+                mapOccRevamp(data.revamp),
+//                0,
+//                "Ini popup message")
+                data.errorCode,
+                data.popUpMessage)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -272,7 +276,11 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode)
+                address.latitude, address.postalCode,
+//                201,
+//                "206")
+                address.state,
+                address.stateDetail)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {

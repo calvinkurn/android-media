@@ -40,7 +40,11 @@ data class GetOccCartData(
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
         @SerializedName("occ_revamp")
-        val revamp: OccRevampResponse = OccRevampResponse()
+        val revamp: OccRevampResponse = OccRevampResponse(),
+        @SerializedName("error_code")
+        val errorCode: Int = 0,
+        @SerializedName("pop_up_message")
+        val popUpMessage: String = ""
 )
 
 data class CartMessages(
