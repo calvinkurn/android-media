@@ -62,7 +62,7 @@ object MediaListenerBuilder {
                     val ect = urlBuilder.toUri()?.getQueryParameter("ect")?: "4g"
 
                     println("MediaLoader => $pageName, ${properties.data.toString()}, $qualitySettings, $ect, $loadTime, $fileSize")
-                    println("MediaLoader => properties: $properties")
+                    println("MediaLoader => properties: ${properties.toString()}")
                 } catch (e: Exception) {}
             }
 

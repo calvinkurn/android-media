@@ -29,21 +29,22 @@ fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 fun ImageView.loadImage(url: String?) = this.loadImage(url) {}
 
+inline fun ImageView.loadImage(
+        url: String?,
+        crossinline properties: Properties.() -> Unit
+) = call(url, Properties().apply(properties))
+
 fun ImageView.loadImageFitCenter(url: String?) = this.loadImage(url) { transform(FitCenter()) }
 
-fun ImageView.loadImageWithoutPlaceholder(url: String?) = this.loadImage(url) { setPlaceHolder(-1) }
+fun ImageView.loadImageWithoutPlaceholder(url: String?) = this.loadImageWithoutPlaceholder(url) {}
 
 fun ImageView.loadImageWithoutPlaceholder(
         url: String?,
         properties: Properties.() -> Unit
 ) = call(url, Properties().apply(properties).also {
     it.setPlaceHolder(-1)
+    it.useBlurHash(false)
 })
-
-inline fun ImageView.loadImage(
-        url: String?,
-        crossinline properties: Properties.() -> Unit
-) = call(url, Properties().apply(properties))
 
 fun ImageView.loadImageCircle(url: String) {
     call(url, Properties().apply {
@@ -111,7 +112,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
             * don't let the imageView haven't image
             * render with error drawable
             * */
-            this.loadImage(R.drawable.ic_media_default_error)
+            this.loadImage(R.drawable.media_state_default_error)
         }
     }
 }

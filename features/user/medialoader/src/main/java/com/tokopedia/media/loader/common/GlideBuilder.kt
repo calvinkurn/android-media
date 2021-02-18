@@ -94,7 +94,7 @@ class GlideBuilder {
                     if (blurHash && !hash.isNullOrEmpty()) {
                         placeholder(BitmapDrawable(context.resources, blurring(hash)))
                     } else {
-                        placeholder(R.drawable.ic_media_default_placeholder)
+                        placeholder(R.drawable.media_state_default_placeholder)
                     }
                 }
 

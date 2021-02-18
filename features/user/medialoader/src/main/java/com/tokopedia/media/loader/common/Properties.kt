@@ -17,7 +17,7 @@ open class Properties(
         var isCircular: Boolean = false,
         var roundedRadius: Float = 0f,
         var signatureKey: Key? = null,
-        var error: Int = R.drawable.ic_media_default_error,
+        var error: Int = R.drawable.media_state_default_error,
         var placeHolder: Int = 0,
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         var overrideSize: Resize? = null,
@@ -133,6 +133,21 @@ open class Properties(
         result = 31 * result + transform.hashCode()
         result = 31 * result + transforms.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return """
+            source: $data,
+            transform: ${transform?.javaClass?.name},
+            transforms: ${transforms?.size},
+            placeholder: $placeHolder,
+            error: $error,
+            blurhash: $blurHash,
+            isAnimate: $isAnimate,
+            isAnimate: $isAnimate,
+            isCircular: $isCircular,
+            roundedRadius: $roundedRadius,
+        """.trimIndent()
     }
 
 }
