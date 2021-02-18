@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request
+package com.tokopedia.localizationchooseaddress.util.request
 
 import com.google.gson.annotations.SerializedName
 
