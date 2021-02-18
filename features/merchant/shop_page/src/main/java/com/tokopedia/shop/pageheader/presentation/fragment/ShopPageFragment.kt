@@ -332,38 +332,6 @@ class ShopPageFragment :
         viewPager.isUserInputEnabled = false
         viewPager.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
         viewPager.adapter = viewPagerAdapter
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                tabLayout.getTabAt(position)?.let{
-                    viewPagerAdapter?.handleSelectedTab(it, true)
-                }
-                if (isFirstLoading) {
-                    isFirstLoading = false
-                } else {
-                    shopPageTracking?.clickTab(
-                            shopViewModel?.isMyShop(shopId) == true,
-                            listShopPageTabModel[position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
-                }
-                if (isSellerMigrationEnabled(context)) {
-                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
-                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
-                        if (position == tabFeedPosition) {
-                            showBottomSheetSellerMigration()
-                        } else {
-                            hideBottomSheetSellerMigration()
-                        }
-                    }else{
-                        hideBottomSheetSellerMigration()
-                    }
-                }
-            }
-        })
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -1100,6 +1068,38 @@ class ShopPageFragment :
             tabLayout.addTab(tabLayout.newTab().setIcon(it.tabIconInactive),false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                tabLayout.getTabAt(position)?.let{
+                    viewPagerAdapter?.handleSelectedTab(it, true)
+                }
+                if (isFirstLoading) {
+                    isFirstLoading = false
+                } else {
+                    shopPageTracking?.clickTab(
+                            shopViewModel?.isMyShop(shopId) == true,
+                            listShopPageTabModel[position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
+                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
+                        if (position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
+                    }
+                }
+            }
+        })
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
