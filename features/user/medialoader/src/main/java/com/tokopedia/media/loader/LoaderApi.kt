@@ -9,8 +9,9 @@ import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.common.GlideBuilder
+import com.tokopedia.media.loader.common.builder.GlideBitmapBuilder
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.common.builder.GlideGifBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
@@ -18,7 +19,8 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDisk
 
 internal object LoaderApi {
 
-    private val builder by lazy { GlideBuilder() }
+    private val bitmapBuilder by lazy { GlideBitmapBuilder() }
+    private val gifBuilder by lazy { GlideGifBuilder() }
 
     private fun automateScaleType(
             imageView: ImageView,
@@ -38,6 +40,11 @@ internal object LoaderApi {
     fun loadImage(imageView: ImageView, properties: Properties) {
         var tracker: PerformanceMonitoring? = null
         val context = imageView.context
+
+        // handling empty url
+        if (properties.data is String && properties.data.toString().isEmpty()) {
+            return
+        }
 
         if (properties.data == null) {
             // if the data source is null, the image will be render the error drawable
@@ -72,7 +79,7 @@ internal object LoaderApi {
                         tracker = PerformanceTracker.preRender(source, context)
                     }
 
-                    builder.build(
+                    bitmapBuilder.build(
                             context = context,
                             blurHash = blurHash,
                             properties = properties,
@@ -81,7 +88,7 @@ internal object LoaderApi {
                     ).load(source)
                 }
                 else -> {
-                    builder.build(
+                    bitmapBuilder.build(
                             context = context,
                             properties = properties,
                             request = this
@@ -94,14 +101,13 @@ internal object LoaderApi {
 
     // temporarily the GIF loader
     fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
-        with(imageView) {
-            GlideApp.with(context).asGif().load(data).apply {
-                properties.cacheStrategy?.let {
-                    diskCacheStrategy(mapToDiskCacheStrategy(it))
-                    transform(MultiTransformation(properties.transforms as MutableList))
-                }
-            }.into(this)
-        }
+        val context = imageView.context
+
+        GlideApp.with(context)
+                .asGif()
+                .load(data)
+                .apply { gifBuilder.build(properties, this) }
+                .into(imageView)
     }
 
 }
