@@ -30,6 +30,7 @@ object ProductManageVariantMapper {
                 it.status,
                 it.combination,
                 it.isPrimary,
+                it.isCampaign,
                 it.price,
                 it.sku,
                 it.stock,

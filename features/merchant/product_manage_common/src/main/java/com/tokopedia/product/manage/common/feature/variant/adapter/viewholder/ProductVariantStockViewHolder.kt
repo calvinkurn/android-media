@@ -47,6 +47,7 @@ class ProductVariantStockViewHolder(
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
         setupStockHint(variant)
+        setupCampaignLabel(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -103,6 +104,10 @@ class ProductVariantStockViewHolder(
         val stock = getCurrentStockInput()
         val shouldShow = stock == 0 && !variant.isAllStockEmpty
         itemView.textTotalStockHint.showWithCondition(shouldShow)
+    }
+
+    private fun setupCampaignLabel(variant: ProductVariant) {
+        itemView.labelCampaign.showWithCondition(variant.isCampaign)
     }
 
     private fun setStockMinMaxValue() {

@@ -16,17 +16,27 @@ class GetProductVariantUseCase @Inject constructor(
     companion object {
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
+        private const val PARAM_EXTRA_INFO = "extraInfo"
+        private const val PARAM_CAMPAIGN = "campaign"
+        private const val PARAM_EVENT = "event"
         private const val PARAM_VARIANT = "variant"
         private const val PARAM_EDIT = "edit"
 
         fun createRequestParams(productId: String, paramEdit: Boolean = true): RequestParams {
-            val optionsParam = RequestParams()
-            optionsParam.putBoolean(PARAM_VARIANT, true)
-            optionsParam.putBoolean(PARAM_EDIT, paramEdit)
+            val optionsParam = RequestParams().apply {
+                putBoolean(PARAM_VARIANT, true)
+                putBoolean(PARAM_EDIT, paramEdit)
+                putBoolean(PARAM_CAMPAIGN, true)
+            }.parameters
+
+            val extraInfoParam = RequestParams().apply {
+                putBoolean(PARAM_EVENT, true)
+            }.parameters
 
             return RequestParams().apply {
                 putString(PARAM_PRODUCT_ID, productId)
-                putObject(PARAM_OPTIONS, optionsParam.parameters)
+                putObject(PARAM_OPTIONS, optionsParam)
+                putObject(PARAM_EXTRA_INFO, extraInfoParam)
             }
         }
     }
