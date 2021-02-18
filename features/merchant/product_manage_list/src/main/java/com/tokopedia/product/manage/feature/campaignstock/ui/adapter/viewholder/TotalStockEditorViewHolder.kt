@@ -29,6 +29,7 @@ class TotalStockEditorViewHolder(itemView: View?,
     private val stockEditor by lazy { itemView?.qte_campaign_stock_amount }
     private val emptyStockInfo by lazy { itemView?.emptyStockInfo }
     private val textStock by lazy { itemView?.textStock }
+    private val labelCampaign by lazy { itemView?.labelCampaign }
 
     private val stockTextWatcher by lazy {
         StockEditorTextWatcher(stockEditor, onTotalStockChanged)
@@ -61,6 +62,7 @@ class TotalStockEditorViewHolder(itemView: View?,
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
         setupStockEditor(element)
+        setupCampaignLabel(element)
     }
 
     private fun QuantityEditorUnify.removeEditorTextListener() {
@@ -82,5 +84,10 @@ class TotalStockEditorViewHolder(itemView: View?,
             textStock?.show()
             textStock?.text = element.totalStock.toString()
         }
+    }
+
+    private fun setupCampaignLabel(element: TotalStockEditorUiModel) {
+        val isCampaign = element.isCampaign == true
+        labelCampaign?.showWithCondition(isCampaign)
     }
 }
