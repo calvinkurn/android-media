@@ -9,8 +9,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +34,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener) {
         if (data.isBebasOngkirExtra) {
-            tvTitleExtra.text = data.title
+            tvTitleExtra.text = itemView.context.getString(R.string.bracket_container, CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountedRate, false).removeDecimalSuffix())
             tvTitleExtra.visibility = View.VISIBLE
             tvTitle.visibility = View.GONE
         } else {
