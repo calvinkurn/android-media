@@ -19,14 +19,10 @@ import javax.inject.Named
 @Component(modules = [AnalyticsDebuggerModule::class], dependencies = [BaseAppComponent::class])
 @AnalyticsDebuggerScope
 interface AnalyticsDebuggerComponent {
-    fun inject(fragment: AnalyticsDebuggerFragment?)
     fun inject(fragment: FpmDebuggerFragment?)
     fun inject(fragment: ApplinkDebuggerFragment?)
     fun inject(fragment: TopAdsDebuggerFragment?)
     fun inject(fragment: AnalyticsDebuggerGtmErrorFragment?)
-
-    @get:Named(NAMED_GTM_ANALYTICS)
-    val gtmPresenter: AnalyticsDebugger.Presenter
 
     @get:Named(NAMED_FPM_ANALYTICS)
     val fpmPresenter: FpmDebugger.Presenter

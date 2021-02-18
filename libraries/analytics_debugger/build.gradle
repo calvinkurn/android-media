@@ -11,6 +11,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
 
 dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -26,12 +31,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifeCycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.testDependencies.junit
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.assertJCore

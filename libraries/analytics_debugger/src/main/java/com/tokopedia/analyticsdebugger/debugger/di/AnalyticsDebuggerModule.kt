@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.debugger.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerPresenter
 import com.tokopedia.analyticsdebugger.debugger.domain.*
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.*
@@ -18,13 +17,6 @@ class AnalyticsDebuggerModule {
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context {
         return context
-    }
-
-    @Provides
-    @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
     }
 
     @Provides
