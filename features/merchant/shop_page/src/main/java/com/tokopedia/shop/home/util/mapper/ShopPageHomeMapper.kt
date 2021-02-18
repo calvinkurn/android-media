@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.util.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
@@ -81,7 +80,6 @@ object ShopPageHomeMapper {
 
 
     fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
-        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
