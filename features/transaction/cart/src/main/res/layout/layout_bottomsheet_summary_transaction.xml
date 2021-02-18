@@ -84,9 +84,9 @@
     <View
         android:id="@+id/separator_benefit"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_total_pay_title" />
@@ -124,6 +124,7 @@
         android:id="@+id/recycler_view_cart_promo_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_total_cashback_title"
