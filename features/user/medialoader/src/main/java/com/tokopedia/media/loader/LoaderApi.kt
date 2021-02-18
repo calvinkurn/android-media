@@ -1,8 +1,13 @@
 package com.tokopedia.media.loader
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import com.bumptech.glide.request.target.CustomViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
@@ -14,11 +19,30 @@ import com.tokopedia.media.loader.common.builder.GlideGifBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
+import com.tokopedia.media.loader.utils.MediaTarget
 
 internal object LoaderApi {
 
     private val bitmapBuilder by lazy { GlideBitmapBuilder() }
     private val gifBuilder by lazy { GlideGifBuilder() }
+
+    @JvmOverloads
+    fun loadImage(imageView: ImageView, properties: Properties) {
+        loadImage(imageView.context, properties, MediaTarget(imageView, onReady = {
+            imageView.setImageBitmap(it)
+        }))
+    }
+
+    // temporarily the GIF loader
+    fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
+        val context = imageView.context
+
+        GlideApp.with(context)
+                .asGif()
+                .load(data)
+                .apply { gifBuilder.build(properties, this) }
+                .into(imageView)
+    }
 
     private fun automateScaleType(
             imageView: ImageView,
@@ -35,27 +59,29 @@ internal object LoaderApi {
     }
 
     @JvmOverloads
-    fun loadImage(imageView: ImageView, properties: Properties) {
+    fun <T: View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
         var tracker: PerformanceMonitoring? = null
-        val context = imageView.context
 
         // handling empty url
         if (properties.data is String && properties.data.toString().isEmpty()) {
             return
         }
 
-        if (properties.data == null) {
+        if (target is ImageView && properties.data == null) {
             // if the data source is null, the image will be render the error drawable
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            target.setImageDrawable(getDrawable(context, properties.error))
             return
         }
 
         GlideApp.with(context).asBitmap().apply {
-            /*
-            * automateScaleType mean, the image will be scaled automatically
-            * based on scaleType attribute which is already defined on ImageView
-            * */
-            automateScaleType(imageView, this)
+
+            if (target is ImageView) {
+                /*
+                * automateScaleType mean, the image will be scaled automatically
+                * based on scaleType attribute which is already defined on ImageView
+                * */
+                automateScaleType(target, this)
+            }
 
             when(properties.data) {
                 is String -> {
@@ -93,19 +119,8 @@ internal object LoaderApi {
                     ).load(properties.data)
                 }
 
-            }.into(imageView)
+            }.into(target)
         }
-    }
-
-    // temporarily the GIF loader
-    fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
-        val context = imageView.context
-
-        GlideApp.with(context)
-                .asGif()
-                .load(data)
-                .apply { gifBuilder.build(properties, this) }
-                .into(imageView)
     }
 
 }

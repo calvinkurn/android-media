@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import com.tokopedia.media.loader.LoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.MediaTarget
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
 
@@ -88,12 +90,6 @@ inline fun ImageView.loadIcon(
 
 fun ImageView.loadIcon(url: String?) = this.loadIcon(url) {}
 
-fun ImageView?.clearImage() {
-    if (this != null && context.isValidContext()) {
-        GlideApp.with(this.context).clear(this)
-    }
-}
-
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValidContext()) {
@@ -114,6 +110,27 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
             * */
             this.loadImage(R.drawable.media_state_default_error)
         }
+    }
+}
+
+fun <T: View> loadImageWithTarget(
+        context: Context,
+        url: String,
+        properties: Properties.() -> Unit,
+        mediaTarget: MediaTarget<T>
+) {
+    LoaderApi.loadImage(
+            context,
+            Properties().apply(properties).also {
+                it.setSource(url)
+            },
+            mediaTarget
+    )
+}
+
+fun ImageView?.clearImage() {
+    if (this != null && context.isValidContext()) {
+        GlideApp.with(this.context).clear(this)
     }
 }
 
