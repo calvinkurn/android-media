@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListResponse
+import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.util.GQL_CHECK_UPDATE_WHITE_LIST
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class CheckUpdateWhiteListCreditCartUseCase @Inject constructor(
 ) : GraphqlUseCase<CheckWhiteListResponse>(graphqlRepository) {
 
     fun whiteListResponse(
-            onSuccess: (CheckWhiteListResponse) -> Unit,
+            onSuccess: (CheckWhiteListStatus) -> Unit,
             onError: (Throwable) -> Unit,
             authValue: Int, status: Boolean,
             token: String?,
@@ -23,7 +24,11 @@ class CheckUpdateWhiteListCreditCartUseCase @Inject constructor(
             this.setGraphqlQuery(CheckUpdateWhiteList.GQL_QUERY)
             this.setRequestParams(getRequestParams(authValue, status, token))
             this.execute(
-                    { result -> onSuccess(result) },
+                    { result ->
+                        if (result.checkWhiteListStatus == null)
+                            onError(NullPointerException("Null Response"))
+                        else onSuccess(result.checkWhiteListStatus!!)
+                    },
                     { error -> onError(error) }
             )
         } catch (throwable: Throwable) {
@@ -42,9 +47,9 @@ class CheckUpdateWhiteListCreditCartUseCase @Inject constructor(
     }
 
     companion object {
-        val UPDATE_STATUS = "updateStatus"
-        val AUTH_VALUE = "authValue"
-        val TOKEN = "token"
+        const val UPDATE_STATUS = "updateStatus"
+        const val AUTH_VALUE = "authValue"
+        const val TOKEN = "token"
     }
 
 }

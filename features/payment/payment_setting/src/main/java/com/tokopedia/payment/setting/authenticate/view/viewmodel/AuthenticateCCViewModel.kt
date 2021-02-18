@@ -7,7 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.domain.CheckUpdateWhiteListCreditCartUseCase
-import com.tokopedia.payment.setting.authenticate.model.*
+import com.tokopedia.payment.setting.authenticate.model.AuthException
+import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
+import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
+import com.tokopedia.payment.setting.authenticate.model.WhiteListData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,16 +55,12 @@ class AuthenticateCCViewModel @Inject constructor(
         )
     }
 
-    private fun onUpdateSuccess(checkWhiteListResponse: CheckWhiteListResponse) {
-        checkWhiteListResponse.checkWhiteListStatus?.let {
-            _whiteListStatusResultLiveData.value = Success(it)
-        } ?: onUpdateError(NullPointerException("CheckWhiteListStatus is null"))
+    private fun onUpdateSuccess(checkWhiteListStatus: CheckWhiteListStatus) {
+        _whiteListStatusResultLiveData.value = Success(checkWhiteListStatus)
     }
 
-    private fun onWhiteListDataSuccess(checkWhiteListResponse: CheckWhiteListResponse) {
-        checkWhiteListResponse.checkWhiteListStatus?.let {
-            _whiteListResultLiveData.value = Success(generateDataListAuth(it.data))
-        } ?: onWhiteListDataError(NullPointerException("List null"))
+    private fun onWhiteListDataSuccess(checkWhiteListResponse: CheckWhiteListStatus) {
+        _whiteListResultLiveData.value = Success(generateDataListAuth(checkWhiteListResponse.data))
     }
 
     private fun onUpdateError(throwable: Throwable) {
