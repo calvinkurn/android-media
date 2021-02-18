@@ -57,8 +57,12 @@ public class GraphqlClient {
     }
 
     @MainThread
-    //Marking important method for main thread
-    public static void setInitData(Context context){
+    /***Marking important method for main thread.
+     * Idea behind this method is A library initialisation may need some critical data.
+     * In this case it was context and we need to mark on which thread the critical data will be set.
+     * This approach decouples the library initialisation, we can use the any thread to initialise the library.
+    **/
+    public static void setContextData(Context context){
         applicationContext = context.getApplicationContext();
     }
 
@@ -124,7 +128,7 @@ public class GraphqlClient {
 
     @AnyThread
     //Use this method for safe usage
-    public static Function getFunctionSafe(Context context) {
+    public static Function getFunctionWithContext(Context context) {
         if (!isInitialized()) {
             init(context);
         }
