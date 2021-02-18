@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import android.content.Intent
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -9,8 +8,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
+import com.tokopedia.test.application.matcher.lastPathSegmentEqualTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -35,7 +34,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, exMessageId)
+        assertThat(intent, lastPathSegmentEqualTo(exMessageId))
     }
 
     @Test
@@ -48,7 +47,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, msgId)
+        assertThat(intent, lastPathSegmentEqualTo(msgId))
     }
 
     @Test
@@ -61,7 +60,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, exShopId)
+        assertThat(intent, lastPathSegmentEqualTo(exShopId))
     }
 
     @Test
@@ -76,7 +75,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, exShopId)
+        assertThat(intent, lastPathSegmentEqualTo(exShopId))
     }
 
     @Test
@@ -92,7 +91,7 @@ class TopchatRoomDeeplinkTest {
         // Then
         assertThat(intent, isPointingTo(topchat))
         assertThat(intent, hasQueryParameter(keyCustomMsg, customMsg))
-        verifyLastPathSegment(intent, exShopId)
+        assertThat(intent, lastPathSegmentEqualTo(exShopId))
     }
 
     @Test
@@ -109,7 +108,7 @@ class TopchatRoomDeeplinkTest {
         // Then
         assertThat(intent, isPointingTo(topchat))
         assertThat(intent, hasQueryParameter("customMessage", customMsg))
-        verifyLastPathSegment(intent, exShopId)
+        assertThat(intent, lastPathSegmentEqualTo(exShopId))
     }
 
     @Test
@@ -122,7 +121,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, exUserId)
+        assertThat(intent, lastPathSegmentEqualTo(exUserId))
     }
 
     @Test
@@ -137,7 +136,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, userId)
+        assertThat(intent, lastPathSegmentEqualTo(userId))
     }
 
     @Test
@@ -153,7 +152,7 @@ class TopchatRoomDeeplinkTest {
         // Then
         assertThat(intent, isPointingTo(topchat))
         assertThat(intent, hasQueryParameter(keyCustomMsg, customMsg))
-        verifyLastPathSegment(intent, exUserId)
+        assertThat(intent, lastPathSegmentEqualTo(exUserId))
     }
 
     @Test
@@ -170,7 +169,7 @@ class TopchatRoomDeeplinkTest {
         // Then
         assertThat(intent, isPointingTo(topchat))
         assertThat(intent, hasQueryParameter("customMessage", customMsg))
-        verifyLastPathSegment(intent, exUserId)
+        assertThat(intent, lastPathSegmentEqualTo(exUserId))
     }
 
     @Test
@@ -183,7 +182,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, exMessageId)
+        assertThat(intent, lastPathSegmentEqualTo(exMessageId))
     }
 
     @Test
@@ -198,14 +197,7 @@ class TopchatRoomDeeplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(topchat))
-        verifyLastPathSegment(intent, msgId)
-    }
-
-    private fun verifyLastPathSegment(
-            intent: Intent,
-            expectedValue: String
-    ) {
-        assertThat(intent.data?.lastPathSegment, equalTo(expectedValue))
+        assertThat(intent, lastPathSegmentEqualTo(msgId))
     }
 
 }

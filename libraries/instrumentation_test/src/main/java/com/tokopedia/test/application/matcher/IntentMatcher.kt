@@ -50,3 +50,22 @@ fun hasQueryParameter(key: String, value: String): Matcher<Intent> {
         }
     }
 }
+
+fun lastPathSegmentEqualTo(lastPathSegment: String): Matcher<Intent> {
+    return object : BaseMatcher<Intent>() {
+        override fun describeMismatch(item: Any?, description: Description?) {
+            if (item is Intent) {
+                description?.appendText(item.data?.lastPathSegment)
+            }
+        }
+
+        override fun describeTo(description: Description?) {
+            description?.appendText(lastPathSegment)
+        }
+
+        override fun matches(item: Any?): Boolean {
+            val intent = item as? Intent ?: return false
+            return intent.data?.lastPathSegment == lastPathSegment
+        }
+    }
+}
