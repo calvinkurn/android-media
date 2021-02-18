@@ -12,8 +12,6 @@ import com.tokopedia.topchat.action.RecyclerViewChildActions.Companion.atPositio
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Before
 import org.junit.Test
 
 class TopchatRoomBuyerUxTest : TopchatRoomTest() {
