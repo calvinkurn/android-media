@@ -58,7 +58,8 @@ class PlayViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
         private val pageMonitoring: PlayPltPerformanceCallback,
-        private val remoteConfig: RemoteConfig
+        private val remoteConfig: RemoteConfig,
+        private val playUiMapper: PlayUiMapper
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -453,7 +454,7 @@ class PlayViewModel @Inject constructor(
                     return@withContext getChannelInfoUseCase.executeOnBackground()
                 }
 
-                val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
+                val completeInfoUiModel = playUiMapper.createCompleteInfoModel(
                         channel = channel,
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
@@ -507,7 +508,7 @@ class PlayViewModel @Inject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playSocket.send(cleanMessage)
-        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId,
+        setNewChat(playUiMapper.mapPlayChat(userSession.userId,
                 PlayChat(
                         message = cleanMessage,
                         user = PlayChat.UserData(
@@ -581,20 +582,20 @@ class PlayViewModel @Inject constructor(
                 }
                 when (result) {
                     is TotalLike -> {
-                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
+                        _observableTotalLikes.value = playUiMapper.mapTotalLikes(result)
                     }
                     is TotalView -> {
-                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
+                        _observableTotalViews.value = playUiMapper.mapTotalViews(result)
                     }
                     is PlayChat -> {
-                        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId, result))
+                        setNewChat(playUiMapper.mapPlayChat(userSession.userId, result))
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.name.orEmpty()
-                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
+                        _observablePinnedMessage.value = playUiMapper.mapPinnedMessage(partnerName, result)
                     }
                     is QuickReply -> {
-                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
+                        _observableQuickReply.value = playUiMapper.mapQuickReply(result)
                     }
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
@@ -608,7 +609,7 @@ class PlayViewModel @Inject constructor(
                     is ProductTag -> {
                         val productSheet = _observableProductSheetContent.value
                         val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        val productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
+                        val productList = playUiMapper.mapItemProducts(result.listOfProducts)
                         _observableProductSheetContent.value = PlayResult.Success(
                                 data = currentProduct.copy(productList = productList)
                         )
@@ -621,7 +622,7 @@ class PlayViewModel @Inject constructor(
                         val productSheet = _observableProductSheetContent.value
                         val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
                         _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
+                                data = currentProduct.copy(voucherList = playUiMapper.mapItemVouchers(result.listOfVouchers))
                         )
                     }
                 }
@@ -671,7 +672,7 @@ class PlayViewModel @Inject constructor(
                 getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
                 getTotalLikeUseCase.executeOnBackground()
             }
-            _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
+            _observableTotalLikes.value = playUiMapper.mapTotalLikes(totalLike)
         } catch (e: Exception) {
         }
     }
@@ -724,7 +725,7 @@ class PlayViewModel @Inject constructor(
                 getProductTagItemsUseCase.executeOnBackground()
             }
             val partnerId = partnerId ?: 0L
-            val productSheet = PlayUiMapper.mapProductSheet(
+            val productSheet = playUiMapper.mapProductSheet(
                     channel.titleBottomSheet,
                     partnerId,
                     productTagsItems)

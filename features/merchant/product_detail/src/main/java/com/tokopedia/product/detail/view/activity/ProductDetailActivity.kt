@@ -64,7 +64,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         }
 
         @JvmStatic
-        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+        fun createIntent(context: Context, productId: Long) = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }

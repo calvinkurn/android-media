@@ -162,7 +162,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         for (i in 0 until totalProduct) {
             products.add(
                     ResultProduct(
-                            11111,
+                            "11111",
                             "tokopedia://product/1111",
                             productThumbnail,
                             "Rp ${i + 1}5.000.000",
