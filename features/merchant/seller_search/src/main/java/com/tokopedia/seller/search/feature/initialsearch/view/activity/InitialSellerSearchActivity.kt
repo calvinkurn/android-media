@@ -96,7 +96,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
-        setKeywordSearchBarView(getKeywordFromIntent())
+        setInitialKeyword()
     }
 
     private fun initView() {
@@ -105,6 +105,13 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         mInitialStateView = findViewById(R.id.search_initial_state_container)
         suggestionFragment = supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
         initialStateFragment = supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
+    }
+
+    private fun setInitialKeyword() {
+        getKeywordFromIntent().let { keyword ->
+            proceedSearchKeyword(keyword)
+            searchBarView?.setKeyword(keyword)
+        }
     }
 
     private fun getKeywordFromIntent(): String =
