@@ -35,7 +35,7 @@ class SmartBillsViewHolder(val view: View,
         super.bind(element)
         with(view) {
 
-            val title = when{
+            val title = when {
                 (element.categoryName.isNotEmpty() && element.productName.isNotEmpty()) -> String.format("%s - %s", element.categoryName, element.productName)
                 (element.categoryName.isNullOrEmpty() && element.productName.isNotEmpty()) -> element.productName
                 (element.categoryName.isNotEmpty() && element.productName.isNullOrEmpty()) -> element.categoryName
@@ -47,22 +47,21 @@ class SmartBillsViewHolder(val view: View,
                 else gone()
             }
 
-            val description = if(element.billName.isNotEmpty()){
+            val description = if (element.billName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_description), element.clientNumber)
-            }else {
+            } else {
                 element.clientNumber
             }
 
-            tv_smart_bills_item_description_bill_name.apply {
-                if (element.billName.isNotEmpty()){
-                    text = element.billName
-                } else gone()
-            }
 
+            if (element.billName.isNotEmpty()) {
+                tv_smart_bills_item_description_bill_name.text = element.billName
+            }
+            
             tv_smart_bills_item_description_number.apply {
-                if(element.clientNumber.isNotEmpty()){
+                if (element.clientNumber.isNotEmpty()) {
                     text = description
-                } else gone()
+                } else this.gone()
             }
 
             tv_smart_bills_item_price.text = element.amountText
@@ -106,7 +105,7 @@ class SmartBillsViewHolder(val view: View,
                 }
             }
 
-            if(!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0){
+            if (!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0) {
                 tv_due_message.apply {
                     text = element.dueMessage.text
                     setTextColor(getDueUrgencyColor(element.dueMessage.type, context))
@@ -115,7 +114,7 @@ class SmartBillsViewHolder(val view: View,
                 tv_due_message.gone()
             }
 
-            if(!element.dueDateLabel.text.isNullOrEmpty() && element.dueDateLabel.type != 0){
+            if (!element.dueDateLabel.text.isNullOrEmpty() && element.dueDateLabel.type != 0) {
                 tv_due_date_label.apply {
                     text = element.dueDateLabel.text
                     setTextColor(getDueUrgencyColor(element.dueDateLabel.type, context))
@@ -141,7 +140,7 @@ class SmartBillsViewHolder(val view: View,
     }
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {
-        return when(type){
+        return when (type) {
             1 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T600)
             2 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
             3 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
@@ -150,7 +149,7 @@ class SmartBillsViewHolder(val view: View,
     }
 
     private fun getDueUrgencyIcon(type: Int): Int {
-        return when(type){
+        return when (type) {
             1 -> R.drawable.ic_countdown_black
             2 -> R.drawable.ic_countdown_yellow
             3 -> R.drawable.ic_countdown_red
