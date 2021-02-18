@@ -333,7 +333,7 @@
     <string name="topads_dash_empty_product_recom_title">Yay, semua produk berpotensimu sudah diiklankan!</string>
     <string name="topads_dash_empty_product_recom_desc">Ayo cek rekomendasi iklan lainnya untuk bikin iklanmu lebih maksimal!</string>
     <string name="topads_dash_grp_bs_item_desc">%d Produk • %d Kata Kunci</string>
-    <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%d</string>
+    <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%s</string>
     <string name="topads_dash_potential_click_text">Maks. +%s klik/hari</string>
     <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#fa31353b'><b> %s</b></font> ]]> .%s</string>
     <string name="topads_dash_product_recomm_min_budget_error">Oops, biaya terlalu rendah!</string>

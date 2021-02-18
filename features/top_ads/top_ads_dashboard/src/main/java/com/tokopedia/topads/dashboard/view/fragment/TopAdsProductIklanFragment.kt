@@ -239,6 +239,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun noAds() {
+        progressView?.gone()
         /*ad switching in progress*/
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (checkInProgress()) {
@@ -278,6 +279,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun noProduct() {
+        progressView?.gone()
         adTypeCallBack?.onNoProduct(true)
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {

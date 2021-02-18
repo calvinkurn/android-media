@@ -104,7 +104,8 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                     setLayoutOnToggle(false)
                 }
                 enableAutoAdssheet?.onSaved = { pos ->
-                    saveSelection(pos, TYPE_BOTTOMSHEET)
+                    if (pos != -1)
+                        saveSelection(pos, TYPE_BOTTOMSHEET)
                 }
             } else {
                 showConfirmationDialog()
@@ -115,7 +116,8 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             sheetNomianl?.setTitle(resources.getString(R.string.topads_dash_pick_nominal))
             sheetNomianl?.show(childFragmentManager, null, false, selectedItem.id)
             sheetNomianl?.onSavedAutoTopUp = { pos ->
-                saveSelection(pos, TYPE_NOMINAL)
+                if (pos != -1)
+                    saveSelection(pos, TYPE_NOMINAL)
             }
         }
         tooltip?.setOnClickListener {
