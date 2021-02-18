@@ -889,27 +889,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
         when (addressState.state) {
-            AddressState.STATE_ADDRESS_ID_MATCH_DEFAULT_OCC -> {
-                // Normal flow
-            }
-            AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC -> {
-                // Normal flow
-            }
-            AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC -> {
-                // Normal flow
-            }
-            AddressState.STATE_DISTRICT_ID_MATCH_DEFAULT_OCC -> {
-                // Normal flow
-            }
-            AddressState.STATE_DISTRICT_ID_MATCH_NON_DEFAULT_OCC -> {
-                // Normal flow
-            }
             AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC -> {
                 if (addressState.errorCode == AddressState.IS_ERROR) {
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
                     startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
-                } else {
-                    // Normal flow
                 }
             }
         }
