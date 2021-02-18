@@ -44,7 +44,7 @@ class LoginTokenV2UseCase @Inject constructor(private val graphqlUseCase: Graphq
         private val PARAM_GRANT_TYPE: String = "grant_type"
         private val PARAM_USERNAME: String = "username"
         private val PARAM_PASSWORD: String = "password"
-        private val PARAM_HASH: String = "hash"
+        private val PARAM_HASH: String = "h"
 
         private val TYPE_PASSWORD:String = "password"
     }
