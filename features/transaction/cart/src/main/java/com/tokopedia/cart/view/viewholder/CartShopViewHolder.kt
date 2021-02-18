@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ImageUnify
@@ -136,7 +137,7 @@ class CartShopViewHolder(itemView: View,
         if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
             if (cartShopHolderData.shopGroupAvailableData.isFulfillment && cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl.isNotEmpty()) {
                 imgFulfillmentBadge.show()
-                imgFulfillmentBadge.setImageUrl(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
+                imgFulfillmentBadge.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
             } else {
                 imgFulfillmentBadge.gone()
             }

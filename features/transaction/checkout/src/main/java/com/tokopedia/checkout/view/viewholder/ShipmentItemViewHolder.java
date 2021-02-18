@@ -413,7 +413,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderFulfillment(ShipmentCartItemModel model) {
         if (!TextUtils.isEmpty(model.getShopLocation())) {
             if (model.isFulfillment() && !TextUtils.isEmpty(model.getFulfillmentBadgeUrl())) {
-                ImageHandler.loadImageWithoutPlaceholder(imgFulfillmentBadge, model.getFulfillmentBadgeUrl());
+                ImageHandler.loadImageWithoutPlaceholderAndError(imgFulfillmentBadge, model.getFulfillmentBadgeUrl());
                 imgFulfillmentBadge.setVisibility(View.VISIBLE);
             } else {
                 imgFulfillmentBadge.setVisibility(View.GONE);
