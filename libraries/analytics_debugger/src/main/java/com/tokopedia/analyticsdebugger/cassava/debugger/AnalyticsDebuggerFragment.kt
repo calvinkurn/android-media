@@ -1,21 +1,29 @@
 package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
+import com.tokopedia.analyticsdebugger.cassava.throttleFirst
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 
 
+@ExperimentalCoroutinesApi
 class AnalyticsDebuggerFragment : Fragment() {
 
     private val viewModel: DebuggerListViewModel by lazy {
@@ -46,24 +54,7 @@ class AnalyticsDebuggerFragment : Fragment() {
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: ""
         viewModel.searchLogs(query)
         initSearch(query)
-        with(recyclerView) {
-            val lm = layoutManager as LinearLayoutManager
-            setHasFixedSize(true)
-            adapter = listAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val totalItemCount = lm.itemCount
-                    val lastVisibleItem = lm.findLastVisibleItemPosition()
-
-                    if (dy > 0 && !isLoading &&
-                            lastVisibleItem + VISIBLE_THRESHOLD >= totalItemCount) {
-                        isLoading = true
-                        viewModel.listScrolled()
-                    }
-                }
-            })
-        }
+        initRecyclerView()
         swipeLayout.setOnRefreshListener {
             updateRepoListFromInput()
         }
@@ -118,6 +109,34 @@ class AnalyticsDebuggerFragment : Fragment() {
                 true
             } else {
                 false
+            }
+        }
+    }
+
+    private fun initRecyclerView() {
+        with(recyclerView) {
+            setHasFixedSize(true)
+            adapter = listAdapter
+        }
+        lifecycleScope.launchWhenStarted {
+            callbackFlow<Int> {
+                val lm = recyclerView.layoutManager as LinearLayoutManager
+                val cb = object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val totalItemCount = lm.itemCount
+                        val lastVisibleItem = lm.findLastVisibleItemPosition()
+
+                        if (dy > 0 && lastVisibleItem + VISIBLE_THRESHOLD >= totalItemCount) {
+                            offer(lastVisibleItem)
+                        }
+                    }
+                }
+                recyclerView.addOnScrollListener(cb)
+                awaitClose { recyclerView.clearOnScrollListeners()}
+            }.throttleFirst(1000).collect {
+                Log.d(TAG, "initRecyclerView: firing requetsmore")
+                viewModel.listScrolled()
             }
         }
     }

@@ -13,16 +13,13 @@ class DebuggerListViewModel(private val repo: GtmRepo) : ViewModel() {
 
     fun searchLogs(query: String) {
         viewModelScope.launch {
-            val results = repo.search(query)
-            logData.value = results
-
+            logData.value = repo.search(query)
         }
     }
 
     fun listScrolled() {
         viewModelScope.launch {
-            val results = repo.requestMore()
-            logData.value = results
+            logData.value = repo.requestMore()
         }
     }
 
