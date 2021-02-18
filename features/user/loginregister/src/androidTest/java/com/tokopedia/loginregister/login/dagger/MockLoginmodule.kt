@@ -8,8 +8,9 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
-import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.login.di.LoginModule
+import com.tokopedia.loginregister.login.stub.MockCryptography
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +24,7 @@ import javax.inject.Named
  */
 
 @Module
-class MockLoginmodule {
+class MockLoginmodule: LoginModule() {
 
     @Provides
     @Named("LOGIN_CACHE")
@@ -51,11 +52,7 @@ class MockLoginmodule {
 
     @Provides
     @RequiresApi(Build.VERSION_CODES.M)
-    fun provideCryptographyUtils(): Cryptography? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            CryptographyUtils()
-        } else null
-    }
+    fun provideCryptographyUtils(): Cryptography? = MockCryptography()
 
     @Provides
     fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
