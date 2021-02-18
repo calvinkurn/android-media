@@ -51,7 +51,6 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
     override fun before() {
         super.before()
         gtmLogDbSource.deleteAll().subscribe()
-
     }
 
     @Test

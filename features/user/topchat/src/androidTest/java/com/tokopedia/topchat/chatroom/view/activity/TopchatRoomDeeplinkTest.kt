@@ -19,9 +19,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class TopchatRoomDeeplinkTest {
 
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val exMessageId = "66961"
