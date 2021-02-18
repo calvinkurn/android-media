@@ -149,7 +149,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                 daily_budget.textFieldInput.setText((Constants.MULTIPLIER * (it.priceBid)).toString())
             }
             val suggestionsDefault = ArrayList<DataSuggestions>()
-            val dummyId: MutableList<Double> = mutableListOf(it?.itemID?.toDouble()?:0.0)
+            val dummyId: MutableList<Long> = mutableListOf(it?.itemID?.toLong() ?: 0)
             suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
             viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
         }

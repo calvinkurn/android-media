@@ -30,7 +30,7 @@
     <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
-    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
+    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%s&lt;/b></string>
     <string name="min_bid_error">Biaya minimum %s rupiah</string>
     <string name="max_bid_error">Biaya maximum %s rupiah</string>
     <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %s</string>

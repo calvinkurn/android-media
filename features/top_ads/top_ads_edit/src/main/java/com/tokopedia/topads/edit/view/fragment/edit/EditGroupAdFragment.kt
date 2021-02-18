@@ -100,9 +100,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<Double> = mutableListOf()
+        val dummyId: MutableList<Long> = mutableListOf()
         productId.forEach {
-            dummyId.add(it.toDouble())
+            dummyId.add(it.toLong())
         }
         val suggestionsDefault = ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))

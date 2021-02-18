@@ -182,9 +182,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         if (stepperModel?.selectedKeywordType?.isNotEmpty() != false) {
             setRestoreValue()
         }
-        val dummyId: MutableList<Double> = mutableListOf()
+        val dummyId: MutableList<Long> = mutableListOf()
         val productIds = stepperModel?.selectedProductIds?.map {
-            it.toDouble()
+            it.toLong()
         }
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("group", dummyId))
@@ -220,7 +220,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         else
             budget.textFieldInput.setText(suggestBidPerClick)
 
-        if (budget.textFieldInput.text.toString().removeCommaRawString().toFloat() > minBid.toFloat() && budget.textFieldInput.text.toString().removeCommaRawString().toFloat() < maxBid.toFloat()) {
+        if (budget.textFieldInput.text.toString().removeCommaRawString().toDouble() > minBid.toDouble() && budget.textFieldInput.text.toString().removeCommaRawString().toDouble() < maxBid.toDouble()) {
             setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
             isEnable = true
             actionEnable()
@@ -300,11 +300,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 val result = number.toInt()
                 stepperModel?.finalBidPerClick = result
                 when {
-                    result < minBid.toFloat() -> {
+                    result < minBid.toDouble() -> {
                         setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                         isEnable = false
                     }
-                    result > maxBid.toFloat() -> {
+                    result > maxBid.toDouble() -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
                     }

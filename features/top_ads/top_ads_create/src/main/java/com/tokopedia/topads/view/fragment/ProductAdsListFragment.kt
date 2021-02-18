@@ -94,18 +94,18 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    private fun getSelectedProduct(): MutableList<String> {
-        val list = mutableListOf<String>()
-        productListAdapter.getSelectedItems().forEach {
-            list.add(it.productID)
-        }
-        return list
-    }
-
     private fun getSelectedProductAdId(): MutableList<String> {
         val list = mutableListOf<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.adID)
+        }
+        return list
+    }
+
+    private fun getSelectedProduct(): MutableList<String> {
+        val list = mutableListOf<String>()
+        productListAdapter.getSelectedItems().forEach {
+            list.add(it.productID)
         }
         return list
     }
@@ -158,7 +158,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 ROW,
                 START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -217,7 +216,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
-
     }
 
     private fun refreshProduct() {

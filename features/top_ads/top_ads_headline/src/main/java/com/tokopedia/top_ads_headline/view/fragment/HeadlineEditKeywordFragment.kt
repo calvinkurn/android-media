@@ -522,7 +522,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
                 action = action,
                 keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
                     id = it.keywordId
-                    priceBid = it.priceBid
+                    priceBid = it.priceBid.toLong()
                     tag = it.tag
                     status = ACTIVE_STATUS
                     type = getKeywordSearchType(it.type)

@@ -175,7 +175,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         } else
             title_1.isChecked = true
 
-        budget.textFieldInput.setText(suggestedBid.toString())
+        budget.textFieldInput.setText(suggestedBid)
         setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestedBid, false)
         title?.text = name
 

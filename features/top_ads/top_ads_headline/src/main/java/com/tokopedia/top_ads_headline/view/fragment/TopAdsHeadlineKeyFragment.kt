@@ -105,7 +105,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
                                 type = POSITIVE_PHRASE,
                                 status = ACTIVE_STATUS,
-                                priceBid = it.bidSuggest,
+                                priceBid = it.bidSuggest.toLong(),
                                 tag = it.keyword)
                 ))
             }
@@ -250,8 +250,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun getLatestBid() {
 
-        val selectedProductIds: List<Double>? = stepperModel?.selectedProductIds?.map {
-            it.toDouble()
+        val selectedProductIds: List<Long>? = stepperModel?.selectedProductIds?.map {
+            it.toLong()
         }
         val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)

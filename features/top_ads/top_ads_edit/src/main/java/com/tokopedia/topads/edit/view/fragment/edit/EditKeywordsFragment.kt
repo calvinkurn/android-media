@@ -143,7 +143,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<Double> = mutableListOf()
+        val dummyId: MutableList<Long> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }

@@ -181,7 +181,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                             id = "0",
                             shopID = userSession.shopId,
                             name = stepperModel?.groupName ?: "",
-                            priceBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString(),
+                            priceBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloat(),
                             dailyBudget = dailyBudget,
                             scheduleStart = scheduleStart,
                             scheduleEnd = scheduleEnd,
