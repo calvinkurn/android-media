@@ -2,12 +2,10 @@ package com.tokopedia.media.loader
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
@@ -28,9 +26,69 @@ internal object LoaderApi {
 
     @JvmOverloads
     fun loadImage(imageView: ImageView, properties: Properties) {
-        loadImage(imageView.context, properties, MediaTarget(imageView, onReady = {
-            imageView.setImageBitmap(it)
-        }))
+        var tracker: PerformanceMonitoring? = null
+        val context = imageView.context
+
+        // handling empty url
+        if (properties.data is String && properties.data.toString().isEmpty()) {
+            return
+        }
+
+        if (properties.data == null) {
+            // if the data source is null, the image will be render the error drawable
+            imageView.setImageDrawable(getDrawable(context, properties.error))
+            return
+        }
+
+        GlideApp.with(context).asBitmap().apply {
+
+            /*
+             * automateScaleType mean, the image will be scaled automatically
+             * based on scaleType attribute which is already defined on ImageView
+             * */
+            automateScaleType(imageView, this)
+
+            val request = when(properties.data) {
+                is String -> {
+                    // url builder
+                    val source = Loader.urlBuilder(properties.data.toString())
+
+                    /*
+                    * get the hash of image blur (placeholder) from the URL, example:
+                    * https://images.tokopedia.net/samples.png?b=abc123
+                    * the hash of blur is abc123
+                    * */
+                    val blurHash = source.toUri()?.getQueryParameter(PARAM_BLURHASH)
+
+                    /*
+                    * only track the performance monitoring for a new domain,
+                    * which is already using CDN services, 'images.tokopedia.net'.
+                    * */
+                    if (source.contains(CDN_IMAGE_URL)) {
+                        tracker = PerformanceTracker.preRender(source, context)
+                    }
+
+                    bitmapBuilder.build(
+                            context = context,
+                            blurHash = blurHash,
+                            properties = properties,
+                            performanceMonitoring = tracker,
+                            request = this
+                    ).load(source)
+                }
+                else -> {
+                    bitmapBuilder.build(
+                            context = context,
+                            properties = properties,
+                            request = this
+                    ).load(properties.data)
+                }
+            }
+
+            Handler().postDelayed({
+                request.into(imageView)
+            }, properties.delay)
+        }
     }
 
     // temporarily the GIF loader
@@ -83,7 +141,7 @@ internal object LoaderApi {
                 automateScaleType(target, this)
             }
 
-            when(properties.data) {
+            val request = when(properties.data) {
                 is String -> {
                     // url builder
                     val source = Loader.urlBuilder(properties.data.toString())
@@ -118,8 +176,11 @@ internal object LoaderApi {
                             request = this
                     ).load(properties.data)
                 }
+            }
 
-            }.into(target)
+            Handler().postDelayed({
+                request.into(target)
+            }, properties.delay)
         }
     }
 
