@@ -4,14 +4,28 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.ui.viewholder.AnalyticsDebuggerViewHolder
 
-class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(diffCallback) {
+class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(DIFF_CALLBACK) {
+
+    private var itemListener: ((GtmLogDB) -> Unit)? = null
+
+    fun setItemClickListener(listener: (GtmLogDB) -> Unit) {
+        itemListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebuggerListViewHolder {
-        val vh = LayoutInflater.from(parent.context).inflate(AnalyticsDebuggerViewHolder.LAYOUT, parent, false)
-        return DebuggerListViewHolder(vh)
+        val vh = LayoutInflater.from(parent.context)
+                .inflate(AnalyticsDebuggerViewHolder.LAYOUT, parent, false)
+        return DebuggerListViewHolder(vh).apply {
+            itemView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    itemListener?.invoke(getItem(adapterPosition))
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: DebuggerListViewHolder, position: Int) {
@@ -23,7 +37,7 @@ class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(diff
     }
 
     companion object {
-        val diffCallback = object : DiffUtil.ItemCallback<GtmLogDB>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<GtmLogDB>() {
             override fun areItemsTheSame(oldItem: GtmLogDB, newItem: GtmLogDB): Boolean {
                 return oldItem.id == newItem.id
             }

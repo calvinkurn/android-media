@@ -31,7 +31,12 @@ class AnalyticsDebuggerFragment : Fragment() {
         ViewModelProvider(this, factory).get(DebuggerListViewModel::class.java)
     }
 
-    private val listAdapter = DebuggerListAdapter()
+    private val listAdapter = DebuggerListAdapter().apply {
+        setItemClickListener {
+            // go to detail
+        }
+    }
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var searchView: TextInputEditText
