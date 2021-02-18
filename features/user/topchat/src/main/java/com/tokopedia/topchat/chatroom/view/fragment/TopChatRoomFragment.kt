@@ -1130,7 +1130,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getAtcBuyParam(element: ProductAttachmentViewModel): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
-                productId = element.productId,
+                productId = element.productId.toLongOrZero(),
                 shopId = element.shopId.toInt(),
                 quantity = element.minOrder,
                 atcFromExternalSource = ATC_FROM_TOPCHAT

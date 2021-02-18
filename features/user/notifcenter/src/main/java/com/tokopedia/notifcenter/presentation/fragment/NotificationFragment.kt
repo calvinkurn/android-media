@@ -28,6 +28,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
@@ -502,7 +503,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun getAtcBuyParam(product: ProductData): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
-                productId = product.productId,
+                productId = product.productId.toLongOrZero(),
                 shopId = product.shop.id.toInt(),
                 quantity = product.minOrder,
                 atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
