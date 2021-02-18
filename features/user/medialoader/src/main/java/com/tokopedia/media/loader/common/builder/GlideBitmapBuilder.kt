@@ -80,8 +80,8 @@ class GlideBitmapBuilder : GlideBuilder<Bitmap>() {
     private fun generateBlurHash(hash: String?): Bitmap? {
         return blurHashDecode(
                 blurHash = hash,
-                width = 60, //TODO
-                height = 20 //TODO
+                width = 50, //TODO
+                height = 30 //TODO
         )
     }
 
