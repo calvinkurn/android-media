@@ -13,23 +13,33 @@ import javax.inject.Inject
 class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): GraphqlUseCase<OtherCampaignStockData>(gqlRepository) {
 
     companion object {
-        private const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!) {\n" +
-                "  getProductV3(productID: \$productID, options: \$options) {\n" +
+        private const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!, ${'$'}extraInfo:ExtraInfoV3!) {\n" +
+                "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo) {\n" +
                 "    pictures {\n" +
                 "      urlThumbnail\n" +
                 "    }\n" +
                 "    status\n" +
+                "    campaign{\n" +
+                "      isActive\n" +
+                "    }"+
                 "  }\n" +
                 "}"
 
         private const val PRODUCT_ID_KEY = "productID"
         private const val OPTIONS_KEY = "options"
+        private const val EXTRA_INFO_KEY = "extraInfo"
+        private const val EVENT_KEY = "event"
 
         @JvmStatic
         fun createRequestParams(productId: String): RequestParams =
                 RequestParams.create().apply {
+                    val extraInfoParam = RequestParams().apply {
+                        putBoolean(EVENT_KEY, true)
+                    }.parameters
+
                     putString(PRODUCT_ID_KEY, productId)
                     putObject(OPTIONS_KEY, OtherCampaignStockParam())
+                    putObject(EXTRA_INFO_KEY, extraInfoParam)
                 }
     }
 
