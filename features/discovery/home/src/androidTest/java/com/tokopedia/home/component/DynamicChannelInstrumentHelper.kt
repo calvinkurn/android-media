@@ -17,6 +17,9 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselSeeMorePdpViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
@@ -48,6 +51,10 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECHARGE_BU_WIDGET = "tracker/home/recharge_bu_widget.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "tracker/home/reminder_widget_recharge_close.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
 
 /**
  * Created by yfsx on 2/9/21.
@@ -112,6 +119,30 @@ fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+}
+
+fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+    waitForData()
+    val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
+    val reminderWidgetModel = adapter.currentList.get(itemPosition)
+    val reminderModel = reminderWidgetModel as ReminderWidgetModel
+    if(reminderModel.source.equals(ReminderEnum.SALAM)) {
+        clickClosedReminderWidgetSalam()
+    } else {
+        clickClosedReminderWidgetRecharge()
+    }
+}
+
+fun clickOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+    waitForData()
+    val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
+    val reminderWidgetModel = adapter.currentList.get(itemPosition)
+    val reminderModel = reminderWidgetModel as ReminderWidgetModel
+    if(reminderModel.source.equals(ReminderEnum.SALAM)) {
+        clickReminderWidgetSalam()
+    } else {
+        clickReminderWidgetRecharge(itemPosition)
+    }
 }
 
 fun clickOnCategoryWidgetSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -295,6 +326,46 @@ private fun clickSingleItemOnRecyclerView(recyclerViewId: Int) {
     }
 }
 
+private fun clickClosedReminderWidgetSalam(){
+    try {
+        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                ViewMatchers.isDisplayed()),0)).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
+private fun clickClosedReminderWidgetRecharge(){
+    try {
+        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                ViewMatchers.isDisplayed()),0)).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
+private fun clickReminderWidgetSalam(){
+    try {
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
+                ViewMatchers.withText("Berbagi Sekarang"))).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
+private fun clickReminderWidgetRecharge(i:Int){
+    try {
+        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i-1))
+        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i))
+        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
+                ViewMatchers.withText("Bayar Sekarang")),0)).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
 //==================================== end of item action ======================================
 
 
@@ -316,6 +387,20 @@ fun getAssertTicker(gtmLogDBSource: GtmLogDBSource, context: Context) {
     assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
             hasAllSuccess())
 //    -> impression intermitten missing
+}
+
+fun getAssertCloseReminderWidget(gtmLogDBSource: GtmLogDBSource, context: Context) {
+    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE),
+            hasAllSuccess())
+    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE),
+            hasAllSuccess())
+}
+
+fun getAssertReminderWidget(gtmLogDBSource: GtmLogDBSource, context: Context) {
+    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE),
+            hasAllSuccess())
+    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM),
+            hasAllSuccess())
 }
 
 fun getAssertHomepageScreen(gtmLogDBSource: GtmLogDBSource, context: Context) {

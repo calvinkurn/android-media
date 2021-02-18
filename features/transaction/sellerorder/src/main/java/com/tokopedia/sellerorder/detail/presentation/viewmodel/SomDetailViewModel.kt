@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class SomDetailViewModel @Inject constructor(
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
-) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
@@ -75,7 +76,7 @@ class SomDetailViewModel @Inject constructor(
     fun loadUserRoles(userId: Int) {
         launchCatchError(block = {
             getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
+            _userRoleResult.postValue(Success(getUserRoleUseCase.execute()))
         }, onError = {
             _userRoleResult.postValue(Fail(it))
         })

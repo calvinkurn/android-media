@@ -10,6 +10,9 @@ import com.tokopedia.home_component.model.ChannelModel
 
 class BannerComponentCallback (val context: Context?,
                                val homeCategoryListener: HomeCategoryListener): BannerComponentListener {
+    // tracker
+    private val impressionStatusList = mutableMapOf<String, Boolean>()
+
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         BannerCarouselTracking.sendBannerCarouselClick(channelModel, channelGrid, position, homeCategoryListener.userId)
         if (channelGrid.applink.isNotEmpty()) {
@@ -27,6 +30,7 @@ class BannerComponentCallback (val context: Context?,
         homeCategoryListener.putEEToTrackingQueue(
                 BannerCarouselTracking.getBannerCarouselItemImpression(channelModel, channelGrid, position, false, homeCategoryListener.userId)
         )
+        impressionStatusList[channelGrid.id] = true
     }
 
     override fun onPageDragStateChanged(isDrag: Boolean) {
@@ -43,5 +47,15 @@ class BannerComponentCallback (val context: Context?,
                         channelModel, parentPosition, true
                 )
         )
+    }
+
+    override fun isBannerImpressed(id: String): Boolean {
+        return if (impressionStatusList.containsKey(id)) {
+            impressionStatusList[id]?:false
+        } else false
+    }
+
+    fun resetImpression() {
+        impressionStatusList.clear()
     }
 }
