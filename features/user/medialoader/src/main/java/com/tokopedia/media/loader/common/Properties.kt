@@ -27,6 +27,13 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
+    var loadTime: String = ""
+    var delay: Long = 0L
+
+    fun setDelay(timeInMilis: Long) = apply {
+        this.delay = timeInMilis
+    }
+
     fun setSource(data: Any?) = apply {
         this.data = data
     }
@@ -137,16 +144,15 @@ open class Properties(
 
     override fun toString(): String {
         return """
-            source: $data,
-            transform: ${transform?.javaClass?.name},
-            transforms: ${transforms?.size},
-            placeholder: $placeHolder,
-            error: $error,
-            blurhash: $blurHash,
-            isAnimate: $isAnimate,
-            isAnimate: $isAnimate,
-            isCircular: $isCircular,
-            roundedRadius: $roundedRadius,
+            source: $data,\n
+            transform: ${transform?.javaClass?.name},\n
+            transforms: ${transforms?.size},\n
+            placeholder: $placeHolder,\n
+            error: $error,\n
+            blurhash: $blurHash,\n
+            isAnimate: $isAnimate,\n
+            isCircular: $isCircular,\n
+            roundedRadius: $roundedRadius,\n
         """.trimIndent()
     }
 
