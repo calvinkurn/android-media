@@ -27,6 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -47,23 +53,16 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
-import com.tokopedia.notification.common.PushNotificationApi;
-import com.tokopedia.notification.common.data.UserKey;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
