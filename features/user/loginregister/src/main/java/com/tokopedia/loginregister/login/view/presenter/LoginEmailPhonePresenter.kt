@@ -38,6 +38,7 @@ import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.extensions.decodeBase64
 import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
@@ -202,7 +203,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {
-                val encryptedPassword = RSAUtils().encrypt(password, keyData.key, useHash)
+                val encryptedPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
                 loginTokenV2UseCase.setParams(email, encryptedPassword, keyData.hash)
                 loginTokenV2UseCase.executeOnBackground().run {
                     LoginV2Mapper(this, userSession,

@@ -1,5 +1,6 @@
 package com.tokopedia.sessioncommon.extensions
 
+import android.util.Base64
 import java.security.MessageDigest
 
 /**
@@ -26,5 +27,15 @@ fun String.getSHA256Hash(): ByteArray {
     } catch (e: java.lang.Exception){
         e.printStackTrace()
         byteArrayOf()
+    }
+}
+
+fun String.decodeBase64(): String {
+    return try {
+        val data: ByteArray = Base64.decode(this, Base64.DEFAULT)
+        String(data)
+    }catch (e: Exception){
+        e.printStackTrace()
+        this
     }
 }
