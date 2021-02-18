@@ -20,6 +20,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
+
     private val recommendedTags = getRecommendedTags()
     private val addedTags = mutableSetOf<String>()
 
@@ -45,7 +47,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun isValidTag(tag: String): Boolean {
-        return tag.length in 2..32
+        return tag.length in 2..32 && validTagRegex.matches(tag)
     }
 
     private fun refreshAddedTags() {
