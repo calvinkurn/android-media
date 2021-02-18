@@ -448,8 +448,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             val productDetailSheet = ProductDetailInfoBottomSheet()
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
