@@ -95,13 +95,11 @@ class BannerComponentViewHolder(itemView: View,
     private fun setViewPortImpression(element: BannerDataModel) {
         if (!element.isCache) {
             itemView.addOnImpressionListener(holder = element, onView = {
-                setScrollListener()
                 element.channelModel?.let {
                     bannerListener?.onChannelBannerImpressed(it, adapterPosition)
-                    if (it.channelGrids.size > 1) {
-                        onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
-                    }
+                    onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
                 }
+                setScrollListener()
             })
         }
     }
@@ -144,15 +142,12 @@ class BannerComponentViewHolder(itemView: View,
         rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = layoutManager
-        rvBanner.clearOnScrollListeners()
-
         if (rvBanner.itemDecorationCount == 0) {
             rvBanner.addItemDecoration(BannerChannelDecoration())
         }
         val adapter = BannerChannelAdapter(list, this)
-        adapter.setItemList(list)
         rvBanner.adapter = adapter
-        layoutManager.scrollToPosition(0)
+        adapter.setItemList(list)
     }
 
     private fun setScrollListener() {
