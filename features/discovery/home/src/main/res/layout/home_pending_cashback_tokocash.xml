@@ -52,6 +52,7 @@
             android:maxHeight="@dimen/dp_96"
             android:padding="@dimen/dp_10"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/content_desc_authorImage"
             tools:src="@drawable/ic_badge_gold"/>
 
     </LinearLayout>
