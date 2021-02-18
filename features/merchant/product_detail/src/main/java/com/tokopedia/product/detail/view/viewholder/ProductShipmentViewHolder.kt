@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
@@ -13,6 +14,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -27,7 +29,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLoadingContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shimmer_shipment_container)
     private val shipmentContentContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shipment_container)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
-    private val shipmentSeparator: View? = itemView.findViewById(R.id.pdp_shipment_separator)
 
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
@@ -38,6 +39,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentFreeOngkir: ImageView? = itemView.findViewById(R.id.ic_pdp_shipment_bo)
     private val shipmentLabelCod: Label? = itemView.findViewById(R.id.label_pdp_shipment_cod)
     private val shipmentLabelInstant: Label? = itemView.findViewById(R.id.label_pdp_shipment_instant)
+    private val shipmentArrow: IconUnify? = itemView.findViewById(R.id.ic_pdp_shipment_arrow_right)
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
@@ -59,7 +61,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
                 hideShipmentLoading()
                 renderText(data)
                 renderTokoCabang(element.isFullfillment)
-                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.isFullfillment, element.freeOngkirUrl)
+                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.freeOngkirUrl, element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0)
             }
         }
     }
@@ -68,36 +70,43 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.hide()
         shipmentLocalLoad?.show()
+        shipmentLocalLoad?.progressState = false
+        shipmentLocalLoad?.refreshBtn?.setOnClickListener {
+            if (!shipmentLocalLoad.progressState) {
+                shipmentLocalLoad.progressState = true
+                listener.refreshPage()
+            }
+        }
     }
 
-    private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean, isFullfillment: Boolean, freeOngkirUrl: String) = with(itemView) {
-        if (!isInstant && freeOngkirUrl.isEmpty() && !isCod && !isFullfillment) {
+    private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean, freeOngkirUrl: String, isError: Boolean) = with(itemView) {
+        if (!isInstant && freeOngkirUrl.isEmpty() && !isCod && !isError) {
             renderSubtitleGreen()
             shipmentFreeOngkir?.hide()
             shipmentLabelCod?.hide()
             shipmentLabelInstant?.hide()
+            adjustSubtitleMargin(isError)
             return@with
         }
 
         renderSubtitleNormal(subtitle)
+        adjustSubtitleMargin(isError)
 
-        if (freeOngkirUrl.isNotEmpty()) {
-            shipmentFreeOngkir?.loadImage(freeOngkirUrl)
-            shipmentFreeOngkir?.show()
-        } else {
-            shipmentFreeOngkir?.hide()
+        shipmentArrow?.showWithCondition(!isError)
+        shipmentFreeOngkir?.shouldShowWithAction(freeOngkirUrl.isNotEmpty() && !isError) {
+            shipmentFreeOngkir.loadImage(freeOngkirUrl)
         }
+        shipmentLabelCod?.showWithCondition(isCod)
+        shipmentLabelInstant?.showWithCondition(isInstant)
+    }
 
-        if (isCod) {
-            shipmentLabelCod?.show()
+    private fun adjustSubtitleMargin(isError: Boolean) = with(itemView) {
+        if (isError) {
+            otherCourierTxt?.setWeight(Typography.REGULAR)
+            otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            otherCourierTxt?.setMargin(0, 4.toPx(), 0, 0)
         } else {
-            shipmentLabelCod?.hide()
-        }
-
-        if (isFullfillment) {
-            shipmentLabelInstant?.show()
-        } else {
-            shipmentLabelInstant?.hide()
+            otherCourierTxt?.setMargin(0, 14.toPx(), 0, 0)
         }
     }
 

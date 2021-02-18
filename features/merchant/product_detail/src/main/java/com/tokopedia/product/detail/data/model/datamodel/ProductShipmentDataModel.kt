@@ -28,7 +28,7 @@ data class ProductShipmentDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductShipmentDataModel) {
-            rates == rates &&
+            rates == newData.rates &&
                     isFullfillment == newData.isFullfillment
                     && isCod == newData.isCod
                     && freeOngkirUrl == newData.freeOngkirUrl

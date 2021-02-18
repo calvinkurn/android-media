@@ -187,8 +187,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:unify_local_load_description="Shipping gan"
-        app:unify_local_load_title="product idnya ga ketemu gan"
+        app:unify_local_load_description="@string/variant_failed_load_description"
+        app:unify_local_load_title="@string/pdp_shipping_failed_label"
         tools:visibility="visible" />
 
 </LinearLayout>
