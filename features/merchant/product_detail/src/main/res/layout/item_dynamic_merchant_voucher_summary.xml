@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.mvcwidget.views.MvcView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.mvcwidget.views.MvcView
-        android:id="@+id/productDetailMerchantVoucherWidget"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl7"
-        app:mvlwTitleString="Testing"
-        android:clipToPadding="false"
-        android:visibility="gone"
-        android:clipChildren="false"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="@dimen/layout_lvl7"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/productDetailMerchantVoucherWidget"
+    app:mvlwTitleString="Testing"
+    android:clipToPadding="false"
+    android:visibility="gone"
+    android:clipChildren="false"
+    app:layout_constraintTop_toTopOf="parent" />
