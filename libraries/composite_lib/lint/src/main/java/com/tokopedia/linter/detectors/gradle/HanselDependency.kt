@@ -1,5 +1,6 @@
 package com.tokopedia.linter.detectors.gradle
 
+import com.android.ide.common.blame.SourcePosition
 import com.android.tools.lint.detector.api.*
 import com.tokopedia.linter.LinterConstants.GradleConstructs.BUILD_SCRIPT
 import com.tokopedia.linter.LinterConstants.GradleConstructs.DEPENDENCIES
