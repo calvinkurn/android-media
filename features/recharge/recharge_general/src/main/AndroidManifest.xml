@@ -9,7 +9,7 @@
         <activity
             android:name=".presentation.activity.RechargeGeneralActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
 
             <intent-filter android:autoVerify="true">

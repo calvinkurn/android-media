@@ -82,14 +82,14 @@
             android:layout_marginRight="@dimen/dp_16" />
 
         <include
-            layout="@layout/item_shimmering_grid_image"
+            layout="@layout/feed_item_shimmering_grid_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16" />
 
         <include
-            layout="@layout/item_shimmering_grid_image"
+            layout="@layout/feed_item_shimmering_grid_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
