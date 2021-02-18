@@ -138,7 +138,8 @@
                 app:srcCompat="@drawable/ic_home_pdp_view_count"
                 app:layout_constraintStart_toEndOf="@+id/deals_product_image"
                 app:layout_constraintTop_toTopOf="@+id/deals_product_image"
-                app:layout_constraintBottom_toBottomOf="@+id/deals_product_view_count"/>
+                app:layout_constraintBottom_toBottomOf="@+id/deals_product_view_count"
+                android:contentDescription="@string/content_desc_icon_image" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/deals_product_name"
@@ -228,7 +229,8 @@
                 app:layout_constraintStart_toEndOf="@id/deals_product_image"
                 app:layout_constraintTop_toBottomOf="@id/deals_product_price"
                 tools:layout_width="67dp"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="@string/content_desc_icon_image"/>
 
             <ProgressBar
                 android:id="@+id/deals_stockbar"
