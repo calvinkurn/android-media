@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
@@ -53,6 +54,7 @@ class ProductManageQuickEditStockFragment(
         private const val KEY_STOCK = "extra_product_stock"
         private const val KEY_EDIT_STOCK_ACCESS = "edit_stock_access"
         private const val KEY_EDIT_PRODUCT_ACCESS = "edit_product_access"
+        private const val KEY_IS_CAMPAIGN = "extra_is_campaign"
 
         fun createInstance(product: ProductUiModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener).apply {
@@ -68,6 +70,7 @@ class ProductManageQuickEditStockFragment(
                     putInt(KEY_STOCK, productStock)
                     putBoolean(KEY_EDIT_STOCK_ACCESS, editStockAccess)
                     putBoolean(KEY_EDIT_PRODUCT_ACCESS, editProductAccess)
+                    putBoolean(KEY_IS_CAMPAIGN, product.isCampaign)
                     arguments = this
                 }
             }
@@ -97,6 +100,7 @@ class ProductManageQuickEditStockFragment(
     private var productName: String = ""
     private var productStock: Int = 0
     private var productStatus = ProductStatus.INACTIVE
+    private var isCampaign = false
 
     private var hasEditStockAccess: Boolean = false
     private var hasEditProductAccess: Boolean = false
@@ -123,6 +127,7 @@ class ProductManageQuickEditStockFragment(
                 productStock = getInt(KEY_STOCK)
                 hasEditStockAccess = getBoolean(KEY_EDIT_STOCK_ACCESS)
                 hasEditProductAccess = getBoolean(KEY_EDIT_PRODUCT_ACCESS)
+                isCampaign = getBoolean(KEY_IS_CAMPAIGN)
 
                 currentStock = productStock
                 currentStatus = productStatus
@@ -136,6 +141,7 @@ class ProductManageQuickEditStockFragment(
                 productStatus = ProductStatus.valueOf(toUpperCase(Locale.ROOT))
             }
             productStock = it.getInt(KEY_STOCK)
+            isCampaign = it.getBoolean(KEY_IS_CAMPAIGN)
         }
         val view = View.inflate(context, R.layout.fragment_quick_edit_stock,null)
         setChild(view)
@@ -168,6 +174,7 @@ class ProductManageQuickEditStockFragment(
             putInt(KEY_STOCK, productStock.orZero())
             putBoolean(KEY_EDIT_STOCK_ACCESS, hasEditStockAccess)
             putBoolean(KEY_EDIT_PRODUCT_ACCESS, hasEditProductAccess)
+            putBoolean(KEY_IS_CAMPAIGN, isCampaign)
         }
     }
 
@@ -185,6 +192,7 @@ class ProductManageQuickEditStockFragment(
         setupSaveButton()
         setupStatusSwitch()
         setupBottomSheet()
+        setupCampaignLabel()
 
         requestStockEditorFocus()
         setAddButtonClickListener()
@@ -293,6 +301,10 @@ class ProductManageQuickEditStockFragment(
         val bottomSpacing = context?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3).orZero()
         bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, bottomSpacing)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
+    }
+
+    private fun setupCampaignLabel() {
+        labelCampaign.showWithCondition(isCampaign)
     }
 
     private fun observeStock() {
