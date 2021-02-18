@@ -80,6 +80,54 @@ object ShopPageHomeMapper {
         )
     }
 
+    fun mapToProductCardPersonalizationModel(
+            shopHomeProductViewModel: ShopHomeProductUiModel,
+            isHasATC: Boolean,
+            isHasOCCButton: Boolean,
+            occButtonText: String = "",
+    ) : ProductCardModel {
+        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
+        val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
+                ?: ""
+        val discountPercentage = if (discountWithoutPercentageString == "0") {
+            ""
+        } else {
+            "$discountWithoutPercentageString%"
+        }
+
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
+                ?: "")
+        return if(isHasOCCButton) {
+            ProductCardModel(
+                    productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
+                    productName = shopHomeProductViewModel.name ?: "",
+                    discountPercentage = discountPercentage,
+                    slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
+                    formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                    labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                        mapToProductCardLabelGroup(it)
+                    },
+                    hasAddToCartButton = isHasATC,
+                    addToCartButtonType = UnifyButton.Type.MAIN,
+                    addToCardText = occButtonText
+            )
+        } else {
+            ProductCardModel(
+                    productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
+                    productName = shopHomeProductViewModel.name ?: "",
+                    discountPercentage = discountPercentage,
+                    slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
+                    formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                    ratingCount = shopHomeProductViewModel.rating.toInt(),
+                    reviewCount = totalReview,
+                    freeOngkir = freeOngkirObject,
+                    labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                        mapToProductCardLabelGroup(it)
+                    },
+                    hasAddToCartButton = isHasATC
+            )
+        }
+    }
 
     fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
@@ -106,8 +154,7 @@ object ShopPageHomeMapper {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
-                hasAddToCartButton = isHasAddToCartButton,
-                addToCartButtonType = UnifyButton.Type.MAIN,
+                hasAddToCartButton = isHasAddToCartButton
         )
     }
 

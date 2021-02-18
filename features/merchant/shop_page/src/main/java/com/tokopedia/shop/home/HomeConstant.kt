@@ -30,7 +30,8 @@ object WidgetName {
     const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
-    const val PRODUCT_RECOMMENDATION = "recent_activity"
+    const val RECENT_ACTIVITY = "recent_activity"
+    const val BUY_AGAIN = "buy_again"
     const val VOUCHER = "voucher"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
 }

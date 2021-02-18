@@ -6,6 +6,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
+import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductRecommendationCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductRecommendationCarouselUiModel.Companion.IS_ATC
@@ -31,15 +33,36 @@ class ShopHomeCarouselProductRecommendationViewHolder (
 
     override fun bind(element: ShopHomeProductRecommendationCarouselUiModel) {
         tvCarouselTitle?.text = element.header.title
-        recyclerView?.bindCarouselProductCardViewGrid(
-                productCardModelList = element.productList.map {
-                    ShopPageHomeMapper.mapToProductCardModel(
-                            isHasAddToCartButton = isHasATC(element),
-                            hasThreeDots = false,
-                            shopHomeProductViewModel = it,
-                    )
-                }
-        )
+        when (element.name) {
+
+            RECENT_ACTIVITY -> {
+                recyclerView?.bindCarouselProductCardViewGrid(
+                        productCardModelList = element.productList.map {
+                            ShopPageHomeMapper.mapToProductCardPersonalizationModel(
+                                    shopHomeProductViewModel = it,
+                                    isHasATC = isHasATC(element),
+                                    isHasOCCButton = false
+                            )
+                        }
+                )
+            }
+
+            BUY_AGAIN -> {
+                recyclerView?.bindCarouselProductCardViewList(
+                        productCardModelList = element.productList.map {
+                            ShopPageHomeMapper.mapToProductCardPersonalizationModel(
+                                    shopHomeProductViewModel = it,
+                                    isHasATC = isHasATC(element),
+                                    isHasOCCButton = true,
+                                    occButtonText = itemView.context.getString(
+                                            R.string.occ_text
+                                    )
+                            )
+                        }
+                )
+            }
+
+        }
     }
 
     private fun initView() {
