@@ -108,7 +108,6 @@ class SmartBillsViewHolder(val view: View,
             if (!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0) {
                 tv_due_message.apply {
                     text = element.dueMessage.text
-                    setTextColor(getDueUrgencyColor(element.dueMessage.type, context))
                 }
             } else {
                 tv_due_message.gone()
