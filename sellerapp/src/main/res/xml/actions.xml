@@ -6,12 +6,8 @@
             urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderDate}">
             <parameter-mapping
                 intentParameter="order.orderDate"
-                required="true"
                 urlParameter="orderDate"/>
         </fulfillment>
-        <fulfillment
-            fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://sellerapp/sellerhome-som-allorder"/>
     </action>
     <action intentName="actions.intent.GET_THING">
         <fulfillment
