@@ -13,6 +13,8 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
+import com.tokopedia.media.loader.LoaderApi.loadImage as loadImageBuilder
+import com.tokopedia.media.loader.LoaderViewTarget.loadImage as loadImageWithTarget
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
 
@@ -92,9 +94,9 @@ fun ImageView.loadIcon(url: String?) = this.loadIcon(url) {}
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
-    if (context.isValidContext()) {
+    if (context.isValid()) {
         try {
-            LoaderApi.loadImage(
+            loadImageBuilder(
                     imageView = this,
                     properties = properties.apply {
                         // passing the image source (url, uri, etc.)
@@ -119,7 +121,7 @@ fun <T: View> loadImageWithTarget(
         properties: Properties.() -> Unit,
         mediaTarget: MediaTarget<T>
 ) {
-    LoaderApi.loadImage(
+    loadImageWithTarget(
             context,
             Properties().apply(properties).also {
                 it.setSource(url)
@@ -129,12 +131,12 @@ fun <T: View> loadImageWithTarget(
 }
 
 fun ImageView?.clearImage() {
-    if (this != null && context.isValidContext()) {
+    if (this != null && context.isValid()) {
         GlideApp.with(this.context).clear(this)
     }
 }
 
-private fun Context?.isValidContext(): Boolean {
+fun Context?.isValid(): Boolean {
     return when {
         this == null -> false
         this is Activity -> !(this.isDestroyed || this.isFinishing)
