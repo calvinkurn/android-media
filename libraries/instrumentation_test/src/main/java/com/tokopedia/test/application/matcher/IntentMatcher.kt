@@ -37,3 +37,16 @@ fun isPointingTo(activityName: String): Matcher<Intent> {
 
     }
 }
+
+fun hasQueryParameter(key: String, value: String): Matcher<Intent> {
+    return object : BaseMatcher<Intent>() {
+        override fun describeTo(description: Description?) {
+            description?.appendText("intent has query \"$key\" with value \"$value\"")
+        }
+
+        override fun matches(item: Any?): Boolean {
+            val intent = item as? Intent ?: return false
+            return intent.data?.getQueryParameter(key) == value
+        }
+    }
+}
