@@ -8,12 +8,15 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 
 abstract class SomOrderBaseViewModel constructor(
         dispatcher: CoroutineDispatcher,
@@ -22,7 +25,8 @@ abstract class SomOrderBaseViewModel constructor(
         private val somRejectOrderUseCase: SomRejectOrderUseCase,
         private val somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase): BaseViewModel(dispatcher) {
+        private val firstAuthorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher) {
 
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrderResponse.Data>>()
     val acceptOrderResult: LiveData<Result<SomAcceptOrderResponse.Data>>
@@ -35,10 +39,6 @@ abstract class SomOrderBaseViewModel constructor(
     private val _editRefNumResult = MutableLiveData<Result<SomEditRefNumResponse.Data>>()
     val editRefNumResult: LiveData<Result<SomEditRefNumResponse.Data>>
         get() = _editRefNumResult
-
-    protected val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
-    val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
-        get() = _userRoleResult
 
     private val _rejectCancelOrderResult = MutableLiveData<Result<SomRejectCancelOrderResponse.Data>>()
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
@@ -78,24 +78,32 @@ abstract class SomOrderBaseViewModel constructor(
         }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 
-    fun getUserRoles() {
-        if (getUserRolesJob()?.isCompleted != false) {
-            setUserRolesJob(launchCatchError(block = {
-                getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
-                _userRoleResult.postValue(getUserRoleUseCase.execute())
-            }, onError = {
-                _userRoleResult.postValue(Fail(it))
-            }))
-        }
-    }
-
-    fun setUserRoles(userRoles: SomGetUserRoleUiModel) {
-        _userRoleResult.postValue(Success(userRoles))
-    }
-
-    fun getUserRolesJob() = userRolesJob
-
     fun setUserRolesJob(job: Job) {
         userRolesJob = job
+    }
+
+    protected suspend fun getAdminAccessEligibilityPair(@AccessId firstAccessId: Int,
+                                                        @AccessId secondAccessId: Int): Result<Pair<Boolean, Boolean>> {
+        return when {
+            userSession.isShopOwner -> Success(true to true)
+            userSession.isShopAdmin -> {
+                userSession.shopId.toIntOrZero().let { shopId ->
+                    val firstEligibilityDeferred = async {
+                        AuthorizeAccessUseCase.createRequestParams(shopId, firstAccessId).let { requestParam ->
+                            firstAuthorizeAccessUseCase.execute(requestParam)
+                        }
+                    }
+                    val secondEligibilityDeferred = async {
+                        AuthorizeAccessUseCase.createRequestParams(shopId, secondAccessId).let { requestParam ->
+                            secondAuthorizeAccessUseCase.execute(requestParam)
+                        }
+                    }
+                    Success(firstEligibilityDeferred.await() to secondEligibilityDeferred.await())
+                }
+            }
+            else -> {
+                Success(false to false)
+            }
+        }
     }
 }

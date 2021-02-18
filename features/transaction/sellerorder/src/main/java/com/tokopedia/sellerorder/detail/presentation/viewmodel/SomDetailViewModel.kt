@@ -11,6 +11,8 @@ import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,10 +30,11 @@ class SomDetailViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase,
-        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
+        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
+        authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
     val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
@@ -44,6 +47,10 @@ class SomDetailViewModel @Inject constructor(
     private val _setDelivered = MutableLiveData<Result<SetDeliveredResponse>>()
     val setDelivered: LiveData<Result<SetDeliveredResponse>>
         get() = _setDelivered
+
+    private val _somDetailChatEligibility = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    val somDetailChatEligibility: LiveData<Result<Pair<Boolean, Boolean>>>
+        get() = _somDetailChatEligibility
 
     fun loadDetailOrder(orderId: String) {
         launchCatchError(block = {
@@ -72,12 +79,14 @@ class SomDetailViewModel @Inject constructor(
         })
     }
 
-    fun loadUserRoles(userId: Int) {
-        launchCatchError(block = {
-            getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
-        }, onError = {
-            _userRoleResult.postValue(Fail(it))
-        })
+    fun getAdminPermission() {
+        launchCatchError(
+                block = {
+                    _somDetailChatEligibility.postValue(getAdminAccessEligibilityPair(AccessId.SOM_DETAIL, AccessId.CHAT_REPLY))
+                },
+                onError = {
+                    _somDetailChatEligibility.postValue(Fail(it))
+                }
+        )
     }
 }

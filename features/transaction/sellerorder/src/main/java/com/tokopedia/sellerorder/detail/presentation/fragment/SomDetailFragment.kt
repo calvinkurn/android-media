@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -53,8 +54,6 @@ import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
-import com.tokopedia.sellerorder.common.presenter.model.Roles
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -85,7 +84,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -116,6 +114,7 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -196,7 +195,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
-    private var userNotAllowedDialog: DialogUnify? = null
+    private var menu: Menu? = null
 
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
@@ -212,14 +211,11 @@ class SomDetailFragment : BaseDaggerFragment(),
 
         private const val TAG_BOTTOMSHEET = "bottomSheet"
 
-        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
-
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
-                    putParcelable(PARAM_USER_ROLES, bundle.getParcelable(PARAM_USER_ROLES))
                 }
             }
         }
@@ -259,13 +255,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         getActivityPltPerformanceMonitoring()
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
-            val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
-            if (userRoles != null) {
-                somDetailViewModel.setUserRoles(userRoles)
-            } else {
-                somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
-                checkUserRole()
-            }
+            somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+            checkUserRole()
         }
     }
 
@@ -302,13 +293,14 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu = menu
         inflater.inflate(R.menu.chat_menu, menu)
     }
 
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
-            somDetailViewModel.getUserRoles()
+            somDetailViewModel.getAdminPermission()
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
         }
@@ -325,7 +317,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             adapter = somDetailAdapter
         }
         somGlobalError?.setActionClickListener {
-            if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
+            if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
                 loadDetail()
             } else {
                 checkUserRole()
@@ -468,13 +460,17 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingUserRoles() {
-        somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.roles.any { allowedRoles.contains(it) }) {
-                        onUserAllowedToViewSOM()
-                    } else {
-                        onUserNotAllowedToViewSOM()
+                    result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
+                        setChatButtonEnabled(isReplyChatEligible)
+                        if (isSomDetailEligible) {
+                            onUserAllowedToViewSOM()
+                        } else {
+                            onUserNotAllowedToViewSOM()
+                        }
+
                     }
                 }
                 is Fail -> {
@@ -504,15 +500,21 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onUserNotAllowedToViewSOM() {
-        context?.run {
-            if (userNotAllowedDialog == null) {
-                Utils.createUserNotAllowedDialog(this)
-            }
-            userNotAllowedDialog?.show()
+        progressBarSom?.hide()
+        setLoadingIndicator(false)
+        refreshHandler?.run {
+            setPullEnabled(false)
+            finishRefresh()
+        }
+        containerBtnDetail?.hide()
+        rv_detail?.hide()
+        somDetailAdminPermissionView?.setUserNotAllowedToViewSom {
+            activity?.finish()
         }
     }
 
     private fun onUserAllowedToViewSOM() {
+        somDetailAdminPermissionView?.gone()
         somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
     }
@@ -1400,7 +1402,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh(view: View?) {
-        if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
+        if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
             loadDetail()
         } else {
             checkUserRole()
@@ -1411,7 +1413,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 
-    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean = value is Success
+    private fun isShowDetailEligible(value: Result<Pair<Boolean, Boolean>>?): Boolean = (value as? Success)?.data?.first == true
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {
@@ -1500,6 +1502,13 @@ class SomDetailFragment : BaseDaggerFragment(),
                 setSupportActionBar(som_detail_toolbar)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
             }
+        }
+    }
+
+    private fun setChatButtonEnabled(isEnabled: Boolean) {
+        menu?.findItem(R.id.som_action_chat)?.run {
+            isVisible = isEnabled
+            setEnabled(isEnabled)
         }
     }
 

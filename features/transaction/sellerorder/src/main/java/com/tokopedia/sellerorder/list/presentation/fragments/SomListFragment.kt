@@ -36,7 +36,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
@@ -50,7 +49,6 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
-import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -61,7 +59,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -88,11 +85,11 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
-import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -132,8 +129,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
 
         private const val SHARED_PREF_NEW_SOM_LIST_COACH_MARK = "newSomListCoachMark"
-
-        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -256,12 +251,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
-    private var canDisplayOrderData = true
+    private var canDisplayOrderData = false
+    private var canMultiAcceptOrder = false
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
     private var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
-    private var userNotAllowedDialog: DialogUnify? = null
     private var errorToaster: Snackbar? = null
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
@@ -304,7 +299,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setInitialOrderListParams()
-        observeUserRoles()
         observeTopAdsCategory()
         observeTickers()
         observeFilters()
@@ -369,9 +363,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onHiddenChanged(hidden)
         if (!hidden) {
             SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
-            if (!isUserRoleFetched()) viewModel.getUserRoles()
         } else {
-            if (isUserRoleFetched()) viewModel.clearUserRoles()
             dismissCoachMark()
         }
     }
@@ -417,18 +409,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun loadInitialData() {
-        viewModel.isMultiSelectEnabled = false
-        resetOrderSelectedStatus()
-        isLoadingInitialData = true
-        somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
-        loadUserRoles()
-        loadTopAdsCategory()
-        loadTickers()
-        loadWaitingPaymentOrderCounter()
-        loadAdminPermission()
-        loadFilters(loadOrders = true)
-        if (shouldReloadOrderListImmediately()) {
-            loadOrderList()
+        if (canDisplayOrderData) {
+            loadAllInitialData()
+        } else {
+            checkAdminPermission()
         }
     }
 
@@ -579,7 +563,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
         selectedOrderId = order.orderId
-        goToSomOrderDetail(this, order, viewModel.userRoleResult.value)
+        goToSomOrderDetail(this, order)
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
@@ -972,12 +956,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun observeIsAdminEligible() {
-        viewModel.isAdminEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isOrderManageEligible.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    result.data.let { isEligible ->
-                        canDisplayOrderData = isEligible
-                        if (!isEligible) {
+                    result.data.let { (isSomListEligible, isMultiAcceptEligible) ->
+                        canDisplayOrderData = isSomListEligible
+                        canMultiAcceptOrder = isMultiAcceptEligible
+                        if (isSomListEligible) {
+                            somAdminPermissionView?.hide()
+                            loadInitialData()
+                        } else {
                             showAdminPermissionError()
                         }
                     }
@@ -1091,10 +1079,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         (adapter as SomListOrderAdapter).updateOrders(newItems)
     }
 
-    private fun loadUserRoles() {
-        viewModel.getUserRoles()
-    }
-
     private fun loadTopAdsCategory() {
         viewModel.getTopAdsCategory()
     }
@@ -1129,7 +1113,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getOrderList()
     }
 
-    private fun loadAdminPermission() {
+    private fun checkAdminPermission() {
         viewModel.getAdminPermission()
     }
 
@@ -1139,6 +1123,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
         } else {
             showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty(), canRetry = false)
+        }
+    }
+
+    private fun loadAllInitialData() {
+        viewModel.isMultiSelectEnabled = false
+        resetOrderSelectedStatus()
+        isLoadingInitialData = true
+        somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+        loadTopAdsCategory()
+        loadTickers()
+        loadWaitingPaymentOrderCounter()
+        loadFilters(loadOrders = true)
+        if (shouldReloadOrderListImmediately()) {
+            loadOrderList()
         }
     }
 
@@ -1369,16 +1367,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    private fun onUserNotAllowedToViewSOM() {
-        context?.run {
-            rvSomList?.gone()
-            if (userNotAllowedDialog == null) {
-                userNotAllowedDialog = Utils.createUserNotAllowedDialog(this)
-            }
-            userNotAllowedDialog?.show()
-        }
-    }
-
     private fun showGlobalError(throwable: Throwable) {
         dismissCoachMark()
         somListLoading.gone()
@@ -1416,12 +1404,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         scrollViewErrorState.gone()
         errorToaster?.dismiss()
         hideWaitingPaymentOrderListMenu()
-        somAdminPermissionView?.run {
-            setPermissionType(SellerHomePermissionGroup.ORDER)
-            setOnActionButtonClickedListener {
+        somAdminPermissionView?.setUserNotAllowedToViewSom {
+            if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            } else {
+                activity?.finish()
             }
-            show()
         }
     }
 
@@ -1451,8 +1439,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()
-                        ?: false) && GlobalConfig.isSellerApp())
+                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
+                        ?: false && GlobalConfig.isSellerApp())
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1497,7 +1485,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             }
             selectedOrderId = ""
             if (adapter.dataSize == 0) {
-                multiEditViews.showWithCondition(adapter.dataSize > 0)
+                multiEditViews.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
                 showEmptyState()
             }
         }
@@ -1625,9 +1613,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             tickerSomList?.gone()
             viewModel.getTickers()
         }
-        if (viewModel.userRoleResult.value is Fail) {
-            viewModel.getUserRoles()
-        }
         if (viewModel.topAdsCategoryResult.value is Fail) {
             loadTopAdsCategory()
         }
@@ -1742,7 +1727,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
-    private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
     override fun onClickShowOrderFilter(
             filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,

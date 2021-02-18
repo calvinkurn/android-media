@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class AdminRoleType(
     @Expose
     @SerializedName("is_shop_admin")
-    val isShopAdmin: Boolean,
+    val isShopAdmin: Boolean = false,
     @Expose
     @SerializedName("is_location_admin")
-    val isLocationAdmin: Boolean,
+    val isLocationAdmin: Boolean = false,
     @Expose
     @SerializedName("is_shop_owner")
-    val isShopOwner: Boolean
+    val isShopOwner: Boolean = false
 )
