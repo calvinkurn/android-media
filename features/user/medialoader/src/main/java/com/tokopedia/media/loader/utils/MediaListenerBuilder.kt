@@ -66,6 +66,7 @@ object MediaListenerBuilder {
                 } catch (e: Exception) {}
             }
 
+            properties.apply { this.loadTime = loadTime }
             listener?.onLoaded(resource, dataSource(dataSource))
             return false
         }
