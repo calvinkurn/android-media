@@ -246,6 +246,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             iuFreeShipping?.gone()
         } else {
             ivFreeShipping?.gone()
+            iuFreeShipping?.gone()
         }
     }
 
