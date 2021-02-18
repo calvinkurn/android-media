@@ -325,16 +325,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindMargin(product: ProductAttachmentViewModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
-            if (isNextItemSender(product) && bottomMarginOpposite > defaultMarginBottom) {
-                setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, bottomMarginOpposite)
+            if (isNextItemOppositeFrom(product)) {
+                setMargin(defaultMarginLeft, bottomMarginOpposite, defaultMarginRight, defaultMarginBottom)
             } else {
                 setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, defaultMarginBottom)
             }
         }
     }
 
-    private fun isNextItemSender(product: ProductAttachmentViewModel): Boolean {
-        return adapterListener?.isNextItemSender(adapterPosition, product.isSender) == false
+    private fun isNextItemOppositeFrom(product: ProductAttachmentViewModel): Boolean {
+        return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
     }
 
     private fun bindBackground(product: ProductAttachmentViewModel) {
