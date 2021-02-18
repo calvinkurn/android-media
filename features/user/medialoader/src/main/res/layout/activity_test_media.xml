@@ -13,14 +13,6 @@
         android:layout_height="200dp"
         android:src="@drawable/media_state_default_placeholder"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtStatus"
-        android:textSize="@dimen/unify_font_16"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Status"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -120,5 +112,13 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:textSize="@dimen/unify_font_14"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Status"/>
 
 </LinearLayout>
