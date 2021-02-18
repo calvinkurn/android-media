@@ -60,7 +60,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -341,7 +340,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     if (item.image.isNotEmpty()) {
                         val tab = bottomTabHolder.tabLayout.newTab()
                         tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
-                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
+                            findViewById<ImageUnify>(R.id.tab_image).setImageUrl(item.image)
                             findViewById<Typography>(R.id.tab_text).apply {
                                 text = item.name
                                 setTextColor(getTabTextColor(this.context, item.fontColor))

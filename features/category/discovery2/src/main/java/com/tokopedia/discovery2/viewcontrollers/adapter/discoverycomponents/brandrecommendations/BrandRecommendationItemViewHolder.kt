@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 
 class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -36,7 +35,7 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
                 item.data?.firstOrNull()?.let {
                     try {
                         if (context.isValidGlideContext())
-                            it.imageUrlMobile?.let { url -> brandImage.loadImage(url) }
+                            it.imageUrlMobile?.let { url -> brandImage.setImageUrl(url) }
                     } catch (e: Throwable) {
                     }
                 }
