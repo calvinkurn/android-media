@@ -527,6 +527,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackClickCtaWidget(element, containerListener?.role)
     }
 
+    override fun trackExpandTimelineHistory(element: NotificationUiModel) {
+        analytic.trackExpandTimelineHistory(element, containerListener?.role)
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,
