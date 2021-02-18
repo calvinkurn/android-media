@@ -3,8 +3,11 @@ package com.tokopedia.cart.view.bottomsheet
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -45,7 +48,7 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
     if (cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
         view.text_total_cashback_value?.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.sellerCashbackValue, false)
-                    .replace("Rp","")
+                    .replace("Rp", "")
                     .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
@@ -64,23 +67,24 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
 }
 
 private fun renderPromo(cartListData: CartListData, view: View) {
-    if (cartListData.shoppingSummaryData.promoValue > 0) {
-        view.text_total_promo_value?.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.promoValue, false)
-                    .replace("Rp","")
-                    .removeDecimalSuffix()
-            visibility = View.VISIBLE
+    with(view) {
+        if (cartListData.promoSummaryData.title.isNotEmpty()) {
+            text_summary_promo_transaction_title.text = cartListData.promoSummaryData.title
+            text_summary_promo_transaction_title.visibility = View.VISIBLE
+        } else {
+            text_summary_promo_transaction_title.visibility = View.GONE
         }
-        view.text_total_promo_title?.apply {
-            text = cartListData.shoppingSummaryData.promoWording
-            visibility = View.VISIBLE
-        }
-    } else {
-        view.text_total_promo_value?.apply {
-            visibility = View.GONE
-        }
-        view.text_total_promo_title?.apply {
-            visibility = View.GONE
+
+        if (cartListData.promoSummaryData.details.isNotEmpty()) {
+            val adapter = CartPromoSummaryAdapter(cartListData.promoSummaryData.details)
+
+            recycler_view_cart_promo_summary.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            recycler_view_cart_promo_summary.setHasFixedSize(true)
+            recycler_view_cart_promo_summary.adapter = adapter
+
+            recycler_view_cart_promo_summary.visibility = View.VISIBLE
+        } else {
+            recycler_view_cart_promo_summary.visibility = View.GONE
         }
     }
 }
