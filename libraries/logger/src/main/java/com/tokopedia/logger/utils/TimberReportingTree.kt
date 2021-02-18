@@ -17,6 +17,14 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
+    var installerPackageName: String? = ""
+        set(value) {
+            field = if (value == PLAYSTORE_PACKAGE_NAME) {
+                "1"
+            } else {
+                value
+            }
+        }
     var tagMaps: HashMap<String, Tag> = hashMapOf()
 
     init {
@@ -70,10 +78,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
     override fun createStackElementTag(element: StackTraceElement): String? {
         return String.format(
-            "[%s:%s:%s]",
-            super.createStackElementTag(element),
-            element.methodName,
-            element.lineNumber
+                "[%s:%s:%s]",
+                super.createStackElementTag(element),
+                element.methodName,
+                element.lineNumber
         )
     }
 
@@ -84,37 +92,40 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: String): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("tag=")
-            .append(tag)
-            .append(DELIMITER)
+                .append(tag)
+                .append(DELIMITER)
         stringBuilder.append("timestamp=")
-            .append(timeStamp)
-            .append(DELIMITER)
+                .append(timeStamp)
+                .append(DELIMITER)
         stringBuilder.append("time=")
-            .append("'${getReadableTimeStamp(timeStamp)}'")
-            .append(DELIMITER)
+                .append("'${getReadableTimeStamp(timeStamp)}'")
+                .append(DELIMITER)
         stringBuilder.append("did=")
-            .append(partDeviceId)
-            .append(DELIMITER)
+                .append(partDeviceId)
+                .append(DELIMITER)
         stringBuilder.append("uid=")
-            .append(userId)
-            .append(DELIMITER)
+                .append(userId)
+                .append(DELIMITER)
         stringBuilder.append("vernm=")
-            .append(versionName)
-            .append(DELIMITER)
+                .append(versionName)
+                .append(DELIMITER)
         stringBuilder.append("vercd=")
-            .append(versionCode)
-            .append(DELIMITER)
+                .append(versionCode)
+                .append(DELIMITER)
+        stringBuilder.append("inst=")
+                .append(installerPackageName)
+                .append(DELIMITER)
         stringBuilder.append("os=")
-            .append(Build.VERSION.RELEASE)
-            .append(DELIMITER)
+                .append(Build.VERSION.RELEASE)
+                .append(DELIMITER)
         stringBuilder.append("device=")
-            .append("'${Build.MODEL}'")
-            .append(DELIMITER)
+                .append("'${Build.MODEL}'")
+                .append(DELIMITER)
         stringBuilder.append("cls=")
-            .append("'${classLine}'")
-            .append(DELIMITER)
+                .append("'${classLine}'")
+                .append(DELIMITER)
         stringBuilder.append("msg=")
-            .append(message)
+                .append(message)
         return stringBuilder.toString()
     }
 
@@ -142,10 +153,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
                 if (randomNumber <= it) {
                     val tagKey = StringBuilder()
-                        .append(tagSplit[0])
-                        .append(DELIMITER)
-                        .append(tagSplit[1])
-                        .toString()
+                            .append(tagSplit[0])
+                            .append(DELIMITER)
+                            .append(tagSplit[1])
+                            .toString()
                     tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
                 }
             }
@@ -168,6 +179,8 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
         const val PRIORITY_ONLINE = 2
         const val PRIORITY_OFFLINE = 1
+
+        const val PLAYSTORE_PACKAGE_NAME = "com.android.vending"
     }
 
 }
