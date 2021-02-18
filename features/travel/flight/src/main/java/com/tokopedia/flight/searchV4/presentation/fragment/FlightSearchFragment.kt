@@ -49,6 +49,7 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -319,9 +320,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
 
-        if (flightFilterModel?.airlineList!!.isNotEmpty()){
 
-        }
         /** tambahin disini kalo di filter di highlight ijo if filter model airline
          add listener aja**/
     }
@@ -769,11 +768,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
         override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
-            if(airlinePrice.isSelected){
-                flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
-            }else{
-                flightSearchViewModel.filterModel.airlineList = mutableListOf()
-            }
+            flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
+            clearAllData()
+            fetchSortAndFilterData()
+        }
+
+        override fun onClickUnselectPromoChips(position: Int) {
+            flightSearchViewModel.filterModel.airlineList = mutableListOf()
             clearAllData()
             fetchSortAndFilterData()
         }

@@ -27,7 +27,6 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
             tv_flight_promo_chips_line2.text = context.resources.getString(R.string.flight_srp_promo_chips_content_line2, element.shortName)
             iv_multiairline_logo.setAirlineLogo(element.logo)
             setSelectedItem(element)
-            setFilteredAirline(element)
         }
     }
 
@@ -41,23 +40,33 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
         }
     }
 
-
-    private fun setSelectedItem(element: AirlinePrice){
-        with(itemView){
+    private fun setSelectedItem(element: AirlinePrice) {
+        with(itemView) {
             if (::adapter.isInitialized) {
+                if (adapter.selectedPosition == FlightPromoChipsAdapter.SELECTED_POSITION_INIT) {
+                    changePromoChipsState(false)
+                } else {
+                    if (adapter.selectedPosition == adapterPosition) {
+                        changePromoChipsState(true)
+                    } else {
+                        changePromoChipsState(false)
+                    }
+                }
                 card_promo_chips.setOnClickListener {
-                    element.isSelected = !element.isSelected
-                    onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
-                    changePromoChipsState(element.isSelected)
+                    if (adapter.selectedPosition != adapterPosition) {
+                        onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
+                        adapter.setSelectedProduct(adapterPosition)
+                    } else {
+                        onFlightPromoChipsListener.onUnselectItemClicked(adapterPosition)
+                        changePromoChipsState(false)
+                    }
                 }
             }
         }
     }
 
-    private fun setFilteredAirline(element: AirlinePrice) {
-    }
-
     interface OnFlightPromoChipsListener{
         fun onItemClicked(airlinePrice: AirlinePrice, adapterPosition: Int)
+        fun onUnselectItemClicked(adapterPosition: Int)
     }
 }

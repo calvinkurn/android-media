@@ -14,6 +14,8 @@ class FlightPromoChipsAdapter(val context: Context,
                               flightPromoChipsAdapterTypeFactory: FlightPromoChipsAdapterTypeFactory)
     : BaseListAdapter<Visitable<*>, FlightPromoChipsAdapterTypeFactory>(flightPromoChipsAdapterTypeFactory) {
 
+    var selectedPosition = SELECTED_POSITION_INIT
+
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int, payloads: MutableList<Any>) {
         if (holder is FlightPromoChipsViewHolder) {
             holder.adapter = this
@@ -26,7 +28,20 @@ class FlightPromoChipsAdapter(val context: Context,
         addElement(data)
     }
 
+    fun setSelectedProduct(position: Int) {
+        if (selectedPosition > -1) {
+            val oldPosition = selectedPosition
+            notifyItemChanged(oldPosition)
+        }
+        selectedPosition = position
+        notifyItemChanged(position)
+    }
+
     fun clearList(){
         clearAllElements()
+    }
+
+    companion object{
+        const val SELECTED_POSITION_INIT = -1
     }
 }

@@ -10,16 +10,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class AirlinePrice(
         @SerializedName("airlineID")
-    val airlineID: String,
+    val airlineID: String = "",
         @SerializedName("logo")
     val logo: String? = null,
         @SerializedName("shortName")
-    val shortName: String,
+    val shortName: String = "",
         @SerializedName("price")
-    val price: String,
+    val price: String = "",
         @SerializedName("priceNumeric")
-    val priceNumeric: Int,
-        var isSelected: Boolean = false
+    val priceNumeric: Int = 0
 ): Visitable<FlightPromoChipsAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactory: FlightPromoChipsAdapterTypeFactory): Int = typeFactory.type(this)
