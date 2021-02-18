@@ -4,17 +4,33 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
+import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonNotify
+import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelBestSeller
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelCampaignBackground
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
+import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -99,7 +115,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
         progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
+            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                progressBarStock.setProgressIcon(ContextCompat.getDrawable(context, R.drawable.ic_fire_filled))
+            }
+            progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
+            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
         }
     }
 
