@@ -48,7 +48,7 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setHeader(channel: ChannelModel?,
-                          sectionId: Int) {
+                          sectionId: String) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
                 itemView.view_recharge_home_product_banner_header, channel,
                 object : HeaderListener {

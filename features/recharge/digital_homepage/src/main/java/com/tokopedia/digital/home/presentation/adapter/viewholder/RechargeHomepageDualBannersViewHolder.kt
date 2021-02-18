@@ -42,7 +42,7 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
             }
             if (items == null) {
                 if (section.title.isNotEmpty()) {
-                    listener.onRechargeSectionEmpty(section.id.toIntOrZero())
+                    listener.onRechargeSectionEmpty(section.id)
                 } else {
                     view_recharge_home_dual_banners_container.hide()
                     view_recharge_home_dual_banners_shimmering.show()

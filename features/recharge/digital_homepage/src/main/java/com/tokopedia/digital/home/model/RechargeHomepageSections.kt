@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections(
@@ -118,13 +117,13 @@ data class RechargeHomepageSections(
 }
 
 interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFactory> {
-    fun visitableId(): Int
+    fun visitableId(): String
     fun equalsWith(b: Any?): Boolean
 }
 
 data class RechargeHomepageBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -144,8 +143,8 @@ data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSection
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -161,8 +160,8 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -178,8 +177,8 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -195,8 +194,8 @@ data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -212,8 +211,8 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -230,8 +229,8 @@ data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSectio
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -247,8 +246,8 @@ data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSection
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -264,8 +263,8 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -282,8 +281,8 @@ data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSecti
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -299,8 +298,8 @@ data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSec
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
-        return section.id.toIntOrZero()
+    override fun visitableId(): String {
+        return section.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
