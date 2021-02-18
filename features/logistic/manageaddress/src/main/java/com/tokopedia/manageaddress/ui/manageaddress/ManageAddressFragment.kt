@@ -108,6 +108,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         openSoftKeyboard()
     }
 
+    override fun onSelectAddressItem() {
+        adapter.notifyDataSetChanged()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {

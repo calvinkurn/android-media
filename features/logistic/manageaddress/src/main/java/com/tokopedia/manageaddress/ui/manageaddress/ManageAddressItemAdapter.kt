@@ -33,6 +33,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
         fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel)
+        fun onSelectAddressItem()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -44,6 +45,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     override fun onBindViewHolder(holder: ManageAddressViewHolder, position: Int) {
+        holder.itemView.isClickable = true
         holder.itemView.isSelected = selectedPos == position
         holder.bindData(addressList[position], selectedPos == position)
     }
@@ -127,17 +129,19 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 listener.onManageAddressLainnyaClicked(peopleAddress)
             }
             cardAddress.setOnClickListener {
-                if (isSelected) {
+                val prevPos = selectedPos
+                println("++ isSelected = $isSelected, prevPos = $prevPos, selectedPos1 = $selectedPos, layoutPosition = $layoutPosition")
+                selectedPos = layoutPosition
+                println("++ isSelected = $isSelected, prevPos = $prevPos, selectedPos2 = $selectedPos, layoutPosition = $layoutPosition")
+
+                if (selectedPos == layoutPosition) {
                     cardAddress.hasCheckIcon = true
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 } else {
                     cardAddress.hasCheckIcon = false
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-
-                notifyItemChanged(selectedPos)
-                selectedPos = layoutPosition
-                notifyItemChanged(selectedPos)
+                listener.onSelectAddressItem()
             }
         }
     }
