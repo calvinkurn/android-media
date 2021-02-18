@@ -16,10 +16,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="tokopedia-android-internal"
-                    android:host="global"
-                    android:path="/media-catalogue"/>
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:path="@string/path_media_catalogue"/>
             </intent-filter>
+
         </activity>
     </application>
 

@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.uitest
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.media.loader.*
 import com.tokopedia.media.loader.common.Properties
@@ -11,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_test_media.*
 
 class MediaActivity : AppCompatActivity() {
 
-    private val url = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/1/e0e5d52e-2d9c-498f-8b13-2cba0e2f1e11.jpg"
+    private val url = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/1/e0e5d52e-2d9c-498f-8b13-2cba0e2f1e11.jpg?b=A4ADcRuO_2y?"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +71,12 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun loadImageCustomError() {
+        Toast.makeText(applicationContext, "initialize...", Toast.LENGTH_SHORT).show()
         imgTest?.loadImage(url) {
-            setErrorDrawable(R.drawable.ic_media_loading)
+            setErrorDrawable(R.drawable.media_sample_error)
             setDelay(3000)
             listener({ _, _ ->
+                Toast.makeText(applicationContext, "loaded!", Toast.LENGTH_SHORT).show()
                 status("loadImageCustomError()", this)
             })
         }
@@ -86,10 +89,17 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun loadImageCustomTarget() {
+        var properties: Properties? = null
+
+        Toast.makeText(applicationContext, "initialize...", Toast.LENGTH_SHORT).show()
         loadImageWithTarget(this, url, {
             setDelay(3000)
+            useBlurHash(true)
+            properties = this
         }, MediaTarget(imgTest, onReady = {
             imgTest.setImageBitmap(it)
+            status("loadImageCustomTarget()", properties!!)
+            Toast.makeText(applicationContext, "loaded!", Toast.LENGTH_SHORT).show()
         }))
     }
 
@@ -103,7 +113,6 @@ class MediaActivity : AppCompatActivity() {
     private fun status(methodNme: String, properties: Properties) {
         txtStatus?.text = "method = $methodNme \n" +
                 "url = $url \n" +
-                "load_time(ms) = ${properties.loadTime} \n\n" +
                 "$properties"
     }
 
