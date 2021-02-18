@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class DetailCreditCardViewModel @Inject constructor(
         private val gqlDeleteCreditCardUseCase: GQLDeleteCreditCardQueryUseCase,
-        private val dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
     private val _creditCardDeleteResultLiveData = MutableLiveData<Result<DataResponseDeleteCC>>()

@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.domain.CheckUpdateWhiteListCreditCartUseCase
 import com.tokopedia.payment.setting.authenticate.model.*
-import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +43,7 @@ class AuthenticateCCViewModel @Inject constructor(
         )
     }
 
-    fun updateWhiteList() {
+    fun checkWhiteList() {
         checkUpdateWhiteListCreditCartUseCase.cancelJobs()
         checkUpdateWhiteListCreditCartUseCase.whiteListResponse(
                 ::onWhiteListDataSuccess,

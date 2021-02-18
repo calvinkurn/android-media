@@ -24,10 +24,12 @@ abstract class ViewModelModule {
     internal abstract fun settingsListViewModel(viewModel: SettingsListViewModel): ViewModel
 
     @Binds
+    @IntoMap
     @ViewModelKey(AuthenticateCCViewModel::class)
-    internal abstract fun detailCreditCardViewModel(CCViewModel: AuthenticateCCViewModel): ViewModel
+    internal abstract fun authenticateViewModel(CCViewModel: AuthenticateCCViewModel): ViewModel
 
     @Binds
+    @IntoMap
     @ViewModelKey(DetailCreditCardViewModel::class)
     internal abstract fun detailCreditCardViewModel(CCViewModel: DetailCreditCardViewModel): ViewModel
 

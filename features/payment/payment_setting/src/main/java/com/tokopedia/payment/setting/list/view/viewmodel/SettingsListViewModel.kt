@@ -8,16 +8,20 @@ import com.tokopedia.payment.setting.list.model.PaymentQueryResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class SettingsListViewModel @Inject constructor(
         private val getCreditCardListUseCase: GetCreditCardListUseCase,
-        private val dispatcher: CoroutineDispatcher,
+        private val userSession: UserSessionInterface,
+        dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
     private val _paymentQueryResultLiveData = MutableLiveData<Result<PaymentQueryResponse>>()
+    private val _phoneVerificationStatusLiveData = MutableLiveData<Boolean>()
     val paymentQueryResultLiveData: LiveData<Result<PaymentQueryResponse>> = _paymentQueryResultLiveData
+    val phoneVerificationStatusLiveData: LiveData<Boolean> = _phoneVerificationStatusLiveData
 
     fun getCreditCardList() {
         getCreditCardListUseCase.cancelJobs()
@@ -25,6 +29,10 @@ class SettingsListViewModel @Inject constructor(
                 ::onCreditCardListSuccess,
                 ::onCreditCardListError,
         )
+    }
+
+    fun checkVerificationPhone() {
+        _phoneVerificationStatusLiveData.value = userSession.isMsisdnVerified
     }
 
     private fun onCreditCardListSuccess(paymentQueryResponse: PaymentQueryResponse) {
