@@ -1305,11 +1305,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 .groupBy { (it as SomListOrderUiModel).isChecked }
         val newIndeterminateStatus = groupedOrders[true]?.size.orZero() > 0 && groupedOrders[false]?.size.orZero() > 0
         val newCheckedStatus = groupedOrders[true]?.size.orZero() > 0
-        if (newCheckedStatus != checkBoxBulkAction.isChecked) {
-            checkBoxBulkAction.isChecked = newCheckedStatus
+        if (newCheckedStatus != checkBoxBulkAction?.isChecked) {
+            checkBoxBulkAction?.isChecked = newCheckedStatus
         }
-        if (newIndeterminateStatus != checkBoxBulkAction.getIndeterminate()) {
-            checkBoxBulkAction.setIndeterminate(newIndeterminateStatus)
+        if (newIndeterminateStatus != checkBoxBulkAction?.getIndeterminate()) {
+            checkBoxBulkAction?.setIndeterminate(newIndeterminateStatus)
         }
     }
 
