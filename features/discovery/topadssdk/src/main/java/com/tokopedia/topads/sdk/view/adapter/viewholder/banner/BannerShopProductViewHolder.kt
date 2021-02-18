@@ -31,7 +31,6 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                 setImageProductViewHintListener(model, object : ViewHintListener {
                     override fun onViewHint() {
                         impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
-                        topAdsUrlHitter.hitImpressionUrl(className, model.imageUrl, "", "", "")
                     }
                 })
                 setOnClickListener {
