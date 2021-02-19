@@ -124,8 +124,20 @@ class OrderSummaryPageRobot {
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
+    fun clickChangeInstallmentRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_installment_detail)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
     fun clickInstallmentErrorAction(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
+    fun clickInstallmentErrorActionRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_installment_error_action)).perform(scrollTo()).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -379,9 +391,30 @@ class OrderSummaryPageRobot {
         }
     }
 
+    fun assertInstallmentRevamp(detail: String?) {
+        if (detail == null) {
+            onView(withId(R.id.tv_new_installment_type)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+            onView(withId(R.id.tv_new_installment_detail)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        } else {
+            onView(withId(R.id.tv_new_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withId(R.id.tv_new_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
+        }
+    }
+
     fun assertInstallmentError() {
         onView(withId(R.id.tv_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
         onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
+    }
+
+    fun assertInstallmentErrorRevamp() {
+        onView(withId(R.id.tv_new_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
+        onView(withId(R.id.tv_new_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
     }
 
     fun assertProfilePaymentError(message: String, buttonText: String) {
