@@ -42,7 +42,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants("1")
+        viewModel.getData("1")
 
         val productVariants = listOf(
             createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
@@ -62,7 +62,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants("1")
+        viewModel.getData("1")
 
         verifyHideProgressBar()
         verifyShowErrorView()
@@ -74,7 +74,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenError(error)
 
-        viewModel.getProductVariants("1")
+        viewModel.getData("1")
 
         verifyHideProgressBar()
         verifyShowErrorView()
@@ -92,9 +92,10 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants(productId)
+        viewModel.getData(productId)
         viewModel.setVariantPrice("2", 300)
         viewModel.setVariantPrice("1", 150)
+        viewModel.saveVariants()
 
         val productVariants = listOf(
             createProductVariant(id = "1", price = 150),
@@ -102,7 +103,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
@@ -118,17 +119,25 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants(productId)
+        viewModel.getData(productId)
         viewModel.setVariantStock("2", 5)
         viewModel.setVariantStock("1", 4)
+        viewModel.saveVariants()
 
         val productVariants = listOf(
             createProductVariant(id = "1", stock = 4, isAllStockEmpty = false),
             createProductVariant(id = "2", stock = 5, isAllStockEmpty = false)
         )
-        val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
+        val expectedResult = EditVariantResult(
+            productId,
+            productName,
+            productVariants,
+            emptyList(),
+            emptyList(),
+            editStock = true
+        )
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
@@ -144,49 +153,39 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants(productId)
+        viewModel.getData(productId)
         viewModel.setVariantStatus("2", ProductStatus.ACTIVE)
         viewModel.setVariantStatus("1", ProductStatus.INACTIVE)
+        viewModel.saveVariants()
 
         val productVariants = listOf(
             createProductVariant(id = "1", status = ProductStatus.INACTIVE),
             createProductVariant(id = "2", status = ProductStatus.ACTIVE)
         )
-        val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
+        val expectedResult = EditVariantResult(
+            productId,
+            productName,
+            productVariants,
+            emptyList(),
+            emptyList(),
+            editStatus = true
+        )
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
     @Test
     fun `given variant result is null when set variant price should NOT update variant`() {
         viewModel.setVariantPrice("1", 100)
+        viewModel.saveVariants()
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(null)
     }
 
     @Test
-    fun `when all variant stock is empty should set show stock ticker true`() {
-        val productId = "1"
-        val productName = "Tokopedia"
-        val variantList = listOf(
-            createProductVariantResponse(productID = "1", stock = 0),
-            createProductVariantResponse(productID = "2", stock = 0)
-        )
-        val response = createGetVariantResponse(productName, products = variantList)
-
-        onGetProductVariant_thenReturn(response)
-
-        viewModel.getProductVariants(productId)
-        viewModel.setStockWarningTicker()
-
-        viewModel.showStockTicker
-            .verifyValueEquals(true)
-    }
-
-    @Test
-    fun `when variant stock is partially empty should set show stock ticker false`() {
+    fun `when all variant stock is empty should set show stock ticker false`() {
         val productId = "1"
         val productName = "Tokopedia"
         val variantList = listOf(
@@ -197,11 +196,30 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         onGetProductVariant_thenReturn(response)
 
-        viewModel.getProductVariants(productId)
-        viewModel.setStockWarningTicker()
+        viewModel.getData("5")
+        viewModel.setVariantStock(productId, 0)
 
-        viewModel.showStockTicker
+        viewModel.showStockInfo
             .verifyValueEquals(false)
+    }
+
+    @Test
+    fun `when variant stock is partially empty should set show stock ticker true`() {
+        val productId = "1"
+        val productName = "Tokopedia"
+        val variantList = listOf(
+            createProductVariantResponse(productID = "1", stock = 0),
+            createProductVariantResponse(productID = "2", stock = 0)
+        )
+        val response = createGetVariantResponse(productName, products = variantList)
+
+        onGetProductVariant_thenReturn(response)
+
+        viewModel.getData("5")
+        viewModel.setVariantStock(productId, 1)
+
+        viewModel.showStockInfo
+            .verifyValueEquals(true)
     }
 
     private fun onGetProductVariant_thenReturn(response: GetProductVariantResponse) {

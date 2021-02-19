@@ -6,13 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/stockTicker"
+        layout="@layout/layout_stock_location_closable_ticker"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainContainer"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnMultiEdit"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/stockTicker">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -100,6 +106,7 @@
                     android:gravity="center_vertical"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold"
+                    android:visibility="gone"
                     android:text="@string/product_manage_multiple_select" />
             </LinearLayout>
 
@@ -158,6 +165,24 @@
         android:id="@+id/pageLoading"
         layout="@layout/layout_product_manage_shimmer"
         tools:visibility="gone" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/errorPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/noAccessPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_NOT_FOUND"/>
 
     <FrameLayout
         android:id="@+id/interceptor"

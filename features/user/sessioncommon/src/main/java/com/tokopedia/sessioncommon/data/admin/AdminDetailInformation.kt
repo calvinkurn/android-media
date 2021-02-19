@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class AdminDetailInformation(
     @Expose
     @SerializedName("admin_role_type")
-    val roleType: AdminRoleType
+    val roleType: AdminRoleType = AdminRoleType()
 )
