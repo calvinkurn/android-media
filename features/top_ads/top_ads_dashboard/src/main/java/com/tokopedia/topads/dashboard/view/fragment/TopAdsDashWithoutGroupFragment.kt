@@ -25,13 +25,13 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOAS
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupModel
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.NonGroupItemsListAdapter
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
@@ -155,17 +155,17 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        SingleDelGroupId = (adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()
+        SingleDelGroupId = (adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()
         performAction(ACTION_DELETE, null)
     }
 
     private fun statusChange(pos: Int, status: Int) {
         if (status != 1) {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), resources, null)
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemViewModel).data.adId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), resources, null)
         }
     }
 
@@ -209,16 +209,16 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
         recyclerviewScrollListener.updateStateAfterGetData()
         list.forEach {
-            groupList.add(MovetoGroupItemViewModel(it))
+            groupList.add(MovetoGroupItemModel(it))
             groupIds.add(it.groupId)
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            groupList.add(MovetoGroupEmptyViewModel())
+            groupList.add(MovetoGroupEmptyModel())
         } else
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
 
@@ -291,7 +291,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
-        adapter.items.add(NonGroupItemsEmptyViewModel())
+        adapter.items.add(NonGroupItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty())
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)
         else
@@ -310,7 +310,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         loader.visibility = View.GONE
         response.data.forEach {
             adIds.add(it.adId.toString())
-            adapter.items.add(NonGroupItemsItemViewModel(it))
+            adapter.items.add(NonGroupItemsItemModel(it))
         }
         if (adIds.isNotEmpty()) {
             val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
