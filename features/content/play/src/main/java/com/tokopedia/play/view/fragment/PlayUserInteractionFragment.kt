@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -111,7 +112,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
-    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
+    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -404,10 +405,30 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
+        /**
+         * This is a temporary workaround for when insets not working as intended inside viewpager
+         */
+        val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
+                val initialBottomMargin = layoutParams.bottomMargin
+                val insets = activity?.window?.decorView?.rootWindowInsets
+                if (insets != null) {
+                    layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
+                    initialBottomMargin
+                } else error("Insets not supported")
+            } catch (e: Throwable) { 0 }
+        } else 0
+
+        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             if (!hasBeenOpened && (insets.systemWindowInsetTop == 0 || insets.systemWindowInsetBottom == 0)) return@doOnApplyWindowInsets
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            /**
+             * Reduce margin by the first added value
+             */
+            val margin = recordedMargin.copy(bottom = realBottomMargin)
 
             var isMarginChanged = false
 
@@ -656,6 +677,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
+                onboardingView?.hide()
                 toolbarView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
@@ -696,7 +718,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeOnboarding() {
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView.showAnimated()
+            if (!orientation.isLandscape) onboardingView?.showAnimated()
         })
     }
     //endregion

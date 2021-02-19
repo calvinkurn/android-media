@@ -5,6 +5,7 @@
     android:id="@+id/container_video"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/play_dms_video_background"
     >
 
     <include
@@ -21,7 +22,6 @@
     <include
         android:id="@+id/view_video_loading"
         layout="@layout/view_video_loading"
-        android:visibility="gone"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toBottomOf="parent"
