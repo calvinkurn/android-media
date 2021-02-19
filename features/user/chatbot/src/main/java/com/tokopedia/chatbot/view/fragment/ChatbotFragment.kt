@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -60,6 +62,7 @@ import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
+import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
@@ -72,6 +75,7 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -96,6 +100,8 @@ private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley f
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 private const val FIRST_PAGE = 1
+private const val RESEND = 1
+private const val DELETE = 0
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
@@ -554,7 +560,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         processImagePathToUpload(data)?.let {
             getViewState().onImageUpload(it)
-            presenter.uploadImages(it, messageId, opponentId, onError())
+            presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
+        }
+    }
+
+    private fun onErrorImageUpload(): (Throwable, ImageUploadViewModel) -> Unit {
+        return { throwable, image ->
+            if (view != null) {
+                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                getViewState().showRetryUploadImages(image, true)
+            }
         }
     }
 
@@ -803,6 +818,53 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             ChatBotCsatActivity
                     .getInstance(it, selected.value, model)
         }, REQUEST_SUBMIT_CSAT)
+    }
+
+    override fun onRetrySendImage(element: ImageUploadViewModel) {
+        val bottomSheetPage = BottomSheetUnify()
+        val viewBottomSheetPage = View.inflate(context, R.layout.retry_upload_image_bottom_sheet_layout, null).apply {
+            val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
+            rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val adapter = ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element,bottomSheetPage))
+            rvPages.adapter = adapter
+            adapter.setList(listOf<String>(context?.getString(R.string.chatbot_delete)
+                    ?: "", context?.getString(R.string.chatbot_resend) ?: ""))
+
+        }
+
+        bottomSheetPage.apply {
+            setTitle("Gambarmu gagal di-upload")
+            showCloseIcon = false
+            setChild(viewBottomSheetPage)
+            showKnob = true
+        }
+        fragmentManager?.let {
+            bottomSheetPage.show(it, "retry image bottom sheet")
+        }
+
+    }
+
+    fun onBottomSheetItemClicked(element: ImageUploadViewModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+        return {
+            when (it) {
+                RESEND -> {
+                    removeDummy(element)
+                    getViewState().onImageUpload(element)
+                    presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
+                    bottomSheetPage.dismiss()
+                }
+                DELETE -> {
+                    removeDummy(element)
+                    bottomSheetPage.dismiss()
+                    view?.let { Toaster.make(it, "Gambarmu sudah dihapus.",Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL) }
+                }
+            }
+        }
+    }
+
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        getViewState().removeDummy(visitable)
     }
 
     override fun onBackPressed(): Boolean {

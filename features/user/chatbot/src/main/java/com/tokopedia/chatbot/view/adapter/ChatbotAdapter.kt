@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 
 /**
  * @author by nisie on 27/11/18.
@@ -12,6 +13,8 @@ import com.tokopedia.chat_common.BaseChatAdapter
 class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory) {
 
+    override fun enableShowTime(): Boolean = false
+
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return adapterTypeFactory.getItemViewType(visitables, position, default)
@@ -19,5 +22,14 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return adapterTypeFactory.createViewHolder(parent, viewType)
+    }
+
+    fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
+        val position = visitables.indexOf(model)
+        if (position < 0) return
+        if (visitables[position] is ImageUploadViewModel) {
+            (visitables[position] as ImageUploadViewModel).isRetry = true
+            notifyItemChanged(position)
+        }
     }
 }

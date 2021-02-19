@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
@@ -180,6 +181,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onImageUpload(it: ImageUploadViewModel) {
         getAdapter().addElement(it)
+        scrollDownWhenInBottom()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {
@@ -280,6 +282,18 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         if (item != null && adapter.list.isNotEmpty()) {
             adapter.clearElement(item)
         }
+    }
+
+    override fun showRetryUploadImages(image: ImageUploadViewModel, retry: Boolean){
+        getAdapter().showRetryFor(image, retry)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        getAdapter().removeDummy(visitable)
+    }
+
+    override fun getAdapter(): ChatbotAdapter {
+        return super.getAdapter() as ChatbotAdapter
     }
 
     override fun getInterlocutorName(headerName: String): String  = headerName

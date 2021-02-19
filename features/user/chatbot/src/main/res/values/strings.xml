@@ -30,5 +30,7 @@
     <string name="cb_bot_toolbar_title">Tanya</string>
     <string name="cb_dot">●</string>
     <string name="chatbot_csat_button_text">Kirim</string>
+    <string name="chatbot_resend">"Upload Ulang"</string>
+    <string name="chatbot_delete">"Hapus"</string>
 
 </resources>

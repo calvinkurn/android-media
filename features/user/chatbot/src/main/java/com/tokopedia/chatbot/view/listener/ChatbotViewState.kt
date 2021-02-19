@@ -59,4 +59,8 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideActionBubbleOnSenderMsg()
 
+    fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+
+    fun removeDummy(visitable: Visitable<*>)
+
 }

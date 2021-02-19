@@ -409,7 +409,7 @@ class ChatbotPresenter @Inject constructor(
     override fun uploadImages(it: ImageUploadViewModel,
                               messageId: String,
                               opponentId: String,
-                              onError: (Throwable) -> Unit) {
+                              onError: (Throwable, ImageUploadViewModel) -> Unit) {
         if (validateImageAttachment(it.imageUrl)) {
             isUploading = true
             uploadImageUseCase.unsubscribe()
@@ -442,7 +442,7 @@ class ChatbotPresenter @Inject constructor(
 
                         override fun onError(e: Throwable) {
                             isUploading = false
-                            onError(e)
+                            onError(e, it)
                         }
 
                     })

@@ -11,7 +11,7 @@ class ChatActionBubbleReadMoreViewHolder(itemView: View) : BaseChatActionBubbleV
     private val arrowUpDown: ImageView = itemView.findViewById(R.id.arrow_up_down)
 
     override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
-        if (element.text ==  "Selngkapnya"){
+        if (element.text ==  "Selengkapnya"){
             arrowUpDown.setImageResource(com.tokopedia.design.R.drawable.ic_arrow_down)
         }else{
             arrowUpDown.setImageResource(com.tokopedia.abstraction.R.drawable.ic_arrow_up)

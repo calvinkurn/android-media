@@ -42,14 +42,14 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
     }
 
     private fun setListOnButtonCLick() {
-        if (data.last().text == "Selngkapnya") {
+        if (data.last().text == "Selengkapnya") {
             data.clear()
             data.addAll(dataPool)
             data.add(ChatActionBubbleViewModel("Sembunyikan", bubbleType = 1))
         } else {
             data.clear()
             data.addAll(getFirstFive(dataPool))
-            data.add(ChatActionBubbleViewModel(text = "Selngkapnya", bubbleType = 1))
+            data.add(ChatActionBubbleViewModel(text = "Selengkapnya", bubbleType = 1))
         }
         notifyDataSetChanged()
 
@@ -75,7 +75,7 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         dataPool.addAll(elements)
         if (elements.size > 5) {
             data.addAll(getFirstFive(elements))
-            data.add(ChatActionBubbleViewModel(text = "Selngkapnya", bubbleType = 1))
+            data.add(ChatActionBubbleViewModel(text = "Selengkapnya", bubbleType = 1))
 
         } else {
             data.addAll(elements)
