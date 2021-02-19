@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +25,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -50,7 +52,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener, ChooseAddressWidget.ChooseAddressWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,6 +75,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
+    private var chooseAddressWidget: ChooseAddressWidget? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -146,11 +149,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
+        chooseAddressWidget = view?.findViewById(R.id.choose_address_widget)
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
+        chooseAddressWidget?.bindChooseAddress(this)
+
         initScrollListener()
+
     }
 
     private fun initViewModel() {
@@ -369,5 +376,25 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         fun newInstance(): ManageAddressFragment {
             return ManageAddressFragment()
         }
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        chooseAddressWidget?.updateWidget()
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+        //
+    }
+
+    override fun onLocalizingAddressRollOutUser(active: Boolean) {
+        //
+    }
+
+    override fun getLocalizingAddressHostFragment(): ManageAddressFragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return "address"
     }
 }

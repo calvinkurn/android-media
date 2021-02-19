@@ -27,10 +27,10 @@
             android:id="@+id/choose_address_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_shipment_label"
+                android:id="@+id/rv_address_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/dp_14"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_add"
@@ -207,7 +207,7 @@
 
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_arrow"
+        android:id="@+id/btn_chevron_snippet"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_18"

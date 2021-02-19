@@ -1,0 +1,205 @@
+package com.tokopedia.localizationchooseaddress.ui.widget
+
+import android.content.Context
+import android.graphics.Typeface
+import android.text.Html
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.util.AttributeSet
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddress
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
+import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
+
+class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    private var textChosenAddress: Typography? = null
+    private var buttonChooseAddress: IconUnify? = null
+    private var chooseAddressPref: ChooseAddressSharePref? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var viewModel: ChooseAddressViewModel
+
+    private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
+
+    init {
+        View.inflate(context, R.layout.choose_address_widget, this)
+        initInjector()
+        initViews()
+    }
+
+    private fun initViews() {
+        chooseAddressPref = ChooseAddressSharePref(context)
+
+        textChosenAddress = findViewById(R.id.text_chosen_address)
+        buttonChooseAddress = findViewById(R.id.btn_arrow)
+
+        checkRollence()
+    }
+
+    private fun initInjector() {
+        getComponent().inject(this)
+    }
+
+    private fun initObservers() {
+        viewModel.test.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
+                    chooseAddressPref?.setLocalCache(LocalCacheModel(address_id = "123", city_id = "123", district_id = "123", lat = "", long = "", label = "Tokopedia Tower" ))
+                    chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                }
+            }
+
+        })
+
+        viewModel.getChosenAddress.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressId == 0) {
+                        viewModel.getDefaultChosenAddress()
+                    } else {
+                        val data = it.data
+                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = data.addressName
+                        )
+                        chooseAddressPref?.setLocalCache(localData)
+                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                    }
+                }
+            }
+        })
+
+        viewModel.getDefaultAddress.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressData.addressId == 0) {
+                        //set to Jakarta Pusat -> waiting for data
+                    } else {
+                        val data = it.data.addressData
+                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = data.addressName
+                        )
+                        chooseAddressPref?.setLocalCache(localData)
+                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun checkRollence(){
+        // check rollence. kalo udah panggil listener, biar host page yang atur show or hide
+        chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+    }
+
+    fun updateWidget(){
+        val data = chooseAddressPref?.getLocalCacheData()
+        val label = context.getString(R.string.txt_send_to, data?.label)
+        textChosenAddress?.text = MethodChecker.fromHtml(label)
+    }
+
+    private fun getComponent(): ChooseAddressComponent {
+        return DaggerChooseAddressComponent.builder()
+                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+    }
+
+    private fun initChooseAddressFlow() {
+        if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
+            updateWidget()
+        } else {
+            textChosenAddress?.text = context.getString(R.string.txt_label_default)
+            viewModel.getStateChosenAddress()
+        }
+    }
+
+    fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
+        this.chooseAddressWidgetListener = listener
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        if (fragment != null) {
+            viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
+        }
+
+        initChooseAddressFlow()
+        initObservers()
+
+        buttonChooseAddress?.setOnClickListener {
+            val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+            ChooseAddressBottomSheet(this).show(fragment?.fragmentManager)
+        }
+    }
+
+    override fun onAddressChosen() {
+        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
+    }
+
+    interface ChooseAddressWidgetListener {
+        /**
+         * Action choosen address from user by widget / bottomshet
+         * Host must update content UI
+         */
+        fun onLocalizingAddressUpdatedFromWidget();
+
+        /**
+         * Address updated from background if device have not address saved in local cache.
+         * this first user rollout
+         * host can ignore this. optional to update UI
+         */
+        fun onLocalizingAddressUpdatedFromBackground();
+
+        /**
+         * this trigger to Host this feature active or not
+         * Host must GONE widget if isRollOutUser == false
+         * Host must VISIBLE widget if isRollOutUser == true
+         */
+        fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean)
+
+        /**
+         * We need Object Host Fragment to get viewmodel
+         */
+        fun getLocalizingAddressHostFragment(): Fragment
+
+        /**
+         * String Source of Host Page
+         */
+        fun getLocalizingAddressHostSourceData(): String
+    }
+
+
+}

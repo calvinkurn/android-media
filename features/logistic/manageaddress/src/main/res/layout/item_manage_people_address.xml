@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/address_name"
+            android:text="daps djpasjd apj a daspjd"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_16"
             app:layout_constraintEnd_toStartOf="@id/lbl_main_address"
@@ -51,11 +51,11 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:text="@string/address_label"
-            android:visibility="gone"
+            android:visibility="visible"
             app:labelType="general_light_grey"
             app:layout_constraintBaseline_toBaselineOf="@id/address_name"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintEnd_toStartOf="@id/label_lainnya"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/address_name" />
 
         <ImageView
