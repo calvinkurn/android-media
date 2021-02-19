@@ -5,9 +5,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -165,9 +162,6 @@ class TopChatRoomPresenterTest {
     private lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
-    private lateinit var addToCartOccUseCase: AddToCartOccUseCase
-
-    @RelaxedMockK
     private lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
 
     @RelaxedMockK
@@ -301,7 +295,6 @@ class TopChatRoomPresenterTest {
                         groupStickerUseCase,
                         chatAttachmentUseCase,
                         chatToggleBlockChat,
-                        addToCartOccUseCase,
                         chatBackgroundUseCase,
                         sharedPref,
                         dispatchers
@@ -723,7 +716,7 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) {
-            sendAbleProductPreview.sendTo(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+            sendAbleProductPreview.generateMsgObj(exMessageId, exOpponentId, exSendMessage, listInterceptor)
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
@@ -1155,110 +1148,6 @@ class TopChatRoomPresenterTest {
         val attachments = presenter.attachments
         verify(exactly = 1) { view.updateAttachmentsView(attachments) }
         assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `on success addToCart OCC`() {
-        // Given
-        val successAtcModel = AddToCartDataModel().apply {
-            data.success = 1
-            status = "OK"
-        }
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val response = Observable.just(successAtcModel)
-        val result = response.toBlocking().single()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } returns response
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onSuccess.invoke(result) }
-    }
-
-    @Test
-    fun `on error addToCart OCC`() {
-        // Given
-        val errorAtcModel = AddToCartDataModel().apply {
-            data.message = arrayListOf("Error")
-            errorMessage = arrayListOf("Error")
-        }
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val response = Observable.just(errorAtcModel)
-        val throwableSlot = slot<Throwable>()
-        var throwable: Throwable = Throwable()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } returns response
-        every {
-            onError.invoke(capture(throwableSlot))
-        } answers {
-            throwable = throwableSlot.captured
-        }
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onError.invoke(throwable) }
-    }
-
-    @Test
-    fun `on throw exeception when addToCart OCC`() {
-        // Given
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        var throwable: Throwable = Throwable()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } throws throwable
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onError.invoke(throwable) }
-    }
-
-    @Test
-    fun `check isStickerTooltipAlreadyShow`() {
-        // Given
-        every {
-            sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false)
-        } returns false
-
-        // When
-        presenter.isStickerTooltipAlreadyShow()
-
-        // Then
-        verify(exactly = 1) { sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false) }
-    }
-
-    @Test
-    fun `check toolTipOnBoardingShown`() {
-        // When
-        presenter.toolTipOnBoardingShown()
-
-        // Then
-        verify(exactly = 1) {
-            sharedPref.edit().putBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, true).apply()
-        }
     }
 
     @Test

@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ChatListFakeUseCaseModule(
+class ChatRoomFakeUseCaseModule constructor(
         private val getChatUseCase: GetChatUseCase,
         private val chatAttachmentUseCase: ChatAttachmentUseCase
 ) {
