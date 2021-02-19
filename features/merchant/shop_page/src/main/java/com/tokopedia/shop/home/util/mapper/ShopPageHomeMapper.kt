@@ -17,6 +17,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -102,7 +103,8 @@ object ShopPageHomeMapper {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
-                hasAddToCartButton = isHasAddToCartButton
+                hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN
         )
     }
 
@@ -130,6 +132,7 @@ object ShopPageHomeMapper {
                 },
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN,
                 stockBarLabel = shopHomeProductViewModel.stockLabel,
                 stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
         )
