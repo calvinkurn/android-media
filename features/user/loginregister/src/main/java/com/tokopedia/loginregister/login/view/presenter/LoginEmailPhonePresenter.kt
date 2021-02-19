@@ -208,25 +208,24 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     finalPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
-                loginTokenV2UseCase.executeOnBackground().run {
-                    LoginV2Mapper(userSession).map(this,
-                            onSuccessLoginToken = {
-                                view.onSuccessLoginEmail(it)
-                            },
-                            onErrorLoginToken = {
-                                view.onErrorLoginEmail(email).invoke(it)
-                            },
-                            onShowPopupError = {
-                                view.showPopup().invoke(it.loginToken.popupError)
-                            },
-                            onGoToActivationPage = {
-                                view.onGoToActivationPage(email).invoke(it)
-                            },
-                            onGoToSecurityQuestion = {
-                                view.onGoToSecurityQuestion(email).invoke()
-                            }
-                    )
-                }
+                val tokenResult = loginTokenV2UseCase.executeOnBackground()
+                LoginV2Mapper(userSession).map(tokenResult,
+                        onSuccessLoginToken = {
+                            view.onSuccessLoginEmail(it)
+                        },
+                        onErrorLoginToken = {
+                            view.onErrorLoginEmail(email).invoke(it)
+                        },
+                        onShowPopupError = {
+                            view.showPopup().invoke(it.loginToken.popupError)
+                        },
+                        onGoToActivationPage = {
+                            view.onGoToActivationPage(email).invoke(it)
+                        },
+                        onGoToSecurityQuestion = {
+                            view.onGoToSecurityQuestion(email).invoke()
+                        }
+                )
             }
             else {
                 view.onErrorLoginEmail(email)
