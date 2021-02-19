@@ -23,9 +23,19 @@ abstract class GlideBuilder<T> {
     private val _transform = mutableListOf<Transformation<Bitmap>>()
 
     private fun transformation(properties: Properties) {
+        // clear before applying a transformations
+        _transform.clear()
+
         with(properties) {
-            if (roundedRadius > 0f) _transform.add(RoundedCorners(roundedRadius.toInt()))
-            if (isCircular) _transform.add(CircleCrop())
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            }
+
+            // built-in CircleCrop transformation
+            if (isCircular) {
+                _transform.add(CircleCrop())
+            }
 
             transforms?.let { _transform.addAll(it) }
             transform?.let { _transform.add(it) }
@@ -37,9 +47,19 @@ abstract class GlideBuilder<T> {
             request: GlideRequest<T>
     ) = request.apply {
         with(properties) {
-            error(error)
+            /*
+            * set multiple transformation into list of transform (_transform)
+            * and then bulk it the transforms from transformList with MultiTransformation
+            * */
             transformation(properties)
+            if (_transform.isNotEmpty()) {
+                request.transform(MultiTransformation(_transform))
+            }
 
+            // set custom error drawable
+            error(error)
+
+            // disable animation (default)
             if (!isAnimate) {
                 dontAnimate()
             }
@@ -48,11 +68,6 @@ abstract class GlideBuilder<T> {
             decodeFormat?.let { format(MediaDecodeFormat.mapTo(it)) }
             overrideSize?.let { override(it.width, it.height) }
             signatureKey?.let { signature(it) }
-
-            // bulk transforms from transformList with MultiTransform
-            if (_transform.isNotEmpty()) {
-                request.transform(MultiTransformation(_transform))
-            }
         }
     }
 
