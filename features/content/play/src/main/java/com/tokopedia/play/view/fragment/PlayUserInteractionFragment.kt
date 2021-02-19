@@ -677,7 +677,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                onboardingView?.hide()
                 toolbarView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
