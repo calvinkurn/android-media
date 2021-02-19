@@ -1306,6 +1306,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showLoading() {
+        loadingLayout?.progress = 0.0f
         loadingLayout?.show()
         doneButton?.hide()
     }
