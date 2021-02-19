@@ -88,3 +88,6 @@ include "libraries:adapter_delegate"
 include "libraries:logger"
 include ':libraries:common_network'
 include "features:user:sessioncommon"
+include "features:communication:push-notification-common"
+include "libraries:keys"
+include "libraries:device_fingerprint"
