@@ -112,3 +112,10 @@ fun RecommendationItem.toProductCardModel(
             hasAddToCartButton = hasAddToCartButton
     )
 }
+
+
+var LABEL_FULFILLMENT: String = "fulfillment"
+
+fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
+    return this.any { it.position == LABEL_FULFILLMENT }
+}

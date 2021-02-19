@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_wishlist.model.datamodel.BannerTopAdsDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -102,6 +103,7 @@ object WishlistTracking {
     private const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
     private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     private fun getTracker(): ContextAnalytics {
@@ -136,7 +138,7 @@ object WishlistTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if (item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                FIELD_DIMENSION_83, getBebasOngkirValue(item)
         )
     }
     private fun convertBannerTopAdsToDataTrackingObject(item: BannerTopAdsDataModel,
@@ -220,6 +222,13 @@ object WishlistTracking {
                 )
         )
         )
+    }
+
+    private fun getBebasOngkirValue(item: RecommendationItem): String{
+        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
+        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
+        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
+        else VALUE_NONE_OTHER
     }
 
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
