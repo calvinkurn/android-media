@@ -2,7 +2,8 @@ package com.tokopedia.home.beranda.helper;
 
 import android.view.View;
 
-import com.tokopedia.design.R;
+import com.tokopedia.home.R;
+
 
 /**
  * Created by Lukas on 5/2/2021.
