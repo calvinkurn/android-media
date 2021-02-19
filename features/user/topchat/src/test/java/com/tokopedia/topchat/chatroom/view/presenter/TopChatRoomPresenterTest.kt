@@ -5,6 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -68,6 +70,7 @@ import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_UNDERSIZE
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_VALID
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -213,11 +216,21 @@ class TopChatRoomPresenterTest {
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
         val exSticker = generateSticker()
         val exResultProduct = generateResultProduct()
-        val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
-        val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
-        val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
-        val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
-        val wsResponseImageAttachmentString = FileUtil.readFileContent("/ws_response_image_attachment.json")
+        val wsResponseReplyString = FileUtil.readFileContent(
+                "/ws_response_reply_text_is_opposite.json"
+        )
+        val wsResponseTypingString = FileUtil.readFileContent(
+                "/ws_response_typing.json"
+        )
+        val wsResponseEndTypingString = FileUtil.readFileContent(
+                "/ws_response_end_typing.json"
+        )
+        val wsResponseReadMessageString = FileUtil.readFileContent(
+                "/ws_response_read_message.json"
+        )
+        val wsResponseImageAttachmentString = FileUtil.readFileContent(
+                "/ws_response_image_attachment.json"
+        )
         val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
                 "/success_get_order_progress.json",
                 OrderProgressResponse::class.java
@@ -1279,6 +1292,30 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) {
             view.renderBackground(exUrl)
+        }
+    }
+
+    @Test
+    fun `when success addProductToCart`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(successAtc)
+
+        // When
+        presenter.addProductToCart(RequestParams(), onSuccess, {})
+
+        // Then
+        verify(exactly = 1) {
+            onSuccess.invoke(successAtc.data)
+        }
+    }
+
+    private fun getSuccessAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 1
         }
     }
 
