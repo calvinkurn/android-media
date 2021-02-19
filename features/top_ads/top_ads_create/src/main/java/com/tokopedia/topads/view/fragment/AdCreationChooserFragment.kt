@@ -16,10 +16,10 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel

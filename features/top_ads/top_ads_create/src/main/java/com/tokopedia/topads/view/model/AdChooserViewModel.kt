@@ -12,10 +12,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.usecase.RequestParams

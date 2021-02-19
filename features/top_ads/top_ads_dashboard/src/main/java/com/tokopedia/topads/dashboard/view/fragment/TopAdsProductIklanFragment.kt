@@ -17,9 +17,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
@@ -43,7 +47,6 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
@@ -387,7 +390,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun loadData() {
-        topAdsDashboardPresenter.getAutoTopUpStatus(resources, ::onSuccessAdsInfo)
+        topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
     }
 
     private fun loadStatisticsData() {
@@ -428,8 +431,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
     }
 
-    private fun onSuccessAdsInfo(data: AutoTopUpStatus?) {
-        adCurrentState = data?.status.toIntOrZero()
+    private fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        adCurrentState = data.status
         topAdsDashboardPresenter.getAdsStatus(resources)
     }
 

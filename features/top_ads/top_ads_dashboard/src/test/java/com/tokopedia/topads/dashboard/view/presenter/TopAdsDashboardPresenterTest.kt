@@ -1,14 +1,11 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.*
@@ -20,19 +17,17 @@ import com.tokopedia.topads.headline.data.Ad
 import com.tokopedia.topads.headline.data.Data
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.topads.headline.data.TopadsGetShopInfoV2
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import rx.Subscriber
-import java.lang.Exception
-import java.lang.reflect.Type
 import java.util.*
 
 @ExperimentalCoroutinesApi
@@ -60,7 +55,8 @@ class TopAdsDashboardPresenterTest {
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
-    private val autoAdsStatusUseCase: GraphqlUseCase<AdStatusResponse> = mockk(relaxed = true)
+    private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse> = mockk(relaxed = true)
+    private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse> = mockk(relaxed = true)
     private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
     private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> = mockk(relaxed = true)
     private var userSession: UserSessionInterface = mockk(relaxed = true)
@@ -77,9 +73,9 @@ class TopAdsDashboardPresenterTest {
                 getStatisticUseCase, budgetRecomUseCase,
                 productRecomUseCase, topAdsEditUseCase,
                 validGroupUseCase, createGroupUseCase,
-                bidInfoUseCase, groupInfoUseCase,autoTopUpUSeCase,
-                autoAdsStatusUseCase,getExpiryDateUseCase,
-                getHiddenTrialUseCase,userSession)
+                bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
+                autoAdsStatusUseCase, getExpiryDateUseCase,
+                getHiddenTrialUseCase, userSession)
     }
 
     @Before
@@ -99,43 +95,37 @@ class TopAdsDashboardPresenterTest {
         every { topAdsGetShopDepositUseCase.execute(captureLambda(), any()) } answers {
             onSuccess.invoke(dataDeposit)
         }
-        presenter.getShopDeposit (onSuccess)
+        presenter.getShopDeposit(onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `get group data success`(){
-
-        val data = GroupItemResponse()
-//        every {
-//            topAdsGetGroupDataUseCase.execute(any(), any())
-//        } answers {
-//            secondArg<Subscriber<GroupItemResponse>>().onError(Throwable())
-//            secondArg<Subscriber<GroupItemResponse>>().onCompleted()
-//            secondArg<Subscriber<>>().onNext()
-//        }
-        presenter.getGroupData(0,"","",1,"","",1) {}
+    fun `get group data success`() {
+        presenter.getGroupData(0, "", "", 1, "", "", 1) {}
 
         verify {
-            topAdsGetGroupDataUseCase.execute(any(), any())}
+            topAdsGetGroupDataUseCase.execute(any(), any())
+        }
     }
 
     @Test
-    fun `get overall stats success`(){
+    fun `get overall stats success`() {
 
-        presenter.getStatistic(Date(), Date(),1,"",) {}
+        presenter.getStatistic(Date(), Date(), 1, "", ) {}
 
         verify {
-            getStatisticUseCase.execute(any(), any())}
+            getStatisticUseCase.execute(any(), any())
+        }
     }
 
     @Test
-    fun `get group stats success`(){
+    fun `get group stats success`() {
 
-        presenter.getGroupStatisticsData(1,"","",1,"","", listOf()){}
+        presenter.getGroupStatisticsData(1, "", "", 1, "", "", listOf()) {}
 
         verify {
-            topAdsGetGroupStatisticsUseCase.execute(any(), any())}
+            topAdsGetGroupStatisticsUseCase.execute(any(), any())
+        }
     }
 
     @Test
@@ -185,10 +175,11 @@ class TopAdsDashboardPresenterTest {
     }
 
     @Test
-    fun `set group action `(){
-        presenter.setGroupAction({},"", listOf(),res)
+    fun `set group action `() {
+        presenter.setGroupAction({}, "", listOf(), res)
         verify {
-            topAdsGroupActionUseCase.execute(any(), any())}
+            topAdsGroupActionUseCase.execute(any(), any())
+        }
     }
 
     @Test
@@ -206,17 +197,19 @@ class TopAdsDashboardPresenterTest {
     }
 
     @Test
-    fun `get product data `(){
-        presenter.getGroupProductData(1,1,"","",1,"","",{}){}
+    fun `get product data `() {
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", {}) {}
         verify {
-            topAdsGetGroupProductDataUseCase.execute(any(), any())}
+            topAdsGetGroupProductDataUseCase.execute(any(), any())
+        }
     }
 
     @Test
-    fun `get insight data `(){
-        presenter.getInsight(res){}
+    fun `get insight data `() {
+        presenter.getInsight(res) {}
         verify {
-            topAdsInsightUseCase.execute(any(), any())}
+            topAdsInsightUseCase.execute(any(), any())
+        }
     }
 
     @Test
@@ -235,35 +228,43 @@ class TopAdsDashboardPresenterTest {
     }
 
     @Test
-    fun `get expiray date success`(){
+    fun `get expiray date success`() {
 
         presenter.getExpiryDate(res)
         verify {
-            getExpiryDateUseCase.execute(any(),any())
+            getExpiryDateUseCase.execute(any(), any())
         }
     }
 
     @Test
-    fun `get hidden trial list date success`(){
+    fun `get hidden trial list date success`() {
         presenter.getShopListHiddenTrial(res)
         verify {
-            getHiddenTrialUseCase.execute(any(),any())
+            getHiddenTrialUseCase.execute(any(), any())
         }
     }
 
     @Test
-    fun `get ad status success`(){
+    fun `get ad status success`() {
         presenter.getAdsStatus(res)
         verify {
-            autoAdsStatusUseCase.execute(any(),any())
+            adsStatusUseCase.execute(any(), any())
         }
     }
 
     @Test
-    fun `get auto topup value success`(){
-        presenter.getAutoTopUpStatus(res,{})
+    fun `get auto ad status success`() {
+        presenter.getAdsStatus(res)
         verify {
-            autoTopUpUSeCase.execute(any(),any())
+            adsStatusUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `get auto topup value success`() {
+        presenter.getAutoTopUpStatus(res, {})
+        verify {
+            autoTopUpUSeCase.execute(any(), any())
         }
     }
 
@@ -279,7 +280,7 @@ class TopAdsDashboardPresenterTest {
         every { productRecomUseCase.execute(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getProductRecommendation (onSuccess )
+        presenter.getProductRecommendation(onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -295,7 +296,7 @@ class TopAdsDashboardPresenterTest {
         every { budgetRecomUseCase.execute(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getDailyBudgetRecommendation (onSuccess )
+        presenter.getDailyBudgetRecommendation(onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -305,14 +306,14 @@ class TopAdsDashboardPresenterTest {
         val data = FinalAdResponse.TopadsManageGroupAds(keywordResponse =
         FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors =
         listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem(title = expected))))
-        var actual =  ""
+        var actual = ""
         val onSuccess: (data: FinalAdResponse.TopadsManageGroupAds) -> Unit = {
-            actual = it.keywordResponse.errors?.get(0)?.title ?:"haha"
+            actual = it.keywordResponse.errors?.get(0)?.title ?: "haha"
         }
-        every { topAdsEditUseCase.executeQuerySafeMode( captureLambda(),any()) } answers   {
+        every { topAdsEditUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.editBudgetThroughInsight (mutableListOf(), hashMapOf(),onSuccess,{} )
+        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), onSuccess, {})
         Assert.assertEquals(expected, actual)
     }
 
@@ -327,7 +328,7 @@ class TopAdsDashboardPresenterTest {
         every { validGroupUseCase.execute(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.validateGroup("",onSuccess)
+        presenter.validateGroup("", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -342,7 +343,7 @@ class TopAdsDashboardPresenterTest {
         every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.createGroup(hashMapOf(),onSuccess)
+        presenter.createGroup(hashMapOf(), onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -357,7 +358,7 @@ class TopAdsDashboardPresenterTest {
         every { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getBidInfo(listOf(),onSuccess)
+        presenter.getBidInfo(listOf(), onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
@@ -372,13 +373,13 @@ class TopAdsDashboardPresenterTest {
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getGroupInfo(res,"",onSuccess)
+        presenter.getGroupInfo(res, "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
 
     @Test
-    fun `check detach view`(){
+    fun `check detach view`() {
         presenter.detachView()
         verify {
             topAdsGetShopDepositUseCase.cancelJobs()

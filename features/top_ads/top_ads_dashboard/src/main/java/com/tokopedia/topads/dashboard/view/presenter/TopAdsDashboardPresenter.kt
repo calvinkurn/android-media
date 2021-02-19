@@ -78,7 +78,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val bidInfoUseCase: BidInfoUseCase,
             private val groupInfoUseCase: GroupInfoUseCase,
             private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-            private val autoAdsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
+            private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
+            private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
             private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
             private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
@@ -333,13 +334,24 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getAdsStatus(resources: Resources) {
-        autoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info))
-        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
-        autoAdsStatusUseCase.setTypeClass(AdStatusResponse::class.java)
-        autoAdsStatusUseCase.execute({
+        adsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info))
+        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        adsStatusUseCase.setTypeClass(AdStatusResponse::class.java)
+        adsStatusUseCase.execute({
             view?.onSuccessAdStatus(it.topAdsGetShopInfo.data)
-        },{
-                Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", it.localizedMessage)
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", it.localizedMessage)
+        })
+    }
+
+    fun getAutoAdsStatus(resources: Resources, onSuccess: ((data: AutoAdsResponse.TopAdsGetAutoAds.Data) -> Unit)) {
+        autoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
+        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        autoAdsStatusUseCase.setTypeClass(AutoAdsResponse::class.java)
+        autoAdsStatusUseCase.execute({
+            onSuccess(it.topAdsGetAutoAds.data)
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", it.localizedMessage)
         })
     }
 
