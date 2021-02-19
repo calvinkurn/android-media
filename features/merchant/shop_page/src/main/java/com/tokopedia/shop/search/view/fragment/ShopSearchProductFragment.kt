@@ -63,7 +63,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-
+        val PAGE_SOURCE = "SHOP_SEARCH_PRODUCT_PAGE"
         fun createInstance(
                 shopId: String,
                 shopName: String,
@@ -230,11 +230,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            if (productListData.isNotEmpty()) {
-                shopPageTrackingShopSearchProduct.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
-            } else {
-                shopPageTrackingShopSearchProduct.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
-            }
             redirectToShopProductListPage()
             activity?.finish()
         }
@@ -266,14 +261,14 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun redirectToShopProductListPage() {
-        val intent = ShopProductListResultActivity.createIntent(
+        val intent = ShopProductListResultActivity.createIntentWithPageSource(
                 context,
                 shopId,
                 searchQuery,
                 "",
                 shopAttribution,
-
-                shopRef
+                shopRef,
+                PAGE_SOURCE
         )
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)

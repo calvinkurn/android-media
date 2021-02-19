@@ -84,6 +84,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_ON_TOKOPEDIA;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT;
@@ -878,6 +879,22 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_PAGE_BUYER,
                 CLICK_FILTER_RATING + rating,
                 productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchResultTracker(
+            Boolean isOwner,
+            String keyword,
+            Boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String actionEvent = isProductResultListEmpty? SEARCH_NO_RESULT: SEARCH;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                actionEvent,
+                keyword,
                 customDimensionShopPage
         );
     }

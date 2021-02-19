@@ -48,6 +48,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
     private ShopComponent component;
     private String shopId;
     private String shopRef = "";
+    private String pageSource = "";
 
     // this field only used first time for new fragment
     private String keyword = "";
@@ -79,6 +80,13 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
         return intent;
     }
 
+    public static Intent createIntentWithPageSource(Context context, String shopId, String keyword,
+                                      String etalaseId, String attribution, String shopRef, String pageSource) {
+        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef);
+        intent.putExtra(ShopParamConstant.EXTRA_PAGE_SOURCE, pageSource);
+        return intent;
+    }
+
     public static Intent createIntent(Context context, String shopId, String shopRef) {
         Intent intent = new Intent(context, ShopProductListResultActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
@@ -94,6 +102,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
         isNeedToReloadData = getIntent().getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false);
+        pageSource = getIntent().getStringExtra(ShopParamConstant.EXTRA_PAGE_SOURCE);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
             if (null == keyword) {
@@ -178,7 +187,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData);
+        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, pageSource);
     }
 
     @Override

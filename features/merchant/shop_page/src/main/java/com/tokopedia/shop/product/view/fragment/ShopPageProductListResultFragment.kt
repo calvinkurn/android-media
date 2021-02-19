@@ -79,6 +79,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
+import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -119,6 +120,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             ""
         }
+    private var pageSource: String = ""
+    private var isShopPageProductSearchResultTrackerAlreadySent: Boolean = false
     private var attribution: String? = null
     private var selectedEtalaseList: ArrayList<ShopEtalaseItemDataModel>? = null
     private var isNeedToReloadData: Boolean = false
@@ -209,6 +212,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onCreate(savedInstanceState: Bundle?) {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
+        pageSource = arguments?.getString(ShopParamConstant.EXTRA_PAGE_SOURCE, "").orEmpty()
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
             arguments?.let {
@@ -231,6 +235,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
             needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
+            isShopPageProductSearchResultTrackerAlreadySent = savedInstanceState.getBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, false)
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortId ?: "")
         setHasOptionsMenu(true)
@@ -430,6 +435,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
+                    if (pageSource == ShopSearchProductFragment.PAGE_SOURCE && !isShopPageProductSearchResultTrackerAlreadySent)
+                        sendShopPageProductSearchResultTracker(productList.isEmpty())
                     renderProductList(productList, hasNextPage, totalProductData)
                     if(!isAlreadyCheckRestrictionInfo) {
                         loadShopRestrictionInfo()
@@ -479,6 +486,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> { }
             }
         })
+    }
+
+    private fun sendShopPageProductSearchResultTracker(isProductResultListEmpty: Boolean) {
+        isShopPageProductSearchResultTrackerAlreadySent = true
+        shopPageTracking?.sendShopPageProductSearchResultTracker(
+                isMyShop, keyword, isProductResultListEmpty, customDimensionShopPage
+        )
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -1002,6 +1016,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
         outState.putParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER, shopProductFilterParameter)
+        outState.putBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, isShopPageProductSearchResultTrackerAlreadySent)
     }
 
     private fun redirectToEtalasePicker() {
@@ -1053,7 +1068,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
         val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
-
+        val SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT = "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
 
         @JvmStatic
@@ -1063,7 +1078,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            etalaseId: String?,
                            sort: String?,
                            attribution: String?,
-                           isNeedToReloadData: Boolean? = false
+                           isNeedToReloadData: Boolean? = false,
+                           pageSource: String = ""
         ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
@@ -1074,6 +1090,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
                 putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
+                putString(ShopParamConstant.EXTRA_PAGE_SOURCE, pageSource)
             }
         }
     }
