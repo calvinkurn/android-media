@@ -118,12 +118,12 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96))
+                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
         }
 
