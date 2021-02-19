@@ -149,7 +149,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     }
 
     private fun observingData() {
-        println("++ observingData")
         snapshotAdapter.showLoader()
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -163,7 +162,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                         visible()
                         text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
-                            println("++ click lihat halaman produk")
                             RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
                             userSession.userId?.let { userId ->
                                 SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
@@ -200,9 +198,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
 
     override fun onSnapshotShopClicked(shopId: Int) {
         activity?.let {
-            println("++ click shop")
-            val applinkShop = ApplinkConst.SHOP.replace("{shop_id}", shopId.toString())
-            RouteManager.route(it, applinkShop)
+            RouteManager.route(it, ApplinkConst.SHOP, shopId.toString())
         }
         userSession.userId?.let { userId ->
             SnapshotAnalytics.clickShopPage(shopId.toString(), userId)

@@ -61,15 +61,6 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
             is SnapshotContentViewHolder-> {
                 holder.bind(element, holder.adapterPosition)
             }
-            /*is SnapshotInfoViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
-            }
-            is SnapshotShopViewHolder-> {
-                holder.bind(element, holder.adapterPosition)
-            }
-            is SnapshotDetailsViewHolder-> {
-                holder.bind(element, holder.adapterPosition)
-            }*/
         }
     }
 

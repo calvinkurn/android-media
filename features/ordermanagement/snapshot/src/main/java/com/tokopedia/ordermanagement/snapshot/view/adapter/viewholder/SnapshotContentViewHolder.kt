@@ -19,7 +19,6 @@ import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotUtils
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageViewPagerAdapter
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ticker.Ticker

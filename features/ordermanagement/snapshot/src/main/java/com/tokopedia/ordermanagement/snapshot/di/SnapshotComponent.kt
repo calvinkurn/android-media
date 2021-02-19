@@ -18,13 +18,5 @@ import kotlinx.coroutines.CoroutineDispatcher
 interface SnapshotComponent {
     fun context(): Context
 
-    fun dispatcher(): CoroutineDispatcher
-
-    fun graphQlRepository(): GraphqlRepository
-
-    fun userSessionInterface(): UserSessionInterface
-
-    fun dispatcherProvider(): SnapshotDispatcherProvider
-
     fun inject(uohListFragment: SnapshotFragment)
 }
