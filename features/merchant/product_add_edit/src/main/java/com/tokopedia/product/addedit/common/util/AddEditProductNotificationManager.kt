@@ -36,8 +36,8 @@ abstract class AddEditProductNotificationManager(
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
         setContentTitle(TITLE_NOTIF_PRODUCT_UPLOAD)
-        setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
+        setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
+        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         priority = NotificationCompat.PRIORITY_MAX

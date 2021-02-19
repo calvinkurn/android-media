@@ -13,7 +13,7 @@ import javax.inject.Inject
 class ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel {
-        TODO("Kasih logic if rollence aktif, if login user, etc")
+        //TODO("Kasih logic if rollence aktif, if login user, etc")
         if(isRollOutUser()){
             if(isLoginUser()){
                 if(hasLocalizingAddressOnCache()){
@@ -23,12 +23,11 @@ class ChooseAddressUtils {
                     TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
                 }
             }else{
-                TODO("Return LocalCacheModel dengan isi JAKARTA PUSAT")
+                return ChooseAddressConstant.defaultAddress
             }
         }else{
             TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
         }
-
     }
 
     private fun hasLocalizingAddressOnCache(): Boolean {
@@ -40,7 +39,7 @@ class ChooseAddressUtils {
         TODO("Not yet implemented, check login apa ga")
     }
 
-    private fun isRollOutUser(): Boolean {
+    fun isRollOutUser(): Boolean {
         TODO("Not yet implemented. atur logic terserah bisa langsung ke endpoint ui atau mau bikin local cache ")
     }
 
@@ -64,7 +63,7 @@ class ChooseAddressUtils {
         return validate
     }
 
-    fun setDataToLocalCache(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String): LocalCacheModel {
+    fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -81,11 +80,13 @@ class ChooseAddressUtils {
      * coachmark must implemented by own host page
      */
     fun isLocalizingAddressNeedShowCoachMark(): Boolean {
+        //cek sharedPref
         TODO("Not yet implemented, untuk HOST supaya tau harus munculin coachmak atau ga. bisa bikin key di sharepref")
         return true
     }
 
     fun coachMarkLocalizingAddressAlreadyShown(){
+        //update sharedPref
         TODO("Not yet implemented, update KEY identifiernya ya")
     }
 

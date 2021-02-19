@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -25,6 +25,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressListener
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -52,7 +53,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener, ChooseAddressWidget.ChooseAddressWidgetListener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener, ChooseAddressListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -198,7 +199,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
                         .findLastVisibleItemPosition()
 
-                if(maxItemPosition < lastVisibleItemPosition) {
+                if (maxItemPosition < lastVisibleItemPosition) {
                     maxItemPosition = lastVisibleItemPosition
                 }
 
@@ -379,6 +380,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        //fetchData()
         chooseAddressWidget?.updateWidget()
     }
 
