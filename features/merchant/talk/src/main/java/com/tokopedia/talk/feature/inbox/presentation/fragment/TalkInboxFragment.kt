@@ -76,10 +76,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val EMPTY_SELLER_PROBLEM = "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
         const val EMPTY_SELLER_AUTOREPLIED = "https://images.tokopedia.net/img/android/talk/talk_inbox_empty_autoreplied.png"
         const val KEY_SHOW_COACH_MARK = "showCoachMark"
-        private const val DISCUSSION_PREF = "discussion.pref"
         const val COACH_MARK_INITIAL_VALUE = true
         const val COACH_MARK_SHOWN = false
         const val COACH_MARK_LAST_INDEX = 2
+        private const val DISCUSSION_PREF = "discussion.pref"
 
         fun createNewInstance(tab: TalkInboxTab? = null, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {

@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 
-class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
+class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouchHelperAdapter?) : ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled(): Boolean {
         return false
@@ -17,7 +17,7 @@ class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        itemTouchHelperAdapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+        itemTouchHelperAdapter?.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
         return true
     }
 

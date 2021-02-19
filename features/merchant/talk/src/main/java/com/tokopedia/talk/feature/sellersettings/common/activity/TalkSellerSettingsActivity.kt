@@ -45,6 +45,7 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
         super.onCreate(savedInstanceState)
         getDataFromApplink()
         setupNavController()
+        setupHeader()
     }
 
     override fun getComponent(): TalkComponent {
@@ -81,20 +82,24 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
             navController.navigateUp()
         }
 
-        val bundle = Bundle().apply {
+        val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
+        navController.setGraph(R.navigation.talk_seller_settings_navigation, getNavigationBundle())
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+    }
+
+    private fun getNavigationBundle(): Bundle {
+        return Bundle().apply {
             putString(KEY_NAVIGATION_PARAM, navigationParam)
         }
+    }
 
+    private fun setupHeader() {
         findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)?.let {
             setSupportActionBar(it)
             it.setNavigationOnClickListener {
                 onBackPressed()
             }
         }
-
-        val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
-        navController.setGraph(R.navigation.talk_seller_settings_navigation, bundle)
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
     private fun getDataFromApplink() {

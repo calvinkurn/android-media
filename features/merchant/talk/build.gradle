@@ -79,6 +79,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

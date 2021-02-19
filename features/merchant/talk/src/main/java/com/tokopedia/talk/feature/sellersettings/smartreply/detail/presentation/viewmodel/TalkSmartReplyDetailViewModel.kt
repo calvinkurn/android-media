@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.TalkSmartReplyDetailButtonState
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplySettingsUseCase
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
@@ -64,7 +65,7 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
             if (response.discussionSetSmartReplySetting.isSuccess) {
                 _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplySetting.reason))
             } else {
-                _setSmartReplyResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplySetting.reason)))
+                _setSmartReplyResult.postValue(Fail(MessageErrorException(response.discussionSetSmartReplySetting.reason)))
             }
         }) {
             _setSmartReplyResult.postValue(Fail(it))
@@ -79,7 +80,7 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
                 _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplyTemplate.reason))
                 updateOriginalMessages(messageReady, messageNotReady)
             } else {
-                _setSmartReplyResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplyTemplate.reason)))
+                _setSmartReplyResult.postValue(Fail(MessageErrorException(response.discussionSetSmartReplyTemplate.reason)))
             }
         }) {
             _setSmartReplyResult.postValue(Fail(it))

@@ -45,8 +45,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     @Inject
     lateinit var viewModel: TalkSmartReplyDetailViewModel
 
-    private var toaster: Snackbar? = null
     private var isTemplateEdited = false
+
+    private var toaster: Snackbar? = null
     private var talkSmartReplyDetailSubtitle: Typography? = null
     private var talkSmartReplySwitch: SwitchUnify? = null
     private var talkSmartReplyDetailCardContainer: ConstraintLayout? = null
@@ -179,20 +180,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun observeSetSmartReplyResult() {
         viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    when {
-                        viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == false -> {
-                            showToaster(getString(R.string.smart_reply_success_activate), false)
-                        }
-                        !viewModel.isSmartReplyOn -> {
-                            showToaster(getString(R.string.smart_reply_success_deactivate), false)
-                        }
-                        viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == true -> {
-                            showToaster(getString(R.string.smart_reply_success_saved), false)
-                        }
-                    }
-                    isTemplateEdited = true
-                }
+                is Success -> onSuccessSetSmartReplyResult()
                 is Fail -> {
                     showToaster(it.throwable.message
                             ?: getString(R.string.inbox_toaster_connection_error), true)
@@ -229,6 +217,21 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                 }
             }
         })
+    }
+
+    private fun onSuccessSetSmartReplyResult() {
+        when {
+            viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == false -> {
+                showToaster(getString(R.string.smart_reply_success_activate), false)
+            }
+            !viewModel.isSmartReplyOn -> {
+                showToaster(getString(R.string.smart_reply_success_deactivate), false)
+            }
+            viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton?.isEnabled == true -> {
+                showToaster(getString(R.string.smart_reply_success_saved), false)
+            }
+        }
+        isTemplateEdited = true
     }
 
     private fun showToaster(successMessage: String, isError: Boolean) {

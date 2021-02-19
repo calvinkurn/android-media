@@ -49,7 +49,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     lateinit var viewModel: TalkTemplateViewModel
 
     private var isSeller: Boolean = false
-    private val adapter = TalkTemplateListAdapter(this)
+
+    private var adapter: TalkTemplateListAdapter? = null
     private var toaster: Snackbar? = null
     private var toolbar: HeaderUnify? = null
     private var editBottomsheet: TalkTemplateBottomsheet? = null
@@ -58,8 +59,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private var talkTemplateListAddButton: UnifyButton? = null
     private var talkTemplateListSwitch: SwitchUnify? = null
     private var talkTemplateListLoading: View? = null
-    private val touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
-    private val itemTouchHelper = ItemTouchHelper(touchHelperCallback)
+    private var touchHelperCallback: TalkTemplateListItemTouchHelperCallback? = null
+    private var itemTouchHelper: ItemTouchHelper? = null
 
     override fun getScreenName(): String {
         return ""
@@ -86,7 +87,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     override fun onDrag(viewHolder: TalkTemplateListViewHolder) {
-        itemTouchHelper.startDrag(viewHolder)
+        itemTouchHelper?.startDrag(viewHolder)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,6 +105,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAdapter()
         bindViewReferences(view)
         showLoading()
         initRecyclerView()
@@ -169,7 +171,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun renderList(templates: List<String>, isEnabled: Boolean) {
         talkTemplateListAddButton?.isEnabled = templates.shouldEnableButton()
-        adapter.setData(templates)
+        adapter?.setData(templates)
         talkTemplateListRecyclerView?.show()
         initSwitch(isEnabled)
     }
@@ -179,7 +181,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
             adapter = this@TalkTemplateListFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
-        itemTouchHelper.attachToRecyclerView(talkTemplateListRecyclerView)
+        itemTouchHelper?.attachToRecyclerView(talkTemplateListRecyclerView)
     }
 
     private fun initSwitch(isEnabled: Boolean) {
@@ -275,7 +277,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun putDataIntoCacheManager(isEditMode: Boolean, template: String?, index: Int?): String {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.apply {
-            put(TalkTemplateBottomsheet.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index, adapter.itemCount > MINIMUM_ITEM))
+            put(TalkTemplateBottomsheet.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index, adapter?.itemCount!! > MINIMUM_ITEM))
         }
         return cacheManager?.id ?: ""
     }
@@ -311,4 +313,9 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 
+    private fun initAdapter() {
+        adapter = TalkTemplateListAdapter(this)
+        touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
+        itemTouchHelper = ItemTouchHelper(touchHelperCallback ?: TalkTemplateListItemTouchHelperCallback(TalkTemplateListAdapter(this)))
+    }
 }

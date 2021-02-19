@@ -26,7 +26,7 @@ class TalkEditTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             addTemplateUseCase.setParams(isSeller, template)
             val response = addTemplateUseCase.executeOnBackground()
-            if(response.chatAddTemplate.success.isMutationSuccess()) {
+            if(response.chatAddTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
@@ -40,7 +40,7 @@ class TalkEditTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             deleteSpecificTemplateUseCase.setParams(index, isSeller)
             val response = deleteSpecificTemplateUseCase.executeOnBackground()
-            if(response.chatDeleteTemplate.success.isMutationSuccess()) {
+            if(response.chatDeleteTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplate)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
@@ -54,7 +54,7 @@ class TalkEditTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             updateSpecificTemplateUseCase.setParams(isSeller, value, index)
             val response = updateSpecificTemplateUseCase.executeOnBackground()
-            if(response.chatUpdateTemplate.success.isMutationSuccess()) {
+            if(response.chatUpdateTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
                 _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
@@ -62,9 +62,5 @@ class TalkEditTemplateViewModel @Inject constructor(
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
         }
-    }
-
-    private fun Int.isMutationSuccess(): Boolean {
-        return this == 1
     }
 }
