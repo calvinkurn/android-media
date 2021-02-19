@@ -37,7 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
-
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.banner

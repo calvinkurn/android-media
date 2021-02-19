@@ -202,7 +202,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun createSimilarSearchItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
-        return SimilarSearchItemDecoration(activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        return SimilarSearchItemDecoration(activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
     }
 
     private fun observeViewModelData() {

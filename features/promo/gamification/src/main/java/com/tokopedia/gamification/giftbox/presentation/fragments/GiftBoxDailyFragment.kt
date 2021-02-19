@@ -470,15 +470,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun handleRecomPage(recommendation: Recommendation?) {
-        recommendation?.isShow?.let { show ->
-            if (show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
+        recommendation?.isShow?.let { _ ->
+            if (canShowRecomPage(recommendation)) {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId.toLong())
+                    var shopId = 0L
+                    if(!recommendation.shopId.isNullOrEmpty()){
+                        shopId = recommendation.shopId.toLong()
+                    }
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName?:"", shopId, recommendation.shopId.isNullOrEmpty())
                 }, 1000L)
 
             }
         }
+    }
+
+    fun canShowRecomPage(recommendation: Recommendation?) :Boolean{
+        if(recommendation!=null){
+            return recommendation.isShow == true && !recommendation.pageName.isNullOrEmpty()
+        }
+        return false
     }
 
     fun performRewardAnimation(startDelay: Long, stageLightAnim: Animator) {
