@@ -49,6 +49,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.mvcwidget.views.MvcDetailView
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -1384,18 +1385,9 @@ class ShopPageFragment :
     }
 
     private fun showMerchantVoucherCouponBottomSheet(shopId: Int) {
-        val bottomSheet = BottomSheetUnify()
-        bottomSheet.setTitle(getString(R.string.shop_merchant_voucher_title_bottom_sheet))
-        val childView = MvcDetailView(requireContext())
-        bottomSheet.setChild(childView)
-        bottomSheet.show((context as AppCompatActivity).supportFragmentManager, getString(R.string.shop_merchant_voucher_tag_bottom_sheet))
-        childView.show(shopId.toString(),false)
-        bottomSheet.setShowListener {
-            val margin = dpToPx(context, 20)
-            bottomSheet.bottomSheetWrapper.setPadding(0,  margin, 0, 0)
-            bottomSheet.bottomSheetClose.setImageResource(com.tokopedia.mvcwidget.R.drawable.mvc_dialog_close)
-            bottomSheet.bottomSheetClose.setMargin(margin, 0, margin, 0)
-        }
+        val intent = Intent(context, TransParentActivity::class.java)
+        intent.putExtra(TransParentActivity.SHOP_ID, shopId)
+        context?.startActivity(intent)
     }
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
