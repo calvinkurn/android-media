@@ -55,6 +55,33 @@
     <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>%1s kali lipat</b>]]></string>
     <string name="title_shop_pm_potential">Toko dengan Power Merchant berpotensi:</string>
     <string name="text_item_potential_pm_benefit">Menerima pesanan lebih banyak <![CDATA[<b>%1s kali lipat</b>]]></string>
+    <string name="title_calculation_shop_performance">Perhitungan</string>
+    <string name="title_tips_shop_performance">Tips</string>
+    <string name="desc_calculation_shop_performance">Skor melambangkan kualitas layanan dan produkmu. Target disesuaikan dengan levelmu.</string>
+    <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan di-update setiap minggunya (Senin).</string>
+    <string name="desc_calculation_success_order">Persentasi jumlah pesanan berhasil dibanding total pesanan masuk.</string>
+    <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.</string>
+    <string name="desc_calculation_level_reply_chat">Persentase jumlah chat dan diskusi yang dibalas oleh Seller dibandingkan total chat (50%) dan diskusi (50%) yang masuk.</string>
+    <string name="desc_calculation_speed_process_order">Waktu yang diperlukan Seller untuk memproses pesanan, dari waktu pesanan masuk hingga resi terkonfirmasi.</string>
+    <string name="desc_calculation_review_product">Persentase ulasan dengan bintang 4+ dalam waktu 90 hari dibandingkan dengan total ulasan yang masuk.</string>
+    <string name="desc_calculation_total_buyer">Jumlah pembeli unik yang berbelanja dalam waktu 90 hari.</string>
+    <string name="desc_calculation_open_seller_app">Membuka Tokopedia Seller dalam waktu 90 hari.</string>
+
+    <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
+    <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (60%) dan diskusi (40%) yang dibalas di jam operasional toko.
+        <br /><br />Setting awal jam operasional Tokopedia adalah 09.00 – 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan akan mengikuti jam operasional toko.</string>
+    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
+    <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
+        <br />Konvensional: 09.00 - 18.00
+        <br />Instan: 09.00 - 17.00
+        <br />
+        <br />(tidak termasuk weekend)</string>
+    <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya.</string>
+    <string name="desc_tips_total_buyer">Gunakan fitur TopAds dan Broadcast Chat untuk menarik pembeli berbelanja.</string>
+    <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>
+
+    <string name="increase_up_to_performance">Tingkatkan hingga <![CDATA[<b> > %1s</b>]]></string>
+    <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
 
 
 
