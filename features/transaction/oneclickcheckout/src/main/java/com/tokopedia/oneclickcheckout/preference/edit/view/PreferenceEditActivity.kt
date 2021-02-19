@@ -324,6 +324,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
         const val EXTRA_FROM_FLOW = "from_flow"
         const val FROM_FLOW_OSP = 1
+        const val FROM_FLOW_OSP_STRING = "osp"
         const val FROM_FLOW_PREF = 0
 
         const val EXTRA_DIRECT_PAYMENT_STEP = "direct_payment_step"

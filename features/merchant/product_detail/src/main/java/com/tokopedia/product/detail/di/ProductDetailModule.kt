@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -51,12 +50,6 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
-
-    @ProductDetailScope
-    @Provides
-    fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
-        return StickyLoginUseCase(context.resources, graphqlRepository)
-    }
 
     @ProductDetailScope
     @Provides

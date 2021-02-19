@@ -10,6 +10,5 @@ object RawQueryKeyConstant {
     const val QUERY_PRODUCT_AFFILIATE = "product_affiliate"
     const val MUTATION_FAVORITE_SHOP = "favorite_shop"
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
-    const val QUERY_TICKER = "query_ticker"
     const val MUTATION_NOTIFY_ME = "query_notify_me"
 }

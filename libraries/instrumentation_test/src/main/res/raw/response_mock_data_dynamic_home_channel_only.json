@@ -2851,6 +2851,11 @@
                     "layout": "dg_bills"
                 },
                 {
+                    "id": 75166,
+                    "layout": "home_widget_2",
+                    "widgetParam": "?section=top_up_dan_tagihan"
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",
@@ -3475,7 +3480,228 @@
                         "expiredTime": "",
                         "backColor": "green",
                         "backImage": ""
-                    }}]
+                    }
+                },
+                {
+                    "banner": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "attribution": "",
+                        "back_color": "#346eeb",
+                        "cta": {
+                            "coupon_code": "",
+                            "mode": "",
+                            "text": "",
+                            "type": ""
+                        },
+                        "description": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ],
+                        "id": 10197,
+                        "image_url": "https://ecs7-p.tokopedia.net/img/PYbRbC/2021/1/28/e6a29f96-c463-4960-91ce-90ddf8678567.png",
+                        "text_color": "#ffffff",
+                        "title": "",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "brand_id": "",
+                    "campaignCode": "",
+                    "categoryID": "{}",
+                    "category_persona": "",
+                    "contextualInfo": 1,
+                    "galaxy_attribution": "PG",
+                    "grids": [
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1147390125",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243826,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/4/11879544/11879544_76e020bd-a725-4a5c-ab2f-b4043b20ea07_1080_1080",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Laptop",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1147390125",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=721948527",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243827,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2021/1/12/49d0f4b5-9c16-4b87-9a2d-0e4e6712a6fb.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Lampu",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=721948527",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1139161419",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243828,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/31/31712488/31712488_11433140-e4ce-45aa-8c62-c39872e764ed_800_800",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Alat Tulis",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1139161419",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=786947893",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243829,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/12/9/f12f41c6-02ff-4e81-94c2-7438f790b221.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Meja Belajar",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=786947893",
+                            "warehouseID": 0
+                        }
+                    ],
+                    "group_id": 240,
+                    "has_close_button": false,
+                    "header": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "backColor": "",
+                        "backImage": "",
+                        "expiredTime": "",
+                        "id": 71585,
+                        "name": "Kisah Kasih Alat Tulis",
+                        "serverTime": 0,
+                        "subtitle": "",
+                        "textColor": "#000000",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "id": 71344,
+                    "isAutoRefreshAfterExpired": false,
+                    "layout": "6_image_auto",
+                    "name": "test lego 6 auto",
+                    "pageName": "",
+                    "perso_type": 1,
+                    "persona": "",
+                    "showPromoBadge": false,
+                    "token": "",
+                    "type": "inspiration",
+                    "widgetParam": ""
+                }
+            ]
         }
     }
 }]

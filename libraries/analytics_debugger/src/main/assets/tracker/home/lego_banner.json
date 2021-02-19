@@ -107,7 +107,8 @@
       "eventLabel": "{{.*}}",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse"
     },
     {
       "businessUnit": "home & browse",
@@ -135,6 +136,7 @@
       }],
       "eventCategory": "homepage",
       "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
       "attribution": "{{.*}}",
       "shopId" : "{{.*}}",
       "event": "select_content",
@@ -144,7 +146,46 @@
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
       "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
       "userId": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": ""
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner 6 auto click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName" : "/",
+      "userId" : "{{.*}}",
+      "eventAction": "lego banner 6 auto click view all",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "event": "clickHomepage",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
     }
   ]
 }
