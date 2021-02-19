@@ -1,6 +1,7 @@
 package com.tokopedia.play.helper
 
 import com.tokopedia.play.view.uimodel.mapper.*
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
@@ -23,7 +24,11 @@ class ClassBuilder {
             channelStatusMapper = channelStatusMapper
     )
 
-    fun getPlayChannelDetailsRecomMapper() = PlayChannelDetailsWithRecomMapper()
+    fun getPlayChannelDetailsRecomMapper(
+            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
+    ) = PlayChannelDetailsWithRecomMapper(
+            htmlTextTransformer = htmlTextTransformer
+    )
 
     fun getMapperExtraParams(
             channelId: String? = null,

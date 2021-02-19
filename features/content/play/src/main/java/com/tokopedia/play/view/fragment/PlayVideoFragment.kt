@@ -35,7 +35,7 @@ import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
-import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -131,8 +131,8 @@ class PlayVideoFragment @Inject constructor(
 
     private val cornerRadius = 16f.dpToPx()
 
+    private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
-    private lateinit var viewModel: PlayVideoViewModel
 
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
@@ -152,7 +152,7 @@ class PlayVideoFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
+        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -218,6 +218,7 @@ class PlayVideoFragment @Inject constructor(
                 videoOrientation = playViewModel.videoOrientation,
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
+                        source = playParentViewModel.source,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoOrientation = playViewModel.videoOrientation,

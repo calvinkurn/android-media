@@ -271,7 +271,9 @@ class PlayViewModel @Inject constructor(
         override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
             viewModelScope.launch(dispatchers.immediate) {
                 val value = _observableStatusInfo.value
-                value?.let { _observableStatusInfo.value = if (shouldFreeze) it.copy(statusType = PlayStatusType.Freeze) else it }
+                if (value != null && !statusType.isFreeze) {
+                    _observableStatusInfo.value = if (shouldFreeze) value.copy(statusType = PlayStatusType.Freeze) else value
+                }
             }
         }
     }
@@ -663,7 +665,7 @@ class PlayViewModel @Inject constructor(
                         _observableQuickReply.value = playSocketToModelMapper.mapQuickReplies(result)
                     }
                     is BannedFreeze -> {
-                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
+                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true) && !statusType.isFreeze) {
                             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
                                     shouldAutoSwipeOnFreeze = true,
                                     statusType = playSocketToModelMapper.mapStatus(
@@ -892,10 +894,13 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun updateStatusInfo(channelId: String) {
+        if (statusType.isFreeze) return
+
         viewModelScope.launchCatchError(block = {
             val channelStatus = getChannelStatus(channelId)
             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                    statusType = playUiModelMapper.mapStatus(channelStatus)
+                    statusType = playUiModelMapper.mapStatus(channelStatus),
+                    shouldAutoSwipeOnFreeze = false
             )
         }, onError = {
 

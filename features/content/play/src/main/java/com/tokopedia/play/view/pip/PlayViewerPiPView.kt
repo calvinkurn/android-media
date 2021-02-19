@@ -12,10 +12,14 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.play.PLAY_KEY_SOURCE_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -134,8 +138,14 @@ class PlayViewerPiPView : ConstraintLayout {
         setOnClickListener {
             mPiPInfo?.let { pipInfo ->
                 removePiP()
-                val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                val intent = RouteManager.getIntent(
+                        context,
+                        UriUtil.buildUriAppendParams(
+                                ApplinkConst.PLAY_DETAIL,
+                                getApplinkQueryParams(pipInfo)
+                        ),
+                        pipInfo.channelId
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra(EXTRA_PLAY_START_VOD_MILLIS, mVideoPlayer.getCurrentPosition())
 
                 context.startActivity(intent)
@@ -174,6 +184,19 @@ class PlayViewerPiPView : ConstraintLayout {
                 channelType = pipInfo.channelType,
                 durationInSecond = durationPiPAttachedInSeconds
         )
+    }
+
+    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> {
+        return when (pipInfo.source) {
+            PlaySource.Unknown -> emptyMap()
+            is PlaySource.Shop -> mapOf(
+                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
+                    PLAY_KEY_SOURCE_ID to pipInfo.source.sourceId
+            )
+            else -> mapOf(
+                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
+            )
+        }
     }
 
     companion object {

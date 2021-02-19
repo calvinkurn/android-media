@@ -3,10 +3,13 @@ package com.tokopedia.play.view.viewmodel
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
@@ -62,7 +65,13 @@ class PlayParentViewModel constructor(
     private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
 
     val sourceType: String
-        get() = handle[KEY_SOURCE_TYPE] ?: ""
+        get() = handle[PLAY_KEY_SOURCE_TYPE] ?: ""
+    
+    val source: PlaySource
+        get() = PlaySource.getBySource(
+                sourceType = sourceType,
+                sourceId = handle[PLAY_KEY_SOURCE_ID]
+        )
 
     val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
@@ -72,10 +81,7 @@ class PlayParentViewModel constructor(
 
     private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
             channelId = startingChannelId ?: error("Channel ID must be provided"),
-            sourceType = GetChannelDetailsWithRecomUseCase.SourceType.getBySource(
-                    sourceType = sourceType,
-                    sourceId = handle[KEY_SOURCE_ID]
-            )
+            source = source
     )
 
     init {
@@ -128,9 +134,6 @@ class PlayParentViewModel constructor(
     }
 
     companion object {
-
-        private const val KEY_SOURCE_TYPE = "source_type"
-        private const val KEY_SOURCE_ID = "source_id"
 
         private const val KEY_START_MILLIS = "start_vod_millis"
     }

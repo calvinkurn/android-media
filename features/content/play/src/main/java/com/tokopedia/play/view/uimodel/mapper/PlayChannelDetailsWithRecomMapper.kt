@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
@@ -9,12 +10,16 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
 /**
  * Created by jegul on 21/01/21
  */
-class PlayChannelDetailsWithRecomMapper @Inject constructor() {
+@PlayScope
+class PlayChannelDetailsWithRecomMapper @Inject constructor(
+        private val htmlTextTransformer: HtmlTextTransformer
+) {
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
@@ -45,7 +50,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor() {
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
             basicInfo = PlayPartnerBasicInfoUiModel(
                     id = partnerResponse.id.toLongOrZero(),
-                    name = partnerResponse.name,
+                    name = htmlTextTransformer.transform(partnerResponse.name),
                     type = PartnerType.getTypeByValue(partnerResponse.type),
             )
     )
@@ -102,12 +107,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor() {
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
             id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
-            partnerName = partnerResponse.name,
+            partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = pinnedMessageResponse.title,
     )
 
     private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(
-            partnerName = partnerResponse.name,
+            partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = configResponse.pinnedProductConfig.pinTitle,
             hasPromo = configResponse.hasPromo,
             shouldShow = configResponse.showPinnedProduct,
