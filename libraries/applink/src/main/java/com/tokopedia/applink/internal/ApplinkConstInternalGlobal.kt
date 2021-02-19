@@ -47,6 +47,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_2FA = "enable_2fa"
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
+    const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -431,6 +432,17 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_RETURN_HOME = "return_to_home"
     @JvmField
     val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
+
+    /**
+     * TermPrivacyActivity
+     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
+     **/
+    @JvmField
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
+    /** for param term privacy */
+    const val PAGE_TERM_AND_CONDITION = "term-condition"
+    const val PAGE_PRIVACY_POLICY = "privacy-policy"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -513,9 +525,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
 
+    // OvoFinalPageActivity
+    // tokopedia-android-internal://global/ovo-final-page
+    @JvmField
+    val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
+
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init
     @JvmField
     val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
-
 }

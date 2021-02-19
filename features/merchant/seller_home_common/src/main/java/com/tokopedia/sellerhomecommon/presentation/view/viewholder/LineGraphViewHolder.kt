@@ -113,7 +113,7 @@ class LineGraphViewHolder(
     }
 
     private fun onStateError(isShown: Boolean) = with(itemView) {
-        ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         commonWidgetErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
@@ -214,7 +214,7 @@ class LineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -222,7 +222,7 @@ class LineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData.yAxisLabel
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

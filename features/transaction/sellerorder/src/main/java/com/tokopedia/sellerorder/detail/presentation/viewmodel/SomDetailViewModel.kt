@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -12,6 +13,7 @@ import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -29,7 +31,7 @@ class SomDetailViewModel @Inject constructor(
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
-) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
@@ -46,7 +48,7 @@ class SomDetailViewModel @Inject constructor(
 
     fun loadDetailOrder(orderId: String) {
         launchCatchError(block = {
-            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toIntOrNull() ?: 0)
+            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
             somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)
             _orderDetailResult.postValue(somGetOrderDetail)
@@ -74,7 +76,7 @@ class SomDetailViewModel @Inject constructor(
     fun loadUserRoles(userId: Int) {
         launchCatchError(block = {
             getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
+            _userRoleResult.postValue(Success(getUserRoleUseCase.execute()))
         }, onError = {
             _userRoleResult.postValue(Fail(it))
         })

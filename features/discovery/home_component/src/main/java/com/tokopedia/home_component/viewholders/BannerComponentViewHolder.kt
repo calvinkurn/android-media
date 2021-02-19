@@ -2,13 +2,8 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
@@ -16,8 +11,10 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
+import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
+import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
+import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -25,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * @author by devarafikry on 11/28/20.
@@ -35,14 +33,10 @@ class BannerComponentViewHolder(itemView: View,
                                 private val homeComponentListener: HomeComponentListener?
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
-        CircularListener, CoroutineScope {
+        BannerItemListener, CoroutineScope {
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
-    private val adapter = BannerChannelAdapter(listOf(), this)
-    private val layoutManager = LinearCenterLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-
-    // tracker
-    private val impressionStatusList = mutableMapOf<Int, Boolean>()
+    private val layoutManager = PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -84,12 +78,11 @@ class BannerComponentViewHolder(itemView: View,
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
 
             channelModel?.let { it ->
                 this.isCache = element.isCache
                 try {
-                    initBanner(it.convertToCircularModel())
+                    initBanner(it.convertToBannerItemModel())
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -105,25 +98,13 @@ class BannerComponentViewHolder(itemView: View,
                 element.channelModel?.let {
                     bannerListener?.onChannelBannerImpressed(it, adapterPosition)
                 }
+                setScrollListener()
             })
         }
     }
 
     override fun bind(element: BannerDataModel, payloads: MutableList<Any>) {
-        try {
-            setHeaderComponent(element)
-            setViewPortImpression(element)
-            channelModel = element.channelModel
-            this.isCache = element.isCache
-
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
-            element.channelModel?.let {
-                val gridCount = it.channelGrids.size
-                adapter.setItemList(it.convertToCircularModel())
-            }
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        bind(element)
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -155,16 +136,26 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
-    private fun initBanner(list: List<CircularModel>){
-        val snapHelper: SnapHelper = LinearSnapHelper()
+    private fun initBanner(list: List<BannerItemModel>){
+        rvBanner.clearOnScrollListeners()
+
+        val snapHelper: SnapHelper = PagerSnapHelper()
+        rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = layoutManager
-        rvBanner.clearOnScrollListeners()
-        rvBanner.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        if (rvBanner.itemDecorationCount == 0) {
+            rvBanner.addItemDecoration(BannerChannelDecoration())
+        }
+        val adapter = BannerChannelAdapter(list, this)
+        rvBanner.adapter = adapter
+        adapter.setItemList(list)
+    }
+
+    private fun setScrollListener() {
+        rvBanner.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when(newState) {
+                when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
-                        onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
                         onPageDragStateChanged(false)
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
@@ -174,12 +165,14 @@ class BannerComponentViewHolder(itemView: View,
                 }
             }
         })
+    }
 
-        if (rvBanner.itemDecorationCount == 0) {
-            rvBanner.addItemDecoration(BannerChannelDecoration())
+    override fun onImpressed(position: Int) {
+        channelModel?.let {channel ->
+            channel.selectGridInPosition(position) {
+                onPromoScrolled(position)
+            }
         }
-        adapter.setItemList(list)
-        rvBanner.adapter = adapter
     }
 
     override fun onClick(position: Int) {
@@ -191,20 +184,14 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(position) && position != -1) {
-            channelModel?.let {channel ->
-                channel.selectGridInPosition(position) {
+        channelModel?.let {channel ->
+            channel.selectGridInPosition(position) {
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
                     bannerListener.onPromoScrolled(channel, it ,position)
                 }
-                impressionStatusList.put(position, true)
             }
         }
-    }
 
-    private fun isBannerImpressed(position: Int): Boolean {
-        return if (impressionStatusList.size > position && position != -1) {
-            impressionStatusList[position]?:false
-        } else false
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
@@ -230,14 +217,9 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
-    fun resetImpression(){
-        impressionStatusList.clear()
-        layoutManager.scrollToPosition(0)
-    }
-
-    private fun ChannelModel.convertToCircularModel(): List<CircularModel> {
+    private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-            this.channelGrids.map{ CircularModel(it.id.toInt(), it.imageUrl) }
+            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
         } catch (e: NumberFormatException) {
             listOf()
         }
@@ -249,8 +231,6 @@ class BannerComponentViewHolder(itemView: View,
             this.channelGrids[position]
         } else null
     }
-
-
 
     companion object {
         @LayoutRes

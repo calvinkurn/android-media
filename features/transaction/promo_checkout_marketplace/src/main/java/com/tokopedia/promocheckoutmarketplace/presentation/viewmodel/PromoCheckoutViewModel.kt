@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
@@ -154,11 +155,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest)
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<CouponListRecommendationResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleGetPromoListResponse(response, tmpPromoCode)
@@ -599,11 +602,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         )
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, applyPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ValidateUseResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleApplyPromoResponse(response, selectedPromoList, validateUsePromoRequest)
@@ -869,11 +874,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         tmpMutation = tmpMutation.replace("#isOCC", (validateUsePromoRequest.cartType == "occ").toString())
 
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ClearPromoResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleClearPromoResponse(response, validateUsePromoRequest, toBeRemovedPromoCodes)
     }
@@ -990,11 +997,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private suspend fun doGetPromoLastSeen(query: String) {
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<GetPromoSuggestionResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleGetPromoLastSeenResponse(response)
     }

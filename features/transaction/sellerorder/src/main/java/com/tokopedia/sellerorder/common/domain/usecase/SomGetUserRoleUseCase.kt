@@ -13,24 +13,19 @@ class SomGetUserRoleUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<SomGetUserRoleResponse>,
         private val mapper: SomUserRoleMapper) {
 
-    suspend fun execute(): Result<SomGetUserRoleUiModel> {
+    init {
         useCase.setGraphqlQuery(QUERY)
         useCase.setTypeClass(SomGetUserRoleResponse::class.java)
-
-        return try {
-            val result = mapper.mapDomainToUiModel(useCase.executeOnBackground().goldGetUserShopInfo?.data)
-            Success(result)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
     }
+
+    suspend fun execute(): SomGetUserRoleUiModel = mapper.mapDomainToUiModel(useCase.executeOnBackground().goldGetUserShopInfo?.data)
 
     fun setUserId(userId: Int) {
         useCase.setRequestParams(mapOf(USER_ID to userId))
     }
 
     companion object {
-        private const val QUERY = "query UserRole(\$userID: Int!){\n" +
+        private const val QUERY = "query GetUserRole(\$userID: Int!){\n" +
                 "  GoldGetUserShopInfo(userID:\$userID) {\n" +
                 "    Data {\n" +
                 "      Roles\n" +

@@ -1,0 +1,222 @@
+[
+  {
+    "data": {
+      "get_som_detail": {
+        "order_id": 688060798,
+        "status": 0,
+        "status_text": "Pesanan Dibatalkan",
+        "status_text_color": "#EF144A",
+        "status_indicator_color": "#B5BBC5",
+        "invoice": "INV/20210118/XXI/I/729621539",
+        "invoice_url": "https://www.tokopedia.com/invoice.pl?id=688060798&pdf=Invoice-12299749-2664611-20210118142640-eXl5eXl5eXk0",
+        "checkout_date": "",
+        "payment_date": "18 Jan 2021, 14:26 WIB",
+        "notes": "",
+        "products": [
+          {
+            "id": 1517876535,
+            "order_detail_id": 1027717227,
+            "name": "testing 1",
+            "product_url": "https://www.tokopedia.com/b3rl14n-1nd4h/testing-1",
+            "snapshot_url": "https://www.tokopedia.com/snapshot_product?order_id=688060798&dtl_id=1027717227",
+            "currency_type": 1,
+            "currency_rate": 0,
+            "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg",
+            "price": 100000,
+            "price_text": "Rp 100.000",
+            "weight": 0.5,
+            "weight_text": "500 gr",
+            "quantity": 1,
+            "note": "",
+            "free_return": 0,
+            "free_return_message": "",
+            "purchase_protection_fee": 0,
+            "purchase_protection_fee_text": "Rp 0",
+            "purchase_protection_quantity": 0
+          }
+        ],
+        "customer": {
+          "id": 12299749,
+          "name": "Try Sugihartoo",
+          "image": "https://ecs7.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-19.jpg",
+          "phone": "6287767899273"
+        },
+        "dropshipper": {
+          "phone": "",
+          "name": ""
+        },
+        "shipment": {
+          "id": 1,
+          "name": "JNE",
+          "product_id": 1,
+          "product_name": "Reguler",
+          "is_same_day": 0,
+          "awb": "",
+          "awb_upload_proof_text": "",
+          "awb_text_color": "",
+          "awb_upload_url": ""
+        },
+        "shipment_change": {
+          "id": 0,
+          "name": "",
+          "product_id": 0,
+          "product_name": "",
+          "is_same_day": 0,
+          "awb": ""
+        },
+        "booking_info": {
+          "driver": {
+            "name": "",
+            "phone": "",
+            "photo": "",
+            "license_number": "",
+            "tracking_url": ""
+          },
+          "pickup_point": {
+            "store_code": "",
+            "district_id": 0,
+            "address": "",
+            "geo_location": "",
+            "store_name": "",
+            "pickup_code": ""
+          },
+          "online_booking": {
+            "booking_code": "",
+            "state": 1,
+            "message": "Terima pesanan terlebih dahulu",
+            "message_array": [
+              "Terima pesanan terlebih dahulu"
+            ],
+            "barcode_type": ""
+          }
+        },
+        "receiver": {
+          "name": "Try Sugihartoo",
+          "phone": "6287767899273",
+          "street": "Cilangkap, Cilangkap, Kec. Cipayung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta [Tokopedia Note: asdadd]",
+          "postal": "13870",
+          "district": "Cipayung",
+          "city": "Kota Administrasi Jakarta Timur",
+          "province": "DKI Jakarta"
+        },
+        "deadline": {
+          "text": "",
+          "color": ""
+        },
+        "insurance": {
+          "type": 2,
+          "name": "Tokopedia Insurance",
+          "note": "Paket ini tidak menggunakan asuransi pihak logistik, penjual <strong>tidak perlu bayar asuransi</strong> ke kurir."
+        },
+        "warehouse": {
+          "warehouse_id": 2152693,
+          "fulfill_by": 0
+        },
+        "exclusive_promo": {
+          "amount": 0,
+          "note": ""
+        },
+        "buyer_request_cancel": {
+          "is_request_cancel": false,
+          "request_cancel_time": "",
+          "reason": ""
+        },
+        "flag_order_type": {
+          "is_order_cod": false,
+          "is_order_now": false,
+          "is_order_kelontong": false,
+          "is_order_sampai": false,
+          "is_order_trade_in": false
+        },
+        "flag_order_meta": {
+          "is_free_shipping_campaign": false,
+          "is_topads": false,
+          "is_tokocabang": false,
+          "is_shipping_printed": false
+        },
+        "label_info": [],
+        "logistic_info": {
+          "all": [
+            {
+              "id": "additional_info_auto_awb",
+              "priority": 1,
+              "description": "Additional Info Auto Awb",
+              "info_text_short": "Wajib <b>Cetak Label</b> atau <b>Tulis Kode Booking Pengiriman</b> pada paket AWB Otomatis",
+              "info_text_long": "Wajib <b>Cetak Label</b> atau <b>Tulis Kode Booking Pengiriman</b> pada paket AWB Otomatis"
+            },
+            {
+              "id": "insurance_conventional",
+              "priority": 2,
+              "description": "Insurance for Conventional Shipping",
+              "info_text_short": "Paket ini tidak menggunakan asuransi pihak logistik, penjual <strong>tidak perlu bayar asuransi</strong> ke kurir.",
+              "info_text_long": "Paket ini tidak menggunakan asuransi pihak logistik, penjual <strong>tidak perlu bayar asuransi</strong> ke kurir."
+            }
+          ],
+          "priority": {
+            "id": "additional_info_auto_awb",
+            "priority": 1,
+            "description": "Additional Info Auto Awb",
+            "info_text_short": "Wajib <b>Cetak Label</b> atau <b>Tulis Kode Booking Pengiriman</b> pada paket AWB Otomatis",
+            "info_text_long": "Wajib <b>Cetak Label</b> atau <b>Tulis Kode Booking Pengiriman</b> pada paket AWB Otomatis"
+          },
+          "others": [
+            {
+              "id": "insurance_conventional",
+              "priority": 2,
+              "description": "Insurance for Conventional Shipping",
+              "info_text_short": "Paket ini tidak menggunakan asuransi pihak logistik, penjual <strong>tidak perlu bayar asuransi</strong> ke kurir.",
+              "info_text_long": "Paket ini tidak menggunakan asuransi pihak logistik, penjual <strong>tidak perlu bayar asuransi</strong> ke kurir."
+            }
+          ]
+        },
+        "button": [],
+        "online_booking": {
+          "is_hide_input_awb": false,
+          "is_remove_input_awb": false,
+          "is_show_info": false,
+          "info_text": ""
+        },
+        "penalty_reject_info": {
+          "is_penalty_reject": true,
+          "penalty_reject_wording": "Pembatalan pengiriman akan mendapatkan penalti reputasi. <a href='https://www.tokopedia.com/help/article/a-0522'><b>Pelajari sistem penalti</b></a>"
+        },
+        "ticker_info": {
+          "text": "",
+          "type": "",
+          "action_text": "",
+          "action_key": "",
+          "action_url": ""
+        }
+      }
+    }
+  },
+  {
+    "data": {
+      "get_som_dynamic_price": {
+        "payment_method": [],
+        "payment_data": {
+          "label": "Total Bayar",
+          "value": "Rp 109.500",
+          "text_color": "#393D43"
+        },
+        "pricing_data": [
+          {
+            "label": "Total Harga (1 barang)",
+            "value": "Rp 100.000",
+            "text_color": ""
+          },
+          {
+            "label": "Total Ongkos Kirim (500 gr)",
+            "value": "Rp 9.000",
+            "text_color": ""
+          },
+          {
+            "label": "Biaya Asuransi",
+            "value": "Rp 500",
+            "text_color": ""
+          }
+        ]
+      }
+    }
+  }
+]

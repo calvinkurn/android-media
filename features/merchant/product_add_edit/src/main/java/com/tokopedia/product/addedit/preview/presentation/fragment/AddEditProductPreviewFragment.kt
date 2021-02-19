@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +47,9 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
@@ -72,6 +76,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -145,6 +151,8 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
+    private var productInputModel: ProductInputModel? = null
+    private var isFragmentVisible = false
 
     private var toolbar: Toolbar? = null
 
@@ -275,16 +283,19 @@ class AddEditProductPreviewFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
+
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
 
-        // action button
+        // ticker specification unavailable
         tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
@@ -485,8 +496,29 @@ class AddEditProductPreviewFragment :
         stopPreparePagePerformanceMonitoring()
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    productInputModel = this
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
@@ -791,6 +823,10 @@ class AddEditProductPreviewFragment :
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
+            // set data only in draft or edit mode to make dynamic ui preview
+            if (isDrafting() || viewModel.productInputModel.value?.productId != 0L) {
+                productInputModel = viewModel.productInputModel.value
+            }
         }
     }
 
@@ -805,7 +841,7 @@ class AddEditProductPreviewFragment :
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
-        tickerAddEditProductNotification?.show()
+        tickerAddEditProductNotification?.isVisible = !RollenceUtil.getSpecificationRollence()
 
         enablePhotoEdit()
         enableDetailEdit()
@@ -946,6 +982,12 @@ class AddEditProductPreviewFragment :
             }
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
+            //check whether productInputModel has value from savedInstanceState
+            if (productInputModel != null) {
+                viewModel.productInputModel.value = productInputModel
+                checkEnableOrNot()
+                productInputModel = null
+            }
         })
     }
 
@@ -1404,7 +1446,7 @@ class AddEditProductPreviewFragment :
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.label_for_action_text_toaster_success_set_shop_location)
-            ) { /*no op*/ }.show()
+            ).show()
         }
     }
 

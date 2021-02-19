@@ -12,8 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -298,7 +298,7 @@ class VideoDetailFragment:
                 authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
             }
 
-            authorTitle.text = it.avatarTitle
+            authorTitle.text = MethodChecker.fromHtml(it.avatarTitle)
 
             it.avatarDate = TimeConverter.generateTime(activity!!, it.avatarDate)
             authorSubtitile.text = it.avatarDate

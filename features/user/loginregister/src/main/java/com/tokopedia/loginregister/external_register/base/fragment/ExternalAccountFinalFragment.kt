@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
@@ -25,6 +26,8 @@ open class ExternalAccountFinalFragment: BaseDaggerFragment() {
     @Inject
     lateinit var ovoCreationAnalytics: OvoCreationAnalytics
 
+    @Inject
+    lateinit var externalRegisterPreference: ExternalRegisterPreference
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
