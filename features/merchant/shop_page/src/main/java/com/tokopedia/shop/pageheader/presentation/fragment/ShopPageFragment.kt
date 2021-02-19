@@ -47,8 +47,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.mvcwidget.setMargin
-import com.tokopedia.mvcwidget.views.MvcDetailView
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
@@ -1385,9 +1384,11 @@ class ShopPageFragment :
     }
 
     private fun showMerchantVoucherCouponBottomSheet(shopId: Int) {
-        val intent = Intent(context, TransParentActivity::class.java)
-        intent.putExtra(TransParentActivity.SHOP_ID, shopId)
-        context?.startActivity(intent)
+        context?.startActivity(TransParentActivity.getIntent(
+                context = requireContext(),
+                shopId = shopId.toString(),
+                source = MvcSource.SHOP)
+        )
     }
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
