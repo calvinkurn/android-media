@@ -260,9 +260,11 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         })
     }
 
-    override fun onPreferenceSelected(preference: ProfilesItemModel) {
-        preferenceListAnalytics.eventClickJadikanPilihanUtama()
-        viewModel.changeDefaultPreference(preference)
+    override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
+        if (!isMainProfile) {
+            preferenceListAnalytics.eventClickJadikanPilihanUtama()
+            viewModel.changeDefaultPreference(preference)
+        }
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
