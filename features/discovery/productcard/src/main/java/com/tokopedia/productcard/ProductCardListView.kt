@@ -18,19 +18,6 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonNotify
-import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelBestSeller
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelCampaignBackground
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
-import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
