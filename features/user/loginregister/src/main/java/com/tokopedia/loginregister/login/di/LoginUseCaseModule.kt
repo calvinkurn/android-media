@@ -9,7 +9,7 @@ import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import dagger.Module
@@ -43,7 +43,7 @@ class LoginUseCaseModule {
 
     @Provides
     fun provideLoginTokenUseCaseV2(graphqlRepository: GraphqlRepository): LoginTokenV2UseCase {
-        val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
+        val useCase = GraphqlUseCase<LoginTokenPojoV2>(graphqlRepository)
         return LoginTokenV2UseCase(useCase)
     }
 

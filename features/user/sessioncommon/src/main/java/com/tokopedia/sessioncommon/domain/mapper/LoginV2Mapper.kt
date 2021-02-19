@@ -2,7 +2,7 @@ package com.tokopedia.sessioncommon.domain.mapper
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -12,10 +12,10 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class LoginV2Mapper(val userSession: UserSessionInterface) {
 
-    fun map(loginTokenPojo: LoginTokenPojo,
-            onSuccessLoginToken: (loginTokenPojo: LoginTokenPojo) -> Unit,
+    fun map(loginTokenPojo: LoginTokenPojoV2,
+            onSuccessLoginToken: (loginTokenPojo: LoginTokenPojoV2) -> Unit,
             onErrorLoginToken: (e: Throwable) -> Unit,
-            onShowPopupError: (loginTokenPojo: LoginTokenPojo)  -> Unit,
+            onShowPopupError: (loginTokenPojo: LoginTokenPojoV2)  -> Unit,
             onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
             onGoToSecurityQuestion: () -> Unit){
 
@@ -44,12 +44,12 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
 
     }
 
-    private fun shouldGoToActivationPage(loginTokenPojo: LoginTokenPojo): Boolean {
+    private fun shouldGoToActivationPage(loginTokenPojo: LoginTokenPojoV2): Boolean {
         val NOT_ACTIVATED = "belum diaktivasi"
         return loginTokenPojo.loginToken.errors.isNotEmpty() && loginTokenPojo.loginToken.errors[0].message.contains(NOT_ACTIVATED)
     }
 
-    private fun saveAccessToken(loginTokenPojo: LoginTokenPojo?) {
+    private fun saveAccessToken(loginTokenPojo: LoginTokenPojoV2?) {
         loginTokenPojo?.loginToken?.run {
             userSession.setToken(
                     accessToken,
