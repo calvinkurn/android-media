@@ -354,7 +354,7 @@ class OrderSummaryPageRobot {
     fun assertPaymentRevamp(paymentName: String, paymentDetail: String?) {
         onView(withId(R.id.tv_new_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
         if (paymentDetail != null) {
-            onView(withId(R.id.tv_new_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
+            onView(withId(R.id.tv_new_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentDetail)))
         } else {
             onView(withId(R.id.tv_new_payment_detail)).check { view, noViewFoundException ->
                 noViewFoundException?.printStackTrace()
