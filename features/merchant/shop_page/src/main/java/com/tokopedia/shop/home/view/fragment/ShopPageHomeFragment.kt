@@ -964,7 +964,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getMerchantVoucherCoupon(shopId)
     }
 
-    override fun onVoucherItemImpressed() {
+    override fun onVoucherImpression() {
         shopPageHomeTracking.impressionSeeEntryPoint(shopId, viewModel?.userId)
     }
 
