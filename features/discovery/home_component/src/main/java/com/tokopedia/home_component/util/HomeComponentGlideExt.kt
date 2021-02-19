@@ -3,7 +3,7 @@ package com.tokopedia.home_component.util
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
-import com.tokopedia.media.loader.common.MediaDataSource
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
