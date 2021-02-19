@@ -56,7 +56,6 @@ class DiscomActivityTest {
 
     @Test
     fun givenValidQueryReturnsRequiredResults() {
-        // Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
         val testQuery = "jak"
         onView(withId(R.id.edit_text_search)).perform(typeText(testQuery), closeSoftKeyboard())
 
