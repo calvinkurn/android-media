@@ -14,8 +14,33 @@ class ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel {
         TODO("Kasih logic if rollence aktif, if login user, etc")
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        return chooseAddressPref?.getLocalCacheData()
+        if(isRollOutUser()){
+            if(isLoginUser()){
+                if(hasLocalizingAddressOnCache()){
+                    var chooseAddressPref = ChooseAddressSharePref(context)
+                    return chooseAddressPref?.getLocalCacheData()
+                }else{
+                    TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
+                }
+            }else{
+                TODO("Return LocalCacheModel dengan isi JAKARTA PUSAT")
+            }
+        }else{
+            TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
+        }
+
+    }
+
+    private fun hasLocalizingAddressOnCache(): Boolean {
+        TODO("Not yet implemented, check cachenya kosong atau ga")
+    }
+
+    private fun isLoginUser(): Boolean {
+        TODO("Not yet implemented, check login apa ga")
+    }
+
+    private fun isRollOutUser(): Boolean {
+        TODO("Not yet implemented. atur logic terserah bisa langsung ke endpoint ui atau mau bikin local cache ")
     }
 
     /**
