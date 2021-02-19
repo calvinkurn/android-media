@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,9 +30,13 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -88,6 +94,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         setupView(view)
         setChild(view)
         setTitle("Mau kirim belanjaan ke mana?")
+        setCloseClickListener { this.dismiss() }
     }
 
     private fun setupView(child: View) {
@@ -125,7 +132,29 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     }
 
     private fun initObserver() {
+        viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val data = it.data
+                    val localData = ChooseAddressUtils().setDataToLocalCache(
+                            addressId = data.addressId.toString(),
+                            cityId = data.cityId.toString(),
+                            districtId = data.districtId.toString(),
+                            lat = data.latitude,
+                            long = data.longitude,
+                            label = data.addressName
+                    )
+                    chooseAddressPref?.setLocalCache(localData)
+                    listener.onAddressChosen()
+                    this.dismiss()
+                }
 
+                is Fail -> {
+                    showError(it.throwable)
+                }
+
+            }
+        })
     }
 
     private fun renderButton() {
@@ -152,6 +181,11 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         }
     }
 
+    private fun showError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun getComponent(): ChooseAddressComponent {
         return DaggerChooseAddressComponent.builder()
                 .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
@@ -170,8 +204,10 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
+        //can't be set due gql
+        //viewModel.setStateChosenAddress()
+
         val data = ChooseAddressUtils().setDataToLocalCache(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
-        viewModel.setStateChosenAddress()
         chooseAddressPref?.setLocalCache(data)
         listener.onAddressChosen()
     }

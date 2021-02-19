@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
@@ -130,7 +131,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     fun updateWidget(){
         val data = chooseAddressPref?.getLocalCacheData()
         val label = context.getString(R.string.txt_send_to, data?.label)
-        textChosenAddress?.text = Html.fromHtml(label)
+        textChosenAddress?.text = MethodChecker.fromHtml(label)
     }
 
     private fun getComponent(): ChooseAddressComponent {
