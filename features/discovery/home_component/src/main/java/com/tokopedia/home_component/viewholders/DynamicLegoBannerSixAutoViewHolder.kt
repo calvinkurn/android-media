@@ -66,7 +66,7 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
                 itemView.item_lego_auto_image.setImageUrl(url = element.channelModel.channelBanner.imageUrl)
             }
             itemView.item_lego_auto_image.setOnClickListener {
-                legoSixAutoListener?.onTallImageClicked(element.channelModel, adapterPosition)
+                legoSixAutoListener?.onTallImageClicked(element.channelModel, (adapterPosition+1))
             }
         }
         if (element.channelModel.channelGrids.isNotEmpty()) {
