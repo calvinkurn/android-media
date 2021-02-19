@@ -18,6 +18,7 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.appsflyer.AppsflyerEventValidation;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
@@ -111,7 +112,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             Timber.d("Error key Appsflyer");
-            initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
+            initAppsFlyer(Keys.getAppsFlyerKey(context), userID, conversionListener);
         }
     }
 

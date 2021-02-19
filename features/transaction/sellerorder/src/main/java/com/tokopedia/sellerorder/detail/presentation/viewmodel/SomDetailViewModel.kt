@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class SomDetailViewModel @Inject constructor(
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
         authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
-) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
@@ -78,7 +79,6 @@ class SomDetailViewModel @Inject constructor(
             _setDelivered.postValue(Fail(it))
         })
     }
-
     fun getAdminPermission() {
         launchCatchError(
                 block = {

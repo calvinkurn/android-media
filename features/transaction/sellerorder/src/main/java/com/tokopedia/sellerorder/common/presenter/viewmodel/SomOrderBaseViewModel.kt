@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -14,19 +15,18 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 
-abstract class SomOrderBaseViewModel constructor(
-        dispatcher: CoroutineDispatcher,
+abstract class SomOrderBaseViewModel(
+        dispatcher: SomDispatcherProvider,
         protected val userSession: UserSessionInterface,
         private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val somRejectOrderUseCase: SomRejectOrderUseCase,
         private val somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         private val firstAuthorizeAccessUseCase: AuthorizeAccessUseCase,
-        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher) {
+        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher.io()) {
 
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrderResponse.Data>>()
     val acceptOrderResult: LiveData<Result<SomAcceptOrderResponse.Data>>
@@ -46,35 +46,51 @@ abstract class SomOrderBaseViewModel constructor(
 
     private var userRolesJob: Job? = null
 
-    fun acceptOrder(orderId: String) {
+    protected open suspend fun doAcceptOrder(orderId: String, invoice: String) {
+        somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
+        _acceptOrderResult.postValue(Success(somAcceptOrderUseCase.execute()))
+    }
+
+    protected open suspend fun doRejectOrder(rejectOrderRequestParam: SomRejectRequestParam, invoice: String) {
+        _rejectOrderResult.postValue(Success(somRejectOrderUseCase.execute(rejectOrderRequestParam)))
+    }
+
+    protected open suspend fun doEditAwb(orderId: String, shippingRef: String, invoice: String) {
+        somEditRefNumUseCase.setParams(SomEditRefNumRequestParam(orderId, shippingRef))
+        _editRefNumResult.postValue(Success(somEditRefNumUseCase.execute()))
+    }
+
+    protected open suspend fun doRejectCancelOrder(orderId: String, invoice: String) {
+        _rejectCancelOrderResult.postValue(Success(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId))))
+    }
+
+    fun acceptOrder(orderId: String, invoice: String = "") {
         launchCatchError(block = {
-            somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
-            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute())
+            doAcceptOrder(orderId, invoice)
         }, onError = {
             _acceptOrderResult.postValue(Fail(it))
         })
     }
 
-    fun rejectOrder(rejectOrderRequestParam: SomRejectRequestParam) {
+    fun rejectOrder(rejectOrderRequestParam: SomRejectRequestParam, invoice: String = "") {
         launchCatchError(block = {
-            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequestParam))
+            doRejectOrder(rejectOrderRequestParam, invoice)
         }, onError = {
             _rejectOrderResult.postValue(Fail(it))
         })
     }
 
-    fun editAwb(orderId: String, shippingRef: String) {
+    fun editAwb(orderId: String, shippingRef: String, invoice: String = "") {
         launchCatchError(block = {
-            somEditRefNumUseCase.setParams(SomEditRefNumRequestParam(orderId, shippingRef))
-            _editRefNumResult.postValue(somEditRefNumUseCase.execute())
+            doEditAwb(orderId, shippingRef, invoice)
         }, onError = {
             _editRefNumResult.postValue(Fail(it))
         })
     }
 
-    fun rejectCancelOrder(orderId: String) {
+    fun rejectCancelOrder(orderId: String, invoice: String = "") {
         launchCatchError(block = {
-            _rejectCancelOrderResult.postValue(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId)))
+            doRejectCancelOrder(orderId, invoice)
         }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 

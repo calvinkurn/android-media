@@ -370,7 +370,7 @@ public class ExploreFragment
                 }
 
                 if (position == 0) {
-                    outRect.top = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16);
+                    outRect.top = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16);
                 }
 
                 Visitable visitable = adapter.getData().get(position);
@@ -379,9 +379,9 @@ public class ExploreFragment
                     int spanIndex =
                             ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
+                        outRect.left = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
+                        outRect.right = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_12);
                     }
                 }
             }
