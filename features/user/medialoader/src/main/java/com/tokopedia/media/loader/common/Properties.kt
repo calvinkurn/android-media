@@ -3,10 +3,13 @@ package com.tokopedia.media.loader.common
 import android.graphics.Bitmap
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
+import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
@@ -30,6 +33,9 @@ open class Properties(
 
     // getting the load time on listener
     internal var loadTime: String = ""
+
+    // validation of performance monitoring
+    internal val isTrackable: Boolean = data is String && data.toString().contains(CDN_IMAGE_URL)
 
     fun setDelay(timeInMs: Long) = apply {
         this.renderDelay = timeInMs
@@ -84,7 +90,7 @@ open class Properties(
     }
 
     fun listener(
-            onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+            onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
             onError: (MediaException?) -> Unit = { _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
@@ -111,6 +117,7 @@ open class Properties(
         return other is Properties &&
                 renderDelay == other.renderDelay &&
                 loadTime == other.loadTime &&
+                isTrackable == other.isTrackable &&
                 thumbnailUrl == other.thumbnailUrl &&
                 blurHash == other.blurHash &&
                 isAnimate == other.isAnimate &&
@@ -131,6 +138,7 @@ open class Properties(
         var result = thumbnailUrl.hashCode()
         result = 31 * result + renderDelay.hashCode()
         result = 31 * result + loadTime.hashCode()
+        result = 31 * result + isTrackable.hashCode()
         result = 31 * result + blurHash.hashCode()
         result = 31 * result + isAnimate.hashCode()
         result = 31 * result + isCircular.hashCode()

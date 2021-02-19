@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.uitest
+package com.tokopedia.media.loader.ui
 
 import android.os.Bundle
 import android.widget.Toast

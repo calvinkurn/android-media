@@ -6,20 +6,19 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
-import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.common.builder.GlideBitmapBuilder
-import com.tokopedia.media.loader.common.builder.GlideGifBuilder
+import com.tokopedia.media.loader.common.factory.BitmapFactory
+import com.tokopedia.media.loader.common.factory.GifFactory
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 
 internal object MediaLoaderApi {
 
-    private val bitmapBuilder by lazy { GlideBitmapBuilder() }
-    private val gifBuilder by lazy { GlideGifBuilder() }
+    private val bitmap by lazy { BitmapFactory() }
+    private val gif by lazy { GifFactory() }
 
     private val handler by lazy { Handler() }
 
@@ -77,11 +76,11 @@ internal object MediaLoaderApi {
                     * only track the performance monitoring for a new domain,
                     * which is already using CDN services, 'images.tokopedia.net'.
                     * */
-                    if (source.contains(CDN_IMAGE_URL)) {
+                    if (properties.isTrackable) {
                         tracker = PerformanceTracker.preRender(source, context)
                     }
 
-                    bitmapBuilder.build(
+                    bitmap.build(
                             context = context,
                             blurHash = blurHash,
                             properties = properties,
@@ -90,7 +89,7 @@ internal object MediaLoaderApi {
                     ).load(source)
                 }
                 else -> {
-                    bitmapBuilder.build(
+                    bitmap.build(
                             context = context,
                             properties = properties,
                             request = this
@@ -112,7 +111,7 @@ internal object MediaLoaderApi {
             GlideApp.with(context)
                     .asGif()
                     .load(data)
-                    .apply { gifBuilder.build(properties, this) }
+                    .apply { gif.build(properties, this) }
                     .into(imageView)
         }
     }

@@ -3,7 +3,6 @@ package com.tokopedia.media.loader.tracker
 import android.content.Context
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.data.MediaSettingPreferences
-import com.tokopedia.media.loader.utils.AttributeUtils
 
 object PerformanceTracker {
 
@@ -12,7 +11,6 @@ object PerformanceTracker {
 
     private const val IMAGE_URL = "image_url"
     private const val QUALITY_SETTING = "image_quality_setting"
-    private const val DATE_TIME = "date_time"
     private const val PAGE_NAME = "page_name"
     private const val LOAD_TIME = "load_time"
     private const val FILE_SIZE = "file_size"
@@ -26,7 +24,6 @@ object PerformanceTracker {
         return PerformanceMonitoring.start(MEDIA_LOADER_TRACE).apply {
             putCustomAttribute(IMAGE_URL, urlWithoutPrefix)
             putCustomAttribute(QUALITY_SETTING, mediaSetting.getQualitySetting(mediaSettingIndex))
-            putCustomAttribute(DATE_TIME, AttributeUtils.getDateTime())
         }
     }
 

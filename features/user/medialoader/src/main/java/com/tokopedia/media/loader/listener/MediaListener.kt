@@ -1,8 +1,8 @@
-package com.tokopedia.media.loader.common
+package com.tokopedia.media.loader.listener
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 interface MediaListener {
     fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?)

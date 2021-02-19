@@ -1,17 +1,17 @@
-package com.tokopedia.media.loader.common.builder
+package com.tokopedia.media.loader.common.factory
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.loader.R
-import com.tokopedia.media.loader.common.GlideBuilder
+import com.tokopedia.media.loader.common.MediaLoaderFactory
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.transform.BlurHashDecoder.decode as blurHashDecode
-import com.tokopedia.media.loader.utils.MediaListenerBuilder.callback as callbackListener
+import com.tokopedia.media.loader.listener.MediaListenerBuilder.callback as callbackListener
 
-class GlideBitmapBuilder : GlideBuilder<Bitmap>() {
+class BitmapFactory : MediaLoaderFactory<Bitmap>() {
 
     fun build(
             context: Context,

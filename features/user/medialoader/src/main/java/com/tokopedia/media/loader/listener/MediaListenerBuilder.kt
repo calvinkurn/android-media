@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.utils
+package com.tokopedia.media.loader.listener
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,10 +8,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.media.loader.common.MediaListener
 import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource as dataSource
 import com.tokopedia.media.loader.tracker.PerformanceTracker.postRender as trackPerformancePostRender
+import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapToDataSource as dataSource
 
 object MediaListenerBuilder {
 
@@ -43,14 +42,19 @@ object MediaListenerBuilder {
             val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it).toString() }?: "0"
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
-            trackPerformancePostRender(
-                    performanceMonitoring,
-                    pageName,
-                    loadTime,
-                    fileSize
-            )
+            // only track if the URL from CDN service
+            if (properties.isTrackable) {
+                trackPerformancePostRender(
+                        performanceMonitoring,
+                        pageName,
+                        loadTime,
+                        fileSize
+                )
+            }
 
+            // override the load time into properties
             properties.loadTime = loadTime
+
             listener?.onLoaded(resource, dataSource(dataSource))
             return false
         }

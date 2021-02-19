@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.common
+package com.tokopedia.media.loader.wrapper
 
 import com.bumptech.glide.load.DataSource
 

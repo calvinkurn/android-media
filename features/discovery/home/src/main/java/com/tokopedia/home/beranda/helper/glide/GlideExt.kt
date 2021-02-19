@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
-import com.tokopedia.media.loader.common.MediaDataSource
-import com.tokopedia.media.loader.common.MediaListener
+import com.tokopedia.media.loader.wrapper.MediaDataSource
+import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon

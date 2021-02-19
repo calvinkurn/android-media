@@ -1,11 +1,11 @@
-package com.tokopedia.media.loader.common.builder
+package com.tokopedia.media.loader.common.factory
 
 import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.tokopedia.media.loader.common.GlideBuilder
+import com.tokopedia.media.loader.common.MediaLoaderFactory
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideRequest
 
-class GlideGifBuilder : GlideBuilder<GifDrawable>() {
+class GifFactory : MediaLoaderFactory<GifDrawable>() {
 
     fun build(
             properties: Properties,

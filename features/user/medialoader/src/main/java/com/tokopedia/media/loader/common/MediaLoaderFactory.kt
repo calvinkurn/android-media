@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
-abstract class GlideBuilder<T> {
+abstract class MediaLoaderFactory<T> {
 
     /*
     * The transformation mechanism carried out by medialoader is
