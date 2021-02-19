@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.catalog.model.datamodel.CatalogDetailDataModel
-import com.tokopedia.catalog.usecase.CatalogDetailUseCase
+import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

@@ -167,8 +167,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun setUpAdapter() {
         productTypeFactory = ProductTypeFactoryImpl(this)
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
+        productNavListAdapter?.setIsStaggered(false)
+        productNavListAdapter?.changeListView()
         product_recyclerview.adapter = productNavListAdapter
-        product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        product_recyclerview.layoutManager = getLinearLayoutManager()
         productNavListAdapter?.addShimmer()
 
         attachScrollListener()
@@ -240,6 +242,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
+                    headerTitle.text = getString(R.string.catalog_search_product_count_text,it)
                     setQuickFilterAdapter(getString(R.string.catalog_result_count_template_text, it))
                 } else {
                     setQuickFilterAdapter("")
@@ -355,35 +358,35 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun getProductListParamMap(start: Int): RequestParams {
-
         val param = RequestParams.create()
-
-
         val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
-        searchProductRequestParams.putString(CategoryNavConstants.SC, departmentId)
-        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
-        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
-        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
-        searchProductRequestParams.putString(CategoryNavConstants.CTG_ID, catalogId)
-        searchProductRequestParams.putAllString(getSelectedSort())
-        searchProductRequestParams.putAllString(getSelectedFilter())
+        searchProductRequestParams.apply {
+            putString(CategoryNavConstants.START, (start * 10).toString())
+            putString(CategoryNavConstants.SC, departmentId)
+            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+            putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+            putString(CategoryNavConstants.ROWS, "10")
+            putString(CategoryNavConstants.SOURCE, "catalog")
+            putString(CategoryNavConstants.CTG_ID, "65051")
+            putAllString(getSelectedSort())
+            putAllString(getSelectedFilter())
+        }
         param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
 
 
         val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, departmentId)
-        topAdsRequestParam.putString(CategoryNavConstants.CTG_ID, catalogId)
-
+        topAdsRequestParam.apply {
+            putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.KEY_SRC, "directory")
+            putString(CategoryNavConstants.KEY_PAGE, start.toString())
+            putString(CategoryNavConstants.KEY_EP, "product")
+            putString(CategoryNavConstants.KEY_ITEM, "2")
+            putString(CategoryNavConstants.KEY_F_SHOP, "1")
+            putString(CategoryNavConstants.KEY_DEPT_ID, departmentId)
+            putString(CategoryNavConstants.CTG_ID, catalogId)
+        }
         topAdsRequestParam.putAllString(getSelectedSort())
 
         param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
@@ -557,6 +560,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.onPause()
     }
 
+    override fun hasThreeDots(): Boolean {
+        return true
+    }
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
     }

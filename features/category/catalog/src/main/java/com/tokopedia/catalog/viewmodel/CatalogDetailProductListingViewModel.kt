@@ -2,11 +2,11 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
+import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.common_category.usecase.DynamicFilterUseCase
-import com.tokopedia.common_category.usecase.GetProductListUseCase
-import com.tokopedia.common_category.usecase.QuickFilterUseCase
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.usecase.RequestParams
@@ -17,9 +17,9 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class CatalogDetailProductListingViewModel
-@Inject constructor(var quickFilterUseCase: QuickFilterUseCase,
-                    var dynamicFilterUseCase: DynamicFilterUseCase,
-                    var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+@Inject constructor(var quickFilterUseCase: CatalogQuickFilterUseCase,
+                    var dynamicFilterUseCase: CatalogDynamicFilterUseCase,
+                    var getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     val mProductCount = MutableLiveData<String>()
@@ -33,9 +33,8 @@ class CatalogDetailProductListingViewModel
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products?.let { productList ->
                             mProductList.value = Success((productList) as List<ProductsItem>)
+                            mProductCount.value = if(productList.size == 0) "" else productList.size.toString()
                         }
-
-                        mProductCount.value = searchProduct.countText
                     }
                 }
 

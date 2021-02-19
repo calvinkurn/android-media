@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.show
@@ -103,10 +105,14 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
+        openBottomSheetProductListing()
+    }
 
-//        Handler().postDelayed({
-//            CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
-//        },3000)
+    private fun openBottomSheetProductListing() {
+        // TODO REMOVE
+        Handler().postDelayed({
+            CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
+        },3000)
     }
 
     private fun initViews() {

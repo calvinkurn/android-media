@@ -36,12 +36,14 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
     var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
     var isShimmer: Boolean = false
-
+    private var isStaggeredLayout = true
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
-        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        when(visitables[position]){
-            is LoadingMoreModel -> layout.isFullSpan = true
+        if (isStaggeredLayout){
+            val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+            when(visitables[position]){
+                is LoadingMoreModel -> layout.isFullSpan = true
+            }
         }
         holder.bind(visitables[position])
     }
@@ -191,5 +193,9 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         }
         viewedProductList.clear()
         viewedTopAdsList.clear()
+    }
+
+    fun setIsStaggered(isStaggered : Boolean){
+        isStaggeredLayout = isStaggered
     }
 }

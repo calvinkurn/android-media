@@ -97,9 +97,9 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     lineView.minimumHeight = 2
                     lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.catalog_grey_line))
                     if(specs.specificationsRow.size - 1 == index){
-                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(R.dimen.dp_22))
+                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.unify_space_24))
                     }else {
-                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(R.dimen.dp_1))
+                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.unify_space_0))
                     }
                     lineView.layoutParams = params
                     linear_layout.addView(lineView)

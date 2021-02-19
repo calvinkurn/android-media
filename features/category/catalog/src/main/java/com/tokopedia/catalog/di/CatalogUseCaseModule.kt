@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
-import com.tokopedia.common_category.usecase.*
-import com.tokopedia.catalog.usecase.CatalogDetailUseCase
+import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.catalog.usecase.listing.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -47,25 +47,37 @@ class CatalogUseCaseModule {
     }
 
     @CatalogScope
-    @Named("topAdsProductListing")
+    @Named("catalogTopAdsProductListing")
     @Provides
-    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase()
+    fun provideCatalogTopAdsUseCase(): CatalogTopAdsProductsUseCase {
+        return CatalogTopAdsProductsUseCase()
     }
 
     @CatalogScope
     @Provides
-    fun provideCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CategoryProductUseCase {
-        return CategoryProductUseCase(graphqlUseCase)
+    fun provideCatalogCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CatalogCategoryProductUseCase {
+        return CatalogCategoryProductUseCase(graphqlUseCase)
     }
 
     @CatalogScope
     @Provides
-    fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
-                              , @Named("topAdsProductListing") topAdsProductsUseCase
-                              : TopAdsProductsUseCase)
-            : GetProductListUseCase {
-        return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
+    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase
+                              , @Named("catalogTopAdsProductListing") catalogTopAdsProductsUseCase
+                              : CatalogTopAdsProductsUseCase)
+            : CatalogGetProductListUseCase {
+        return CatalogGetProductListUseCase(catalogCategoryProductUseCase, catalogTopAdsProductsUseCase)
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogDynamicFilterUseCase(): CatalogDynamicFilterUseCase {
+        return CatalogDynamicFilterUseCase()
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogQuickFilterUseCase(): CatalogQuickFilterUseCase {
+        return CatalogQuickFilterUseCase()
     }
 
     @CatalogScope

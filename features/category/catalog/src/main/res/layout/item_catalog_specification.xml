@@ -42,6 +42,8 @@
             android:maxWidth="@dimen/dp_110"
             android:layout_marginTop="@dimen/dp_6"
             app:typographyType="body_3"
+            android:ellipsize="end"
+            android:maxLines="3"
             tools:text="6.1 inch Super Retina HDR Display, 1170 x 2532 pixels"
             />
 

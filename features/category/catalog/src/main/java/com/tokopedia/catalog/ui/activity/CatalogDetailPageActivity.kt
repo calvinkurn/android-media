@@ -2,14 +2,10 @@ package com.tokopedia.catalog.ui.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.tkpd.library.utils.legacy.MethodChecker
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
@@ -18,7 +14,6 @@ import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
-import com.tokopedia.core.model.share.ShareData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -27,13 +22,13 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.share.DefaultShare
-import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
 class CatalogDetailPageActivity :  BaseSimpleActivity(),
         CatalogDetailPageFragment.Listener,
         CategoryNavigationListener,
-        BottomSheetListener {
+        BottomSheetListener,
+        SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener{
 
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
@@ -239,5 +234,20 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
 
     private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    // TODO CHECK
+    override fun onSortButtonClicked() {
+        //CatalogDetailPageAnalytics.trackEventClickSort()
+        //visibleFragmentListener?.onSortClick()
+    }
+
+    override fun onFilterButtonClicked() {
+        //CatalogDetailPageAnalytics.trackEventClickFilter()
+        //visibleFragmentListener?.onFilterClick()
+    }
+
+    override fun onSortApplied(showTick: Boolean) {
+        //searchNavContainer?.onSortSelected(showTick)
     }
 }

@@ -5,6 +5,8 @@ import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
 import com.tokopedia.catalog.model.raw.*
+import com.tokopedia.common_category.model.productModel.*
+import java.util.*
 
 object CatalogDetailMapper {
 
@@ -214,5 +216,159 @@ object CatalogDetailMapper {
         )
         val catalogGetDetailModular = CatalogResponseData.CatalogGetDetailModular(basicInfo,componentList)
         return CatalogResponseData(catalogGetDetailModular)
+    }
+
+    fun getDummyProductList(): List<ProductsItem> {
+        val array = arrayListOf<ProductsItem>()
+        array.add((ProductsItem(
+                null,
+                "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/18/f55e4438-02da-4b01-9a76-a74e6c423bea.jpg\"",
+                Shop(false,"Jakarta Pusat","CMP phone","",false,"",
+                        false,"",
+                        5982341, "https://www.tokopedia.com/cmpphone",false),
+                "Rp13.699.000",
+                false,
+                false,
+                5,
+                "Handphone  Tablet",
+                0,23,"Rp13.699.000",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/18/f55e4438-02da-4b01-9a76-a74e6c423bea.jpg",
+                1432537477,
+                "handphone-tablet/handp hone/ios",
+                0,
+                1213,
+                65,
+                "",
+                31,
+                "https://www.tokopedia.com/cmpphone/apple-iphone-12-mini-128gb-grs-resmi-ibox-indonesia?whid=0",
+                Arrays.asList(
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback")
+                ),
+                Arrays.asList(
+                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true),
+                ),
+                0,
+                Arrays.asList(
+                        LabelGroupsItem("integrity","textDarkGrey","Terjual 6")
+
+                ),
+                "APPLE IPHONE 12 MINI 128GB GRS RESMI IBOX INDONESIA",
+                0,
+                "",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/18/f55e4438-02da-4b01-9a76-a74e6c423bea.jpg",
+                false,
+                false,
+                "",
+                "",
+                "",
+                0,
+                FreeOngkir(true,"https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
+                ""
+
+        )))
+
+        array.add((ProductsItem(
+                null,
+                "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                Shop(false,"Jakarta Pusat","CMP phone","",false,"",
+                        false,"",
+                        5982341, "https://www.tokopedia.com/cmpphone",false),
+                "Rp13.699.000",
+                false,
+                false,
+                4,
+                "Handphone  Tablet",
+                0,
+                60,
+                "Rp13.699.000",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                1276760028,
+                "handphone-tablet/handp hone/ios",
+                1,
+                12,
+                65,
+                "",
+                21,
+                "https://www.tokopedia.com/cmpphone/apple-iphone-12-mini-128gb-grs-resmi-ibox-indonesia?whid=0",
+                Arrays.asList(
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback")
+                ),
+                Arrays.asList(
+                        BadgesItem("https://images.tokopedia.net/img/power_merchant_badge.png", "Power Badge",true),
+                ),
+                1,
+                Arrays.asList(
+                        LabelGroupsItem("integrity","textDarkGrey","Terjual 6")
+                ),
+                "Apple iPhone 12 Mini 256GB 128GB 64GB - Blue Green Red White Black",
+                0,
+                "",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                false,
+                true,
+                "",
+                "",
+                "",
+                0,
+                FreeOngkir(false,"https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
+                ""
+
+        )))
+
+        array.add((ProductsItem(
+                null,
+                "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                Shop(true,"Jakarta Pusat","CMP phone","Clover",true,
+                        "https://inbox.tokopedia.com/reputation/v1/badge/shop/6246981",
+                        true,"Jakarta Pusat",
+                        5982341, "https://www.tokopedia.com/cmpphone",true),
+                "Rp12.999.000",
+                false,
+                false,
+                4,
+                "Handphone  Tablet",
+                0,
+                5,"Rp13.699.000",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                1362477524,
+                "handphone-tablet/handp hone/ios",
+                1,
+                234,
+                65,
+                "",
+                24,
+                "https://www.tokopedia.com/cmpphone/apple-iphone-12-mini-128gb-grs-resmi-ibox-indonesia?whid=0",
+                Arrays.asList(
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback"),
+                        LabelsItem("lightGreen","Cashback")
+                ),
+                Arrays.asList(
+                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true),
+                ),
+                0,
+                Arrays.asList(
+                        LabelGroupsItem("integrity","textDarkGrey","Terjual 1")
+                ),
+                "Apple iPhone 12 Mini 256GB 128GB 64GB - Blue Green Red White Black",
+                0,
+                "",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/28/1ce15d8b-f5c1-42f5-8e19-7e23e7650a6d.png",
+                false,
+                false,
+                "",
+                "",
+                "",
+                0,
+                FreeOngkir(true,"https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
+                ""
+
+        )))
+
+        return array
     }
 }

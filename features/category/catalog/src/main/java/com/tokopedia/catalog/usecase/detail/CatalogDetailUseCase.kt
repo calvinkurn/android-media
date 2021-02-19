@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.usecase
+package com.tokopedia.catalog.usecase.detail
 
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData

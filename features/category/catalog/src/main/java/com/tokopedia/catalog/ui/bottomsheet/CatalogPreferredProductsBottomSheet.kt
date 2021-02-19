@@ -16,6 +16,8 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         isSkipCollapseState = false
         showKnob = true
+        showCloseIcon = false
+        showHeader = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
@@ -30,10 +32,8 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle(resources.getString(R.string.catalog_daftar_produk_pilihan))
-        childFragmentManager.beginTransaction()
-                .add(CatalogDetailProductListingFragment.newInstance("52191","","",""),"")
-                .commit()
+        childFragmentManager.beginTransaction().replace(R.id.frame_content,
+                CatalogDetailProductListingFragment.newInstance("52191","","","")).commit()
 
     }
 
