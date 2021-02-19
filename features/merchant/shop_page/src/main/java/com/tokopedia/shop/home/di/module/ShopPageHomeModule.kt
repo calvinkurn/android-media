@@ -92,6 +92,12 @@ class ShopPageHomeModule {
                       totalReview
                       isPO
                       cashback
+                      labelGroups {
+                        position
+                        type
+                        title
+                        url
+                      }
                     }
                     ... on CampaignWidget {
                       campaignID

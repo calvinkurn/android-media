@@ -404,6 +404,7 @@ object ShopPageHomeMapper {
                 isShowWishList = !isMyOwnProduct
                 isShowFreeOngkir = response.isShowFreeOngkir
                 freeOngkirPromoIcon = response.freeOngkirPromoIcon
+                labelGroupList = response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
