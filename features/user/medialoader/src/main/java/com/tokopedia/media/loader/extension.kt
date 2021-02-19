@@ -31,20 +31,16 @@ fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
-fun ImageView.loadImage(url: String?) = this.loadImage(url) {}
-
 inline fun ImageView.loadImage(
         url: String?,
-        crossinline properties: Properties.() -> Unit
+        crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties))
 
 fun ImageView.loadImageFitCenter(url: String?) = this.loadImage(url) { transform(FitCenter()) }
 
-fun ImageView.loadImageWithoutPlaceholder(url: String?) = this.loadImageWithoutPlaceholder(url) {}
-
 fun ImageView.loadImageWithoutPlaceholder(
         url: String?,
-        properties: Properties.() -> Unit
+        properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.setPlaceHolder(-1)
     it.useBlurHash(false)
@@ -68,17 +64,15 @@ fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageRes
 inline fun ImageView.loadImageRounded(
         url: String?,
         rounded: Float = DEFAULT_ROUNDED,
-        crossinline configuration: Properties.() -> Unit = {
-            Properties().apply {
-                setRoundedRadius(rounded)
-            }
-        }) {
-    call(url, Properties().apply(configuration))
+        crossinline configuration: Properties.() -> Unit = {}) {
+    call(url, Properties().apply(configuration).also {
+        it.setRoundedRadius(rounded)
+    })
 }
 
 inline fun ImageView.loadIcon(
         url: String?,
-        crossinline properties: Properties.() -> Unit
+        crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.useBlurHash(false)
 
@@ -89,8 +83,6 @@ inline fun ImageView.loadIcon(
      * */
     it.setPlaceHolder(-1)
 })
-
-fun ImageView.loadIcon(url: String?) = this.loadIcon(url) {}
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
