@@ -3,8 +3,9 @@ package com.tokopedia.ordermanagement.snapshot.domain
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.ordermanagement.snapshot.data.model.Data
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.PARAM_INPUT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -15,10 +16,10 @@ import javax.inject.Inject
  * Created by fwidjaja on 1/25/21.
  */
 class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(param: SnapshotParam): Result<SnapshotResponse.Data.GetOrderSnapshot> {
+    suspend fun executeSuspend(param: SnapshotParam): Result<GetOrderSnapshot> {
         return try {
-            val request = GraphqlRequest(QUERY, SnapshotResponse.Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<SnapshotResponse.Data>()
+            val request = GraphqlRequest(QUERY, Data::class.java, generateParam(param))
+            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<Data>()
             Success(response.getOrderSnapshot)
         } catch (throwable: Throwable) {
             Fail(throwable)

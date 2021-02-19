@@ -13,9 +13,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BARU
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BEKAS
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotUtils
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageViewPagerAdapter
@@ -56,8 +58,9 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val dividerMinOrder = itemView.findViewById<View>(R.id.divider_min_order)
     val desc = itemView.findViewById<Typography>(R.id.snapshot_desc)
 
+    @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
-        if (item.dataObject is SnapshotResponse.Data.GetOrderSnapshot) {
+        if (item.dataObject is GetOrderSnapshot) {
             // header
             val productImages = item.dataObject.productImageSecondary
             if (productImages.isNotEmpty()) {
@@ -155,10 +158,10 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             shopName.text = item.dataObject.shopSummary.shopName
 
             val condition = when {
-                item.dataObject.orderDetail.condition == 1 -> {
+                item.dataObject.orderDetail.condition == KONDISI_BARU -> {
                     itemView.context.getString(R.string.snapshot_condition_baru)
                 }
-                item.dataObject.orderDetail.condition == 0 -> {
+                item.dataObject.orderDetail.condition == KONDISI_BEKAS -> {
                     itemView.context.getString(R.string.snapshot_condition_bekas)
                 }
                 else -> {
@@ -215,7 +218,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
 
             val minOrder = item.dataObject.orderDetail.minOrder
 
-            if (minOrder > 0) {
+            if (minOrder.toInt() > 0) {
                 minOrderLabel.visible()
                 minOrderValue.visible()
                 minOrderValue.text = "$minOrder pcs"

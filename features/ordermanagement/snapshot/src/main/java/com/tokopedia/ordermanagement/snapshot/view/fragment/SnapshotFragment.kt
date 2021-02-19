@@ -21,12 +21,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.analytics.SnapshotAnalytics
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.di.DaggerSnapshotComponent
 import com.tokopedia.ordermanagement.snapshot.di.SnapshotModule
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
@@ -51,7 +50,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
-    private var responseSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
+    private var responseSnapshot = GetOrderSnapshot()
     private var srlSnapshot: SwipeToRefresh? = null
     private var refreshHandler: RefreshHandler? = null
 
@@ -196,12 +195,12 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         }
     }
 
-    override fun onSnapshotShopClicked(shopId: Int) {
+    override fun onSnapshotShopClicked(shopId: String) {
         activity?.let {
-            RouteManager.route(it, ApplinkConst.SHOP, shopId.toString())
+            RouteManager.route(it, ApplinkConst.SHOP, shopId)
         }
         userSession.userId?.let { userId ->
-            SnapshotAnalytics.clickShopPage(shopId.toString(), userId)
+            SnapshotAnalytics.clickShopPage(shopId, userId)
         }
     }
 

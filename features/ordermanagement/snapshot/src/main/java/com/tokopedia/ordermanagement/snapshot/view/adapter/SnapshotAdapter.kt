@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.snapshot.R
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_CONTENT
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_LOADER
@@ -17,7 +17,7 @@ import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
  */
 class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>() {
     var listTypeData = mutableListOf<SnapshotTypeData>()
-    var snapshotResponse = SnapshotResponse.Data.GetOrderSnapshot()
+    var snapshotResponse = GetOrderSnapshot()
     private var actionListener: ActionListener? = null
 
     companion object {
@@ -27,7 +27,7 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
 
     interface ActionListener {
         fun onSnapshotImgClicked(position: Int)
-        fun onSnapshotShopClicked(shopId: Int)
+        fun onSnapshotShopClicked(shopId: String)
     }
 
     fun setActionListener(fragment: SnapshotFragment) {
