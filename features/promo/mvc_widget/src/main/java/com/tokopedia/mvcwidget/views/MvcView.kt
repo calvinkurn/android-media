@@ -1,7 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.text.Html
 import android.util.AttributeSet
@@ -10,8 +9,8 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -28,6 +27,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var mvcContainer: MvcShadowLayout
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
+    @MvcSource
+    var source: Int = MvcSource.SHOP
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
@@ -45,13 +46,12 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            val intent = Intent(context, TransParentActivity::class.java)
-            intent.putExtra(TransParentActivity.SHOP_ID, shopId)
-            context.startActivity(intent)
+            context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source:Int) {
+    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source: Int) {
+        this.source = source
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()

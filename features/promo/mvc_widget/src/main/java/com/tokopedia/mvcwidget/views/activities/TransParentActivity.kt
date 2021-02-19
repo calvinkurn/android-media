@@ -1,11 +1,13 @@
 package com.tokopedia.mvcwidget.views.activities
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.mvcwidget.views.MvcDetailView
@@ -17,6 +19,15 @@ import com.tokopedia.user.session.UserSession
 class TransParentActivity : BaseActivity() {
     companion object{
         const val SHOP_ID = "shopId"
+        const val MVC_SOURCE = "mvcSource"
+
+        fun getIntent(context: Context, shopId:String, @MvcSource source:Int):Intent{
+            val intent = Intent(context, TransParentActivity::class.java)
+            intent.putExtra(SHOP_ID, shopId)
+            intent.putExtra(MVC_SOURCE, source)
+            return intent
+        }
+
     }
 
     val REQUEST_CODE_LOGIN = 12
