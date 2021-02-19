@@ -15,8 +15,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DAILY_BUDGET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_CURRENT_TAB
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
 import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
@@ -151,15 +151,15 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             if (page == CONST_0)
                 index = CONST_0
             if (page == CONST_1) {
-                index = if (isDailyBudgetFirst())
+                index = if (checkFragmentPosition(CONST_0, DAILY_BUDGET))
                     CONST_0
                 else
                     CONST_1
             }
             if (page == CONST_2) {
-                if (isKeywordFirst())
+                if (checkFragmentPosition(CONST_0, KATA_KUNCI))
                     index = CONST_0
-                index = if (isKeywordsecond())
+                index = if (checkFragmentPosition(CONST_1, KATA_KUNCI))
                     CONST_1
                 else
                     CONST_2
@@ -183,10 +183,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (topAdsInsightTabAdapter?.itemCount ?: 0 >= CONST_1)
             return when (topAdsInsightTabAdapter?.itemCount) {
                 CONST_1 -> {
-                    isKeywordFirst()
+                    checkFragmentPosition(CONST_0, KATA_KUNCI)
                 }
                 CONST_2 -> {
-                    return !(!isKeywordFirst() && !isKeywordsecond())
+                    return !(!checkFragmentPosition(CONST_0, KATA_KUNCI) && !checkFragmentPosition(CONST_1, KATA_KUNCI))
                 }
                 else -> true
             }
@@ -196,25 +196,15 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun isDailyBudgetAvailable(): Boolean {
         if (topAdsInsightTabAdapter?.itemCount ?: 0 >= CONST_1)
             return if (topAdsInsightTabAdapter?.itemCount == CONST_1) {
-                isDailyBudgetFirst()
-            } else{
-                !(!isDailyBudgetFirst() && !isDailyBudgetsecond())
+                checkFragmentPosition(CONST_0, DAILY_BUDGET)
+            } else {
+                !(!checkFragmentPosition(CONST_0, DAILY_BUDGET) && !checkFragmentPosition(CONST_1, DAILY_BUDGET))
             }
         return false
     }
 
-    private fun isDailyBudgetFirst(): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(CONST_0)?.contains(DAILY_BUDGET) == true
-    }
-    private fun isDailyBudgetsecond(): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(CONST_1)?.contains(DAILY_BUDGET) == true
-    }
-
-    private fun isKeywordFirst(): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(CONST_0)?.contains(KATA_KUNCI) == true
-    }
-    private fun isKeywordsecond(): Boolean {
-        return topAdsInsightTabAdapter?.getTab()?.get(CONST_1)?.contains(KATA_KUNCI) == true
+    private fun checkFragmentPosition(index: Int, value: String): Boolean {
+        return topAdsInsightTabAdapter?.getTab()?.get(index)?.contains(value) == true
     }
 
     private fun isProductAvailable(): Boolean {
@@ -225,7 +215,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     fun setCount(count: Int, type: Int) {
         when (type) {
-            CONST_0-> topAdsInsightTabAdapter?.setTabTitles(resources, count, countBid, countKey)
+            CONST_0 -> topAdsInsightTabAdapter?.setTabTitles(resources, count, countBid, countKey)
             CONST_1 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, count, countKey)
             CONST_2 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, count)
         }
