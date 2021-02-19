@@ -2,6 +2,7 @@ package com.tokopedia.statistic.view.model
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.statistic.view.adapter.factory.ActionMenuAdapterFactory
 import kotlinx.android.parcel.Parcelize
 
@@ -13,7 +14,8 @@ import kotlinx.android.parcel.Parcelize
 data class ActionMenuUiModel(
         val title: String = "",
         val appLink: String = "",
-        val iconUnify: Int? = null
+        val iconUnify: Int? = null,
+        val impressHolder: ImpressHolder = ImpressHolder()
 ) : Visitable<ActionMenuAdapterFactory>, Parcelable {
 
     override fun type(typeFactory: ActionMenuAdapterFactory): Int {

@@ -9,5 +9,6 @@ import com.tokopedia.statistic.view.model.ActionMenuUiModel
  */
 
 class ActionMenuAdapter(
+        pageName: String, userId: String,
         onItemClick: (menu: ActionMenuUiModel) -> Unit
-) : BaseAdapter<ActionMenuAdapterFactory>(ActionMenuAdapterFactory(onItemClick))
+) : BaseAdapter<ActionMenuAdapterFactory>(ActionMenuAdapterFactory(pageName, userId, onItemClick))

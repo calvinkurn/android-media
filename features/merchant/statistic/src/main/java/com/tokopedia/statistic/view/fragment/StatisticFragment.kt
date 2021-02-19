@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
@@ -38,6 +40,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
@@ -111,6 +114,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
+    private val dateFilterImpressHolder = ImpressHolder()
+    private val otherMenuImpressHolder = ImpressHolder()
 
     private var isPltMonitoringCompleted = false
     private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
@@ -176,9 +181,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onCreateOptionsMenu(menu, inflater)
         initDateFilterBottomSheet()
 
-        if (!getRegularMerchantStatus()) {
-            inflater.inflate(R.menu.menu_stc_action_calendar, menu)
-        }
+        inflater.inflate(R.menu.menu_stc_action_calendar, menu)
+
+        setMenuItemVisibility(menu)
+        sendActionBarMenuImpressionEvent(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -327,12 +333,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun getRegularMerchantStatus(): Boolean {
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        val isOfficialStore = userSession.isShopOfficialStore
-        return !isPowerMerchant && !isOfficialStore
-    }
-
     private fun setDefaultRange() = view?.run {
         val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
         val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
@@ -452,6 +452,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
             applyDateRange(it)
         }?.show()
+
+        val tabName = statisticPage?.pageTitle.orEmpty()
+        StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
     }
 
     private fun applyDateRange(item: DateFilterItem) {
@@ -726,12 +729,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             //we can't show bottom sheet if FragmentManager's state has already been saved
             if (childFragmentManager.isStateSaved) return
 
-            val actionMenuBottomSheet = ActionMenuBottomSheet.createInstance(menus)
+            val pageName = statisticPage?.pageTitle.orEmpty()
+            val actionMenuBottomSheet = ActionMenuBottomSheet.createInstance(pageName, userSession.userId, menus)
 
             //to prevent IllegalStateException: Fragment already added
             if (actionMenuBottomSheet.isAdded) return
 
             actionMenuBottomSheet.show(childFragmentManager)
+
+            StatisticTracker.sendThreeDotsClickEvent(userSession.userId)
         }
     }
 
@@ -744,6 +750,32 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (dateFilterBottomSheet == null) {
             val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
             dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters)
+        }
+    }
+
+    private fun setMenuItemVisibility(menu: Menu) {
+        val shouldShowActionMenu = !statisticPage?.actionMenu.isNullOrEmpty()
+        menu.findItem(R.id.actionStcOtherMenu)?.isVisible = shouldShowActionMenu
+
+        val shouldShowFilterMenu = !statisticPage?.dateFilters.isNullOrEmpty()
+        menu.findItem(R.id.actionStcSelectDate)?.isVisible = shouldShowFilterMenu
+    }
+
+    private fun sendActionBarMenuImpressionEvent(menu: Menu) {
+        //send impression for calendar filter action menu
+        menu.findItem(R.id.actionStcSelectDate)?.let {
+            view?.addOnImpressionListener(dateFilterImpressHolder) {
+                val tabName = statisticPage?.pageTitle.orEmpty()
+                val chosenPeriod = headerSubTitle
+                StatisticTracker.sendCalendarImpressionEvent(userSession.userId, tabName, chosenPeriod)
+            }
+        }
+
+        //send impression for 3 dots action menu
+        menu.findItem(R.id.actionStcOtherMenu)?.let {
+            view?.addOnImpressionListener(otherMenuImpressHolder) {
+                StatisticTracker.sendThreeDotsImpressionEvent(userSession.userId)
+            }
         }
     }
 

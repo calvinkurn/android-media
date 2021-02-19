@@ -7,6 +7,7 @@ import com.tokopedia.statistic.R
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 object StatisticPageHelper {
 
-    fun getShopStatistic(context: Context): StatisticPageUiModel {
+    fun getShopStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
         val title = context.getString(R.string.stc_shop)
         return StatisticPageUiModel(
                 pageTitle = title,
@@ -34,11 +35,11 @@ object StatisticPageHelper {
                                 iconUnify = IconUnify.INFORMATION
                         )
                 ),
-                dateFilters = getShopDateFilters(context)
+                dateFilters = getShopDateFilters(context, userSession)
         )
     }
 
-    fun getBuyerStatistic(context: Context): StatisticPageUiModel {
+    fun getBuyerStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
                 pageTitle = title,
@@ -56,29 +57,47 @@ object StatisticPageHelper {
                                 iconUnify = IconUnify.INFORMATION
                         )
                 ),
-                dateFilters = getBuyerDateFilters(context)
+                dateFilters = getBuyerDateFilters(context, userSession)
         )
     }
 
-    private fun getShopDateFilters(context: Context): List<DateFilterItem> = listOf(
-            getDateRangeItemToday(context),
-            getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
-            getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_29, Const.DAY_0, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-            DateFilterItem.Divider,
-            getDateFilterPerDay(context),
-            getDateFilterPerWeek(context, false),
-            getFilterPerMonth(context, true),
-            DateFilterItem.ApplyButton
-    )
+    private fun getShopDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
+        return if (getRegularMerchantStatus(userSession)) {
+            listOf(
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    DateFilterItem.ApplyButton
+            )
+        } else {
+            listOf(
+                    getDateRangeItemToday(context),
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_29, Const.DAY_0, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                    DateFilterItem.Divider,
+                    getDateFilterPerDay(context),
+                    getDateFilterPerWeek(context, false),
+                    getFilterPerMonth(context, true),
+                    DateFilterItem.ApplyButton
+            )
+        }
+    }
 
-    private fun getBuyerDateFilters(context: Context): List<DateFilterItem> = listOf(
-            getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-            getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-            DateFilterItem.Divider,
-            getDateFilterPerWeek(context, true),
-            getFilterPerMonth(context, false),
-            DateFilterItem.ApplyButton
-    )
+    private fun getBuyerDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
+        return if (getRegularMerchantStatus(userSession)) {
+            listOf(
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    DateFilterItem.ApplyButton
+            )
+        } else {
+            listOf(
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                    DateFilterItem.Divider,
+                    getDateFilterPerWeek(context, true),
+                    getFilterPerMonth(context, false),
+                    DateFilterItem.ApplyButton
+            )
+        }
+    }
 
     private fun getDateRangeItemToday(context: Context): DateFilterItem {
         val label = context.getString(R.string.stc_today_real_time)
@@ -135,5 +154,11 @@ object StatisticPageHelper {
             }
         }
         return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = defaultDate, endDate = defaultDate, monthPickerMaxDate = defaultDate)
+    }
+
+    fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        val isOfficialStore = userSession.isShopOfficialStore
+        return !isPowerMerchant && !isOfficialStore
     }
 }

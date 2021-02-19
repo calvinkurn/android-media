@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Statistic</string>
-    <string name="stc_shop_statistic">Statistik</string>
+    <string name="stc_statistic">Statistik</string>
+    <string name="stc_shop_statistic">Statistik Toko</string>
     <string name="stc_select_date">Pilih Tanggal</string>
     <string name="stc_select_date_">Pilih tanggal</string>
     <string name="stc_other_menu">Menu Lainnya</string>

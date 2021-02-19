@@ -1,19 +1,20 @@
 package com.tokopedia.statistic.view.activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setLightStatusBar
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
@@ -26,8 +27,10 @@ import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
+import com.tokopedia.statistic.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.view.viewmodel.StatisticActivityViewModel
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_stc_statistic.*
 import javax.inject.Inject
 
@@ -40,6 +43,8 @@ import javax.inject.Inject
 class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         FragmentListener, StatisticPerformanceMonitoringListener {
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -108,17 +113,47 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getStatisticPages(isWhiteListed: Boolean): List<StatisticPageUiModel> {
+        adjustHeaderConfig(isWhiteListed)
         return if (isWhiteListed) {
-            listOf(StatisticPageHelper.getShopStatistic(this), StatisticPageHelper.getBuyerStatistic(this))
+            supportActionBar?.title = getString(R.string.stc_statistic)
+            tabStatistic.visible()
+            listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getBuyerStatistic(this, userSession))
         } else {
-            listOf(StatisticPageHelper.getShopStatistic(this))
+            supportActionBar?.title = getString(R.string.stc_shop_statistic)
+            tabStatistic.gone()
+            listOf(StatisticPageHelper.getShopStatistic(this, userSession))
         }
+    }
+
+    private fun adjustHeaderConfig(isWhiteListed: Boolean) {
+        val lParams = headerStcStatistic.layoutParams as? LinearLayout.LayoutParams
+        if (isWhiteListed) {
+            supportActionBar?.title = getString(R.string.stc_statistic)
+            tabStatistic.visible()
+
+            val marginBottom = resources.getDimension(R.dimen.dimen_stc_minus2dp)
+            lParams?.setMargins(0, 0, 0, marginBottom.toInt())
+        } else {
+            supportActionBar?.title = getString(R.string.stc_shop_statistic)
+            tabStatistic.gone()
+
+            lParams?.setMargins(0, 0, 0, 0)
+        }
+
+        headerStcStatistic.requestLayout()
     }
 
     private fun setupView() {
         setSupportActionBar(headerStcStatistic)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.stc_shop_statistic)
+
+        tabStatistic.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
+        tabStatistic.tabLayout.setOnTabSelectedListener {
+            val tabIndex = tabStatistic.tabLayout.selectedTabPosition
+            val title = viewPagerAdapter?.titles?.getOrNull(tabIndex).orEmpty()
+            StatisticTracker.sendPageTabClickEvent(userSession.userId, title)
+        }
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {
@@ -151,8 +186,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun setupTabs() {
         viewPagerAdapter?.let { adapter ->
             adapter.titles.forEach { title ->
-                tabStatistic.addNewTab(title)
+                val tab = tabStatistic.addNewTab(title)
+                sendTabImpressionEvent(tab.view, title)
             }
+        }
+    }
+
+    private fun sendTabImpressionEvent(view: TabLayout.TabView, title: String) {
+        view.addOneTimeGlobalLayoutListener {
+            StatisticTracker.sendPageTabImpressionEvent(userSession.userId, title)
         }
     }
 
