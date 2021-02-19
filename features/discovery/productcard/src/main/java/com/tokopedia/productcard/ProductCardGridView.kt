@@ -119,7 +119,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun View.renderStockLabel(productCardModel: ProductCardModel) {
         textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             textViewStockLabel.text = productCardModel.stockBarLabel
-            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
+
+            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            } else if (productCardModel.stockBarLabelColor.isNotEmpty()) {
                 textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
             } else {
                 textViewStockLabel.setTextColor(MethodChecker.getColor(context,
