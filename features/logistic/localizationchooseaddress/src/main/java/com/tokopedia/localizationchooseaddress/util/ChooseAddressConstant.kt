@@ -13,5 +13,14 @@ class ChooseAddressConstant {
                 long = "",
                 label = "Jakarta Pusat"
         )
+
+        val emptyAddress = LocalCacheModel(
+                address_id = "",
+                city_id = "",
+                district_id = "",
+                lat = "",
+                long = "",
+                label = "Pilih Alamat Pengirimanmu"
+        )
     }
 }
