@@ -141,7 +141,7 @@ class PreferenceListBottomSheet(
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
-        override fun onPreferenceSelected(preference: ProfilesItemModel) {
+        override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
             bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
