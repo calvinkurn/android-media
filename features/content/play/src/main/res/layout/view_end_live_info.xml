@@ -26,12 +26,27 @@
         tools:text="Live streaming telah berakhir"
         />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/play_live_ended_subtitle"
+        android:textColor="@color/play_live_ended_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_live_ended_title"
+        app:typographyType="body_2"
+        />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_live_ended_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.30"
+        app:layout_constraintGuide_percent="0.43"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
