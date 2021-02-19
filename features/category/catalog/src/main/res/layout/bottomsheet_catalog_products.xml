@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.tokopedia.catalog.model.util.DisallowInterceptView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/frame_content"
-    >
-</FrameLayout>
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frame_content"
+        >
+    </FrameLayout>
+
+</com.tokopedia.catalog.model.util.DisallowInterceptView>
