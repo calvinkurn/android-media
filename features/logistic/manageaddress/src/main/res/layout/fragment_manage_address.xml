@@ -105,6 +105,35 @@
             android:gravity="center"
             android:visibility="gone" />
 
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_4"
+                android:background="@drawable/manageaddress_shadow_top" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:text="@string/pilih_alamat"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
