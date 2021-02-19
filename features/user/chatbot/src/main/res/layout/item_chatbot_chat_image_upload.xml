@@ -69,6 +69,6 @@
         android:layout_toStartOf="@+id/fl_image_container"
         android:layout_toLeftOf="@+id/fl_image_container"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_reload" />
+        app:srcCompat="@drawable/ic_retry_image_send" />
 
 </RelativeLayout>
