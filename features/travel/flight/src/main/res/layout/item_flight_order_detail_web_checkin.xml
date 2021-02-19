@@ -23,7 +23,7 @@
             android:elevation="@dimen/spacing_lvl2"
             app:tv_anchor1="@id/ticketTopView"
             app:tv_circleRadius="@dimen/spacing_lvl3"
-            app:tv_dashColor="@color/flight_ticket_dash_color">
+            app:tv_dashColor="@color/Unify_N100">
 
             <LinearLayout
                 android:id="@+id/ticketTopView"
