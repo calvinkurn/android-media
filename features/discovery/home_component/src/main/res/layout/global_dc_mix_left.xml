@@ -22,8 +22,7 @@
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="@dimen/dp_8"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
         android:id="@+id/container_mixleft"
@@ -53,7 +52,8 @@
                 android:layout_width="@dimen/product_card_flashsale_width"
                 android:clickable="true"
                 android:focusable="true"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/content_desc_mix_left" />
 
         </FrameLayout>
 
@@ -61,7 +61,6 @@
             android:id="@+id/rv_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingLeft="@dimen/home_component_margin_default"
             android:paddingRight="@dimen/dp_8"
