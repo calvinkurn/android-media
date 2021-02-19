@@ -140,8 +140,9 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickSellerFilter(shopId: String, userId: String) {
-        tracker.sendGeneralEvent(getSellerSettingsTrackingMap(shopId, userId, TalkInboxTrackingConstants.EVENT_ACTION_CLICK_FILTER, getEventCategoryInbox(TalkInboxTab.SHOP_TAB)))
+    fun eventClickSellerFilter(shopId: String, userId: String, filter: String, filterStatus: Boolean, countUnreadMessages: Long) {
+        val eventLabel = String.format(TalkInboxTrackingConstants.EVENT_LABEL_CLICK_SELLER_FILTER, getFilter(filter), getFilterStatus(filterStatus), shopId, countUnreadMessages.toString())
+        tracker.sendGeneralEvent(getSellerSettingsTrackingMap(shopId, userId, TalkInboxTrackingConstants.EVENT_ACTION_CLICK_FILTER, getEventCategoryInbox(TalkInboxTab.SHOP_TAB), eventLabel))
     }
 
     fun eventClickSettings(shopId: String, userId: String) {

@@ -28,4 +28,5 @@ object TalkInboxTrackingConstants {
     const val CREATIVE_MESSAGE_STATUS = "message status:%s"
     const val EE_NAME = "inbox-talk/%s"
     const val EVENT_ACTION_CLICK_SETTINGS = "${TalkTrackingConstants.EVENT_ACTION_CLICK} diskusi settings"
+    const val EVENT_LABEL_CLICK_SELLER_FILTER = "filter value:%s; filter status:%s; shop id:%s; count unread messages:%s;"
 }

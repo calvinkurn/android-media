@@ -17,10 +17,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
-    dispatcher: CoroutineDispatchers,
-    private val talkInboxListUseCase: TalkInboxListUseCase,
-    private val userSession: UserSessionInterface,
-    private val talkInboxTracking: TalkInboxTracking
+        dispatcher: CoroutineDispatchers,
+        private val talkInboxListUseCase: TalkInboxListUseCase,
+        private val userSession: UserSessionInterface,
+        private val talkInboxTracking: TalkInboxTracking
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
@@ -71,12 +71,12 @@ class TalkInboxViewModel @Inject constructor(
     }
 
     fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean) {
-        if(this.filter == selectedFilter) {
-            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, false, getShopId(), getUserId())
+        if (this.filter == selectedFilter) {
+            sendFilterTracker(selectedFilter, isSellerView, false)
             resetFilter()
             return
         }
-        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, true, getShopId(), getUserId())
+        sendFilterTracker(selectedFilter, isSellerView, true)
         this.filter = selectedFilter
         resetPage()
     }
@@ -87,6 +87,14 @@ class TalkInboxViewModel @Inject constructor(
 
     fun resetPage() {
         this.page.value = TalkConstants.DEFAULT_INITIAL_PAGE
+    }
+
+    private fun sendFilterTracker(selectedFilter: TalkInboxFilter, isSellerView: Boolean, isActive: Boolean) {
+        if (isSellerView) {
+            talkInboxTracking.eventClickSellerFilter(userSession.shopId, userSession.userId, selectedFilter.filterParam, isActive, unrespondedCount)
+        } else {
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), unreadCount, false, getShopId(), getUserId())
+        }
     }
 
     private fun resetFilter() {
@@ -100,7 +108,7 @@ class TalkInboxViewModel @Inject constructor(
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
             shopId = response.discussionInbox.shopID
-            unreadCount = if(type == TalkInboxTab.SHOP_OLD) {
+            unreadCount = if (type == TalkInboxTab.SHOP_OLD) {
                 response.discussionInbox.sellerUnread
             } else {
                 response.discussionInbox.buyerUnread
