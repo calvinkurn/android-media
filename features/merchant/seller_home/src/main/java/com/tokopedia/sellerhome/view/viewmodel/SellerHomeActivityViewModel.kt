@@ -83,7 +83,7 @@ class SellerHomeActivityViewModel @Inject constructor(
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
         getEligiblityOnlyWhenAdminShouldCheckRole {
-            sellerAdminUseCase.requestParams = GetAdminTypeUseCase.createRequestParams(SOURCE)
+            sellerAdminUseCase.requestParams = SellerAdminUseCase.createRequestParams(SOURCE)
             sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
                 adminDataResponse.data.detail.roleType.also { roleType ->
                     updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
