@@ -889,7 +889,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash)
+            presenter.loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash = useHash)
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
