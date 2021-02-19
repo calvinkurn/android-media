@@ -20,6 +20,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -234,8 +236,8 @@ class ChatItemListViewModelTest {
         // then
         verify(exactly = 1) {
             isChatAdminEligibleObserver.onChanged(expectedResult)
-            assertEquals(expectedResult, viewModel.isChatAdminEligible.value)
         }
+        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
     }
 
     @Test fun `non-owner shop admin seller role should success check for eligibility first`() {
@@ -264,8 +266,8 @@ class ChatItemListViewModelTest {
         // then
         verify(exactly = 1) {
             isChatAdminEligibleObserver.onChanged(expectedResult)
-            assertEquals(expectedResult, viewModel.isChatAdminEligible.value)
         }
+        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
     }
 
     @Test fun `non-owner shop admin seller role should fail check for eligibility first`() {
@@ -313,11 +315,9 @@ class ChatItemListViewModelTest {
         // then
         verify(exactly = 1) {
             isChatAdminEligibleObserver.onChanged(expectedResult)
-            assertEquals(expectedResult, viewModel.isChatAdminEligible.value)
         }
+        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
     }
-
-    //@Test fun ``() {}
 
     companion object {
         private val getChatList: ChatListPojo = FileUtil.parse(

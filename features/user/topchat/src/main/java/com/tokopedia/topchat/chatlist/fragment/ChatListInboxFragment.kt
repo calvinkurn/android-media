@@ -763,10 +763,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         )
     }
 
-    override fun returnToSellerHome() {
-
-    }
-
     private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
         adapter?.unpinChatItem(
                 element,
@@ -817,6 +813,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         swipeToRefresh?.isEnabled = false
         adapter?.showNoAccessView()
     }
+
+    override fun returnToSellerHome() {}
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324

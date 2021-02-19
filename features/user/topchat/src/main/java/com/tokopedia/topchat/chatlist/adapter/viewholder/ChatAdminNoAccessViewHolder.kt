@@ -21,11 +21,7 @@ class ChatAdminNoAccessViewHolder(itemView: View,
         val LAYOUT = R.layout.item_chat_admin_no_access
     }
 
-    private var adminNoAccessGlobalError: GlobalError? = null
-
-    init {
-        adminNoAccessGlobalError = itemView.findViewById(R.id.chatAdminNoAccessView)
-    }
+    private var adminNoAccessGlobalError: GlobalError? = itemView.findViewById(R.id.chatAdminNoAccessView)
 
     override fun bind(element: ChatAdminNoAccessUiModel) {
         bindGlobalError()
