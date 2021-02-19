@@ -17,7 +17,7 @@ class SubmitDVTokenUseCase @Inject constructor(
         private const val ANDROID = "android"
         private val query = """
             mutation subDvcIntlEvent(${'$'}key: String!, ${'$'}retry_count: Int!, ${'$'}error_message: String!, ${'$'}device_type: String! ){
-              subDvcIntlEvent(input: {key: ${'$'}key, retry_count: ${'$'}retry_count, error_message: ${'$'}error_message}, device_type: ${'$'}device_type}) {
+              subDvcIntlEvent(input: {key: ${'$'}key, retry_count: ${'$'}retry_count, error_message: ${'$'}error_message, device_type: ${'$'}device_type}) {
                 is_error
               }
             }
