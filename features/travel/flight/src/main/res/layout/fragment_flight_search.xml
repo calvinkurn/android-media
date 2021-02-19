@@ -35,17 +35,30 @@
 
             <include layout="@layout/include_flight_quick_filter" />
 
-            <com.tokopedia.flight.promo_chips.widget.FlightPromoChips
-                android:id="@+id/flight_promo_chips_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:fitsSystemWindows="true" />
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:descendantFocusability="blocksDescendants">
+                <com.tokopedia.flight.promo_chips.widget.FlightPromoChips
+                    android:id="@+id/flight_promo_chips_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:fitsSystemWindows="true" />
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

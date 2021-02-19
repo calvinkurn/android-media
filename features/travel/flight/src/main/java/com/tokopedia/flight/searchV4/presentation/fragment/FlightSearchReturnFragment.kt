@@ -126,7 +126,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         if (flightSearchReturnViewModel.isBestPairing &&
                 !flightSearchReturnViewModel.isViewOnlyBestPairing &&
                 list.isNotEmpty()) {
-            showSeeBestPairingResultView()
+                    showSeeBestPairingResultView()
         }
 
         if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {

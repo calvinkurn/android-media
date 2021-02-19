@@ -49,7 +49,6 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
