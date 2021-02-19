@@ -63,7 +63,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
 
     interface PreferenceListAdapterListener {
 
-        fun onPreferenceSelected(preference: ProfilesItemModel)
+        fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean)
 
         fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int)
     }
