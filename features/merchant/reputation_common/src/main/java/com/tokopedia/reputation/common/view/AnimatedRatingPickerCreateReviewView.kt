@@ -5,9 +5,9 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimCreateReviewModel
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.animated_rating_picker_create_review.view.*
 
 /**
