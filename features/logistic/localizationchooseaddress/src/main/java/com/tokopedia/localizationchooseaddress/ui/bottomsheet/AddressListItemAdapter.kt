@@ -12,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    var addressList = mutableListOf(ChosenAddressList(), ChosenAddressList(isStateChosenAddress = false))
+    var addressList = mutableListOf(ChosenAddressList(), ChosenAddressList(addressname = "Tokopedia Care", isStateChosenAddress = false))
     private var selectedPosition = RecyclerView.NO_POSITION
 
     interface AddressListItemAdapterListener {

@@ -209,6 +209,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
 
         val data = ChooseAddressUtils().setDataToLocalCache(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
+        this.dismiss()
         listener.onAddressChosen()
     }
 
