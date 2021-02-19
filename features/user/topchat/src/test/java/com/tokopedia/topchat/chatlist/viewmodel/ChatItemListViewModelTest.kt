@@ -202,7 +202,7 @@ class ChatItemListViewModelTest {
             isChatAdminEligibleObserver.onChanged(any())
         }
         verify(exactly = 1) {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), captureLambda())
+            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
         }
     }
 
@@ -216,7 +216,7 @@ class ChatItemListViewModelTest {
             isChatAdminEligibleObserver.onChanged(any())
         }
         verify(exactly = 1) {
-            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), captureLambda())
+            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
         }
     }
 
