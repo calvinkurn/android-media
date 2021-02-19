@@ -386,6 +386,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         //
     }
 
+    override fun onLocalizingAddressServerDown() {
+        TODO("Not yet implemented")
+    }
+
     override fun onLocalizingAddressRollOutUser(active: Boolean) {
         //
     }

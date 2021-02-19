@@ -184,6 +184,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun onLocalizingAddressUpdatedFromBackground();
 
         /**
+         * this listen if we get server down on widget/bottomshet.
+         * Host mandatory to GONE LocalizingAddressWidget
+         */
+        fun onLocalizingAddressServerDown();
+
+        /**
          * this trigger to Host this feature active or not
          * Host must GONE widget if isRollOutUser == false
          * Host must VISIBLE widget if isRollOutUser == true
