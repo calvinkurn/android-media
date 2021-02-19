@@ -899,7 +899,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val channelStatus = getChannelStatus(channelId)
             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                    statusType = PlayStatusType.Freeze,
+                    statusType = playUiModelMapper.mapStatus(channelStatus),
                     shouldAutoSwipeOnFreeze = false
             )
         }, onError = {
