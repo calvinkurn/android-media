@@ -59,6 +59,9 @@ public class Wishlist implements Parcelable {
     @SerializedName("free_ongkir")
     @Expose
     public FreeOngkir freeOngkir;
+    @SerializedName("free_ongkir_extra")
+    @Expose
+    public FreeOngkir freeOngkirExtra;
 
     public List<Label> getLabels() {
         return labels;
@@ -234,6 +237,7 @@ public class Wishlist implements Parcelable {
         reviewCount = in.readInt();
         categoryBreadcrumb = in.readString();
         freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
+        freeOngkirExtra = in.readParcelable(FreeOngkir.class.getClassLoader());
     }
 
     @Override
@@ -257,6 +261,7 @@ public class Wishlist implements Parcelable {
         dest.writeInt(reviewCount);
         dest.writeString(categoryBreadcrumb);
         dest.writeParcelable(freeOngkir, flags);
+        dest.writeParcelable(freeOngkirExtra, flags);
     }
 
     @Override
