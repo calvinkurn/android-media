@@ -116,10 +116,6 @@ fun ImageView.loadImageCenterCrop(url: String){
     }
 }
 
-fun ImageView.loadImageWithoutPlaceholder(url: String){
-    this.loadImageWithoutPlaceholder(url)
-}
-
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
         transform(CenterCrop())
