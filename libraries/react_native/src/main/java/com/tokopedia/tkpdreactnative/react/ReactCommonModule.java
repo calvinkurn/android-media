@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -87,7 +88,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getYoutubeApiKey(Promise promise){
-        promise.resolve(ReactConst.YOUTUBE_API_KEY);
+        promise.resolve(Keys.getAUTH_GOOGLE_YOUTUBE_API_KEY());
     }
 
     @ReactMethod

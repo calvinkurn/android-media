@@ -14,6 +14,8 @@ import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
@@ -123,5 +125,11 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
         return PlayAnalytic(userSession, trackingQueue)
+    }
+
+    @PlayScope
+    @Provides
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
     }
 }

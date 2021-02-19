@@ -107,7 +107,7 @@ class HomeDefaultDataSource {
                 Flags(HomeFlag.DYNAMIC_ICON_WRAP_STRING, true),
                 Flags(HomeFlag.HAS_TOKOPOINTS_STRING, false),
                 Flags(HomeFlag.HAS_RECOM_NAV_BUTTON_STRING, false)
-        )
+        ).toMutableList()
         return homeFlag
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.play.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.helper.TestHtmlTextTransformer
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
@@ -46,6 +47,8 @@ class PlayBottomSheetViewModelTest {
     private val modelBuilder = ModelBuilder()
     private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: ProductDetailVariantCommonResponse = modelBuilder.buildProductVariant()
+
+    private val playUiMapper: PlayUiMapper = PlayUiMapper(TestHtmlTextTransformer())
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
 
