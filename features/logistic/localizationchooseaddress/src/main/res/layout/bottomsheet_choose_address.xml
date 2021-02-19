@@ -207,7 +207,7 @@
 
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_arrow"
+        android:id="@+id/btn_chevron_snippet"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_18"

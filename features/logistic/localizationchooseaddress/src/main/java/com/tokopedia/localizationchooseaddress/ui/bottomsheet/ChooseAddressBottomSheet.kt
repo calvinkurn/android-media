@@ -16,15 +16,20 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -47,8 +52,11 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     private var loginLayout: ConstraintLayout? = null
     private var buttonLogin: IconUnify? = null
     private var buttonAddAddress: IconUnify? = null
+    private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
+
     private var fm: FragmentManager? = null
+    private var chooseAddressPref: ChooseAddressSharePref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +71,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initObserver()
     }
 
     /*on activity result here*/
@@ -82,11 +91,13 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     }
 
     private fun setupView(child: View) {
+        chooseAddressPref = ChooseAddressSharePref(context)
         chooseAddressLayout = child.findViewById(R.id.choose_address_layout)
         noAddressLayout = child.findViewById(R.id.no_address_layout)
         loginLayout = child.findViewById(R.id.login_layout)
         buttonLogin = child.findViewById(R.id.btn_chevron_login)
         buttonAddAddress = child.findViewById(R.id.btn_chevron_add)
+        buttonSnippetLocation = child.findViewById(R.id.btn_chevron_snippet)
         addressList = child.findViewById(R.id.rv_address_card)
 
         addressList?.adapter = adapter
@@ -113,6 +124,10 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         renderButton()
     }
 
+    private fun initObserver() {
+
+    }
+
     private fun renderButton() {
         buttonLogin?.setOnClickListener {
             startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
@@ -123,6 +138,10 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                 putExtra(EXTRA_IS_FULL_FLOW, true)
                 putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
             }, REQUEST_CODE_ADD_ADDRESS)
+        }
+
+        buttonSnippetLocation?.setOnClickListener {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS), REQUEST_CODE_GET_DISTRICT_RECOM)
         }
     }
 
@@ -143,14 +162,18 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
         const val REQUEST_CODE_ADD_ADDRESS = 199
-    }
-
-    override fun onItemClicked(address: ChosenAddressModel) {
-        listener?.onAddressChosen()
+        const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
     }
 
     interface ChooseAddressBottomSheetListener {
         fun onAddressChosen()
+    }
+
+    override fun onItemClicked(address: ChosenAddressList) {
+        val data = ChooseAddressUtils().setDataToLocalCache(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
+        viewModel.setStateChosenAddress()
+        chooseAddressPref?.setLocalCache(data)
+        listener.onAddressChosen()
     }
 
 }

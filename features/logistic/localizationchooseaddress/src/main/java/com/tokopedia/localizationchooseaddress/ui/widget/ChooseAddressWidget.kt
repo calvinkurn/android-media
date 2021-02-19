@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.ui.widget
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Html
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.AttributeSet
@@ -23,6 +24,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -81,7 +83,16 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     if (it.data.addressId == 0) {
                         viewModel.getDefaultChosenAddress()
                     } else {
-                        chooseAddressPref?.setLocalCache(setChosenAddressToLocalCache(it.data))
+                        val data = it.data
+                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = data.addressName
+                        )
+                        chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
                     }
                 }
@@ -94,7 +105,16 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     if (it.data.addressData.addressId == 0) {
                         //set to Jakarta Pusat -> waiting for data
                     } else {
-                        chooseAddressPref?.setLocalCache(setDefaultAddressToLocalCache(it.data.addressData))
+                        val data = it.data.addressData
+                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = data.addressName
+                        )
+                        chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
                     }
                 }
@@ -107,33 +127,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         chooseAddressWidgetListener?.onFeatureActive(true)
     }
 
-    private fun setChosenAddressToLocalCache(data: ChosenAddressModel): LocalCacheModel {
-        return LocalCacheModel(
-                address_id = data.addressId.toString(),
-                city_id = data.cityId.toString(),
-                district_id = data.districtId.toString(),
-                lat = data.latitude,
-                long = data.longitude,
-                label = data.addressName
-        )
-    }
-
-    private fun setDefaultAddressToLocalCache(data: DefaultChosenAddress): LocalCacheModel {
-        return LocalCacheModel(
-                address_id = data.addressId.toString(),
-                city_id = data.cityId.toString(),
-                district_id = data.districtId.toString(),
-                lat = data.latitude,
-                long = data.longitude,
-                label = data.addressName
-        )
-    }
-
     fun updateWidget(){
         val data = chooseAddressPref?.getLocalCacheData()
-        val label = SpannableString(data?.label)
-        label.setSpan(StyleSpan(Typeface.BOLD), 0, label.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textChosenAddress?.text = context.getString(R.string.txt_send_to) + label
+        val label = context.getString(R.string.txt_send_to, data?.label)
+        textChosenAddress?.text = Html.fromHtml(label)
     }
 
     private fun getComponent(): ChooseAddressComponent {
@@ -143,7 +140,6 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun initChooseAddressFlow() {
-
         if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
             updateWidget()
         } else {

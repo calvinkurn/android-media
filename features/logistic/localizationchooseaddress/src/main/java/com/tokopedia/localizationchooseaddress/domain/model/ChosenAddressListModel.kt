@@ -22,5 +22,5 @@ data class ChosenAddressList(
         var country: String = "",
         var latitude: String = "",
         var longitude: String = "",
-        var isStateChosenAddress: Boolean = false,
+        var isStateChosenAddress: Boolean = true,
 )

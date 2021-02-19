@@ -3,6 +3,7 @@ package com.tokopedia.localizationchooseaddress.util
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
@@ -27,5 +28,17 @@ class ChooseAddressUtils {
         if (latestChooseAddressData.label != data.label) validate = false
         return validate
     }
+
+    fun setDataToLocalCache(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String): LocalCacheModel {
+        return LocalCacheModel(
+                address_id = addressId,
+                city_id = cityId,
+                district_id = districtId,
+                lat = lat,
+                long = long,
+                label = label
+        )
+    }
+
 
 }

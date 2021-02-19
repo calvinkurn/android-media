@@ -1,7 +1,5 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
-import com.google.gson.annotations.SerializedName
-
 data class ChosenAddressModel (
         var addressId: Int = 0,
         var receiverName: String = "",
