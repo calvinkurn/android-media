@@ -311,14 +311,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         url = voucherUrl,
                         convertIntoSize = 50
                 )
-                shopPageTracking?.viewVoucherFollowUnfollowShop(shopId, userId)
+                shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
             } else {
                 removeCompoundDrawableFollowButton()
             }
             if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
                 listener.saveFirstTimeVisit()
-                shopPageTracking?.viewCoachMarkFollowUnfollowShop(shopId, userId)
+                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
             }
         }
         changeColorButton()
@@ -330,7 +330,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun dismissCoachMark(shopId: String, userId: String) {
         coachMark?.dismissCoachMark()
-        shopPageTracking?.viewCoachMarkDissapearFollowUnfollowShop(shopId, userId)
+        shopPageTracking?.impressionCoachMarkDissapearFollowUnfollowShop(shopId, userId)
     }
 
     fun removeCompoundDrawableFollowButton() {

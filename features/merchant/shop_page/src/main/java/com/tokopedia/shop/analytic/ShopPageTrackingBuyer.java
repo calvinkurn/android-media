@@ -204,39 +204,36 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 etalaseName;
     }
 
-    public void viewVoucherFollowUnfollowShop(
+    public void impressionVoucherFollowUnfollowShop(
             String shopId,
             String userId
     ) {
         followUnfollowShop(
                 VIEW_FOLLOW_VOUCHER_ICON,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
         );
     }
 
-    public void viewCoachMarkFollowUnfollowShop(
+    public void impressionCoachMarkFollowUnfollowShop(
             String shopId,
             String userId
     ) {
         followUnfollowShop(
                 VIEW_COACHMARK_FOLLOW,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
         );
     }
 
-    public void viewCoachMarkDissapearFollowUnfollowShop(
+    public void impressionCoachMarkDissapearFollowUnfollowShop(
             String shopId,
             String userId
     ) {
         followUnfollowShop(
                 VIEW_COACHMARK_FOLLOW,
                 SHOP_PAGE_LABEL + shopId + COACHMARK_DISAPPEAR,
-                userId,
-                null
+                userId
         );
     }
 
@@ -254,8 +251,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         followUnfollowShop(
                 action,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
         );
     }
 
@@ -270,7 +266,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
-    public void viewToasterFollow(
+    public void impressionToasterFollow(
             Boolean isSuccess,
             String shopId,
             String userId
@@ -284,12 +280,11 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         followUnfollowShop(
                 action,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
         );
     }
 
-    public void viewToasterUnfollow(
+    public void impressionToasterUnfollow(
             Boolean isSuccess,
             String shopId,
             String userId
@@ -303,11 +298,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         followUnfollowShop(
                 action,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
         );
     }
-
 
     public void clickCekToasterSuccess(
             String shopId,
@@ -316,8 +309,18 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         followUnfollowShop(
                 CLICK_CEK_TOASTER_SUCCESS,
                 SHOP_PAGE_LABEL + shopId,
-                userId,
-                null
+                userId
+        );
+    }
+
+    public void impressionSeeEntryPoint(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                SEE_ENTRY_POINT,
+                SHOP_PAGE_LABEL + shopId,
+                userId
         );
     }
 

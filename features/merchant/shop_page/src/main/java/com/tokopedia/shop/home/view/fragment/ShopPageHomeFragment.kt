@@ -965,7 +965,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherItemImpressed() {
-        // implement tracker
+        shopPageHomeTracking.impressionSeeEntryPoint(shopId, viewModel?.userId)
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {

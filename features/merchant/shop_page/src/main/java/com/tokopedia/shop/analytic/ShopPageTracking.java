@@ -463,8 +463,7 @@ public class ShopPageTracking {
     protected void followUnfollowShop(
             String action,
             String label,
-            String userId,
-            List<String> promolist
+            String userId
     ) {
         HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_VIEW);
@@ -474,13 +473,6 @@ public class ShopPageTracking {
         eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, PHYSICAL_GOODS);
         eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
         eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
-        if (promolist != null) {
-            eventMap.put(
-                    ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                            ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf()
-                    )
-            );
-        }
         sendDataLayerEvent(eventMap);
     }
 

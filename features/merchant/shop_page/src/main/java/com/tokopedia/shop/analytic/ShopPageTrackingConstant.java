@@ -107,6 +107,7 @@ public class ShopPageTrackingConstant {
     public static final String VIEW_TOASTER_UNFOLLOW_SUCCESS = "view toaster unfollow success";
     public static final String VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error";
     public static final String CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success";
+    public static final String SEE_ENTRY_POINT = "see entry point";
 
     //label
     public static final String CLICK_TAB = "click tab";

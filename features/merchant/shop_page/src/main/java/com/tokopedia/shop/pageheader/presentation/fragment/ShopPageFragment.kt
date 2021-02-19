@@ -1359,13 +1359,13 @@ class ShopPageFragment :
 
     private fun trackViewToasterFollowUnfollow(isFollowing: Boolean, isSuccess: Boolean) {
         if (isFollowing) {
-            shopPageTracking?.viewToasterFollow(
+            shopPageTracking?.impressionToasterFollow(
                     isSuccess,
                     shopId,
                     shopViewModel?.userId
             )
         } else {
-            shopPageTracking?.viewToasterUnfollow(
+            shopPageTracking?.impressionToasterUnfollow(
                     isSuccess,
                     shopId,
                     shopViewModel?.userId
