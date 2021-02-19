@@ -1,5 +1,6 @@
 package com.tokopedia.flight.promo_chips.adapter.viewholder
 
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
@@ -60,14 +61,13 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                     }
                 }
                 if (element.airlineID == adapter.higlightPromo) {
-                    adapter.setSelectedProduct(adapterPosition)
+//                    Log.d("sukses", "masuk")
+//                    Log.d("sukses", adapter.higlightPromo)
                     changePromoChipsState(true)
+                    adapter.setSelectedProduct(adapterPosition)
                 }
             }
         }
-    }
-
-    fun highlight(element: AirlinePrice){
     }
 
     interface OnFlightPromoChipsListener{
