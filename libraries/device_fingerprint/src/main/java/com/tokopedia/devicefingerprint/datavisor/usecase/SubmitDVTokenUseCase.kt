@@ -1,27 +1,23 @@
 package com.tokopedia.devicefingerprint.datavisor.usecase
 
-import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.datavisor.payload.DeviceInitPayload
 import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitResponse
-import com.tokopedia.devicefingerprint.submitdevice.utils.ContentCreator
-import com.tokopedia.encryption.security.md5
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 class SubmitDVTokenUseCase @Inject constructor(
-        repository: GraphqlRepository,
-        private val gson: Gson,
-        private val contentCreator: ContentCreator)
+        repository: GraphqlRepository)
     : GraphqlUseCase<SubmitDeviceInitResponse>(repository) {
 
     companion object {
-        private const val PARAM_CONTENT = "content"
-        private const val PARAM_IDENTIFIER = "identifier"
-        private const val PARAM_VERSION = "version"
+        private const val PARAM_KEY = "key"
+        private const val PARAM_RETRY_COUNT = "retry_count"
+        private const val PARAM_ERROR_MESSAGE = "error_message"
+        private const val PARAM_DEVICE_TYPE = "device_type"
+        private const val ANDROID = "android"
         private val query = """
-            mutation subDvcIntlEvent(${'$'}content: String!, ${'$'}identifier: String!, ${'$'}version: String!){
-              subDvcIntlEvent(input: {content: ${'$'}content, identifier: ${'$'}identifier, version: ${'$'}version}) {
+            mutation subDvcIntlEvent(${'$'}key: String!, ${'$'}retry_count: Int!, ${'$'}error_message: String!, ${'$'}device_type: String! ){
+              subDvcIntlEvent(input: {key: ${'$'}key, retry_count: ${'$'}retry_count, error_message: ${'$'}error_message}, device_type: ${'$'}device_type}) {
                 is_error
               }
             }
@@ -33,12 +29,12 @@ class SubmitDVTokenUseCase @Inject constructor(
         setTypeClass(SubmitDeviceInitResponse::class.java)
     }
 
-    fun setParams(payload: DeviceInitPayload) {
-        val json = gson.toJson(payload)
+    fun setParams(key: String, retryCount: Int, errorMessage: String, deviceType: String = ANDROID) {
         val params: Map<String, Any?> = mutableMapOf(
-                PARAM_CONTENT to contentCreator.createContent(json),
-                PARAM_IDENTIFIER to json.md5(),
-                PARAM_VERSION to "1"
+                PARAM_KEY to key,
+                PARAM_RETRY_COUNT to retryCount,
+                PARAM_ERROR_MESSAGE to errorMessage,
+                PARAM_DEVICE_TYPE to deviceType
         )
         setRequestParams(params)
     }

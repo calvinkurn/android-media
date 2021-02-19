@@ -312,7 +312,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
-        VisorFingerprintInstance.initToken(requireActivity(), null, null)
     }
 
     private fun fetchRemoteConfig() {

@@ -1,10 +1,8 @@
 package com.tokopedia.devicefingerprint.datavisor.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
-import com.tokopedia.devicefingerprint.datavisor.payload.DeviceInitPayload
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
@@ -43,7 +41,10 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        VisorFingerprintInstance.initToken(applicationContext, listener = object : VisorFingerprintInstance.onVisorInitListener {
+                        val userSession = getUserSession(applicationContext)
+                        VisorFingerprintInstance.initToken(applicationContext,
+                                userSession.userId,
+                                listener = object : VisorFingerprintInstance.onVisorInitListener {
                             override fun onSuccessInitToken(token: String) {
                                 continuation.resume(token to "")
                             }
@@ -94,13 +95,12 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         sendDataVisorToServer(context, DEFAULT_VALUE_DATAVISOR, MAX_RUN_ATTEMPT, errorMessage)
     }
 
-    fun sendDataVisorToServer(context: Context, token: String = DEFAULT_VALUE_DATAVISOR, countAttempt: Int, errorMessage: String): Pair<Boolean, Throwable?>? {
-        submitDVTokenUseCase.setParams(DeviceInitPayload(
+    private fun sendDataVisorToServer(context: Context, token: String = DEFAULT_VALUE_DATAVISOR, countAttempt: Int, errorMessage: String): Pair<Boolean, Throwable?>? {
+        submitDVTokenUseCase.setParams(
                 token,
-                userSession.userId.toLong(),
                 countAttempt,
                 errorMessage
-        ))
+        )
         var result: Pair<Boolean, Throwable?>? = null
         submitDVTokenUseCase.execute({
             result = true to null
@@ -167,7 +167,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
         fun getUserSession(context: Context): UserSessionInterface {
             if (userSession == null) {
-                userSession = UserSession(context)
+                userSession = UserSession(context.applicationContext)
             }
             return userSession!!
         }
