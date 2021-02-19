@@ -1331,6 +1331,24 @@ class TopChatRoomPresenterTest {
         }
     }
 
+    @Test
+    fun `when error throwable addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorMsg = "Gagal menambahkan produk"
+        every {
+            addToCartUseCase.createObservable(any())
+        } throws IllegalStateException(errorMsg)
+
+        // When
+        presenter.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(errorMsg)
+        }
+    }
+
     private fun getErrorAtcModel(): AddToCartDataModel {
         return AddToCartDataModel().apply {
             data.success = 0
