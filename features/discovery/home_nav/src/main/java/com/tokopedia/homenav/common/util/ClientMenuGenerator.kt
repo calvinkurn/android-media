@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.common.util
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -24,6 +25,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         val ID_HOME = 911
 
         val ID_OPEN_SHOP_TICKER = 801
+        const val PAGE_SOURCE_KEY = "pageSource"
+        const val PAGE_SOURCE = "home side nav"
     }
 
     val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
@@ -165,7 +168,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 id = ID_REVIEW,
                 srcIconId = IconUnify.STAR,
                 itemTitle = context.getString(R.string.menu_transaction_menu_review),
-                applink = ApplinkConst.REPUTATION.needLoginValidation(),
+                applink = getReputationApplink().needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -197,5 +200,9 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         } else {
             ApplinkConst.LOGIN
         }
+    }
+
+    private fun getReputationApplink(): String {
+        return Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()
     }
 }
