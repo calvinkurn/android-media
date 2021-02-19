@@ -51,7 +51,7 @@ abstract class GlideBuilder<T> {
 
             // bulk transforms from transformList with MultiTransform
             if (_transform.isNotEmpty()) {
-                transform(MultiTransformation(_transform))
+                request.transform(MultiTransformation(_transform))
             }
         }
     }
