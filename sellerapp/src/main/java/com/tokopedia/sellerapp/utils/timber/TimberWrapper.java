@@ -62,7 +62,6 @@ public class TimberWrapper {
                     timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                     timberReportingTree.setVersionName(GlobalConfig.RAW_VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                    timberReportingTree.setInstallerPackageName(context.getPackageManager().getInstallerPackageName(context.getPackageName()));
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
                     Timber.plant(timberReportingTree);
@@ -83,6 +82,8 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-seller-app-p%s", priority);
         String parser = String.format("android-seller-app-p%s-parser", priority);
-        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(),
+                String.valueOf(context.getPackageManager().getInstallerPackageName(context.getPackageName())),
+                GlobalConfig.DEBUG, priority);
     }
 }

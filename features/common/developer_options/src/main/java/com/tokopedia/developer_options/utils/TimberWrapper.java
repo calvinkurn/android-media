@@ -39,7 +39,6 @@ public class TimberWrapper {
                 timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                 timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                 timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                timberReportingTree.setInstallerPackageName(context.getPackageManager().getInstallerPackageName(context.getPackageName()));
                 timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                 timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
                 Timber.plant(timberReportingTree);
