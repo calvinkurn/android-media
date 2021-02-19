@@ -19,6 +19,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.utils.FirebaseLogger
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
 import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
@@ -137,10 +138,12 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     showToaster(getString(R.string.template_list_success_add_template), false)
                 }
-                TalkTemplateMutationResults.RearrangeTemplateFailed -> {
+                is TalkTemplateMutationResults.RearrangeTemplateFailed -> {
+                    logException(it.throwable)
                     showToaster(getString(R.string.template_list_rearrange_toaster_fail), true)
                 }
-                else -> {
+                is TalkTemplateMutationResults.MutationFailed -> {
+                    logException(it.throwable)
                     showToaster(getString(R.string.template_list_toaster_fail), true)
                 }
             }
@@ -317,5 +320,9 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         adapter = TalkTemplateListAdapter(this)
         touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(touchHelperCallback ?: TalkTemplateListItemTouchHelperCallback(TalkTemplateListAdapter(this)))
+    }
+
+    private fun logException(throwable: Throwable) {
+        FirebaseLogger.logError(throwable)
     }
 }

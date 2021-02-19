@@ -40,10 +40,10 @@ class TalkTemplateViewModel @Inject constructor(
             if (response.chatMoveTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
-                _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
+                _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed())
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed(it))
         }
     }
 
@@ -54,10 +54,10 @@ class TalkTemplateViewModel @Inject constructor(
             if (response.chatToggleTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(if (isEnable) TalkTemplateMutationResults.TemplateActivateSuccess else TalkTemplateMutationResults.TemplateDeactivateSuccess)
             } else {
-                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed())
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed(it))
         }
     }
 

@@ -11,12 +11,11 @@
         android:paddingBottom="@dimen/layout_lvl2">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/talk_smart_reply_detail_dummy_buyer_image"
+            android:id="@+id/talkSmartReplyDetailBuyerImage"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:src="@drawable/ic_smart_reply_card_avatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,9 +26,9 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:text="@string/smart_reply_dummy_buyer_text"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_detail_dummy_buyer_image"
-            app:layout_constraintStart_toEndOf="@id/talk_smart_reply_detail_dummy_buyer_image"
-            app:layout_constraintTop_toTopOf="@id/talk_smart_reply_detail_dummy_buyer_image"
+            app:layout_constraintBottom_toBottomOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintStart_toEndOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintTop_toTopOf="@id/talkSmartReplyDetailBuyerImage"
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -39,8 +38,8 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:text="@string/smart_reply_dummy_question_text"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="@id/talk_smart_reply_detail_dummy_buyer_image"
-            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_detail_dummy_buyer_image"
+            app:layout_constraintStart_toStartOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailBuyerImage"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 

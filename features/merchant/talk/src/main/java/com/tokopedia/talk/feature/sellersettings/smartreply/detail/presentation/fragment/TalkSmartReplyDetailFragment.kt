@@ -23,6 +23,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalk
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.utils.FirebaseLogger
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
@@ -181,10 +182,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSetSmartReplyResult()
-                is Fail -> {
-                    showToaster(it.throwable.message
-                            ?: getString(R.string.inbox_toaster_connection_error), true)
-                }
+                is Fail -> onFailSetSmartReply(it.throwable)
             }
         })
     }
@@ -304,5 +302,14 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     private fun getShopId(): String {
         return (activity as? UserSessionListener)?.getShopId() ?: ""
+    }
+
+    private fun onFailSetSmartReply(throwable: Throwable) {
+        logException(throwable)
+        showToaster(throwable.message ?: getString(R.string.inbox_toaster_connection_error), true)
+    }
+
+    private fun logException(throwable: Throwable) {
+        FirebaseLogger.logError(throwable)
     }
 }

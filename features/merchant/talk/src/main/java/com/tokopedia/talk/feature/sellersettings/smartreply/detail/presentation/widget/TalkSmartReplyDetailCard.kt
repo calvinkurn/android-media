@@ -12,9 +12,14 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TalkSmartReplyDetailCard : BaseCustomView {
 
+    companion object {
+        const val BUYER_IMAGE_URL = ""
+    }
+
     private var talkSmartReplyDetailSellerName: Typography? = null
     private var talkSmartReplyDetailSellerThumbnail: ImageUnify? = null
     private var talkSmartReplyDetailPreview: Typography? = null
+    private var talkSmartReplyDetailBuyerImage: ImageUnify? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -36,6 +41,8 @@ class TalkSmartReplyDetailCard : BaseCustomView {
         talkSmartReplyDetailSellerName = findViewById(R.id.talkSmartReplyDetailSellerName)
         talkSmartReplyDetailSellerThumbnail = findViewById(R.id.talkSmartReplyDetailSellerThumbnail)
         talkSmartReplyDetailPreview = findViewById(R.id.talkSmartReplyDetailPreview)
+        talkSmartReplyDetailBuyerImage = findViewById(R.id.talkSmartReplyDetailBuyerImage)
+        talkSmartReplyDetailBuyerImage?.loadImage(BUYER_IMAGE_URL)
     }
 
     fun setData(sellerName: String, sellerThumbnail: String) {

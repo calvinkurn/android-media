@@ -28,8 +28,7 @@ import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
                                 private val talkReplyHeaderListener: TalkReplyHeaderListener,
-                                private val threadListener: ThreadListener,
-                                private val isOldView: Boolean) :
+                                private val threadListener: ThreadListener) :
         AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {

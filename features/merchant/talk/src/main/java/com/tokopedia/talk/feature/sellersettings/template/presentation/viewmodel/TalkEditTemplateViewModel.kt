@@ -29,10 +29,10 @@ class TalkEditTemplateViewModel @Inject constructor(
             if(response.chatAddTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
-                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed())
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed(it))
         }
     }
 
@@ -43,10 +43,10 @@ class TalkEditTemplateViewModel @Inject constructor(
             if(response.chatDeleteTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplate)
             } else {
-                _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
+                _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed())
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed(it))
         }
     }
 
@@ -57,10 +57,10 @@ class TalkEditTemplateViewModel @Inject constructor(
             if(response.chatUpdateTemplate.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             } else {
-                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed())
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed(it))
         }
     }
 }

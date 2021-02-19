@@ -13,6 +13,7 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.utils.FirebaseLogger
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
 import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
@@ -108,10 +109,12 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                     talkTemplateBottomSheetListener?.onSuccessUpdateTemplate(getString(R.string.template_list_success_add_template))
                     this.dismiss()
                 }
-                TalkTemplateMutationResults.DeleteTemplateFailed -> {
+                is TalkTemplateMutationResults.DeleteTemplateFailed -> {
+                    logException(it.throwable)
                     showToaster(getString(R.string.template_delete_toaster_fail))
                 }
-                TalkTemplateMutationResults.MutationFailed -> {
+                is TalkTemplateMutationResults.MutationFailed -> {
+                    logException(it.throwable)
                     showToaster(getString(R.string.template_list_toaster_fail))
                 }
             }
@@ -211,5 +214,9 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private fun getShopId(): String {
         return (activity as? UserSessionListener)?.getShopId() ?: ""
+    }
+
+    private fun logException(throwable: Throwable) {
+        FirebaseLogger.logError(throwable)
     }
 }
