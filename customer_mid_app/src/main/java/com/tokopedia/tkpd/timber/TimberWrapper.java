@@ -33,17 +33,6 @@ import static com.tokopedia.config.GlobalConfig.CONSUMER_PRO_APPLICATION;
 public class TimberWrapper {
     private static final int PRIORITY_LENGTH = 2;
 
-    private static final String[] LOGENTRIES_TOKEN = new String[]{
-            new String(new char[]{
-                    48, 56, 102, 99, 100, 49, 52, 56, 45, 49, 52, 97, 97, 45, 52, 100, 56, 57, 45,
-                    97, 99, 54, 55, 45, 52, 102, 55, 48, 102, 101, 102, 100, 50, 102, 51, 55
-            }),
-            new String(new char[]{
-                    54, 48, 54, 54, 52, 101, 97, 55, 45, 52, 100, 54, 49, 45, 52, 100, 102, 49, 45,
-                    98, 51, 57, 99, 45, 51, 54, 53, 100, 99, 54, 52, 55, 97, 99, 101, 100
-            }),
-    };
-
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
     private static final Object LOCK = new Object();
@@ -51,7 +40,6 @@ public class TimberWrapper {
     public static void init(Application application) {
         LogManager.init(application);
         if (LogManager.instance != null) {
-            LogManager.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
             LogManager.setScalyrConfigList(getScalyrConfigList(application));
         }
         initConfig(application);
@@ -111,6 +99,8 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(),
+                String.valueOf(context.getPackageManager().getInstallerPackageName(context.getPackageName())),
+                GlobalConfig.DEBUG, priority);
     }
 }

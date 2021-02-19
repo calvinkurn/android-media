@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 
 /**
@@ -18,6 +18,9 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
 class BannerShopProductViewHolder(container: View, private val topAdsBannerClickListener: TopAdsBannerClickListener?,
                                   private val impressionListener: TopAdsItemImpressionListener?) : AbstractViewHolder<BannerShopProductViewModel?>(container) {
     private val productCardGridView: ProductCardGridView = itemView.findViewById(R.id.product_item)
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(itemView.context)
+    }
 
     override fun bind(element: BannerShopProductViewModel?) {
         element?.let { model ->
@@ -33,7 +36,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                 setOnClickListener {
                     topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
                             model.appLink, model.cpmData)
-                    ImpresionTask(className).execute(model.adsClickUrl)
+                    topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
                 }
             }
         }
