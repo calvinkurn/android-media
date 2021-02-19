@@ -1,6 +1,8 @@
 package com.tokopedia.media.loader.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.media.loader.*
@@ -12,11 +14,13 @@ import kotlinx.android.synthetic.main.activity_test_media.*
 
 class MediaActivity : AppCompatActivity() {
 
-    private val url = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/1/e0e5d52e-2d9c-498f-8b13-2cba0e2f1e11.jpg?b=A4ADcRuO_2y?"
+    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_media)
+
+        default()
 
         btnNormal?.setOnClickListener { loadImage() }
         btnRoundedProperties?.setOnClickListener { loadImageRounded() }
@@ -29,9 +33,19 @@ class MediaActivity : AppCompatActivity() {
         btnWithoutPlaceHolder?.setOnClickListener { loadImageWithoutPlaceHolder() }
         btnCustomTarget?.setOnClickListener { loadImageCustomTarget() }
         btnBlurHash?.setOnClickListener { loadImageBlurHash() }
+
+        btnLoadIcon?.setOnClickListener { loadIcon() }
+    }
+
+    private fun default() {
+        url = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/1/e0e5d52e-2d9c-498f-8b13-2cba0e2f1e11.jpg?b=A4ADcRuO_2y?"
+        edtUrl?.setText(url)
+        imgTest?.scaleType = ImageView.ScaleType.FIT_XY
     }
 
     private fun loadImage() {
+        default()
+
         imgTest?.loadImage(url) {
             status("loadImage", this)
         }
@@ -40,6 +54,16 @@ class MediaActivity : AppCompatActivity() {
     private fun loadImageRounded() {
         imgTest?.loadImageRounded(url) {
             status("loadImageRounded()", this)
+            Toast.makeText(applicationContext, "loadImageRounded: first", Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({
+                imgTest?.loadImageRounded(url) {
+                    setDelay(3000)
+                    listener({ _, _ ->
+                        Toast.makeText(applicationContext, "loadImageRounded: second", Toast.LENGTH_SHORT).show()
+                        status("loadImageRounded with delayed()", this)
+                    })
+                }
+            }, 3000)
         }
     }
 
@@ -108,6 +132,14 @@ class MediaActivity : AppCompatActivity() {
             setDelay(3000)
             status("loadImageBlurHash()", this)
         }
+    }
+
+    private fun loadIcon() {
+        url = "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png"
+        edtUrl?.setText(url)
+
+        imgTest?.loadIcon(url)
+        imgTest?.scaleType = ImageView.ScaleType.FIT_CENTER
     }
 
     private fun status(methodNme: String, properties: Properties) {

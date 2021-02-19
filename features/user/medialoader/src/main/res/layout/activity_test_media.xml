@@ -7,6 +7,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/unify_space_8">
 
+    <EditText
+        android:id="@+id/edtUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:hint="URL"/>
+
     <ImageView
         android:id="@+id/imgTest"
         android:layout_width="match_parent"
@@ -109,6 +116,14 @@
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
                 android:text="loadImage blurhash"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnLoadIcon"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="loadIcon"/>
 
         </LinearLayout>
 
