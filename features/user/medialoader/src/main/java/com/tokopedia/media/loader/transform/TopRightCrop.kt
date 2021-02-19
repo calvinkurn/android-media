@@ -6,11 +6,10 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import java.security.MessageDigest
 
-class TopRightCrop : BitmapTransformation() {
+class TopRightCrop : MediaTransformation() {
 
     override fun equals(other: Any?): Boolean {
         return other is TopRightCrop
@@ -59,7 +58,7 @@ class TopRightCrop : BitmapTransformation() {
     }
 
     companion object {
-        private const val ID = "com.tokopedia.productcard.utils.TopRightCrop"
+        private val ID = TopRightCrop::javaClass.name
         private val ID_BYTES = ID.toByteArray(Key.CHARSET)
         private val DEFAULT_PAINT = Paint(TransformationUtils.PAINT_FLAGS)
     }
