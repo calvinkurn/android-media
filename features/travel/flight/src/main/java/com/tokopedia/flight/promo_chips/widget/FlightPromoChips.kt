@@ -21,6 +21,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FlightPromoChipsAdapter
     private lateinit var listener: PromoChipsListener
+    private lateinit var listPromo: List<AirlinePrice>
 
     fun init (){
         val view = View.inflate(context, R.layout.include_flight_promo_chips, this)
@@ -33,6 +34,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun renderPromoList(airlineList: List<AirlinePrice>) {
+        listPromo = airlineList
         recyclerView.visibility = View.VISIBLE
         val dataCollection = mutableListOf<Visitable<*>>()
         dataCollection.addAll(airlineList)
@@ -54,8 +56,12 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.clearList()
     }
 
-    fun setItemActive(position: Int){
-        adapter.setSelectedProduct(position)
+    fun setItemActive(airlineID: String){
+        listPromo.forEach{
+            if (airlineID == it.airlineID){
+                adapter.higlightPromo = it.airlineID
+            }
+        }
     }
 
     interface PromoChipsListener{

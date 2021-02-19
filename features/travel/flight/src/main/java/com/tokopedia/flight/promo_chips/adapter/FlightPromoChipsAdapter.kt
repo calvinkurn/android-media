@@ -15,6 +15,7 @@ class FlightPromoChipsAdapter(val context: Context,
     : BaseListAdapter<Visitable<*>, FlightPromoChipsAdapterTypeFactory>(flightPromoChipsAdapterTypeFactory) {
 
     var selectedPosition = SELECTED_POSITION_INIT
+    var higlightPromo: String = ""
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int, payloads: MutableList<Any>) {
         if (holder is FlightPromoChipsViewHolder) {

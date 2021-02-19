@@ -297,13 +297,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
+        flight_promo_chips_view.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
-
-
-        /** tambahin disini kalo di filter di highlight ijo if filter model airline
-         add listener aja**/
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout

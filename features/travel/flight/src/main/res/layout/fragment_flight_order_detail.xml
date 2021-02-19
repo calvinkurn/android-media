@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/flight_search_reverse_background"
+            android:background="@color/Unify_N50"
             android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.ticker.Ticker

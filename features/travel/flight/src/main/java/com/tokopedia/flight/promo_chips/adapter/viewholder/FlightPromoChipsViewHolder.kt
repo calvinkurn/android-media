@@ -48,7 +48,8 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                 } else {
                     if (adapter.selectedPosition == adapterPosition) {
                         changePromoChipsState(true)
-                    } else {
+                    }
+                    else {
                         changePromoChipsState(false)
                     }
                 }
@@ -57,6 +58,10 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                         onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
                         adapter.setSelectedProduct(adapterPosition)
                     }
+                }
+                if (element.airlineID == adapter.higlightPromo) {
+                    adapter.setSelectedProduct(adapterPosition)
+                    changePromoChipsState(true)
                 }
             }
         }
