@@ -26,7 +26,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tokopedia_note"
             app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
-        
+
         <View
             android:id="@+id/view_indicator_vert"
             android:layout_width="@dimen/dp_4"
@@ -44,7 +44,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/address_name"
+            android:text="daps djpasjd apj a daspjd"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_16"
             app:layout_constraintEnd_toStartOf="@id/lbl_main_address"
@@ -63,7 +63,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:text="@string/address_label_new"
-            android:visibility="gone"
+            android:visibility="visible"
             app:labelType="general_light_grey"
             app:layout_constraintBaseline_toBaselineOf="@id/address_name"
             app:layout_constraintHorizontal_bias="0"
