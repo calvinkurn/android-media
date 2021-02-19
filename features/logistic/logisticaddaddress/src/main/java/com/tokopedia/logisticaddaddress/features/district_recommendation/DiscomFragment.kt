@@ -121,9 +121,6 @@ PopularCityAdapter.ActionListener {
             dividerCurrLocation?.visibility = View.GONE
             llDiscomPopularCity?.visibility = View.GONE
         }
-
-        // setMessageSection(true)
-        // setSwipeRefreshSection(true, isLocalization == true)
     }
 
     override fun getSearchInputViewResourceId(): Int {
@@ -211,9 +208,7 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun setLoadingState(active: Boolean) {
-        setMessageSection(false)
-        setSwipeRefreshSection(isLocalization == true, isLocalization == true)
-        if (isLocalization == true)
+        if (active)
             super.showLoading()
         else
             super.hideLoading()
@@ -221,12 +216,12 @@ PopularCityAdapter.ActionListener {
 
     override fun showEmpty() {
         tvMessage!!.text = getString(R.string.message_search_address_no_result)
-        setSwipeRefreshSection(isLocalization == true, isLocalization == true)
+        setSwipeRefreshSection(false, isLocalization == true)
     }
 
     private fun showInitialLoadMessage() {
         setMessageSection(isLocalization != true)
-        setSwipeRefreshSection(isLocalization == true, isLocalization == true)
+        setSwipeRefreshSection(true, isLocalization == true)
 
         if (isLocalization == true) {
             val cityList = resources.getStringArray(R.array.cityList)
@@ -254,7 +249,7 @@ PopularCityAdapter.ActionListener {
     }
 
     private fun setSwipeRefreshSection(active: Boolean, isLocalization: Boolean) {
-        if (isLocalization) {
+        if (!isLocalization) {
             swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
         } else {
             swipeRefreshLayout?.visibility = if (active) View.GONE else View.VISIBLE
