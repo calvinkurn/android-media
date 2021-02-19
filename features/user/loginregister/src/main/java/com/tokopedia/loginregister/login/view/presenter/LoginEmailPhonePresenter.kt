@@ -203,10 +203,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {
-                val encryptedPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
-                loginTokenV2UseCase.setParams(email, encryptedPassword, keyData.hash)
+                var finalPassword = password
+                if(useHash) {
+                    finalPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
+                }
+                loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 loginTokenV2UseCase.executeOnBackground().run {
-                    LoginV2Mapper(this, userSession,
+                    LoginV2Mapper(userSession).map(this,
                             onSuccessLoginToken = {
                                 view.onSuccessLoginEmail(it)
                             },

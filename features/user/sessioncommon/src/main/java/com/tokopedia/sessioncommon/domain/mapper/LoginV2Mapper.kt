@@ -10,15 +10,15 @@ import com.tokopedia.user.session.UserSessionInterface
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 
-class LoginV2Mapper(loginTokenPojo: LoginTokenPojo,
-                    val userSession: UserSessionInterface,
-                    onSuccessLoginToken: (loginTokenPojo: LoginTokenPojo) -> Unit,
-                    onErrorLoginToken: (e: Throwable) -> Unit,
-                    onShowPopupError: (loginTokenPojo: LoginTokenPojo)  -> Unit,
-                    onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
-                    onGoToSecurityQuestion: () -> Unit) {
-    
-    init {
+class LoginV2Mapper(val userSession: UserSessionInterface) {
+
+    fun map(loginTokenPojo: LoginTokenPojo,
+            onSuccessLoginToken: (loginTokenPojo: LoginTokenPojo) -> Unit,
+            onErrorLoginToken: (e: Throwable) -> Unit,
+            onShowPopupError: (loginTokenPojo: LoginTokenPojo)  -> Unit,
+            onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
+            onGoToSecurityQuestion: () -> Unit){
+
         val errors = loginTokenPojo.loginToken.errors
         if (loginTokenPojo.loginToken.errors.isEmpty()
                 && loginTokenPojo.loginToken.accessToken.isNotBlank()) {
@@ -41,6 +41,7 @@ class LoginV2Mapper(loginTokenPojo: LoginTokenPojo,
         } else {
             onErrorLoginToken(Throwable())
         }
+
     }
 
     private fun shouldGoToActivationPage(loginTokenPojo: LoginTokenPojo): Boolean {
