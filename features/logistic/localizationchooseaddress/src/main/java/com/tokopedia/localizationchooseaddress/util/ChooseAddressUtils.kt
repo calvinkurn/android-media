@@ -33,6 +33,7 @@ class ChooseAddressUtils {
 
     private fun hasLocalizingAddressOnCache(): Boolean {
         TODO("Not yet implemented, check cachenya kosong atau ga")
+
     }
 
     private fun isLoginUser(): Boolean {
@@ -72,6 +73,20 @@ class ChooseAddressUtils {
                 long = long,
                 label = label
         )
+    }
+    /**
+     * Host can use this for show or not coachmark
+     * we not provide coackmark. just KEY for identifier.
+     * after host page shown the coachmark, please trigger coachMarkLocalizingAddressAlreadyShown
+     * coachmark must implemented by own host page
+     */
+    fun isLocalizingAddressNeedShowCoachMark(): Boolean {
+        TODO("Not yet implemented, untuk HOST supaya tau harus munculin coachmak atau ga. bisa bikin key di sharepref")
+        return true
+    }
+
+    fun coachMarkLocalizingAddressAlreadyShown(){
+        TODO("Not yet implemented, update KEY identifiernya ya")
     }
 
 
