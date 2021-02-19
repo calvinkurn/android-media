@@ -2,13 +2,13 @@ package com.tokopedia.sellerorder.filter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -22,7 +22,7 @@ abstract class SomFilterViewModelTestFixture {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineDispatchersProvider
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     lateinit var getSomOrderFilterUseCase: GetSomOrderFilterUseCase

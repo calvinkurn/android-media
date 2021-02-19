@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -9,6 +8,7 @@ import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -25,7 +25,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private val dispatcher = CoroutineDispatchersProvider
+    private val dispatcher = CoroutineTestDispatchersProvider
     private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
