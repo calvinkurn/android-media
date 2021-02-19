@@ -562,6 +562,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
+            updateProductId(productData.productID)
             when {
                 !validToReview -> {
                     finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
@@ -987,6 +988,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
             text = incentiveHelper
             show()
         }
+    }
+
+    private fun updateProductId(productId: Int) {
+        this.productId = productId.toLong()
     }
 
     fun getOrderId(): String {
