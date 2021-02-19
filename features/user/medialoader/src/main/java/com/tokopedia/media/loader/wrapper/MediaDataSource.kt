@@ -10,7 +10,7 @@ enum class MediaDataSource {
     MEMORY_CACHE;
 
     companion object {
-        fun mapToDataSource(dataSource: MediaDataSource): DataSource {
+        fun mapTo(dataSource: MediaDataSource): DataSource {
             return when (dataSource) {
                 LOCAL -> DataSource.LOCAL
                 REMOTE -> DataSource.REMOTE
@@ -20,7 +20,7 @@ enum class MediaDataSource {
             }
         }
 
-        fun mapToDataSource(dataSource: DataSource?): MediaDataSource {
+        fun mapTo(dataSource: DataSource?): MediaDataSource {
             if (dataSource == null) return REMOTE
             return when (dataSource) {
                 DataSource.LOCAL -> LOCAL

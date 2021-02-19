@@ -10,7 +10,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.tracker.PerformanceTracker.postRender as trackPerformancePostRender
-import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapToDataSource as dataSource
+import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
 object MediaListenerBuilder {
 
