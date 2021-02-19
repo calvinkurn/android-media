@@ -209,6 +209,8 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
 
+            pushNotificationCommon          : ":features:communication:push-notification-common",
+
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",

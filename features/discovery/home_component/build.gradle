@@ -48,7 +48,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -78,7 +77,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCoreKtx
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.firebase.core
-    implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation project(rootProject.ext.libraries.circularViewPager)
 }

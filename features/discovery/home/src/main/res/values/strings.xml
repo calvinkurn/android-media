@@ -129,4 +129,6 @@
     <string name="content_desc_home_background">Home background</string>
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
+    <string name="sprint_card_item">Sprint Card Item</string>
+    <string name="sprint_product_item">Sprint Product Item</string>
 </resources>
