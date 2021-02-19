@@ -91,6 +91,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var promoCheckoutMarketplaceHanselHelper: PromoCheckoutMarketplaceHanselHelper? = null
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
@@ -206,6 +207,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Initialize hansel helper
+        initializeHanselHelper()
 
         // UI Initialization
         initializeToolbar(view)
@@ -230,6 +233,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun initializeHanselHelper() {
+        promoCheckoutMarketplaceHanselHelper = PromoCheckoutMarketplaceHanselHelper(viewModel, analytics)
+    }
+
+    private fun getHanselHelper(): PromoCheckoutMarketplaceHanselHelper? {
+        return promoCheckoutMarketplaceHanselHelper
     }
 
     private fun initializeFlagIsPromoMvcLockCourierFlow() {
@@ -278,17 +289,23 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeClickListener() {
-        buttonApplyPromo?.let { buttonApplyPromo ->
-            buttonApplyPromo.setOnClickListener {
-                setButtonLoading(buttonApplyPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                        ?: ValidateUsePromoRequest()
-                val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
-                        ?: ArrayList())
+        initializeClickButtonApplyPromo()
+        initializeClickButtonApplyNoPromo()
+        initializeClickBottomsheet()
+    }
+
+    private fun initializeClickBottomsheet() {
+        bottomsheetCloseButton?.let { bottomsheetCloseButton ->
+            bottomsheetCloseButton.setOnClickListener {
+                analytics.eventDismissLastSeen(viewModel.getPageSource())
+                hidePromoCheckoutLastSeenBottomsheet()
             }
         }
 
+        bottomSheetTitle?.setOnClickListener { }
+    }
+
+    private fun initializeClickButtonApplyNoPromo() {
         buttonApplyNoPromo?.let { buttonApplyNoPromo ->
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
@@ -300,15 +317,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
+    }
 
-        bottomsheetCloseButton?.let { bottomsheetCloseButton ->
-            bottomsheetCloseButton.setOnClickListener {
-                analytics.eventDismissLastSeen(viewModel.getPageSource())
-                hidePromoCheckoutLastSeenBottomsheet()
+    private fun initializeClickButtonApplyPromo() {
+        buttonApplyPromo?.let { buttonApplyPromo ->
+            buttonApplyPromo.setOnClickListener {
+                setButtonLoading(buttonApplyPromo, true)
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                        ?: ValidateUsePromoRequest()
+                val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
+                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                        ?: ArrayList())
             }
         }
-
-        bottomSheetTitle?.setOnClickListener { }
     }
 
     private fun initializePromoCheckoutLastSeenBottomsheet() {
