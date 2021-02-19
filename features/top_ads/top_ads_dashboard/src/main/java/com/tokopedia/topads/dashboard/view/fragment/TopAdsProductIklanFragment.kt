@@ -198,7 +198,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             loadData()
         }
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
-        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
+        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.abstraction.R.color.green_400))
 
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {

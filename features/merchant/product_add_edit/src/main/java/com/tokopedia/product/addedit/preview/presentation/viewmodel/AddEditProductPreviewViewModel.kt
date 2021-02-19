@@ -120,6 +120,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
                     is Success -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
 
@@ -148,7 +151,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(detailInputModel) {

@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.util
 
-import com.tokopedia.design.countdown.CountDownView
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
