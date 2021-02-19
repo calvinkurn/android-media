@@ -33,8 +33,7 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
 
     override fun onError(e: Throwable) {
         if (e is AkamaiErrorException) {
-            presenter?.setLastApplyNotValid()
-            presenter?.setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
+            presenter?.doClearAllPromo()
             view?.showToastMessageRed(e)
         }
         view?.renderPromoCheckoutButtonActiveDefault(emptyList())

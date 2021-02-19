@@ -49,7 +49,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -95,6 +94,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.request.Tokopedia
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -756,6 +756,32 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    // This is for akamai error case
+    private void clearAllPromo(ValidateUsePromoRequest validateUsePromoRequest) {
+        ArrayList<String> codes = new ArrayList<>();
+        for (String code : validateUsePromoRequest.getCodes()) {
+            if (code != null) {
+                codes.add(code);
+            }
+        }
+        validateUsePromoRequest.setCodes(new ArrayList<>());
+        ArrayList<OrdersItem> cloneOrders = new ArrayList<>();
+        for (OrdersItem order : validateUsePromoRequest.getOrders()) {
+            if (order != null) {
+                codes.addAll(order.getCodes());
+                order.setCodes(new ArrayList<>());
+                cloneOrders.add(order);
+            }
+        }
+        validateUsePromoRequest.setOrders(cloneOrders);
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), codes);
+        compositeSubscription.add(
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+        );
+        ShipmentPresenter.this.lastValidateUsePromoRequest = validateUsePromoRequest;
+        ShipmentPresenter.this.validateUsePromoRevampUiModel = null;
+    }
+
     @Override
     public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest,
                                                 int lastSelectedCourierOrderIndex,
@@ -779,8 +805,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                            Timber.d(e);
                                            if (getView() != null) {
                                                if (e instanceof AkamaiErrorException) {
-                                                   ShipmentPresenter.this.lastValidateUsePromoRequest = new ValidateUsePromoRequest();
-                                                   ShipmentPresenter.this.validateUsePromoRevampUiModel = null;
+                                                   clearAllPromo(validateUsePromoRequest);
                                                    getView().showToastError(e.getMessage());
                                                    getView().resetAllCourier();
                                                    getView().cancelAllCourierPromo();
@@ -1045,8 +1070,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 Timber.d(e);
                                 if (getView() != null) {
                                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                                    getView().showToastError(e.getMessage());
-                                    getView().resetCourier(cartPosition);
+                                    if (e instanceof AkamaiErrorException) {
+                                        clearAllPromo(validateUsePromoRequest);
+                                        getView().showToastError(e.getMessage());
+                                        getView().resetAllCourier();
+                                        getView().cancelAllCourierPromo();
+                                        getView().doResetButtonPromoCheckout();
+                                    } else {
+                                        getView().showToastError(e.getMessage());
+                                        getView().resetCourier(cartPosition);
+                                    }
                                 }
                             }
 
@@ -1139,8 +1172,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (e instanceof CheckPromoCodeException) {
                                         getView().showToastError(e.getMessage());
                                     } else if (e instanceof AkamaiErrorException) {
+                                        clearAllPromo(validateUsePromoRequest);
                                         getView().showToastError(e.getMessage());
-                                        getView().resetCourier(itemPosition);
+                                        getView().resetAllCourier();
+                                        getView().cancelAllCourierPromo();
+                                        getView().doResetButtonPromoCheckout();
                                     } else {
                                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                     }

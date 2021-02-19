@@ -1,5 +1,6 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
+import android.util.Log
 import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import okhttp3.Headers
@@ -16,6 +17,7 @@ import java.nio.charset.Charset
 import kotlin.system.measureTimeMillis
 
 class GqlAkamaiBotInterceptor : Interceptor {
+    var shouldThrow = false
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response  {
         val request = chain.request()
@@ -62,8 +64,16 @@ class GqlAkamaiBotInterceptor : Interceptor {
                 }
             }
         }
+        val build = newRequest.build()
 
-        val response = chain.proceed(newRequest.build())
+        if (build.header("X-TKPD-AKAMAI") == "promorevamp") {
+            Log.i("asdf", "asdf + $shouldThrow")
+            if (shouldThrow) {
+                throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
+            }
+        }
+
+        val response = chain.proceed(build)
 
         if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
