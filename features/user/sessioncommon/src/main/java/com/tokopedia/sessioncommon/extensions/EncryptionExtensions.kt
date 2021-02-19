@@ -2,6 +2,7 @@ package com.tokopedia.sessioncommon.extensions
 
 import android.util.Base64
 import java.security.MessageDigest
+import java.util.*
 
 /**
  * Created by Yoris Prayogo on 16/02/21.
@@ -14,7 +15,7 @@ fun ByteArray.toHexString(): String {
         for (byte in this) {
             hexString += String.format("%02X", byte)
         }
-        return hexString
+        return hexString.toLowerCase(Locale.getDefault())
     }
     return ""
 }
