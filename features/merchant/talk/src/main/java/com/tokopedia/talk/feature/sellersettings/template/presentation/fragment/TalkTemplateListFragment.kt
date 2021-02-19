@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.utils.FirebaseLogger
+import com.tokopedia.talk.common.utils.UpdateTrackerListener
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
 import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
@@ -191,6 +192,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         talkTemplateListSwitch?.apply {
             isChecked = isEnabled
             setOnCheckedChangeListener { buttonView, isChecked ->
+                updateSwitchState(isChecked)
                 viewModel.enableTemplate(isChecked)
                 if (isChecked) {
                     talkTemplateListRecyclerView?.show()
@@ -324,5 +326,9 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun logException(throwable: Throwable) {
         FirebaseLogger.logError(throwable)
+    }
+
+    private fun updateSwitchState(isChecked: Boolean) {
+        (activity as? UpdateTrackerListener)?.updateTemplateListTracker(isChecked)
     }
 }

@@ -24,6 +24,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartR
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.utils.FirebaseLogger
+import com.tokopedia.talk.common.utils.UpdateTrackerListener
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
@@ -123,6 +124,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun initSwitchState() {
         talkSmartReplySwitch?.isChecked = viewModel.isSmartReplyOn
         talkSmartReplySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            updateSwitchState(isChecked)
             viewModel.isSmartReplyOn = isChecked
             viewModel.setSmartReply()
             viewModel.updateIsSwitchActive(isChecked)
@@ -311,5 +313,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     private fun logException(throwable: Throwable) {
         FirebaseLogger.logError(throwable)
+    }
+
+    private fun updateSwitchState(isChecked: Boolean) {
+        (activity as? UpdateTrackerListener)?.updateSmartReplyTracker(isChecked)
     }
 }

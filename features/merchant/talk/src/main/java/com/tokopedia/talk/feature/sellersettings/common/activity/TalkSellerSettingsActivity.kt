@@ -15,11 +15,14 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.utils.UpdateTrackerListener
 import com.tokopedia.talk.feature.sellersettings.common.util.UserSessionListener
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.analytics.TalkSmartReplyDetailTracking
+import com.tokopedia.talk.feature.sellersettings.template.analytics.TalkTemplateTracking
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, UserSessionListener {
+class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, UserSessionListener, UpdateTrackerListener {
 
     companion object {
         const val KEY_NAVIGATION_PARAM = "navigation"
@@ -29,6 +32,10 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
     lateinit var userSession: UserSessionInterface
 
     private var navigationParam: String = ""
+    private var shouldHitSmartReplyTracker: Boolean = false
+    private var shouldHitTemplateListTracker: Boolean = false
+    private var finalSmartReplySwitchState: Boolean = false
+    private var finalTemplateListSwitchState: Boolean = false
 
     override fun getParentViewResourceID(): Int {
         return R.id.talk_seller_settings_parent_view
@@ -44,8 +51,8 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
         component.inject(this)
         super.onCreate(savedInstanceState)
         getDataFromApplink()
-        setupNavController()
         setupHeader()
+        setupNavController()
     }
 
     override fun getComponent(): TalkComponent {
@@ -56,6 +63,14 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
     override fun onBackPressed() {
         if(isTaskRoot && isTalkSettingsFragment()) {
             goToInbox()
+        }
+        if(isTalkSmartReplyDetailFragment() && shouldHitSmartReplyTracker) {
+            shouldHitSmartReplyTracker = false
+            trackSmartReplySwitch()
+        }
+        if(isTalkSmartTemplateListFragment() && shouldHitTemplateListTracker) {
+            shouldHitTemplateListTracker = false
+            trackTemplateListSwitch()
         }
         super.onBackPressed()
     }
@@ -68,12 +83,38 @@ class TalkSellerSettingsActivity : BaseSimpleActivity(), HasComponent<TalkCompon
         return userSession.userId
     }
 
+    override fun updateSmartReplyTracker(finalSmartReplySwitchState: Boolean) {
+        shouldHitSmartReplyTracker = true
+        this.finalSmartReplySwitchState = finalSmartReplySwitchState
+    }
+
+    override fun updateTemplateListTracker(finalTemplateListSwitchState: Boolean) {
+        shouldHitTemplateListTracker = true
+        this.finalTemplateListSwitchState = finalTemplateListSwitchState
+    }
+
     private fun goToInbox() {
         RouteManager.route(this, ApplinkConstInternalGlobal.INBOX_TALK)
     }
 
     private fun isTalkSettingsFragment(): Boolean {
         return findNavController(R.id.talk_seller_settings_parent_view).currentDestination?.id == R.id.sellerSettingsFragment
+    }
+
+    private fun isTalkSmartReplyDetailFragment(): Boolean {
+        return findNavController(R.id.talk_seller_settings_parent_view).currentDestination?.id == R.id.talkSmartReplyDetailFragment
+    }
+
+    private fun isTalkSmartTemplateListFragment(): Boolean {
+        return findNavController(R.id.talk_seller_settings_parent_view).currentDestination?.id == R.id.talkTemplateListFragment
+    }
+
+    private fun trackSmartReplySwitch() {
+        TalkSmartReplyDetailTracking.eventClickSwitch(getShopId(), getUserId(), finalSmartReplySwitchState)
+    }
+
+    private fun trackTemplateListSwitch() {
+        TalkTemplateTracking.eventActivateTemplates(getShopId(), getUserId(), finalTemplateListSwitchState)
     }
 
     private fun setupNavController() {
