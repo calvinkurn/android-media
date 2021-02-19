@@ -92,7 +92,7 @@
         android:id="@+id/flow_shop_location_and_free_shipping"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:constraint_referenced_ids="iu_image_fulfill,tv_shop_location,iu_free_shipping"
         app:flow_horizontalBias="0"
@@ -188,6 +188,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:scaleType="fitCenter"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/lbl_cashback"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
         tools:ignore="ContentDescription" />

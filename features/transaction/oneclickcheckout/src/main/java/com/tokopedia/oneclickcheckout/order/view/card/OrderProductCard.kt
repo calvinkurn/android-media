@@ -45,7 +45,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val iuImageFulfillment by lazy { view.findViewById<ImageUnify>(R.id.iu_image_fulfill) }
-    private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val iuFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iu_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
     private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
@@ -232,20 +231,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             tvProductSlashPrice.gone()
         }
 
-        if (product.isFreeOngkirExtra && product.freeOngkirImg.isNotEmpty()) {
+        if (product.freeOngkirImg.isNotEmpty()) {
             iuFreeShipping?.let {
                 it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
-            ivFreeShipping?.gone()
-        } else if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
-            ivFreeShipping?.let {
-                it.setImageUrl(product.freeOngkirImg)
-                it.visible()
-            }
-            iuFreeShipping?.gone()
         } else {
-            ivFreeShipping?.gone()
             iuFreeShipping?.gone()
         }
     }
