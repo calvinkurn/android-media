@@ -1313,6 +1313,31 @@ class TopChatRoomPresenterTest {
         }
     }
 
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(errorAtc)
+
+        // When
+        presenter.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke("Gagal menambahkan produk")
+        }
+    }
+
+    private fun getErrorAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 0
+            data.message.add("Gagal menambahkan produk")
+        }
+    }
+
     private fun getSuccessAtcModel(): AddToCartDataModel {
         return AddToCartDataModel().apply {
             data.success = 1
