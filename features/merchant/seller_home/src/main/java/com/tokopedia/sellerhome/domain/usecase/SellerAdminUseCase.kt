@@ -11,10 +11,40 @@ import javax.inject.Inject
 
 class SellerAdminUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<AdminDataResponse>() {
 
-    var requestParams: RequestParams = GetAdminTypeUseCase.createRequestParams()
+    companion object {
+        private const val DEFAULT_SOURCE = "android"
+        private const val PARAM_SOURCE = "source"
+        private const val SOURCE = "\$source"
+
+        val QUERY = """
+            query getAdminType($SOURCE: String!) {
+              getAdminType(source: $SOURCE) {
+                shopID
+                isMultiLocation
+                admin_data {
+                  detail_information {
+                    admin_role_type {
+                      is_shop_admin
+                      is_location_admin
+                      is_shop_owner            
+                    }
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+
+        @JvmStatic
+        fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
+                RequestParams.create().apply {
+                    putString(PARAM_SOURCE, source)
+                }
+    }
+
+    var requestParams: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): AdminDataResponse {
-        GraphqlRequest(GetAdminTypeUseCase.QUERY, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
+        GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
             gqlRepository.getReseponse(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {
