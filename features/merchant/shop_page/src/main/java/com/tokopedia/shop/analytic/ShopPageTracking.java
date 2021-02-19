@@ -461,12 +461,13 @@ public class ShopPageTracking {
     }
 
     protected void followUnfollowShop(
+            String event,
             String action,
             String label,
             String userId
     ) {
         HashMap<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_VIEW);
+        eventMap.put(ShopPageTrackingConstant.EVENT, event);
         eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
         eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
         eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);

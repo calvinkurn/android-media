@@ -10,9 +10,13 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
+Data Layer Docs:
+
 Shop Page Home Revamp
-Data layer docs
 https://docs.google.com/spreadsheets/d/1l91ritx5rj-RJzcTNVXnMTcOp3sWZz6O2v__nfV64Co/edit#gid=306885993
+
+Mvc + Shop Follower Revamp
+https://mynakama.tokopedia.com/datatracker/requestdetail/690
  */
 
 class ShopPageHomeTracking(
@@ -98,9 +102,10 @@ class ShopPageHomeTracking(
             userId: String?
     ) {
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 SEE_ENTRY_POINT,
                 SHOP_PAGE_LABEL + shopId,
-                userId
+                userId,
         )
     }
 

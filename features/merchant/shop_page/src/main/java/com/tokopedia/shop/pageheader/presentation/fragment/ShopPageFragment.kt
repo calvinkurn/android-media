@@ -1515,7 +1515,7 @@ class ShopPageFragment :
 
     override fun setFollowStatus(isFollowing: Boolean) {
         shopPageTracking?.clickFollowUnfollowShopWithoutShopFollower(
-                isFollowing,
+                !isFollowing,
                 CustomDimensionShopPage.create(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,

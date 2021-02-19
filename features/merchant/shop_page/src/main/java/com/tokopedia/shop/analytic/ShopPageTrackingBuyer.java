@@ -209,6 +209,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String userId
     ) {
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 VIEW_FOLLOW_VOUCHER_ICON,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -220,6 +221,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String userId
     ) {
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 VIEW_COACHMARK_FOLLOW,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -231,6 +233,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String userId
     ) {
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 VIEW_COACHMARK_FOLLOW,
                 SHOP_PAGE_LABEL + shopId + COACHMARK_DISAPPEAR,
                 userId
@@ -249,6 +252,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             action = CLICK_UNFOLLOW;
         }
         followUnfollowShop(
+                CLICK_SHOP_PAGE,
                 action,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -278,6 +282,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             action = VIEW_TOASTER_FOLLOW_ERROR;
         }
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 action,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -296,6 +301,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             action = VIEW_TOASTER_UNFOLLOW_ERROR;
         }
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 action,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -307,6 +313,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String userId
     ) {
         followUnfollowShop(
+                CLICK_SHOP_PAGE,
                 CLICK_CEK_TOASTER_SUCCESS,
                 SHOP_PAGE_LABEL + shopId,
                 userId
@@ -318,6 +325,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String userId
     ) {
         followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
                 SEE_ENTRY_POINT,
                 SHOP_PAGE_LABEL + shopId,
                 userId
