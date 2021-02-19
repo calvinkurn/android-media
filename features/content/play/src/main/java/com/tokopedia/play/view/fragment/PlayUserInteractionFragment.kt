@@ -455,7 +455,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeCartInfo()
         observeLikeContent()
         observeBottomInsetsState()
-        observeEventUserInfo()
+        observeStatusInfo()
         observeShareInfo()
 
         observeLoggedInInteractionEvent()
@@ -644,7 +644,7 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
+    private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             getBottomSheetInstance().setState(it.statusType.isFreeze)
 
@@ -667,6 +667,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
                 pipViewOnStateChanged(isFreezeOrBanned = true)
+                pinnedViewOnStateChanged()
 
                 /**
                  * Non view component
@@ -1040,8 +1041,14 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun pinnedViewOnStateChanged(
             pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
+        if (isFreezeOrBanned) {
+            pinnedView?.hide()
+            return
+        }
+
         when (pinnedModel) {
             is PlayPinnedUiModel.PinnedMessage -> {
                 pinnedView?.setPinnedMessage(pinnedModel)

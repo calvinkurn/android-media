@@ -28,6 +28,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
@@ -255,7 +256,7 @@ class PlayVideoFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeBottomInsetsState()
-        observeEventUserInfo()
+        observeStatusInfo()
         observePiPEvent()
     }
 
@@ -278,9 +279,7 @@ class PlayVideoFragment @Inject constructor(
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
-            meta.videoStream?.let {
-                videoView.setOrientation(orientation, it.orientation)
-            }
+            videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
@@ -288,27 +287,11 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (!isYouTube) videoAnalyticHelper.onNewVideoState(it.state)
-            if (playViewModel.videoPlayer.isYouTube) videoView.hide()
-            else {
-                videoView.show()
-                handleVideoStateChanged(it.state)
-            }
+            videoAnalyticHelper.onNewVideoState(it.state)
 
-            when (it.state) {
-                PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
-                is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = it.state.bufferSource)
-                PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
-            }
-
-            if (!playViewModel.channelType.isVod) {
-                overlayVideoView.hide()
-                return@DistinctObserver
-            }
-            when (it.state) {
-                PlayViewerVideoState.End -> overlayVideoView.show()
-                else -> overlayVideoView.hide()
-            }
+            videoLoadingViewOnStateChanged(state = it.state)
+            videoViewOnStateChanged(state = it.state)
+            overlayVideoViewOnStateChanged(state = it.state)
         })
     }
 
@@ -321,9 +304,12 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
+    private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            videoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
+            val isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned
+
+            videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
+            videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
         })
     }
 
@@ -351,13 +337,57 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
             videoView.setPlayer(null)
             videoView.hide()
+            return
         } else if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+
+        when (videoPlayer) {
+            is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()
+            is PlayVideoPlayerUiModel.General -> {
+                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+
+                videoAnalyticHelper.onNewVideoState(state)
+                videoView.show()
+                handleVideoStateChanged(state)
+            }
+        }
+    }
+
+    private fun videoLoadingViewOnStateChanged(
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            videoLoadingView.hide()
+            return
+        }
+
+        when (state) {
+            PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
+            is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
+            PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
+        }
+    }
+
+    private fun overlayVideoViewOnStateChanged(
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            channelType: PlayChannelType = playViewModel.channelType,
+    ) {
+        if (!channelType.isVod) {
+            overlayVideoView.hide()
+            return
+        }
+
+        when (state) {
+            PlayViewerVideoState.End -> overlayVideoView.show()
+            else -> overlayVideoView.hide()
+        }
     }
     //endregion
 
