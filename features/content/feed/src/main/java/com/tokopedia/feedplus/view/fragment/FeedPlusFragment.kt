@@ -345,7 +345,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 stringBuilder.append(getString(R.string.shop_success_follow))
                             }
                         } else {
-                            stringBuilder.append(getString(R.string.msg_network_error))
+                            stringBuilder.append(getString(com.tokopedia.abstraction.R.string.msg_network_error))
                         }
                         data.resultString = stringBuilder.toString()
                         onSuccessFavoriteUnfavoriteShop(data)
@@ -981,7 +981,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
-        dialog.setBtnOk(getString(R.string.button_delete))
+        dialog.setBtnOk(getString(R.string.feed_delete))
         dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         dialog.setOnOkClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
@@ -1010,7 +1010,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.label_close)) }
+            Toaster.make(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close)) }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
@@ -1628,7 +1628,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
                     feedViewModel.doUnfollowKol(data.id, data.rowNumber)
                 else
@@ -1683,7 +1683,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newList.removeAt(rowNumber)
         adapter.updateList(newList)
         view?.let {
-            Toaster.make(it, getString(R.string.feed_post_deleted), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.af_title_ok), View.OnClickListener {
+            Toaster.make(it, getString(R.string.feed_post_deleted), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {
                 Toaster.snackBar.dismiss()
             })
         }
@@ -1695,7 +1695,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorDeletePost(data : DeletePostViewModel) {
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                     feedViewModel.doDeletePost(data.id, data.rowNumber)
             })
         }
@@ -1741,7 +1741,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
         adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId)
             })
         }
