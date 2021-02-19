@@ -836,8 +836,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                         getPassportExpiryDate(), sixMonthFromDeparture)) {
-            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
-                    FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
+            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error))
             til_passport_expiration_date.setError(true)
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(

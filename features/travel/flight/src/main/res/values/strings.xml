@@ -241,7 +241,7 @@
     <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
     <string name="flight_passenger_nationality_secondary_hint">Pilih kewarganegaraan</string>
     <string name="flight_passenger_passport_issuer_country_secondary_hint">Pilih negara</string>
-    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Paspor harus valid setidaknya sampai %s.</string>
+    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Pastikan paspor memiliki masa aktif sekurang-kurangnya 6 bulan</string>
     <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku paspor tidak boleh lebih dari %s.</string>
     <string name="flight_booking_passport_number_empty_error">Nomor Paspor harus diisi</string>
     <string name="flight_booking_passport_number_alphanumeric_error">Nomor Paspor hanya boleh terdiri dari huruf dan angka</string>
