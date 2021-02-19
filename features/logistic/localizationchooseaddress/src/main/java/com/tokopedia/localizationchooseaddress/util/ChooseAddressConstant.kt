@@ -1,11 +1,17 @@
 package com.tokopedia.localizationchooseaddress.util
 
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+
 class ChooseAddressConstant {
-/*
+
     companion object {
-        const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
-        const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
-        const val REQUEST_CODE_ADD_ADDRESS = 199
+        val defaultAddress = LocalCacheModel(
+                address_id = "",
+                city_id = "176",
+                district_id = "2274",
+                lat = "",
+                long = "",
+                label = "Jakarta Pusat"
+        )
     }
-    */
 }
