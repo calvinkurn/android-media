@@ -71,7 +71,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                 is Success -> {
                     //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
                     chooseAddressPref?.setLocalCache(LocalCacheModel(address_id = "123", city_id = "123", district_id = "123", lat = "", long = "", label = "Tokopedia Tower" ))
-                    chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
+                    chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                 }
             }
 
@@ -93,7 +93,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 label = data.addressName
                         )
                         chooseAddressPref?.setLocalCache(localData)
-                        chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
+                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                     }
                 }
             }
@@ -115,7 +115,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 label = data.addressName
                         )
                         chooseAddressPref?.setLocalCache(localData)
-                        chooseAddressWidgetListener?.onChosenAddressUpdatedFromBackground()
+                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                     }
                 }
             }
@@ -124,7 +124,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private fun checkRollence(){
         // check rollence. kalo udah panggil listener, biar host page yang atur show or hide
-        chooseAddressWidgetListener?.onFeatureActive(true)
+        chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
     }
 
     fun updateWidget(){
@@ -150,7 +150,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
         this.chooseAddressWidgetListener = listener
-        val fragment = chooseAddressWidgetListener?.getHostFragment()
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
             viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
         }
@@ -159,21 +159,45 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         initObservers()
 
         buttonChooseAddress?.setOnClickListener {
-            val fragment = chooseAddressWidgetListener?.getHostFragment()
+            val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
             ChooseAddressBottomSheet(this).show(fragment?.fragmentManager)
         }
     }
 
     override fun onAddressChosen() {
-        chooseAddressWidgetListener?.onUserChosenAddress()
+        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
     }
 
     interface ChooseAddressWidgetListener {
-        fun onUserChosenAddress() // ini yang dari bottomshet dan UI harus implement
-        fun onChosenAddressUpdatedFromBackground() // ini yg background kita hit dan update cache, tapi UI optional untuk lakuin sesuatu. contoh pas non login cache kosong.
-        fun onFeatureActive(active: Boolean)
-        fun getHostFragment(): Fragment
-        fun getSrcData(): String
+        /**
+         * Action choosen address from user by widget / bottomshet
+         * Host must update content UI
+         */
+        fun onLocalizingAddressUpdatedFromWidget();
+
+        /**
+         * Address updated from background if device have not address saved in local cache.
+         * this first user rollout
+         * host can ignore this. optional to update UI
+         */
+        fun onLocalizingAddressUpdatedFromBackground();
+
+        /**
+         * this trigger to Host this feature active or not
+         * Host must GONE widget if isRollOutUser == false
+         * Host must VISIBLE widget if isRollOutUser == true
+         */
+        fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean)
+
+        /**
+         * We need Object Host Fragment to get viewmodel
+         */
+        fun getLocalizingAddressHostFragment(): Fragment
+
+        /**
+         * String Source of Host Page
+         */
+        fun getLocalizingAddressHostSourceData(): String
     }
 
 

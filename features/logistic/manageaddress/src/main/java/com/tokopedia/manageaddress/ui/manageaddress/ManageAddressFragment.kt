@@ -378,23 +378,23 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    override fun onUserChosenAddress() {
-        //
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        TODO("Not yet implemented")
     }
 
-    override fun onChosenAddressUpdatedFromBackground() {
-        //
+    override fun onLocalizingAddressUpdatedFromBackground() {
+        TODO("Not yet implemented")
     }
 
-    override fun onFeatureActive(active: Boolean) {
-        //
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+        TODO("Not yet implemented")
     }
 
-    override fun getHostFragment(): ManageAddressFragment {
-        return this
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        TODO("Not yet implemented")
     }
 
-    override fun getSrcData(): String {
-        return "address"
+    override fun getLocalizingAddressHostSourceData(): String {
+        TODO("Not yet implemented")
     }
 }

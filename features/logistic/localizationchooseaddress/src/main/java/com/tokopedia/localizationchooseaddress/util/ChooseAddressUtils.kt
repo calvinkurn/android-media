@@ -1,5 +1,6 @@
 package com.tokopedia.localizationchooseaddress.util
 
+import android.content.ClipData
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -11,21 +12,29 @@ import javax.inject.Inject
 
 class ChooseAddressUtils {
 
-    fun getLatestChooseAddress(context: Context): LocalCacheModel {
+    fun getLocalizingAddressData(context: Context): LocalCacheModel {
+        TODO("Kasih logic if rollence aktif, if login user, etc")
         var chooseAddressPref = ChooseAddressSharePref(context)
         return chooseAddressPref?.getLocalCacheData()
     }
 
-    fun compareAddressData(context: Context, data: LocalCacheModel): Boolean {
+    /**
+     * Host must check this onResume
+     * if the result true
+     * then host must getLocalizingAddressData to refresh the page content
+     * if false
+     * it mean data has same. no need action from host
+     */
+    fun isLocalizingAddressHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
         var chooseAddressPref = ChooseAddressSharePref(context)
         var latestChooseAddressData = chooseAddressPref?.getLocalCacheData()
         var validate = true
-        if (latestChooseAddressData.address_id != data.address_id) validate = false
-        if (latestChooseAddressData.city_id != data.city_id) validate = false
-        if (latestChooseAddressData.district_id != data.district_id) validate = false
-        if (latestChooseAddressData.lat != data.lat) validate = false
-        if (latestChooseAddressData.long != data.long) validate = false
-        if (latestChooseAddressData.label != data.label) validate = false
+        if (latestChooseAddressData.address_id != localizingAddressStateData.address_id) validate = false
+        if (latestChooseAddressData.city_id != localizingAddressStateData.city_id) validate = false
+        if (latestChooseAddressData.district_id != localizingAddressStateData.district_id) validate = false
+        if (latestChooseAddressData.lat != localizingAddressStateData.lat) validate = false
+        if (latestChooseAddressData.long != localizingAddressStateData.long) validate = false
+        if (latestChooseAddressData.label != localizingAddressStateData.label) validate = false
         return validate
     }
 
