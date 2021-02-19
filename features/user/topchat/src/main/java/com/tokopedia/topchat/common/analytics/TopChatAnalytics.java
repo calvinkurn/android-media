@@ -137,7 +137,6 @@ public class TopChatAnalytics {
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
-        String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
         String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
         String VIEW_REVIEW_REMINDER_WIDGET = "view on review reminder widget";
         String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
@@ -659,48 +658,6 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_ORDER_PROGRESS_WIDGET,
                 "buyer - " + chatOrder.getStatus()
-        );
-    }
-
-    // #OCC1
-    public void trackClickOccProduct(
-            @NotNull ProductAttachmentViewModel product,
-            @NotNull String shopType,
-            @NotNull String shopName,
-            @NotNull String cartId
-    ) {
-
-        List<AddToCartProduct> addToCartProducts
-                = new ArrayList<AddToCartProduct>() {{
-            add(new AddToCartProduct(
-                    product.getIdString(),
-                    product.getProductName(),
-                    "",
-                    product.getCategory(),
-                    product.getVariants().toString(),
-                    product.getPriceInt(),
-                    product.getMinOrder(),
-                    cartId,
-                    DataLayer.mapStringsOf(
-                            "dimension79", product.getShopId() + "",
-                            "dimension81", shopType,
-                            "dimension80", shopName,
-                            "dimension40", getFrom(product))
-            ));
-        }};
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                AddToCartBundler.KEY,
-                AddToCartBundler.getBundle(
-                        addToCartProducts,
-                        AddToCartBundler.KEY,
-                        Action.CLICK_OCC_PRODUCT_THUMBNAIL,
-                        null,
-                        Category.CHAT_DETAIL,
-                        null,
-                        null,
-                        new ArrayMap<>()
-                )
         );
     }
 
