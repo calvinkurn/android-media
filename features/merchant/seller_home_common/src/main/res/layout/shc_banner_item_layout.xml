@@ -9,6 +9,7 @@
     android:layout_marginEnd="@dimen/layout_lvl1"
     android:layout_marginRight="@dimen/layout_lvl1"
     android:adjustViewBounds="true"
+    android:contentDescription="@null"
     android:focusable="true"
     android:minHeight="@dimen/shc_dimen_210dp"
     app:srcCompat="@drawable/bannerview_image_placeholder" />
