@@ -2,11 +2,14 @@ package com.tokopedia.orderhistory.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.FileUtil
 import com.tokopedia.orderhistory.TestCoroutineContextDispatcher
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,6 +19,7 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rx.Observable
 
 class OrderHistoryViewModelTest {
 
@@ -99,4 +103,70 @@ class OrderHistoryViewModelTest {
         verify { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, mockListener) }
     }
 
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(errorAtc)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke("Gagal menambahkan produk")
+        }
+    }
+
+    @Test
+    fun `when error throwable addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorMsg = "Gagal menambahkan produk"
+        every {
+            addToCartUseCase.createObservable(any())
+        } throws IllegalStateException(errorMsg)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(errorMsg)
+        }
+    }
+
+    @Test
+    fun `when success addProductToCart`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(successAtc)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), onSuccess, {})
+
+        // Then
+        verify(exactly = 1) {
+            onSuccess.invoke(successAtc.data)
+        }
+    }
+
+    private fun getErrorAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 0
+            data.message.add("Gagal menambahkan produk")
+        }
+    }
+
+    private fun getSuccessAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 1
+        }
+    }
 }
