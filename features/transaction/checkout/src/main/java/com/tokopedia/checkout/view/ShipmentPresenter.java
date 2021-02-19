@@ -757,7 +757,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     // This is for akamai error case
-    private void clearAllPromo(ValidateUsePromoRequest validateUsePromoRequest) {
+    private void clearAllPromo(ValidateUsePromoRequest newValidateUsePromoRequest) {
+        ValidateUsePromoRequest validateUsePromoRequest = ShipmentPresenter.this.lastValidateUsePromoRequest;
         ArrayList<String> codes = new ArrayList<>();
         for (String code : validateUsePromoRequest.getCodes()) {
             if (code != null) {
@@ -774,10 +775,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
         validateUsePromoRequest.setOrders(cloneOrders);
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), codes);
-        compositeSubscription.add(
-            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-        );
+        if (!codes.isEmpty()) {
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), codes);
+            compositeSubscription.add(
+                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+            );
+        }
         ShipmentPresenter.this.lastValidateUsePromoRequest = validateUsePromoRequest;
         ShipmentPresenter.this.validateUsePromoRevampUiModel = null;
     }
