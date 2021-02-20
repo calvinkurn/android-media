@@ -294,22 +294,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun actionMore() {
-        LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                        0, DataMapper().getLinkerShareData(data),
-                        object : ShareCallback {
-                            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                val intent = getIntent(data?.originalTextContent ?: "", TYPE_TEXT)
-                                startActivity(Intent.createChooser(intent, getString(R.string.other)))
-                                sendTracker(KEY_OTHER)
-                            }
-
-                            override fun onError(linkerError: LinkerError) {
-
-                            }
-                        }
-                )
-        )
+        val intent = getIntent(data?.uri ?: "", TYPE_TEXT)
+        startActivity(Intent.createChooser(intent, getString(R.string.other)))
+        sendTracker(KEY_OTHER)
     }
 
     private fun getIntent(textToShare: String, type: String): Intent {

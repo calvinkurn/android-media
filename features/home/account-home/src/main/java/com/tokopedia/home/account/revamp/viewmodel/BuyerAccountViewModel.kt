@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
-import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
+import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
@@ -111,7 +111,6 @@ class BuyerAccountViewModel @Inject constructor (
 
     private fun saveLocallyAttributes(accountDataModel: AccountDataModel) {
         saveLocallyWallet(accountDataModel)
-        saveLocallyVccUserStatus(accountDataModel)
         savePhoneVerified(accountDataModel)
         saveIsAffiliateStatus(accountDataModel)
         saveDebitInstantData(accountDataModel)
@@ -182,15 +181,8 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private fun saveLocallyWallet(accountDataModel: AccountDataModel) {
-        walletPref.saveWallet(accountDataModel.wallet)
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.tokoSwipeUrl = accountDataModel.vccUserStatus.redirectionUrl
-        }
-    }
-
-    private fun saveLocallyVccUserStatus(accountDataModel: AccountDataModel) {
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.saveVccUserStatus(accountDataModel.vccUserStatus)
+        if (accountDataModel.profile != null) {
+            walletPref.saveWallet(accountDataModel.wallet)
         }
     }
 

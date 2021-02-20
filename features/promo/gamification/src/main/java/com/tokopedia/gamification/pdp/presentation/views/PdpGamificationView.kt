@@ -202,10 +202,11 @@ class PdpGamificationView : LinearLayout {
         scrollListener.updateStateAfterGetData()
     }
 
-    fun getRecommendationParams(pageName: String, shopId: Long) {
+    fun getRecommendationParams(pageName: String, shopId: Long, isShopIdEmpty:Boolean) {
         this.pageName = pageName
         this.shopId = shopId
         viewModel.shopId = shopId
+        viewModel.useEmptyShopId = isShopIdEmpty
         viewModel.getRecommendationParams(pageName)
     }
 

@@ -62,8 +62,6 @@ interface AccountItemListener {
 
     fun onTopAdsMenuClicked()
 
-    fun onSellerAccountCardClicked()
-
     fun onShopStatusInfoButtonClicked()
 
     fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String)

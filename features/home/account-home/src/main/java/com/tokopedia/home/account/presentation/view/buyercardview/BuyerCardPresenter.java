@@ -1,5 +1,9 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
+import android.opengl.Visibility;
+
+import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCardContract.View;
+
 import static android.view.View.GONE;
 
 /**
