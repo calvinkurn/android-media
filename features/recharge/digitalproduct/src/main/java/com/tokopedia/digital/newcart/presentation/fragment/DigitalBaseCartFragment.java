@@ -97,6 +97,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     protected EmptyStateUnify emptyState;
 
+    private static final String DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         DeviceInfo.getAdsIdSuspend(requireContext(), null);
@@ -486,7 +488,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         }
         else {
             emptyState.setDescription(message);
-            emptyState.setImageDrawable(getResources().getDrawable(R.drawable.digital_ic_digital_cart_transaction_failed));
+            emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
             emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
         }
         emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));

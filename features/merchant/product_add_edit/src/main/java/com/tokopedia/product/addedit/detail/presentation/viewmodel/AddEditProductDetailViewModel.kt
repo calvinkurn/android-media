@@ -323,7 +323,11 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductStockInput(productStockInput: String) {
-        if (hasVariants) return
+        if (hasVariants) {
+            productStockMessage = ""
+            mIsProductStockInputError.value = false
+            return
+        }
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }

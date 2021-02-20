@@ -16,10 +16,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
-import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
-import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.common.util.AddEditProductUploadException
-import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
@@ -69,6 +66,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var resourceProvider: ResourceProvider
     @Inject
     lateinit var gson: Gson
+    @Inject
+    lateinit var sellerAppReviewHelper: AddEditSellerReviewHelper
 
     private var notificationManager: AddEditProductNotificationManager? = null
 

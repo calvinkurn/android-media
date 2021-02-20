@@ -9,6 +9,7 @@ import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -38,4 +39,9 @@ abstract class SellerHomeViewModelModule {
     @IntoMap
     @ViewModelKey(OtherMenuViewModel::class)
     abstract fun otherSettingViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SellerReviewViewModel::class)
+    abstract fun provideSellerReviewViewModel(otherMenuViewModel: SellerReviewViewModel): ViewModel
 }

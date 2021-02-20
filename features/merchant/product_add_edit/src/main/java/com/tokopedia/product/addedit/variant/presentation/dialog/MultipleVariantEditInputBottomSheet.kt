@@ -89,7 +89,6 @@ class MultipleVariantEditInputBottomSheet(
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
-
         contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()

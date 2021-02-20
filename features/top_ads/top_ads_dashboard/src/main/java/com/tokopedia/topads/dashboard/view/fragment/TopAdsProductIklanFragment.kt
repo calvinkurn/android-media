@@ -198,7 +198,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             loadData()
         }
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
-        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
+        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.abstraction.R.color.green_400))
 
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -320,6 +320,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun noAds() {
+        progressView?.gone()
         /*ad switching in progress*/
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (checkInProgress()) {
@@ -359,6 +360,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun noProduct() {
+        progressView?.gone()
         adTypeCallBack?.onNoProduct(true)
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {
