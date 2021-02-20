@@ -10,8 +10,8 @@ import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -20,7 +20,7 @@ import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
-    fun mapToViewModels(
+    fun mapToUiModels(
         productList: List<Product>?,
         access: ProductManageAccess?,
         multiSelectActive: Boolean

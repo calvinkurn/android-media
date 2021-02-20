@@ -24,10 +24,6 @@ class StatusBarColorUtil(private val activity: Activity) {
 
         with(window) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (GlobalConfig.isSellerApp()) {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-                }
                 statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
             } else {
                 statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
@@ -40,8 +36,6 @@ class StatusBarColorUtil(private val activity: Activity) {
             val window = activity.window ?: return@checkBuildVersion
             with(window) {
                 statusBarColor = if (GlobalConfig.isSellerApp()) {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
                     color
                 } else {
                     Color.TRANSPARENT

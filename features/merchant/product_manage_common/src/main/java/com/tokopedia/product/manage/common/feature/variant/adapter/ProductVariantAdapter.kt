@@ -40,6 +40,22 @@ class ProductVariantAdapter(
         updateVariant(id) { it.copy(stock = stock) }
     }
 
+    fun showStockInfo() {
+        getVariantList().forEach {
+            val index = data.indexOf(it)
+            data[index] = it.copy(isAllStockEmpty = false)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun hideStockInfo() {
+        getVariantList().forEach {
+            val index = data.indexOf(it)
+            data[index] = it.copy(isAllStockEmpty = true)
+        }
+        notifyDataSetChanged()
+    }
+
     private fun getVariantList(): List<ProductVariant> {
         return data.filterIsInstance<ProductVariant>()
     }
