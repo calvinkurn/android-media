@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
@@ -45,8 +46,6 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
     private var validation1 = true
     private var validation2 = true
     private var currentBudget = 0
-    val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
-
 
     companion object {
         fun newInstance(bundle: Bundle?): EditFormWithoutGroupFragment {
@@ -83,7 +82,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                currentBudget = replace(abs(number.toInt()).toString()).toInt()
+                currentBudget = abs(number.toInt()).toString().removeCommaRawString().toInt()
                 val result = number.toInt()
                 daily_budget.textFieldInput.setText((Constants.MULTIPLIER * result).toString())
                 when {
@@ -130,19 +129,13 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         save_butt.setOnClickListener {
             var priceDaily = 0.0F
             if (radio2.isChecked) {
-                priceDaily = replace(daily_budget.textFieldInput.text.toString()).toFloat()
+                priceDaily = daily_budget.textFieldInput.text.toString().removeCommaRawString().toFloat()
             }
-            viewModel.editSingleAd(adId.toString(), replace(budget.textFieldInput.text.toString()).toFloat(),
+            viewModel.editSingleAd(adId.toString(), budget.textFieldInput.text.toString().removeCommaRawString().toFloat(),
                     priceDaily)
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
-    }
-
-    private fun replace(value: String): String {
-        return value.replace(",", "")
-                .replace(".", "").trim()
-
     }
 
     private fun onSuccessAdInfo(data: List<SingleAd>) {
