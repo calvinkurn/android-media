@@ -16,7 +16,6 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +36,6 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -108,7 +106,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -162,7 +159,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
-    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
@@ -205,7 +201,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFireBase()
-        initTooltipPopup()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -280,36 +275,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupBackground() {
         presenter.getBackground()
-    }
-
-    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
-        val addToCartOccRequestParams = AddToCartOccRequestParams(
-                productId = product.productId.toString(),
-                shopId = product.shopId.toString(),
-                quantity = product.minOrder.toString(),
-                productName = product.productName,
-                category = product.category,
-                price = product.priceInt.toString(),
-                userId = session.userId
-        )
-        presenter.addToCart(addToCartOccRequestParams, {
-            analytics.trackClickOccProduct(
-                    product,
-                    getViewState().chatRoomViewModel.shopType,
-                    getViewState().chatRoomViewModel.shopName,
-                    it.data.cartId
-            )
-            finishOccLoading(product, position)
-            RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        }, {
-            finishOccLoading(product, position)
-            showSnackbarError(it)
-        })
-    }
-
-    private fun finishOccLoading(product: ProductAttachmentViewModel, position: Int) {
-        product.isLoadingOcc = false
-        adapter.updateOccLoadingStatus(product, position)
     }
 
     private fun setupBeforeReplyTime() {
@@ -389,10 +354,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun hideTopLoading() {
         hideLoading()
-    }
-
-    private fun initTooltipPopup() {
-        toolTip = ToolTipStickerPopupWindow(context, presenter)
     }
 
     private fun setupAnalytic() {
@@ -505,7 +466,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
-        showStickerOnBoardingTooltip()
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -530,15 +490,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvScrollListener?.updateHasNextState(chat)
         if (hasNext) {
             showTopLoading()
-        }
-    }
-
-    private fun showStickerOnBoardingTooltip() {
-        if (
-                !presenter.isStickerTooltipAlreadyShow() &&
-                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == true
-        ) {
-            toolTip.showAtTop(getViewState().chatStickerMenuButton)
         }
     }
 
@@ -959,8 +910,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         activity?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
                     .withSimpleMultipleSelection(maxPick = 1).apply {
-                maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
-            }
+                        maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
+                    }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
@@ -1341,7 +1292,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        toolTip.dismiss()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
@@ -1548,7 +1498,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
-        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {
