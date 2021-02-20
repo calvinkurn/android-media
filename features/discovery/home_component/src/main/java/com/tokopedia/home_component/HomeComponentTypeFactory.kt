@@ -7,6 +7,7 @@ import com.tokopedia.home_component.visitable.*
  */
 interface HomeComponentTypeFactory {
     fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int
+    fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int
     fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int
     fun type(reminderWidgetModel: ReminderWidgetModel): Int
     fun type(mixLeftDataModel: MixLeftDataModel): Int

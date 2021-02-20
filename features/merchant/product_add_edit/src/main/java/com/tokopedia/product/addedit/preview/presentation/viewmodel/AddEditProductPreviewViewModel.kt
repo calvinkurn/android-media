@@ -5,12 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -153,6 +153,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
                     is Success -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
 
@@ -181,7 +184,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(detailInputModel) {

@@ -18,7 +18,7 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
     lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
 
     override suspend fun getQuickFilterData(componentId: String, pageEndPoint: String): ArrayList<Filter>? {
-        getRecommendationFilterChips.setParams(pageName = "clp_quick_filter", xSource = "discopage")
+        getRecommendationFilterChips.setParams(pageName = "clp_quick_filter", xSource = "category")
         return mapFilters(getRecommendationFilterChips.executeOnBackground().filterChip)
     }
 
@@ -32,6 +32,7 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
                         iconUrl = option.icon,
                         key = option.key,
                         value = option.value,
+                        isPopular = option.isPopular,
                         inputType = option.inputType))
             }
             filters.add(Filter(

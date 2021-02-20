@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BaseNotification_Container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/notif_dp_12</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
+    <style name="BaseNotification_Icon">
+        <item name="android:layout_marginStart">@dimen/spacing_lvl4</item>
+        <item name="android:layout_width">@dimen/layout_lvl3</item>
+        <item name="android:layout_height">@dimen/layout_lvl3</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:layout_marginTop">@dimen/notif_dp_10</item>
+    </style>
+
+    <style name="BaseNotification_Type">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="typographyType">body_3</item>
+    </style>
+
+    <style name="BaseNotification_Time">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/notif_dp_10</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="typographyType">body_3</item>
+    </style>
+
+    <style name="BaseNotification_Title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="typographyType">body_2</item>
+        <item name="typographyWeight">bold</item>
+    </style>
+
+    <style name="BaseNotification_Desc">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
+        <item name="android:layout_marginTop">@dimen/spacing_lvl1</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="typographyType">body_2</item>
+    </style>
+</resources>

@@ -18,9 +18,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_SUCCESS
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +39,9 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userDataTemp: UserDataTemporary
+
+    @Inject
+    lateinit var tracker: InactivePhoneTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,6 +85,8 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext?.setOnClickListener {
+            tracker.clickOnNextButtonOnboarding()
+
             showLoading()
             viewModel.phoneValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail())
         }
@@ -90,10 +98,10 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
             when (it) {
                 is Success -> {
-                    if (it.data.validation.status == 1) {
+                    if (it.data.validation.status == STATUS_SUCCESS) {
                         userDataTemp.setIndex(1)
                         gotoOnboardingIdCardPage()
-                    } else if (it.data.validation.status == 2) {
+                    } else if (it.data.validation.status == STATUS_MULTIPLE_ACCOUNT) {
                         gotoAccountListPage(userDataTemp.getOldPhone())
                     }
                 }

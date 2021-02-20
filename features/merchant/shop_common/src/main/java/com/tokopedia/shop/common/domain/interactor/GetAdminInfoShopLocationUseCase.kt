@@ -16,7 +16,7 @@ class GetAdminInfoShopLocationUseCase @Inject constructor(
 ): GraphqlUseCase<AdminInfoResponse>(gqlRepository) {
 
     companion object {
-        private const val SOURCE = "akw-testing"
+        private const val DEFAULT_SOURCE = "android"
 
         private const val SOURCE_KEY = "source"
         private const val SHOP_ID_KEY = "shopId"
@@ -32,9 +32,9 @@ class GetAdminInfoShopLocationUseCase @Inject constructor(
         setTypeClass(AdminInfoResponse::class.java)
     }
 
-    suspend fun execute(shopId: Int): List<ShopLocationResponse> {
+    suspend fun execute(shopId: Int, source: String = DEFAULT_SOURCE): List<ShopLocationResponse> {
         val requestParams = RequestParams.create().apply {
-            putString(SOURCE_KEY, SOURCE)
+            putString(SOURCE_KEY, source)
             putInt(SHOP_ID_KEY, shopId)
         }
 

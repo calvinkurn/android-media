@@ -1,5 +1,9 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
+import android.opengl.Visibility;
+
+import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCardContract.View;
+
 import static android.view.View.GONE;
 
 /**
@@ -35,8 +39,8 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setEggImage(buyerCard.getEggImageUrl());
             view.setMemberStatus(buyerCard.getMemberStatus());
 
-            if(buyerCard.isHasShop() || buyerCard.getRoleName() != null) {
-                view.showSellerAccountCard(buyerCard.getShopName(), buyerCard.getRoleName());
+            if(buyerCard.isHasShop()) {
+                view.showSellerAccountCard(buyerCard.getShopName());
             } else {
                 view.showShopOpenCard();
             }

@@ -21,6 +21,10 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
+    companion object {
+        private const val GET_ADMIN_TYPE_SOURCE = "kevin_user-profile"
+    }
+
     override fun onNext(response: GraphqlResponse) {
         onSuccessGetUserProfile(response)
     }
@@ -56,7 +60,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
             userSession,
             onSuccessGetAdminType(profile),
             onErrorGetAdminType()
-        ))
+        ), GET_ADMIN_TYPE_SOURCE)
     }
 
     private fun onSuccessGetAdminType(profile: ProfilePojo): (AdminDataResponse) -> Unit {
