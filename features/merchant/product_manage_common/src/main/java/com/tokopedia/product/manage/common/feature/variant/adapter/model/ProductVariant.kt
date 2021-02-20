@@ -16,6 +16,7 @@ data class ProductVariant(
         val sku: String,
         val stock: Int,
         val pictures: List<Picture>,
+        val isAllStockEmpty: Boolean = false,
         val access: ProductManageAccess
 ): Visitable<ProductVariantAdapterFactory> {
 

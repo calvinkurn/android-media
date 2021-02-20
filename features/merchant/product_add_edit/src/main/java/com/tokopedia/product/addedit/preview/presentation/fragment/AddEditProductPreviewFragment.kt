@@ -47,6 +47,9 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
@@ -73,6 +76,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -146,6 +151,8 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
+    private var productInputModel: ProductInputModel? = null
+    private var isFragmentVisible = false
 
     private var toolbar: Toolbar? = null
 
@@ -195,9 +202,6 @@ class AddEditProductPreviewFragment :
 
     //loading
     private var loadingLayout: MotionLayout? = null
-
-    // admin multi location ticker
-    private var multiLocationTicker: Ticker? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -279,11 +283,14 @@ class AddEditProductPreviewFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
+
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -337,9 +344,6 @@ class AddEditProductPreviewFragment :
 
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
-
-        // admin revamp
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
 
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
@@ -473,8 +477,6 @@ class AddEditProductPreviewFragment :
             checkEnableOrNot()
         }
 
-        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
-
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -485,7 +487,6 @@ class AddEditProductPreviewFragment :
         observeIsLoading()
         observeValidationMessage()
         observeSaveProductDraft()
-        observeAdminPermission()
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
 
@@ -495,8 +496,29 @@ class AddEditProductPreviewFragment :
         stopPreparePagePerformanceMonitoring()
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    productInputModel = this
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
@@ -801,6 +823,10 @@ class AddEditProductPreviewFragment :
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
+            // set data only in draft or edit mode to make dynamic ui preview
+            if (isDrafting() || viewModel.productInputModel.value?.productId != 0L) {
+                productInputModel = viewModel.productInputModel.value
+            }
         }
     }
 
@@ -956,6 +982,12 @@ class AddEditProductPreviewFragment :
             }
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
+            //check whether productInputModel has value from savedInstanceState
+            if (productInputModel != null) {
+                viewModel.productInputModel.value = productInputModel
+                checkEnableOrNot()
+                productInputModel = null
+            }
         })
     }
 
@@ -1073,25 +1105,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun observeAdminPermission() {
-        viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    result.data.let { isEligible ->
-                        if (!isEligible) {
-                            // TODO: Show not eligible page. Will wait for PM. For now, exit the page
-                            activity?.finish()
-                        }
-                    }
-                }
-                is Fail -> {
-                    showGetProductErrorToast(viewModel.getProductId())
-                }
-            }
-
-        }
-    }
-
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1100,7 +1113,6 @@ class AddEditProductPreviewFragment :
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
-        viewModel.isProductManageAuthorized.removeObservers(this)
         viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
