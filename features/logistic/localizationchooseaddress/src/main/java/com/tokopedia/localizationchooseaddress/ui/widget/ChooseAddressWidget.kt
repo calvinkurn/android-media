@@ -1,10 +1,6 @@
 package com.tokopedia.localizationchooseaddress.ui.widget
 
 import android.content.Context
-import android.graphics.Typeface
-import android.text.Html
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,21 +15,15 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddress
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
-import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressBottomSheetListener
-import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressListener
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.defaultAddress
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
+class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -48,7 +38,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
 
     lateinit var viewModel: ChooseAddressViewModel
 
-    private var chooseAddressWidgetListener: ChooseAddressListener? = null
+    private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -74,7 +64,6 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
             when (it) {
                 is Success -> {
                     //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
-                    chooseAddressPref?.setLocalCache(defaultAddress)
                     chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                 }
             }
@@ -144,15 +133,24 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
     }
 
     private fun initChooseAddressFlow() {
+        val localData = ChooseAddressUtils.getLocalizingAddressData(context)
+        if (localData?.city_id?.isEmpty() == true) {
+            textChosenAddress?.text = context.getString(R.string.txt_label_default)
+        } else {
+            updateWidget()
+        }
+        viewModel.getStateChosenAddress()
+        /*
+
         if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
             updateWidget()
         } else {
             textChosenAddress?.text = context.getString(R.string.txt_label_default)
             viewModel.getStateChosenAddress()
-        }
+        }*/
     }
 
-    fun bindChooseAddress(listener: ChooseAddressListener) {
+    fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
         this.chooseAddressWidgetListener = listener
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
@@ -172,7 +170,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
     }
 
-    override fun onAddressChosen() {
+    override fun onAddressDataChanged() {
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
     }
 

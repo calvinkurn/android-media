@@ -9,6 +9,7 @@ class ChooseAddressSharePref(context: Context?) {
 
     val PREFERENCE_NAME = "LocalCacheAddress"
     val EXTRA_IS_CHOSEN_ADDRESS = "EXTRA_IS_CHOSEN_ADDRESS"
+    val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
     var gson = Gson()
 
     private val sharedPref: SharedPreferences? by lazy {
@@ -17,7 +18,7 @@ class ChooseAddressSharePref(context: Context?) {
 
     val editor = sharedPref?.edit()
 
-    fun getLocalCacheData(): LocalCacheModel {
+    fun getLocalCacheData(): LocalCacheModel? {
         val data = sharedPref?.getString(EXTRA_IS_CHOSEN_ADDRESS, null)
         return gson.fromJson(data, LocalCacheModel::class.java)
     }
@@ -30,5 +31,14 @@ class ChooseAddressSharePref(context: Context?) {
         var jsonString = gson.toJson(data)
         editor?.putString(EXTRA_IS_CHOSEN_ADDRESS, jsonString)
         editor?.apply()
+    }
+
+    fun setCoachMarkState(state: Boolean) {
+        editor?.putBoolean(EXTRA_IS_COACHMARK, state)
+        editor?.apply()
+    }
+
+    fun getCoachMarkState(): Boolean? {
+        return sharedPref?.getBoolean(EXTRA_IS_COACHMARK, true)
     }
 }
