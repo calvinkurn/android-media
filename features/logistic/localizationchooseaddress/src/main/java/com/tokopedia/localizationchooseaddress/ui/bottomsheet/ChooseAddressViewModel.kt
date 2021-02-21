@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
+import com.tokopedia.localizationchooseaddress.data.repository.FakeChooseAddressRepo
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListModel
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: ChooseAddressRepository,
-                                                 private val chooseAddressMapper: ChooseAddressMapper) : ViewModel(){
+                                                 private val chooseAddressMapper: ChooseAddressMapper,
+                                                 private val fakeChooseAddressRepo: FakeChooseAddressRepo) : ViewModel(){
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
     val chosenAddressList: LiveData<Result<List<ChosenAddressList>>>
@@ -42,7 +44,9 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
 
     fun getChosenAddressList() {
         viewModelScope.launch {
-            val getChosenAddressList = chooseAddressRepo.getChosenAddressList()
+            /*val getChosenAddressList = chooseAddressRepo.getChosenAddressList()
+            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))*/
+            val getChosenAddressList = fakeChooseAddressRepo.getChosenAddressList()
             _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
         }
     }
@@ -58,6 +62,7 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         viewModelScope.launch {
 //            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress()
 //            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
+            val getStateChoosenAddress = chooseAddressRepo
             _test.value = Success("view model")
         }
     }

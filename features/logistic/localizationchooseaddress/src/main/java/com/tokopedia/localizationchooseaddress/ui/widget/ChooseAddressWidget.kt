@@ -24,13 +24,16 @@ import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddress
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
+import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressBottomSheetListener
+import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressListener
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.defaultAddress
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheetListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -45,7 +48,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     lateinit var viewModel: ChooseAddressViewModel
 
-    private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
+    private var chooseAddressWidgetListener: ChooseAddressListener? = null
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -71,7 +74,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             when (it) {
                 is Success -> {
                     //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
-                    chooseAddressPref?.setLocalCache(LocalCacheModel(address_id = "123", city_id = "123", district_id = "123", lat = "", long = "", label = "Tokopedia Tower" ))
+                    chooseAddressPref?.setLocalCache(defaultAddress)
                     chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                 }
             }
@@ -85,7 +88,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         viewModel.getDefaultChosenAddress()
                     } else {
                         val data = it.data
-                        val localData = ChooseAddressUtils().setLocalizingAddressData(
+                        val localData = ChooseAddressUtils.setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
                                 cityId = data.cityId.toString(),
                                 districtId = data.districtId.toString(),
@@ -107,7 +110,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         //set to Jakarta Pusat -> waiting for data
                     } else {
                         val data = it.data.addressData
-                        val localData = ChooseAddressUtils().setLocalizingAddressData(
+                        val localData = ChooseAddressUtils.setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
                                 cityId = data.cityId.toString(),
                                 districtId = data.districtId.toString(),
@@ -149,7 +152,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
     }
 
-    fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
+    fun bindChooseAddress(listener: ChooseAddressListener) {
         this.chooseAddressWidgetListener = listener
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
@@ -163,6 +166,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
             ChooseAddressBottomSheet(this).show(fragment?.fragmentManager)
         }
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        chooseAddressWidgetListener?.onLocalizingAddressServerDown()
     }
 
     override fun onAddressChosen() {

@@ -12,9 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    var dummyAddress1 = ChosenAddressList(addressId = "4725085", addressname = "testgql by chetan 123132", receiverName = "abc", phone = "62812382183128", address1 = "jalan jal chetan an jalan jalan 123", districtName = "Pondok Aren")
-    var dummyAddress2 = ChosenAddressList(addressId = "4683624", addressname = "Rumah", receiverName = "Joel Hutasoit", phone = "6287851117744", address1 = "Tokopedia Tower, Jalan Professor Doktor Satrio, Karet Semanggi, South Jakarta City, Jakarta, Indonesia[Tokopedia notes: lantai 49 tokopedia tower]", districtName = "Setiabudi")
-    var addressList = mutableListOf(dummyAddress1, dummyAddress2)
+    var addressList = mutableListOf<ChosenAddressList>()
     private var selectedPosition = RecyclerView.NO_POSITION
 
     interface AddressListItemAdapterListener {

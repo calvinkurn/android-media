@@ -8,25 +8,26 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ChooseAddressUtils {
+object ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel {
-        //TODO("Kasih logic if rollence aktif, if login user, etc")
         if(isRollOutUser()){
-            if(isLoginUser()){
+            if(isLoginUser(context)){
                 if(hasLocalizingAddressOnCache()){
                     var chooseAddressPref = ChooseAddressSharePref(context)
                     return chooseAddressPref?.getLocalCacheData()
                 }else{
-                    TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
+                    return ChooseAddressConstant.emptyAddress
                 }
             }else{
                 return ChooseAddressConstant.defaultAddress
             }
         }else{
-            TODO("Return LocalCacheModel dengan isi kosong semua, label = Pilih Alamat Pengiriman")
+            return ChooseAddressConstant.emptyAddress
         }
     }
 
@@ -35,8 +36,9 @@ class ChooseAddressUtils {
 
     }
 
-    private fun isLoginUser(): Boolean {
-        TODO("Not yet implemented, check login apa ga")
+    private fun isLoginUser(context: Context): Boolean {
+        var userSession: UserSessionInterface = UserSession(context)
+        return userSession.isLoggedIn
     }
 
     fun isRollOutUser(): Boolean {

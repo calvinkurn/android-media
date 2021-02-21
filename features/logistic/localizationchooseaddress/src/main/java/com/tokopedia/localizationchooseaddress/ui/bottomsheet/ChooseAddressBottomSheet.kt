@@ -27,6 +27,8 @@ import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressBottomSheetListener
+import com.tokopedia.localizationchooseaddress.ui.listener.ChooseAddressListener
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -136,7 +138,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
             when (it) {
                 is Success -> {
                     val data = it.data
-                    val localData = ChooseAddressUtils().setLocalizingAddressData(
+                    val localData = ChooseAddressUtils.setLocalizingAddressData(
                             addressId = data.addressId.toString(),
                             cityId = data.cityId.toString(),
                             districtId = data.districtId.toString(),
@@ -150,6 +152,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                 }
 
                 is Fail -> {
+                    listener.onLocalizingAddressServerDown()
                     showError(it.throwable)
                 }
 
@@ -199,18 +202,14 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
     }
 
-    interface ChooseAddressBottomSheetListener {
-        fun onAddressChosen()
-    }
-
     override fun onItemClicked(address: ChosenAddressList) {
         //can't be set due gql
-        //viewModel.setStateChosenAddress()
+        viewModel.setStateChosenAddress()
 
-        val data = ChooseAddressUtils().setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
+/*        val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        listener.onAddressChosen()
+        listener.onAddressChosen()*/
     }
 
 }
