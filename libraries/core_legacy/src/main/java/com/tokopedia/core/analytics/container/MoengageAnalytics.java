@@ -7,6 +7,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -41,6 +42,14 @@ public class MoengageAnalytics extends ContextAnalytics {
         /*
           Mandatory to set small/Large notification icon while initialising sdk
           */
+        MoEngage moEngage =
+                new MoEngage.Builder(getContext(),
+                        Keys.getMoengageKey(getContext()))
+                        .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
+                        .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
+                        .optOutTokenRegistration()
+                        .build();
+        MoEngage.initialise(moEngage);
         boolean isInitialized = moengageInteractor.initialiseMoengage();
         if (isInitialized)
             executeInstallTrackingAsync();
