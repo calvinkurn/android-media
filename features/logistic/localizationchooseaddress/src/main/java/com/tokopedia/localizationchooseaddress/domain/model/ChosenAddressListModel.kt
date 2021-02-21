@@ -1,5 +1,7 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
+sealed class ChosenAddressListVisitable
+
 data class ChosenAddressListModel (
         var chosenAddressList: List<ChosenAddressList> = listOf()
 )
@@ -23,4 +25,6 @@ data class ChosenAddressList(
         var latitude: String = "",
         var longitude: String = "",
         var isStateChosenAddress: Boolean = false,
-)
+) :  ChosenAddressListVisitable()
+
+data class OtherAddressModel(var text: String? = null) : ChosenAddressListVisitable()
