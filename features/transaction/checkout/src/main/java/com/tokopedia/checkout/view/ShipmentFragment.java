@@ -1,4 +1,3 @@
-
 package com.tokopedia.checkout.view;
 
 import android.annotation.SuppressLint;
