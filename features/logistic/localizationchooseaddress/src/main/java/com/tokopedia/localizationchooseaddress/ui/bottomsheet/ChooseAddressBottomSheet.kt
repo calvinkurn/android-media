@@ -136,7 +136,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
             when (it) {
                 is Success -> {
                     val data = it.data
-                    val localData = ChooseAddressUtils().setDataToLocalCache(
+                    val localData = ChooseAddressUtils().setLocalizingAddressData(
                             addressId = data.addressId.toString(),
                             cityId = data.cityId.toString(),
                             districtId = data.districtId.toString(),
@@ -207,7 +207,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         //can't be set due gql
         //viewModel.setStateChosenAddress()
 
-        val data = ChooseAddressUtils().setDataToLocalCache(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
+        val data = ChooseAddressUtils().setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
         listener.onAddressChosen()

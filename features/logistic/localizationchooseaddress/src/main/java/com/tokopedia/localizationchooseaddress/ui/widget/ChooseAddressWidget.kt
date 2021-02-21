@@ -85,7 +85,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         viewModel.getDefaultChosenAddress()
                     } else {
                         val data = it.data
-                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                        val localData = ChooseAddressUtils().setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
                                 cityId = data.cityId.toString(),
                                 districtId = data.districtId.toString(),
@@ -107,7 +107,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         //set to Jakarta Pusat -> waiting for data
                     } else {
                         val data = it.data.addressData
-                        val localData = ChooseAddressUtils().setDataToLocalCache(
+                        val localData = ChooseAddressUtils().setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
                                 cityId = data.cityId.toString(),
                                 districtId = data.districtId.toString(),
