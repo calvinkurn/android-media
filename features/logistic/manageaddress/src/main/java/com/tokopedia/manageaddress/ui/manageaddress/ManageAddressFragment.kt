@@ -174,7 +174,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
-        // chooseAddressWidget?.bindChooseAddress(this)
+        chooseAddressWidget?.bindChooseAddress(this)
 
         initScrollListener()
 
@@ -400,7 +400,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    /*override fun onLocalizingAddressUpdatedFromWidget() {
+    override fun onLocalizingAddressUpdatedFromWidget() {
         //fetchData()
         chooseAddressWidget?.updateWidget()
     }
@@ -423,11 +423,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun getLocalizingAddressHostSourceData(): String {
         return "address"
-    }*/
+    }
 
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
         _selectedAddressItem = peopleAddress
-        println("++ selectedAddressItem = ${_selectedAddressItem.toString()}")
     }
 
     private fun setChoosenAddress() {
