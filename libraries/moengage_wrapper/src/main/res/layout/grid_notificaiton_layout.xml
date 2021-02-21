@@ -20,7 +20,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/iv_gridTwo"
@@ -28,7 +29,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/iv_gridThree"
@@ -36,7 +38,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
 
     </LinearLayout>
 
@@ -54,7 +57,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/iv_gridFive"
@@ -62,7 +66,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
 
 
         <ImageView
@@ -71,6 +76,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@null" />
     </LinearLayout>
 </LinearLayout>

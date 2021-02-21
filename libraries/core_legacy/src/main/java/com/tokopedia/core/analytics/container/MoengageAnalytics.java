@@ -30,8 +30,7 @@ public class MoengageAnalytics extends ContextAnalytics {
         super(context);
         //pass data to moengageWrapper
         moengageInteractor = MoengageInteractor.INSTANCE;
-        moengageInteractor.initInteractor(getContext(), getContext().getResources().
-                        getString(R.string.key_moengage),
+        moengageInteractor.initInteractor(getContext(), Keys.getMoengageKey(getContext()),
                 R.drawable.ic_status_bar_notif_customerapp, R.drawable.ic_big_notif_customerapp);
     }
 
@@ -42,14 +41,6 @@ public class MoengageAnalytics extends ContextAnalytics {
         /*
           Mandatory to set small/Large notification icon while initialising sdk
           */
-        MoEngage moEngage =
-                new MoEngage.Builder(getContext(),
-                        Keys.getMoengageKey(getContext()))
-                        .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
-                        .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
-                        .optOutTokenRegistration()
-                        .build();
-        MoEngage.initialise(moEngage);
         boolean isInitialized = moengageInteractor.initialiseMoengage();
         if (isInitialized)
             executeInstallTrackingAsync();
