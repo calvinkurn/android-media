@@ -205,9 +205,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -302,7 +299,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onSwipeRefresh() {
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
-        stickyLoginView?.loadContent()
         ticker_occ_layout.gone()
         super.onSwipeRefresh()
     }
@@ -361,6 +357,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
         }
+        sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
@@ -978,7 +975,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onVideoFullScreenClicked() {
         activity?.let { activity ->
             productVideoCoordinator?.let {
-                sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
                 val trackerData = viewModel.getDynamicProductInfoP1
                 it.pauseVideoAndSaveLastPosition()
                 sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
@@ -1106,7 +1102,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     }
                 }
                 if (isAffiliate && productInfo?.basic?.productID?.isNotEmpty() == true) {
-                    productDetailTracking.eventClickWishlistOnAffiliate(
+                    DynamicProductDetailTracking.Click.eventClickWishlistOnAffiliate(
                             viewModel.userId,
                             productInfo.basic.productID)
                 }
@@ -1177,7 +1173,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun goToReviewImagePreview() {
-        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
@@ -3008,18 +3004,18 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 setSecondaryCTAText(result.errorReporter.texts.cancelButton)
                 setSecondaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickCloseOnHelpPopUpAtc()
                 }
                 setPrimaryCTAText(result.errorReporter.texts.submitButton)
                 setPrimaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
                     viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragmentDiffutil::onErrorSubmitHelpTicket, this@DynamicProductDetailFragmentDiffutil::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
-            productDetailTracking.eventViewHelpPopUpWhenAtc()
+            DynamicProductDetailTracking.Impression.eventViewHelpPopUpWhenAtc()
         }
     }
 

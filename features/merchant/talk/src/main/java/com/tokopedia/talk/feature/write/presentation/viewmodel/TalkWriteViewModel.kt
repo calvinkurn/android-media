@@ -31,7 +31,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
     var isVariantSelected = false
     var availableVariants = ""
 
-    private val productId = MutableLiveData<Int>()
+    private val productId = MutableLiveData<String>()
     val writeFormData: LiveData<Result<DiscussionGetWritingForm>> = Transformations.switchMap(productId) {
         getWriteFormData(it)
     }
@@ -75,7 +75,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         }
     }
 
-    private fun getWriteFormData(productId: Int) : LiveData<Result<DiscussionGetWritingForm>> {
+    private fun getWriteFormData(productId: String) : LiveData<Result<DiscussionGetWritingForm>> {
         val result = MutableLiveData<Result<DiscussionGetWritingForm>>()
         launchCatchError(block = {
             discussionGetWritingFormUseCase.setParams(productId)
@@ -118,7 +118,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     fun submitForm(text: String) {
         launchCatchError(block = {
-            discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value.orZero())
+            discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value ?: "")
             val response = discussionSubmitFormUseCase.executeOnBackground()
             _submitFormResult.postValue(Success(response.discussionSubmitForm))
         }) {
@@ -130,11 +130,11 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         isTextNotEmpty.value = isTextNotEmptyData
     }
 
-    fun setProductId(productId: Int) {
+    fun setProductId(productId: String) {
         this.productId.value = productId
     }
 
-    fun getProductId(): Int?{
+    fun getProductId(): String? {
         return productId.value
     }
 
