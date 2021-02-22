@@ -48,7 +48,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     }
 
     override fun closeMenu() {
-        hide()
+        hideMenu()
     }
 
     fun setupAttachmentMenu(attachmentMenuListener: AttachmentMenu.AttachmentMenuListener) {
