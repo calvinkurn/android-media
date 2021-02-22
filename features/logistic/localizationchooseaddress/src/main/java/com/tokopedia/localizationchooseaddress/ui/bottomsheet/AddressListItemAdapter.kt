@@ -22,6 +22,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
 
     interface AddressListItemAdapterListener {
         fun onItemClicked(address: ChosenAddressList)
+        fun onOtherAddressClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -116,8 +117,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
         override fun bind(item: ChosenAddressListVisitable, position: Int) {
 
             buttonOther?.setOnClickListener {
-                val intent = RouteManager.getIntent(it.context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-                it.context.startActivity(intent)
+                listener.onOtherAddressClicked()
             }
         }
     }

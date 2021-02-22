@@ -70,6 +70,13 @@ object ChooseAddressUtils {
                 label = label
         )
     }
+
+    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, addressName: String) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, addressName)
+        chooseAddressPref.setLocalCache(localData)
+    }
+
     /**
      * Host can use this for show or not coachmark
      * we not provide coackmark. just KEY for identifier.

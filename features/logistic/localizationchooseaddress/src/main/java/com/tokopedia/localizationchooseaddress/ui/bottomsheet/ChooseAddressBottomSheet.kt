@@ -37,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+
 class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
     @Inject
@@ -89,6 +90,8 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
             if (data != null) {
                 chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
             }
+        } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
+            this.dismiss()
         }
     }
 
@@ -219,6 +222,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
+        const val REQUEST_CODE_ADDRESS_LIST = 399
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
@@ -229,6 +233,11 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
         listener.onAddressDataChanged()
+    }
+
+    override fun onOtherAddressClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
     }
 
     interface ChooseAddressBottomSheetListener {

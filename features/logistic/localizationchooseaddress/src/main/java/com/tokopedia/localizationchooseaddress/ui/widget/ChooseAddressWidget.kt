@@ -60,10 +60,13 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun initObservers() {
+        /**
+         * Test only, gql not ready yet from BE side
+         * Hit viewModel on the first start
+         */
         viewModel.test.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    //hit choosenAddressUpdated, setelah selesai dan kita berhasil simpen di local cache -> will be put in Success state view model observer
                     chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                 }
             }
@@ -116,7 +119,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun checkRollence(){
-        // check rollence. kalo udah panggil listener, biar host page yang atur show or hide
+        /**
+         * Will be implement rollence here, still need confirmation from product side
+         */
         chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
     }
 
@@ -136,18 +141,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         if (localData?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = context.getString(R.string.txt_label_default)
+            viewModel.getStateChosenAddress()
         } else {
             updateWidget()
         }
-        viewModel.getStateChosenAddress()
-        /*
-
-        if (chooseAddressPref?.checkLocalCache()?.isEmpty() == false) {
-            updateWidget()
-        } else {
-            textChosenAddress?.text = context.getString(R.string.txt_label_default)
-            viewModel.getStateChosenAddress()
-        }*/
     }
 
     fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
