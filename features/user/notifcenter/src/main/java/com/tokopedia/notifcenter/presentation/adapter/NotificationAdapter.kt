@@ -78,7 +78,7 @@ class NotificationAdapter constructor(
     fun loadMore(lastKnownPosition: Int, element: LoadMoreUiModel) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
-        val item = elementData.second
+        val item = elementData.second ?: return
         if (position == RecyclerView.NO_POSITION) return
         item.loading = true
         notifyItemChanged(position, LoadMoreViewHolder.PAYLOAD_UPDATE_STATE)
@@ -87,7 +87,7 @@ class NotificationAdapter constructor(
     fun failLoadMoreNotification(lastKnownPosition: Int, element: LoadMoreUiModel) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
-        val item = elementData.second
+        val item = elementData.second ?: return
         if (position == RecyclerView.NO_POSITION) return
         item.loading = false
         notifyItemChanged(position, LoadMoreViewHolder.PAYLOAD_UPDATE_STATE)
@@ -169,16 +169,15 @@ class NotificationAdapter constructor(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T : Visitable<NotificationTypeFactory>> getUpToDateUiModelPosition(
+    private inline fun <reified T : Visitable<NotificationTypeFactory>> getUpToDateUiModelPosition(
             lastKnownPosition: Int, element: T
-    ): Pair<Int, T> {
+    ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
         if (item == element) {
-            return Pair(lastKnownPosition, item as T)
+            return Pair(lastKnownPosition, item as? T)
         }
         val updatePosition = visitables.indexOf(element)
-        return Pair(updatePosition, item as T)
+        return Pair(updatePosition, item as? T)
     }
 
     private fun isNotificationItem(position: Int): Boolean {
