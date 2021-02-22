@@ -7,9 +7,6 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
-import com.tokopedia.media.common.data.CDN_IMAGE_URL
-import com.tokopedia.media.common.data.PARAM_BLURHASH
-import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.module.GlideApp
@@ -39,23 +36,15 @@ object MediaLoaderTarget {
                 val source = Loader.urlBuilder(properties.data.toString())
 
                 /*
-                * get the hash of image blur (placeholder) from the URL, example:
-                * https://images.tokopedia.net/samples.png?b=abc123
-                * the hash of blur is abc123
-                * */
-                val blurHash = source.toUri()?.getQueryParameter(PARAM_BLURHASH)
-
-                /*
                 * only track the performance monitoring for a new domain,
                 * which is already using CDN services, 'images.tokopedia.net'.
                 * */
-                if (source.contains(CDN_IMAGE_URL)) {
+                if (properties.isTrackable) {
                     tracker = PerformanceTracker.preRender(source, context)
                 }
 
                 val request = bitmap.build(
                         context = context,
-                        blurHash = blurHash,
                         properties = properties,
                         performanceMonitoring = tracker,
                         request = this

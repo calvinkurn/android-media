@@ -7,6 +7,7 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.transform.CircleCrop
@@ -52,6 +53,7 @@ abstract class MediaLoaderFactory<T> {
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
             transformation(properties)
+
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
             }
@@ -63,6 +65,11 @@ abstract class MediaLoaderFactory<T> {
             if (!isAnimate) {
                 dontAnimate()
             }
+
+            // use custom signature for caching
+            signatureKey?.let {
+                signature(it)
+            }?: signature(ObjectKey(properties.urlHasQualityParam))
 
             cacheStrategy?.let { diskCacheStrategy(MediaCacheStrategy.mapTo(it)) }
             decodeFormat?.let { format(MediaDecodeFormat.mapTo(it)) }

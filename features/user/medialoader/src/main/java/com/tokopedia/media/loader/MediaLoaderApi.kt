@@ -6,8 +6,6 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
-import com.tokopedia.media.common.data.PARAM_BLURHASH
-import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.common.factory.GifFactory
@@ -39,7 +37,7 @@ internal object MediaLoaderApi {
     @JvmOverloads
     fun loadImage(imageView: ImageView, properties: Properties) {
         var tracker: PerformanceMonitoring? = null
-        val context = imageView.context
+        val context = imageView.context.applicationContext
 
         // handling empty url
         if (properties.data is String && properties.data.toString().isEmpty()) {
@@ -61,16 +59,13 @@ internal object MediaLoaderApi {
             automateScaleType(imageView, this)
 
             val request = when(properties.data) {
+                /*
+                * currently, this builder only support for URL,
+                * will supporting URL, drawable, etc. later
+                * */
                 is String -> {
                     // url builder
                     val source = Loader.urlBuilder(properties.data.toString())
-
-                    /*
-                    * get the hash of image blur (placeholder) from the URL, example:
-                    * https://images.tokopedia.net/samples.png?b=abc123
-                    * the hash of blur is abc123
-                    * */
-                    val blurHash = source.toUri()?.getQueryParameter(PARAM_BLURHASH)
 
                     /*
                     * only track the performance monitoring for a new domain,
@@ -82,9 +77,10 @@ internal object MediaLoaderApi {
 
                     bitmap.build(
                             context = context,
-                            blurHash = blurHash,
-                            properties = properties,
                             performanceMonitoring = tracker,
+                            properties = properties.apply {
+                                setUrlHasQuality(source)
+                            },
                             request = this
                     ).load(source)
                 }

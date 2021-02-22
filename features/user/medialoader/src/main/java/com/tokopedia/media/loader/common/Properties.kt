@@ -31,11 +31,18 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
+    // generated URL have contains ECT param
+    internal var urlHasQualityParam: String = ""
+
     // getting the load time on listener
     internal var loadTime: String = ""
 
     // validation of performance monitoring
     internal val isTrackable: Boolean = data is String && data.toString().contains(CDN_IMAGE_URL)
+
+    internal fun setUrlHasQuality(url: String) = apply {
+        this.urlHasQualityParam = url
+    }
 
     fun setDelay(timeInMs: Long) = apply {
         this.renderDelay = timeInMs
