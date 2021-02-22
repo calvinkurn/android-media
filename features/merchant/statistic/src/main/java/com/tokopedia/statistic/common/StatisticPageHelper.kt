@@ -27,12 +27,12 @@ object StatisticPageHelper {
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_give_suggestions),
                                 appLink = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU",
-                                iconUnify = IconUnify.INFORMATION
+                                iconUnify = IconUnify.CHAT_REPORT
                         ),
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_learn_more),
                                 appLink = "https://www.tokopedia.com/help/article/apa-itu-statistik-toko?source=sapp-wawasan-toko",
-                                iconUnify = IconUnify.INFORMATION
+                                iconUnify = IconUnify.HELP
                         )
                 ),
                 dateFilters = getShopDateFilters(context, userSession)
@@ -49,12 +49,12 @@ object StatisticPageHelper {
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_give_suggestions),
                                 appLink = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit",
-                                iconUnify = IconUnify.INFORMATION
+                                iconUnify = IconUnify.CHAT_REPORT
                         ),
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_learn_more),
                                 appLink = "https://www.tokopedia.com/help/article/apa-itu-wawasan-pembeli?source=sapp-wawasan-pembeli",
-                                iconUnify = IconUnify.INFORMATION
+                                iconUnify = IconUnify.HELP
                         )
                 ),
                 dateFilters = getBuyerDateFilters(context, userSession)
