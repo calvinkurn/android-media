@@ -1,0 +1,41 @@
+{
+  "readme": "Recharge credit card",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewDigitalCCIris",
+      "eventCategory": "digital - cc page",
+      "eventAction": "impression of initial cc page",
+      "eventLabel": "{{.* - .*}}",
+      "userId": "{{.*}}"
+    },
+    {
+      "event": "viewDigitalCCIris",
+      "eventCategory": "digital - cc page",
+      "eventAction": "impression of bank list",
+      "eventLabel": "{{.* - .*}}",
+      "userId": "{{.*}}"
+    },
+    {
+      "event": "clickDigitalCC",
+      "eventCategory": "digital - cc page",
+      "eventAction": "click confirmation to checkout",
+      "eventLabel": "{{.* - .*}}",
+      "userId": "{{.*}}"
+    },
+    {
+      "event": "clickDigitalCC",
+      "eventCategory": "digital - cc page",
+      "eventAction": "checkout page",
+      "eventLabel": "{{.* - .*}}",
+      "userId": "{{.*}}"
+    },
+    {
+      "event": "clickDigitalCC",
+      "eventCategory": "digital - cc page",
+      "eventAction": "click confirmation to pdp",
+      "eventLabel": "{{.* - .*}}",
+      "userId": "{{.*}}"
+    }
+  ]
+}
