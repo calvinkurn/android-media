@@ -16,13 +16,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.lang.reflect.Field
 
-class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
+class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @RelaxedMockK
     lateinit var getUserRoleUseCase: SomGetUserRoleUseCase
 
@@ -490,21 +492,6 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         coVerify(exactly = 1) {
             somListGetFilterListUseCase.executeOnBackground(true)
             somListGetFilterListUseCase.executeOnBackground(false)
-        }
-
-    @Test
-    fun getFilters_shouldSuccessAndCancelActiveJob() {
-        val somGetFiltersJob = mockk<Job>(relaxed = true)
-        somGetFiltersJobField.set(viewModel, somGetFiltersJob)
-
-        every {
-            somGetFiltersJob.cancel()
-        } just runs
-
-        getFilters_shouldSuccess()
-
-        verify(exactly = 1) {
-            somGetFiltersJob.cancel()
         }
     }
 
