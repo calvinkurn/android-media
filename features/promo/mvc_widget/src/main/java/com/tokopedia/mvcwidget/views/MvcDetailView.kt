@@ -23,6 +23,7 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class MvcDetailView @JvmOverloads constructor(
@@ -33,13 +34,28 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+    private val widgetImpression = WidgetImpression()
+
+    override fun getWidgetImpression(): WidgetImpression {
+        return widgetImpression
+    }
 
     private val adapter = MvcDetailAdapter(arrayListOf(), this)
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
-    var shopId = ""
+    private var shopId = ""
+    override fun getShopId(): String {
+        return this.shopId
+    }
+
+    @MvcSource
+    private var mvcSource: Int = MvcSource.DEFAULT
+
+    override fun getMvcSource(): Int {
+        return mvcSource
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -139,6 +155,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
+            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, true)
         }
     }
 
@@ -149,6 +166,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
+            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, false)
         }
     }
 
@@ -156,6 +174,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
+            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, true)
         }
     }
 
@@ -166,12 +185,14 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
+            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, false)
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
         this.shopId = shopId
+        this.mvcSource = mvcSource
         viewModel.getListData(shopId)
     }
 
@@ -181,7 +202,7 @@ class MvcDetailView @JvmOverloads constructor(
         response.data?.followWidget?.let {
             if (it.isShown == true) {
                 tempList.add(it)
-            }else{
+            } else {
                 removeTickerTopMargin = true
             }
         }
@@ -216,6 +237,13 @@ class MvcDetailView @JvmOverloads constructor(
         }
 
         adapter.updateList(tempList)
+        if(!tempList.isNullOrEmpty()){
+            if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
+                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, UserSession(context).userId, this.mvcSource)
+            }else{
+                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, UserSession(context).userId, this.mvcSource)
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -238,3 +266,5 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 }
+
+data class WidgetImpression(var sentFollowWidgetImpression: Boolean = false, var sentJadiMemberImpression: Boolean = false)

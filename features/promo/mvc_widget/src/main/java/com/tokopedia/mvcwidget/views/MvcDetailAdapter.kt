@@ -43,7 +43,7 @@ class MvcDetailAdapter(val data: ArrayList<MvcListItem>, val contract: MvcDetail
                 holder.divider.visibility = if (position == data.size - 1) View.INVISIBLE else View.VISIBLE
             }
             is FollowViewHolder -> {
-                holder.setData(data[position] as FollowWidget)
+                holder.setData(data[position] as FollowWidget, contract.getWidgetImpression(),contract.getShopId(), contract.getMvcSource())
             }
             is TickerViewHolder -> {
                 holder.setData(data[position] as TickerText)

@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.Tracker
 import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.promoui.common.dpToPx
@@ -33,10 +34,12 @@ class TransParentActivity : BaseActivity() {
     val REQUEST_CODE_LOGIN = 12
     val userSession = UserSession(this)
     lateinit var shopId: String
+    @MvcSource var mvcSource = MvcSource.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
+        mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         if (userSession.isLoggedIn) {
             showMvcDetailDialog()
         } else {
@@ -58,7 +61,7 @@ class TransParentActivity : BaseActivity() {
         val childView = MvcDetailView(this)
         bottomSheet.setChild(childView)
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
-        childView.show(shopId, false)
+        childView.show(shopId, false, mvcSource)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
@@ -67,6 +70,7 @@ class TransParentActivity : BaseActivity() {
 
         bottomSheet.setOnDismissListener {
             finish()
+            Tracker.closeMainBottomSheet(shopId,UserSession(this).userId,mvcSource)
         }
     }
 

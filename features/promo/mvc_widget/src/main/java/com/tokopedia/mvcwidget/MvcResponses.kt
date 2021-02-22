@@ -2,6 +2,7 @@ package com.tokopedia.mvcwidget
 
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.mvcwidget.FollowWidgetType.Companion.DEFAULT
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
 
@@ -103,11 +104,12 @@ data class FollowShop(
 )
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN)
+@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN,DEFAULT)
 annotation class FollowWidgetType {
 
     companion object {
         const val FIRST_FOLLOW = "first_follow"
         const val MEMBERSHIP_OPEN = "membership_open"
+        const val DEFAULT = "default"
     }
 }

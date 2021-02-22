@@ -11,8 +11,10 @@ import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.Tracker
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
 
 /*
@@ -47,6 +49,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     private fun setClicks() {
         mvcContainer.setOnClickListener {
             context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+            Tracker.userClickEntryPoints(shopId,UserSession(context).userId,this.source)
         }
     }
 

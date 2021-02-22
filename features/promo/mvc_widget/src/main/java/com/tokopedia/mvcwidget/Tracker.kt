@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget
 
 import androidx.annotation.IntDef
+import com.tokopedia.mvcwidget.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.MvcSource.Companion.PDP
 import com.tokopedia.mvcwidget.MvcSource.Companion.SHOP
 import com.tokopedia.track.TrackApp
@@ -25,18 +26,13 @@ object Tracker {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
-        const val CREATIVE_SLOT = "creative_slot"
-        const val PROMOTIONS = "promotions"
-        const val CREATIVE_NAME = "creative_name"
-        const val ITEM_ID = "item_id"
-        const val ITEM_NAME = "item_name"
     }
 
     object Event {
-        const val CLICK_PDP = "clickPDP"
-        const val CLICK_SHOP = "clickShop"
-        const val PROMO_VIEW = "promoView"
+        const val CLICK_SHOP = "clickShopPage"
         const val CLICK_MV = "clickMerchantVoucher"
+        const val VIEW_MV = "viewMerchantVoucherIris"
+        const val VIEW_SHOP = "viewShopPageIris"
     }
 
     object Category {
@@ -48,11 +44,20 @@ object Tracker {
         const val CLICK_COUPON_ENTRY_POINT = "click coupon entry point"
         const val CLICK_COUPON = "click coupon"
         const val VIEW_FOLLOW_WIDGET = "view follow widget"
+        const val VIEW_MEMBERSHIP_WIDGET = "view membership widget"
         const val CLICK_FOLLOW_WIDGET = "click follow widget"
-        const val CLICK_JADI_MEMBER = "click jadi member"
+        const val CLICK_JADI_MEMBER = "click jadi member widget"
         const val CLICK_CEK_INFO = "click cek info"
+        const val VIEW_TM_INFO = "view tokomember info"
         const val CLICK_DAFTAR = "click daftar jadi member widget"
-        const val CLOSE_BOTTOMSHEET = "close buttomsheet"
+        const val CLOSE_BOTTOMSHEET = "Close buttomsheet"
+        const val VIEW_TOASTER_FOLLOW_SUCCESS = "view toaster follow success"
+        const val VIEW_TOASTER_FOLLOW_ERROR = "view toaster follow error"
+        const val VIEW_TOASTER_JADI_MEMBER_SUCCESS = "view toaster jadi member success"
+        const val VIEW_TOASTER_JADI_MEMBER_ERROR = "view toaster jadi member error"
+        const val VIEW_SHOP_FOLLOWERS_COUPON = "view shop followers coupon"
+        const val VIEW_MEMBERSHIP_COUPON = "view membership coupon"
+        const val VIEW_REGULAR_COUPON = "view regular coupon"
     }
 
     object Label {
@@ -60,39 +65,27 @@ object Tracker {
         const val SHOP_PAGE = "shop page"
     }
 
-    fun fillCommonItems(map:MutableMap<String,Any>,userId:String?){
-        map[Constants.BUSINESS_UNIT] = ""
-        map[Constants.CURRENT_SITE] = ""
+    fun fillCommonItems(map: MutableMap<String, Any>, userId: String?) {
+        map[Constants.BUSINESS_UNIT] = "physical goods"
+        map[Constants.CURRENT_SITE] = "tokopediamarketplace"
         userId?.let {
             map[Constants.USER_ID] = userId
         }
     }
 
-    fun fillPromotions(map:MutableMap<String,Any>){
-        val promoMap = HashMap<String,Any>()
-        promoMap[Constants.CREATIVE_NAME] = ""
-        promoMap[Constants.ITEM_ID] = ""
-        promoMap[Constants.ITEM_NAME] = ""
-        map[Constants.PROMOTIONS] = promoMap
-    }
-
-    fun fillCreativeSlot(map:MutableMap<String,Any>){
-        map[Constants.CREATIVE_SLOT] = ""
-    }
-
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId:String?, @MvcSource source:Int ) {
+    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        when(source){
-            MvcSource.PDP-> {
-                map[Constants.EVENT] = Event.CLICK_PDP
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_ACTION] = Action.CLICK_COUPON_ENTRY_POINT
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
 
             }
-            MvcSource.SHOP-> {
+            MvcSource.SHOP -> {
                 map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_ACTION] = Action.CLICK_COUPON
@@ -105,15 +98,17 @@ object Tracker {
     }
 
     //3, 18
-    fun clickFollowButton(shopId: String,userId:String?, @MvcSource source:Int){
+    fun clickFollowButton(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_MV
-        when(source){
-            MvcSource.PDP->{
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
             }
-            MvcSource.SHOP->{
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
             }
@@ -122,20 +117,106 @@ object Tracker {
         map[Constants.EVENT_ACTION] = Action.CLICK_FOLLOW_WIDGET
 
         fillCommonItems(map, userId)
-        fillCreativeSlot(map)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //4,10,19, 25
+    fun viewFollowButtonToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean) {
+        val map = mutableMapOf<String, Any>()
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.VIEW_MV
+                map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+                map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
+            }
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.VIEW_SHOP
+                map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+                map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+            }
+        }
+
+        if (isSuccess) {
+            map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_FOLLOW_SUCCESS
+        } else {
+            map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_FOLLOW_ERROR
+        }
+
+        fillCommonItems(map, userId)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //5,9,20, 24
+    fun viewCoupons(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.VIEW_MV
+                map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+                map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
+            }
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.VIEW_SHOP
+                map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+                map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+            }
+        }
+        when (widgetType) {
+            FollowWidgetType.FIRST_FOLLOW -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_SHOP_FOLLOWERS_COUPON
+            }
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_COUPON
+            }
+            else -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_REGULAR_COUPON
+            }
+        }
+        fillCommonItems(map, userId)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //2,6,17,21
+    fun viewWidgetImpression(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.VIEW_MV
+                map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+                map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
+            }
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.VIEW_SHOP
+                map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+                map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+            }
+        }
+        when (widgetType) {
+            FollowWidgetType.FIRST_FOLLOW -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_FOLLOW_WIDGET
+            }
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_WIDGET
+            }
+        }
+        fillCommonItems(map, userId)
         getTracker().sendGeneralEvent(map)
     }
 
     //7, 22
-    fun clickJadiMemberButton(shopId: String,userId:String?, @MvcSource source: Int) {
+    fun clickJadiMemberButton(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_MV
-        when(source){
-            MvcSource.PDP->{
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
             }
-            MvcSource.SHOP->{
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
             }
@@ -146,16 +227,45 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
-    //12, 27
-    fun clickCekInfoButton(shopId: String,userId:String?, @MvcSource source: Int) {
+    //8,11,23,26
+    fun viewJadiMemberToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_MV
-        when(source){
-            MvcSource.PDP->{
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.VIEW_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
             }
-            MvcSource.SHOP->{
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.VIEW_SHOP
+                map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+                map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+            }
+        }
+
+        if (isSuccess) {
+            map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_JADI_MEMBER_SUCCESS
+        } else {
+            map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_JADI_MEMBER_ERROR
+        }
+
+        fillCommonItems(map, userId)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //12, 27
+    fun clickCekInfoButton(shopId: String, userId: String?, @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
+                map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+                map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
+            }
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
             }
@@ -166,16 +276,40 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
-    //14, 29
-    fun clickDaftarJadiMember(shopId: String,userId:String?, @MvcSource source: Int){
+    //13,28
+    fun viewTokomemberBottomSheet(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_MV
-        when(source){
-            MvcSource.PDP->{
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.VIEW_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
             }
-            MvcSource.SHOP->{
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.VIEW_SHOP
+                map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+                map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+            }
+        }
+
+        map[Constants.EVENT_ACTION] = Action.VIEW_TM_INFO
+        fillCommonItems(map, userId)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //14, 29
+    fun clickDaftarJadiMember(shopId: String, userId: String?, @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
+                map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+                map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
+            }
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
             }
@@ -187,15 +321,17 @@ object Tracker {
     }
 
     //15, 30
-    fun closeMainBottomSheet(shopId: String,userId:String?, @MvcSource source: Int){
+    fun closeMainBottomSheet(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Constants.EVENT] = Event.CLICK_MV
-        when(source){
-            MvcSource.PDP->{
+
+        when (source) {
+            MvcSource.PDP -> {
+                map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
                 map[Constants.EVENT_LABEL] = "${Label.PDP_VIEW}-$shopId"
             }
-            MvcSource.SHOP->{
+            MvcSource.SHOP -> {
+                map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
                 map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
             }
@@ -210,11 +346,13 @@ object Tracker {
     //Outside MVC - entryPoint
     //35,36,37,38,39,40,41,42,43,44,45
 }
+
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(SHOP, PDP)
+@IntDef(DEFAULT, SHOP, PDP)
 annotation class MvcSource {
 
     companion object {
+        const val DEFAULT = 0
         const val SHOP = 1
         const val PDP = 2
     }

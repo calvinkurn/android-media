@@ -13,14 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.mvcwidget.FollowWidget
-import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
 
 class MvcFollowViewContainer @JvmOverloads constructor(
@@ -40,7 +39,7 @@ class MvcFollowViewContainer @JvmOverloads constructor(
         orientation = VERTICAL
     }
 
-    fun setData(followWidget: FollowWidget) {
+    fun setData(followWidget: FollowWidget, widgetImpression: WidgetImpression, shopId: String, @MvcSource source: Int) {
         divider.visibility = View.GONE
 
         if (followWidget.isShown == true) {
@@ -51,12 +50,22 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                         twoActionView.visibility = View.GONE
                         oneActionView.setData(followWidget)
                         divider.visibility = View.VISIBLE
+
+                        if (!widgetImpression.sentFollowWidgetImpression) {
+                            Tracker.viewWidgetImpression(FollowWidgetType.FIRST_FOLLOW, shopId, UserSession(context).userId, source)
+                            widgetImpression.sentFollowWidgetImpression = true
+                        }
                     }
                     FollowWidgetType.MEMBERSHIP_OPEN -> {
                         twoActionView.visibility = View.VISIBLE
                         oneActionView.visibility = View.GONE
-                        twoActionView.setData(followWidget)
+                        twoActionView.setData(followWidget, shopId, source)
                         divider.visibility = View.VISIBLE
+
+                        if (!widgetImpression.sentJadiMemberImpression) {
+                            Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_OPEN, shopId, UserSession(context).userId, source)
+                            widgetImpression.sentJadiMemberImpression = true
+                        }
                     }
                 }
             }
@@ -116,7 +125,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         type = TYPE_LARGE
     }
 
-    fun setData(followWidget: FollowWidget) {
+    fun setData(followWidget: FollowWidget, shopId: String, @MvcSource mvcSource: Int) {
         val t = followWidget.content ?: ""
         followWidget.content?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -133,15 +142,16 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         btnFirst.setOnClickListener {
 
             if (context is AppCompatActivity) {
-                showTokomemberBottomSheet(followWidget, context as AppCompatActivity)
+                showTokomemberBottomSheet(followWidget, context as AppCompatActivity, shopId, mvcSource)
             }
         }
     }
 
-    fun showTokomemberBottomSheet(followWidget: FollowWidget, activity: AppCompatActivity) {
+    fun showTokomemberBottomSheet(followWidget: FollowWidget, activity: AppCompatActivity, shopId: String, @MvcSource mvcSource: Int) {
         if (followWidget.membershipHowTo.isNullOrEmpty()) {
             return
         }
+        Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
         val bottomsheet = BottomSheetUnify()
         bottomsheet.setTitle(context.getString(R.string.mvc_tentang_toko_member))
         bottomsheet.showCloseIcon = false
@@ -171,7 +181,10 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
         val caroRef = child.findViewById<CarouselUnify>(R.id.carousel)
         val cta = child.findViewById<View>(R.id.btn)
-        cta.setOnClickListener { bottomsheet.dismiss() }
+        cta.setOnClickListener {
+            bottomsheet.dismiss()
+            Tracker.clickDaftarJadiMember(shopId,UserSession(context).userId,mvcSource)
+        }
         caroRef.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
@@ -184,6 +197,9 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
         bottomsheet.setChild(child)
         bottomsheet.clearContentPadding = true
+        bottomsheet.setShowListener {
+            Tracker.viewTokomemberBottomSheet(shopId,UserSession(context).userId,mvcSource)
+        }
         bottomsheet.show(activity.supportFragmentManager, "btm_mvc_tokomember")
 
     }
