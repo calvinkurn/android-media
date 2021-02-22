@@ -236,7 +236,8 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION_45 = "dimension45";
     public static final String DIMENSION_38 = "dimension38";
     public static final String DIMENSION_40 = "dimension40";
-    public static final String DIMENSION_83 = "dimension83";
+
+
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
@@ -257,11 +258,8 @@ public class ShopPageTrackingConstant {
     public static final String VALUE_NO_SEE_CAMPAIGN = "no see campaign";
     public static final String VALUE_HOME = "home";
 
-    //dimension83
-    public static final String BOE = "BoE";
-    public static final String BO_PRODUCT = "BO Product";
-    public static final String NON_BO_PRODUCT = "Non-BO Product";
-    public static final String LABEL_GROUP_POSITION_FULFILLMENT = "fulfillment";
+
+
 
     //page_url
     public static final String ETALASE_SHOPNAME = "etalase-%s";
