@@ -1966,7 +1966,7 @@ final class ProductListPresenter
     }
 
     private void toggleSearchOnBoardingShown() {
-        if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN, true);
+        searchOnBoardingLocalCache.putBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }
 
