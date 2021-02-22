@@ -38,7 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
+class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -58,7 +58,6 @@ class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddress
     private var buttonAddAddress: IconUnify? = null
     private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
-    private var _listener: ChooseAddressBottomSheetListener? = null
 
     private var fm: FragmentManager? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
@@ -94,10 +93,6 @@ class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddress
         } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
             this.dismiss()
         }
-    }
-
-    fun setListener(listener: ChooseAddressBottomSheetListener) {
-        _listener = listener
     }
 
     private fun initInjector() {
@@ -154,12 +149,12 @@ class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddress
                             label = data.addressName
                     )
                     chooseAddressPref?.setLocalCache(localData)
-                    _listener?.onAddressDataChanged()
+                    listener?.onAddressDataChanged()
                     this.dismiss()
                 }
 
                 is Fail -> {
-                    _listener?.onLocalizingAddressServerDown()
+                    listener?.onLocalizingAddressServerDown()
                     showError(it.throwable)
                 }
 
@@ -237,7 +232,7 @@ class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddress
         val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        _listener?.onAddressDataChanged()
+        listener?.onAddressDataChanged()
     }
 
     override fun onOtherAddressClicked() {
