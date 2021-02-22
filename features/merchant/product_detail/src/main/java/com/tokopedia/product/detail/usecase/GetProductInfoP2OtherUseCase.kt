@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
-import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -45,16 +44,6 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 
-        //region Review
-        val imageReviewParams = generateImageReviewParam(productId.toLongOrZero())
-        val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
-                ImageReviewGqlResponse::class.java, imageReviewParams)
-
-        val helpfulReviewParams = generateProductIdParam(productId.toLongOrZero())
-        val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW],
-                Review.Response::class.java, helpfulReviewParams)
-        //endregion
-
         //region Discussion/Talk
         val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId.toString())
         val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
@@ -62,24 +51,10 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
         //endregion
 
 
-        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, discussionMostHelpfulRequest)
+        val requests = mutableListOf(discussionMostHelpfulRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
-
-            //region Review
-            if (gqlResponse.getError(Review.Response::class.java)?.isNotEmpty() != true) {
-                gqlResponse.doActionIfNotNull<Review.Response> {
-                    p2GeneralData.helpfulReviews = it.productMostHelpfulReviewQuery.list
-                }
-            }
-
-            if (gqlResponse.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true) {
-                gqlResponse.doActionIfNotNull<ImageReviewGqlResponse> {
-                    p2GeneralData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(it)
-                }
-            }
-            //endregion
 
             //region Discussion
             if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
@@ -95,17 +70,6 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
             Timber.d(e)
         }
         return p2GeneralData
-    }
-
-    private fun generateImageReviewParam(productId: Long): Map<String, Any> {
-        return mapOf(
-                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
-                ProductDetailCommonConstant.PARAM_PAGE to 1,
-                ProductDetailCommonConstant.PARAM_TOTAL to ProductDetailCommonConstant.DEFAULT_NUM_IMAGE_REVIEW)
-    }
-
-    private fun generateProductIdParam(productId: Long): Map<String, Any> {
-        return mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId)
     }
 
     private fun generateDiscussionMosthelpfulParam(productId: String, shopId: String): Map<String, Any> {

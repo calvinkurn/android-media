@@ -267,20 +267,20 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun generateImageReviewUiData(data: ImageReviewGqlResponse): List<ImageReviewItem> {
+    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): List<ImageReviewItem> {
         val images = SparseArray<ImageReviewGqlResponse.Image>()
         val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-        val hasNext = data.productReviewImageListQuery?.isHasNext ?: false
+        val hasNext = data.isHasNext ?: false
 
-        data.productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
-        data.productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+        data.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
+        data.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
 
-        return data.productReviewImageListQuery?.list?.map {
+        return data.list?.map {
             val image = images[it.imageID]
             val review = reviews[it.reviewID]
             ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
+                    image.uriLarge, review.rating, hasNext, data.detail?.imageCount)
         } ?: listOf()
     }
 

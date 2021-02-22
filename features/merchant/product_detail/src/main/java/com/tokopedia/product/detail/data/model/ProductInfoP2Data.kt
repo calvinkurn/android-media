@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQueryResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -9,6 +10,7 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -97,7 +99,15 @@ data class ProductInfoP2Data(
 
         @SerializedName("restrictionInfo")
         @Expose
-        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse()
+        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+
+        @SerializedName("mostHelpFulReviewData")
+        @Expose
+        var mostHelpFulReviewData: MostHelpfulReviewData = MostHelpfulReviewData(),
+
+        @SerializedName("reviewImage")
+        @Expose
+        var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

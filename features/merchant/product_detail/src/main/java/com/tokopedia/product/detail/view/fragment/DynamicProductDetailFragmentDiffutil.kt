@@ -1203,11 +1203,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-            }
-
             pdpUiUpdater?.updateDataP2General(it)
             updateUi()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
@@ -1670,6 +1665,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         updateNplButtonFollowers(it.restrictionInfo)
         updateButtonState()
         setupTickerOcc()
+
+        if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
+        }
 
         if (it.vouchers.isNullOrEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)

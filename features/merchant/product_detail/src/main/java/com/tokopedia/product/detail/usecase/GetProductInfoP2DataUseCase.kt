@@ -14,6 +14,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -341,6 +342,25 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            reviewImage{
+              list{
+                imageID
+                reviewID
+              }
+              detail{
+                imageCountFmt
+              }
+              hasNext
+              hasPrev
+            }
+            mostHelpFulReviewData{
+              list{
+                reviewId
+                message
+                productRating
+                reviewCreateTime
+              }
+            }
         }
     }""".trimIndent()
     }
@@ -401,6 +421,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.helpfulReviews = mostHelpFulReviewData.list
+            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
         }
         return p2UiData
     }
