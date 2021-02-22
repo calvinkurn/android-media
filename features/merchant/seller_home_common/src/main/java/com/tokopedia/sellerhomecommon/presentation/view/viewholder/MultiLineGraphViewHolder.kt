@@ -389,7 +389,7 @@ class MultiLineGraphViewHolder(
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
-                    data?.let {
+                    (data as? LineChartEntry)?.let {
                         if (isMetricComparableByPeriodSelected) {
                             showComparablePeriodMetricTooltip(view, it, x.toInt())
                         } else {
