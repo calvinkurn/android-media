@@ -26,10 +26,10 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
-import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddress
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,7 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
+class ChooseAddressBottomSheet(): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -58,6 +58,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     private var buttonAddAddress: IconUnify? = null
     private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
+    private var _listener: ChooseAddressBottomSheetListener? = null
 
     private var fm: FragmentManager? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
@@ -86,13 +87,17 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                 chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName))
             }
         } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
-            val data = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
+            val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
             if (data != null) {
                 chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
             }
         } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
             this.dismiss()
         }
+    }
+
+    fun setListener(listener: ChooseAddressBottomSheetListener) {
+        _listener = listener
     }
 
     private fun initInjector() {
@@ -149,12 +154,12 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                             label = data.addressName
                     )
                     chooseAddressPref?.setLocalCache(localData)
-                    listener.onAddressDataChanged()
+                    _listener?.onAddressDataChanged()
                     this.dismiss()
                 }
 
                 is Fail -> {
-                    listener.onLocalizingAddressServerDown()
+                    _listener?.onLocalizingAddressServerDown()
                     showError(it.throwable)
                 }
 
@@ -232,7 +237,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        listener.onAddressDataChanged()
+        _listener?.onAddressDataChanged()
     }
 
     override fun onOtherAddressClicked() {

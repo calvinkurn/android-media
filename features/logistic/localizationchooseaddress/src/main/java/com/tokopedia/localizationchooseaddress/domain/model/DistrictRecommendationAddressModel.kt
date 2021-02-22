@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class DistrictRecommendationAddress (
+data class DistrictRecommendationAddressModel (
         var districtId: Int = 0,
         var districtName: String = "",
         var cityId: Int = 0,
