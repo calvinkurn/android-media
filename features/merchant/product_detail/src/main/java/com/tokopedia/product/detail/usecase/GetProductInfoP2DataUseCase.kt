@@ -346,10 +346,37 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               list{
                 imageID
                 reviewID
+                imageSibling
               }
               detail{
-                imageCountFmt
-              }
+                 reviews {
+                   reviewId
+                   message
+                   ratingDescription
+                   rating
+                   time_format{
+                     date_time_fmt1
+                   }
+                   updateTime
+                   isAnonymous
+                   isReportable
+                   isUpdated
+                   reviewer{
+                     userID
+                     fullName
+                     profilePicture
+                     url
+                   }
+                 }
+                 images {
+                   imageAttachmentID
+                   description
+                   uriThumbnail
+                   uriLarge
+                   reviewID
+                 }
+                 imageCountFmt
+               }
               hasNext
               hasPrev
             }
