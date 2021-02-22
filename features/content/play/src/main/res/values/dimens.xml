@@ -31,6 +31,7 @@
     <dimen name="play_voucher_title_image_margin">10dp</dimen>
     <dimen name="play_voucher_sheet_title_margin">20dp</dimen>
     <dimen name="play_voucher_divider_width">18dp</dimen>
+    <dimen name="play_voucher_copy_divider_width">1dp</dimen>
 
     <dimen name="play_cart_badge_size">12dp</dimen>
     <dimen name="play_cart_margin">2dp</dimen>
@@ -60,6 +61,8 @@
     <dimen name="play_product_grid_radius">8dp</dimen>
     <dimen name="play_product_grid_width">240dp</dimen>
     <dimen name="play_product_grid_more_action_size">32dp</dimen>
+
+    <dimen name="play_voucher_radius">7dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>

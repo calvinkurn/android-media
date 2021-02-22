@@ -21,4 +21,6 @@
 
     <color name="play_dms_pip_control_bg">#AD31353B</color>
 
+    <color name="play_dms_voucher_bg">#AD31353B</color>
+
 </resources>
