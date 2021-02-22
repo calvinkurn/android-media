@@ -31,10 +31,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -47,7 +45,6 @@ import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 class SingleProductAttachmentContainer : ConstraintLayout {
 
     private var btnWishList: UnifyButton? = null
-    private var btnOcc: UnifyButton? = null
     private var btnBuy: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
     private var label: Label? = null
@@ -125,7 +122,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBindView() {
         btnWishList = findViewById(R.id.tv_wishlist)
-        btnOcc = findViewById(R.id.tv_occ)
         btnBuy = findViewById(R.id.tv_buy)
         btnAtc = findViewById(R.id.tv_atc)
         label = findViewById(R.id.lb_product_label)
@@ -416,55 +412,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
-        val abTestVariant = getOccAbTestVariant()
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
-            if (product.isEligibleOcc() && isEligibleOccAbTest(abTestVariant)) {
-                when (abTestVariant) {
-                    TopchatProductAttachmentViewHolder.VARIANT_A -> {
-                        btnBuy?.hide()
-                        bindOcc(product)
-                        bindAtc(product)
-                    }
-                    TopchatProductAttachmentViewHolder.VARIANT_B -> {
-                        btnBuy?.hide()
-                        btnAtc?.hide()
-                        bindOcc(product)
-                    }
-                }
-            } else {
-                bindBuy(product)
-                bindAtc(product)
-                btnOcc?.hide()
-            }
+            bindBuy(product)
+            bindAtc(product)
             bindWishList(product)
         } else {
             hideFooter()
-        }
-    }
-
-    private fun getOccAbTestVariant(): String {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(TopchatProductAttachmentViewHolder.AB_TEST_KEY, TopchatProductAttachmentViewHolder.VARIANT_DEFAULT);
-    }
-
-    private fun isEligibleOccAbTest(variant: String): Boolean {
-        return (variant == TopchatProductAttachmentViewHolder.VARIANT_A || variant == TopchatProductAttachmentViewHolder.VARIANT_B)
-    }
-
-    fun bindOcc(product: ProductAttachmentViewModel) {
-        btnOcc?.apply {
-            if (product.hasEmptyStock()) {
-                hide()
-            } else {
-                show()
-                isLoading = product.isLoadingOcc
-                setOnClickListener {
-                    if (!product.isLoadingOcc) {
-                        product.isLoadingOcc = true
-                        isLoading = true
-                        listener?.onClickOccFromProductAttachment(product, adapterPosition)
-                    }
-                }
-            }
         }
     }
 
@@ -500,7 +453,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnBuy?.hide()
         btnAtc?.hide()
         btnWishList?.hide()
-        btnOcc?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {

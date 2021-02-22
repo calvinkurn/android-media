@@ -132,6 +132,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             // (4)
             clearProductDraft()
             setUploadProductDataSuccess()
+            addFlagOnUploadProductSuccess()
             ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
             val errorMessage = getErrorMessage(throwable)
@@ -157,6 +158,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         if(productDraftId > 0) {
             deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
             deleteProductDraftUseCase.executeOnBackground()
+        }
+    }
+
+    private suspend fun addFlagOnUploadProductSuccess() {
+        withContext(Dispatchers.IO) {
+            sellerAppReviewHelper.saveAddProductFrag()
         }
     }
 }

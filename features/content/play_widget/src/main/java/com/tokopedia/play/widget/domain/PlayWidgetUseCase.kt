@@ -79,6 +79,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                   meta_description
                   is_show_button
                 }
+                performanceSummaryPageLink
               }
               __typename ... on PlayWidgetBanner {
                 backgroundURL

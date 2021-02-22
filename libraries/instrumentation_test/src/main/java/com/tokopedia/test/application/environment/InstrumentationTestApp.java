@@ -84,7 +84,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void onCreate() {
         SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.66";
+        GlobalConfig.VERSION_NAME = "3.115";
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);
@@ -96,11 +96,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
-        GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.90";
         NetworkClient.init(this);
         GraphqlClient.init(this);
-        com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
 
         super.onCreate();

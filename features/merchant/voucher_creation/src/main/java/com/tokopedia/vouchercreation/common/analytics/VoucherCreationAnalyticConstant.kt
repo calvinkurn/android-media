@@ -19,9 +19,11 @@ object VoucherCreationAnalyticConstant {
     }
 
     object Values {
+        const val TOKOPEDIA_SELLER_APP = "tokopedia seller app"
         const val TOKOPEDIA_SELLER = "tokopediaseller"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PHYSICAL_GOODS = "physical goods"
+        const val COMMUNICATION = "communication"
     }
 
     object ScreenName {
