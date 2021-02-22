@@ -52,18 +52,8 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun loadImageRounded() {
-        imgTest?.loadImageRounded(url) {
+        imgTest?.loadImageRounded(url, 100f) {
             status("loadImageRounded()", this)
-            Toast.makeText(applicationContext, "loadImageRounded: first", Toast.LENGTH_SHORT).show()
-            Handler().postDelayed({
-                imgTest?.loadImageRounded(url) {
-                    setDelay(3000)
-                    listener({ _, _ ->
-                        Toast.makeText(applicationContext, "loadImageRounded: second", Toast.LENGTH_SHORT).show()
-                        status("loadImageRounded with delayed()", this)
-                    })
-                }
-            }, 3000)
         }
     }
 
@@ -82,10 +72,14 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun loadImageCircle() {
-        imgTest?.loadImage(url) {
-            isCircular(true)
-            status("loadImageCircle()", this)
-        }
+        imgTest?.loadImageCircle(url)
+
+        Handler().postDelayed({
+            imgTest?.loadImage(url) {
+                isCircular(true)
+                status("loadImageCircle()", this)
+            }
+        }, 5000)
     }
 
     private fun loadImageError() {
