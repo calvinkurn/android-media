@@ -241,6 +241,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val data = cartDataList[position]
         return when (data) {
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
+            is CartChooseAddressViewHolder -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
@@ -267,6 +268,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
                 return CartSelectAllViewHolder(view, actionListener, compositeSubscription)
+            }
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(CartChooseAddressViewHolder.LAYOUT, parent, false)
+                return CartChooseAddressViewHolder(view, actionListener)
             }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val view = LayoutInflater.from(parent.context)
@@ -357,70 +363,74 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        when {
-            viewType == CartSelectAllViewHolder.LAYOUT -> {
+        when (viewType) {
+            CartSelectAllViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSelectAllHolderData
                 (holder as CartSelectAllViewHolder).bind(data)
             }
-            viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartChooseAddressHolderData
+                (holder as CartChooseAddressViewHolder).bind(data)
+            }
+            CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
             }
-            viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
+            CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
                 (holder as CartTickerErrorViewHolder).bindData(data, position)
             }
-            viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
+            ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 val data = cartDataList[position] as ShipmentSellerCashbackModel
                 (holder as ShipmentSellerCashbackViewHolder).bindViewHolder(data)
             }
-            viewType == CartEmptyViewHolder.LAYOUT -> {
+            CartEmptyViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartEmptyHolderData
                 (holder as CartEmptyViewHolder).bind(data)
             }
-            viewType == CartRecentViewViewHolder.LAYOUT -> {
+            CartRecentViewViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecentViewHolderData
                 (holder as CartRecentViewViewHolder).bind(data)
                 cartRecentViewAdapter = holder.recentViewAdapter
             }
-            viewType == CartWishlistViewHolder.LAYOUT -> {
+            CartWishlistViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartWishlistHolderData
                 (holder as CartWishlistViewHolder).bind(data)
                 cartWishlistAdapter = holder.wishlistAdapter
             }
-            viewType == CartSectionHeaderViewHolder.LAYOUT -> {
+            CartSectionHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSectionHeaderHolderData
                 (holder as CartSectionHeaderViewHolder).bind(data)
             }
-            viewType == CartRecommendationViewHolder.LAYOUT -> {
+            CartRecommendationViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecommendationItemHolderData
                 (holder as CartRecommendationViewHolder).bind(data)
             }
-            viewType == CartLoadingViewHolder.LAYOUT -> {
+            CartLoadingViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartLoadingHolderData
                 (holder as CartLoadingViewHolder).bind(data)
             }
-            viewType == TickerAnnouncementViewHolder.LAYOUT -> {
+            TickerAnnouncementViewHolder.LAYOUT -> {
                 val cartTickerData = cartDataList[position] as TickerAnnouncementHolderData
                 (holder as TickerAnnouncementViewHolder).bind(cartTickerData)
             }
-            viewType == DisabledItemHeaderViewHolder.LAYOUT -> {
+            DisabledItemHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
                 (holder as DisabledItemHeaderViewHolder).bind(data)
             }
-            viewType == DisabledReasonViewHolder.LAYOUT -> {
+            DisabledReasonViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledReasonHolderData
                 (holder as DisabledReasonViewHolder).bind(data)
             }
-            viewType == DisabledShopViewHolder.LAYOUT -> {
+            DisabledShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledShopHolderData
                 (holder as DisabledShopViewHolder).bind(data)
             }
-            viewType == DisabledCartItemViewHolder.LAYOUT -> {
+            DisabledCartItemViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledCartItemHolderData
                 (holder as DisabledCartItemViewHolder).bind(data)
             }
-            viewType == DisabledAccordionViewHolder.LAYOUT -> {
+            DisabledAccordionViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledAccordionHolderData
                 (holder as DisabledAccordionViewHolder).bind(data)
             }

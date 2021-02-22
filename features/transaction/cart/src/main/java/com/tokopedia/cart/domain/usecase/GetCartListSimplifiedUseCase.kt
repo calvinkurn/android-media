@@ -36,10 +36,11 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
     fun buildParams(cartId: String): Map<String, Any?> {
         return mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_SELECTED_CART_ID to cartId,
-                PARAM_KEY_ADDITIONAL to mapOf(
-                        KEY_CHOSEN_ADDRESS to getChosenAddress()
-                )
+                PARAM_KEY_SELECTED_CART_ID to cartId
+//                ,
+//                PARAM_KEY_ADDITIONAL to mapOf(
+//                        KEY_CHOSEN_ADDRESS to getChosenAddress()
+//                )
         )
     }
 

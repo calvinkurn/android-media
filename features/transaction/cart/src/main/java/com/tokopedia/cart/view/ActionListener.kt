@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.*
@@ -11,6 +12,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 
 interface ActionListener {
+
+    fun getFragment(): Fragment
 
     fun onClickShopNow()
 

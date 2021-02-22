@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -751,11 +752,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun handleStickyCheckboxGlobalVisibility(recyclerView: RecyclerView) {
         val topItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
         if (topItemPosition == RecyclerView.NO_POSITION) return
+
+        val topCompleteItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
+        if (topCompleteItemPosition == RecyclerView.NO_POSITION) return
+
         val adapterData = cartAdapter.getData()
         if (topItemPosition >= adapterData.size) return
-        val lastData = adapterData[topItemPosition]
-        if (lastData is CartShopHolderData || lastData is CartSelectAllHolderData) {
-            if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+        if (topCompleteItemPosition >= adapterData.size) return
+
+        val firstItemData = adapterData[topItemPosition]
+        val firstCompleteItemData = adapterData[topCompleteItemPosition]
+
+        if (firstItemData is CartShopHolderData || firstItemData is CartSelectAllHolderData) {
+            if (firstCompleteItemData is CartSelectAllHolderData) {
+                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(false)
+            } else {
+                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+            }
         } else {
             if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
         }
@@ -1195,6 +1208,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog.dismiss()
         }
         dialog?.show()
+    }
+
+    override fun getFragment(): Fragment {
+        return this
     }
 
     override fun onClickShopNow() {
