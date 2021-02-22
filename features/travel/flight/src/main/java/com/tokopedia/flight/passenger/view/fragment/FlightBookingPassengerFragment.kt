@@ -339,6 +339,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
                     FlightDateUtil.DEFAULT_FORMAT, passportExpiryDateStr)
             til_passport_expiration_date.textFieldInput.setText(passportExpiryDateStr)
+            validatePassportExpiredDate(true)
         })
     }
 
@@ -845,6 +846,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
             til_passport_expiration_date.setError(true)
+            false
+        } else if (isNeedPassport && flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
+        getPassportExpiryDate(), sixMonthFromDeparture)){
+            til_passport_expiration_date.setError(false)
             false
         } else {
             true
