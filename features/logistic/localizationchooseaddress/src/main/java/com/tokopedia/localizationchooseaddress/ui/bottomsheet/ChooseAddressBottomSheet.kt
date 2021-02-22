@@ -38,7 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
+class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -58,6 +58,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
     private var buttonAddAddress: IconUnify? = null
     private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
+    private var listener: ChooseAddressBottomSheetListener? = null
 
     private var fm: FragmentManager? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
@@ -90,7 +91,10 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
             if (data != null) {
                 chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
             }
+            listener?.onAddressDataChanged()
+            this.dismiss()
         } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
+            listener?.onAddressDataChanged()
             this.dismiss()
         }
     }
@@ -149,12 +153,12 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                             label = data.addressName
                     )
                     chooseAddressPref?.setLocalCache(localData)
-                    listener.onAddressDataChanged()
+                    listener?.onAddressDataChanged()
                     this.dismiss()
                 }
 
                 is Fail -> {
-                    listener.onLocalizingAddressServerDown()
+                    listener?.onLocalizingAddressServerDown()
                     showError(it.throwable)
                 }
 
@@ -206,6 +210,10 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         }
     }
 
+    fun setListener(listener: ChooseAddressBottomSheetListener) {
+        this.listener = listener
+    }
+
     private fun showError(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -232,7 +240,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        listener.onAddressDataChanged()
+        listener?.onAddressDataChanged()
     }
 
     override fun onOtherAddressClicked() {

@@ -12,12 +12,18 @@
         android:layout_height="match_parent"
         android:background="@color/Unify_N0">
 
-        <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-            android:id="@+id/choose_address_widget"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_choose_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:text="Open Choose Address Activity"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyWeight="bold"
+            app:typographyType="heading_5"
+            android:textColor="@color/Green_G600"/>
 
         <com.tokopedia.unifycomponents.SearchBarUnify
             android:layout_marginTop="@dimen/dp_8"
@@ -29,7 +35,7 @@
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+            app:layout_constraintTop_toBottomOf="@id/text_choose_address"
             app:search_bar_show_icon="false"/>
 
         <LinearLayout
