@@ -33,6 +33,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
         fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel)
+        fun onAddressItemSelected(peopleAddress: RecipientAddressModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
@@ -138,6 +139,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 notifyItemChanged(selectedPos)
                 selectedPos = layoutPosition
                 notifyItemChanged(layoutPosition)
+                listener.onAddressItemSelected(peopleAddress)
             }
         }
     }
