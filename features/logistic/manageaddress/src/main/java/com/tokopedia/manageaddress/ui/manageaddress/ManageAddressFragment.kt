@@ -1,15 +1,16 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -25,13 +26,17 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
@@ -40,6 +45,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -77,8 +83,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var manageAddressListener: ManageAddressListener? = null
     private var chooseAddressWidget: ChooseAddressWidget? = null
 
+    private var buttonChooseAddress: UnifyButton? = null
+    private var chooseAddressPref: ChooseAddressSharePref? = null
+    private var _selectedAddressItem: RecipientAddressModel? = null
+
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
+    private var isFromCheckout: Boolean? = false
+    private var typeRequest: Int? = -1
 
     override fun getScreenName(): String = ""
 
@@ -101,6 +113,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         address_list.adapter = adapter
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
+        isFromCheckout = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT)
+        typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -151,6 +165,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
         chooseAddressWidget = view?.findViewById(R.id.choose_address_widget)
 
+        chooseAddressPref = ChooseAddressSharePref(context)
+
+        buttonChooseAddress = view?.findViewById(R.id.btn_choose_address)
+        buttonChooseAddress?.setOnClickListener {
+            setChoosenAddress()
+        }
+
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
 
@@ -198,7 +219,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
                         .findLastVisibleItemPosition()
 
-                if(maxItemPosition < lastVisibleItemPosition) {
+                if (maxItemPosition < lastVisibleItemPosition) {
                     maxItemPosition = lastVisibleItemPosition
                 }
 
@@ -373,12 +394,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
 
-        fun newInstance(): ManageAddressFragment {
-            return ManageAddressFragment()
+        fun newInstance(bundle: Bundle): ManageAddressFragment {
+            return ManageAddressFragment().apply {
+                arguments = bundle
+            }
         }
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        //fetchData()
         chooseAddressWidget?.updateWidget()
     }
 
@@ -400,5 +424,54 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun getLocalizingAddressHostSourceData(): String {
         return "address"
+    }
+
+    override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
+        _selectedAddressItem = peopleAddress
+    }
+
+    private fun setChoosenAddress() {
+        _selectedAddressItem?.let { addr ->
+            context?.let { ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addr.id,
+                    cityId = addr.cityId,
+                    districtId = addr.destinationDistrictId,
+                    lat = addr.latitude,
+                    long = addr.longitude,
+                    addressName = addr.addressName) }
+        }
+
+        if (isFromCheckout == true) {
+            val resultIntent: Intent
+            when (typeRequest) {
+                CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN -> {
+                    resultIntent = Intent()
+                    resultIntent.putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                    activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent)
+                }
+                CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS -> {
+                    resultIntent = Intent()
+                    resultIntent.putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                        resultIntent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST,
+                                arguments?.getParcelableArrayList<Parcelable>(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST))
+                        resultIntent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX,
+                                arguments?.getInt(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1))
+                        resultIntent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX,
+                                arguments?.getInt(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1))
+                    activity?.setResult(Activity.RESULT_OK, resultIntent)
+                }
+                CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT -> {
+                    resultIntent = Intent()
+                    resultIntent.putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                        resultIntent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST,
+                                arguments?.getParcelableArrayList<Parcelable>(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST))
+                        resultIntent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX,
+                                arguments?.getInt(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1))
+                    activity?.setResult(Activity.RESULT_OK, resultIntent)
+                }
+            }
+        }
+        activity?.finish()
     }
 }

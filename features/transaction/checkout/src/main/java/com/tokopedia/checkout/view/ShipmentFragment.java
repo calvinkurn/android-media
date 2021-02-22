@@ -151,6 +151,7 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
@@ -1339,6 +1340,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 */
         // Todo : implement flow change address using manage address list, including activity result
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+        intent.putExtra(EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT, true);
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 

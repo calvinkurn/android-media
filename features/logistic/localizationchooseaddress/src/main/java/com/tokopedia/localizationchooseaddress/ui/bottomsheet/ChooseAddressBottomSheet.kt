@@ -26,19 +26,17 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+
 
 class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetListener): BottomSheetUnify(), HasComponent<ChooseAddressComponent>, AddressListItemAdapter.AddressListItemAdapterListener{
 
@@ -76,13 +74,25 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initData()
         initObserver()
     }
 
-    /*on activity result here*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_ADD_ADDRESS) {
+            val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+            if (data != null) {
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName))
+            }
+        } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
+            val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
+            if (data != null) {
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
+            }
+        } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
+            this.dismiss()
+        }
     }
 
     private fun initInjector() {
@@ -111,7 +121,48 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private fun initView() {
+    private fun initData() {
+        viewModel.getChosenAddressList()
+    }
+
+    private fun initObserver() {
+        viewModel.chosenAddressList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    adapter.updateData(it.data)
+                    setViewState()
+                }
+            }
+        })
+
+
+        viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val data = it.data
+                    val localData = ChooseAddressUtils.setLocalizingAddressData(
+                            addressId = data.addressId.toString(),
+                            cityId = data.cityId.toString(),
+                            districtId = data.districtId.toString(),
+                            lat = data.latitude,
+                            long = data.longitude,
+                            label = data.addressName
+                    )
+                    chooseAddressPref?.setLocalCache(localData)
+                    listener.onAddressDataChanged()
+                    this.dismiss()
+                }
+
+                is Fail -> {
+                    listener.onLocalizingAddressServerDown()
+                    showError(it.throwable)
+                }
+
+            }
+        })
+    }
+
+    private fun setViewState() {
         if (!userSession.isLoggedIn) {
             chooseAddressLayout?.gone()
             noAddressLayout?.gone()
@@ -129,32 +180,6 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         }
 
         renderButton()
-    }
-
-    private fun initObserver() {
-        viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    val data = it.data
-                    val localData = ChooseAddressUtils().setDataToLocalCache(
-                            addressId = data.addressId.toString(),
-                            cityId = data.cityId.toString(),
-                            districtId = data.districtId.toString(),
-                            lat = data.latitude,
-                            long = data.longitude,
-                            label = data.addressName
-                    )
-                    chooseAddressPref?.setLocalCache(localData)
-                    listener.onAddressChosen()
-                    this.dismiss()
-                }
-
-                is Fail -> {
-                    showError(it.throwable)
-                }
-
-            }
-        })
     }
 
     private fun renderButton() {
@@ -197,20 +222,35 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
-    }
-
-    interface ChooseAddressBottomSheetListener {
-        fun onAddressChosen()
+        const val REQUEST_CODE_ADDRESS_LIST = 399
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
         //can't be set due gql
         //viewModel.setStateChosenAddress()
 
-        val data = ChooseAddressUtils().setDataToLocalCache(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
+        val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        listener.onAddressChosen()
+        listener.onAddressDataChanged()
+    }
+
+    override fun onOtherAddressClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
+    }
+
+    interface ChooseAddressBottomSheetListener {
+        /**
+         * this listen if we get server down on widget/bottomshet.
+         * Host mandatory to GONE LocalizingAddressWidget
+         */
+        fun onLocalizingAddressServerDown();
+
+        /**
+         * Only use by bottomsheet, to notify every changes in address data
+         */
+        fun onAddressDataChanged()
     }
 
 }

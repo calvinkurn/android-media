@@ -19,15 +19,17 @@ class ChooseAddressRepository @Inject constructor(private val gql: GraphqlReposi
         return gql.getResponse(request)
     }
 
+    /*update param*/
     suspend fun setStateChosenAddress(): SetStateChosenAddressQqlResponse {
         val request = GraphqlRequest(ChooseAddressQuery.setStateChosenAddress,
                 SetStateChosenAddressQqlResponse::class.java)
         return gql.getResponse(request)
     }
 
-    suspend fun getStateChosenAddress(): GetStateChosenAddressQglResponse {
+    suspend fun getStateChosenAddress(source: String): GetStateChosenAddressQglResponse {
+        val param = mapOf("source" to source)
         val request = GraphqlRequest(ChooseAddressQuery.getStateChosenAddress,
-                GetStateChosenAddressQglResponse::class.java)
+                GetStateChosenAddressQglResponse::class.java, param)
         return gql.getResponse(request)
     }
 

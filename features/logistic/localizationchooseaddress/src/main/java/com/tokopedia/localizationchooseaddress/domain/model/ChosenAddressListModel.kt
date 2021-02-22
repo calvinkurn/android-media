@@ -1,26 +1,30 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
+sealed class ChosenAddressListVisitable
+
 data class ChosenAddressListModel (
         var chosenAddressList: List<ChosenAddressList> = listOf()
 )
 
 data class ChosenAddressList(
         var addressId: String = "",
-        var receiverName: String = "Tokopedia",
-        var addressname: String = "Tokopedia tower",
-        var address1: String = "Jalan jalan ke pasar tua",
+        var receiverName: String = "",
+        var addressname: String = "",
+        var address1: String = "",
         var address2: String = "",
         var postalCode: String = "",
         var provinceId: String = "",
         var cityId: String = "",
         var districtId: String = "",
-        var phone: String = "0821321342123",
+        var phone: String = "",
         var provinceName: String = "",
         var cityName: String = "",
-        var districtName: String = "Gambir, Jakarta Selatan",
+        var districtName: String = "",
         var status: String = "",
         var country: String = "",
         var latitude: String = "",
         var longitude: String = "",
-        var isStateChosenAddress: Boolean = true,
-)
+        var isStateChosenAddress: Boolean = false,
+) :  ChosenAddressListVisitable()
+
+data class OtherAddressModel(var text: String? = null) : ChosenAddressListVisitable()

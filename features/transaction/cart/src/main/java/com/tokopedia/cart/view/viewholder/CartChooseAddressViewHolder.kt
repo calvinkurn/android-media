@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
-import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
 class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
