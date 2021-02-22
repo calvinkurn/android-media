@@ -112,27 +112,37 @@
             app:typographyType="body_3"
             tools:visibility="visible" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_pdp_shipment_other"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/ic_pdp_shipment_arrow_right"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_khusus">
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_pdp_shipment_other_courier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
             android:layout_marginEnd="24dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/pdp_shipping_other_courier_label"
             android:visibility="gone"
-            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_khusus"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/ic_pdp_shipment_bo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:scaleType="centerInside"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
@@ -167,13 +177,15 @@
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
             tools:visibility="visible" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_pdp_shipment_arrow_right"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/container_pdp_shipment_other"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

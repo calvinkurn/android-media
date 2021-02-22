@@ -1,6 +1,7 @@
 package com.tokopedia.product.estimasiongkir.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
@@ -13,7 +14,11 @@ class ProductShippingShimmerViewHolder(view: View) : AbstractViewHolder<ProductS
         val LAYOUT = R.layout.item_product_shipping_shimmer
     }
 
-    override fun bind(element: ProductShippingShimmerDataModel?) {
-
+    override fun bind(element: ProductShippingShimmerDataModel) {
+        if (element.height == 0) {
+            itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        } else {
+            itemView.layoutParams.height = element.height
+        }
     }
 }

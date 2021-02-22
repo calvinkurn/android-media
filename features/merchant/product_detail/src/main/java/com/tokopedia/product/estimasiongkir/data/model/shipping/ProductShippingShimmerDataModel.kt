@@ -7,7 +7,8 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitabl
  * Created by Yehezkiel on 08/02/21
  */
 class ProductShippingShimmerDataModel(
-        val id: Long = 0L
+        val id: Long = 0L,
+        val height: Int = 0
 ) : ProductShippingVisitable {
 
     companion object {

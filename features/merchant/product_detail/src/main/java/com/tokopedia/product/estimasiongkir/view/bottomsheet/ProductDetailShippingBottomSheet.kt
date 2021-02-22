@@ -2,6 +2,7 @@ package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
+import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
@@ -38,27 +40,31 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private var viewModel: RatesEstimationBoeViewModel? = null
     private var adapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
+    private var viewContainer: View? = null
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
     }
 
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val view = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
-        setupBottomSheet(dialog, view)
+        viewContainer = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
+        setupBottomSheet(dialog, viewContainer)
 
         dialog.run {
-            setupRecyclerView(view)
-            setContentView(view)
+            viewContainer?.let {
+                setupRecyclerView(it)
+                setContentView(it)
+            }
+
             initInjector()
             initViewModel()
             observeData()
         }
     }
 
-    private fun setupBottomSheet(dialog: Dialog, view: View) {
-        val closeBtn = view.findViewById<IconUnify>(R.id.shipment_bottom_sheet_close)
-        closeBtn.setOnClickListener {
+    private fun setupBottomSheet(dialog: Dialog, view: View?) {
+        val closeBtn = view?.findViewById<IconUnify>(R.id.shipment_bottom_sheet_close)
+        closeBtn?.setOnClickListener {
             dismiss()
         }
         val dialogFragment = dialog as BottomSheetDialog
@@ -107,16 +113,24 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         if (rv?.itemDecorationCount == 0 && context != null) {
             rv?.addItemDecoration(ProductSeparatorItemDecoration(requireContext()))
         }
+        rv?.itemAnimator = null
         val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
                 .build()
 
         adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this))
 
         rv?.adapter = adapter
-        adapter?.submitList(listOf(ProductShippingShimmerDataModel()))
+        showShimmerPage()
+    }
+
+    private fun showShimmerPage(height: Int = 0) {
+        adapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
     }
 
     override fun onChooseAddressClicked() {
-        view?.showToasterSuccess("Clicked bottom sheet")
+        showShimmerPage(rv?.height ?: 0)
+        viewModel?.setRatesRequest(sharedViewModel.rateEstimateRequest.value?.copy(forceRefresh = true)
+                ?: RatesEstimateRequest())
+        viewContainer?.showToasterSuccess("Clicked bottom sheet")
     }
 }

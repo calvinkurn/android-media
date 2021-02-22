@@ -28,6 +28,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private val shipmentLoadingContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shimmer_shipment_container)
     private val shipmentContentContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shipment_container)
+    private val shipmentOtherContainer: ConstraintLayout? = itemView.findViewById(R.id.container_pdp_shipment_other)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
 
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
@@ -55,13 +56,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             }
             else -> {
                 // receive rates data
-                itemView.setOnClickListener {
-                    listener.openShipmentClickedBottomSheet()
-                }
+                val isError = element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0
                 hideShipmentLoading()
                 renderText(data)
                 renderTokoCabang(element.isFullfillment)
-                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.freeOngkirUrl, element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0)
+                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.freeOngkirUrl, isError)
             }
         }
     }
@@ -80,19 +79,18 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean, freeOngkirUrl: String, isError: Boolean) = with(itemView) {
+        adjustIfError(isError)
+
         if (!isInstant && freeOngkirUrl.isEmpty() && !isCod && !isError) {
             renderSubtitleGreen()
             shipmentFreeOngkir?.hide()
             shipmentLabelCod?.hide()
             shipmentLabelInstant?.hide()
-            adjustSubtitleMargin(isError)
             return@with
         }
 
         renderSubtitleNormal(subtitle)
-        adjustSubtitleMargin(isError)
 
-        shipmentArrow?.showWithCondition(!isError)
         shipmentFreeOngkir?.shouldShowWithAction(freeOngkirUrl.isNotEmpty() && !isError) {
             shipmentFreeOngkir.loadImage(freeOngkirUrl)
         }
@@ -100,13 +98,23 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLabelInstant?.showWithCondition(isInstant)
     }
 
-    private fun adjustSubtitleMargin(isError: Boolean) = with(itemView) {
+    private fun adjustIfError(isError: Boolean) = with(itemView) {
         if (isError) {
             otherCourierTxt?.setWeight(Typography.REGULAR)
             otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            otherCourierTxt?.setMargin(0, 4.toPx(), 0, 0)
+            shipmentOtherContainer?.setOnClickListener(null)
+            shipmentArrow?.setOnClickListener(null)
+            shipmentArrow?.hide()
+            shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
         } else {
-            otherCourierTxt?.setMargin(0, 14.toPx(), 0, 0)
+            shipmentOtherContainer?.setOnClickListener {
+                listener.openShipmentClickedBottomSheet()
+            }
+            shipmentArrow?.setOnClickListener {
+                listener.openShipmentClickedBottomSheet()
+            }
+            shipmentArrow?.show()
+            shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
         }
     }
 
