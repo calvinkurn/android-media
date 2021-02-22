@@ -221,14 +221,14 @@ class SomListViewModel @Inject constructor(
     fun getFilters(refreshOrders: Boolean) {
         if (somListGetFilterListUseCase.isFirstLoad) {
             somListGetFilterListUseCase.isFirstLoad = false
-            launchCatchError(block = {
-                _filterResult.postValue(Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders }))
+            launchCatchError(context = dispatcher.main, block = {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
             }, onError = {})
         }
-        launchCatchError(block = {
-            _filterResult.postValue(Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders }))
+        launchCatchError(context = dispatcher.main, block = {
+            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
         }, onError = {
-            _filterResult.postValue(Fail(it))
+            _filterResult.value = Fail(it)
         })
     }
 
