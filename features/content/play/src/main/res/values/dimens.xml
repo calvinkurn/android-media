@@ -57,6 +57,10 @@
     <dimen name="play_pip_icon_radius">8dp</dimen>
     <dimen name="play_pip_view_radius">6dp</dimen>
 
+    <dimen name="play_product_grid_radius">8dp</dimen>
+    <dimen name="play_product_grid_width">240dp</dimen>
+    <dimen name="play_product_grid_more_action_size">32dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>
