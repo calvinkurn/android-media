@@ -19,7 +19,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
     fun bind(data: CartChooseAddressHolderData) {
         chooseAddressWidget.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
-
+                listener?.onLocalizingAddressUpdatedFromWidget()
             }
 
             override fun onLocalizingAddressUpdatedFromBackground() {

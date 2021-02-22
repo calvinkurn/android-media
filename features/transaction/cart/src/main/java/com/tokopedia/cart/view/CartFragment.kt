@@ -97,7 +97,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
@@ -428,36 +427,29 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
-        if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
-            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
-            showToastMessageGreen(getString(R.string.message_payment_success))
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
-            showToastMessageRed(getString(R.string.default_request_error_unknown))
-            cartPageAnalytics.sendScreenName(activity, screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
+        when (resultCode) {
+            PaymentConstant.PAYMENT_CANCELLED -> {
+                showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
+                refreshCartWithProgressDialog()
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            cartPageAnalytics.sendScreenName(activity, screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
+            PaymentConstant.PAYMENT_SUCCESS -> {
+                showToastMessageGreen(getString(R.string.message_payment_success))
+                refreshCartWithProgressDialog()
             }
-        } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
-            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
-            showToastMessageRed(message ?: "")
+            PaymentConstant.PAYMENT_FAILED -> {
+                showToastMessageRed(getString(R.string.default_request_error_unknown))
+                refreshCartWithProgressDialog()
+            }
+            CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED -> {
+                refreshCartWithProgressDialog()
+            }
+            CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED -> {
+                val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+                showToastMessageRed(message ?: "")
+            }
+            else -> {
+                refreshCartWithProgressDialog()
+            }
         }
     }
 
@@ -1122,8 +1114,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun refreshCart() {
-        resetRecentViewList()
-        refreshHandler?.startRefresh()
+        refreshCartWithSwipeToRefresh()
     }
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
@@ -3029,11 +3020,27 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onRefresh(view: View?) {
+        refreshCartWithSwipeToRefresh()
+    }
+
+    private fun refreshCartWithSwipeToRefresh() {
+        refreshHandler?.isRefreshing = true
+        resetRecentViewList()
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
             dPresenter.processToUpdateAndReloadCartData(getCartId())
         } else {
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+        }
+    }
+
+    private fun refreshCartWithProgressDialog() {
+        resetRecentViewList()
+        if (dPresenter.dataHasChanged()) {
+            showMainContainer()
+            dPresenter.processToUpdateAndReloadCartData(getCartId())
+        } else {
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
         }
     }
 
