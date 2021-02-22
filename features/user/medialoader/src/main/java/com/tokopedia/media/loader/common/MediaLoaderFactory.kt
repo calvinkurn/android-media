@@ -28,14 +28,14 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
-            // built-in RoundedCorners transformation
-            if (roundedRadius > 0f) {
-                _transform.add(RoundedCorners(roundedRadius.toInt()))
-            }
-
             // built-in CircleCrop transformation
             if (isCircular) {
                 _transform.add(CircleCrop())
+            }
+
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
             }
 
             transforms?.let { _transform.addAll(it) }
