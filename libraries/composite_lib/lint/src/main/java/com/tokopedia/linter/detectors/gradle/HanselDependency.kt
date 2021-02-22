@@ -6,7 +6,7 @@ import com.tokopedia.linter.LinterConstants.GradleConstructs.BUILD_SCRIPT
 import com.tokopedia.linter.LinterConstants.GradleConstructs.DEPENDENCIES
 import com.tokopedia.linter.LinterConstants.GradleConstructs.REPOSITORIES
 
-class HansleDependency {
+class HanselDependency {
     var isPluginAdded = false;
     var isRepositoryAdded = false;
     var isClassPathAdded = false;
@@ -65,7 +65,7 @@ fun checkHanselClassPath(filePath: String, property: String, parent: String, val
 }
 
 
-fun getHanselObject(filePath: String) = mapGraleFileTOHansel[filePath] ?: HansleDependency().apply {
+fun getHanselObject(filePath: String) = mapGraleFileTOHansel[filePath] ?: HanselDependency().apply {
     mapGraleFileTOHansel[filePath] = this
 }
 
