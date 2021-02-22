@@ -355,7 +355,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1,
@@ -374,7 +376,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
@@ -393,7 +397,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1,
@@ -425,7 +431,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1,
@@ -444,7 +452,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
@@ -463,7 +473,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1,
