@@ -15,6 +15,10 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +40,7 @@ class BuyerAccountViewModel @Inject constructor (
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val shortcutDataUseCase: GetShortcutDataUseCase,
+        private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
         private val dispatcher: DispatcherProvider
@@ -61,17 +66,42 @@ class BuyerAccountViewModel @Inject constructor (
     val firstRecommendation : LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendation
 
+    private val _canGoToSellerAccount = MutableLiveData<Boolean>()
+    val canGoToSellerAccount: LiveData<Boolean>
+        get() = _canGoToSellerAccount
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
+            val (adminDataResponse, shopData) =
+                    if (userSession.isShopOwner) {
+                        null to null
+                    } else {
+                        with(accountAdminInfoUseCase) {
+                            requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
+                            isLocationAdmin = userSession.isLocationAdmin
+                            setStrategyCloudThenCache()
+                            executeOnBackground()
+                        }
+                    }
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
+                accountModel.adminTypeText = adminDataResponse?.data?.adminTypeText
                 saveLocallyAttributes(accountModel)
+                adminDataResponse?.let {
+                    userSession.refreshUserSessionAdminData(it)
+                }
+                (adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
+                    _canGoToSellerAccount.postValue(canGoToSellerAccount)
+                }
+                shopData?.let {
+                    userSession.refreshUserSessionShopData(it)
+                }
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
@@ -202,5 +232,6 @@ class BuyerAccountViewModel @Inject constructor (
         private const val MSG_FAILED_ADD_WISHLIST = "Gagal menambahkan ke Wishlist"
         private const val MSG_SUCCESS_REMOVE_WISHLIST = "Berhasil menghapus dari Wishlist"
         private const val AKUN_PAGE = "account"
+        private const val SOURCE = "kevin_account-home"
     }
 }

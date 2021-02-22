@@ -16,6 +16,7 @@ data class AccountHeaderDataModel(
         var shopId: String = "",
         var shopNotifCount: String = "",
         var shopApplink: String = "",
+        var adminRoleText: String? = null,
         var isGetUserNameError: Boolean = true,
         var isGetOvoError: Boolean = true,
         var isGetSaldoError: Boolean = true,
@@ -23,7 +24,8 @@ data class AccountHeaderDataModel(
         var isGetShopError: Boolean = true,
         var isCacheData: Boolean = false,
         var isGetShopLoading: Boolean = false,
-        var isProfileLoading: Boolean = false
+        var isProfileLoading: Boolean = false,
+        var canGoToSellerAccount: Boolean = true
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -95,6 +97,11 @@ data class AccountHeaderDataModel(
         this.shopId = shopId
         this.isGetShopError = isError
         this.isGetShopLoading = isLoading
+    }
+
+    fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
+        this.adminRoleText = adminRoleText
+        this.canGoToSellerAccount = canGoToSellerAccount
     }
 
 }
