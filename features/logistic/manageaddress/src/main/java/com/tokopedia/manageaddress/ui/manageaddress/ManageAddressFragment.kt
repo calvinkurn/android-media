@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -431,14 +432,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setChoosenAddress() {
         _selectedAddressItem?.let { addr ->
-            val chosenAddress = LocalCacheModel(
-                    address_id = addr.id,
-                    city_id = addr.cityId,
-                    district_id = addr.destinationDistrictId,
+            context?.let { ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addr.id,
+                    cityId = addr.cityId,
+                    districtId = addr.destinationDistrictId,
                     lat = addr.latitude,
-                    long = addr.longitude
-            )
-            chooseAddressPref?.setLocalCache(chosenAddress)
+                    long = addr.longitude,
+                    addressName = addr.addressName) }
         }
 
         if (isFromCheckout == true) {
