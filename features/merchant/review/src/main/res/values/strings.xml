@@ -271,4 +271,14 @@
     <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
+    <string name="title_reputation_join_shop_score">Program reputasi akan bergabung ke</string>
+    <string name="title_shop_performance">Performa Toko</string>
+    <string name="start_date_reputation">Mulai dari %s</string>
+    <string name="more_interest_candidate_buyer"><![CDATA[<b>Untuk lebih menarik calon pembeli,</b>]]> berikut perubahan yang akan berlangsung:</string>
+    <string name="more_focus_shop_service">Lebih fokus dengan layanan toko</string>
+    <string name="desc_more_focus_shop_service">Reputasi tidak muncul di halaman toko &amp; produkmu lagi. Namun, pembeli bisa melihat parameter Performa lain yang lebih menjelaskan kualitas layanan tokomu.</string>
+    <string name="title_get_benefit_performance">Dapatkan benefit sesuai performa</string>
+    <string name="desc_get_benefit_performance">Reputasimu dikonversi menjadi grade Power Merchant dan dapat ditukar dengan berbagai benefit. &lt;a href="#"&gt;Info Selengkapnya&lt;/a&gt;</string>
+    <string name="btn_shop_performance">Pelajari Performa Toko</string>
+
 </resources>
