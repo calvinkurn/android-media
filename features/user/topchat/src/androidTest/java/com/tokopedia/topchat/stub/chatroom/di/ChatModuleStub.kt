@@ -59,9 +59,7 @@ import javax.inject.Named
                 NetworkModule::class
         )
 )
-class ChatModuleStub constructor(
-        private val websocket: RxWebSocketUtilStub
-) {
+class ChatModuleStub {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -143,10 +141,15 @@ class ChatModuleStub constructor(
     @ChatScope
     @Provides
     fun provideRxWebSocketUtil(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor
+            rxWebSocketUtilStub: RxWebSocketUtilStub
     ): RxWebSocketUtil {
-        return websocket
+        return rxWebSocketUtilStub
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRxWebSocketUtilStub(): RxWebSocketUtilStub {
+        return RxWebSocketUtilStub()
     }
 
     @ChatScope

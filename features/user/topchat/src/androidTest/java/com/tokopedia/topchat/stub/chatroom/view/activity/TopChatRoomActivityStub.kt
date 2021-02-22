@@ -2,30 +2,20 @@ package com.tokopedia.topchat.stub.chatroom.view.activity
 
 import android.os.Bundle
 import com.tokopedia.chat_common.BaseChatFragment
-import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 
 class TopChatRoomActivityStub : TopChatRoomActivity() {
 
-    private lateinit var getChatUseCase: GetChatUseCase
-    private lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
-    private lateinit var websocket: RxWebSocketUtilStub
+    lateinit var chatComponentStub: ChatComponentStub
 
     override fun inflateFragment() {
         // Don't inflate fragment immediately
     }
 
-    fun setupTestFragment(
-            getChatUseCase: GetChatUseCase,
-            chatAttachmentUseCase: ChatAttachmentUseCase,
-            websocket: RxWebSocketUtilStub
-    ) {
-        this.getChatUseCase = getChatUseCase
-        this.chatAttachmentUseCase = chatAttachmentUseCase
-        this.websocket = websocket
+    fun setupTestFragment(chatComponentStub: ChatComponentStub) {
+        this.chatComponentStub = chatComponentStub
         supportFragmentManager.beginTransaction()
                 .replace(parentViewResourceID, newFragment, TAG)
                 .commit()
@@ -37,10 +27,7 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
 
     override fun createChatRoomFragment(bundle: Bundle): BaseChatFragment {
         return TopChatRoomFragmentStub.createInstance(
-                bundle,
-                getChatUseCase,
-                chatAttachmentUseCase,
-                websocket
+                bundle
         )
     }
 

@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.activity.base
 
+import android.content.Context
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
@@ -12,13 +12,16 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
+import com.tokopedia.topchat.stub.chatroom.di.*
 import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
@@ -31,6 +34,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 abstract class TopchatRoomTest {
 
@@ -42,11 +46,20 @@ abstract class TopchatRoomTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val context = InstrumentationRegistry.getInstrumentation().targetContext
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    protected val applicationContext: Context
+        get() = InstrumentationRegistry
+                .getInstrumentation().context.applicationContext
 
-    protected open lateinit var getChatUseCase: GetChatUseCaseStub
-    protected open lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
+    @Inject
+    lateinit var getChatUseCase: GetChatUseCaseStub
+
+    @Inject
+    lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
+
+    @Inject
     protected open lateinit var websocket: RxWebSocketUtilStub
+
     protected open lateinit var activity: TopChatRoomActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
@@ -63,13 +76,18 @@ abstract class TopchatRoomTest {
             ChatAttachmentResponse::class.java
     )
 
+    protected lateinit var chatComponentStub: ChatComponentStub
+
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        getChatUseCase = GetChatUseCaseStub()
-        chatAttachmentUseCase = ChatAttachmentUseCaseStub()
-        websocket = RxWebSocketUtilStub()
+        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        chatComponentStub = DaggerChatComponentStub.builder()
+                .baseAppComponent(baseComponent)
+                .chatRoomContextModule(ChatRoomContextModule(context))
+                .build()
+        chatComponentStub.inject(this)
     }
 
     protected fun setupChatRoomActivity(
@@ -93,7 +111,7 @@ abstract class TopchatRoomTest {
 
     protected fun waitForFragmentResumed() {
         IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        Espresso.onView(withId(R.id.recycler_view))
+        onView(withId(R.id.recycler_view))
                 .check(matches(isDisplayed()))
         IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
@@ -103,9 +121,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(
-                getChatUseCase, chatAttachmentUseCase, websocket
-        )
+        activity.setupTestFragment(chatComponentStub)
         waitForFragmentResumed()
     }
 
