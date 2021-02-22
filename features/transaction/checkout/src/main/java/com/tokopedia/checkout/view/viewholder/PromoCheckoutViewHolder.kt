@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -13,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -71,7 +71,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             llSummaryTransaction.gone()
         } else {
             llSummaryTransaction.visible()
-            if  (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
+            if (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
             generateChildrenView(lastApplyUiModel)
         }
     }
@@ -145,6 +145,26 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
             if (value.parent != null) (value.parent as ViewGroup).removeView(value)
             relativeLayout.addView(value)
+
+            if (lastApplyUsageSummary.currencyDetailsStr.isNotEmpty()) {
+                val currencyValue: Typography = Typography(itemView.context).apply {
+                    setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setWeight(Typography.REGULAR)
+                    setType(Typography.SMALL)
+                    text = lastApplyUsageSummary.currencyDetailsStr
+                }
+
+                val currencyValueParams = RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
+                currencyValueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                currencyValueParams.addRule(RelativeLayout.BELOW, value.id)
+                currencyValue.layoutParams = currencyValueParams
+
+                if (currencyValue.parent != null) (currencyValue.parent as ViewGroup).removeView(currencyValue)
+                relativeLayout.addView(currencyValue)
+            }
 
             llSummaryTransaction.addView(relativeLayout)
         }

@@ -11,4 +11,5 @@ data class LastApplyUsageSummariesUiModel (
         var description: String = "",
         var type: String = "",
         var amountStr: String = "",
-        var amount: Int = -1): Parcelable
+        var amount: Int = -1,
+        var currencyDetailsStr: String = ""): Parcelable
