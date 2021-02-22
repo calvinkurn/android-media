@@ -82,15 +82,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getBranchDefferedDeeplink(false);
-//        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-//            @NotNull
-//            @Override
-//            public Object execute() {
-//                return getBranchDefferedDeeplink(false);
-//            }
-//        };
-//        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, getApplicationContext());
+        getBranchDefferedDeeplink();
     }
 
     @Override
@@ -172,7 +164,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @NotNull
-    private boolean getBranchDefferedDeeplink(boolean isReInit) {
+    private boolean getBranchDefferedDeeplink() {
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
@@ -213,21 +205,13 @@ public class SplashScreen extends AppCompatActivity {
                     @Override
                     public void onError(LinkerError linkerError) {
                     }
-                }, SplashScreen.this), isReInit);
+                }, SplashScreen.this));
         return true;
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        getBranchDefferedDeeplink(true);
-//        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-//            @NotNull
-//            @Override
-//            public Object execute() {
-//                return getBranchDefferedDeeplink(true);
-//            }
-//        };
-//        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
+        getBranchDefferedDeeplink();
     }
 }

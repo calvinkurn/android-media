@@ -67,9 +67,9 @@ public class LinkerManager {
         }
     }
 
-    public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, boolean isReInit){
+    public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest){
         if(wrapperObj != null) {
-            wrapperObj.handleDefferedDeeplink(linkerDeeplinkRequest, context, isReInit);
+            wrapperObj.handleDefferedDeeplink(linkerDeeplinkRequest, context);
         }
     }
 

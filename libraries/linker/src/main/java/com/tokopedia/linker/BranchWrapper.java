@@ -50,9 +50,9 @@ public class BranchWrapper implements WrapperInterface {
         if(Branch.getInstance() == null) {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
-//            if(GlobalConfig.isAllowDebuggingTools()) {
-            Branch.enableLogging();
-//            }
+            if(GlobalConfig.isAllowDebuggingTools()) {
+                Branch.enableLogging();
+            }
         }
     }
 
@@ -71,8 +71,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     @Override
-    public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context, boolean isReInit) {
-        Log.d("Varun Branch", "handleDefferedDeeplink");
+    public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         if (branch == null) {
             if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
@@ -123,8 +122,6 @@ public class BranchWrapper implements WrapperInterface {
 
                     checkAndSendUtmParams(context,referringParams);
                 } else {
-                    Log.d("Varun Branch", error.getMessage());
-                    Log.d("Varun Branch", referringParams.toString());
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                                 LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
@@ -154,7 +151,6 @@ public class BranchWrapper implements WrapperInterface {
 
     @Override
     public void initSession() {
-        Log.d("Varun Branch", "initSession");
         Branch.getInstance().initSession();
     }
 
