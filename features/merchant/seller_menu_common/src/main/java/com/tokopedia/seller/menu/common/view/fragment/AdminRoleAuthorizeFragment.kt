@@ -211,34 +211,4 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         return Pair(title, desc)
     }
 
-    // TODO: Delete later if unused
-    private fun Typography.showHelpMessage() {
-        context?.getString(R.string.admin_no_permission_need_help)?.let { helpMessage ->
-            context?.getString(R.string.admin_no_permission_contact_tocare)?.let { clickableMessage ->
-                helpMessage.indexOf(clickableMessage).let { clickableIndex ->
-                    SpannableString(helpMessage).apply {
-                        setSpan(
-                                object : ClickableSpan() {
-                                    override fun onClick(widget: View) {
-                                        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
-                                    }
-
-                                    override fun updateDrawState(ds: TextPaint) {
-                                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                                    }
-                                },
-                                clickableIndex,
-                                clickableIndex + clickableMessage.length,
-                                0)
-                    }.let { spannableString ->
-                        movementMethod = LinkMovementMethod.getInstance()
-                        setText(spannableString, TextView.BufferType.SPANNABLE)
-                        visibility = View.VISIBLE
-                    }
-                }
-            }
-        }
-    }
 }
