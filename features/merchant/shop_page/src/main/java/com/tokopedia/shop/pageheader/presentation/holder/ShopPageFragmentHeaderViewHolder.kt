@@ -298,7 +298,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setFollowStatus(followStatus: FollowStatus?) {
+    fun setFollowStatus(followStatus: FollowStatus?, shopId: String, userId: String) {
         followButton.isLoading = false
         isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
@@ -311,12 +311,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         url = voucherUrl,
                         convertIntoSize = 50
                 )
+                shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
             } else {
                 removeCompoundDrawableFollowButton()
             }
             if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
                 listener.saveFirstTimeVisit()
+                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
             }
         }
         changeColorButton()
@@ -326,8 +328,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         return coachMark?.isDismissed
     }
 
-    fun dismissCoachMark() {
+    fun dismissCoachMark(shopId: String, userId: String) {
         coachMark?.dismissCoachMark()
+        shopPageTracking?.impressionCoachMarkDissapearFollowUnfollowShop(shopId, userId)
     }
 
     fun removeCompoundDrawableFollowButton() {

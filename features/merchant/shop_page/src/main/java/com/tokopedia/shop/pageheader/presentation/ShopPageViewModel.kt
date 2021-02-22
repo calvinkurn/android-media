@@ -105,6 +105,9 @@ class ShopPageViewModel @Inject constructor(
     val userShopId: String
         get() = userSessionInterface.shopId
 
+    val userId: String
+        get() = userSessionInterface.userId
+
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
     val shopShareTracker : LiveData<Result<ShopQuestGeneralTracker>>
         get() = _shopShareTracker
