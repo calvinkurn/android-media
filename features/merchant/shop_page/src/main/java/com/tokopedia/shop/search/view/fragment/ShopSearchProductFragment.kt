@@ -63,7 +63,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-        val PAGE_SOURCE = "SHOP_SEARCH_PRODUCT_PAGE"
+        val SEARCH_SUBMIT_RESULT_REDIRECTION = "SEARCH_SUBMIT_RESULT_REDIRECTION"
+        val ETALASE_CLICK_RESULT_REDIRECTION = "ETALASE_CLICK_RESULT_REDIRECTION"
+
         fun createInstance(
                 shopId: String,
                 shopName: String,
@@ -201,12 +203,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                if (productListData.isNotEmpty()) {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                } else {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPageProductEmpty(isMyShop, searchQuery, customDimensionShopPage)
-                }
-                redirectToShopProductListPage()
+                redirectToShopProductListPage(ETALASE_CLICK_RESULT_REDIRECTION)
             }
         }
         activity?.finish()
@@ -230,7 +227,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            redirectToShopProductListPage()
+            redirectToShopProductListPage(SEARCH_SUBMIT_RESULT_REDIRECTION)
             activity?.finish()
         }
     }
@@ -260,15 +257,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
     }
 
-    private fun redirectToShopProductListPage() {
-        val intent = ShopProductListResultActivity.createIntentWithPageSource(
+    private fun redirectToShopProductListPage(sourceOfRedirection: String) {
+        val intent = ShopProductListResultActivity.createIntentWithSourceRedirection(
                 context,
                 shopId,
                 searchQuery,
                 "",
                 shopAttribution,
                 shopRef,
-                PAGE_SOURCE
+                sourceOfRedirection
         )
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)

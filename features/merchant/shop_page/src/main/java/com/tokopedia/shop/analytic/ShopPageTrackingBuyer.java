@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +104,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
@@ -894,6 +898,22 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 actionEvent,
+                keyword,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchClickEtalaseProductResultTracker(
+            boolean isMyShop,
+            String keyword,
+            boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventActionFormat = isProductResultListEmpty ? SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY : SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                String.format(eventActionFormat, keyword),
                 keyword,
                 customDimensionShopPage
         );

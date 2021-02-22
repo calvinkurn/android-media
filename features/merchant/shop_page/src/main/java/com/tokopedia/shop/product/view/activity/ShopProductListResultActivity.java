@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
@@ -48,7 +49,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
     private ShopComponent component;
     private String shopId;
     private String shopRef = "";
-    private String pageSource = "";
+    private String sourceRedirection = "";
 
     // this field only used first time for new fragment
     private String keyword = "";
@@ -80,10 +81,10 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
         return intent;
     }
 
-    public static Intent createIntentWithPageSource(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution, String shopRef, String pageSource) {
+    public static Intent createIntentWithSourceRedirection(Context context, String shopId, String keyword,
+                                                           String etalaseId, String attribution, String shopRef, String sourceRedirection) {
         Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef);
-        intent.putExtra(ShopParamConstant.EXTRA_PAGE_SOURCE, pageSource);
+        intent.putExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection);
         return intent;
     }
 
@@ -102,7 +103,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
         isNeedToReloadData = getIntent().getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false);
-        pageSource = getIntent().getStringExtra(ShopParamConstant.EXTRA_PAGE_SOURCE);
+        sourceRedirection = getIntent().getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
             if (null == keyword) {
@@ -164,7 +165,8 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
             if (null != shopPageTracking)
                 shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
             if (null != shopInfo) {
-                redirectToShopSearchProduct();
+                if(getFragment() instanceof ShopPageProductListResultFragment)
+                    ((ShopPageProductListResultFragment)getFragment()).onSearchBarClicked();
             }
         });
         actionUpBtn.setOnClickListener(view -> {
@@ -172,22 +174,10 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
         });
     }
 
-    private void redirectToShopSearchProduct() {
-        startActivity(ShopSearchProductActivity.createIntent(
-                this,
-                shopId,
-                shopInfo.getShopCore().getName(),
-                shopInfo.getGoldOS().isOfficial() == 1,
-                shopInfo.getGoldOS().isGold() == 1,
-                keyword,
-                attribution,
-                shopRef
-        ));
-    }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, pageSource);
+        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection);
     }
 
     @Override

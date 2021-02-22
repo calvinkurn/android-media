@@ -51,8 +51,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
-import com.tokopedia.shop.common.constant.ShopParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -120,7 +118,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             ""
         }
-    private var pageSource: String = ""
+    private var sourceRedirection: String = ""
     private var isShopPageProductSearchResultTrackerAlreadySent: Boolean = false
     private var attribution: String? = null
     private var selectedEtalaseList: ArrayList<ShopEtalaseItemDataModel>? = null
@@ -212,7 +210,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onCreate(savedInstanceState: Bundle?) {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
-        pageSource = arguments?.getString(ShopParamConstant.EXTRA_PAGE_SOURCE, "").orEmpty()
+        sourceRedirection = arguments?.getString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, "").orEmpty()
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
             arguments?.let {
@@ -435,8 +433,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
-                    if (pageSource == ShopSearchProductFragment.PAGE_SOURCE && !isShopPageProductSearchResultTrackerAlreadySent)
-                        sendShopPageProductSearchResultTracker(productList.isEmpty())
+                    if(!isShopPageProductSearchResultTrackerAlreadySent) {
+                        when (sourceRedirection) {
+                            ShopSearchProductFragment.SEARCH_SUBMIT_RESULT_REDIRECTION -> sendShopPageProductSearchResultTracker(productList.isEmpty())
+                            ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(productList.isEmpty())
+                        }
+                    }
                     renderProductList(productList, hasNextPage, totalProductData)
                     if(!isAlreadyCheckRestrictionInfo) {
                         loadShopRestrictionInfo()
@@ -491,6 +493,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun sendShopPageProductSearchResultTracker(isProductResultListEmpty: Boolean) {
         isShopPageProductSearchResultTrackerAlreadySent = true
         shopPageTracking?.sendShopPageProductSearchResultTracker(
+                isMyShop, keyword, isProductResultListEmpty, customDimensionShopPage
+        )
+    }
+
+    private fun sendShopPageProductSearchClickEtalaseProductResultTracker(isProductResultListEmpty: Boolean) {
+        isShopPageProductSearchResultTrackerAlreadySent = true
+        shopPageTracking?.sendShopPageProductSearchClickEtalaseProductResultTracker(
                 isMyShop, keyword, isProductResultListEmpty, customDimensionShopPage
         )
     }
@@ -1079,7 +1088,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            sort: String?,
                            attribution: String?,
                            isNeedToReloadData: Boolean? = false,
-                           pageSource: String = ""
+                           sourceRedirection: String = ""
         ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
@@ -1090,7 +1099,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
                 putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
-                putString(ShopParamConstant.EXTRA_PAGE_SOURCE, pageSource)
+                putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection)
             }
         }
     }
@@ -1234,6 +1243,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
             shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
+    }
+
+    fun onSearchBarClicked() {
+        redirectToShopSearchProduct()
+    }
+
+    private fun redirectToShopSearchProduct() {
+        context?.let {
+            shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
+            startActivity(createIntent(
+                    it,
+                    shopId.orEmpty(),
+                    shopInfo?.shopCore?.name.orEmpty(),
+                    shopInfo?.goldOS?.isOfficial.orZero() == 1,
+                    shopInfo?.goldOS?.isGold.orZero() == 1,
+                    keyword,
+                    attribution,
+                    shopRef
+            ))
         }
     }
 

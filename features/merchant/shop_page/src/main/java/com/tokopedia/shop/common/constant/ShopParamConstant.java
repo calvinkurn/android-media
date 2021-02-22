@@ -14,7 +14,7 @@ public class ShopParamConstant {
     public static final String EXTRA_PRODUCT_KEYWORD = "EXTRA_PRODUCT_KEYWORD";
     public static final String EXTRA_ETALASE_ID = "EXTRA_ETALASE_ID";
     public static final String EXTRA_SORT_ID = "EXTRA_SORT_ID";
-    public static final String EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE";
+    public static final String EXTRA_SOURCE_REDIRECTION = "EXTRA_SOURCE_REDIRECTION";
 
     public static final String EXTRA_ETALASE_PICKER_ETALASE_ID = "ETALASE_ID";
     public static final String EXTRA_ETALASE_PICKER_ETALASE_NAME = "ETALASE_NAME";

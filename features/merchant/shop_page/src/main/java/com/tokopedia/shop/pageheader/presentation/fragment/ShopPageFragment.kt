@@ -965,7 +965,7 @@ class ShopPageFragment :
             setupSearchbar(
                     hints =  listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProduct()
+                        clickSearch()
                     }
             )
         }
