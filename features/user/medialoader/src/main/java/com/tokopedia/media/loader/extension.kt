@@ -42,6 +42,7 @@ inline fun ImageView.loadImageFitCenter(
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.transform(FitCenter())
+    it.useBlurHash(false)
 })
 
 inline fun ImageView.loadImageWithoutPlaceholder(
