@@ -912,8 +912,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     fun isEnableEncryptRollout(): Boolean {
-        return getAbTestPlatform()
-                .getString(LoginConstant.ROLLOUT_LOGIN_ENCRYPTION) == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+        val variant = getAbTestPlatform().getString(LoginConstant.ROLLOUT_LOGIN_ENCRYPTION)
+        return variant == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
     }
 
     fun isEnableEncryptConfig(): Boolean {
