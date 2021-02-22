@@ -34,7 +34,6 @@
         app:typographyWeight="bold"
         android:paddingHorizontal="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_8"
-        app:layout_goneMarginBottom="@dimen/unify_space_8"
         app:layout_constraintTop_toBottomOf="@id/banner_image_container"
         app:layout_constraintLeft_toLeftOf="@id/banner_image_container"
         app:layout_constraintRight_toRightOf="@id/banner_image_container"
