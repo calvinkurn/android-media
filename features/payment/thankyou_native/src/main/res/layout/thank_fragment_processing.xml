@@ -15,6 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/topTicker"
+                app:closeButtonVisibility="gone"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"/>
+
             <ImageView
                 android:id="@+id/ivPaymentProcessing"
                 android:layout_width="@dimen/thank_dp_200"
@@ -22,7 +33,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topTicker"
                 app:srcCompat="@drawable/thank_payment_processing" />
 
 

@@ -339,7 +339,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         isLoadInitialData = true
-        loadInitialData()
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -369,9 +368,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onResume() {
+        loadInitialDataAfterOnViewCreated()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+    }
+
+    private fun loadInitialDataAfterOnViewCreated() {
+        if (isLoadInitialData) {
+            loadInitialData()
+            isLoadInitialData = false
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -379,7 +386,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
-        loadInitialData()
     }
 
     override fun onPause() {
@@ -415,22 +421,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
-            shopHomeAdapter.clearAllElements()
-            recycler_view.visible()
-            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-            globalError_shopPage.hide()
-            showLoading()
-            shopHomeAdapter.isOwner = isOwner
-            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-            viewModel?.getShopPageHomeData(
-                    shopId,
-                    shopProductFilterParameter ?: ShopProductFilterParameter(),
-                    initialProductListData
-            )
-            isLoadInitialData = false
-        }
+        shopHomeAdapter.clearAllElements()
+        recycler_view.visible()
+        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+        globalError_shopPage.hide()
+        showLoading()
+        shopHomeAdapter.isOwner = isOwner
+        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+        viewModel?.getShopPageHomeData(
+                shopId,
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                initialProductListData
+        )
     }
 
     private fun getIntentData() {
@@ -1811,6 +1814,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     showLinkCopiedToaster()
                     playWidgetActionBottomSheet.dismiss()
                 }
+            )
+        }
+        if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
+            bottomSheetActionList.add(
+                    PlayWidgetSellerActionBottomSheet.Action(
+                            R.drawable.ic_play_widget_sgc_performance,
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                            context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()) {
+                        shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
+                        RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
+                        playWidgetActionBottomSheet.dismiss()
+                    }
             )
         }
         bottomSheetActionList.add(

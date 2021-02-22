@@ -13,7 +13,6 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -24,22 +23,24 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class DynamicChannelHeaderView: FrameLayout {
     private var itemView: View?
 
     private var listener: HeaderListener? = null
 
-    var countDownView: CountDownView? = null
+    var countDownView: TimerUnifySingle? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
     var seeAllButtonUnify: UnifyButton? = null
     var channelSubtitle: TextView? = null
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.home_component_dynamic_channel_header, this)
@@ -216,17 +217,36 @@ class DynamicChannelHeaderView: FrameLayout {
             countDownView = if (stubCountDownView is ViewStub &&
                     !isViewStubHasBeenInflated(stubCountDownView)) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
-                inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+                inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
                 itemView?.findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime) {
-                    listener?.onChannelExpired(channel)
+                countDownView?.run {
+                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty()){
+                        TimerUnifySingle.VARIANT_ALTERNATE
+                    } else {
+                        TimerUnifySingle.VARIANT_MAIN
+                    }
+
+                    visibility = View.VISIBLE
+
+                    // calculate date diff
+                    targetDate = Calendar.getInstance().apply {
+                        val currentDate = Date()
+                        val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
+                        val timeDiff = expiredTime.time - currentMillisecond
+                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+                    }
+                    onFinish = {
+                        listener?.onChannelExpired(channel)
+                    }
+
                 }
-                countDownView?.visibility = View.VISIBLE
             }
         } else {
             countDownView?.let {

@@ -32,13 +32,9 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
         topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
         val requestParams = topAdsInsightUseCase.setParams()
         topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
+            override fun onCompleted() {}
 
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
+            override fun onError(e: Throwable?) {}
 
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
@@ -56,8 +52,7 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
         topAdsEditKeywordUseCase.setQuery(query)
         val requestParams = topAdsEditKeywordUseCase.setParam(groupId, data)
         topAdsEditKeywordUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()
@@ -74,7 +69,6 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
             }
         })
     }
-
 
     override fun detachView() {
         super.detachView()
