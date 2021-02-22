@@ -18,9 +18,9 @@ class HanselDependency {
 
 
 val HANSEL_REQUIRED = Issue.create(
-        "HANSEL PLUGIN",  //$NON-NLS-1$
-        "HANSEL PLUGIN SHOULD BE INCLUDED",
-        "HANSEL IS IMPORTANT LIBRARY PLEASE HELP TO INCLUDE",
+        "Hansel PLUGIN",  //$NON-NLS-1$
+        "Hansel PLUGIN SHOULD BE INCLUDED",
+        "Hansel IS IMPORTANT LIBRARY PLEASE HELP TO INCLUDE",
         Category.CORRECTNESS,
         1,
         Severity.ERROR,
@@ -31,7 +31,7 @@ const val HANSEL_PLUGIN = "io.hansel.preprocessor.module"
 const val HANSEL_REPOSITORY = "maven { url 'https://maven-hansel.tokopedia.com/maven' }"
 const val HANSEL_CLASSPATH = "classpath rootProject.ext.miscDependencies.hansel"
 
-var mapGraleFileTOHansel = mutableMapOf<String, HANSELDependency?>()
+var mapGraleFileTOHansel = mutableMapOf<String, HanselDependency?>()
 
 fun addGradleFileToMap(filePath: String) = {
     mapGraleFileTOHansel[filePath] = null
