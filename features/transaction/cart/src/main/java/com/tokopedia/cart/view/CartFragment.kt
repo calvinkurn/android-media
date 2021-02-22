@@ -753,22 +753,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val topItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
         if (topItemPosition == RecyclerView.NO_POSITION) return
 
-        val topCompleteItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
-        if (topCompleteItemPosition == RecyclerView.NO_POSITION) return
-
         val adapterData = cartAdapter.getData()
         if (topItemPosition >= adapterData.size) return
-        if (topCompleteItemPosition >= adapterData.size) return
 
         val firstItemData = adapterData[topItemPosition]
-        val firstCompleteItemData = adapterData[topCompleteItemPosition]
-
-        if (firstItemData is CartShopHolderData || firstItemData is CartSelectAllHolderData) {
-            if (firstCompleteItemData is CartSelectAllHolderData) {
-                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(false)
-            } else {
-                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
-            }
+        if (firstItemData is CartShopHolderData) {
+            if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
         } else {
             if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
         }
