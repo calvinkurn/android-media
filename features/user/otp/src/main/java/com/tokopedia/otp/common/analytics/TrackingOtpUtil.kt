@@ -431,4 +431,15 @@ class TrackingOtpUtil @Inject constructor() {
                 status
         ))
     }
+
+    /* INACTIVE PHONE */
+
+    fun trackClickInactivePhoneLink() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_CHOOSE_OTP_PAGE,
+                Action.ACTION_CLICK_ON_INACTIVE_PHONE,
+                Label.LABEL_EMPTY
+        ))
+    }
 }

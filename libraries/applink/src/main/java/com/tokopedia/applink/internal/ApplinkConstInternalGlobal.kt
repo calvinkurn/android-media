@@ -462,9 +462,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
-    // Topchat
+    /**
+     * Go to chat list
+     */
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
+
 
 
     //ReferralPhoneNumberVerificationActivity
@@ -523,6 +532,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/ovo-add-name
     @JvmField
     val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
+
+    // OvoFinalPageActivity
+    // tokopedia-android-internal://global/ovo-final-page
+    @JvmField
+    val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
 
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init

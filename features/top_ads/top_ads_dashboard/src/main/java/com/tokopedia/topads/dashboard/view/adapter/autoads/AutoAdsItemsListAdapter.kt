@@ -5,21 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsViewModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsModel
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class AutoAdsItemsListAdapter(private val typeFactory: AutoAdsItemsAdapterTypeFactory) : RecyclerView.Adapter<AutoAdsItemsViewHolder<AutoAdsItemsViewModel>>() {
+class AutoAdsItemsListAdapter(private val typeFactory: AutoAdsItemsAdapterTypeFactory) : RecyclerView.Adapter<AutoAdsItemsViewHolder<AutoAdsItemsModel>>() {
 
 
-    var items: MutableList<AutoAdsItemsViewModel> = mutableListOf()
+    var items: MutableList<AutoAdsItemsModel> = mutableListOf()
     var statsData: MutableList<WithoutGroupDataItem> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AutoAdsItemsViewHolder<AutoAdsItemsViewModel> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AutoAdsItemsViewHolder<AutoAdsItemsModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.holder(viewType, view) as AutoAdsItemsViewHolder<AutoAdsItemsViewModel>
+        return typeFactory.holder(viewType, view) as AutoAdsItemsViewHolder<AutoAdsItemsModel>
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -30,8 +30,8 @@ class AutoAdsItemsListAdapter(private val typeFactory: AutoAdsItemsAdapterTypeFa
         return items.count()
     }
 
-    override fun onBindViewHolder(holder: AutoAdsItemsViewHolder<AutoAdsItemsViewModel>, position: Int) {
-        holder.bind(items[position],statsData)
+    override fun onBindViewHolder(holder: AutoAdsItemsViewHolder<AutoAdsItemsModel>, position: Int) {
+        holder.bind(items[position], statsData)
     }
 
     fun setstatistics(data: List<WithoutGroupDataItem>) {

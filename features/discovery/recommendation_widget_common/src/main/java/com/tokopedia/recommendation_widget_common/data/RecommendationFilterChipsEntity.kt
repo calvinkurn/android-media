@@ -48,6 +48,8 @@ data class RecommendationFilterChipsEntity (
             val icon: String = "",
             @SerializedName("isActivated")
             var isActivated: Boolean = false,
+            @SerializedName("search")
+            var search: Search = Search(),
             @SerializedName("options")
             val options: List<Option> = listOf()
     ){
@@ -119,6 +121,11 @@ data class RecommendationFilterChipsEntity (
             @SerializedName("key")
             val key: String = ""
     )
+
+    data class Search(@SerializedName("searchable")
+                 var searchable: Int = 0,
+                 @SerializedName("placeholder")
+                 var placeholder: String = "")
 
     companion object{
         private const val HASH_CODE = 31

@@ -18,7 +18,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,7 +36,6 @@ abstract class BaseWidgetUiTest{
     open val getCoroutineWalletBalanceUseCase = mockk<Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
     open val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
     open val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
-    open val getStickyLoginUseCase = mockk<Lazy<StickyLoginUseCase>> (relaxed = true)
     open val getBusinessWidgetTab = mockk<Lazy<GetBusinessWidgetTab>> (relaxed = true)
     open val getBusinessUnitDataUseCase = mockk<Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
     open val getPopularKeywordUseCase = mockk<Lazy<GetPopularKeywordUseCase>> (relaxed = true)
@@ -52,7 +50,6 @@ abstract class BaseWidgetUiTest{
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val getDisplayHeadlineAds = mockk<Lazy<GetDisplayHeadlineAds>>(relaxed = true)
-
     open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
@@ -78,7 +75,6 @@ abstract class BaseWidgetUiTest{
             homeUseCase = getHomeUseCase,
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
