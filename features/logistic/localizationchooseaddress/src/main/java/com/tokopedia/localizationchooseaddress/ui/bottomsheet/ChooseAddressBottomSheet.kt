@@ -26,6 +26,8 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
+import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddress
+import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
@@ -75,9 +77,17 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         initObserver()
     }
 
-    /*on activity result here*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_ADD_ADDRESS) {
+            val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+
+        } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
+            val data = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
+            if (data != null) {
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
+            }
+        }
     }
 
     private fun initInjector() {
@@ -211,7 +221,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
 
     override fun onItemClicked(address: ChosenAddressList) {
         //can't be set due gql
-//        viewModel.setStateChosenAddress()
+        //viewModel.setStateChosenAddress()
 
         val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)

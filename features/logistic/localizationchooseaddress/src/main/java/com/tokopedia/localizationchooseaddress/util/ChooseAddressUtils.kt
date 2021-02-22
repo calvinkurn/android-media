@@ -1,25 +1,19 @@
 package com.tokopedia.localizationchooseaddress.util
 
-import android.content.ClipData
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 object ChooseAddressUtils {
 
-    fun getLocalizingAddressData(context: Context): LocalCacheModel {
+    fun getLocalizingAddressData(context: Context): LocalCacheModel? {
         if(isRollOutUser()){
             if(isLoginUser(context)){
-                if(hasLocalizingAddressOnCache()){
+                if(hasLocalizingAddressOnCache(context)){
                     var chooseAddressPref = ChooseAddressSharePref(context)
-                    return chooseAddressPref?.getLocalCacheData()
+                    return chooseAddressPref.getLocalCacheData()
                 }else{
                     return ChooseAddressConstant.emptyAddress
                 }
@@ -31,18 +25,19 @@ object ChooseAddressUtils {
         }
     }
 
-    private fun hasLocalizingAddressOnCache(): Boolean {
-        TODO("Not yet implemented, check cachenya kosong atau ga")
+    private fun hasLocalizingAddressOnCache(context: Context): Boolean {
+        var chooseAddressPref = ChooseAddressSharePref(context)
+        return !chooseAddressPref.checkLocalCache().isNullOrEmpty()
 
     }
 
-    private fun isLoginUser(context: Context): Boolean {
+    fun isLoginUser(context: Context): Boolean {
         var userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
     }
 
     fun isRollOutUser(): Boolean {
-        TODO("Not yet implemented. atur logic terserah bisa langsung ke endpoint ui atau mau bikin local cache ")
+        return true
     }
 
     /**
@@ -54,14 +49,14 @@ object ChooseAddressUtils {
      */
     fun isLocalizingAddressHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
         var chooseAddressPref = ChooseAddressSharePref(context)
-        var latestChooseAddressData = chooseAddressPref?.getLocalCacheData()
+        var latestChooseAddressData = chooseAddressPref.getLocalCacheData()
         var validate = true
-        if (latestChooseAddressData.address_id != localizingAddressStateData.address_id) validate = false
-        if (latestChooseAddressData.city_id != localizingAddressStateData.city_id) validate = false
-        if (latestChooseAddressData.district_id != localizingAddressStateData.district_id) validate = false
-        if (latestChooseAddressData.lat != localizingAddressStateData.lat) validate = false
-        if (latestChooseAddressData.long != localizingAddressStateData.long) validate = false
-        if (latestChooseAddressData.label != localizingAddressStateData.label) validate = false
+        if (latestChooseAddressData?.address_id != localizingAddressStateData.address_id) validate = false
+        if (latestChooseAddressData?.city_id != localizingAddressStateData.city_id) validate = false
+        if (latestChooseAddressData?.district_id != localizingAddressStateData.district_id) validate = false
+        if (latestChooseAddressData?.lat != localizingAddressStateData.lat) validate = false
+        if (latestChooseAddressData?.long != localizingAddressStateData.long) validate = false
+        if (latestChooseAddressData?.label != localizingAddressStateData.label) validate = false
         return validate
     }
 
@@ -81,16 +76,14 @@ object ChooseAddressUtils {
      * after host page shown the coachmark, please trigger coachMarkLocalizingAddressAlreadyShown
      * coachmark must implemented by own host page
      */
-    fun isLocalizingAddressNeedShowCoachMark(): Boolean {
-        //cek sharedPref
-        TODO("Not yet implemented, untuk HOST supaya tau harus munculin coachmak atau ga. bisa bikin key di sharepref")
-        return true
+    fun isLocalizingAddressNeedShowCoachMark(context: Context): Boolean? {
+        var chooseAddressPref = ChooseAddressSharePref(context)
+        return chooseAddressPref.getCoachMarkState()
     }
 
-    fun coachMarkLocalizingAddressAlreadyShown(){
-        //update sharedPref
-        TODO("Not yet implemented, update KEY identifiernya ya")
+    fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
+        var chooseAddressPref = ChooseAddressSharePref(context)
+        chooseAddressPref.setCoachMarkState(true)
     }
-
 
 }
