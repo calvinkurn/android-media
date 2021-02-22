@@ -234,5 +234,6 @@ data class ProductCardModel (
 
     companion object {
         const val WORDING_SEGERA_HABIS = "Segera Habis"
+        const val FIRE_OFFSET = 5f
     }
 }
