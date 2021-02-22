@@ -57,9 +57,9 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun setItemActive(airlineID: String){
-        listPromo.forEach{
-            if (airlineID == it.airlineID){
-                adapter.higlightPromo = it.airlineID
+        listPromo.forEachIndexed { index, airlinePrice ->
+            if (airlineID == airlinePrice.airlineID){
+                adapter.setSelectedProduct(index)
             }
         }
     }
