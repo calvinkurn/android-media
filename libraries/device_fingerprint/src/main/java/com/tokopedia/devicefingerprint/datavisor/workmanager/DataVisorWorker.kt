@@ -98,7 +98,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     private fun sendDataVisorToServer(context: Context, token: String = DEFAULT_VALUE_DATAVISOR, countAttempt: Int, errorMessage: String): Pair<Boolean, Throwable?>? {
         submitDVTokenUseCase.setParams(
                 token,
-                countAttempt - 1,
+                countAttempt,
                 errorMessage
         )
         var result: Pair<Boolean, Throwable?>? = null
