@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -88,7 +89,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
 
     private fun observeViewModel() {
-        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, {
+        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is Success -> {
                     onPaymentSignature(it.data.paymentSignature)
@@ -97,7 +98,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 is Fail -> showGetListError(it.throwable)
             }
         })
-        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, {
+        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer{
             if (it) {
                 hideLoadingDialog()
                 onSuccessVerifPhone()

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.payment.setting.di.DaggerSettingPaymentComponent
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.di.SettingPaymentModule
 import com.tokopedia.payment.setting.list.view.fragment.SettingListPaymentFragment
 
 class SettingListPaymentActivity : BaseSimpleActivity(), HasComponent<SettingPaymentComponent> {
@@ -17,6 +18,7 @@ class SettingListPaymentActivity : BaseSimpleActivity(), HasComponent<SettingPay
     override fun getComponent(): SettingPaymentComponent {
         return DaggerSettingPaymentComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .settingPaymentModule(SettingPaymentModule(this))
                 .build()
     }
 

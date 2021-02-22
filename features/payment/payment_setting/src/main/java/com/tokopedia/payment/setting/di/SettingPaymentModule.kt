@@ -1,10 +1,9 @@
 package com.tokopedia.payment.setting.di
 
+import android.app.Activity
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -13,19 +12,20 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class SettingPaymentModule {
+class SettingPaymentModule(val activity: Activity) {
+
+    @Provides
+    fun getContext(): Context = activity
 
     @SettingPaymentScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @Provides
-    fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {

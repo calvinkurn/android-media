@@ -1,11 +1,8 @@
 package com.tokopedia.payment.setting.authenticate.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.domain.CheckUpdateWhiteListCreditCartUseCase
 import com.tokopedia.payment.setting.authenticate.model.AuthException
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
@@ -19,7 +16,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AuthenticateCCViewModel @Inject constructor(
-        @ApplicationContext val context: Context,
         private val checkUpdateWhiteListCreditCartUseCase: CheckUpdateWhiteListCreditCartUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
@@ -36,65 +32,68 @@ class AuthenticateCCViewModel @Inject constructor(
     ) {
         checkUpdateWhiteListCreditCartUseCase.cancelJobs()
         if (authValue == SINGLE_AUTH_VALUE && isNeedCheckOtp) {
-            onUpdateError(AuthException.CheckOtpException(userSession.phoneNumber))
+            _whiteListStatusResultLiveData.postValue(Fail(AuthException
+                    .CheckOtpException(userSession.phoneNumber)))
             return
         }
         checkUpdateWhiteListCreditCartUseCase.whiteListResponse(
-                ::onUpdateSuccess,
-                ::onUpdateError,
+                {
+                    _whiteListStatusResultLiveData.value = Success(it)
+                },
+                {
+                    _whiteListStatusResultLiveData.value = Fail(it)
+                },
                 authValue, isNeedCheckOtp, token
         )
     }
 
-    fun checkWhiteList() {
+    fun checkWhiteList(singleAuthTitle: String, singleAuthDescription: String,
+                       doubleAuthTitle: String, doubleAuthDescription: String, ) {
         checkUpdateWhiteListCreditCartUseCase.cancelJobs()
         checkUpdateWhiteListCreditCartUseCase.whiteListResponse(
-                ::onWhiteListDataSuccess,
-                ::onWhiteListDataError,
+                {
+                    _whiteListResultLiveData.value = Success(generateDataListAuth(singleAuthTitle,
+                            singleAuthDescription, doubleAuthTitle, doubleAuthDescription,
+                            it.data))
+                },
+                {
+                    _whiteListResultLiveData.value = Fail(it)
+                },
                 0, false, null
         )
     }
 
-    private fun onUpdateSuccess(checkWhiteListStatus: CheckWhiteListStatus) {
-        _whiteListStatusResultLiveData.value = Success(checkWhiteListStatus)
-    }
 
-    private fun onWhiteListDataSuccess(checkWhiteListResponse: CheckWhiteListStatus) {
-        _whiteListResultLiveData.value = Success(generateDataListAuth(checkWhiteListResponse.data))
-    }
-
-    private fun onUpdateError(throwable: Throwable) {
-        _whiteListStatusResultLiveData.value = Fail(throwable)
-    }
-
-    private fun onWhiteListDataError(throwable: Throwable) {
-        _whiteListResultLiveData.value = Fail(throwable)
-    }
-
-    private fun generateDataListAuth(data: List<WhiteListData>?): List<TypeAuthenticateCreditCard> {
+    private fun generateDataListAuth(singleAuthTitle: String, singleAuthDescription: String,
+                                     doubleAuthTitle: String, doubleAuthDescription: String,
+                                     data: List<WhiteListData>?): List<TypeAuthenticateCreditCard> {
         val listAuth = ArrayList<TypeAuthenticateCreditCard>()
         data?.let {
             if (data.isNotEmpty()) {
-                listAuth.add(initiateSingleAuthentication(data.first()))
-                listAuth.add(initiateDoubleAuthentication(data.first()))
+                listAuth.add(initiateSingleAuthentication(singleAuthTitle,
+                        singleAuthDescription, data.first()))
+                listAuth.add(initiateDoubleAuthentication(doubleAuthTitle,
+                        doubleAuthDescription, data.first()))
             }
         }
         return listAuth
     }
 
-    private fun initiateSingleAuthentication(model: WhiteListData): TypeAuthenticateCreditCard {
+    private fun initiateSingleAuthentication(title: String, description: String,
+                                             model: WhiteListData): TypeAuthenticateCreditCard {
         val singleAuthentication = TypeAuthenticateCreditCard()
-        singleAuthentication.title = context.getString(R.string.payment_authentication_title_1)
-        singleAuthentication.description = context.getString(R.string.payment_authentication_description_1)
+        singleAuthentication.title = title
+        singleAuthentication.description = description
         singleAuthentication.stateWhenSelected = SINGLE_AUTH_VALUE
         singleAuthentication.isSelected = model.state == SINGLE_AUTH_VALUE
         return singleAuthentication
     }
 
-    private fun initiateDoubleAuthentication(model: WhiteListData): TypeAuthenticateCreditCard {
+    private fun initiateDoubleAuthentication(title: String, description: String,
+                                             model: WhiteListData): TypeAuthenticateCreditCard {
         val doubleAuthentication = TypeAuthenticateCreditCard()
-        doubleAuthentication.title = context.getString(R.string.payment_authentication_title_2)
-        doubleAuthentication.description = context.getString(R.string.payment_authentication_description_2)
+        doubleAuthentication.title = title
+        doubleAuthentication.description = description
         doubleAuthentication.stateWhenSelected = DOUBLE_AUTH_VALUE
         doubleAuthentication.isSelected = model.state == DOUBLE_AUTH_VALUE
         return doubleAuthentication

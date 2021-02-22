@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -74,14 +75,16 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         updateVisibilityButtonUse()
     }
 
+
     private fun observeViewModel() {
-        viewModel.whiteListResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> onCheckWhiteListSuccess(it.data)
-                is Fail -> onUpdateWhiteListError(it.throwable)
-            }
+        viewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is Success -> onCheckWhiteListSuccess(it.data)
+                    is Fail -> onUpdateWhiteListError(it.throwable)
+                }
+
         })
-        viewModel.whiteListStatusResultLiveData.observe(viewLifecycleOwner, {
+        viewModel.whiteListStatusResultLiveData.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is Success -> onUpdateWhiteListSuccess(it.data)
                 is Fail -> onUpdateWhiteListError(it.throwable)
@@ -214,8 +217,15 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun loadData(page: Int) {
-        showProgressLoading()
-        viewModel.checkWhiteList()
+        context?.let { context ->
+            showProgressLoading()
+            viewModel.checkWhiteList(
+                    context.getString(R.string.payment_authentication_title_1),
+                    context.getString(R.string.payment_authentication_description_1),
+                    context.getString(R.string.payment_authentication_title_2),
+                    context.getString(R.string.payment_authentication_description_2)
+            )
+        }
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view

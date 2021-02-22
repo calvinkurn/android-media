@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -75,7 +76,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModel() {
-        viewModel.creditCardDeleteResultLiveData.observe(viewLifecycleOwner, {
+        viewModel.creditCardDeleteResultLiveData.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is Success -> onDeleteCCSuccess(it.data)
                 is Fail -> onDeleteCCError(it.throwable)
@@ -146,9 +147,9 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
             val errorMessage = ErrorHandler.getErrorMessage(context, e)
             view?.let { view ->
                 Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.payment_label_coba_lagi)) {
+                        getString(R.string.payment_label_coba_lagi), View.OnClickListener {
                     onConfirmDelete(tokenId)
-                }
+                })
             }
         }
     }

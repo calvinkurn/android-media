@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.payment.setting.detail.view.fragment.DetailCreditCardFragment
 import com.tokopedia.payment.setting.di.DaggerSettingPaymentComponent
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.di.SettingPaymentModule
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 
 class DetailCreditCardActivity : BaseSimpleActivity(), HasComponent<SettingPaymentComponent> {
@@ -29,6 +30,7 @@ class DetailCreditCardActivity : BaseSimpleActivity(), HasComponent<SettingPayme
     override fun getComponent(): SettingPaymentComponent {
         return DaggerSettingPaymentComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .settingPaymentModule(SettingPaymentModule(this))
                 .build()
     }
 }
