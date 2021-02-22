@@ -149,7 +149,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
-        if (getIntent() != null) {
+        if (getIntent() != null && getIntent().getData()!= null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);

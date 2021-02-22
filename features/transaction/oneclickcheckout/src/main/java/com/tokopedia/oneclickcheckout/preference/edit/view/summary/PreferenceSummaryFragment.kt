@@ -32,6 +32,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemM
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity.Companion.FROM_FLOW_OSP
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity.Companion.FROM_FLOW_OSP_STRING
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
@@ -39,6 +41,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDura
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -76,6 +79,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
     private var tvPaymentInfo: Typography? = null
+    private var tickerPaymentInfo: Ticker? = null
     private var buttonChangePayment: Typography? = null
 
     private var cbMainPreference: CheckboxUnify? = null
@@ -143,8 +147,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile())
+            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile(), getFromFlowOsp(parent))
         }
+    }
+
+    private fun getFromFlowOsp(parent: PreferenceEditParent): String {
+        return if (parent.getFromFlow() == FROM_FLOW_OSP) FROM_FLOW_OSP_STRING else ""
     }
 
     private fun initViewModel() {
@@ -217,6 +225,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 if (!isNewFlow && preferenceIndex.isNotEmpty()) {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
+                } else if (preferenceIndex.isNotEmpty()) {
+                    tvPreferenceName?.text = getString(R.string.lbl_occ_profile_name_with_suffix, preferenceIndex.replace("[^0-9]".toRegex(), ""))
+                    tvPreferenceName?.visible()
                 }
             }
         } else {
@@ -241,8 +252,13 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
-        tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
-        tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
+        if (isNewFlow && shipmentModel.estimation.isNotEmpty()) {
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingDuration?.text = shipmentModel.estimation
+        } else {
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
+        }
 
         val paymentModel = data.paymentModel
         ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel.image)
@@ -255,10 +271,18 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             tvPaymentDetail?.gone()
         }
         if (paymentModel.tickerMessage.isNotBlank()) {
-            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
-            tvPaymentInfo?.visible()
+            if (isNewFlow) {
+                tickerPaymentInfo?.setHtmlDescription(paymentModel.tickerMessage)
+                tickerPaymentInfo?.visible()
+                tvPaymentInfo?.gone()
+            } else {
+                tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+                tvPaymentInfo?.visible()
+                tickerPaymentInfo?.gone()
+            }
         } else {
             tvPaymentInfo?.gone()
+            tickerPaymentInfo?.gone()
         }
 
         val parent = activity
@@ -338,6 +362,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvPaymentName = view?.findViewById(R.id.tv_payment_name)
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
         tvPaymentInfo = view?.findViewById(R.id.tv_payment_info)
+        tickerPaymentInfo = view?.findViewById(R.id.ticker_payment_info)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
         cbMainPreference = view?.findViewById(R.id.cb_main_preference)

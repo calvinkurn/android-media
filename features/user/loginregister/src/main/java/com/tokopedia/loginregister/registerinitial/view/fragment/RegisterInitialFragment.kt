@@ -46,6 +46,7 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
@@ -128,6 +129,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
 
+    @Inject
+    lateinit var externalRegisterPreference: ExternalRegisterPreference
+
     @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -156,6 +160,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
+
+    private var isRegisterOvo = false
 
     override fun onStart() {
         super.onStart()
@@ -210,8 +216,18 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         userSession.logoutSession()
     }
 
+    fun checkForOvoResume(){
+        if(isRegisterOvo){
+            if(externalRegisterPreference.isNeedContinue()){
+                goToRegisterWithPhoneNumber(externalRegisterPreference.getPhone())
+                externalRegisterPreference.isNeedContinue(false)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        checkForOvoResume()
         activity?.run {
             if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
                 setResult(Activity.RESULT_OK)
@@ -508,6 +524,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             phoneNumber?.run {
                 OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
+                        isRegisterOvo = true
                         ovoCreationAnalytics.trackClickCreateOvo()
                         goToOvoAddName(this@run)
                     }
@@ -528,6 +545,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             ovoCreationAnalytics.trackViewOvoConnectDialog()
             OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
+                    isRegisterOvo = true
                     ovoCreationAnalytics.trackClickConnectOvo()
                     goToOvoAddName(phoneNumber ?: "")
                 }

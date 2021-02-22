@@ -48,15 +48,16 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
         val selected = mutableListOf<TopAdsProductModel>()
         selected.clear()
         items.forEach { productViewModel ->
-            if((productViewModel is ProductItemViewModel) && productViewModel.isChecked )
-            selected.add(productViewModel.data) }
+            if ((productViewModel is ProductItemViewModel) && productViewModel.isChecked)
+                selected.add(productViewModel.data)
+        }
         return selected
     }
 
-    fun setSelectedList(selectedProductIds: MutableList<Int>) {
-        items.forEach{productViewModel->
+    fun setSelectedList(selectedProductIds: MutableList<String>) {
+        items.forEach { productViewModel ->
             selectedProductIds.forEach {
-                if((productViewModel is ProductItemViewModel) && productViewModel.data.productID == it){
+                if ((productViewModel is ProductItemViewModel) && productViewModel.data.productID == it) {
                     productViewModel.isChecked = true
                 }
             }

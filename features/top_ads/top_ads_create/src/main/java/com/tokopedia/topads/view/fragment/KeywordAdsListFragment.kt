@@ -140,7 +140,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (STAGE == 0) {
             keywordSelectedAdapter.items.clear()
         }
-        val list: MutableList<Int>? = stepperModel?.selectedProductIds
+        val list: MutableList<String>? = stepperModel?.selectedProductIds
         val productId = list?.joinToString(",")
         keywordListAdapter.items.clear()
         viewModel.getSuggestionKeyword(productId
@@ -278,8 +278,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
-    private fun getSelectedBid(): MutableList<Int> {
-        val list = mutableListOf<Int>()
+    private fun getSelectedBid(): MutableList<String> {
+        val list = mutableListOf<String>()
         keywordSelectedAdapter.items.forEach {
             list.add(it.bidSuggest)
         }
@@ -399,7 +399,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun getProductIds(): String {
         val ids: MutableList<String> = mutableListOf()
         stepperModel?.selectedProductIds?.forEach {
-            ids.add(it.toString())
+            ids.add(it)
         }
         return ids.joinToString(",")
     }
