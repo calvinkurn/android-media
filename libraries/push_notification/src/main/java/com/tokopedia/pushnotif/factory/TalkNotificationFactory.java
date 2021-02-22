@@ -36,7 +36,7 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {
-            builder.setSound(getRingtoneUri());
+            builder.setSound(getRingtoneUri(context));
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
