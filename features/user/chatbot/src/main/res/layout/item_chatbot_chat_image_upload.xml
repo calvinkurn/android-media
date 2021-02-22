@@ -33,7 +33,6 @@
                 layout="@layout/image_loading_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:indeterminateDrawable="@drawable/progress"
                 android:layout_gravity="center"
                 android:visibility="visible"
                 tools:visibility="visible" />
