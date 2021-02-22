@@ -34,6 +34,7 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
@@ -183,15 +184,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun sendAnalyticEvent() {
-        adsItemsList.forEachIndexed { index, adsItem ->
-            selectedProductIds.add(adsItemsList[index].productID)
+        adsItemsList.forEachIndexed { index, _ ->
+            selectedProductIds.add(adsItemsList[index].productID.toString())
         }
 
-        keywordsList.forEachIndexed { index, keywordsItem ->
+        keywordsList.forEachIndexed { index, _ ->
             selectedkeywordIds.add(keywordsList[index].keywordTypeID)
         }
 
-        keywordsList.forEachIndexed { index, keywordsItem ->
+        keywordsList.forEachIndexed { index, _ ->
             selectedkeywordTags.add(keywordsList[index].keywordTag)
         }
 
@@ -200,7 +201,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun setCardData() {
-        bid_range?.text = String.format(resources.getString(R.string.bid_range), String.format("%,d", stepperModel?.minBid), String.format("%,d", stepperModel?.maxBid))
+        bid_range?.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid.toString(), stepperModel?.maxBid.toString())
         product_count?.text = stepperModel?.selectedProductIds?.count().toString()
         keyword_count?.text = stepperModel?.selectedKeywords?.count().toString()
         group_name?.text = stepperModel?.groupName
@@ -210,7 +211,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(resources.getColor(com.tokopedia.abstraction.R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 RouteManager.route(context, getString(R.string.more_info))
@@ -273,6 +274,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 addKeywords(index)
             }
             input.keywords = keywordsList
+        } else {
+            input.keywords = null
         }
         if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
             stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
@@ -299,7 +302,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             key.keywordTypeID = stepperModel?.selectedKeywordType?.get(index).toString()
         }
         key.keywordTag = stepperModel?.selectedKeywords?.get(index) ?: ""
-        if (stepperModel?.selectedSuggestBid?.get(index) ?: 0 > 0) {
+        if (stepperModel?.selectedSuggestBid?.get(index)?.toDouble() ?: 0.0 > 0) {
             key.priceBid = stepperModel?.selectedSuggestBid?.get(index)?.toDouble() ?: 0.0
         } else
             key.priceBid = stepperModel?.minSuggestBidKeyword?.toDouble() ?: 0.0
@@ -311,10 +314,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun onErrorActivation(throwable: Throwable) {
-        SnackbarManager.make(activity,
-                throwable.message,
-                Snackbar.LENGTH_LONG)
-                .show()
+        view?.let {
+            Toaster.build(it, throwable.message
+                    ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+        loading?.visibility = View.GONE
+        btn_submit?.isEnabled = true
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

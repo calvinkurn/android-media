@@ -37,7 +37,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@id/more"
+        android:id="@+id/more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/learn_more"
@@ -48,7 +48,7 @@
         android:layout_height="@dimen/dp_10" />
 
     <TextView
-        android:id="@id/close_but"
+        android:id="@+id/close_but"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

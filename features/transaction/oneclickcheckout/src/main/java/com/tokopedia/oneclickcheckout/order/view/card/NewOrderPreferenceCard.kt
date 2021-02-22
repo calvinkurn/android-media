@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -56,12 +57,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
     private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description) }
+    private val tickerShippingPromoTitle by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_title) }
+    private val tickerShippingPromoSubtitle by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_subtitle) }
     private val tickerAction by lazy { view.findViewById<Typography>(R.id.ticker_new_action) }
 
     private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration) }
+    private val tvShippingDurationEta by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration_eta) }
     private val btnChangeDuration by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_duration) }
     private val tvShippingCourier by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier) }
     private val tvShippingPrice by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_price) }
+    private val tvShippingCourierEta by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier_eta) }
     private val btnChangeCourier by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_courier) }
     private val tvShippingErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_error_message) }
     private val btnReloadShipping by lazy { view.findViewById<Typography>(R.id.btn_new_reload_shipping) }
@@ -116,8 +121,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        if (preference.preference.status == MAIN_PROFILE_STATUS) {
+        if (preference.preference.profileRevampWording.isNotEmpty()) {
+            tvCardHeader?.text = preference.preference.profileRevampWording
+        } else {
+            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
+        }
+        if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
             lblDefaultPreference?.visible()
         } else {
             lblDefaultPreference?.gone()
@@ -132,12 +141,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipping = shipment
 
         if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
+            tvShippingDurationEta?.gone()
             btnChangeDuration?.gone()
             tvShippingCourier?.gone()
+            tvShippingPrice?.gone()
+            tvShippingCourierEta?.gone()
             btnChangeCourier?.gone()
             tvShippingErrorMessage?.gone()
             btnReloadShipping?.gone()
@@ -147,6 +160,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
+                tvShippingDurationEta?.gone()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                     listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
                 }
@@ -182,20 +196,56 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvShippingPrice?.text = span
                         tvShippingPrice?.visible()
                     }
-                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
+                    if (shipping.logisticPromoViewModel.etaData.errorCode == 0) {
+                        if (shipping.logisticPromoViewModel.etaData.textEta.isEmpty()) {
+                            tvShippingCourierEta?.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                        } else {
+                            tvShippingCourierEta?.text = shipping.logisticPromoViewModel.etaData.textEta
+                        }
+                        tvShippingCourierEta?.visible()
+                    } else {
+                        tvShippingCourierEta?.gone()
+                    }
+                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
                         listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
+                    }
+                } else if (shipping.shippingEta != null) {
+                    tvShippingCourier?.text = "${shipping.shipperName} (${
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                                ?: 0, false).removeDecimalSuffix()
+                    })"
+                    if (shipping.shippingEta.isNotEmpty()) {
+                        tvShippingCourierEta?.text = shipping.shippingEta
+                    } else {
+                        tvShippingCourierEta?.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                    }
+                    tvShippingCourierEta?.visible()
+                    tvShippingPrice?.gone()
+                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
+                        listener.chooseCourier()
                     }
                 } else {
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
                             ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.visible()
-                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
+                    tvShippingCourierEta?.gone()
+                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
                         listener.chooseCourier()
                     }
                 }
             } else if (shipping.serviceErrorMessage.isNotBlank() && shipping.shippingRecommendationData != null) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
+                if (shipping.serviceEta != null) {
+                    if (shipping.serviceEta.isNotEmpty()) {
+                        tvShippingDurationEta?.text = shipping.serviceEta
+                    } else {
+                        tvShippingDurationEta?.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                    }
+                    tvShippingDurationEta?.visible()
+                } else {
+                    tvShippingDurationEta?.gone()
+                }
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                     /* no-op */
                 }
@@ -216,10 +266,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 btnReloadShipping?.gone()
                 iconReloadShipping?.gone()
                 tvShippingPrice?.gone()
+                tvShippingCourierEta?.gone()
                 tickerShippingPromo?.gone()
             } else {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping)
                 tvShippingDuration?.visible()
+                tvShippingDurationEta?.gone()
                 btnChangeDuration?.gone()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                     /* no-op */
@@ -237,14 +289,31 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 btnReloadShipping?.visible()
                 iconReloadShipping?.visible()
                 tvShippingPrice?.gone()
+                tvShippingCourierEta?.gone()
                 tickerShippingPromo?.gone()
             }
         }
     }
 
     private fun renderBboTicker(shipping: OrderShipment) {
-        if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-            tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
+        val logisticPromo = shipping.shippingRecommendationData?.logisticPromo
+        if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && logisticPromo != null) {
+            if (logisticPromo.etaData.errorCode == 0) {
+                if (logisticPromo.etaData.textEta.isEmpty()) {
+                    tickerShippingPromoSubtitle?.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                } else {
+                    tickerShippingPromoSubtitle?.text = logisticPromo.etaData.textEta
+                }
+                tickerShippingPromoTitle?.text = "${shipping.logisticPromoTickerMessage}"
+                tickerShippingPromoTitle?.visible()
+                tickerShippingPromoSubtitle?.visible()
+                tickerShippingPromoDescription?.gone()
+            } else {
+                tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
+                tickerShippingPromoDescription?.visible()
+                tickerShippingPromoTitle?.gone()
+                tickerShippingPromoSubtitle?.gone()
+            }
             tickerShippingPromo?.visible()
             tickerAction?.setOnClickListener {
                 listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
@@ -522,7 +591,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     break
                 }
             }
-            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
+            ShippingCourierOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                     listener.onCourierChange(shippingCourierViewModel)
                 }
@@ -552,7 +621,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                 }
             }
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
                 }
