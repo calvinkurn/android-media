@@ -7,6 +7,7 @@ import com.tokopedia.ordermanagement.snapshot.domain.SnapshotUseCase
 import com.tokopedia.ordermanagement.snapshot.view.viewmodel.SnapshotViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -26,7 +27,6 @@ class SnapshotViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SnapshotTestDispatcherProvider()
     private lateinit var snapshotViewModel: SnapshotViewModel
     private var snapshotResult = GetOrderSnapshot()
     private var productUrlTesting = "www.testing.com"
@@ -37,7 +37,7 @@ class SnapshotViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        snapshotViewModel = SnapshotViewModel(dispatcher, snapshotUseCase)
+        snapshotViewModel = SnapshotViewModel(CoroutineTestDispatchersProvider, snapshotUseCase)
 
         snapshotResult = GetOrderSnapshot(productUrl = productUrlTesting)
     }
