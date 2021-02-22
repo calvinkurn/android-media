@@ -24,9 +24,6 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
         super.doOnCreate()
         if (!userSession.isLoggedIn)
             askUserLogin.value = 1
-
-
-        //testing
         else {
             fetchUserDOB()
         }
