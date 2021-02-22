@@ -50,7 +50,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                         try {
                             parentView.layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
                                     / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
-                            bannerImage.layoutParams.height = parentView.layoutParams.width
                             bannerImage.loadImageWithoutPlaceholder(itemData.image)
                             itemData.description?.let { title ->
                                 if (title.isEmpty()) {
