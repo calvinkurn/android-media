@@ -204,10 +204,10 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return result
     }
 
-    private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Int, Int, ArrayList<Pair<String, String>>> {
+    private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Int, Int, ArrayList<OrderCostCashbackData>> {
         var productDiscount = 0
         var shippingDiscount = 0
-        val cashbacks = ArrayList<Pair<String, String>>()
+        val cashbacks = ArrayList<OrderCostCashbackData>()
         val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                 ?: emptyList()
         for (summary in summaries) {
@@ -221,10 +221,18 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                 }
             }
-            if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                cashbacks.addAll(summary.details.map { it.description to it.amountStr })
-            }
         }
+
+        validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.usageSummariesUiModel?.map {
+            cashbacks.add(
+                    OrderCostCashbackData(
+                            description = it.desc,
+                            amountStr = it.amountStr,
+                            currencyDetailStr = it.currencyDetailStr
+                    )
+            )
+        }
+
         return Triple(productDiscount, shippingDiscount, cashbacks)
     }
 
