@@ -533,6 +533,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 type
                 amount_str
                 amount
+                currency_detail_str
               }
               sp_ids
             }
