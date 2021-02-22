@@ -258,4 +258,5 @@
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
 
     <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+    <string name="content_description_ic_load_more_product_drop_down_indicator">Load More Product Button</string>
 </resources>
