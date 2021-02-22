@@ -40,9 +40,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     fun convertToCartItemDataList(cartDataListResponse: CartDataListResponse): CartListData {
         val cartListData = CartListData()
 
-//        if (cartDataListResponse.tickers.isNotEmpty()) {
+        if (cartDataListResponse.tickers.isNotEmpty()) {
             cartListData.tickerData = mapTickerData(cartDataListResponse.tickers)
-//        }
+        }
         cartListData.shopGroupAvailableDataList = mapShopGroupAvailableDataList(cartDataListResponse)
         cartListData.unavailableGroupData = mapUnavailableGroupData(cartDataListResponse)
         cartListData.showLessUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
@@ -53,7 +53,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }?.message ?: DEFAULT_WORDING_SHOW_MORE
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
-        var errorCount = 1
+        var errorCount = 0
         cartDataListResponse.unavailableSections.forEach {
             it.unavailableGroups.forEach {
                 errorCount += it.cartDetails.size
@@ -143,8 +143,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             )
 
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
-//        val ticker = tickers[0]
-        return TickerData("1", "Ini ticker announcement", "cart")
+        val ticker = tickers[0]
+        return TickerData(ticker.id, ticker.message, ticker.page)
     }
 
     private fun mapShopGroupAvailableDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupAvailableData> {
