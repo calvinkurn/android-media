@@ -126,7 +126,7 @@ public class RedeemVoucherView extends LinearLayout {
             redeemVoucher.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
 
-        shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
+        shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
     }
 
     private void renderRetryButton(ActionButton actionButton) {
@@ -154,7 +154,7 @@ public class RedeemVoucherView extends LinearLayout {
             } else {
                 redeemVoucher.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
-            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
             redeemVoucher.setBackground(shape);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {

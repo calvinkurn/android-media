@@ -1,8 +1,0 @@
-query ShopInfo($shopId: Int!){
-  topAdsGetShopInfo(shop_id:$shopId){
-    data {
-      category
-      category_desc
-    }
-  }
-}
