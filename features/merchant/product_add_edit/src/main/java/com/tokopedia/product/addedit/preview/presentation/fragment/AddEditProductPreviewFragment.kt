@@ -1041,7 +1041,8 @@ class AddEditProductPreviewFragment :
                     Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
-                    view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                    val errorMessage = ErrorHandler.getErrorMessage(activity, result.exception)
+                    Toaster.build(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
                 else -> {
                     // no-op
@@ -1346,6 +1347,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showLoading() {
+        loadingLayout?.progress = 0.0f
         loadingLayout?.show()
         doneButton?.hide()
     }

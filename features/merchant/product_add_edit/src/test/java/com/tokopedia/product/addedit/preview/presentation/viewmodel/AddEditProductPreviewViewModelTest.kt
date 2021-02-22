@@ -367,12 +367,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.validationResult.getOrAwaitValue()
 
-        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+        val validationResult = response.productValidateV3.data.validationResults.joinToString("\n")
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
+        assertEquals(viewModel.validationResult.value?.exception?.message, validationResult)
 
         viewModel.resetValidateResult()
         viewModel.validationResult.getOrAwaitValue()
 
-        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.UNVALIDATED)
     }
 
     @Test
@@ -391,17 +393,19 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onValidateProductName_thenReturn(response)
         viewModel.validateProductNameInput("testing")
 
-        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS))
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
 
         viewModel.validateProductNameInput("another test")
         viewModel.validationResult.getOrAwaitValue()
 
-        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+        val validationResult = response.productValidateV3.data.validationResults.joinToString("\n")
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
+        assertEquals(viewModel.validationResult.value?.exception?.message, validationResult)
 
         viewModel.resetValidateResult()
         viewModel.validationResult.getOrAwaitValue()
 
-        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.UNVALIDATED)
     }
 
     @Test
