@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
@@ -177,8 +178,7 @@ public class ShipmentDataConverter {
             }
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                     String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
-            shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-            shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+            setCartItemModelFulfillment(shipmentCartItemModel, groupShop);
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModels.add(shipmentCartItemModel);
@@ -187,6 +187,14 @@ public class ShipmentDataConverter {
         return shipmentCartItemModels;
     }
 
+    private void setCartItemModelFulfillment(ShipmentCartItemModel shipmentCartItemModel, GroupShop groupShop) {
+        shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+        shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+        shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
+        if (groupShop.isFulfillment()) {
+            shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
+        }
+    }
 
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError()) {
@@ -209,14 +217,17 @@ public class ShipmentDataConverter {
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
-        if (groupShop.getShipmentInformationData() != null) {
-            if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
-                shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
+        ShipmentInformationData shipmentInformationData = groupShop.getShipmentInformationData();
+        if (shipmentInformationData != null) {
+            if (shipmentInformationData.getPreorder().isPreorder()) {
+                shipmentCartItemModel.setPreOrderInfo(shipmentInformationData.getPreorder().getDuration());
             }
-            if (groupShop.getShipmentInformationData().getFreeShipping().getEligible()) {
-                shipmentCartItemModel.setFreeShippingBadgeUrl(groupShop.getShipmentInformationData().getFreeShipping().getBadgeUrl());
+            if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
+            } else if (shipmentInformationData.getFreeShipping().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
             }
-            shipmentCartItemModel.setShopLocation(groupShop.getShipmentInformationData().getShopLocation());
+            shipmentCartItemModel.setShopLocation(shipmentInformationData.getShopLocation());
         }
 
         Shop shop = groupShop.getShop();
@@ -296,8 +307,8 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+        cartItemModel.setFreeShippingExtra(product.isFreeShippingExtra());
         cartItemModel.setFreeShipping(product.isFreeShipping());
-        cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());

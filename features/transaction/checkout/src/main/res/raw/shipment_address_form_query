@@ -49,12 +49,20 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           sp_id
           is_insurance
           is_fulfillment_service
+          toko_cabang {
+            message
+            badge_url
+          }
           cart_string
           has_promo_list
           shipment_information {
             shop_location
             estimation
             free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
               eligible
               badge_url
             }
@@ -198,6 +206,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               diagnostic_id
             }
             free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
               eligible
               badge_url
             }

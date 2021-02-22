@@ -74,6 +74,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String blackboxInfo;
 
     private boolean isFulfillment;
+    private String fulfillmentBadgeUrl;
     private int fulfillmentId;
 
     // promo stacking
@@ -141,6 +142,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         addressId = in.readString();
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
+        fulfillmentBadgeUrl = in.readString();
         fulfillmentId = in.readInt();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
@@ -195,6 +197,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(addressId);
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeString(fulfillmentBadgeUrl);
         dest.writeInt(fulfillmentId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
@@ -258,6 +261,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
         newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
+        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.fulfillmentBadgeUrl);
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
@@ -541,6 +545,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
+    }
+
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
     }
 
     public int getFulfillmentId() {
