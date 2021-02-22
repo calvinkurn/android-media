@@ -30,38 +30,17 @@
           },
           "occ_main_onboarding": {
             "force_show_coachmark": false,
-            "show_onboarding_ticker": true,
+            "show_onboarding_ticker": false,
             "onboarding_ticker": {
-              "title": "Baru!",
-              "message": "Cara lain belanja untuk 1 barang dan bisa bayar lebih cepat.",
-              "image": "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png",
-              "show_coachmark_link_text": true,
-              "coachmark_link_text": "Yuk, Mulai Coba!"
+              "title": "",
+              "message": "",
+              "image": "",
+              "show_coachmark_link_text": false,
+              "coachmark_link_text": ""
             },
             "onboarding_coachmark": {
-              "skip_button_text": "Lewati",
-              "detail": [
-                {
-                  "step": 1,
-                  "title": "Pengiriman \u0026 pembayaran jadi satu",
-                  "message": "Alamat pengiriman \u0026 metode pembayaran yang sudah dipilih sebelumnya telah digabung jadi satu."
-                },
-                {
-                  "step": 2,
-                  "title": "Bebas atur pengiriman \u0026 pembayaran",
-                  "message": "Kamu bisa ubah alamat, durasi pengiriman \u0026 metode pembayaran dengan klik ikon Pengaturan."
-                },
-                {
-                  "step": 3,
-                  "title": "Bisa cepat ganti kurir",
-                  "message": "Kamu bisa ganti pilihan kurir berdasarkan durasi pengiriman yang sudah disimpan."
-                },
-                {
-                  "step": 4,
-                  "title": "Cuma 1 klik untuk bayar",
-                  "message": "Pesanan akan diproses setelah kamu klik Bayar, \u0026 rekomendasi pilihanmu akan otomatis tersimpan."
-                }
-              ]
+              "skip_button_text": "",
+              "detail": []
             }
           },
           "kero_token": "Tokopedia+Kero:Z4S2NplQ5MOwfgkg1ZtgYCBCSzk\u003d",
@@ -172,6 +151,10 @@
                 "is_campaign_error": false,
                 "is_blacklisted": false,
                 "free_shipping": {
+                  "eligible": false,
+                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "free_shipping_extra": {
                   "eligible": true,
                   "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
@@ -198,6 +181,10 @@
                 "protection_checkbox_disabled": false,
                 "unit": ""
               },
+              "toko_cabang": {
+                "message": "TokoCabang",
+                "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+              },
               "shop": {
                 "shop_id": 480176,
                 "user_id": 5513284,
@@ -208,16 +195,16 @@
                 "shop_status": 1,
                 "is_gold": 1,
                 "is_gold_badge": true,
-                "is_official": 0,
+                "is_official": 1,
                 "is_free_returns": 0,
                 "gold_merchant": {
-                  "is_gold": 1,
-                  "is_gold_badge": true,
-                  "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "is_gold": 0,
+                  "is_gold_badge": false,
+                  "gold_merchant_logo_url": ""
                 },
                 "official_store": {
-                  "is_official": 0,
-                  "os_logo_url": ""
+                  "is_official": 1,
+                  "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
                 },
                 "address_id": 3608,
                 "postal_code": "55212",
@@ -459,7 +446,7 @@
                 "email": "",
                 "address_detail": "kecamatan danurejan 55212",
                 "country_name": "Indonesia",
-                "is_fulfillment": false
+                "is_fulfillment": true
               }
             }
           ],
@@ -479,6 +466,8 @@
                 "link": "http://pref-ecs.tokopedia.com"
               }
             },
+            "profile_revamp_wording": "Template Beli Langsung",
+            "is_recom": false,
             "profile_id": 1,
             "status": 2,
             "address": {
@@ -501,73 +490,30 @@
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "CREDITCARD",
-              "gateway_name": "Kartu Kredit",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png",
-              "description": "Kartu Kredit (************1841)",
-              "url": "https://pay.tokopedia.com/v2/api/payment/CREDITCARD",
-              "fee": 0,
-              "minimum_amount": 50000,
-              "maximum_amount": 50000000,
+              "gateway_code": "PAYMENT1",
+              "gateway_name": "Payment 1",
+              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+              "description": "",
+              "url": "",
+              "fee": 1000,
+              "minimum_amount": 10000,
+              "maximum_amount": 100000000,
               "flags": {
                 "pin": false
               },
               "wallet_amount": 0,
-              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"1841\",\"issuer\":\"bni\",\"card_token\":\"ced46df1-d3f9-4fbb-b540-951c74834660\",\"card_type\":\"mastercard\",\"total_saved_card\":\"2\",\"installment_term\":\"0\",\"expiry\":\"06/21\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"53fb901330881ed14c755fbfab125b41a26d0990\",\"customer_name\":\"Jk Buyer\",\"customer_email\":\"jean.karunadewi+jkb@tokopedia.com\",\"user_id\":7977933}",
-              "mdr": 1.5,
+              "metadata": "",
+              "mdr": 0,
               "credit_card": {
                 "number_of_cards": {
-                  "available": 2,
+                  "available": 0,
                   "unavailable": 0,
-                  "total": 2
+                  "total": 0
                 },
-                "available_terms": [
-                  {
-                    "term": 0,
-                    "mdr": 1.5,
-                    "mdr_subsidized": 1.5,
-                    "min_amount": 50000,
-                    "is_selected": true
-                  },
-                  {
-                    "term": 3,
-                    "mdr": 2.5,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 6,
-                    "mdr": 3.5,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 12,
-                    "mdr": 6,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 18,
-                    "mdr": 8,
-                    "mdr_subsidized": 0,
-                    "min_amount": 3000000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 24,
-                    "mdr": 10,
-                    "mdr_subsidized": 0,
-                    "min_amount": 5000000,
-                    "is_selected": false
-                  }
-                ],
-                "bank_code": "bni",
-                "card_type": "MasterCard",
-                "is_expired": false,
+                "available_terms": [],
+                "bank_code": "",
+                "card_type": "",
+                "is_expired": true,
                 "tnc_info": "\u003cul\u003e\u003cli\u003e\u003ch1\u003eKonversi Cicilan 0%\u003c/h1\u003e\u003col\u003e\u003cli\u003ePihak bank butuh 7-14 hari kerja untuk mengubah tagihanmu dari pembayaran penuh (full payment) jadi cicilan\u003c/li\u003e\u003cli\u003eJika tagihan kartu kreditmu terbit dan ditagih secara penuh, kamu bisa lakukan pembayaran minimum dulu.\u003c/li\u003e\u003c/ol\u003e\u003c/li\u003e\u003cli\u003e\u003ch1\u003eBiaya Layanan\u003c/h1\u003e\u003cp\u003eBiaya layanan ini diberlakukan untuk tujuan pemeliharaan sistem dan peningkatan layanan dalam bertransaksi melalui Tokopedia.\u003c/p\u003e\u003c/li\u003e\u003c/ul\u003e"
               },
               "error_message": {
@@ -575,13 +521,6 @@
                 "button": {
                   "text": "",
                   "link": ""
-                }
-              },
-              "occ_revamp_error_message": {
-                "message": "Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.",
-                "button": {
-                  "text": "",
-                  "action": ""
                 }
               },
               "ticker_message": "",
@@ -675,11 +614,10 @@
           "payment_additional_data": {
             "merchant_code": "tokopedia",
             "profile_code": "TKPD_DEFAULT",
-            "signature": "681f804316cb384bde0a69d731daed7811a6bf64",
-            "change_cc_link": "https://pay.tokopedia.com/v3/cardlist",
-            "callback_url": "https://api.tokopedia.com/cart/v2/cart/v2/receiver"
+            "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
+            "change_cc_link": ""
           },
-          "error_ticker": "Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.",
+          "error_ticker": "",
           "prompt": {
             "type": "",
             "title": "",
@@ -689,8 +627,8 @@
           },
           "occ_revamp": {
             "enable": true,
-            "total_profile": 2,
-            "change_template_text": "Pilih template lain"
+            "total_profile": 1,
+            "change_template_text": "Tambah template"
           }
         }
       }
