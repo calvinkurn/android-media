@@ -206,7 +206,7 @@ class OrderSummaryPageActivityTest {
             clickBboTicker()
 
             assertShipment(
-                    shippingName = context.getString(R.string.lbl_osp_free_shipping),
+                    shippingName = "Pengiriman Bebas Ongkir (4-6 hari)",
                     shippingDuration = "Durasi 4-6 hari",
                     shippingPrice = context.getString(R.string.lbl_osp_free_shipping_only_price),
                     hasPromo = false
