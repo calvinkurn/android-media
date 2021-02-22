@@ -78,6 +78,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -1812,6 +1813,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
+            renderChooseAddressWidget()
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
                 renderCartEmpty(it)
@@ -1877,6 +1879,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun setInitialCheckboxGlobalState(cartListData: CartListData) {
         checkboxGlobal.isChecked = cartListData.isAllSelected
+    }
+
+    private fun renderChooseAddressWidget() {
+        if (ChooseAddressUtils.isRollOutUser()) {
+            val cartChooseAddressHolderData = CartChooseAddressHolderData()
+            cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
+        }
     }
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
