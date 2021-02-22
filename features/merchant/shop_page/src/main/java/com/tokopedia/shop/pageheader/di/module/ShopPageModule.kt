@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
@@ -124,6 +123,7 @@ class ShopPageModule {
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData
