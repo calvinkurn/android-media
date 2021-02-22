@@ -26,12 +26,12 @@ object StatisticPageHelper {
                 actionMenu = listOf(
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_give_suggestions),
-                                appLink = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU",
+                                appLink = Const.Url.SHOP_GIVE_SUGGESTIONS,
                                 iconUnify = IconUnify.CHAT_REPORT
                         ),
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_learn_more),
-                                appLink = "https://www.tokopedia.com/help/article/apa-itu-statistik-toko?source=sapp-wawasan-toko",
+                                appLink = Const.Url.SHOP_LEARN_MORE,
                                 iconUnify = IconUnify.HELP
                         )
                 ),
@@ -48,12 +48,12 @@ object StatisticPageHelper {
                 actionMenu = listOf(
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_give_suggestions),
-                                appLink = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit",
+                                appLink = Const.Url.BUYER_GIVE_SUGGESTIONS,
                                 iconUnify = IconUnify.CHAT_REPORT
                         ),
                         ActionMenuUiModel(
                                 title = context.getString(R.string.stc_learn_more),
-                                appLink = "https://www.tokopedia.com/help/article/apa-itu-wawasan-pembeli?source=sapp-wawasan-pembeli",
+                                appLink = Const.Url.BUYER_LEARN_MORE,
                                 iconUnify = IconUnify.HELP
                         )
                 ),

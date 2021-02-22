@@ -28,4 +28,11 @@ object Const {
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }
+
+    object Url {
+        const val SHOP_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-statistik-toko?source=sapp-wawasan-toko"
+        const val SHOP_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
+        const val BUYER_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-pembeli?source=sapp-wawasan-pembeli"
+        const val BUYER_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
+    }
 }
