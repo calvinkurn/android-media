@@ -1088,7 +1088,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            sort: String?,
                            attribution: String?,
                            isNeedToReloadData: Boolean? = false,
-                           sourceRedirection: String = ""
+                           sourceRedirection: String? = ""
         ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
@@ -1099,7 +1099,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
                 putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
-                putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection)
+                putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection.orEmpty())
             }
         }
     }
