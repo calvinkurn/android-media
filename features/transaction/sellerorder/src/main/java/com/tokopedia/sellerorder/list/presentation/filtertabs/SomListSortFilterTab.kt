@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_STATUS_COMPLAINT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -48,7 +49,7 @@ class SomListSortFilterTab(
                         filterItems.find {
                             it.title.contains(statusFilter.status)
                         }?.apply {
-                            title = composeTabTitle(statusFilter.status, statusFilter.amount)
+                            title = composeTabTitle(statusFilter.key, statusFilter.status, statusFilter.amount)
                             type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
                         }
                     }
@@ -73,14 +74,17 @@ class SomListSortFilterTab(
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
-        return SortFilterItem(composeTabTitle(statusFilter.status, statusFilter.amount)).apply {
+        return SortFilterItem(composeTabTitle(statusFilter.key, statusFilter.status, statusFilter.amount)).apply {
             listener = { onTabClicked(this, statusFilter) }
             type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         }
     }
 
-    private fun composeTabTitle(status: String, amount: Int): String {
-        return "$status${" ($amount)".takeIf { amount > 0 } ?: ""}"
+    private fun composeTabTitle(key: String, status: String, amount: Int): String {
+        return when (key) {
+            STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING, KEY_STATUS_COMPLAINT -> "$status${" ($amount)".takeIf { amount > 0 } ?: ""}"
+            else -> status
+        }
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {

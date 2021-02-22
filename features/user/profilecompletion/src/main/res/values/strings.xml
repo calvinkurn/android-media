@@ -78,10 +78,11 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
     <string name="success_add_email">Email berhasil ditambah</string>
-    <string name="add_and_verify_phone">Tambah dan verifikasi Nomor HP</string>
-    <string name="add_and_verify_phone_detail">Tambah dan verifikasi Nomor HP terlebih dahulu sebelum mengubah email</string>
-
-    <!-- ADD PHONE -->
+  
+    <string name="add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
+    <string name="add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
+  
+  <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor HP</string>
     <string name="title_verify_phone">Verifikasi Nomor HP</string>
     <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor HP</string>

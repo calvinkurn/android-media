@@ -30,5 +30,5 @@ class SomModule {
 
     @SomScope
     @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
+    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

@@ -6,7 +6,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
-import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import dagger.Module
 import dagger.Provides
 
@@ -15,6 +17,7 @@ import dagger.Provides
  */
 @Module
 class SomDetailModule {
+
     @SomDetailScope
     @Provides
     fun providesGraphqlRepository(): GraphqlRepository {

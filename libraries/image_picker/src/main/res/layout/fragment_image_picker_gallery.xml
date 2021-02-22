@@ -24,6 +24,8 @@
             android:paddingBottom="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             tools:lv_content="@string/default_all_album"
+            app:lv_title_color="@color/Unify_N700"
+            app:lv_sub_title_color="@color/Unify_N700"
             app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/album"
             app:layout_scrollFlags="enterAlways|scroll" />

@@ -18,9 +18,9 @@ interface SomComponent {
     @ApplicationContext
     fun context(): Context
 
+    fun coroutineDispatcher(): CoroutineDispatchers
+
     fun graphQlRepository(): GraphqlRepository
 
     fun userSessionInterface(): UserSessionInterface
-
-    fun coroutineDispatchers(): CoroutineDispatchers
 }

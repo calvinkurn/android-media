@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,16 +21,16 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        userSession: UserSessionInterface,
-        private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
         somAcceptOrderUseCase: SomAcceptOrderUseCase,
-        private val somReasonRejectUseCase: SomReasonRejectUseCase,
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
+        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        userSession: UserSessionInterface,
+        dispatcher: CoroutineDispatchers,
+        private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
+        private val somReasonRejectUseCase: SomReasonRejectUseCase,
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase,
-        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
+        private val getUserRoleUseCase: SomGetUserRoleUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
@@ -75,7 +76,7 @@ class SomDetailViewModel @Inject constructor(
     fun loadUserRoles(userId: Int) {
         launchCatchError(block = {
             getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
+            _userRoleResult.postValue(Success(getUserRoleUseCase.execute()))
         }, onError = {
             _userRoleResult.postValue(Fail(it))
         })

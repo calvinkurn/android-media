@@ -205,9 +205,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -590,8 +587,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             val productDetailSheet = ProductDetailInfoBottomSheet()
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
@@ -1106,7 +1104,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     }
                 }
                 if (isAffiliate && productInfo?.basic?.productID?.isNotEmpty() == true) {
-                    productDetailTracking.eventClickWishlistOnAffiliate(
+                    DynamicProductDetailTracking.Click.eventClickWishlistOnAffiliate(
                             viewModel.userId,
                             productInfo.basic.productID)
                 }
@@ -1177,7 +1175,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun goToReviewImagePreview() {
-        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
@@ -3008,18 +3006,18 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 setSecondaryCTAText(result.errorReporter.texts.cancelButton)
                 setSecondaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickCloseOnHelpPopUpAtc()
                 }
                 setPrimaryCTAText(result.errorReporter.texts.submitButton)
                 setPrimaryCTAClickListener {
                     this.dismiss()
-                    productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                    DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
                     viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragmentDiffutil::onErrorSubmitHelpTicket, this@DynamicProductDetailFragmentDiffutil::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
-            productDetailTracking.eventViewHelpPopUpWhenAtc()
+            DynamicProductDetailTracking.Impression.eventViewHelpPopUpWhenAtc()
         }
     }
 

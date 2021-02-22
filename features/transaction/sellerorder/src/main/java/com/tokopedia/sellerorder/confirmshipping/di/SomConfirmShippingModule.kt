@@ -15,6 +15,7 @@ import dagger.Provides
 
 @Module
 class SomConfirmShippingModule {
+
     @SomConfirmShippingScope
     @Provides
     fun providesGraphqlRepository(): GraphqlRepository {

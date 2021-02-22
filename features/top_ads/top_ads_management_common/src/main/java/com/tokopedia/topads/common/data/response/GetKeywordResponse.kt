@@ -55,7 +55,7 @@ data class GetKeywordResponse(
             @SerializedName("keyword_id")
             val keywordId: String = "",
             @SerializedName("price_bid")
-            var priceBid: Int = 0,
+            var priceBid: String = "0",
             @SerializedName("isChecked")
             var isChecked: Boolean = false,
             @SerializedName("tag")

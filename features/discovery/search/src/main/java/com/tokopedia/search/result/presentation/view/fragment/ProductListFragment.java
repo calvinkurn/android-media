@@ -367,7 +367,7 @@ public class ProductListFragment
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
-        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
     }
 
     @Override
@@ -1339,14 +1339,17 @@ public class ProductListFragment
 
     private void trackBannerAdsClicked(int position, String applink, CpmData data) {
         if (applink.contains(SHOP)) {
+            TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, getQueryKey(), data, getUserId());
             TopAdsGtmTracker.eventSearchResultPromoShopClick(getActivity(), data, position);
         } else {
+            TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, getQueryKey(), data, getUserId());
             TopAdsGtmTracker.eventSearchResultPromoProductClick(getActivity(), data, position);
         }
     }
 
     @Override
     public void onBannerAdsImpressionListener(int position, CpmData data) {
+        TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, getQueryKey(), getUserId());
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
 
