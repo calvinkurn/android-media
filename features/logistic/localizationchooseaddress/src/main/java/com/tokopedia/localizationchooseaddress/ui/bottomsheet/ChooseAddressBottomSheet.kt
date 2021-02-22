@@ -149,12 +149,12 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
                             label = data.addressName
                     )
                     chooseAddressPref?.setLocalCache(localData)
-                    listener?.onAddressDataChanged()
+                    listener.onAddressDataChanged()
                     this.dismiss()
                 }
 
                 is Fail -> {
-                    listener?.onLocalizingAddressServerDown()
+                    listener.onLocalizingAddressServerDown()
                     showError(it.throwable)
                 }
 
@@ -232,7 +232,7 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
-        listener?.onAddressDataChanged()
+        listener.onAddressDataChanged()
     }
 
     override fun onOtherAddressClicked() {
