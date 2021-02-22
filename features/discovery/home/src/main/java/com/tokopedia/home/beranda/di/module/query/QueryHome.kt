@@ -1,9 +1,9 @@
 package com.tokopedia.home.beranda.di.module.query
 
 object QueryHome {
-    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!){\n" +
+    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!, \$location: String){\n" +
             "    dynamicHomeChannel {\n" +
-            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param){\n" +
+            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param, location: \$location){\n" +
             "          id\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +
@@ -246,13 +246,16 @@ object QueryHome {
             "        }"
 
     val recommendationQuery : String = "{\n" +
-            "  get_home_recommendation{\n" +
+            "query getRecommendation(\$location: String)\n" +
+            " {\n" +
+            "  get_home_recommendation(location: \$location){\n" +
             "    recommendation_tabs{\n" +
             "      id\n" +
             "      name\n" +
             "      image_url\n" +
             "    }\n" +
             "  }\n" +
+            " }\n" +
             "}"
 
     val closeChannel = "mutation closeChannel(\$channelID: Int!){\n" +

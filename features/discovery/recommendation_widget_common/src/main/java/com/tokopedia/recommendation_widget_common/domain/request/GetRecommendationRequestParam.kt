@@ -9,7 +9,8 @@ data class GetRecommendationRequestParam(
         val pageName: String = "",
         val categoryIds: List<String> = listOf(),
         val xSource: String = "",
-        val xDevice: String = ""
+        val xDevice: String = "",
+        val location: String = ""
 
 ) {
     private val PAGE_NUMBER = "pageNumber"
@@ -19,6 +20,7 @@ data class GetRecommendationRequestParam(
     private val CATEGORY_IDS = "categoryIDs"
     private val X_SOURCE = "xSource"
     private val X_DEVICE = "xDevice"
+    private val LOCATION = "location"
 
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
@@ -33,6 +35,8 @@ data class GetRecommendationRequestParam(
             requestMap[X_SOURCE] = xSource
         if(xDevice.isNotEmpty())
             requestMap[X_DEVICE] = xDevice
+        if(location.isNotEmpty())
+            requestMap[LOCATION] = location
         return requestMap
     }
 }
