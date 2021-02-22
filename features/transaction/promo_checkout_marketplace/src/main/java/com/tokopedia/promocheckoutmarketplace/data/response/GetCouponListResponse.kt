@@ -157,7 +157,9 @@ data class Coupon(
         @SerializedName("radio_check_state")
         val radioCheckState: String = "",
         @SerializedName("clashing_infos")
-        val clashingInfos: List<ClashingInfo> = emptyList()
+        val clashingInfos: List<ClashingInfo> = emptyList(),
+        @SerializedName("currency_detail_str")
+        val currencyDetailStr: String = ""
 )
 
 data class ClashingInfo(

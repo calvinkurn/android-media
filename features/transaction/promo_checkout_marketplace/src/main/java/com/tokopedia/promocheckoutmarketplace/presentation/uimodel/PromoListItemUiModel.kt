@@ -41,6 +41,7 @@ data class PromoListItemUiModel(
             var benefitAmount: Int = 0,
             var promoCode: String = "",
             var couponAppLink: String = "",
+            var currencyDetailStr: String = "",
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
             var clashingInfo: MutableMap<String, String> = mutableMapOf(),

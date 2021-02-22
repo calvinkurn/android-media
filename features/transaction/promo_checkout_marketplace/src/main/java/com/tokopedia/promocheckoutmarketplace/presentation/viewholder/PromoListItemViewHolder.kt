@@ -33,6 +33,9 @@ class PromoListItemViewHolder(private val view: View,
     private val labelPromoItemTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_title)
     }
+    private val labelPromoItemTitleInfo by lazy {
+        view.findViewById<Typography>(R.id.label_promo_item_title_info)
+    }
     private val labelPromoItemSubTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_sub_title)
     }
@@ -77,11 +80,11 @@ class PromoListItemViewHolder(private val view: View,
             if (hasNonBlankUrl) {
                 containerImagePromoItem.show()
             } else {
-                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
                 containerImagePromoItem.gone()
             }
         } else {
-            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
             containerImagePromoItem.gone()
         }
 
@@ -92,6 +95,16 @@ class PromoListItemViewHolder(private val view: View,
         } else {
             labelPromoCodeValue.gone()
             labelPromoCodeInfo.gone()
+        }
+
+        // set tokopoints/ovopoints cashback info
+        if (element.uiData.currencyDetailStr.isNotEmpty()) {
+            labelPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+            labelPromoItemTitleInfo.show()
+        } else {
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+            labelPromoItemTitleInfo.gone()
         }
 
         labelPromoItemTitle.text = element.uiData.title
@@ -136,6 +149,7 @@ class PromoListItemViewHolder(private val view: View,
         }
 
         labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        labelPromoItemTitleInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
@@ -164,6 +178,7 @@ class PromoListItemViewHolder(private val view: View,
 
         val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
         labelPromoItemTitle.setTextColor(disabledColor)
+        labelPromoItemTitleInfo.setTextColor(disabledColor)
         labelPromoCodeInfo.setTextColor(disabledColor)
         labelPromoCodeValue.setTextColor(disabledColor)
         labelPromoItemErrorMessage.setTextColor(disabledColor)

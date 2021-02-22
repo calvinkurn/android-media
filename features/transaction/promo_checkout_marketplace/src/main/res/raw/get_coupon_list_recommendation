@@ -70,6 +70,7 @@ mutation coupon_list_recommendation($params: PromoStackRequest) {
                             code
                             message
                         }
+                        currency_detail_str
                     }
                 }
             }
