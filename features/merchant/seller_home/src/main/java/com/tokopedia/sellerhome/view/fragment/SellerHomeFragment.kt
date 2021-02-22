@@ -590,7 +590,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
-    private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean, isSuccess: Boolean) {
+    private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
@@ -755,7 +755,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Success -> result.data.setOnSuccessWidgetState(type)
                     is Fail -> {
                         stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
-                        stopPltMonitoringIfNotCompleted(fromCache = false, false)
+                        stopPltMonitoringIfNotCompleted(fromCache = false)
                         logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
@@ -792,7 +792,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         val isFromCache = firstOrNull()?.isFromCache == true
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
-        stopPltMonitoringIfNotCompleted(isFromCache, true)
+        stopPltMonitoringIfNotCompleted(isFromCache)
         val newWidgetList = adapter.data.toMutableList()
         forEach { widgetData ->
             newWidgetList.indexOfFirst {
@@ -893,11 +893,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun stopPltMonitoringIfNotCompleted(fromCache: Boolean, isSuccess: Boolean) {
+    private fun stopPltMonitoringIfNotCompleted(fromCache: Boolean) {
         if (!performanceMonitoringSellerHomePltCompleted) {
             performanceMonitoringSellerHomePltCompleted = true
             recyclerView.addOneTimeGlobalLayoutListener {
-                stopHomeLayoutRenderMonitoring(fromCache, isSuccess)
+                stopHomeLayoutRenderMonitoring(fromCache)
             }
         }
     }
