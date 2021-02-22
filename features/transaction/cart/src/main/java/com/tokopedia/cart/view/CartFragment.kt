@@ -1205,6 +1205,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return this
     }
 
+    override fun onNeedToGoneLocalizingAddressWidget() {
+        cartAdapter.removeChooseAddressWidget()
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        refreshCartWithProgressDialog()
+    }
+
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
         goToHome()

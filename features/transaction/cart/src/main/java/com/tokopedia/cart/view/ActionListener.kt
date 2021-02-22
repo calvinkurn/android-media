@@ -86,4 +86,8 @@ interface ActionListener {
     fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
 
     fun onGlobalDeleteClicked()
+
+    fun onNeedToGoneLocalizingAddressWidget()
+
+    fun onLocalizingAddressUpdatedFromWidget()
 }

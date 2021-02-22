@@ -27,11 +27,13 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
             }
 
             override fun onLocalizingAddressServerDown() {
-
+                listener?.onNeedToGoneLocalizingAddressWidget()
             }
 
             override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-
+                if (!isRollOutUser) {
+                    listener?.onNeedToGoneLocalizingAddressWidget()
+                }
             }
 
             override fun getLocalizingAddressHostFragment(): Fragment {
