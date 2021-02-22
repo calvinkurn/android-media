@@ -436,6 +436,13 @@ class ShopPageHomeTracking(
                 widgetOption,
                 customDimensionShopPage
         )
+        val boe = if (customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+            BOE
+        } else if (!customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+            BO_PRODUCT
+        } else {
+            NON_BO_PRODUCT
+        }
         return mutableMapOf(
                 NAME to productName,
                 ID to productId,
@@ -447,7 +454,8 @@ class ShopPageHomeTracking(
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType,
                 DIMENSION_79 to customDimensionShopPage.shopId,
-                SHOP_REF to customDimensionShopPage.shopRef
+                SHOP_REF to customDimensionShopPage.shopRef,
+                DIMENSION_83 to boe
         )
     }
 
