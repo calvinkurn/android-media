@@ -29,8 +29,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.coachmark.CoachMarkBuilder;
-import com.tokopedia.coachmark.CoachMarkItem;
+import com.tokopedia.coachmark.CoachMark2;
+import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
@@ -1633,50 +1633,51 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
-        if (recyclerView == null) return;
+    public void showOnBoarding(int firstProductPositionWithBOELabel) {
+        if (recyclerView == null || getContext() == null) return;
 
         recyclerView.post(() -> {
-            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
+            View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
 
-            if (firstProductPosition > 0 && threeDots != null)
-                recyclerView.smoothScrollToPosition(firstProductPosition);
+            if (productWithBOELabel != null) recyclerView.smoothScrollToPosition(firstProductPositionWithBOELabel);
 
             recyclerView.postDelayed(() -> {
-                ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
+                ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(productWithBOELabel);
 
-                CoachMarkBuilder builder = new CoachMarkBuilder();
-                builder.allowPreviousButton(false);
-                builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+                if (coachMark2ItemList.size() <= 0) return;
+
+                CoachMark2 coachMark = new CoachMark2(getContext());
+                coachMark.showCoachMark(coachMark2ItemList, null, 0);
             }, 200);
         });
     }
 
-    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+    private View getFirstProductWithBOELabel(int firstProductPositionWithBOELabel) {
         if (recyclerView == null) return null;
 
-        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPositionWithBOELabel);
         if (viewHolder == null) return null;
 
         if (viewHolder.itemView instanceof IProductCardView)
-            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+            return viewHolder.itemView;
         else
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View threeDots) {
-        ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+    private ArrayList<CoachMark2Item> createCoachMark2ItemList(@Nullable View boeLabelProductCard) {
+        ArrayList<CoachMark2Item> coachMarkItemList = new ArrayList<>();
 
-        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelOnBoarding(boeLabelProductCard));
 
         return coachMarkItemList;
     }
 
-    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
-        return new CoachMarkItem(
-                threeDotsButton,
-                getString(R.string.search_product_three_dots_onboarding_title),
-                getString(R.string.search_product_three_dots_onboarding_description)
+    private CoachMark2Item createBOELabelOnBoarding(View boeLabelProductCard) {
+        return new CoachMark2Item(
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description),
+                CoachMark2.POSITION_TOP
         );
     }
 

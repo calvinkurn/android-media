@@ -36,7 +36,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
     renderShopBadge(productCardModel)
-    renderTextDilayaniTokoCabang(productCardModel)
+    renderTextFulfillment(productCardModel)
     renderTextShopLocation(productCardModel)
     renderRating(productCardModel)
     renderTextReview(productCardModel)
@@ -225,7 +225,7 @@ private fun ProductCardModel.getPriceToRender(): String {
     return if (priceRange.isNotEmpty()) priceRange else formattedPrice
 }
 
-private fun View.renderTextDilayaniTokoCabang(productCardModel: ProductCardModel) {
+private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
     if (productCardModel.willShowFulfillment()) {
         val labelGroup = productCardModel.getLabelFulfillment() ?: return
 

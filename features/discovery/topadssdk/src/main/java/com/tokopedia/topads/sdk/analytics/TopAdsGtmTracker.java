@@ -118,7 +118,6 @@ public class TopAdsGtmTracker {
                 "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
-                "dimension58", hasLabelGroupFulfillment(item.getLabelGroupList()),
                 "dimension83", setFreeOngkirDataLayer(item)));
 
         //GTMv5
@@ -303,7 +302,6 @@ public class TopAdsGtmTracker {
                                             "category", getCategoryBreadcrumb(item),
                                             "variant", "none/other",
                                             "position", position,
-                                            "dimension58", hasLabelGroupFulfillment(item.getLabelGroupList()),
                                             "dimension83", setFreeOngkirDataLayer(item)))))
             );
             IrisSession irisSession = new IrisSession(context);

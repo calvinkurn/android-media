@@ -417,7 +417,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
-                "dimension58", hasLabelGroupFulfillment(),
                 "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
                 "dimension83", setFreeOngkirDataLayer(),
                 "dimension87", "search result",
@@ -447,7 +446,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
     }
 
-    private boolean hasLabelGroupFulfillment() {
+    public boolean hasLabelGroupFulfillment() {
         return CollectionsKt.any(labelGroupList, labelGroupViewModel -> labelGroupViewModel.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT));
     }
 

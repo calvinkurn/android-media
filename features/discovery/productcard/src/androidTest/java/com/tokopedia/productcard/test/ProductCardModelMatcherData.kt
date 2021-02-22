@@ -660,7 +660,7 @@ private fun testLabelIntegrity(): ProductCardModelMatcher {
 
 private fun testLabelFulfillment(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-    val labelFulfillment = LabelGroup(position = LABEL_FULFILLMENT, title = "TokoCabang", type = DARK_GREY, imageUrl = tokoCabangBadgeImageUrl)
+    val labelFulfillment = LabelGroup(position = LABEL_FULFILLMENT, title = "TokoCabang", type = DARK_GREY, imageUrl = fulfillmentBadgeImageUrl)
 
     val productCardModel = ProductCardModel(
             productName = "Label Fulfillment",
@@ -705,7 +705,7 @@ private fun testLabelFulfillment(): ProductCardModelMatcher {
 
 private fun testLabelFulfillmentWithNoShopBadge(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-    val labelFulfillment = LabelGroup(position = LABEL_FULFILLMENT, title = "TokoCabang", type = DARK_GREY, imageUrl = tokoCabangBadgeImageUrl)
+    val labelFulfillment = LabelGroup(position = LABEL_FULFILLMENT, title = "TokoCabang", type = DARK_GREY, imageUrl = fulfillmentBadgeImageUrl)
 
     val productCardModel = ProductCardModel(
             productName = "Label Fulfillment with no Shop Badge",
