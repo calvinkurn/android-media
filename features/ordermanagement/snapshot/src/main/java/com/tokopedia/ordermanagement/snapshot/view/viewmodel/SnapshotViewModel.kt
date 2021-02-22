@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 1/25/21.
  */
 class SnapshotViewModel @Inject constructor(dispatcher: SnapshotDispatcherProvider,
-                                            private val snapshotUseCase: SnapshotUseCase) : BaseViewModel(dispatcher.ui()) {
+                                            private val snapshotUseCase: SnapshotUseCase) : BaseViewModel(dispatcher.io()) {
 
     private val _snapshotResponse = MutableLiveData<Result<GetOrderSnapshot>>()
     val snapshotResponse: LiveData<Result<GetOrderSnapshot>>
@@ -25,7 +25,7 @@ class SnapshotViewModel @Inject constructor(dispatcher: SnapshotDispatcherProvid
     fun loadSnapshot(paramSnapshot: SnapshotParam) {
         SnapshotIdlingResource.increment()
         launch {
-            _snapshotResponse.value = snapshotUseCase.executeSuspend(paramSnapshot)
+            _snapshotResponse.postValue(snapshotUseCase.executeSuspend(paramSnapshot))
             SnapshotIdlingResource.decrement()
         }
     }

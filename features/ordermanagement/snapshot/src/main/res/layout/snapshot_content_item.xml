@@ -16,7 +16,8 @@
         <ImageView
             android:id="@+id/snapshot_main_img"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/snapshot_dimen_360dp" />
+            android:layout_height="@dimen/snapshot_dimen_360dp"
+            android:contentDescription="@string/snapshot_img" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/snapshot_header_view_pager"

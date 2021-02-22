@@ -86,7 +86,7 @@ data class ProductAdditionalData(
 
 data class OrderDetail(
 	@field:SerializedName("subtotal_price")
-	val subtotalPrice: Long = -1,
+	val subtotalPrice: Double = 0.0,
 
 	@field:SerializedName("quantity")
 	val quantity: String = "",
@@ -107,7 +107,7 @@ data class OrderDetail(
 	val finsurance: String = "",
 
 	@field:SerializedName("product_price")
-	val productPrice: Long =-1,
+	val productPrice: Double = 0.0,
 
 	@field:SerializedName("product_name")
 	val productName: String = "",
@@ -128,10 +128,10 @@ data class OrderDetail(
 	val returnable: String = "",
 
 	@field:SerializedName("insurance_price")
-	val insurancePrice: String = "",
+	val insurancePrice: Double = 0.0,
 
 	@field:SerializedName("normal_price")
-	val normalPrice: String = "",
+	val normalPrice: Double = 0.0,
 
 	@field:SerializedName("product_id")
 	val productId: String = "",

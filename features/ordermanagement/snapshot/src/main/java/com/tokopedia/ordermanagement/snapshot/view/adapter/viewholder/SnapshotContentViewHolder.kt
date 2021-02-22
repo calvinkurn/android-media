@@ -146,6 +146,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
         productName.text = MethodChecker.fromHtmlPreserveLineBreak(dataObject.orderDetail.productName)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderShop(dataObject: GetOrderSnapshot) {
         ImageHandler.loadImageCircle2(itemView.context, shopLogo, dataObject.shopImagePrimaryUrl)
 
