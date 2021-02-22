@@ -12,14 +12,14 @@ ext {
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
-    workManagerVersion = "2.3.4"
+    workManagerVersion = "2.5.0"
 
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     androidxCoreVersion = '1.3.2'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    coroutineVersion = '1.3.3'
+    coroutineVersion = '1.4.2'
     retrofitVersion = '2.6.0'
     okHttpVersion = '3.12.5'
     brotliVersion = '0.1.2'
