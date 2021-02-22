@@ -43,6 +43,7 @@
                     android:layout_height="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_16"
                     app:srcCompat="@drawable/ic_icon_alert"
+                    tools:ignore="ContentDescription"
                     tools:visibility="visible" />
 
             </FrameLayout>

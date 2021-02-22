@@ -192,6 +192,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             eligible
             badge_url
           }
+          free_shipping_extra {
+            eligible
+            badge_url
+          }
           booking_stock
           product_preorder {
             duration_day
@@ -212,6 +216,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           protection_checkbox_disabled
           unit
           source
+        }
+        toko_cabang {
+          message
+          badge_url
         }
         shop {
           shop_id
