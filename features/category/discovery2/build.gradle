@@ -70,6 +70,7 @@ dependencies {
     implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
 
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
