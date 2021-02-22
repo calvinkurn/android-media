@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_information_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/description_information_level_text"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_period_information_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_6"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/tv_description_information_level"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="1 OKT 2020 - 1 JAN 2021"/>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_income_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:card_type="border"
+        app:cardBackgroundColor="@color/transparent"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_period_information_level">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_income_tooltip"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_5"
+                android:text="@string/title_income_information_level"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_value_income_tooltip"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_5"
+                tools:text="Rp 4.000.000"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/separatorIncome"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_income_tooltip"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_product_sold_tooltip"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_5"
+                android:text="@string/title_product_sold_information_level"
+                app:layout_constraintTop_toBottomOf="@id/separatorIncome"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_value_product_sold_tooltip"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_5"
+                tools:text="5 produk"
+                app:layout_constraintTop_toBottomOf="@id/separatorIncome"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_level_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_income_information"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_card_level_information" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_next_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/transparent"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_level_card"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_desc_next_update"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_96"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama."/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_value_next_update"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_96"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_desc_next_update"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Update selanjutnya: 2 Feb 2021"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

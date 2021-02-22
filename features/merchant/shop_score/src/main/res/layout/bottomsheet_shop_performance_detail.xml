@@ -75,18 +75,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvDescTipsDetail" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvIncreasePerformance"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
-        android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separatorTips"
-        tools:text="@string/increase_up_to_performance" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMoreInfoPerformanceDetail"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
@@ -95,7 +83,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvIncreasePerformance"
+        app:layout_constraintTop_toBottomOf="@id/separatorTips"
         tools:text="@string/read_tips_more_info_performance_detail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

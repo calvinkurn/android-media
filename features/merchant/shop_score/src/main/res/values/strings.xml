@@ -30,6 +30,30 @@
     <string name="title_target_progress">Target %s</string>
     <string name="title_level_performance">Level %s</string>
     <string name="maximum_score_performance">/100</string>
+
+
+
+    <!-- Example Text for display preview -->
+    <string name="example_score_performance">80</string>
+    <string name="example_desc_transition_period">Hingga [DD MMM YYY] Power Merchant-mu akan tetap aktif walaupun skor di bawah 60. Setelah itu, pertahankan skor min. 60 agar tetap aktif, ya!</string>
+    <string name="example_summary_detail_penalty">Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330</string>
+    <string name="example_title_detail_penalty">Manipulasi transaksi</string>
+    <string name="example_date_penalty_detail">Tanggal pelanggaran 31 Des 2020</string>
+    <string name="example_title_result_detail_penalty">Akibat Pelanggaran</string>
+    <string name="example_desc_result_detail_penalty">Penghapusan produk dan pengurangan poin performa sebanyak 1 poin.</string>
+    <string name="example_date_result_detail_penalty">Tanggal nonaktif: 31 Des 2020</string>
+    <string name="example_regarding_penalty_pm_value">Power Merchant Gold</string>
+    <string name="example_update_regarding_pm_reputation">Update berikutnya: 1 Aug 2021</string>
+    <string name="example_next_update_pm_status">Update berikutnya: 1 Aug 2021</string>
+    <string name="example_desc_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>naik</b>]]> di grade <![CDATA[<b>Diamond</b>]]>.</string>
+    <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
+    <string name="example_title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi Power Merchant Gold</string>
+    <string name="example_desc_eligible_power_merchant">Hingga [DD MMM YYYY], Power Merchant akan dapat grade dari reputasi dan akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
+    <string name="see_all_benefit">Lihat semua Benefitnya</string>
+    <string name="example_title_non_eligible_status_power_merchant">Yuk, tingkatkan skor hingga 60 untuk daftar Power Merchant dan dapat benefitnya!</string>
+    <string name="example_text_item_potential_pm_benefit">Menerima pesanan lebih banyak hingga 5 kali lipat</string>
+    <string name="description_information_level_text">Level toko mewakili skala bisnismu. Kami menggunakan level untuk memberikan penilaian yang lebih adil untuk setiap skala bisnis yang berbeda.</string>
     
     <string name="title_shop_score_service">Pelayanan tokomu sudah sangat memuaskan pembeli!</string>
     <string name="desc_shop_score_service">Tingkatkan terus kualitas tokomu supaya kamu punya kesempatan untuk naik ke level tertinggi, ya.</string>
@@ -83,27 +107,8 @@
     <string name="increase_up_to_performance">Tingkatkan hingga <![CDATA[<b> > %1s</b>]]></string>
     <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
 
+    <string name="title_income_information_level">Pendapatan:</string>
+    <string name="title_product_sold_information_level">Produk Terjual:</string>
 
-
-    <!-- Example Text for display preview -->
-    <string name="example_score_performance">80</string>
-    <string name="example_desc_transition_period">Hingga [DD MMM YYY] Power Merchant-mu akan tetap aktif walaupun skor di bawah 60. Setelah itu, pertahankan skor min. 60 agar tetap aktif, ya!</string>
-    <string name="example_summary_detail_penalty">Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330</string>
-    <string name="example_title_detail_penalty">Manipulasi transaksi</string>
-    <string name="example_date_penalty_detail">Tanggal pelanggaran 31 Des 2020</string>
-    <string name="example_title_result_detail_penalty">Akibat Pelanggaran</string>
-    <string name="example_desc_result_detail_penalty">Penghapusan produk dan pengurangan poin performa sebanyak 1 poin.</string>
-    <string name="example_date_result_detail_penalty">Tanggal nonaktif: 31 Des 2020</string>
-    <string name="example_regarding_penalty_pm_value">Power Merchant Gold</string>
-    <string name="example_update_regarding_pm_reputation">Update berikutnya: 1 Aug 2021</string>
-    <string name="example_next_update_pm_status">Update berikutnya: 1 Aug 2021</string>
-    <string name="example_desc_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>naik</b>]]> di grade <![CDATA[<b>Diamond</b>]]>.</string>
-    <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
-    <string name="example_title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi Power Merchant Gold</string>
-    <string name="example_desc_eligible_power_merchant">Hingga [DD MMM YYYY], Power Merchant akan dapat grade dari reputasi dan akan tetap aktif walaupun skor di bawah 60, ya.</string>
-    <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
-    <string name="see_all_benefit">Lihat semua Benefitnya</string>
-    <string name="example_title_non_eligible_status_power_merchant">Yuk, tingkatkan skor hingga 60 untuk daftar Power Merchant dan dapat benefitnya!</string>
-    <string name="example_text_item_potential_pm_benefit">Menerima pesanan lebih banyak hingga 5 kali lipat</string>
 
 </resources>
