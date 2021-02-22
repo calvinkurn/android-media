@@ -6,7 +6,7 @@ import com.tokopedia.linter.LinterConstants.GradleConstructs.BUILD_SCRIPT
 import com.tokopedia.linter.LinterConstants.GradleConstructs.DEPENDENCIES
 import com.tokopedia.linter.LinterConstants.GradleConstructs.REPOSITORIES
 
-class HansleDependency {
+class HanselDependency {
     var isPluginAdded = false;
     var isRepositoryAdded = false;
     var isClassPathAdded = false;
@@ -18,9 +18,9 @@ class HansleDependency {
 
 
 val HANSEL_REQUIRED = Issue.create(
-        "HANSLE PLUGIN",  //$NON-NLS-1$
-        "HANSLE PLUGIN SHOULD BE INCLUDED",
-        "HANSLE IS IMPORTANT LIBRARY PLEASE HELP TO INCLUDE",
+        "HANSEL PLUGIN",  //$NON-NLS-1$
+        "HANSEL PLUGIN SHOULD BE INCLUDED",
+        "HANSEL IS IMPORTANT LIBRARY PLEASE HELP TO INCLUDE",
         Category.CORRECTNESS,
         1,
         Severity.ERROR,
@@ -31,7 +31,7 @@ const val HANSEL_PLUGIN = "io.hansel.preprocessor.module"
 const val HANSEL_REPOSITORY = "maven { url 'https://maven-hansel.tokopedia.com/maven' }"
 const val HANSEL_CLASSPATH = "classpath rootProject.ext.miscDependencies.hansel"
 
-var mapGraleFileTOHansel = mutableMapOf<String, HansleDependency?>()
+var mapGraleFileTOHansel = mutableMapOf<String, HANSELDependency?>()
 
 fun addGradleFileToMap(filePath: String) = {
     mapGraleFileTOHansel[filePath] = null
@@ -65,14 +65,14 @@ fun checkHanselClassPath(filePath: String, property: String, parent: String, val
 }
 
 
-fun getHanselObject(filePath: String) = mapGraleFileTOHansel[filePath] ?: HansleDependency().apply {
+fun getHanselObject(filePath: String) = mapGraleFileTOHansel[filePath] ?: HanselDependency().apply {
     mapGraleFileTOHansel[filePath] = this
 }
 
 fun checkHanselPresent(filePath: String, context: Context) {
     if (!getHanselObject(filePath).isHanselAdded()) {
         context.report(
-                HANSEL_REQUIRED, Location.create(context.file, SourcePosition(3,0,0)), "HANSLE PLUGIN SHOULD BE INCLUDED"
+                HANSEL_REQUIRED, Location.create(context.file, SourcePosition(3,0,0)), "HANSEL PLUGIN SHOULD BE INCLUDED"
         )
     }
 }
