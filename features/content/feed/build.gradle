@@ -137,6 +137,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
 
 project.ext {

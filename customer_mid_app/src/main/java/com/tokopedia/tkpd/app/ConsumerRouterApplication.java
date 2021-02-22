@@ -80,6 +80,7 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -584,6 +585,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        PushNotification.init(getApplicationContext());
+
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.SPLASH);
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_ACTIVITY);
