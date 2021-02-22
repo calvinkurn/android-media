@@ -110,5 +110,46 @@
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
 
+    <!-- Summary Shop Performance -->
+    <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>
+    <string name="desc_keep_up_level_1">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
+    <string name="title_good_level_1">Kualitas layanan tokomu sudah bagus!</string>
+    <string name="desc_good_level_1">Kamu tetap bisa tingkatkan terus performa tokomu dengan selalu memenuhi target layanan dan kualitas toko, ya.</string>
+    <string name="title_great_level_1">Kualitas layanan tokomu sudah memuaskan!</string>
+    <string name="desc_great_level_1">Kamu tetap bisa tingkatkan terus performa tokomu dengan selalu memenuhi target layanan dan kualitas toko, ya.</string>
+    <string name="title_perfect_level_1">Selamat, kamu memberikan layanan yang terbaik!</string>
+    <string name="desc_perfect_level_1">Ini waktunya kamu untuk mengembangkan bisnis ke level selanjutnya dan dapatkan banyak benefit dari berbagai fitur di Tokopedia!</string>
+
+    <string name="title_keep_up_level_2">Kualitas layanan tokomu masih bisa berkembang!</string>
+    <string name="desc_keep_up_level_2">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
+    <string name="title_good_level_2">Kamu sudah memberikan pelayanan yang baik!</string>
+    <string name="desc_good_level_2">Ini waktunya kamu untuk terus mempertahankan layanan toko supaya makin banyak menarik calon pembeli.</string>
+    <string name="title_great_level_2">Wah, pelayanan tokomu sangat memuaskan!</string>
+    <string name="desc_great_level_2">Sedikit lagi untuk bisa mengembangkan bisnismu ke level selanjutnya. Pertahankan dan tingkatkan terus kualitas pelayanan tokomu, ya.</string>
+    <string name="title_perfect_level_2">Kamu memberikan pelayanan toko yang luar biasa!</string>
+    <string name="desc_perfect_level_2">Tokomu sudah teruji dapat memberikan kualitas pelayanan yang memuaskan pembeli. Ini waktu yang tepat untuk tingkatkan lagi bisnismu ke level toko selanjutnya!</string>
+
+    <string name="title_keep_up_level_3">Tokomu punya potensi untuk berkembang!</string>
+    <string name="desc_keep_up_level_3">Kamu masih bisa meningkatkan layanan tokomu, lho. Selalu penuhi target, menggunakan fitur, dan manfaatkan promosi di Tokopedia, ya!</string>
+    <string name="title_good_level_3">Good job! Kualitas layanan tokomu sudah baik!</string>
+    <string name="desc_good_level_3">Jangan lupa untuk selalu mempertahankan kualitas layanan tokomu, ya. Kamu juga masih bisa meningkatkan kualitas tokomu, lho!</string>
+    <string name="title_great_level_3">Pelayanan tokomu sudah sangat memuaskan pembeli!</string>
+    <string name="desc_great_level_3">Tingkatkan terus kualitas tokomu supaya kamu bisa punya kesempatan untuk naik ke level tertinggi, ya.</string>
+    <string name="title_perfect_level_3">Yay, kualitas layanan tokomu sudah maksimal!</string>
+    <string name="desc_perfect_level_3">Level 4 ada di depan mata! Yuk, kembangkan bisnismu ke level selanjutnya untuk dapat berbagai benefit dari Tokopedia!</string>
+
+    <string name="title_keep_up_level_4">Layanan toko masih bisa ditingkatkan, lho!</string>
+    <string name="desc_keep_up_level_4">Sedikit lagi untuk bisa menyediakan pelayanan toko yang sempurna untuk pembelimu. Tingkatkan lagi kualitas tokomu, yuk!</string>
+    <string name="title_good_level_4">Kualitas layanan tokomu sudah sangat baik!</string>
+    <string name="desc_good_level_4">Kamu sudah memberikan pelayanan toko yang memuaskan untuk pembelimu. Pertahankan dan tingkatkan terus, ya.</string>
+    <string name="title_great_level_4">Wah, kualitas layanan tokomu nyaris sempurna!</string>
+    <string name="desc_great_level_4">Kamu sudah melangkah sejauh ini, waktunya untuk meningkatkan kualitas layanan toko supaya pelayanan tokomu sempurna!</string>
+    <string name="title_perfect_level_4">Selamat, kualitas pelayanan tokomu sudah sempurna!</string>
+    <string name="desc_perfect_level_4">Terima kasih, pelayanan tokomu sudah membuat banyak pembeli merasa nyaman untuk belanja di tokomu. Pertahankan, ya!</string>
+
+    <string name="title_performance_approaching">Ayo, tingkatkan lagi kualitas layanan tokomu!</string>
+    <string name="desc_performance_approaching">Kualitas layanan toko sangat penting untuk mendatangkan banyak pembeli, lho. Yuk, mulai selalu penuhi target Parameter Skor-mu!</string>
+    <string name="title_performance_below">Waktunya memperbaiki kualitas layanan tokomu</string>
+    <string name="desc_performance_below">Kualitas layanan dapat mendatangkan pembeli dan meningkatkan penjualanmu. Yuk, mulai penuhi target Parameter Skor-mu!</string>
 
 </resources>
