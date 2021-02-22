@@ -37,11 +37,16 @@ inline fun ImageView.loadImage(
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties))
 
-fun ImageView.loadImageFitCenter(url: String?) = this.loadImage(url) { transform(FitCenter()) }
-
-fun ImageView.loadImageWithoutPlaceholder(
+inline fun ImageView.loadImageFitCenter(
         url: String?,
-        properties: Properties.() -> Unit = {}
+        crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties().apply(properties).also {
+    it.transform(FitCenter())
+})
+
+inline fun ImageView.loadImageWithoutPlaceholder(
+        url: String?,
+        crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.setPlaceHolder(-1)
     it.useBlurHash(false)
@@ -60,7 +65,10 @@ fun ImageView.loadImageCircle(url: String) {
     })
 }
 
-fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageResource(resource)
+fun ImageView.loadImageRounded(
+        resource: Int,
+        rounded: Float
+) = this.setImageResource(resource)
 
 inline fun ImageView.loadImageRounded(
         url: String?,
