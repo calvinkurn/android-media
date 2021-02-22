@@ -77,6 +77,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.constant.LoginConstant
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -89,9 +90,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -154,8 +155,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var isShowBanner: Boolean = false
     protected var isEnableFingerprint = true
     private var isHitRegisterPushNotif: Boolean = false
+    private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
     private var isFromRegister = false
+    private var isUseHash = false
+
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -319,6 +324,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER, false)
             isEnableFingerprint = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_LOGIN_FP, true)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(LoginConstant.CONFIG_LOGIN_ENCRYPTION)
         }
     }
 
@@ -412,8 +418,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         wrapper_password?.textFieldInput?.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
-                presenter.loginEmail(emailPhoneEditText.text.toString().trim(),
-                        wrapper_password?.textFieldInput?.text.toString())
+                loginEmail(emailPhoneEditText.text.toString().trim(),
+                        wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
@@ -703,7 +709,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         presenter.getUserInfo()
     }
 
-    override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojoV2) {
+    override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo?) {
         setSmartLock()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
@@ -886,15 +892,43 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    override fun onEmailExist(email: String, useHash: Boolean) {
+    override fun onEmailExist(email: String) {
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash = useHash)
+            loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), isUseHash)
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
             }
+        }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    fun isEnableEncryptRollout(): Boolean {
+        return getAbTestPlatform()
+                .getString(LoginConstant.ROLLOUT_LOGIN_ENCRYPTION) == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+    }
+
+    fun isEnableEncryptConfig(): Boolean {
+        return isEnableEncryptConfig
+    }
+
+    fun isEnableEncryption(): Boolean {
+        return isEnableEncryptRollout() && isEnableEncryptConfig()
+    }
+
+    private fun loginEmail(email: String, password: String, useHash: Boolean = false){
+        if(isEnableEncryption() && useHash) {
+            presenter.loginEmailV2(email = email, password = password, useHash = useHash)
+        }else {
+            presenter.loginEmail(email, password)
         }
     }
 
@@ -1498,8 +1532,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                 if (it.isExist) {
                     if (!it.isPending) {
+                        isUseHash = it.useHash
                         userSession.setTempLoginEmail(partialRegisterInputView.textValue)
-                        onEmailExist(it.view, it.useHash)
+                        onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
                     }

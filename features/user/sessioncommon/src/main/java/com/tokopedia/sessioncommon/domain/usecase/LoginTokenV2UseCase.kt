@@ -4,17 +4,24 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.query.LoginTokenV2Query
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Yoris Prayogo on 16/02/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 
-class LoginTokenV2UseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>):
+class LoginTokenV2UseCase @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
+        @Named(SessionModule.SESSION_MODULE)
+        private val userSession: UserSessionInterface):
         UseCase<LoginTokenPojoV2>() {
 
     init {
@@ -33,6 +40,7 @@ class LoginTokenV2UseCase @Inject constructor(private val graphqlUseCase: Graphq
     }
 
     override suspend fun executeOnBackground(): LoginTokenPojoV2 {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()

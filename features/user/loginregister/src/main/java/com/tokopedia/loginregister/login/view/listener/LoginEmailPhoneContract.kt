@@ -16,7 +16,6 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
@@ -39,7 +38,7 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojoV2)
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo? = null)
 
         fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
@@ -97,7 +96,7 @@ interface LoginEmailPhoneContract {
 
         fun goToRegisterPhoneVerifyPage(phoneNumber: String)
 
-        fun onEmailExist(email: String, useHash: Boolean)
+        fun onEmailExist(email: String)
 
         fun showNotRegisteredEmailDialog(email: String, isPending: Boolean)
 
@@ -147,7 +146,9 @@ interface LoginEmailPhoneContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean = false)
+        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
+
+        fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean = false)
 
         fun loginGoogle(accessToken: String, email: String)
 

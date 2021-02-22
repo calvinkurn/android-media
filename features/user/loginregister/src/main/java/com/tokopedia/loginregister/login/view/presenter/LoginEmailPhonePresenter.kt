@@ -40,7 +40,6 @@ import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.sessioncommon.extensions.decodeBase64
 import com.tokopedia.sessioncommon.util.RSAUtils
-import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -198,8 +197,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 5 : Proceed to home
      */
 
-    fun loginEmailV2(email: String, password: String, useHash: Boolean = false) {
-        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+    override fun loginEmailV2(email: String, password: String, isSmartLock : Boolean, useHash: Boolean) {
+        setSmartLock(isSmartLock)
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {
@@ -211,7 +210,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
                 LoginV2Mapper(userSession).map(tokenResult,
                         onSuccessLoginToken = {
-                            view.onSuccessLoginEmail(it)
+                            view.onSuccessLoginEmail()
                         },
                         onErrorLoginToken = {
                             view.onErrorLoginEmail(email).invoke(it)
@@ -235,18 +234,31 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         })
     }
 
-    override fun loginEmail(email: String, password: String, isSmartLock: Boolean, useHash: Boolean) {
+    private fun setSmartLock(isSmartLock: Boolean){
+        if (isSmartLock) {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+        } else {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+        }
+    }
+
+    override fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
         view?.let { view ->
-            if (isSmartLock) {
-                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-            } else {
-                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-            }
+            setSmartLock(isSmartLock)
             idlingResourceProvider?.increment()
             view.resetError()
             if (isValid(email, password)) {
                 view.showLoadingLogin()
-                loginEmailV2(email, password, useHash)
+                loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
+                        email, password), LoginTokenSubscriber(userSession,
+                        { view.onSuccessLoginEmail(it) },
+                        view.onErrorLoginEmail(email),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
+                        view.onGoToActivationPage(email),
+                        view.onGoToSecurityQuestion(email),
+                        onFinished = {
+                            idlingResourceProvider?.decrement()
+                        }))
             } else {
                 viewEmailPhone.stopTrace()
                 idlingResourceProvider?.decrement()
