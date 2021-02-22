@@ -153,11 +153,14 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, Utils.convertToCurrency(number.toLong()))
                 val minBid: String = stepperModel?.minBid ?: "0"
+                var minBudget = (stepperModel?.currentBid ?: 0.0) * MULTIPLIER
+                if (minBid.toDouble() > stepperModel?.currentBid ?: 0.0) {
+                    minBudget = minBid.toDouble() * MULTIPLIER
+                }
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < minBid.toDouble() * MULTIPLIER && budgetCost.isVisible) {
+                if (number < minBudget && budgetCost.isVisible) {
                     budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
-                            ?: 0)))
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(minBudget.toLong())))
                     saveButtonState?.setButtonState(false)
                 } else if (number > maxDailyBudget) {
                     budgetCost.setError(true)
@@ -209,7 +212,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
-                (selectedEndDate as? GregorianCalendar)?.let {selectedEndDate ->
+                (selectedEndDate as? GregorianCalendar)?.let { selectedEndDate ->
                     openSetDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
                             selectedEndDate, this@EditAdOthersFragment::onStartDateChanged)
                 }

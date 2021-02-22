@@ -95,15 +95,14 @@ class EditAdCostFragment : BaseDaggerFragment() {
 
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            if (it.adBidPrice != stepperModel?.adBidPrice) {
-                setAdvertisingCost(it.adBidPrice)
-            }
             stepperModel = it
+            setAdvertisingCost(it.adBidPrice)
         })
     }
 
     private fun setAdvertisingCost(adBidPrice: Double) {
         val cost = Utils.convertToCurrency(adBidPrice.toLong())
+        stepperModel?.currentBid = adBidPrice
         advertisingCost.textFieldInput.setText(cost)
         advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
     }
@@ -128,6 +127,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
                     else -> {
                         stepperModel?.adBidPrice = number
                         stepperModel?.dailyBudget = (number * MULTIPLIER).toFloat()
+                        stepperModel?.currentBid = number
                         onMinBidChange?.onMinBidChange(number)
                         advertisingCost.setMessage("")
                         advertisingCost.setError(false)
