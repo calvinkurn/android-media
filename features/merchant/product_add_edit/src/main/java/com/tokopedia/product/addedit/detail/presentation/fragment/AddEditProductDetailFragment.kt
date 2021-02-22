@@ -656,6 +656,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupMultiLocationShopValues()
+        productStockField?.setMessage(viewModel.productStockMessage)
+
         setupSpecificationField()
         enableProductNameField()
         onFragmentResult()

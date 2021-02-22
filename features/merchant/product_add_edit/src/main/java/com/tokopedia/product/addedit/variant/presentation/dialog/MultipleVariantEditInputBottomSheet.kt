@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
@@ -15,12 +18,14 @@ import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean = false,
         private var enableEditPrice: Boolean = false,
+        private val couldShowMultiLocationTicker: Boolean = false,
         private val multipleVariantEditInputListener: MultipleVariantEditInputListener? = null
 ): BottomSheetUnify() {
 
@@ -105,6 +110,9 @@ class MultipleVariantEditInputBottomSheet(
             submitInput()
             updateSubmitButtonInput()
             sendTrackerTrackManageAllPriceData()
+        }
+        contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.let { multiLocationTicker ->
+            multiLocationTicker.showWithCondition(couldShowMultiLocationTicker)
         }
         setChild(contentView)
     }

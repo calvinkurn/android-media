@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -49,14 +50,23 @@ class EditProductInputMapper @Inject constructor() {
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: VariantInputModel): ProductEditParam {
+                        variantInputModel: VariantInputModel,
+                        shouldPutStockOnParam: Boolean = true): ProductEditParam {
+
+        val stock: Int? =
+                if (shouldPutStockOnParam) {
+                    detailInputModel.stock
+                } else {
+                    // Put null to stock param as we will update product stock separately (related to multilocation)
+                    null
+                }
 
         return ProductEditParam(
                 productId,
                 detailInputModel.productName,
                 detailInputModel.price,
                 PRICE_CURRENCY,
-                detailInputModel.stock,
+                stock,
                 getActiveStatus(detailInputModel.status),
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
@@ -121,6 +131,14 @@ class EditProductInputMapper @Inject constructor() {
         val picID = it.pictures.firstOrNull()?.picID ?: ""
         var productPicture = it.pictures
 
+        // Edit headquarters stock to zero requires status to be INACTIVE
+        val productStatus =
+                if (it.stock == 0) {
+                    ProductStatus.STATUS_INACTIVE_STRING
+                } else {
+                    it.status
+                }
+
         if (filePath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
             productPicture = getExistingPictureFromProductVariants(filePath, picID, products)
         }
@@ -128,7 +146,7 @@ class EditProductInputMapper @Inject constructor() {
                 it.combination,
                 it.price,
                 it.sku,
-                it.status,
+                productStatus,
                 it.stock,
                 it.isPrimary,
                 mapPictureVariant(productPicture)
