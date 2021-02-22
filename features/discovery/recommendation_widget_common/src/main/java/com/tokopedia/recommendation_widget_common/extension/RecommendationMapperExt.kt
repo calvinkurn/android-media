@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by Lukas on 2/15/21.
@@ -83,7 +84,8 @@ fun List<RecommendationItem>.toProductCardModels(): List<ProductCardModel>{
 }
 
 fun RecommendationItem.toProductCardModel(
-        hasAddToCartButton: Boolean = false
+        hasAddToCartButton: Boolean = false,
+        addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
 ) : ProductCardModel{
     return ProductCardModel(
             slashedPrice = slashedPrice,
@@ -109,7 +111,8 @@ fun RecommendationItem.toProductCardModel(
             labelGroupList = labelGroupList.map {
                 ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl=it.imageUrl)
             },
-            hasAddToCartButton = hasAddToCartButton
+            hasAddToCartButton = hasAddToCartButton,
+            addToCartButtonType = addToCartButtonType
     )
 }
 
