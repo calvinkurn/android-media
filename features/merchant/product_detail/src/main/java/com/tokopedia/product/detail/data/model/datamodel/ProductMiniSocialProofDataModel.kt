@@ -18,6 +18,7 @@ data class ProductMiniSocialProofDataModel(
         var viewCount: Int = 0,
         var talkCount: Int = 0,
         var wishlistCount: Int = 0,
+        var buyerPhotosCount: Int = 0,
         var paymentVerifiedCount: Int = 0,
         var shouldRenderSocialProof: Boolean = false
 ) : DynamicPdpDataModel {
@@ -27,6 +28,7 @@ data class ProductMiniSocialProofDataModel(
         const val PAYMENT_VERIFIED = "paymentVerified"
         const val WISHLIST = "wishlist"
         const val VIEW_COUNT = "viewCount"
+        const val BUYER_PHOTOS = "buyerPhotos"
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -73,12 +75,13 @@ data class ProductMiniSocialProofDataModel(
     val getLastThreeHirarchyData: List<Pair<String, Int>>
         get() = listOf(firstPositionData(),
                 RATING to ratingCount,
+                BUYER_PHOTOS to buyerPhotosCount,
                 TALK to talkCount)
                 .filter { it.second > 0 }
-                .take(3)
+                .take(4)
 
     fun shouldShowSingleViewSocialProof(): Boolean {
-        return talkCount == 0 && ratingCount == 0
+        return talkCount == 0 && ratingCount == 0 && buyerPhotosCount == 0
     }
 
     fun generateFirstSocialProofText(context: Context): String {

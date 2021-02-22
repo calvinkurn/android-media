@@ -101,6 +101,16 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                     text = view.context.getString(R.string.bracket_formated, value.second.productThousandFormatted())
                 }
             }
+            ProductMiniSocialProofDataModel.BUYER_PHOTOS -> {
+                clickedSocialProof.isClickable = true
+                clickedSocialProof.setOnClickListener { listener.onSeeAllLastItemImageReview(componentTrackDataModel) }
+                firstSocialProofTxt?.run {
+                    text = view.context.getString(R.string.label_buyer_photos)
+                }
+                firstSocialProofValue?.run {
+                    text = view.context.getString(R.string.bracket_formated, value.second.productThousandFormatted())
+                }
+            }
         }
     }
 

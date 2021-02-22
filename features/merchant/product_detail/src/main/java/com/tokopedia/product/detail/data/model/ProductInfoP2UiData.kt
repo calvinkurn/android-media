@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculatio
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -36,6 +37,6 @@ data class ProductInfoP2UiData(
         var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
         var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
         var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
-        var imageReviews: List<ImageReviewItem>? = null,
+        var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
 )

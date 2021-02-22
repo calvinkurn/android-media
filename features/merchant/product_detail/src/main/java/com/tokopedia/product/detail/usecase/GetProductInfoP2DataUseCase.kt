@@ -376,6 +376,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                    reviewID
                  }
                  imageCountFmt
+                 imageCount
                }
               hasNext
               hasPrev
@@ -386,6 +387,24 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 message
                 productRating
                 reviewCreateTime
+                user {
+                  userId
+                  fullName
+                  image
+                }
+                imageAttachments{
+                  attachmentId
+                  imageUrl
+                  imageThumbnailUrl
+                }
+                likeDislike{
+                  TotalLike
+                  TotalDislike
+                  isShowable
+                }
+                variant{
+                  name
+                }
               }
             }
         }

@@ -328,6 +328,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
+                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
                 }
             }
 
@@ -343,14 +344,14 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
                 }
             }
 
             updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
                 productReviewOldMap?.run {
                     listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
                 }
             }
         }

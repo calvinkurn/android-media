@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
@@ -267,7 +268,7 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): List<ImageReviewItem> {
+    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val images = SparseArray<ImageReviewGqlResponse.Image>()
         val reviews = SparseArray<ImageReviewGqlResponse.Review>()
         val hasNext = data.isHasNext ?: false
@@ -275,13 +276,13 @@ object DynamicProductDetailMapper {
         data.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
         data.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
 
-        return data.list?.map {
+        return ImageReview(data.list?.map {
             val image = images[it.imageID]
             val review = reviews[it.reviewID]
             ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating, hasNext, data.detail?.imageCount)
-        } ?: listOf()
+                    image.uriLarge, review.rating, hasNext, data.detail?.imageCountFmt)
+        } ?: listOf(), data.detail?.imageCount ?: "")
     }
 
     fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
