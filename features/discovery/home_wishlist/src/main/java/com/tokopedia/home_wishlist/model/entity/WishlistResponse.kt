@@ -111,10 +111,7 @@ data class WishlistItem(
     val labels: List<LabelGroup> = listOf(),
     @SerializedName("free_ongkir")
     @Expose
-    val freeOngkir: FreeOngkir = FreeOngkir(),
-    @SerializedName("free_ongkir_extra")
-    @Expose
-    val freeOngkirExtra: FreeOngkir = FreeOngkir()
+    val freeOngkir: FreeOngkir = FreeOngkir()
 ) : ImpressHolder(){
     override fun equals(other: Any?): Boolean {
         return other is WishlistItem &&

@@ -105,6 +105,8 @@ object WishlistTracking {
     private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
     private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
+    private const val LABEL_FULFILLMENT = "fulfillment"
+
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
     }
@@ -126,9 +128,10 @@ object WishlistTracking {
     }
 
     private fun generateWishlistFreeOngkirTrackingValue(item: WishlistItem): String {
+        val hasFulfillmentLabel = item.labels.any { it.position == LABEL_FULFILLMENT }
         return when {
-            item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
-            item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
+            hasFulfillmentLabel && item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
+            !hasFulfillmentLabel && item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
             else -> VALUE_NONE_OTHER
         }
     }

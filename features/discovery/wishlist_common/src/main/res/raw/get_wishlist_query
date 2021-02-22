@@ -20,10 +20,6 @@ query wishlist($page: Int, $count: Int, $filter: WishlistFilter){
           is_active
           image_url
         }
-        free_ongkir_extra {
-          is_active
-          image_url
-        }
         wholesale_price {
           minimum
           maximum
