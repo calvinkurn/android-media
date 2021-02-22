@@ -90,7 +90,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
     private var navigator: SellerHomeNavigator? = null
-    private var isOrderShopAdmin = true
 
     private var statusBarCallback: StatusBarCallback? = null
 
@@ -357,9 +356,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             if (it is Success) {
                 showNotificationBadge(it.data.notifCenterUnread)
                 showChatNotificationCounter(it.data.chat)
-                if (isOrderShopAdmin) {
-                    showOrderNotificationCounter(it.data.sellerOrderStatus)
-                }
+                showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
     }
