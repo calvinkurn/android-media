@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TalkSmartReplyDetailCard : BaseCustomView {
 
     companion object {
-        const val BUYER_IMAGE_URL = ""
+        const val BUYER_IMAGE_URL = "https://images.tokopedia.net/img/android/others/smart_reply_card_avatar.png"
     }
 
     private var talkSmartReplyDetailSellerName: Typography? = null
