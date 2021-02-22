@@ -20,8 +20,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     override var isError: Boolean = false
     override val id: String get() = attachmentId
 
-    var isLoadingOcc: Boolean = false
-    var productId: Long = 0
+    var productId: String = "0"
         private set
     var productName: String = ""
         private set
@@ -146,7 +145,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
-            productId: Long, productName: String, productPrice: String, productUrl: String,
+            productId: String, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
             blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
@@ -217,7 +216,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
      */
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, productId: Long,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: String,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
             blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
@@ -281,7 +280,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
      * @param startTime    send time to validate dummy mesages.
      */
     constructor(
-            loginID: String, productId: Long, productName: String, productPrice: String,
+            loginID: String, productId: String, productName: String, productPrice: String,
             productUrl: String, productImage: String, startTime: String, canShowFooter: Boolean,
             shopId: Long
     ) : super(

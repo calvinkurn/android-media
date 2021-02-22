@@ -2,7 +2,6 @@ package com.tokopedia.logger
 
 import android.app.Application
 import com.tokopedia.encryption.security.AESEncryptorECB
-import com.tokopedia.logger.datasource.cloud.LoggerCloudLogentriesDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
@@ -13,7 +12,7 @@ import com.tokopedia.logger.utils.Constants
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
- * For the current implementation, this class is wrapping the insight7 (Logentries)
+ * For the current implementation, this class is wrapping the client log app
  *
  * To Initialize:
  * LogManager.init(application);
@@ -24,15 +23,9 @@ import com.tokopedia.logger.utils.Constants
 class LogManager(val application: Application) {
 
     companion object {
-        @JvmStatic
-        var logentriesToken: Array<String> = arrayOf()
 
         @JvmStatic
         var scalyrConfigList: List<ScalyrConfig> = mutableListOf()
-        var scalyrEnabled: Boolean = false
-        var logentriesEnabled: Boolean = true
-        var isPrimaryLogentries: Boolean = true
-        var isPrimaryScalyr: Boolean = false
         var queryLimits: List<Int> = mutableListOf(5, 5)
 
         @JvmField
@@ -45,13 +38,12 @@ class LogManager(val application: Application) {
                 val instance = instance ?: return null
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
-                val loggerCloudLogentriesDataSource = LoggerCloudLogentriesDataSource()
                 val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao,
-                        loggerCloudLogentriesDataSource, loggerCloudScalyrDataSource,
-                        logentriesToken, scalyrConfigList,
+                        loggerCloudScalyrDataSource,
+                        scalyrConfigList,
                         encryptor, secretKey)
             }
             return loggerRepository

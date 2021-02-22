@@ -17,7 +17,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -64,7 +63,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         }
 
         @JvmStatic
-        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+        fun createIntent(context: Context, productId: Long) = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }
@@ -196,19 +195,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment {
-        return if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_PDP_DIFFUTIL, true) == true) {
-            DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
+    override fun getNewFragment(): Fragment = DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate ?: false, trackerAttribution,
                     trackerListName, affiliateString, deeplinkUrl, layoutId)
-        } else {
-            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                    productKey, isFromDeeplink,
-                    isFromAffiliate ?: false, trackerAttribution,
-                    trackerListName, affiliateString, deeplinkUrl, layoutId)
-        }
-    }
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
