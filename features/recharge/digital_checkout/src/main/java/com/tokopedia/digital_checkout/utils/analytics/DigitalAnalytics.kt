@@ -196,10 +196,13 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes?.pricePlain.toString(),
                 DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes?.operatorName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes?.categoryName?.toLowerCase(),
-                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, "none",
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_QUANTITY, "1",
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, cartDigitalInfoData.relationCategory?.id,
-                DigitalCheckoutTrackingConst.Product.KEY_CART_ID, cartDigitalInfoData.id
+                DigitalCheckoutTrackingConst.Product.KEY_CART_ID, cartDigitalInfoData.id,
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_TYPE, DigitalCheckoutTrackingConst.Value.NONE
         )
     }
 

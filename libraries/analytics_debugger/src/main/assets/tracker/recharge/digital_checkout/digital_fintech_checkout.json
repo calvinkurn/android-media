@@ -19,7 +19,10 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "shop_id": "{{.*}}",
+          "shop_name": "{{.*}}",
+          "shop_type": "{{.*}}"
         }
       ]
     },
@@ -42,7 +45,10 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "shop_id": "{{.*}}",
+          "shop_name": "{{.*}}",
+          "shop_type": "{{.*}}"
         }
       ]
     },
