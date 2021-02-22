@@ -64,8 +64,7 @@ object StatisticPageHelper {
     private fun getShopDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
         return if (getRegularMerchantStatus(userSession)) {
             listOf(
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    DateFilterItem.ApplyButton
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true)
             )
         } else {
             listOf(
@@ -84,8 +83,7 @@ object StatisticPageHelper {
     private fun getBuyerDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
         return if (getRegularMerchantStatus(userSession)) {
             listOf(
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    DateFilterItem.ApplyButton
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true)
             )
         } else {
             listOf(

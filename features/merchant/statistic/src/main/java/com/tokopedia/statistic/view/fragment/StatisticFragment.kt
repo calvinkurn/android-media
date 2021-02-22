@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -757,7 +754,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val shouldShowActionMenu = !statisticPage?.actionMenu.isNullOrEmpty()
         menu.findItem(R.id.actionStcOtherMenu)?.isVisible = shouldShowActionMenu
 
-        val shouldShowFilterMenu = !statisticPage?.dateFilters.isNullOrEmpty()
+        val minFilterSize = 1
+        val shouldShowFilterMenu = statisticPage?.dateFilters?.size.orZero() > minFilterSize
         menu.findItem(R.id.actionStcSelectDate)?.isVisible = shouldShowFilterMenu
     }
 
