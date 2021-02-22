@@ -234,8 +234,7 @@ data class ProductCardModel (
 
     companion object {
         const val WORDING_SEGERA_HABIS = "Segera Habis"
-        const val FIRE_OFFSET = 1f
         val FIRE_WIDTH = R.dimen.dp_12
-        val FIRE_HEIGHT = R.dimen.dp_14
+        val FIRE_HEIGHT = R.dimen.dp_13
     }
 }
