@@ -13,7 +13,7 @@ const val STATUS_CANCELLED = "Cancelled"
 const val STATUS_EMPTY = "Empty"
 
 
-sealed class PayLaterApplicationStatus(val tag: String)
+sealed class PayLaterApplicationStatus(val status: String)
 object PayLaterStatusApproved : PayLaterApplicationStatus(STATUS_APPROVED)
 object PayLaterStatusWaiting : PayLaterApplicationStatus(STATUS_WAITING)
 object PayLaterStatusRejected : PayLaterApplicationStatus(STATUS_REJECTED)

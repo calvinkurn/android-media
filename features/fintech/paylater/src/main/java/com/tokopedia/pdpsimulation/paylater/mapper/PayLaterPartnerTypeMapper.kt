@@ -13,23 +13,26 @@ object ProcessingApplicationPartnerType : PayLaterPartnerType(PROCESSING_APPLICA
 object UsageStepsPartnerType : PayLaterPartnerType(USAGE_STEPS_PARTNER)
 object PayLaterPartnerTypeMapper {
 
-    fun getPayLaterPartnerType(payLaterPartnerData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?): PayLaterPartnerType {
+    fun getPayLaterPartnerType(
+            payLaterPartnerData: PayLaterItemProductData,
+            partnerApplicationDetail: PayLaterApplicationDetail?): PayLaterPartnerType {
         var isApplicationActive = false
-        var status = ""
+        var status = STATUS_EMPTY
         partnerApplicationDetail?.let {
             val payLaterStatus = PayLaterApplicationStatusMapper.getApplicationStatusType(it)
             isApplicationActive = payLaterStatus is PayLaterStatusActive || payLaterStatus is PayLaterStatusApproved
-            status = payLaterStatus.tag
+            status = payLaterStatus.status
         }
 
-        return if (payLaterPartnerData.isAbleToApply == true && isApplicationActive) {
+        return if (payLaterPartnerData.isAbleToApply == false) {
             UsageStepsPartnerType
-        } else if (payLaterPartnerData.isAbleToApply == true && status.isNotBlank()) {
-            ProcessingApplicationPartnerType
-        } else if (payLaterPartnerData.isAbleToApply == true) {
-            // isApplicationActive = false as partnerApplicationDetail == null
-            RegisterStepsPartnerType
-        } else UsageStepsPartnerType
+        } else {
+            when {
+                isApplicationActive -> UsageStepsPartnerType
+                status != STATUS_EMPTY -> ProcessingApplicationPartnerType
+                else -> RegisterStepsPartnerType
+            }
+        }
     }
 
     fun getPayLaterApplicationDataForPartner(
