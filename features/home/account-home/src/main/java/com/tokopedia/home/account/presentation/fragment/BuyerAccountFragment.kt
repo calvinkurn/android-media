@@ -362,10 +362,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     override fun onSellerAccountCardClicked() {
-        if (canGoToShopAccount) {
-            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MENU)
-        } else {
-            LocationAdminDialog(context).show()
+        context?.let {
+            if (canGoToShopAccount) {
+                RouteManager.route(it, ApplinkConstInternalSellerapp.SELLER_MENU)
+            } else {
+                LocationAdminDialog(it).show()
+            }
         }
     }
 
