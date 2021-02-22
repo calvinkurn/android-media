@@ -7,4 +7,5 @@
     <dimen name="dp_topchat_1">1dp</dimen>
     <dimen name="dp_topchat_2">2dp</dimen>
     <dimen name="dp_topchat_3">3dp</dimen>
+    <dimen name="dp_topchat_6">6dp</dimen>
 </resources>

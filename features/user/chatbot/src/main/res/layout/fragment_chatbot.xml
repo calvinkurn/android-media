@@ -253,7 +253,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
         android:layout_below="@id/chatbot_ticker"
-        android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
         android:scrollbars="vertical">
@@ -262,9 +261,9 @@
             android:id="@+id/iv_bg_chat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/chatbot_background"
             android:layout_gravity="bottom"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:src="@drawable/chatbot_background" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -274,7 +273,7 @@
             android:layout_gravity="center"
             android:clipToPadding="false"
             android:descendantFocusability="beforeDescendants"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
