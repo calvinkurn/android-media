@@ -81,7 +81,9 @@ class ChooseAddressBottomSheet(private val listener: ChooseAddressBottomSheetLis
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_ADDRESS) {
             val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
-
+            if (data != null) {
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName))
+            }
         } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
             val data = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
             if (data != null) {
