@@ -850,7 +850,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         } else if (isNeedPassport && flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
         getPassportExpiryDate(), sixMonthFromDeparture)){
             til_passport_expiration_date.setError(false)
-            false
+            true
         } else {
             true
         }
