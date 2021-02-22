@@ -164,6 +164,8 @@ open class Properties(
 
     override fun toString(): String {
         return "source: $data,\n" +
+                "is trackable: $isTrackable,\n" +
+                "url has ect: $urlHasQualityParam,\n" +
                 "load time: $loadTime,\n" +
                 "transform: ${transform?.javaClass?.name},\n" +
                 "transforms: ${transforms?.size},\n" +
