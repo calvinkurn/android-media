@@ -72,7 +72,7 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
         type = LinkerData.MERCHANT_VOUCHER
         uri = shareUrl
         id = voucher.id.toString()
-        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId.toString()).orEmpty()
+        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
     })
     LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -120,6 +120,9 @@ private fun shareVoucherByType(context: Context,
                 }.toString()
             }
     when(socmedType) {
+        SocmedType.BROADCAST -> {
+            SharingUtil.shareToBroadCastChat(context, voucher.id)
+        }
         SocmedType.COPY_LINK -> {
             SharingUtil.copyTextToClipboard(context, VoucherDetailFragment.COPY_PROMO_CODE_LABEL, shareMessage)
         }

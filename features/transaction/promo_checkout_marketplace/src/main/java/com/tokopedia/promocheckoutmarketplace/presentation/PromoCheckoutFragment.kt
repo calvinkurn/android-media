@@ -609,8 +609,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val availableSpaceHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
 
                 // Determine total space, in pixel, needed to show all promo last seen item
-                val headerPromoLastSeenHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_56)
-                val itemPromoLastSeenHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_52)
+                val headerPromoLastSeenHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+                val itemPromoLastSeenHeight = resources.getDimensionPixelSize(R.dimen.dp_52)
                 val totalSpaceNeededForPromoLastSeenItems = (data.uiData.promoLastSeenItemUiModelList.size * itemPromoLastSeenHeight) + headerPromoLastSeenHeight
 
                 // If available space is not sufficient to show all promo item, then set max available height for the bottomsheet
