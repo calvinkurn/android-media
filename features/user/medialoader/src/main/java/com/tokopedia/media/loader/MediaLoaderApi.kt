@@ -18,7 +18,9 @@ internal object MediaLoaderApi {
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    private val handler by lazy { Handler() }
+    private val handler by lazy(LazyThreadSafetyMode.NONE) {
+        Handler()
+    }
 
     private fun automateScaleType(
             imageView: ImageView,
