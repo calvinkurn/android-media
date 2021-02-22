@@ -990,8 +990,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateProductId(productId: Int) {
-        this.productId = productId.toLong()
+    private fun updateProductId(productId: Long) {
+        this.productId = productId
     }
 
     fun getOrderId(): String {
