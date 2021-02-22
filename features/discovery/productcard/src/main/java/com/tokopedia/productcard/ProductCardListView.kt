@@ -11,7 +11,9 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_HEIGHT
 import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_OFFSET
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_WIDTH
 import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -121,8 +123,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
                 progressBarStock.setProgressIcon(
                         icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
                         offsetY = FIRE_OFFSET,
-                        width = context.resources.getDimension(R.dimen.dp_12).toInt(),
-                        height = context.resources.getDimension(R.dimen.dp_16).toInt())
+                        width = context.resources.getDimension(FIRE_WIDTH).toInt(),
+                        height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
             progressBarStock.setValue(productCardModel.stockBarPercentage, true)
