@@ -35,7 +35,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
-        topAdsHeadlineViewModel.getTopAdsHeadlineDate(params, onSuccess, onError)
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
     fun displayAds(cpmModel: CpmModel) {

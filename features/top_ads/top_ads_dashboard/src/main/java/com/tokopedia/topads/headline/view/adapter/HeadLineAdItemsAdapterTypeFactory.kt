@@ -2,8 +2,8 @@ package com.tokopedia.topads.headline.view.adapter
 
 import android.view.View
 import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsViewHolder
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 
 /**
  * Created by Pika on 16/10/20.
@@ -11,9 +11,9 @@ import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemV
 
 interface HeadLineAdItemsAdapterTypeFactory {
 
-    fun type(model: HeadLineAdItemsEmptyViewModel): Int
+    fun type(model: HeadLineAdItemsEmptyModel): Int
 
-    fun type(model: HeadLineAdItemsItemViewModel): Int
+    fun type(model: HeadLineAdItemsItemModel): Int
 
     fun holder(type: Int, view: View): HeadLineAdItemsViewHolder<*>
 

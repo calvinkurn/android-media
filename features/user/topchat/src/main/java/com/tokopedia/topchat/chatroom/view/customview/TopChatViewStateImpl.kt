@@ -100,6 +100,7 @@ class TopChatViewStateImpl constructor(
     override fun initView() {
         super.initView()
         recyclerView.setHasFixedSize(true)
+        recyclerView.itemAnimator = null
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
