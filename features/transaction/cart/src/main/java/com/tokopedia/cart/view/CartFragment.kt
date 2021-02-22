@@ -1832,11 +1832,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 renderRecentView(null)
             }
 
-            if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
-            } else {
-                renderRecommendation(null)
-            }
+            dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
 
             if (dPresenter.isLastApplyValid()) {
                 // Render promo from last apply
