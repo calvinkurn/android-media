@@ -4,18 +4,14 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.constant.PermissionId
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.view.viewholder.SellerFeatureViewHolder
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,22 +26,6 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val SCREEN_NAME = "MA - Akun Toko"
-    }
-
-    // TODO: Delete soon, check first with product to make sure these are unused
-    fun mapFeatureToPermissionList(@AdminFeature adminFeature: String): List<String> {
-        return when(adminFeature) {
-            AdminFeature.NEW_ORDER -> listOf(PermissionId.MANAGE_ORDER)
-            AdminFeature.READY_TO_SHIP_ORDER -> listOf(PermissionId.MANAGE_ORDER)
-            AdminFeature.ORDER_HISTORY -> listOf(PermissionId.MANAGE_ORDER)
-            AdminFeature.MANAGE_PRODUCT -> listOf(PermissionId.MANAGE_PRODUCT)
-            AdminFeature.ADD_PRODUCT -> listOf(PermissionId.MANAGE_PRODUCT)
-            AdminFeature.REVIEW -> listOf(PermissionId.REPLY_REVIEW)
-            AdminFeature.DISCUSSION -> listOf(PermissionId.REPLY_DISCUSSION)
-            AdminFeature.COMPLAINT -> listOf(PermissionId.RESPOND_COMPLAINTS)
-            AdminFeature.MANAGE_SHOP -> listOf(PermissionId.MANAGE_SHOP)
-            else -> listOf()
-        }
     }
 
     fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
