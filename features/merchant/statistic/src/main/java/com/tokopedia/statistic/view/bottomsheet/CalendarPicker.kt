@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -47,7 +48,7 @@ class CalendarPicker : BottomSheetUnify() {
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
     private val minDate by lazy {
-        Date(DateTimeUtil.getNPastDaysTimestamp(91L))
+        Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_91.toLong()))
     }
     private val maxDate by lazy {
         filterItem?.calendarPickerMaxDate ?: Date()

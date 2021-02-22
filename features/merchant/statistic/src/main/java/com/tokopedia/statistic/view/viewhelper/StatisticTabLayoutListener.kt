@@ -29,19 +29,3 @@ fun TabLayout.setOnTabSelectedListener(callback: (tab: TabLayout.Tab) -> Unit) {
         }
     })
 }
-
-fun ViewPager.addOnPageChanged(onChanged: (Int) -> Unit) {
-    this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-        }
-
-        override fun onPageSelected(position: Int) {
-            onChanged(position)
-        }
-
-        override fun onPageScrollStateChanged(state: Int) {
-
-        }
-    })
-}
