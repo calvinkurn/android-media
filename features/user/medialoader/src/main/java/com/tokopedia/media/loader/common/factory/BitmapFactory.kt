@@ -101,7 +101,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
     private fun generateBlurHash(hash: String?): Bitmap? {
         return blurHashDecode(
                 blurHash = hash,
-                width = 40,
+                width = 20,
                 height = 20
         )
     }
