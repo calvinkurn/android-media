@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsEmptyViewHolder
 import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsItemViewHolder
 import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsViewHolder
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 
 
 /**
@@ -18,8 +18,8 @@ class HeadLineAdItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -
                                             var editDone: ((groupId: Int) -> Unit),
                                             var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsAdapterTypeFactory {
 
-    override fun type(model: HeadLineAdItemsEmptyViewModel): Int = HeadLineAdItemsEmptyViewHolder.LAYOUT
-    override fun type(model: HeadLineAdItemsItemViewModel): Int = HeadLineAdItemsItemViewHolder.LAYOUT
+    override fun type(model: HeadLineAdItemsEmptyModel): Int = HeadLineAdItemsEmptyViewHolder.LAYOUT
+    override fun type(model: HeadLineAdItemsItemModel): Int = HeadLineAdItemsItemViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): HeadLineAdItemsViewHolder<*> {
         return when (type) {
