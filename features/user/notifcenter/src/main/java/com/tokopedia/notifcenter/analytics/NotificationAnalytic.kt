@@ -1,15 +1,19 @@
 package com.tokopedia.notifcenter.analytics
 
+import android.os.Bundle
 import com.tokopedia.abstraction.processor.beta.ProductListClickBundler
 import com.tokopedia.abstraction.processor.beta.ProductListClickProduct
 import com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler
 import com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct
+import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -23,7 +27,7 @@ class NotificationAnalytic @Inject constructor(
         companion object {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
-            const val ADD_TO_CART = "addToCart"
+            const val ADD_TO_CART = "add_to_cart"
             const val CLICK_NOTIF_CENTER = "clickNotifCenter"
         }
     }
@@ -278,6 +282,85 @@ class NotificationAnalytic @Inject constructor(
                         userRole = getRoleString(role)
                 )
         )
+    }
+
+    fun trackSuccessDoBuyAndAtc(
+            notification: NotificationUiModel,
+            product: ProductData,
+            data: DataModel,
+            eventAction: String
+    ) {
+        val dimen83 = if (product.hasFreeShipping()) {
+            AddToCartExternalAnalytics.EE_VALUE_BEBAS_ONGKIR
+        } else {
+            AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER
+        }
+        val itemBundle = Bundle().apply {
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
+                    setValueOrDefault(data.productId.toString())
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
+                    setValueOrDefault(product.name)
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
+                    setValueOrDefault("")
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY,
+                    setValueOrDefault("")
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
+                    setValueOrDefault("")
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
+                    setValueOrDefault(data.shopId.toString())
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME,
+                    setValueOrDefault(product.shop.name)
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, setValueOrDefault("")
+            )
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
+                    setValueOrDefault("")
+            )
+            putInt(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, product.minOrder)
+            putDouble(AddToCartExternalAnalytics.EE_PARAM_PRICE, product.price)
+            putString(AddToCartExternalAnalytics.EE_PARAM_PICTURE, product.imageUrl)
+            putString(AddToCartExternalAnalytics.EE_PARAM_URL, product.url)
+            putString(AddToCartExternalAnalytics.EE_PARAM_DIMENSION_38, setValueOrDefault(""))
+            putString(
+                    AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
+                    setValueOrDefault(data.cartId)
+            )
+            putString(AddToCartExternalAnalytics.EE_PARAM_DIMENSION_83, dimen83)
+            putString("dimension40", LIST_NOTIFCENTER)
+        }
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, Event.ADD_TO_CART)
+            putString(TrackAppUtils.EVENT_CATEGORY, EventCategory.NOTIFCENTER)
+            putString(TrackAppUtils.EVENT_ACTION, eventAction)
+            putString(TrackAppUtils.EVENT_LABEL, notification.getEventLabel())
+            putParcelableArrayList(
+                    AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                Event.ADD_TO_CART, eventDataLayer
+        )
+    }
+
+    private fun setValueOrDefault(value: String): String? {
+        return if (value.isEmpty()) {
+            AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER
+        } else value
     }
 
     private fun getEventLabel(notification: NotificationUiModel): String {
