@@ -55,7 +55,7 @@ class RechargeHomepageViewModelTest {
 
     @Test
     fun getRechargeHomepageSectionSkeleton_Success() {
-        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item(1, "TOP_BANNER"))
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_BANNER"))
         val skeletonResponse = RechargeHomepageSectionSkeleton(sectionSkeletonItem)
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
@@ -88,7 +88,7 @@ class RechargeHomepageViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
 
         // Sections Skeleton
-        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item(1, "TOP_ICONS"))
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_ICONS"))
         val skeletonResponse = RechargeHomepageSectionSkeleton(sectionSkeletonItem)
         val sectionSkeletonResult = HashMap<Type, Any>()
         val skeletonObjectType = RechargeHomepageSectionSkeleton.Response::class.java

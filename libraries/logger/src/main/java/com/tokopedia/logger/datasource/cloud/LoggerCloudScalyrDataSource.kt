@@ -37,7 +37,9 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEve
 
         try {
             val scalyrBody = ScalyrBody(config.token, config.session,
-                ScalyrSessionInfo(config.serverHost, config.parser, config.packageName, config.debug, config.priority),
+                ScalyrSessionInfo(config.serverHost, config.parser, config.packageName,
+                        config.installer,
+                        config.debug, config.priority),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection

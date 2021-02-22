@@ -1,0 +1,13 @@
+{
+  "readme": "click continue on product image picker",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click continue on gallery page",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}"
+    }
+  ]
+}

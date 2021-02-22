@@ -8,27 +8,21 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
-import javax.inject.Named
 
 class AdChooserViewModel @Inject constructor(private val context: Context,
                                              private val userSession: UserSessionInterface,
@@ -43,7 +37,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
         launchCatchError(
                 block = {
                     val data = withContext(dispatcher.io) {
-                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_ads_creation_shop_info),
+                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info),
                                 AdCreationOption::class.java, hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
                         val cacheStrategy = RequestHelper.getCacheStrategy()
                         repository.getReseponse(listOf(request), cacheStrategy)
@@ -81,7 +75,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
         }
     }
 
-    fun getParams(dataParams: AutoAdsParam): RequestParams {
+    private fun getParams(dataParams: AutoAdsParam): RequestParams {
         val params = RequestParams.create()
         try {
             params.putAll(Utils.jsonToMap(Gson().toJson(dataParams)))
