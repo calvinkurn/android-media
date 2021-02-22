@@ -59,7 +59,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 cbMainPreference.isChecked = false
                 cbMainPreference.isEnabled = true
                 cbMainPreference.setOnClickListener {
-                    listener.onPreferenceSelected(preference)
+                    listener.onPreferenceSelected(preference, false)
                 }
             }
         } else {
@@ -80,7 +80,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             }
             if (preference.enable) {
                 tvChoosePreference.setOnClickListener {
-                    listener.onPreferenceSelected(preference)
+                    listener.onPreferenceSelected(preference, false)
                 }
                 itemView.alpha = 1f
             } else {

@@ -285,6 +285,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             link
           }
         }
+        profile_revamp_wording
+        is_recom
         profile_id
         status
         address {
