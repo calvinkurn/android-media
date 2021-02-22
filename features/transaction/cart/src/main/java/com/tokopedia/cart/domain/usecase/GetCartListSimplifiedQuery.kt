@@ -44,6 +44,7 @@ fun getQueryCartRevamp(): String {
                 seller_cashback_wording
                 seller_cashback_value
               }
+              
               max_quantity
               max_char_note
               messages {
@@ -56,6 +57,10 @@ fun getQueryCartRevamp(): String {
                 ErrorProductMinQuantity
               }
               fulfillment_message
+              toko_cabang {
+                message
+                badge_url
+              }
               available_section {
                 action {
                   id
@@ -68,6 +73,10 @@ fun getQueryCartRevamp(): String {
                     shop_location
                     estimation
                     free_shipping {
+                      eligible
+                      badge_url
+                    }
+                    free_shipping_extra {
                       eligible
                       badge_url
                     }
@@ -245,6 +254,10 @@ fun getQueryCartRevamp(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_extra {
+                        eligible
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -312,6 +325,10 @@ fun getQueryCartRevamp(): String {
                     shop_location
                     estimation
                     free_shipping {
+                      eligible
+                      badge_url
+                    }
+                    free_shipping_extra {
                       eligible
                       badge_url
                     }
@@ -487,6 +504,10 @@ fun getQueryCartRevamp(): String {
                       is_campaign_error
                       is_blacklisted
                       free_shipping {
+                        eligible
+                        badge_url
+                      }
+                      free_shipping_extra {
                         eligible
                         badge_url
                       }
@@ -680,3 +701,18 @@ fun getQueryCartRevamp(): String {
         }
     """
 }
+
+/*
+QUERY PROMO - WAITING FOR STAGING
+
+            promo_summary {
+                title
+                detail {
+                    description
+                    type
+                    amount_str
+                    amount
+                    currency_detail_str
+                }
+              }
+ */

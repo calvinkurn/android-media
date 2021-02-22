@@ -400,6 +400,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               message_info {
                 message

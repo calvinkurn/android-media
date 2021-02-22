@@ -2,9 +2,9 @@ package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -28,6 +28,7 @@ data class CartListData(
         var errorDefault: PromoCheckoutErrorDefault? = null,
         var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null,
         var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData(),
+        var promoSummaryData: PromoSummaryData = PromoSummaryData(),
         var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",

@@ -1,8 +1,10 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse
+import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*
 
@@ -35,8 +37,13 @@ data class CartDataListResponse(
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("shopping_summary")
         val shoppingSummary: ShoppingSummary = ShoppingSummary(),
+        @SerializedName("promo_summary")
+        @Expose
+        val promoSummary: PromoSummary = PromoSummary(),
         @SerializedName("fulfillment_message")
         val fulfillmentMessage: String = "",
+        @SerializedName("toko_cabang")
+        val tokoCabangInfo: TokoCabangInfo = TokoCabangInfo(),
         @SerializedName("available_section")
         val availableSection: AvailableSection = AvailableSection(),
         @SerializedName("unavailable_ticker")

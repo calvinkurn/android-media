@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.domain.analytics
 
 import com.tokopedia.atc_common.data.model.response.DetailOccResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_BEBAS_ONGKIR
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_BEBAS_ONGKIR_EXTRA
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_CURRENCY
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_NONE_OTHER
 import com.tokopedia.track.TrackAppUtils
@@ -85,7 +86,11 @@ object AddToCartOccExternalAnalytics {
                                                 PARAM_URL to response.url,
                                                 PARAM_CATEGORY_ID to response.categoryId,
                                                 PARAM_DIMENSION_82 to response.categoryId,
-                                                PARAM_DIMENSION_83 to if (response.isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                                                PARAM_DIMENSION_83 to when {
+                                                    response.isFreeOngkirExtra -> VALUE_BEBAS_ONGKIR_EXTRA
+                                                    response.isFreeOngkir -> VALUE_BEBAS_ONGKIR
+                                                    else -> VALUE_NONE_OTHER
+                                                }
                                         ))
                                 )
                         )
