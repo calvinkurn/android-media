@@ -3,6 +3,7 @@ package com.tokopedia.localizationchooseaddress.util
 import android.content.Context
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -36,7 +37,12 @@ object ChooseAddressUtils {
         return userSession.isLoggedIn
     }
 
+    /**
+     * temporary use return true
+     */
     fun isRollOutUser(): Boolean {
+        /* val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
+        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY */
         return true
     }
 

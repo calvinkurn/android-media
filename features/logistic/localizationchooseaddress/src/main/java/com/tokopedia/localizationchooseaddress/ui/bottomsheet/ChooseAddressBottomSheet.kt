@@ -86,6 +86,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             if (data != null) {
                 chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName))
             }
+            listener?.onAddressDataChanged()
+            this.dismiss()
         } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
             val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
             if (data != null) {
@@ -199,7 +201,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         }
 
         buttonSnippetLocation?.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS), REQUEST_CODE_GET_DISTRICT_RECOM)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS).apply {
+                putExtra(IS_LOCALIZATION, true)
+            }, REQUEST_CODE_GET_DISTRICT_RECOM)
         }
     }
 
@@ -228,6 +232,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     companion object {
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
+        const val IS_LOCALIZATION = "is_localization"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
