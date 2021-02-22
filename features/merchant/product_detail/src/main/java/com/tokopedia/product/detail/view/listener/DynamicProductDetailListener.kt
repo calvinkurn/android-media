@@ -146,7 +146,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>)
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductReportViewHolder

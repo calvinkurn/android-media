@@ -25,7 +25,7 @@ class PopularProfileViewHolder(v: View, private val mainView: ExploreContract.Vi
         itemView.profileRv.addItemDecoration(object : RecyclerView.ItemDecoration(){
             override fun getItemOffsets(outRect: Rect, view: View,
                                         parent: RecyclerView, state: RecyclerView.State) {
-                outRect.right = itemView.getDimens(com.tokopedia.design.R.dimen.dp_8)
+                outRect.right = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
             }
         })
     }

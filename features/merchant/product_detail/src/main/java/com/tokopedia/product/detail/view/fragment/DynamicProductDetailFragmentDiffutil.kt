@@ -302,7 +302,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        stickyLoginView?.loadContent()
         ticker_occ_layout.gone()
         super.onSwipeRefresh()
     }
@@ -591,8 +590,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             val productDetailSheet = ProductDetailInfoBottomSheet()
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(

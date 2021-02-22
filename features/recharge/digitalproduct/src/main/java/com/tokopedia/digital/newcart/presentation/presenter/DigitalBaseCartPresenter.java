@@ -564,7 +564,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 new com.tokopedia.digital.newcart.data.entity.requestbody.voucher.Attributes();
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         requestBodyCancelVoucher.setAttributes(attributes);
-        getView().showFullPageLoading();
         cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
