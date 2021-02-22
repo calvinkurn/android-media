@@ -24,10 +24,10 @@ class SettingsListViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val getCreditCardListUseCase = mockk<GetCreditCardListUseCase>(relaxed = true)
-    val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: SettingsListViewModel
+    private val getCreditCardListUseCase = mockk<GetCreditCardListUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: SettingsListViewModel
 
     @Before
     fun setUp() {

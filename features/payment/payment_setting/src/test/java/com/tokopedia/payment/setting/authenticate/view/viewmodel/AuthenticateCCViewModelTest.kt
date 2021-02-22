@@ -1,18 +1,13 @@
 package com.tokopedia.payment.setting.authenticate.view.viewmodel
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.payment.setting.authenticate.domain.CheckUpdateWhiteListCreditCartUseCase
 import com.tokopedia.payment.setting.authenticate.model.AuthException
-import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListResponse
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
-import com.tokopedia.payment.setting.list.model.PaymentQueryResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -26,16 +21,15 @@ class AuthenticateCCViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val useCase = mockk<CheckUpdateWhiteListCreditCartUseCase>(relaxed = true)
-    val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val context = mockk<Context>(relaxed = true)
+    private val useCase = mockk<CheckUpdateWhiteListCreditCartUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: AuthenticateCCViewModel
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: AuthenticateCCViewModel
 
     @Before
     fun setUp() {
-        viewModel = AuthenticateCCViewModel(context,
+        viewModel = AuthenticateCCViewModel(
                 useCase,
                 userSession,
                 dispatcher)
@@ -70,7 +64,7 @@ class AuthenticateCCViewModelTest {
         coEvery { useCase.whiteListResponse(any(), any(), any(), any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.checkWhiteList()
+        viewModel.checkWhiteList("title1", "desc1", "title2", "desc2")
         assert(viewModel.whiteListResultLiveData.value is Fail)
     }
 
@@ -90,7 +84,7 @@ class AuthenticateCCViewModelTest {
         coEvery { useCase.whiteListResponse(any(), any(), any(), any(), any()) } answers {
             firstArg<(CheckWhiteListStatus) -> Unit>().invoke(data)
         }
-        viewModel.checkWhiteList()
+        viewModel.checkWhiteList("title1", "desc1", "title2", "desc2")
         assert(viewModel.whiteListResultLiveData.value is Success)
     }
 }

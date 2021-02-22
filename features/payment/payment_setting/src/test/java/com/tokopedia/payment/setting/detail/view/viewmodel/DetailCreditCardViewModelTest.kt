@@ -17,9 +17,9 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class DetailCreditCardViewModelTest {
 
-    val usecase = mockk<GQLDeleteCreditCardQueryUseCase>(relaxed = true)
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: DetailCreditCardViewModel
+    private val usecase = mockk<GQLDeleteCreditCardQueryUseCase>(relaxed = true)
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: DetailCreditCardViewModel
     private var observer = mockk<Observer<Result<DataResponseDeleteCC>>>(relaxed = true)
 
 
