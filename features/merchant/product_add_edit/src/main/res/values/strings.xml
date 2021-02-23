@@ -182,10 +182,16 @@
     <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 
     <!--Shipment-->
+    <string name="title_shipment_required">Wajib</string>
+    <string name="title_shipment_optional">Optional</string>
+    <string name="title_shipment_ticker">Risiko jika pembeli tidak aktifkan asuransi</string>
     <string name="label_shipment_insurance">Asuransi pengiriman</string>
-    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai ke pembeli</string>
+    <string name="label_shipment_insurance_description">Menanggung pengembalian dana produk &amp; ongkir untuk penjual maupun pembeli jika terjadi kerusakan / kehilangan saat pengiriman.</string>
     <string name="label_shipment_detail">Tentukan detail pengirimanmu</string>
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
+    <string name="label_shipment_required">Kamu <b>mewajibkan</b> pembeli untuk mengaktifkan asuransi pengiriman</string>
+    <string name="label_shipment_optional">Kamu <b>memberikan opsi</b> kepada pembeli untuk mengaktifkan asuransi pengiriman</string>
+    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'>Selengkapnya</font>.]]></string>
     <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
     <string name="label_weight_gram">Gram</string>
