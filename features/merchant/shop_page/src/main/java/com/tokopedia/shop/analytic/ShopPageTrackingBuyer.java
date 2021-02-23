@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +86,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_ON_TOKOPEDIA;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT;
@@ -101,6 +104,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
@@ -878,6 +883,38 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_PAGE_BUYER,
                 CLICK_FILTER_RATING + rating,
                 productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchResultTracker(
+            Boolean isOwner,
+            String keyword,
+            Boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String actionEvent = isProductResultListEmpty? SEARCH_NO_RESULT: SEARCH;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                actionEvent,
+                keyword,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchClickEtalaseProductResultTracker(
+            boolean isMyShop,
+            String keyword,
+            boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventActionFormat = isProductResultListEmpty ? SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY : SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                String.format(eventActionFormat, keyword),
+                keyword,
                 customDimensionShopPage
         );
     }
