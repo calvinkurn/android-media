@@ -1244,7 +1244,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+                Lego6AutoBannerComponentCallback(context, this),
+                ChooseAddressWidgetCallback(context, this, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1493,7 +1494,7 @@ open class HomeFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
-    override fun onChooseAddressClick() {
+    override fun onChooseAddressUpdated() {
 
     }
 

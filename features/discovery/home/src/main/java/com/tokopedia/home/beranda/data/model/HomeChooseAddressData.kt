@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.data.model
 
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+
 data class HomeChooseAddressData(
         var isActive: Boolean = true,
-        val addressId: String = ""
+        val localCacheModel: LocalCacheModel? = null
 )
