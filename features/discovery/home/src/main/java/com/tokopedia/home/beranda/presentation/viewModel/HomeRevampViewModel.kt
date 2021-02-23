@@ -33,7 +33,6 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeAddressModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -264,9 +263,8 @@ open class HomeRevampViewModel @Inject constructor(
     private var takeTicker = true
 
     private var homeNotifModel = HomeNotifModel()
-    private var homeAddressModel = HomeAddressModel()
 
-    var homeChooseAddressData = HomeChooseAddressData()
+    private var homeChooseAddressData = HomeChooseAddressData()
 
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
@@ -813,7 +811,7 @@ open class HomeRevampViewModel @Inject constructor(
             val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
             val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
             (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-                it.needToShowChooseAddress = homeChooseAddressData.isActive
+                it.needToShowChooseAddress = getAddressData().isActive
                 list[headerIndex] = homeHeaderOvoDataModel
             }
 
@@ -1375,10 +1373,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
-        this.homeChooseAddressData = homeChooseAddressData
-        refresh(isFirstInstall = false, forceRefresh = true)
-    }
+
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
@@ -1697,12 +1692,17 @@ open class HomeRevampViewModel @Inject constructor(
         navRollanceType = type
     }
 
-    fun updateAddressData(addressModel: HomeAddressModel) {
-        this.homeAddressModel = addressModel
+    fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
+        this.homeChooseAddressData = homeChooseAddressData
+        refresh(isFirstInstall = false, forceRefresh = true)
     }
 
-    fun getAddressData(): HomeAddressModel {
-        return homeAddressModel
+    fun clearAddressData() {
+        this.homeChooseAddressData = HomeChooseAddressData()
+    }
+
+    fun getAddressData(): HomeChooseAddressData {
+        return homeChooseAddressData
     }
 
     fun isAddressDataEmpty(): Boolean {

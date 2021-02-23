@@ -588,11 +588,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
-                    viewModel.get().homeChooseAddressData.isActive = true
+                    viewModel.get().getAddressData().isActive = true
                     //TODO 5: Fetch choose address data and save to viewmodel
                 },
                 ifChooseAddressNotActive = {
-                    viewModel.get().homeChooseAddressData.isActive = false
+                    viewModel.get().getAddressData().isActive = false
                 }
         )
 
