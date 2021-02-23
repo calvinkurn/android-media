@@ -104,7 +104,7 @@ class NotificationTopAdsAnalytic @Inject constructor() {
     private fun getDimension83Attribute(recommendationItem: RecommendationItem): String {
         return if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
             VALUE_BEBAS_ONGKIR_EXTRA
-        } else if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+        } else if (recommendationItem.isFreeOngkirActive) {
             VALUE_BEBAS_ONGKIR
         } else {
             VALUE_NONE_OTHER
