@@ -13,7 +13,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
@@ -23,8 +22,7 @@ import javax.inject.Inject
 class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: ExecutorDispatchers,
-                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
+                                                        private val executorDispatchers: ExecutorDispatchers) {
 
     suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
@@ -117,7 +115,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
                     orderPreference.preference.address.addressId.toString()
             )
-            return UpdateCartOccRequest(arrayListOf(cart), profile, chosenAddressRequestHelper.getChosenAddress())
+            return UpdateCartOccRequest(arrayListOf(cart), profile)
         }
         return null
     }
