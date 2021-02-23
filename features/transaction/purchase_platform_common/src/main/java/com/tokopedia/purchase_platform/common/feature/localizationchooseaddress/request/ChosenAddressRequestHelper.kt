@@ -23,8 +23,8 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                     mode = if (it.address_id.isNotBlank()) ChosenAddress.MODE_ADDRESS else ChosenAddress.MODE_SNIPPET,
                     addressId = it.address_id,
                     districtId = it.district_id,
-                    postalCode = "",
-                    geolocation = it.lat + "," + it.long
+                    postalCode = it.postal_code,
+                    geolocation = if (it.lat.isNotBlank() && it.long.isNotBlank()) it.lat + "," + it.long else ""
             )
         }
 
