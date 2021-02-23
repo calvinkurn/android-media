@@ -590,7 +590,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     onChooseAddressUpdated()
                 },
                 ifChooseAddressNotActive = {
-                    viewModel.get().homeChooseAddressData.isActive = false
+                    viewModel.get().getAddressData().isActive = false
                 }
         )
 
@@ -1578,9 +1578,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onChooseAddressUpdated() {
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        viewModel.get().homeChooseAddressData =
+        getHomeViewModel().updateChooseAddressData(
                 HomeChooseAddressData(isActive = true)
                         .setLocalCacheModel(localCacheModel)
+        )
         Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
     }
 
