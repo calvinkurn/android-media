@@ -55,6 +55,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
@@ -144,35 +145,13 @@ class AddEditProductShipmentFragment:
         isFragmentVisible = true
 
         setupViews(view)
+        hideKeyboardWhenTouchOutside()
         applyShipmentInputModel()
 
-        tfWeightAmount.setModeToNumberInput()
-        tfWeightUnit?.textFieldInput?.apply {
-            setText(getWeightTypeTitle(0))
-            isFocusable = false // disable focus
-            isActivated = false // disable focus
-            setOnClickListener {
-                showUnitWeightOption()
-            }
-        }
-        tfWeightAmount?.textFieldInput?.afterTextChanged {
-            validateInputWeight(it)
-        }
-        hideKeyboardWhenTouchOutside()
-        btnEnd?.setOnClickListener {
-            btnEnd?.isLoading = true
-            submitInput(UPLOAD_DATA)
-        }
-        btnSave?.setOnClickListener {
-            btnSave?.isLoading = true
-            if (shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
-                submitInput(SHIPMENT_DATA)
-            } else {
-                submitInputEdit()
-            }
-        }
-
+        setupWeightInput()
+        setupInsuranceTicker()
         setupInsuranceRadios()
+        setupSubmitButton()
         setupOnBackPressed()
 
         // PLT monitoring
@@ -264,6 +243,34 @@ class AddEditProductShipmentFragment:
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
+    private fun setupViews(view: View) {
+        tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
+        tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
+
+        radiosInsurance = requireView().findViewById(R.id.radios_insurance)
+        radioRequiredInsurance = requireView().findViewById(R.id.radio_required_insurance)
+        radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
+        tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
+
+        btnSave = view.findViewById(R.id.btn_save)
+        btnEnd = view.findViewById(R.id.btn_end)
+        mainLayout = view.findViewById(R.id.main_layout)
+    }
+
+    private fun setupWeightInput() {
+        tfWeightAmount.setModeToNumberInput()
+        tfWeightUnit?.textFieldInput?.apply {
+            isFocusable = false // disable focus
+            isActivated = false // disable focus
+            setOnClickListener {
+                showUnitWeightOption()
+            }
+        }
+        tfWeightAmount?.textFieldInput?.afterTextChanged {
+            validateInputWeight(it)
+        }
+    }
+
     private fun setupInsuranceRadios() {
         radioRequiredInsurance.setTitle(getString(R.string.title_shipment_required))
         radioOptionalInsurance.setTitle(getString(R.string.title_shipment_optional))
@@ -281,6 +288,28 @@ class AddEditProductShipmentFragment:
         }
     }
 
+    private fun setupSubmitButton() {
+        btnEnd?.setOnClickListener {
+            btnEnd?.isLoading = true
+            submitInput(UPLOAD_DATA)
+        }
+        btnSave?.setOnClickListener {
+            btnSave?.isLoading = true
+            if (shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
+                submitInput(SHIPMENT_DATA)
+            } else {
+                submitInputEdit()
+            }
+        }
+    }
+
+    private fun setupInsuranceTicker() {
+        tickerInsurance?.setHtmlDescription(getString(R.string.label_shipment_ticker))
+        tickerInsurance?.setOnClickListener {
+            ShipmentInsuranceBottomSheet().show(fragmentManager)
+        }
+    }
+
     fun sendDataBack() {
         if(shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
             var dataBackPressed = NO_DATA
@@ -293,21 +322,6 @@ class AddEditProductShipmentFragment:
         } else {
             setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
         }
-    }
-
-    private fun setupViews(view: View) {
-        tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
-        tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
-
-        radiosInsurance = requireView().findViewById(R.id.radios_insurance)
-        radioRequiredInsurance = requireView().findViewById(R.id.radio_required_insurance)
-        radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
-        tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
-        tickerInsurance?.setHtmlDescription(getString(R.string.label_shipment_ticker))
-
-        btnSave = view.findViewById(R.id.btn_save)
-        btnEnd = view.findViewById(R.id.btn_end)
-        mainLayout = view.findViewById(R.id.main_layout)
     }
 
     private fun setupOnBackPressed() {
@@ -342,8 +356,7 @@ class AddEditProductShipmentFragment:
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
 
-        radioRequiredInsurance?.isChecked = inputModel.isMustInsurance
-        radioOptionalInsurance?.isChecked = !inputModel.isMustInsurance
+        applyInsuranceValue(inputModel.isMustInsurance)
 
         if (!(shipmentViewModel.isAddMode && shipmentViewModel.isFirstMoved)) {
             btnEnd?.visibility = View.GONE
@@ -354,6 +367,12 @@ class AddEditProductShipmentFragment:
         }
     }
 
+    private fun applyInsuranceValue(mustInsurance: Boolean) {
+        radioRequiredInsurance?.isChecked = mustInsurance
+        radioOptionalInsurance?.isChecked = !mustInsurance
+        tickerInsurance?.isVisible = !mustInsurance
+    }
+
     private fun showUnitWeightOption() {
         if (shipmentViewModel.isEditMode) {
             ProductEditShippingTracking.clickWeightDropDown(shopId)
@@ -362,14 +381,6 @@ class AddEditProductShipmentFragment:
         }
         fragmentManager?.let {
             val optionPicker = OptionPicker()
-            optionPicker.setCloseClickListener {
-                if (shipmentViewModel.isEditMode) {
-                    ProductEditShippingTracking.clickCancelChangeWeight(shopId)
-                } else {
-                    ProductAddShippingTracking.clickCancelChangeWeight(shopId)
-                }
-                optionPicker.dismiss()
-            }
             val title = getString(R.string.label_weight)
             val options: ArrayList<String> = ArrayList()
             options.add(getString(getWeightTypeTitle(UNIT_GRAM)))
@@ -381,6 +392,15 @@ class AddEditProductShipmentFragment:
                 setTitle(title)
                 setItemMenuList(options)
                 show(it, null)
+            }
+
+            optionPicker.setCloseClickListener {
+                if (shipmentViewModel.isEditMode) {
+                    ProductEditShippingTracking.clickCancelChangeWeight(shopId)
+                } else {
+                    ProductAddShippingTracking.clickCancelChangeWeight(shopId)
+                }
+                optionPicker.dismiss()
             }
 
             optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
