@@ -4,6 +4,7 @@
     <!--Manage Address-->
     <string name="address_name">Rumah</string>
     <string name="address_label">Alamat Utama</string>
+    <string name="address_label_new">Utama</string>
     <string name="receiver_name">Nama</string>
     <string name="receiver_number">0821112233445</string>
     <string name="address_detail">Detail Alamat</string>
@@ -14,6 +15,7 @@
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="daftar_alamat">Daftar Alamat</string>
     <string name="tambah_alamat">Tambah Alamat</string>
+    <string name="pilih_alamat">Pilih Alamat</string>
 
     <string name="title_empty_address">Belum ada alamat yang terdaftar</string>
     <string name="text_empty_address">Tambah alamat untuk pengiriman pesananmu. Bisa daftarkan lebih dari satu alamat, lho.</string>
