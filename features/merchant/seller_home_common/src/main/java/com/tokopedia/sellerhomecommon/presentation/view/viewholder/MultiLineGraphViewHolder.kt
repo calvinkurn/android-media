@@ -212,7 +212,11 @@ class MultiLineGraphViewHolder(
             return
         }
 
-        val metric = lastSelectedMetric ?: metricItems.getOrNull(0)
+        val metric = if (metricItems.contains(lastSelectedMetric)) {
+            lastSelectedMetric
+        } else {
+            metricItems.getOrNull(0)
+        }
         metric?.isSelected = true
 
         with(itemView) {
