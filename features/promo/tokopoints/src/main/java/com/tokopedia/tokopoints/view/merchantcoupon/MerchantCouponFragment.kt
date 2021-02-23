@@ -1,0 +1,318 @@
+package com.tokopedia.tokopoints.view.merchantcoupon
+
+import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.library.baseadapter.AdapterCallback
+import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
+import com.tokopedia.tokopoints.view.model.merchantcoupon.ProductCategoriesFilterItem
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
+import com.tokopedia.tokopoints.view.util.*
+import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.*
+import javax.inject.Inject
+
+class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback, MerchantCouponFilterAdapter.OnFilterTypeClickListener {
+
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private var arrayList = ArrayList<ProductCategoriesFilterItem>()
+    private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, factory)[MerchantCouponViewModel::class.java] }
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this) }
+    private val mFilterAdapter: MerchantCouponFilterAdapter by lazy { MerchantCouponFilterAdapter(this) }
+
+    private var merchantRewardToolbar: MerchantRewardToolbar? = null
+    private lateinit var exploreFilterRv: RecyclerView
+    private lateinit var exploreCouponRv: RecyclerView
+    private lateinit var swipeToRefresh: SwipeToRefresh
+    private lateinit var appBarLayout: View
+    private var statusBarBgView: View? = null
+
+    private var categoryId: String = ""
+    private var canLoadMore: Boolean = false
+    private var hasLoadedOnce: Boolean = false
+
+    override fun getScreenName(): String {
+        return AnalyticsTrackerUtil.ScreenKeys.MERCHANT_COUPONLIST_SCREEN_NAME
+    }
+
+    override fun initInjector() {
+        getComponent(TokopointBundleComponent::class.java)
+                .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInjector()
+        val view = inflater.inflate(R.layout.tp_layout_merchat_coupon_list, container, false)
+        exploreFilterRv = view.findViewById(R.id.rv_coupon_category)
+        exploreCouponRv = view.findViewById(R.id.rv_merchant_couponlist)
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
+        appBarLayout = view.findViewById(R.id.app_bar_layout)
+        merchantRewardToolbar = view.findViewById(R.id.toolbar_merchant)
+        statusBarBgView = view.findViewById(R.id.status_bar_bg)
+
+        //  setStatusBarViewHeight()
+        //  setLayoutParams()
+        (activity as BaseSimpleActivity).setSupportActionBar(merchantRewardToolbar)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews(view)
+        initVar()
+        initObserver()
+        merchantRewardToolbar?.setTitle(R.string.tp_kupon_toko)
+
+        mViewModel.couponData.value = Loading()
+    }
+
+    private fun initVar() {
+        if (arguments != null) {
+            categoryId = (arguments!!.getString(
+                    PARAM_CATEGORY_ID,
+                    DEFAULT_CATEGORY)
+                    )
+        }
+    }
+
+    private fun initObserver() {
+        addListObserver()
+    }
+
+    private fun initViews(view: View) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.outlineProvider = null
+        }
+        swipeToRefresh.setOnRefreshListener(this)
+
+        val linearLayoutManagerFilter = LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL,
+                false)
+        exploreFilterRv.layoutManager = linearLayoutManagerFilter
+        exploreFilterRv.addItemDecoration(MerchantListItemDecorator(convertDpToPixel(10, exploreCouponRv.context)))
+        exploreFilterRv.adapter = mFilterAdapter
+
+        val linearLayoutManager = LinearLayoutManager(context,
+                LinearLayoutManager.VERTICAL,
+                false)
+        exploreCouponRv.layoutManager = linearLayoutManager
+        exploreCouponRv.adapter = mCouponAdapter
+    }
+
+    private fun addListObserver() = mViewModel.couponData.observe(viewLifecycleOwner, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> {
+                    mCouponAdapter.resetAdapter()
+                    mCouponAdapter.notifyDataSetChanged()
+                    mCouponAdapter.startDataLoading()
+                }
+                is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    setOnRecyclerViewLayoutReady()
+                    if (it.data.firstSetup) {
+                        setUpFilter(it.data.merchantCouponResponse.productlist?.productCategoriesFilter)
+                    }
+                    it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
+                }
+                is ErrorMessage -> {
+                    mCouponAdapter.onError()
+                }
+                else -> {
+                }
+            }
+        }
+    })
+
+    private fun setUpFilter(productCategoriesFilter: List<ProductCategoriesFilterItem?>?) {
+        mFilterAdapter.setData(productCategoriesFilter as ArrayList<ProductCategoriesFilterItem>)
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS,
+                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS,
+                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setOnRecyclerViewLayoutReady() {
+        exploreCouponRv?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        exploreCouponRv?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                })
+    }
+
+    override fun onRefresh() {
+        val id = mViewModel.category
+        id?.let { mViewModel.setCategoryRootId(id) }
+    }
+
+    fun showLoader() {
+        container?.displayedChild = CONTAINER_LOADER
+        swipe_refresh_layout?.isRefreshing = false
+    }
+
+    fun hideLoader() {
+        container?.displayedChild = CONTAINER_DATA
+        swipe_refresh_layout?.isRefreshing = false
+    }
+
+    override fun onDestroyView() {
+        //  mCouponAdapter.onDestroyView()
+        super.onDestroyView()
+    }
+
+    private fun setLayoutParams() {
+        val statusBarHeight = getStatusBarHeight(activity)
+        val layoutParams = merchantRewardToolbar?.layoutParams as FrameLayout.LayoutParams
+        layoutParams.topMargin = statusBarHeight
+        merchantRewardToolbar?.layoutParams = layoutParams
+    }
+
+    private fun setStatusBarViewHeight() {
+        if (activity != null) statusBarBgView?.layoutParams?.height = TokoPointsHomeFragmentNew.getStatusBarHeight(activity)
+    }
+
+    fun getStatusBarHeight(context: Context?): Int {
+        var height = 0
+        val resId = context!!.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resId > 0) {
+            height = context.resources.getDimensionPixelSize(resId)
+        }
+        return height
+    }
+
+    companion object {
+
+        const val PARAM_CATEGORY_ID = "categoryRootID"
+        private const val DEFAULT_CATEGORY = "0"
+        const val CONTAINER_LOADER = 0
+        const val CONTAINER_DATA = 1
+        const val CONTAINER_ERROR = 2
+
+        @JvmStatic
+        fun newInstance(bundle: Bundle?): MerchantCouponFragment {
+            val fragment = MerchantCouponFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    override fun onRetryPageLoad(pageNumber: Int) {}
+
+    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+        swipe_refresh_layout.isRefreshing = false
+    }
+
+    override fun onStartPageLoad(pageNumber: Int) {}
+
+    override fun onStartFirstPageLoad() {
+        showLoader()
+    }
+
+    override fun onError(pageNumber: Int) {
+        if (pageNumber == 1) {
+            container.displayedChild = CONTAINER_ERROR
+            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(context?.applicationContext))
+        }
+        swipe_refresh_layout.isRefreshing = false
+    }
+
+    override fun onEmptyList(rawObject: Any?) {
+        hideLoader()
+    }
+
+    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+        view?.postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
+    }
+
+/*    override fun filterClickListener(rootID: String?) {
+        if (rootID != null) {
+            mViewModel.setCategoryRootId(rootID)
+        }
+    }*/
+
+    override fun onFilterTypeSelected(adapterPosition: Int, productCategoriesFilterItem: ProductCategoriesFilterItem) {
+        if (productCategoriesFilterItem.rootID != null) {
+            mViewModel.setCategoryRootId(productCategoriesFilterItem.rootID)
+        }
+    }
+
+    override fun onFilterTypeDeselected(adapterPosition: Int, productCategoriesFilterItem: ProductCategoriesFilterItem): Boolean {
+        if (productCategoriesFilterItem.rootID != null) {
+            mViewModel.setCategoryRootId("0")
+        }
+        return true
+    }
+}

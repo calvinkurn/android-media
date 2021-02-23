@@ -51,6 +51,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
@@ -358,6 +359,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
 
                     }
+                    if (sectionContent.layoutMerchantCouponAttr != null && !sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
+
+                        val merchantVoucherViewBinder = MerchantVoucherViewBinder()
+                        @Suppress("UNCHECKED_CAST")
+                        viewBinders.put(
+                                sectionContent.layoutType,
+                                merchantVoucherViewBinder as SectionItemBinder)
+                        sectionList.add(sectionContent)
+                    }
+
                     when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()

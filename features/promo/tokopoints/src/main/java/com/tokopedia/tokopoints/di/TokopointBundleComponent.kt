@@ -7,6 +7,7 @@ import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingFragment
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment
+import com.tokopedia.tokopoints.view.merchantcoupon.MerchantCouponFragment
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
@@ -33,4 +34,6 @@ interface TokopointBundleComponent {
     fun inject(fragment: TokoPointsHomeFragmentNew)
 
     fun inject(fragment: ValidateMerchantPinFragment)
+
+    fun inject(fragment: MerchantCouponFragment)
 }

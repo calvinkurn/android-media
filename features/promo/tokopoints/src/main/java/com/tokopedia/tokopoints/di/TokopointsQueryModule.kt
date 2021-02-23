@@ -189,4 +189,11 @@ class TokopointsQueryModule(val activity: Activity) {
     fun getGQLRewardUserSaving(context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_usersaving)
     }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_MERCHANTCOUPON)
+    fun getGQLMerchantCoupon(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_reward_merchantcoupon)
+    }
 }
