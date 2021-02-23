@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerStepDetails
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
@@ -50,6 +51,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var partnerName: String? = ""
     private var isUsageType = false
 
+    private val applicationStatusData: PayLaterApplicationDetail? by lazy {
+        arguments?.getParcelable(APPLICATION_STATUS_DATA)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getArgumentData()
@@ -68,7 +73,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         payLaterItemProductData?.let {
             actionUrl = it.actionWebUrl ?: ""
             partnerName = it.partnerName ?: ""
-            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(it, null)) {
+            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(it, applicationStatusData)) {
                 is RegisterStepsPartnerType -> {
                     sheetTitle = "${context?.getString(R.string.pay_later_how_to_register)} ${it.partnerName}"
                     partnerUsageData = it.partnerApplyDetails
@@ -126,12 +131,14 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun initListeners() {
         btnRegister.setOnClickListener {
             sendAnalytics()
-            openUrlWebView(actionUrl) }
+            openUrlWebView(actionUrl)
+        }
     }
 
     private fun sendAnalytics() {
         if (!isUsageType)
-            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(partnerName ?: ""))
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(partnerName
+                    ?: ""))
     }
 
     private fun initAdapter() {
@@ -152,6 +159,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
+        const val APPLICATION_STATUS_DATA = "applicationStatusData"
 
         fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
             val actionStepsBottomSheet = PayLaterActionStepsBottomSheet().apply {

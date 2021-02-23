@@ -42,7 +42,10 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
             } else {
                 applicationDetailList.map {
                     val appStatus = setLabelData(it)
-                    if (appStatus is PayLaterStatusActive) isPayLaterActive = true
+                    if (appStatus is PayLaterStatusActive ||
+                            appStatus is PayLaterStatusApproved ||
+                            appStatus is PayLaterStatusWaiting)
+                        isPayLaterActive = true
                 }
             }
         }
@@ -74,7 +77,7 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
             }
             is PayLaterStatusApproved -> {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_approved
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_GREEN
             }
             is PayLaterStatusSuspended -> {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_suspended

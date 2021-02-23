@@ -30,6 +30,8 @@ class NoRecommendationViewTableRowHeader(val context: Context, val layoutParams:
 
         if (showBackGround)
             rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+        else rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
         val recomBadge = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivRecommendationBadge)
         recomBadge.gone()
         return rowHeaderNoRecom

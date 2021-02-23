@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
@@ -19,7 +18,6 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
     fun initUI(simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val recommendationView = LayoutInflater.from(context).inflate(getLayout(), null)
         recommendationView.layoutParams = layoutParams
-        recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_green_border)
         val ivPayLaterPartner = recommendationView.findViewById<ImageView>(R.id.ivPaylaterPartner)
         val imageUrl: String?
         if (context.isDarkMode())
@@ -30,7 +28,8 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
             ivPayLaterPartner.loadImage(imageUrl)
 
         if (showBackGround)
-            recommendationView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_bg_grey_green_border)
+        else recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_bg_white_green_border)
         return recommendationView
     }
 }

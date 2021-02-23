@@ -141,13 +141,14 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
                 is ProcessingApplicationPartnerType ->
                     openVerificationBottomSheet(bundle, partnerApplicationDetail)
-                else -> openActionBottomSheet(bundle, data)
+                else -> openActionBottomSheet(bundle, data, partnerApplicationDetail)
             }
         }
     }
 
-    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterItemProductData) {
+    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, partnerData)
+        bundle.putParcelable(PayLaterActionStepsBottomSheet.APPLICATION_STATUS_DATA, partnerApplicationDetail)
         pdpSimulationCallback?.openBottomSheet(bundle, PayLaterActionStepsBottomSheet::class.java)
     }
 

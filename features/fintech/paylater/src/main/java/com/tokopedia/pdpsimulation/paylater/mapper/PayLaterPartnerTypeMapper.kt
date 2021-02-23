@@ -20,7 +20,7 @@ object PayLaterPartnerTypeMapper {
         var status = STATUS_EMPTY
         partnerApplicationDetail?.let {
             val payLaterStatus = PayLaterApplicationStatusMapper.getApplicationStatusType(it)
-            isApplicationActive = payLaterStatus is PayLaterStatusActive || payLaterStatus is PayLaterStatusApproved
+            isApplicationActive = payLaterStatus is PayLaterStatusActive
             status = payLaterStatus.status
         }
 

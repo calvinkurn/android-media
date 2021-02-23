@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.pdpsimulation.paylater.mapper.EmptyInstallment
@@ -17,14 +16,12 @@ class InstallmentViewTableContent(val context: Context, private val layoutParams
 
     private fun getLayout() = R.layout.paylater_simulation_table_content
 
-    fun initUI(installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
+    fun initUI(installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, isRecommendedOption: Boolean, col: Int): View {
         val installmentView = LayoutInflater.from(context).inflate(getLayout(), null)
         installmentView.layoutParams = layoutParams
-        if (showBackground(row))
-            installmentView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         val tvInstallmentPrice = installmentView.findViewById<Typography>(R.id.tvContent)
         tvInstallmentPrice.text = getInstallmentText(tenureList[col], installmentMap)
-        if (isRecommendedInstallment(row)) tvInstallmentPrice.setWeight(Typography.BOLD)
+        if (isRecommendedOption) tvInstallmentPrice.setWeight(Typography.BOLD)
         return installmentView
     }
 
@@ -34,16 +31,11 @@ class InstallmentViewTableContent(val context: Context, private val layoutParams
                 && installmentMap.containsKey(tenureType)
                 && installmentMap[tenureType]?.installmentPerMonth?.isNotEmpty() == true) {
 
-            val priceString = installmentMap[tenureType]?.installmentPerMonth?.toIntOrNull() ?: -1
+            val priceString = installmentMap[tenureType]?.installmentPerMonth?.toIntOrNull() ?: 0
             val isInterestZeroPercent = installmentMap[tenureType]?.interestPercent == 0f
-            if (priceString != -1 && isInterestZeroPercent) "${CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)}*"
-            else if (priceString != -1) CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
+            if (priceString != 0 && isInterestZeroPercent) "${CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)}*"
+            else if (priceString != 0) CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
             else "-"
         } else "-"
     }
-
-    private fun isRecommendedInstallment(row: Int) = row == 1
-
-    private fun showBackground(row: Int) = row % 2 == 0
-
 }
