@@ -157,8 +157,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         menuSettingViewModel.shopSettingAccessLiveData.removeObservers(viewLifecycleOwner)
     }
 
