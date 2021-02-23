@@ -129,7 +129,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 if (groupId == SINGLE_AD) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, SINGLE_USER_ADS)
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
-                        putExtra(GROUPID, adId.toInt())
+                        putExtra(GROUPID, adId)
                     }
                     startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {

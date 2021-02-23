@@ -2,8 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -14,6 +13,7 @@ import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,7 +64,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
     private lateinit var somGetFiltersJobField: Field
     private lateinit var somRefreshOrderJobField: Field
 
-    private val dispatcher: SomDispatcherProvider = SomTestDispatcherProvider()
+    private val dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     @Before
     override fun setUp() {

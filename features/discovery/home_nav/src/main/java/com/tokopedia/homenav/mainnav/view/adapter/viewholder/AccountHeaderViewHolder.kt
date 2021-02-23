@@ -191,6 +191,7 @@ class AccountHeaderViewHolder(itemView: View,
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tvShopInfo.setOnClickListener { onShopClicked() }
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
