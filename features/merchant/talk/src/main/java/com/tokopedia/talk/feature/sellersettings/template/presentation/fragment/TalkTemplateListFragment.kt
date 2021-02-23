@@ -256,7 +256,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun goToEdit(template: String, index: Int) {
         activity?.let {
             if(editBottomsheet == null) {
-                editBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(context, getString(R.string.title_edit_template_page)) }
+                editBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(getString(R.string.title_edit_template_page)) }
             }
             editBottomsheet?.apply {
                 setCacheManagerId(putDataIntoCacheManager(true, template, index))
@@ -269,7 +269,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun goToAdd() {
         activity?.let {
             if(addBottomsheet == null) {
-                addBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(context, getString(R.string.title_add_template_page)) }
+                addBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(getString(R.string.title_add_template_page)) }
             }
             addBottomsheet?.apply {
                 setCacheManagerId(putDataIntoCacheManager(false, null, null))

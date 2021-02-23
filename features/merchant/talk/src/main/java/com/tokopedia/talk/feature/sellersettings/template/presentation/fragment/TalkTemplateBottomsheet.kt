@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.sellersettings.template.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,6 +24,7 @@ import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateComponent> {
@@ -33,12 +33,12 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
         const val REQUEST_KEY = "talk_template_request"
         const val KEY_TEMPLATE = "template"
         const val BOLD_REOURCE = "RobotoBold.ttf"
+        const val TOASTER_ERROR_LIMIT_HEIGHT = 150
+        const val TOASTER_ERROR_HEIGHT = 50
         const val TEXT_LIMIT = 200
-        fun createNewInstance(context: Context, title: String): TalkTemplateBottomsheet {
+        fun createNewInstance(title: String): TalkTemplateBottomsheet {
             return TalkTemplateBottomsheet().apply {
-                val view = View.inflate(context, R.layout.fragment_talk_edit_template, null)
                 setTitle(title)
-                setChild(view)
             }
         }
     }
@@ -49,13 +49,13 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private var isSeller: Boolean = false
     private var index: Int = -1
     private var templateText: String = ""
-    private var toaster: Snackbar? = null
     private var isEditMode: Boolean = false
     private var allowDelete: Boolean = false
     private var cacheManagerId = ""
     private var talkTemplateBottomSheetListener: TalkTemplateBottomSheetListener? = null
     private var talkEditTemplateEditText: EditText? = null
     private var talkEditTemplateSaveButton: UnifyButton? = null
+    private var viewContainer: View? = null
 
     fun setCacheManagerId(cacheId: String) {
         cacheManagerId = cacheId
@@ -67,6 +67,8 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewContainer = View.inflate(requireContext(), R.layout.fragment_talk_edit_template, null)
+        setChild(viewContainer)
         component?.inject(this)
     }
 
@@ -111,21 +113,19 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 }
                 is TalkTemplateMutationResults.DeleteTemplateFailed -> {
                     logException(it.throwable)
-                    showToaster(getString(R.string.template_delete_toaster_fail))
+                    showToaster(getString(R.string.template_delete_toaster_fail), TOASTER_ERROR_HEIGHT)
                 }
                 is TalkTemplateMutationResults.MutationFailed -> {
                     logException(it.throwable)
-                    showToaster(getString(R.string.template_list_toaster_fail))
+                    showToaster(getString(R.string.template_list_toaster_fail), TOASTER_ERROR_HEIGHT)
                 }
             }
         })
     }
 
-    private fun showToaster(successMessage: String) {
-        parentFragment?.view?.let {
-            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
-            toaster?.show()
-        }
+    private fun showToaster(successMessage: String, customHeight: Int) {
+        Toaster.toasterCustomBottomHeight = customHeight.toPx()
+        viewContainer?.let { Toaster.build(it.rootView, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show() }
     }
 
     private fun initButton(view: View) {
@@ -192,7 +192,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
                         if(s?.length == TEXT_LIMIT) {
-                            showToaster(getString(R.string.template_list_add_edit_template_limit))
+                            showToaster(getString(R.string.template_list_add_edit_template_limit), TOASTER_ERROR_LIMIT_HEIGHT)
                         }
                     }
 

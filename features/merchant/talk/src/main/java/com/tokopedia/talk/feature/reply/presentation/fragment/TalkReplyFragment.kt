@@ -495,7 +495,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onFailCreateComment(throwable: Throwable) {
         logException(throwable)
-        showErrorToaster(throwable.message ?: getString(R.string.reply_toaster_network_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        showErrorToaster(getString(R.string.reply_toaster_network_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun onSuccessUnmaskQuestion() {

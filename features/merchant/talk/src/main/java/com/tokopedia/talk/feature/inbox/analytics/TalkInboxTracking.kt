@@ -227,6 +227,9 @@ class TalkInboxTracking @Inject constructor() {
             TalkInboxFilter.UNRESPONDED_FILTER -> {
                 TalkInboxTrackingConstants.FILTER_UNRESPONDED
             }
+            TalkInboxFilter.AUTOREPLIED_FILTER -> {
+                TalkInboxTrackingConstants.FILTER_AUTOREPLIED
+            }
             else -> {
                 ""
             }
