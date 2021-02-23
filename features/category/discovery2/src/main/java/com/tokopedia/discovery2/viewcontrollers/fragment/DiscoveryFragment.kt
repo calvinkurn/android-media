@@ -180,9 +180,13 @@ class DiscoveryFragment :
     }
 
     private fun initChooseAddressWidget(view: View) {
-        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
-        chooseAddressWidget?.bindChooseAddress(this)
-        fetchUserLatestAddressData()
+        context?.let {
+            if(ChooseAddressUtils.isRollOutUser(it)){
+                chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+                chooseAddressWidget?.bindChooseAddress(this)
+                fetchUserLatestAddressData()
+            }
+        }
     }
 
     private fun initToolbar(view: View) {
@@ -785,8 +789,10 @@ class DiscoveryFragment :
     }
 
     private fun checkAddressUpdate() {
-        if(userAddressData != null && context != null){
-            ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), userAddressData!!)
+        context?.let {
+            if(userAddressData != null){
+                if(ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) showLoadingWithRefresh()
+            }
         }
     }
 }
