@@ -11,7 +11,8 @@
         android:id="@+id/image_icon6"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:src="@drawable/qc_launcher" />
+        android:src="@drawable/ic_big_notif_customerapp"
+        android:contentDescription="@null" />
 
     <LinearLayout
         android:id="@+id/lin_container_1"
@@ -29,7 +30,8 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_3"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/title1"
@@ -59,7 +61,8 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_2"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/title2"
@@ -89,7 +92,8 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_2"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/title3"
@@ -119,7 +123,8 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_2"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/title4"
@@ -145,7 +150,8 @@
             android:layout_width="@dimen/dp_36"
             android:layout_height="match_parent"
             android:padding="@dimen/dp_11"
-            android:src="@drawable/ic_persist_close" />
+            android:src="@drawable/ic_persist_close"
+            android:contentDescription="@null" />
 
     </LinearLayout>
 </LinearLayout>
