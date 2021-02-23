@@ -1,7 +1,5 @@
 package com.tokopedia.loginregister.login.di
 
-import com.tokopedia.devicefingerprint.datavisor.pojo.VisorResponse
-import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
