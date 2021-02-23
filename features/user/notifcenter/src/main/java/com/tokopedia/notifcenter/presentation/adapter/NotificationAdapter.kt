@@ -177,7 +177,7 @@ class NotificationAdapter constructor(
             return Pair(lastKnownPosition, item as? T)
         }
         val updatePosition = visitables.indexOf(element)
-        return Pair(updatePosition, item as? T)
+        return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
     }
 
     private fun isNotificationItem(position: Int): Boolean {
