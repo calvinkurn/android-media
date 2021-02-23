@@ -47,19 +47,28 @@ class SmartBillsViewHolder(val view: View,
                 else gone()
             }
 
-            val description = if (element.billName.isNotEmpty()) {
-                String.format(getString(R.string.smart_bills_item_description), element.clientNumber)
-            } else {
-                element.clientNumber
+            val description = when{
+                element.billName.isNotEmpty() && element.flag -> String.format(getString(R.string.smart_bills_item_description), element.clientNumber)
+                element.clientNumber.isNotEmpty() && !element.flag -> String.format(getString(R.string.smart_bills_item_description), element.operatorName)
+                element.flag -> element.clientNumber
+                !element.flag -> element.operatorName
+                else -> ""
             }
 
-
-            if (element.billName.isNotEmpty()) {
-                tv_smart_bills_item_description_bill_name.text = element.billName
+            val titleDesc = when{
+                element.billName.isNotEmpty() && element.flag -> element.billName
+                element.clientNumber.isNotEmpty() && !element.flag -> element.clientNumber
+                else -> ""
             }
-            
+
+            tv_smart_bills_item_description_bill_name.apply {
+                if (titleDesc.isNotEmpty()){
+                    text = titleDesc
+                } else this.gone()
+            }
+
             tv_smart_bills_item_description_number.apply {
-                if (element.clientNumber.isNotEmpty()) {
+                if (description.isNotEmpty()) {
                     text = description
                 } else this.gone()
             }
