@@ -3,7 +3,6 @@ package com.tokopedia.linker;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.helper.BranchHelper;
