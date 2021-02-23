@@ -55,7 +55,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
 
     private fun renderFreeShipping(element: CartWishlistItemHolderData) {
         itemView.img_free_shipping?.apply {
-            if ((element.freeShipping || element.freeShippingExtra) && element.freeShippingUrl.isNotBlank()) {
+            if (element.freeShipping && element.freeShippingUrl.isNotBlank()) {
                 loadImage(element.freeShippingUrl)
                 show()
             } else {
