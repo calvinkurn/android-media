@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 class StatisticViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val fragments = mutableListOf<Fragment>()
+    val fragments = mutableListOf<Fragment>()
     val titles = mutableListOf<String>()
 
     override fun getCount(): Int = fragments.size

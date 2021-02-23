@@ -9,9 +9,12 @@ import android.content.Intent
 object StatisticAppLinkHandler {
 
     private const val QUERY_PARAM_PAGE = "page"
+    private const val QUERY_PARAM_DATA_KEY = "data_key"
 
-    fun handleAppLink(intent: Intent?, callback: (page: String) -> Unit) {
-        val page = intent?.data?.getQueryParameter(QUERY_PARAM_PAGE).orEmpty()
-        callback(page)
+    fun handleAppLink(intent: Intent?, callback: (page: String, dataKey: String) -> Unit) {
+        val uri = intent?.data
+        val page = uri?.getQueryParameter(QUERY_PARAM_PAGE).orEmpty()
+        val dataKey = uri?.getQueryParameter(QUERY_PARAM_DATA_KEY).orEmpty()
+        callback(page, dataKey)
     }
 }

@@ -59,6 +59,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     var pltListener: StatisticIdlingResourceListener? = null
 
     private var selectedPageSource = ""
+    private var selectedDataKey = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -199,8 +200,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun handleAppLink(intent: Intent?) {
-        StatisticAppLinkHandler.handleAppLink(intent) { page ->
+        StatisticAppLinkHandler.handleAppLink(intent) { page, dataKey ->
             selectedPageSource = page
+            selectedDataKey = dataKey
             selectTabByPageSource()
         }
     }
@@ -208,7 +210,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun selectTabByPageSource() {
         val tabIndex = pages.indexOfFirst { it.pageSource == selectedPageSource }
         val tab = tabStatistic.tabLayout.getTabAt(tabIndex)
-        tab?.select()
+        tab?.let {
+            it.select()
+            showSelectedWidgetByDataKey(tabIndex)
+        }
+    }
+
+    private fun showSelectedWidgetByDataKey(tabIndex: Int) {
+        val fragment = viewPagerAdapter?.fragments?.getOrNull(tabIndex) as? StatisticFragment
+        fragment?.setSelectedDataKey(selectedDataKey)
     }
 
     private fun setWhiteStatusBar() {

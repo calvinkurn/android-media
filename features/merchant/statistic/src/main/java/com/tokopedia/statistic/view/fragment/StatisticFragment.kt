@@ -111,6 +111,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
+    private var selectedDataKey: String = ""
     private val dateFilterImpressHolder = ImpressHolder()
     private val otherMenuImpressHolder = ImpressHolder()
 
@@ -307,6 +308,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
+    fun setSelectedDataKey(dataKey: String) {
+        this.selectedDataKey = dataKey
+    }
+
     private fun setupView() = view?.run {
         setDefaultRange()
         setupRecyclerView()
@@ -498,6 +503,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         adapter.data.clear()
         super.renderList(mWidgetList)
 
+        scrollToWidgetBySelectedDataKey()
+
         if (isFirstLoad) {
             recyclerView.post {
                 requestVisibleWidgetsData()
@@ -505,6 +512,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             isFirstLoad = false
         } else {
             requestVisibleWidgetsData()
+        }
+    }
+
+    private fun scrollToWidgetBySelectedDataKey() {
+        val index = adapter.data.indexOfFirst { it.dataKey == selectedDataKey }
+        val invalidIndex = -1
+        if (index != invalidIndex) {
+            recyclerView.post {
+                recyclerView.smoothScrollToPosition(index)
+            }
         }
     }
 
