@@ -109,7 +109,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Inspiratio
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS;
@@ -176,7 +176,7 @@ final class ProductListPresenter
     private List<Option> quickFilterOptionList = new ArrayList<>();
     private DynamicFilterModel dynamicFilterModel;
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
-    private int firstProductPosition = 0;
+    private int firstProductPositionWithBOELabel = -1;
     private boolean hasFullThreeDotsOptions = false;
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
@@ -1126,7 +1126,7 @@ final class ProductListPresenter
 
         addSearchInTokopedia(searchProduct, list);
 
-        firstProductPosition = getFirstProductPosition(list);
+        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -1140,12 +1140,16 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private int getFirstProductPosition(List<Visitable> list) {
-        if (productList.isEmpty()) return 0;
+    private int getFirstProductPositionWithBOELabel(List<Visitable> list) {
+        if (productList.isEmpty()) return -1;
 
-        int firstProductPosition = list.indexOf(productList.get(0));
+        ProductItemViewModel product = (ProductItemViewModel) CollectionsKt.firstOrNull(productList, prod -> ((ProductItemViewModel) prod).hasLabelGroupFulfillment());
 
-        return Math.max(firstProductPosition, 0);
+        if (product == null) return -1;
+
+        int firstProductPositionWithBOELabel = list.indexOf(product);
+
+        return Math.max(firstProductPositionWithBOELabel, -1);
     }
 
     private void addPageTitle(List<Visitable> list) {
@@ -1951,18 +1955,18 @@ final class ProductListPresenter
     }
 
     public void onFreeOngkirOnBoardingShown() {
-        if (getView() != null && !isSearchOnBoardingShown()) {
-            getView().showOnBoarding(firstProductPosition, hasFullThreeDotsOptions);
+        if (getView() != null && !isSearchOnBoardingShown() && firstProductPositionWithBOELabel >= 0) {
+            getView().showOnBoarding(firstProductPositionWithBOELabel);
             toggleSearchOnBoardingShown();
         }
     }
 
     private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions;
+        return searchOnBoardingLocalCache.getBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN);
     }
 
     private void toggleSearchOnBoardingShown() {
-        if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
+        searchOnBoardingLocalCache.putBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }
 
