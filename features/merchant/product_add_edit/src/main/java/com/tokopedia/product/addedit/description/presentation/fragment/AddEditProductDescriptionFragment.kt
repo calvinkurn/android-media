@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -22,11 +23,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
@@ -40,6 +37,10 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.MAX_VIDEOS
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VALIDATE_REQUEST_DELAY
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VIDEO_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
@@ -69,7 +70,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
@@ -85,21 +85,20 @@ class AddEditProductDescriptionFragment:
         AddEditProductPerformanceMonitoringListener
 {
 
-    companion object {
-        const val MAX_VIDEOS = 3
-        const val MAX_DESCRIPTION_CHAR = 2000
-        const val VIDEO_REQUEST_DELAY = 250L
-        const val VALIDATE_REQUEST_DELAY = 250L
-    }
-
-    private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
     private var isFragmentVisible = false
+
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
+
+    override fun loadInitialData() {
+        loadData(1)
+    }
 
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
@@ -165,6 +164,10 @@ class AddEditProductDescriptionFragment:
 
     override fun getScreenName(): String? = null
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -176,10 +179,8 @@ class AddEditProductDescriptionFragment:
     override fun onCreate(savedInstanceState: Bundle?) {
         // PLT Monitoring
         startPerformanceMonitoring()
-
-        userSession = UserSession(requireContext())
-        shopId = userSession.shopId
         super.onCreate(savedInstanceState)
+        shopId = userSession.shopId
 
         arguments?.let {
             val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
@@ -203,99 +204,23 @@ class AddEditProductDescriptionFragment:
         return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        btnNext.isLoading = false
-        btnSave.isLoading = false
-    }
-
-    override fun getRecyclerViewResourceId(): Int {
-        return R.id.recycler_view
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
+                requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
-        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
-        textFieldDescription?.textFieldInput?.apply {
-            isSingleLine = false
-            imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-            afterTextChanged {
-                if (it.length >= MAX_DESCRIPTION_CHAR) {
-                    textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
-                    textFieldDescription?.setError(true)
-                } else {
-                    textFieldDescription?.setMessage("")
-                    textFieldDescription?.setError(false)
-                }
-                validateDescriptionText(it)
-            }
-        }
-
-        textViewAddVideo.setOnClickListener {
-            if (getFilteredValidVideoLink().size == adapter.dataSize) {
-                if (descriptionViewModel.isEditMode) {
-                    ProductEditDescriptionTracking.clickAddVideoLink(shopId)
-                } else {
-                    ProductAddDescriptionTracking.clickAddVideoLink(shopId)
-                }
-                addEmptyVideoUrl()
-            }
-        }
-
-        layoutDescriptionTips.setOnClickListener {
-            showDescriptionTips()
-        }
-
-        layoutVariantTips.setOnClickListener {
-            showVariantTips()
-        }
-
-        tvAddVariant.setOnClickListener {
-            sendClickAddProductVariant()
-            showVariantDialog()
-        }
-
-        tvEditVariant.setOnClickListener {
-            sendClickAddProductVariant()
-            showVariantDialog()
-        }
-
-        btnNext.setOnClickListener {
-            btnNext.isLoading = true
-            moveToShipmentActivity()
-        }
-
-        btnSave.setOnClickListener {
-            btnSave.isLoading = true
-            val isAdding = descriptionViewModel.isAddMode
-            val isDrafting = descriptionViewModel.isDraftMode
-            if (isAdding && !isDrafting) {
-                submitInput()
-            } else {
-                submitInputEdit()
-            }
-        }
-
-        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
-            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-        }
+        setupDescriptionLayout()
+        setupVideoListLayout()
+        setupVariantLayout()
+        setupSubmitButton()
+        setupSellerMigrationLayout()
 
         if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) applyEditMode()
-
-        with (GlobalConfig.isSellerApp()) {
-            containerAddEditDescriptionFragmentNoInputVariant.showWithCondition(!this)
-            containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
-            tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
-        }
 
         onFragmentResult()
         setupOnBackPressed()
@@ -307,6 +232,12 @@ class AddEditProductDescriptionFragment:
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        btnNext.isLoading = false
+        btnSave.isLoading = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -343,14 +274,6 @@ class AddEditProductDescriptionFragment:
             }
         }
         super.onViewStateRestored(savedInstanceState)
-    }
-
-    private fun sendClickAddProductVariant() {
-        if (descriptionViewModel.isEditMode) {
-            ProductEditDescriptionTracking.clickAddProductVariant(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickAddProductVariant(shopId)
-        }
     }
 
     override fun onDestroyView() {
@@ -407,6 +330,97 @@ class AddEditProductDescriptionFragment:
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
+    private fun setupSellerMigrationLayout() {
+        with (GlobalConfig.isSellerApp()) {
+            containerAddEditDescriptionFragmentNoInputVariant.showWithCondition(!this)
+            containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
+            tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
+        }
+    }
+
+    private fun setupVideoListLayout() {
+        textViewAddVideo.setOnClickListener {
+            if (getFilteredValidVideoLink().size == adapter.dataSize) {
+                if (descriptionViewModel.isEditMode) {
+                    ProductEditDescriptionTracking.clickAddVideoLink(shopId)
+                } else {
+                    ProductAddDescriptionTracking.clickAddVideoLink(shopId)
+                }
+                addEmptyVideoUrl()
+            }
+        }
+
+        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+    }
+
+    private fun setupSubmitButton() {
+        btnNext.setOnClickListener {
+            btnNext.isLoading = true
+            moveToShipmentActivity()
+        }
+
+        btnSave.setOnClickListener {
+            btnSave.isLoading = true
+            val isAdding = descriptionViewModel.isAddMode
+            val isDrafting = descriptionViewModel.isDraftMode
+            if (isAdding && !isDrafting) {
+                submitInput()
+            } else {
+                submitInputEdit()
+            }
+        }
+    }
+
+    private fun setupVariantLayout() {
+        layoutVariantTips.setOnClickListener {
+            showVariantTips()
+        }
+
+        tvAddVariant.setOnClickListener {
+            sendClickAddProductVariant()
+            showVariantDialog()
+        }
+
+        tvEditVariant.setOnClickListener {
+            sendClickAddProductVariant()
+            showVariantDialog()
+        }
+    }
+
+    private fun setupDescriptionLayout() {
+        layoutDescriptionTips.setOnClickListener {
+            showDescriptionTips()
+        }
+
+        textFieldDescription?.setCounter(AddEditProductDetailConstants.MAX_DESCRIPTION_CHAR)
+        textFieldDescription?.textFieldInput?.apply {
+            isSingleLine = false
+            imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+            afterTextChanged {
+                if (it.length >= AddEditProductDetailConstants.MAX_DESCRIPTION_CHAR) {
+                    textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
+                    textFieldDescription?.setError(true)
+                } else {
+                    textFieldDescription?.setMessage("")
+                    textFieldDescription?.setError(false)
+                }
+                validateDescriptionText(it)
+            }
+        }
+    }
+
+    private fun sendClickAddProductVariant() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickAddProductVariant(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickAddProductVariant(shopId)
+        }
+    }
+
     private fun removeObservers() {
         descriptionViewModel.productInputModel.removeObservers(this)
         descriptionViewModel.videoYoutube.removeObservers(this)
@@ -422,10 +436,6 @@ class AddEditProductDescriptionFragment:
                 loadData(adapter.dataSize + 1)
             }
         }
-    }
-
-    override fun loadInitialData() {
-        loadData(1)
     }
 
     private fun getVideoYoutube(url: String, index: Int) {
