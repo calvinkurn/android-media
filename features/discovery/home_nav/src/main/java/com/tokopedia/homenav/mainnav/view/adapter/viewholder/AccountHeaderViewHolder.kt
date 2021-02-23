@@ -52,8 +52,6 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        const val TEXT_TOKO_SAYA = "Toko saya:  %s"
-        const val TEXT_PERAN_SAYA = "Peran saya:  %s"
         private const val GREETINGS_0_2 = "Selamat tidur~"
         private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
         private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
@@ -101,7 +99,6 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
@@ -191,7 +188,7 @@ class AccountHeaderViewHolder(itemView: View,
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvShopInfo.setOnClickListener { onShopClicked() }
+            tvShopInfo.setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
@@ -319,12 +316,5 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun setFirstTimeUserSeeNameAnimationOnSession(value: Boolean) {
         MainNavConst.MainNavState.runAnimation = value
-    }
-
-    private fun setColor(view: TextView, fulltext: String, subtext: String, color: Int) {
-        view.setText(fulltext, TextView.BufferType.SPANNABLE)
-        val str = view.text as Spannable
-        val i = fulltext.indexOf(subtext)
-        str.setSpan(ForegroundColorSpan(color), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }
