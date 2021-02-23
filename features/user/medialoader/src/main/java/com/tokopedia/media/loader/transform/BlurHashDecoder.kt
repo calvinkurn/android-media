@@ -166,7 +166,19 @@ object BlurHashDecoder {
                     }
                     tasks.add(async {
                         for (y in start until start + step) {
-                            compositBitmapOnlyX(width, numCompY, numCompX, calculateCosX, cosinesX, calculateCosY, cosinesY, y, height, colors, imageArray)
+                            composeBitmapOnlyX(
+                                    width = width,
+                                    numCompY = numCompY,
+                                    numCompX = numCompX,
+                                    calculateCosX = calculateCosX,
+                                    cosinesX = cosinesX,
+                                    calculateCosY = calculateCosY,
+                                    cosinesY = cosinesY,
+                                    y = y,
+                                    height = height,
+                                    colors = colors,
+                                    imageArray = imageArray
+                            )
                         }
                         return@async
                     })
@@ -177,7 +189,7 @@ object BlurHashDecoder {
         return Bitmap.createBitmap(imageArray, width, height, Bitmap.Config.ARGB_8888)
     }
 
-    private fun compositBitmapOnlyX(
+    private fun composeBitmapOnlyX(
             width: Int,
             numCompY: Int,
             numCompX: Int,
