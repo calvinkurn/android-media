@@ -12,7 +12,6 @@ abstract class LoggerRoomDatabase: RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: LoggerRoomDatabase? = null
-        private var isCreated = false
 
         fun getDatabase(context: Context): LoggerRoomDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -24,11 +23,6 @@ abstract class LoggerRoomDatabase: RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
-        }
-
-        fun checkCreated(context: Context): Boolean {
-            isCreated = context.getDatabasePath("log_database").exists()
-            return isCreated
         }
 
         fun close(){

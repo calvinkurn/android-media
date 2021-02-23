@@ -10,6 +10,4 @@ open class AdsItem(
 		var productID: String = "",
 		@SerializedName("source")
 		var source: String = "dashboard_add_product",
-		@SerializedName("stickerID")
-		var stickerID: String = "3"
 )

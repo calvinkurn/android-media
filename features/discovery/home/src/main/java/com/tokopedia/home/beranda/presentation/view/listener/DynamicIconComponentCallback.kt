@@ -23,14 +23,11 @@ class DynamicIconComponentCallback (private val context: Context?, private val h
     }
 
     override fun onImpressIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int) {
-        homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
-            DynamicIconTracking.sendDynamicIconImpress(
-                    trackingQueue = trackingQueue,
-                    userId = homeCategoryListener.userId,
-                    position = position,
-                    type = type,
-                    dynamicIcons = dynamicIcons
-            )
-        }
+        DynamicIconTracking.sendDynamicIconImpress(
+                userId = homeCategoryListener.userId,
+                dynamicIcons = dynamicIcons,
+                position = position,
+                type = type
+        )
     }
 }
