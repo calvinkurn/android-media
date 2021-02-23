@@ -18,7 +18,9 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -77,7 +79,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             when (it) {
                 is Success -> {
                     if (it.data.addressId == 0) {
-                        viewModel.getDefaultChosenAddress()
+                        val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                        source?.let { it -> viewModel.getDefaultChosenAddress("", it) }
                     } else {
                         val data = it.data
                         val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -86,7 +89,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName
+                                label = data.addressName,
+                                postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -99,7 +103,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             when (it) {
                 is Success -> {
                     if (it.data.addressData.addressId == 0) {
-                        //set to Jakarta Pusat -> waiting for data
+                        val data = ChooseAddressConstant.defaultAddress
+                        viewModel.setStateChosenAddress(2, data.address_id, "", "", data.lat, data.long, data.district_id, "")
                     } else {
                         val data = it.data.addressData
                         val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -108,7 +113,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName
+                                label = data.addressName,
+                                postalCode = data.postalCode.toString()
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -116,19 +122,36 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                 }
             }
         })
+
+        viewModel.getDefaultAddress.observe(context as LifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val data = it.data.addressData
+                    val localData = ChooseAddressUtils.setLocalizingAddressData(
+                            addressId = data.addressId.toString(),
+                            cityId = data.cityId.toString(),
+                            districtId = data.districtId.toString(),
+                            lat = data.latitude,
+                            long = data.longitude,
+                            label = data.addressName,
+                            postalCode = data.postalCode.toString()
+                    )
+                    chooseAddressPref?.setLocalCache(localData)
+                    chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                }
+            }
+        })
     }
 
     private fun checkRollence(){
-        /**
-         * Will be implement rollence here, still need confirmation from product side
-         */
-        chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+        val value = chooseAddressPref?.getRollenceValue()
+        value?.let { chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(it) }
     }
 
     fun updateWidget(){
         val data = chooseAddressPref?.getLocalCacheData()
         val label = context.getString(R.string.txt_send_to, data?.label)
-        textChosenAddress?.text = MethodChecker.fromHtml(label)
+        textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
     }
 
     private fun getComponent(): ChooseAddressComponent {
@@ -159,7 +182,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
         buttonChooseAddress?.setOnClickListener {
             val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
-            ChooseAddressBottomSheet(this).show(fragment?.fragmentManager)
+            val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+            chooseAddressBottomSheet.setListener(this)
+            chooseAddressBottomSheet.show(fragment?.parentFragmentManager)
         }
     }
 
@@ -169,6 +194,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     override fun onAddressDataChanged() {
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
+    }
+
+    override fun getLocalizingAddressHostSourceBottomSheet(): String {
+        val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+        return if (source?.isNotEmpty() == true) source
+        else ""
     }
 
     interface ChooseAddressWidgetListener {
