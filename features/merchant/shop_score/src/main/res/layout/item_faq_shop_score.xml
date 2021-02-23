@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_faq_shop_score"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@id/ic_info_status_penalty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="@string/example_title_faq_shop_score" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_info_status_penalty"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title_faq_shop_score"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_title_faq_shop_score"
+        app:layout_constraintTop_toTopOf="@id/tv_title_faq_shop_score" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/separator_faq_shop_score"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_faq_shop_score" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc_faq_shop_score"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator_faq_shop_score"
+        app:typographyType="body_3"
+        tools:text="@string/example_desc_faq_shop_score" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

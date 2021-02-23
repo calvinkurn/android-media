@@ -10,10 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:unifyEmptyStateType="page"
         app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateTitle="@string/title_empty_state_penalty"
         app:unifyEmptyStateDescription="@string/desc_empty_state_penalty"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -5,4 +5,5 @@ object ShopScoreConstant {
     const val SHOP_SCORE_LEVEL_TWO = 2
     const val SHOP_SCORE_LEVEL_THREE = 3
     const val SHOP_SCORE_LEVEL_FOUR = 4
+
 }

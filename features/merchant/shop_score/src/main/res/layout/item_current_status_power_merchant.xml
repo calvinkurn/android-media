@@ -95,6 +95,17 @@
             app:layout_constraintTop_toBottomOf="@id/potentialPowerMerchantWidget"
             tools:text="@string/example_next_update_pm_status"/>
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_info_potential_pm"
+            app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/Unify_N200"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toTopOf="@id/tv_update_date_potential_pm"
+            app:layout_constraintBottom_toBottomOf="@id/tv_update_date_potential_pm"
+            app:layout_constraintStart_toEndOf="@id/tv_update_date_potential_pm"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_desc_potential_pm"
             android:layout_width="@dimen/layout_lvl0"
