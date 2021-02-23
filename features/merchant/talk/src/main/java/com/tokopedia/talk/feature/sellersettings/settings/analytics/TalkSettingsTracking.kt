@@ -24,7 +24,8 @@ object TalkSettingsTracking {
                 TalkTrackingConstants.TRACKING_EVENT_ACTION to eventAction,
                 TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK_INBOX,
                 TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
-                TalkTrackingConstants.TRACKING_EVENT_LABEL to ""
+                TalkTrackingConstants.TRACKING_EVENT_LABEL to "",
+                TalkTrackingConstants.TRACKING_EVENT_CATEGORY to TalkSettingsTrackingConstants.EVENT_CATEGORY_SETTINGS
         )
     }
 }
