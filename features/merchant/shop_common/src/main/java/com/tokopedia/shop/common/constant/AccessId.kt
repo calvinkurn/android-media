@@ -9,6 +9,7 @@ import androidx.annotation.IntDef
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
+        AccessId.ADS_AND_PROMO,
         AccessId.SHOP_SETTING_ADDRESS,
         AccessId.SHOP_SETTING_ETALASE,
         AccessId.SHOP_SETTING_INFO,
@@ -33,6 +34,7 @@ import androidx.annotation.IntDef
 )
 annotation class AccessId {
     companion object {
+        const val ADS_AND_PROMO = 49
         const val STATISTIC = 55
         const val SHOP_SETTING_ADDRESS = 61
         const val SHOP_SETTING_ETALASE = 62

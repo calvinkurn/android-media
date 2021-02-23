@@ -42,7 +42,7 @@ class OtherMenuAdapterTypeFactory(
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
-            LoadingViewholder.LAYOUT -> LoadingViewholder(parent)
+            LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

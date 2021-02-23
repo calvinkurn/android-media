@@ -157,6 +157,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        menuSettingViewModel.shopSettingAccessLiveData.removeObservers(viewLifecycleOwner)
+    }
+
     private fun observeShopSettingAccess() {
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
             when(result) {
@@ -174,7 +179,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
-        menuSettingViewModel.checkShopSettingAccess()
+        if (!userSession.isShopOwner) {
+            menuSettingViewModel.checkShopSettingAccess()
+        }
 
         setupLogoutView()
         setupExtraSettingView()
