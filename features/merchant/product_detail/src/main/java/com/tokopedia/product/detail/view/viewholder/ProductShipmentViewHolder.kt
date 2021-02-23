@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.toPx
@@ -146,7 +146,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentTitle?.text = data.title
         shipmentTitleIcon?.loadImage(data.icon)
         shipmentDestination?.shouldShowWithAction(data.destination.isNotEmpty()) {
-            shipmentDestination.text = HtmlLinkHelper(context, data.destination).spannedString
+            shipmentDestination.text = data.destination.renderHtmlBold(context)
         }
         shipmentEstimation?.shouldShowWithAction(data.etaText.isNotEmpty()) {
             shipmentEstimation.text = data.etaText
