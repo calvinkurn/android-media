@@ -4,6 +4,7 @@ import android.content.Context
 import com.datavisor.vangogh.face.DVTokenClient
 import com.tokopedia.devicefingerprint.datavisor.`object`.VisorObject
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.encryption.utils.Utils.decodeDecimalToText
 
 class VisorFingerprintInstance {
 
@@ -15,7 +16,7 @@ class VisorFingerprintInstance {
 
         const val SHARED_PREF_NAME = "pref_dv"
         const val KEY_TOKEN = "tk"
-        const val DEFAULT_VALUE_DATAVISOR = "DVLT_6542b775e3263c27e321b929-f52fc6e0_dFlt"
+        val DEFAULT_VALUE_DATAVISOR = decodeDecimalToText(intArrayOf(68, 86, 76, 84, 95, 54, 53, 52, 50, 98, 55, 55, 53, 101, 51, 50, 54, 51, 99, 50, 55, 101, 51, 50, 49, 98, 57, 50, 57, 45, 102, 53, 50, 102, 99, 54, 101, 48, 95, 100, 70, 108, 116))
 
         private fun getVisorInstance(applicationContext: Context): DVTokenClient {
             if (visorInstance == null) {
