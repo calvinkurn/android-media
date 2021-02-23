@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.toPx
 class NotificationProductLongerContentBottomSheet : NotificationLongerContentBottomSheet() {
 
     private var listener: NotificationItemListener? = null
-    private var products: ArrayMap<Long, ProductNotificationCardUnify?> = ArrayMap()
+    private var products: ArrayMap<String, ProductNotificationCardUnify?> = ArrayMap()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

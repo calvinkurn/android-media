@@ -61,14 +61,14 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
     private fun mapProducts(data: TopAdsProductModel): Product {
         return Product().apply {
             data.let {
-                id = it.productID.toString()
+                id = it.productID
                 name = it.productName
                 priceFormat = it.productPrice
                 applinks = it.productUri
                 countReviewFormat = it.productReviewCount.toString()
                 productRating = it.productRating
                 imageProduct = ImageProduct().apply {
-                    id = it.productID.toString()
+                    id = it.productID
                     name = it.productName
                     imageUrl = it.productImage
                 }

@@ -29,4 +29,5 @@ interface NotificationItemListener {
     fun markAsSeen(notifId: String)
     fun refreshPage()
     fun trackClickCtaWidget(element: NotificationUiModel)
+    fun trackExpandTimelineHistory(element: NotificationUiModel)
 }
