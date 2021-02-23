@@ -416,7 +416,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     districtId = addr.destinationDistrictId,
                     lat = addr.latitude,
                     long = addr.longitude,
-                    addressName = addr.addressName) }
+                    addressName = addr.addressName,
+                    postalCode = addr.postalCode) }
         }
 
         if (isFromCheckout == true) {
