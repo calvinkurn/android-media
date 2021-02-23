@@ -1877,9 +1877,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderChooseAddressWidget() {
-        if (ChooseAddressUtils.isRollOutUser()) {
-            val cartChooseAddressHolderData = CartChooseAddressHolderData()
-            cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
+        activity?.let {
+            if (ChooseAddressUtils.isRollOutUser(it)) {
+                val cartChooseAddressHolderData = CartChooseAddressHolderData()
+                cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
+            }
         }
     }
 
