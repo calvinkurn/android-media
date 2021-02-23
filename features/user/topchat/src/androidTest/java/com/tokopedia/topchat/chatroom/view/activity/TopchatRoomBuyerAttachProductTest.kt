@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
@@ -18,10 +19,13 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
@@ -155,6 +159,65 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
                 .check(RecyclerViewItemCountAssertion(3))
+    }
+
+    @Test
+    fun user_remove_preview_product() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        // When
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+                .respondWith(
+                        Instrumentation.ActivityResult(
+                                Activity.RESULT_OK, getAttachProductData(1)
+                        )
+                )
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        clickCloseAttachmentPreview(0)
+
+        // Then
+        onView(withId(R.id.rv_attachment_preview)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun user_remove_one_of_preview_products() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        // When
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+                .respondWith(
+                        Instrumentation.ActivityResult(
+                                Activity.RESULT_OK, getAttachProductData(3)
+                        )
+                )
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        clickCloseAttachmentPreview(0)
+        clickCloseAttachmentPreview(1)
+
+        // Then
+        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
+        onView(withId(R.id.rv_attachment_preview))
+                .check(RecyclerViewItemCountAssertion(1))
+    }
+
+    private fun clickCloseAttachmentPreview(position: Int) {
+        val viewAction = RecyclerViewActions
+                .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                        position,
+                        ClickChildViewWithIdAction()
+                                .clickChildViewWithId(R.id.iv_close)
+                )
+        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
     private fun getAttachProductData(totalProduct: Int): Intent {
