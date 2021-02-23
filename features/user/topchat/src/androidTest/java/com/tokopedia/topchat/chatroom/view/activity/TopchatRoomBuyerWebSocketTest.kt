@@ -14,7 +14,7 @@ import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterSt
 import com.tokopedia.websocket.WebSocketResponse
 import org.junit.Test
 
-class TopchatRoomBuyerUxTest : TopchatRoomTest() {
+class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
 
     private var wsResponseText: WebSocketResponse = AndroidFileUtil.parse(
             "ws_response_text.json",
