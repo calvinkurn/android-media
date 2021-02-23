@@ -59,6 +59,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.*
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -338,11 +339,30 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun isChooseAddressRollenceActive(): Boolean {
+        //TODO 3: Get rollence flag if active
+        return true
+    }
+    private fun isChooseAddressRollenceNotActive(): Boolean {
+        //TODO 4: Get rollence flag if not active
+        return false
+    }
+
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
         } else if (isNavOld()) {
             ifNavOld.invoke()
+        }
+    }
+
+    private fun chooseAddressAbTestCondition(
+            ifChooseAddressActive: ()-> Unit = {},
+            ifChooseAddressNotActive: ()-> Unit = {}) {
+        if (isChooseAddressRollenceActive()) {
+            ifChooseAddressActive.invoke()
+        } else if (isChooseAddressRollenceNotActive()) {
+            ifChooseAddressNotActive.invoke()
         }
     }
 
@@ -563,6 +583,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                         it.setIcon(icons)
                     }
+                }
+        )
+
+        chooseAddressAbTestCondition(
+                ifChooseAddressActive = {
+                    viewModel.get().homeChooseAddressData.isActive = true
+                    //TODO 5: Fetch choose address data and save to viewmodel
+                },
+                ifChooseAddressNotActive = {
+                    viewModel.get().homeChooseAddressData.isActive = false
                 }
         )
 
@@ -833,8 +863,30 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun conditionalViewModelRefresh(){
         if(!fragmentCreatedForFirstTime) {
-            getHomeViewModel().refresh(isFirstInstall())
+            chooseAddressAbTestCondition(
+                    ifChooseAddressActive = {
+                        if (!validateChooseAddressWidget()) {
+                            getHomeViewModel().refresh(isFirstInstall())
+                        }
+                    },
+                    ifChooseAddressNotActive = {
+                        getHomeViewModel().refresh(isFirstInstall())
+                    }
+            )
+
         }
+    }
+
+    private fun validateChooseAddressWidget(): Boolean {
+        //TODO 1: Get diff from choose address library
+        val isAddressChanged = true
+        if (isAddressChanged) {
+            //TODO 2: Get updated choose address data
+            val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+            viewModel.get().updateChooseAddressData(updatedChooseAddressData)
+        }
+
+        return isAddressChanged
     }
 
     private fun adjustStatusBarColor() {
@@ -973,8 +1025,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
-            if (data != null) {
-                if (data.list.size > 0) {
+            data?.let {
+                if (data.list.isNotEmpty()) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache, data.isProcessingAtf)
                 }
@@ -1519,6 +1571,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
+    }
+
+    override fun onChooseAddressClick() {
+
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

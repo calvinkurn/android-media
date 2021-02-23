@@ -18,6 +18,7 @@ import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.home_header_ovo.view.*
 
 class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategoryListener)
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
@@ -31,11 +32,28 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
         renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+        renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: HomeHeaderOvoDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
+        val chooseAddressView = itemView.widget_choose_address
+        chooseAddressView.run {
+            visibility = if (needToShowChooseAddress) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            setOnClickListener {
+                listener.onChooseAddressClick()
+            }
+        }
+
     }
 
     private fun renderEmptySpace(isUserLogin: Boolean) {
