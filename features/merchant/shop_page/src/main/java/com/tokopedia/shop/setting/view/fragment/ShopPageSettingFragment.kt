@@ -38,6 +38,7 @@ import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
 import com.tokopedia.shop.setting.view.model.*
 import com.tokopedia.shop.setting.view.viewmodel.ShopPageSettingViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -124,6 +125,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 is Fail -> onErrorGetShopInfo(it.throwable)
             }
         })
+        observeRoleAccess()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -193,6 +195,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private fun getShopInfo(isRefresh: Boolean = false) {
         setViewState(VIEW_LOADING)
         shopPageSettingViewModel.getShop(shopId, shopDomain, isRefresh)
+        shopPageSettingViewModel.checkAccess()
     }
 
     private fun setViewState(viewState: Int) {
@@ -222,6 +225,29 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
         } else {
             RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+        }
+    }
+
+    private fun observeRoleAccess() {
+        shopPageSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (!isEligible) {
+                            showErrorToaster(context?.getString(R.string.shop_page_setting_no_access_error).orEmpty())
+                        }
+                    }
+                }
+                is Fail -> {
+                    showErrorToaster(result.throwable.message.orEmpty())
+                }
+            }
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.let {
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
         }
     }
 
