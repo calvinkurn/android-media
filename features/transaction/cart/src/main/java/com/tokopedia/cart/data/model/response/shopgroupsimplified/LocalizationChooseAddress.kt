@@ -51,5 +51,4 @@ data class LocalizationChooseAddress(
         val state: Int = 0,
         @SerializedName("state_detail")
         val stateDetail: String = ""
-
 )
