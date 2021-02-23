@@ -6,7 +6,7 @@ package com.tokopedia.loginregister.login.view.constant
  */
 
 object LoginConstant {
-    const val ROLLOUT_LOGIN_ENCRYPTION = "enchance_security"
+    const val ROLLOUT_LOGIN_ENCRYPTION = "enf_cred_and"
     const val CONFIG_LOGIN_ENCRYPTION = "android_user_login_encryption"
 
 }
