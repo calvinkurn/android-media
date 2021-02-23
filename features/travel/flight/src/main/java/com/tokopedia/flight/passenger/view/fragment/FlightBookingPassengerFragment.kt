@@ -848,7 +848,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_expiration_date.setError(true)
             false
         } else {
-            til_passport_expiration_date.setError(false)
             true
         }
     }
