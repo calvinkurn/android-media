@@ -19,12 +19,7 @@ class HomeHeaderOvoDataModel(
     var headerDataModel: HeaderDataModel? = HeaderDataModel()
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is HomeHeaderOvoDataModel) {
-            createdTimeMillis == b.createdTimeMillis &&
-                    needToShowChooseAddress == b.needToShowChooseAddress &&
-                    needToShowUserWallet && needToShowUserWallet &&
-                    headerDataModel == b.headerDataModel
-        } else false
+        return false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
