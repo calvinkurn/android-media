@@ -84,7 +84,8 @@ object ChooseAddressUtils {
                 district_id = districtId,
                 lat = lat,
                 long = long,
-                label = label
+                label = label,
+                postal_code = postalCode
         )
     }
 
