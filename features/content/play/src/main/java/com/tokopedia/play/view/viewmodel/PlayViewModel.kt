@@ -22,7 +22,6 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -390,7 +389,7 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: ProductLineUiModel, action: ProductAction) {
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: PlayProductUiModel.Product, action: ProductAction) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.VariantSheet] =
@@ -974,7 +973,7 @@ class PlayViewModel @Inject constructor(
     private fun trackProductTag(channelId: String, productList: List<PlayProductUiModel>) {
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                val productIds = productList.mapNotNull { product -> if (product is ProductLineUiModel) product.id else null }
+                val productIds = productList.mapNotNull { product -> if (product is PlayProductUiModel.Product) product.id else null }
                 trackProductTagBroadcasterUseCase.params = TrackProductTagBroadcasterUseCase.createParams(channelId, productIds)
                 trackProductTagBroadcasterUseCase.executeOnBackground()
             }

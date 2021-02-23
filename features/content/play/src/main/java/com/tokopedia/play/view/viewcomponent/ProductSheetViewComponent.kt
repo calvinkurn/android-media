@@ -19,8 +19,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
-import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
@@ -49,15 +48,15 @@ class ProductSheetViewComponent(
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
-        override fun onBuyProduct(product: ProductLineUiModel) {
+        override fun onBuyProduct(product: PlayProductUiModel.Product) {
             listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
 
         }
-        override fun onAtcProduct(product: ProductLineUiModel) {
+        override fun onAtcProduct(product: PlayProductUiModel.Product) {
             listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
         }
 
-        override fun onClickProductCard(product: ProductLineUiModel, position: Int) {
+        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
     })
@@ -186,12 +185,12 @@ class ProductSheetViewComponent(
                     partnerId = 0L
             ),
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
-            productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
+            productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
     )
 
     private fun isProductDecreased(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
-                productLineAdapter.getItems().first() is ProductLineUiModel &&
+                productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
                 productLineAdapter.itemCount > productSize
     }
 
@@ -209,9 +208,9 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetViewComponent, product: ProductLineUiModel, position: Int)
+        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
+        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
+        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int)
         fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
     }

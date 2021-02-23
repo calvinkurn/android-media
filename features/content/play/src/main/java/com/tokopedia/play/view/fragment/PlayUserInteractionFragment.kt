@@ -107,6 +107,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
+    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
@@ -604,6 +605,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observePinned() {
         playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
             pinnedViewOnStateChanged(pinnedModel = it)
+            productFeaturedViewOnStateChanged(pinnedModel = it)
         })
     }
 
@@ -659,6 +661,7 @@ class PlayUserInteractionFragment @Inject constructor(
             quickReplyViewOnStateChanged(bottomInsets = map)
             chatListViewOnStateChanged(bottomInsets = map)
             pinnedViewOnStateChanged(bottomInsets = map)
+            productFeaturedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
@@ -688,7 +691,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
                 pipViewOnStateChanged(isFreezeOrBanned = true)
-                pinnedViewOnStateChanged()
+                pinnedViewOnStateChanged(isFreezeOrBanned = true)
+                productFeaturedViewOnStateChanged(isFreezeOrBanned = true)
 
                 /**
                  * Non view component
@@ -1086,6 +1090,29 @@ class PlayUserInteractionFragment @Inject constructor(
             PlayPinnedUiModel.NoPinned -> {
                 pinnedView?.hide()
             }
+        }
+    }
+
+    private fun productFeaturedViewOnStateChanged(
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+    ) {
+        if (isFreezeOrBanned) {
+            pinnedView?.hide()
+            return
+        }
+
+        when (pinnedModel) {
+            is PlayPinnedUiModel.PinnedProduct -> {
+                if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
+                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList)
+                }
+
+                if (!bottomInsets.isAnyShown) productFeaturedView?.show()
+                else productFeaturedView?.hide()
+            }
+            else -> productFeaturedView?.hide()
         }
     }
 

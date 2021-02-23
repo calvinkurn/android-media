@@ -42,7 +42,7 @@
         app:layout_constraintStart_toEndOf="@id/fl_product_image"
         app:layout_constraintTop_toTopOf="@id/fl_product_image"
         app:layout_constraintBottom_toTopOf="@id/ll_product_discount"
-        app:layout_constraintEnd_toStartOf="@+id/btn_product_buy"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_2"
         tools:text="Alyssa Suede Flats "
         />
@@ -80,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_N700_44"
             app:typographyType="small"
             tools:text="Rp349.000"

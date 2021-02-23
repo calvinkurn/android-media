@@ -1,7 +1,7 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -173,7 +173,7 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionProductList(listOfProducts: List<ProductLineUiModel>) {
+    fun impressionProductList(listOfProducts: List<PlayProductUiModel.Product>) {
         if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
@@ -192,7 +192,7 @@ class PlayAnalytic(
         }
     }
 
-    fun clickProduct(product: ProductLineUiModel,
+    fun clickProduct(product: PlayProductUiModel.Product,
                      position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -228,20 +228,20 @@ class PlayAnalytic(
         }
     }
 
-    fun clickProductAction(productLineUiModel: ProductLineUiModel,
+    fun clickProductAction(product: PlayProductUiModel.Product,
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType) {
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, productLineUiModel, cartId)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, productLineUiModel, cartId)
+                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, cartId)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, productLineUiModel, cartId)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, productLineUiModel, cartId)
+                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId)
                 }
             }
         }
@@ -338,7 +338,7 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(listOfProducts: List<ProductLineUiModel>): MutableList<HashMap<String, Any>> {
+    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->
             products.add(convertProductToHashMapWithList(product, index))
@@ -346,7 +346,7 @@ class PlayAnalytic(
         return products
     }
 
-    private fun convertProductToHashMapWithList(product: ProductLineUiModel, position: Int): HashMap<String, Any> {
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): HashMap<String, Any> {
         return hashMapOf(
                 "name" to product.title,
                 "id" to product.id,
@@ -381,7 +381,7 @@ class PlayAnalytic(
     }
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                    product: ProductLineUiModel,
+                                                    product: PlayProductUiModel.Product,
                                                     cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -402,7 +402,7 @@ class PlayAnalytic(
     }
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                   product: ProductLineUiModel,
+                                                   product: PlayProductUiModel.Product,
                                                    cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -423,7 +423,7 @@ class PlayAnalytic(
     }
 
     private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
-                                        product: ProductLineUiModel,
+                                        product: PlayProductUiModel.Product,
                                         cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -444,7 +444,7 @@ class PlayAnalytic(
     }
 
     private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
-                                         product: ProductLineUiModel,
+                                         product: PlayProductUiModel.Product,
                                          cartId: String) {
         trackingQueue.putEETracking(
                 EventModel(
@@ -464,7 +464,7 @@ class PlayAnalytic(
         )
     }
 
-    private fun convertProductToHashMap(product: ProductLineUiModel, cartId: String, page: String): MutableList<HashMap<String, Any>> {
+    private fun convertProductToHashMap(product: PlayProductUiModel.Product, cartId: String, page: String): MutableList<HashMap<String, Any>> {
         return mutableListOf(
                 hashMapOf(
                         "name" to product.title,

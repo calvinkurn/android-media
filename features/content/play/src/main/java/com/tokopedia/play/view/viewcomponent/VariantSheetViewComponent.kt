@@ -21,7 +21,7 @@ import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -126,7 +126,7 @@ class VariantSheetViewComponent(
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
 
-                val product = ProductLineUiModel(
+                val product = PlayProductUiModel.Product(
                         id = selectedProduct.productId.toString(),
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
@@ -233,7 +233,7 @@ class VariantSheetViewComponent(
         ).show()
     }
 
-    private fun setProduct(product: ProductLineUiModel) {
+    private fun setProduct(product: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(product.imageUrl, imageRadius)
         tvProductTitle.text = product.title
 
@@ -296,7 +296,7 @@ class VariantSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
-        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel)
-        fun onBuyClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel)
+        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
+        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
     }
 }

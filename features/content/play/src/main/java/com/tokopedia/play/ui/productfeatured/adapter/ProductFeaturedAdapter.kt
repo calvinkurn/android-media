@@ -1,22 +1,21 @@
-package com.tokopedia.play.ui.productsheet.adapter
+package com.tokopedia.play.ui.productfeatured.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductLineAdapterDelegate
-import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductPlaceholderAdapterDelegate
+import com.tokopedia.play.ui.product.ProductBasicViewHolder
+import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
- * Created by jegul on 03/03/20
+ * Created by jegul on 23/02/21
  */
-class ProductLineAdapter(
-        listener: ProductLineViewHolder.Listener
-) : BaseDiffUtilAdapter<PlayProductUiModel>(), ProductLineViewHolder.Listener by listener {
+class ProductFeaturedAdapter(
+        listener: ProductBasicViewHolder.Listener
+) : BaseDiffUtilAdapter<PlayProductUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(ProductLineAdapterDelegate(this))
-                .addDelegate(ProductPlaceholderAdapterDelegate())
+                .addDelegate(ProductFeaturedAdapterDelegate(listener))
     }
 
     override fun areItemsTheSame(oldItem: PlayProductUiModel, newItem: PlayProductUiModel): Boolean {

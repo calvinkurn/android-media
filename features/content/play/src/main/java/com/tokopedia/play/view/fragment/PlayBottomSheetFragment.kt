@@ -23,7 +23,8 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -122,15 +123,15 @@ class PlayBottomSheetFragment @Inject constructor(
         closeProductSheet()
     }
 
-    override fun onBuyButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel) {
+    override fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product) {
         shouldCheckProductVariant(product, ProductAction.Buy)
     }
 
-    override fun onAtcButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel) {
+    override fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product) {
         shouldCheckProductVariant(product, ProductAction.AddToCart)
     }
 
-    override fun onProductCardClicked(view: ProductSheetViewComponent, product: ProductLineUiModel, position: Int) {
+    override fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int) {
         shouldOpenProductDetail(product, position)
     }
 
@@ -149,11 +150,11 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
-    override fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel) {
+    override fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
         shouldDoActionProduct(productModel, ProductAction.AddToCart, BottomInsetsType.VariantSheet)
     }
 
-    override fun onBuyClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel) {
+    override fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
         shouldDoActionProduct(productModel, ProductAction.Buy, BottomInsetsType.VariantSheet)
     }
 
@@ -182,7 +183,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.onHideProductSheet()
     }
 
-    private fun shouldCheckProductVariant(product: ProductLineUiModel, action: ProductAction) {
+    private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
         if (product.isVariantAvailable) {
             openVariantSheet(product, action)
             analytic.clickActionProductWithVariant(product.id, action)
@@ -191,7 +192,7 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {
+    private fun openVariantSheet(product: PlayProductUiModel.Product, action: ProductAction) {
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
         viewModel.getProductVariant(product, action)
     }
@@ -211,11 +212,11 @@ class PlayBottomSheetFragment @Inject constructor(
         if (::loadingDialog.isInitialized) loadingDialog.dismiss()
     }
 
-    private fun shouldDoActionProduct(product: ProductLineUiModel, action: ProductAction, type: BottomInsetsType) {
+    private fun shouldDoActionProduct(product: PlayProductUiModel.Product, action: ProductAction, type: BottomInsetsType) {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
-    private fun shouldOpenProductDetail(product: ProductLineUiModel, position: Int) {
+    private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
     }
 
@@ -268,7 +269,7 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun doOpenProductDetail(product: ProductLineUiModel, position: Int) {
+    private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
             analytic.clickProduct(product, position)
             openPageByApplink(product.applink)
@@ -277,7 +278,7 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction, type: BottomInsetsType) {
+    private fun doActionProduct(product: PlayProductUiModel.Product, productAction: ProductAction, type: BottomInsetsType) {
         viewModel.addToCart(product, action = productAction, type = type)
     }
 
@@ -300,9 +301,9 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun sendTrackerImpression(playResult: PlayResult<PlayProductTagsUiModel.Complete>) {
         if (playResult is PlayResult.Success) {
             if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList.first() is ProductLineUiModel) {
+                    && playResult.data.productList.first() is PlayProductUiModel.Product) {
                 with(analytic) { impressionProductList(
-                        playResult.data.productList as List<ProductLineUiModel>
+                        playResult.data.productList as List<PlayProductUiModel.Product>
                 ) }
             }
         }
