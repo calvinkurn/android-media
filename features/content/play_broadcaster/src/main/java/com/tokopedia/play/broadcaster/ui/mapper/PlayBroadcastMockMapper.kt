@@ -77,9 +77,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return FollowerDataUiModel(
                 List(3) {
                     FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Yellow_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Blue_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Yellow_Y300
+                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
+                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
+                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
                     })
                 },
                 3

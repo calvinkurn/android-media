@@ -180,7 +180,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
             if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
             false
         }
-        etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
+        etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Unify_N150)
 
         setupTitleCounter()
         setupSaveButton()
