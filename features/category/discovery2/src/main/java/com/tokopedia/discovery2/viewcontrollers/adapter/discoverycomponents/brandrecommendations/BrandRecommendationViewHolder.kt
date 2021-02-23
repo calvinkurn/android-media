@@ -51,10 +51,12 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
                 if (item.isNotEmpty()) {
                     val noOfItems:Double = if (item.size > 4) 4.5 else 4.0
                     val widthOfSingleChild = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap)) / noOfItems)
-                    val heightOfRecyclerView = widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap) / 2
-                    val params = recyclerView.layoutParams
-                    params.height = heightOfRecyclerView.toInt()
-                    recyclerView.layoutParams = params
+                    val heightOfRecyclerView = (widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap) / 2).toInt()
+                    if(recyclerView.layoutParams.height != heightOfRecyclerView) {
+                        val params = recyclerView.layoutParams
+                        params.height = heightOfRecyclerView
+                        recyclerView.layoutParams = params
+                    }
                     discoveryRecycleAdapter.setDataList(item as? ArrayList<ComponentsItem>)
                 }
             })
