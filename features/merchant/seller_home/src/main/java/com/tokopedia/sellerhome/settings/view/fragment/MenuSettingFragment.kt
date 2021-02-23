@@ -10,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -32,8 +34,12 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpress
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
+import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.sellerreview.common.SellerReviewUtils
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
 import kotlinx.android.synthetic.main.setting_logout.view.*
@@ -72,6 +78,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
 
@@ -92,8 +101,22 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         OtherSettingsUiModel(PRIVACY_POLICY_BUTTON_NAME)
     }
 
+    private val menuSettingViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(MenuSettingViewModel::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewLifecycleOwner.lifecycle.addObserver(menuSettingViewModel)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu_setting, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeShopSettingAccess()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,9 +126,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
-    override fun onItemClicked(t: SettingUiModel?) {
-
-    }
+    override fun onItemClicked(t: SettingUiModel?) {}
 
     override fun getScreenName(): String = ""
 
@@ -116,12 +137,27 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {
-
-    }
+    override fun loadData(page: Int) {}
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
         settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+    }
+
+    private fun observeShopSettingAccess() {
+        menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (!isEligible) {
+                            showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
+                        }
+                    }
+                }
+                is Fail -> {
+                    showToasterError(result.throwable.message.orEmpty())
+                }
+            }
+        }
     }
 
     private fun setupView() {
@@ -195,8 +231,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             })
-        adapter.data.addAll(settingList)
-        adapter.notifyDataSetChanged()
         renderList(settingList)
 
         setupLogoutView()
@@ -305,6 +339,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         val privacyUrl = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
         val intent = RouteManager.getIntent(context, privacyUrl)
         context?.startActivity(intent)
+    }
+
+    private fun showToasterError(errorMessage: String) {
+        view?.let {
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
+        }
     }
 
 }
