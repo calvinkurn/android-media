@@ -40,7 +40,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
@@ -80,6 +79,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var bannerAdsAdapter: BannerAdsAdapter? = null
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -135,8 +137,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
-            }
-            else if (cpmData != null) {
+            } else if (cpmData != null) {
                 list?.visible()
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
@@ -166,7 +167,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     btnFollow.setOnClickListener {
                         cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1) }
                         if (!cpmData.cpm.cpmShop.isFollowed) {
-                            ImpresionTask(className).execute(cpmData.adClickUrl)
+                            topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                         }
                     }
                     btnFollow.show()
@@ -179,7 +180,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shopdetail.setOnClickListener {
                     if (topAdsBannerClickListener != null) {
                         topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                        ImpresionTask(className).execute(cpmData.adClickUrl)
+                        topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                     }
                 }
 
@@ -190,7 +191,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         shop_image.addOnImpressionListener(it1) {
                             impressionListener?.let {
                                 it.onImpressionHeadlineAdsItem(0, cpmData)
-                                ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
+                                topAdsUrlHitter.hitImpressionUrl(className, cpmData.cpm.cpmImage.fullUrl, "", "", "")
                             }
                         }
                     }
@@ -204,8 +205,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                     for (i in 0 until productCardModelList.size) {
                         if (i < 3) {
-                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i],
-                                    appLink, cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
+                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i], appLink,
+                                    cpmData.cpm.cpmShop.products[i].image.m_url, cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
                         }
                     }
                     if (productCardModelList.size < 3) {
@@ -307,7 +308,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     override fun onItemImpressed() {
                         impressionListener?.onImpressionHeadlineAdsItem(0, cpmData)
 
-                        TopAdsUrlHitter(context).hitImpressionUrl(
+                        topAdsUrlHitter.hitImpressionUrl(
                                 className,
                                 cpmData.cpm.cpmImage.fullUrl,
                                 cpmData.cpm.cpmShop.id,
@@ -319,7 +320,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     override fun onItemClicked() {
                         topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
 
-                        TopAdsUrlHitter(context).hitClickUrl(
+                        topAdsUrlHitter.hitClickUrl(
                                 className,
                                 adsClickUrl,
                                 cpmData.cpm.cpmShop.id,
@@ -337,7 +338,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         topAdsBannerClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
 
-                        TopAdsUrlHitter(context).hitClickUrl(
+                        topAdsUrlHitter.hitClickUrl(
                                 className,
                                 product.imageProduct.imageClickUrl,
                                 product.id,
@@ -380,7 +381,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             if (image != null) {
                                 image.setImageBitmap(resource)
-                                ImpresionTask(className).execute(cpm.cpmImage.fullUrl)
+                                topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
                             }
                         }
 
@@ -438,7 +439,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {
                                 topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
-                                ImpresionTask(className).execute(data.adClickUrl)
+                                topAdsUrlHitter.hitClickUrl(className, data.adClickUrl, "", "", "")
                             }
                         }
                     }
