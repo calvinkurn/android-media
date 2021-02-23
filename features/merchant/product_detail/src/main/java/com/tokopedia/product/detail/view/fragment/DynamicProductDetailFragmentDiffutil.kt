@@ -67,6 +67,8 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -251,6 +253,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var alreadyHitVideoTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
+    //Prevent several method at onResume to being called when first open page.
+    private var firstOpenPage:Boolean = true
 
     //View
     private var varToolbar: Toolbar? = null
@@ -364,6 +368,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
+        assignUserLocationData()
         loadData()
     }
 
@@ -388,6 +393,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
+        reloadUserLocationChanged()
     }
 
     override fun onDestroy() {
@@ -544,6 +550,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 })
             }
         }
+    }
+
+    private fun reloadUserLocationChanged() {
+        if (viewModel.getDynamicProductInfoP1 == null || context == null || firstOpenPage) return
+        val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.userLocationCache)
+        if (isUserLocationChanged) refreshPage()
     }
 
     private fun setNavToolBarCartCounter() {
@@ -1343,6 +1355,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
+                firstOpenPage = false
                 pdpUiUpdater = PdpUiUpdaterDiffutil(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
             }, {
@@ -3006,6 +3019,13 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId ?: ""
+    }
+
+    private fun assignUserLocationData() {
+        context?.let {
+            viewModel.userLocationCache = ChooseAddressUtils.getLocalizingAddressData(it)
+                    ?: LocalCacheModel()
+        }
     }
 
     private fun goToHargaFinal() {

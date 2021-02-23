@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -11,7 +12,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.boldOrLinkText
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.toPx
@@ -29,13 +30,14 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLoadingContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shimmer_shipment_container)
     private val shipmentContentContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_shipment_container)
     private val shipmentOtherContainer: ConstraintLayout? = itemView.findViewById(R.id.container_pdp_shipment_other)
+    private val shipmentTokoCabangGroup: Group? = itemView.findViewById(R.id.group_fullfillment)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
 
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
+    private val shipmentTitleIcon: ImageView? = itemView.findViewById(R.id.ic_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
-    private val staticTxtKhusus: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_khusus)
-    private val shipmentFullfillment: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_fullfillment)
+    private val shipmentFullfillmentImg: ImageView? = itemView.findViewById(R.id.img_ic_fullfillment)
     private val otherCourierTxt: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_other_courier)
     private val shipmentFreeOngkir: ImageView? = itemView.findViewById(R.id.ic_pdp_shipment_bo)
     private val shipmentLabelCod: Label? = itemView.findViewById(R.id.label_pdp_shipment_cod)
@@ -94,7 +96,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentFreeOngkir?.shouldShowWithAction(freeOngkirUrl.isNotEmpty() && !isError) {
             shipmentFreeOngkir.loadImage(freeOngkirUrl)
         }
-        shipmentLabelCod?.showWithCondition(isCod)
+        shipmentLabelCod?.showWithCondition(isCod && !isError)
         shipmentLabelInstant?.showWithCondition(isInstant)
     }
 
@@ -132,22 +134,19 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         otherCourierTxt?.show()
     }
 
-    private fun renderTokoCabang(isFullfillment: Boolean) = with(itemView) {
-        if (isFullfillment) {
-            shipmentFullfillment?.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.drawable.ic_pdp_tokocabang), null, null, null)
-            staticTxtKhusus?.show()
-            shipmentFullfillment?.show()
-        } else {
-            staticTxtKhusus?.gone()
-            shipmentFullfillment?.gone()
-        }
+    private fun renderTokoCabang(isFullfillment: Boolean) = if (isFullfillment) {
+        //TODO
+        shipmentFullfillmentImg?.loadImage("https://images.tokopedia.net/img/android/test/pdp - tokocabang@3x.png")
+        shipmentTokoCabangGroup?.show()
+    } else {
+        shipmentTokoCabangGroup?.gone()
     }
 
     private fun renderText(data: P2RatesEstimateData) = with(itemView) {
         shipmentTitle?.text = data.title
+        shipmentTitleIcon?.loadImage(data.icon)
         shipmentDestination?.shouldShowWithAction(data.destination.isNotEmpty()) {
-            shipmentDestination.text = context.getString(R.string.pdp_shipping_to_simple_builder, data.destination)
-                    .boldOrLinkText(false, context, Pair(data.destination, {}))
+            shipmentDestination.text = HtmlLinkHelper(context, data.destination).spannedString
         }
         shipmentEstimation?.shouldShowWithAction(data.etaText.isNotEmpty()) {
             shipmentEstimation.text = data.etaText

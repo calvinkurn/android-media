@@ -29,7 +29,7 @@
             android:id="@+id/txt_shipping_header_from"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:maxLines="1"
@@ -60,39 +60,22 @@
             android:layout_width="@dimen/spacing_lvl1"
             android:layout_height="0dp"
             android:background="@color/Unify_N75"
-            app:layout_constraintBottom_toTopOf="@+id/pdp_ic_location_to"
+            app:layout_constraintBottom_toTopOf="@+id/txt_shipping_header_to"
             app:layout_constraintEnd_toEndOf="@+id/pdp_ic_location_from"
             app:layout_constraintStart_toStartOf="@+id/pdp_ic_location_from"
             app:layout_constraintTop_toBottomOf="@+id/pdp_ic_location_from" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/pdp_ic_location_to"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
+
+        <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+            android:id="@+id/txt_shipping_header_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="8dp"
-            app:layout_goneMarginTop="12dp"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:icon_name="LOCATION"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_shipping_tokocabang" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_shipping_header_to"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_ic_location_to"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/pdp_ic_location_to"
-            app:layout_constraintTop_toTopOf="@+id/pdp_ic_location_to"
-            app:typographyType="body_3"
-            tools:text="Dikirim ke Karet, Jakarta Selatan" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_shipping_tokocabang"
+            app:layout_goneMarginTop="12dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

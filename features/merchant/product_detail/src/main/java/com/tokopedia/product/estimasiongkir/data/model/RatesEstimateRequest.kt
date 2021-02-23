@@ -27,16 +27,8 @@ data class RatesEstimateRequest(
         return if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
     }
 
-    fun getWeightTxt(): String {
-        return if (productWeightUnit.toLowerCase() == KG) {
-            "$productWeight $KG_TEXT"
-        } else {
-            val resultGram = productWeight / 1000
-            if (resultGram >= 1) {
-                "${(productWeight / 1000.0).numberFormatted(1)} $KG_TEXT"
-            } else {
-                "${productWeight.toLong().numberFormatted(1)} $GRAM_TEXT"
-            }
-        }
-    }
+    fun getWeightTxt(): String = "${productWeight.numberFormatted()} ${
+        if (productWeightUnit.toLowerCase() == KG)
+            KG_TEXT else GRAM_TEXT
+    }"
 }

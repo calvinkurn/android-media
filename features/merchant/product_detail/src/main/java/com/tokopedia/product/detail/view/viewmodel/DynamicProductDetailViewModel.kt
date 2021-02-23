@@ -19,6 +19,7 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -32,10 +33,10 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesError
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
@@ -190,6 +191,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
+    var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
@@ -824,7 +826,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
-            getProductInfoP2DataUseCase.get().executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession, generatePdpSessionWithDeviceId()), forceRefresh)
+            getProductInfoP2DataUseCase.get().executeOnBackground(
+                    GetProductInfoP2DataUseCase.createParams(
+                            productId,
+                            pdpSession,
+                            generatePdpSessionWithDeviceId(),
+                            generateUserLocationRequest(userLocationCache)
+                    ), forceRefresh
+            )
         }
     }
 
@@ -844,7 +853,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
+        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache))
         getPdpLayoutUseCase.get().forceRefresh = forceRefresh
         getPdpLayoutUseCase.get().enableCaching = enableCaching
         return getPdpLayoutUseCase.get().executeOnBackground()

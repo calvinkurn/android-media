@@ -1,9 +1,8 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
 import android.app.Dialog
-import android.content.DialogInterface
-import android.util.Log
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -13,16 +12,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
-import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
@@ -32,7 +32,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDetailShippingListener {
+class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDetailShippingListener, ChooseAddressWidget.ChooseAddressWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -117,7 +117,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
                 .build()
 
-        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this))
+        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this, this))
 
         rv?.adapter = adapter
         showShimmerPage()
@@ -133,4 +133,24 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
                 ?: RatesEstimateRequest())
         viewContainer?.showToasterSuccess("Clicked bottom sheet")
     }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        onChooseAddressClicked()
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+
+    }
+
+    override fun onLocalizingAddressServerDown() {
+
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+
+    }
+
+    override fun getLocalizingAddressHostFragment(): Fragment = this
+
+    override fun getLocalizingAddressHostSourceData(): String = "product detail"
 }

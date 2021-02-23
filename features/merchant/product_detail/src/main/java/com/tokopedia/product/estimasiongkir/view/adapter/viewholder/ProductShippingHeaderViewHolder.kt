@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
@@ -16,13 +17,15 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductShippingHeaderViewHolder(view: View, private val listener: ProductDetailShippingListener) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
+class ProductShippingHeaderViewHolder(view: View,
+                                      private val listener: ProductDetailShippingListener,
+                                      private val chooseAddressListener: ChooseAddressWidget.ChooseAddressWidgetListener) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_product_shipping_header
     }
 
     private val txtShippingFrom: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_header_from)
-    private val txtShippingTo: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_header_to)
+    private val txtShippingTo: ChooseAddressWidget? = itemView.findViewById(R.id.txt_shipping_header_to)
     private val txtFreeOngkirPrice: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price)
     private val txtFreeOngkirEstimation: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_estimation)
     private val txtWeight: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_weight)
@@ -30,8 +33,11 @@ class ProductShippingHeaderViewHolder(view: View, private val listener: ProductD
     private val icTokoCabang: IconUnify? = itemView.findViewById(R.id.pdp_ic_location_from)
     private val imgFreeOngkir: ImageView? = itemView.findViewById(R.id.img_pdp_shipping_bo)
 
+
     override fun bind(element: ProductShippingHeaderDataModel) {
-        renderShipmentTrack(element.shippingTo, element.shippingFrom, element.isFullfillment)
+        txtShippingTo?.bindChooseAddress(chooseAddressListener)
+
+        renderShipmentTrack(element.shippingFrom, element.isFullfillment)
         renderBo(element.isFreeOngkir, element.freeOngkirEstimation, element.freeOngkirImageUrl, element.freeOngkirPrice)
         renderWeight(element.weight)
     }
@@ -52,7 +58,7 @@ class ProductShippingHeaderViewHolder(view: View, private val listener: ProductD
         }
     }
 
-    private fun renderShipmentTrack(shippingTo: String, shippingFrom: String, isFullfillment: Boolean) = with(itemView) {
+    private fun renderShipmentTrack(shippingFrom: String, isFullfillment: Boolean) = with(itemView) {
 
         if (isFullfillment) {
             icTokoCabang?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pdp_tokocabang))
@@ -60,11 +66,6 @@ class ProductShippingHeaderViewHolder(view: View, private val listener: ProductD
             icTokoCabang?.setImage(IconUnify.LOCATION)
         }
 
-        txtShippingTo?.setOnClickListener {
-            listener.onChooseAddressClicked()
-        }
-        //TODO get local first
-        txtShippingTo?.text = context.getString(R.string.pdp_shipping_to_builder, shippingTo).boldOrLinkText(false, context, shippingTo to {})
         txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, shippingFrom).boldOrLinkText(false, context, shippingFrom to {})
     }
 }

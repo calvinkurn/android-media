@@ -4,9 +4,11 @@ import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
@@ -294,5 +296,13 @@ object DynamicProductDetailMapper {
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
                 ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
                 ?: listOf(), productInfoContent, forceRefresh)
+    }
+
+    fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
+        return UserLocationRequest(
+                localData.district_id,
+                localData.address_id,
+                "",
+                "${localData.lat},${localData.long}")
     }
 }
