@@ -102,10 +102,7 @@ object WishlistTracking {
     private const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
     private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
-
-    private const val LABEL_FULFILLMENT = "fulfillment"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -123,17 +120,8 @@ object WishlistTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, generateWishlistFreeOngkirTrackingValue(item)
+                FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         )
-    }
-
-    private fun generateWishlistFreeOngkirTrackingValue(item: WishlistItem): String {
-        val hasFulfillmentLabel = item.labels.any { it.position == LABEL_FULFILLMENT }
-        return when {
-            hasFulfillmentLabel && item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
-            !hasFulfillmentLabel && item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
-            else -> VALUE_NONE_OTHER
-        }
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
@@ -178,7 +166,7 @@ object WishlistTracking {
                                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                                 FIELD_PRODUCT_POSITION, position,
-                                FIELD_DIMENSION_83, generateWishlistFreeOngkirTrackingValue(item)
+                                FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                         )
                 )
         )
@@ -228,7 +216,7 @@ object WishlistTracking {
                         FIELD_CATEGORY_ID, VALUE_NONE_OTHER,
                         FIELD_DIMENSION_45, cartId,
                         FIELD_DIMENSION_40, list,
-                        FIELD_DIMENSION_83, generateWishlistFreeOngkirTrackingValue(item)
+                        FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         )
         )
