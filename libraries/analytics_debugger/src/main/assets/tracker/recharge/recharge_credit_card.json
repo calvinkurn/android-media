@@ -3,17 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "openScreen",
-      "clientId": "{{.*}}",
-      "userId": "{{.*}}",
-      "screenName": "{{/digital/.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "sessionIris": "{{.*}}",
-      "shopId": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "networkSpeed": "{{.*}}"
-    },
-    {
       "event": "clickDigitalCC",
       "eventCategory": "digital - cc page",
       "eventAction": "click confirmation to checkout",
@@ -36,13 +25,6 @@
       "eventLabel": "{{.* - .*}}",
       "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "viewDigitalCCIris",
-      "eventCategory": "digital - cc page",
-      "eventAction": "impression of bank list",
-      "eventLabel": "{{.* - .*}}",
-      "userId": "{{.*}}"
     }
   ]
 }
