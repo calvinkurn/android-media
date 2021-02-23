@@ -1,5 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations
 
+import android.app.Activity
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -21,6 +24,7 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
     private val brandRecomTitle: Typography = itemView.findViewById(R.id.brand_recom_title) as Typography
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var brandRecommendationViewModel: BrandRecommendationViewModel
+    private val displayMetrics = getDisplayMetric(fragment.context)
 
     init {
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -45,6 +49,12 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
             brandRecommendationViewModel.getListDataLiveData().observe(lifecycle, { item ->
                 if (item.isNotEmpty()) {
+                    val noOfItems:Double = if (item.size > 4) 4.5 else 4.0
+                    val widthOfSingleChild = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap)) / noOfItems)
+                    val heightOfRecyclerView = widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap) / 2
+                    val params = recyclerView.layoutParams
+                    params.height = heightOfRecyclerView.toInt()
+                    recyclerView.layoutParams = params
                     discoveryRecycleAdapter.setDataList(item as? ArrayList<ComponentsItem>)
                 }
             })
@@ -66,5 +76,11 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
     private fun setTitle(title: String) {
         brandRecomTitle.show()
         brandRecomTitle.text = title
+    }
+
+    private fun getDisplayMetric(context: Context?): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 }
