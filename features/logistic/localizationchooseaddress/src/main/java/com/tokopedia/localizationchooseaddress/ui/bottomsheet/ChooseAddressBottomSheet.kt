@@ -84,14 +84,14 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         if (requestCode == REQUEST_CODE_ADD_ADDRESS) {
             val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (data != null) {
-                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName))
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName, data.postalCode))
             }
             listener?.onAddressDataChanged()
             this.dismiss()
         } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
             val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
             if (data != null) {
-                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName))
+                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName, ""))
             }
             listener?.onAddressDataChanged()
             this.dismiss()
@@ -128,7 +128,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun initData() {
-        viewModel.getChosenAddressList()
+        val source = listener?.getLocalizingAddressHostSourceBottomSheet()
+        source?.let { viewModel.getChosenAddressList(it) }
     }
 
     private fun initObserver() {
@@ -152,7 +153,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = data.districtId.toString(),
                             lat = data.latitude,
                             long = data.longitude,
-                            label = data.addressName
+                            label = data.addressName,
+                            postalCode = data.postalCode
                     )
                     chooseAddressPref?.setLocalCache(localData)
                     listener?.onAddressDataChanged()
@@ -242,7 +244,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         //can't be set due gql
         //viewModel.setStateChosenAddress()
 
-        val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname)
+        val data = ChooseAddressUtils.setLocalizingAddressData(address.addressId, address.cityId, address.districtId, address.latitude, address.longitude, address.addressname, address.postalCode)
         chooseAddressPref?.setLocalCache(data)
         this.dismiss()
         listener?.onAddressDataChanged()
@@ -264,6 +266,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          * Only use by bottomsheet, to notify every changes in address data
          */
         fun onAddressDataChanged()
+
+
+        /**
+         * String Source of Host Page
+         */
+        fun getLocalizingAddressHostSourceBottomSheet(): String
     }
 
 }

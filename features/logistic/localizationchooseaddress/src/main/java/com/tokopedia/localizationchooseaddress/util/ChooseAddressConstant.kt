@@ -13,6 +13,7 @@ class ChooseAddressConstant {
                 district_id = "2274",
                 lat = "",
                 long = "",
+                postal_code = "",
                 label = "Jakarta Pusat"
         )
 
@@ -22,6 +23,7 @@ class ChooseAddressConstant {
                 district_id = "",
                 lat = "",
                 long = "",
+                postal_code = "",
                 label = "Pilih Alamat Pengirimanmu"
         )
     }
