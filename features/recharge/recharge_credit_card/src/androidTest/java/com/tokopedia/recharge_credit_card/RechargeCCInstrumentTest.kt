@@ -63,6 +63,12 @@ class RechargeCCInstrumentTest {
                 .perform(click())
     }
 
+    private fun openBankListBottomSheetThenClose() {
+        onView(withId(R.id.list_bank_btn)).perform(click())
+        onView(withId(R.id.desc_bank_list)).check(matches(isDisplayed()))
+        onView(withId(R.id.bottom_sheet_close)).perform(click())
+    }
+
     @Test
     fun next_button_is_enabled_on_inserted_valid_credit_card_number() {
         onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
@@ -82,6 +88,7 @@ class RechargeCCInstrumentTest {
     @Test
     fun validate_credit_card_user_journey() {
         typeCreditCardNumber(VALID_CC_NUMBER)
+        openBankListBottomSheetThenClose()
         openConfirmationDialogThenClickBack()
         openConfirmationDialogThenClickNext()
 
