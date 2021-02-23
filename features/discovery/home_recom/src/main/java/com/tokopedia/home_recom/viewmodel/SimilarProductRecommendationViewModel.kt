@@ -13,11 +13,11 @@ import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.SingleProductRecommendationMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips.Companion.FULL_FILTER
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips.Companion.QUICK_FILTER
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.toRecommendationWidget
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
@@ -72,12 +72,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
                 val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-                val recommendationItems = SingleProductRecommendationMapper.convertIntoRecommendationList(
-                        recommendationWidget.recommendation,
-                        recommendationWidget.title,
-                        recommendationWidget.pageName,
-                        recommendationWidget.layoutType
-                )
+                val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
                 if(recommendationItems.isEmpty() && page == 1){
                     _filterSortChip.postValue(Response.error(Exception()))
                     _recommendationItem.postValue(Response.error(Exception()))
@@ -154,7 +149,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 )
                 _filterSortChip.postValue(Response.success(filterData))
                 if (recommendationWidget.recommendation.isNotEmpty()) {
-                    val recommendationItems = singleRecommendationUseCase.mapToRecommendationItem(recommendationWidget)
+                    val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
                     val dimension61 = filterString + if(sortString?.isNotEmpty() == true)"&" else "" + sortString
                     _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
                 } else {
@@ -228,7 +223,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 _filterSortChip.postValue(Response.success(recomChip))
 
                 if (recommendationWidget.recommendation.isNotEmpty()) {
-                    val recommendationItems = singleRecommendationUseCase.mapToRecommendationItem(recommendationWidget)
+                    val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
                     _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
                 } else {
                     _recommendationItem.postValue(Response.empty())
@@ -271,7 +266,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             val recommendationWidget = singleRecommendationUseCase.createObservable(singleRecommendationUseCase.getRecomParams(queryParam = query, productIds = listOf(productId), pageNumber = 1)).toBlocking().first()
 
             if (recommendationWidget.recommendation.isNotEmpty()) {
-                val recommendationItems = singleRecommendationUseCase.mapToRecommendationItem(recommendationWidget)
+                val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
                 val filterData = FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)
                 _filterSortChip.postValue(Response.success(filterData))
                 _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
