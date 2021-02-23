@@ -31,6 +31,12 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
+    /*
+    * get size of imageView to check aspect ratio of image.
+    * this size it will be use for blur image size on blurhash generator.
+    * */
+    internal var imageViewSize: Pair<Int, Int> = Pair(0, 0)
+
     // generated URL have contains ECT param
     internal var urlHasQualityParam: String = ""
 
@@ -39,6 +45,10 @@ open class Properties(
 
     // validation of performance monitoring
     internal val isTrackable: Boolean = data is String && data.toString().contains(CDN_IMAGE_URL)
+
+    internal fun setImageSize(width: Int, height: Int) = apply {
+        this.imageViewSize = Pair(width, height)
+    }
 
     internal fun setUrlHasQuality(url: String) = apply {
         this.urlHasQualityParam = url

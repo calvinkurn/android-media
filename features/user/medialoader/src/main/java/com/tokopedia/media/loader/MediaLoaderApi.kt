@@ -77,6 +77,12 @@ internal object MediaLoaderApi {
                         tracker = PerformanceTracker.preRender(source, context)
                     }
 
+                    // get the imageView size
+                    properties.setImageSize(
+                            width = imageView.measuredWidth,
+                            height = imageView.measuredHeight
+                    )
+
                     bitmap.build(
                             context = context,
                             performanceMonitoring = tracker,

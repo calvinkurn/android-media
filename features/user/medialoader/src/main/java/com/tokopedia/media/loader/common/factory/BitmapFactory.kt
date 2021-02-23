@@ -84,7 +84,11 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 * */
                 placeHolder == ZERO_PLACEHOLDER -> {
                     if (blurHash && hash.isNotEmpty()) {
-                        placeholder(BitmapDrawable(context.resources, generateBlurHash(hash)))
+                        placeholder(BitmapDrawable(context.resources, generateBlurHash(
+                                hash = hash,
+                                width = properties.imageViewSize.first,
+                                height = properties.imageViewSize.second
+                        )))
                     } else {
                         placeholder(R.drawable.media_state_default_placeholder)
                     }
@@ -98,11 +102,11 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         }
     }
 
-    private fun generateBlurHash(hash: String?): Bitmap? {
+    private fun generateBlurHash(hash: String?, width: Int = 20, height: Int = 20): Bitmap? {
         return blurHashDecode(
                 blurHash = hash,
-                width = 20,
-                height = 20,
+                width = width,
+                height = height,
                 parallelTasks = 2
         )
     }
