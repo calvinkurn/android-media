@@ -70,9 +70,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                 }
             } else {
                 val error = resultInit?.second?: ""
-                if (isErrorReachMax(runAttemptCount)) {
-                    sendErrorDataVisorToServer(applicationContext, error)
-                }
+                sendErrorDataVisorToServer(applicationContext, runAttemptCount, error)
                 Result.retry()
             }
             result
@@ -91,8 +89,8 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
     fun isErrorReachMax(runAttemptCount: Int) = runAttemptCount == MAX_RUN_ATTEMPT
 
-    fun sendErrorDataVisorToServer(context: Context, errorMessage: String) {
-        sendDataVisorToServer(context, DEFAULT_VALUE_DATAVISOR, MAX_RUN_ATTEMPT, errorMessage)
+    fun sendErrorDataVisorToServer(context: Context, runAttemptCount: Int, errorMessage: String) {
+        sendDataVisorToServer(context, DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
     }
 
     private fun sendDataVisorToServer(context: Context, token: String = DEFAULT_VALUE_DATAVISOR, countAttempt: Int, errorMessage: String): Pair<Boolean, Throwable?>? {
