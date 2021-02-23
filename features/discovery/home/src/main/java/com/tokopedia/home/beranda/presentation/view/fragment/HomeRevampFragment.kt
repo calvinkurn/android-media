@@ -877,7 +877,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun validateChooseAddressWidget(): Boolean {
         var isAddressChanged = false
-        getHomeViewModel().homeChooseAddressData.toLocalCacheModel().let {
+        getHomeViewModel().getAddressData().toLocalCacheModel().let {
             isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
         }
 
