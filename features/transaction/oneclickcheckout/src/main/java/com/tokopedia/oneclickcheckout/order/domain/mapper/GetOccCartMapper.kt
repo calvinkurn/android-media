@@ -46,8 +46,6 @@ class GetOccCartMapper @Inject constructor() {
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
                 mapOccRevamp(data.revamp),
-//                0,
-//                "Ini popup message")
                 data.errorCode,
                 data.popUpMessage)
     }

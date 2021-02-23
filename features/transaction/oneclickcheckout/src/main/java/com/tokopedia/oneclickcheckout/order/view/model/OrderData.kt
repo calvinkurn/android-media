@@ -14,6 +14,6 @@ data class OrderData(
         var payment: OrderPayment = OrderPayment(),
         var prompt: OccPrompt = OccPrompt(),
         val revampData: OccRevampData = OccRevampData(),
-        val errorCode: Int = 0,
+        val errorCode: String = "",
         val popUpMessage: String = ""
 )
