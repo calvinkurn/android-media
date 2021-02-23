@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 

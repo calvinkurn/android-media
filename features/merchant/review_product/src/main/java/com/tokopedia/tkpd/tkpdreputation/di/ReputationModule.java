@@ -21,7 +21,7 @@ import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetRatingUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -34,7 +34,7 @@ import dagger.Provides;
  * @author by nisie on 8/11/17.
  */
 
-@Module
+@Module(includes = {ReviewProductViewModelModule.class})
 public class ReputationModule {
 
     @ReputationScope
