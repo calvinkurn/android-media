@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.*
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
 import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitResponse
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
@@ -111,7 +112,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     companion object {
         const val WORKER_NAME = "DV_WORKER"
         const val MAX_RUN_ATTEMPT = 3
-        const val DV_SHARED_PREF_NAME = "pref_dv"
         const val KEY_TOKEN = "tk"
         const val KEY_TS_TOKEN = "ts_tk"
         const val KEY_TS_WORKER = "ts_worker"
