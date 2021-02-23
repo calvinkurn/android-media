@@ -26,6 +26,7 @@ import com.tokopedia.device.info.DevicePerformanceInfo.getDeviceDpi
 import com.tokopedia.device.info.DevicePerformanceInfo.getDeviceMemoryClassCapacity
 import com.tokopedia.device.info.DeviceScreenInfo.getScreenResolution
 import com.tokopedia.device.info.DeviceScreenInfo.isTablet
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.header.model.FingerPrint
 import com.tokopedia.devicefingerprint.location.LocationCache
 import com.tokopedia.encryption.security.toBase64
@@ -142,7 +143,8 @@ object FingerprintModelGenerator {
                 deviceMemoryClassCapacity = deviceMemoryClass,
                 deviceDpi = deviceDpi,
                 pid = imei,
-                uuid = uuid)
+                uuid = uuid,
+                inval = VisorFingerprintInstance.getDVToken(context))
         return Gson().toJson(fp)
     }
 

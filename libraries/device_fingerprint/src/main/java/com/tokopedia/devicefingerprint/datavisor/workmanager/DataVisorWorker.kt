@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.datavisor.workmanager
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
@@ -99,7 +100,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         )
         var result: Pair<Boolean, Throwable?>? = null
         submitDVTokenUseCase.execute({
-            result = true to null
+            result = !(it.subDvcIntlEvent.isError) to null
         }, {
             result = false to it
         })
@@ -110,7 +111,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     companion object {
         const val WORKER_NAME = "DV_WORKER"
         const val MAX_RUN_ATTEMPT = 3
-        const val DEFAULT_VALUE_DATAVISOR = "DVLT_6542b775e3263c27e321b929-f52fc6e0_dFlt"
         const val DV_SHARED_PREF_NAME = "pref_dv"
         const val KEY_TOKEN = "tk"
         const val KEY_TS_TOKEN = "ts_tk"
