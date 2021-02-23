@@ -213,9 +213,9 @@ class MixTopComponentViewHolder(
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.setPrimaryClip(clipData)
 
-        Toaster.make(view.parent as ViewGroup,
+        Toaster.build(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG).show()
     }
 
     private fun valuateRecyclerViewDecoration() {
@@ -259,7 +259,8 @@ class MixTopComponentViewHolder(
                                 ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
-                                        type = it.type
+                                        type = it.type,
+                                        imageUrl = it.url
                                 )
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
