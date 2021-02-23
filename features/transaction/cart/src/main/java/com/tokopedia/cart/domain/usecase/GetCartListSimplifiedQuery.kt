@@ -44,7 +44,16 @@ fun getQueryCartRevamp(): String {
                 seller_cashback_wording
                 seller_cashback_value
               }
-              
+              promo_summary {
+                title
+                detail {
+                    description
+                    type
+                    amount_str
+                    amount
+                    currency_detail_str
+                }
+              }
               max_quantity
               max_char_note
               messages {
@@ -701,18 +710,3 @@ fun getQueryCartRevamp(): String {
         }
     """
 }
-
-/*
-QUERY PROMO - WAITING FOR STAGING
-
-            promo_summary {
-                title
-                detail {
-                    description
-                    type
-                    amount_str
-                    amount
-                    currency_detail_str
-                }
-              }
- */
