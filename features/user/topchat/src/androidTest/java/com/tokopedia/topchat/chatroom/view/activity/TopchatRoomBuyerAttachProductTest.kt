@@ -185,7 +185,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
     }
 
     @Test
-    fun user_remove_one_of_preview_products() {
+    fun user_remove_two_out_of_three_preview_products() {
         // Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
