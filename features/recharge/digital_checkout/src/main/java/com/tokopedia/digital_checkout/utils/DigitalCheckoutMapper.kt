@@ -26,7 +26,7 @@ import com.tokopedia.track.TrackApp
 
 object DigitalCheckoutMapper {
 
-    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData {
+    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
         cartInfo.attributes?.autoApplyVoucher?.let {
             if (it.isSuccess && !(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
@@ -38,7 +38,7 @@ object DigitalCheckoutMapper {
                         state = TickerCheckoutView.State.ACTIVE)
             }
         }
-        return promoData ?: PromoData()
+        return promoData
     }
 
     fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {

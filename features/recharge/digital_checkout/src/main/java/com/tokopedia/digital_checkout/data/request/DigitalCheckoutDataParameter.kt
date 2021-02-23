@@ -1,9 +1,13 @@
 package com.tokopedia.digital_checkout.data.request
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 /**
  * @author by jessica on 20/01/21
  */
-class DigitalCheckoutDataParameter (
+@Parcelize
+data class DigitalCheckoutDataParameter(
         var voucherCode: String? = null,
         var cartId: String? = null,
         var transactionAmount: Double = 0.0,
@@ -17,4 +21,4 @@ class DigitalCheckoutDataParameter (
 
         var isSubscriptionChecked: Boolean = false,
         var isFintechProductChecked: Boolean = false
-)
+) : Parcelable

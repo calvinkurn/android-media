@@ -224,7 +224,11 @@ class DigitalCartViewModel @Inject constructor(
             _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
             _cartDigitalInfoData.postValue(mappedCartData)
             _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
+
+            val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
+            promoData?.let {
+                _promoData.postValue(it)
+            }
         }
     }
 

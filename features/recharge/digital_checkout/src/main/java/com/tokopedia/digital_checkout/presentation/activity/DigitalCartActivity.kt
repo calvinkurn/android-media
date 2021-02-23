@@ -90,7 +90,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): kotlin.Boolean {
-        if(currentFocus != null) {
+        if (currentFocus != null) {
             KeyboardHandler.hideSoftKeyboard(this)
             currentFocus?.clearFocus()
         }
