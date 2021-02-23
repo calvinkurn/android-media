@@ -1,6 +1,6 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.KEY_CHOSEN_ADDRESS
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
@@ -39,7 +39,7 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_SELECTED_CART_ID to cartId,
                 PARAM_KEY_ADDITIONAL to mapOf(
-                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                        PARAM_KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
                 )
         )
     }

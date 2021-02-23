@@ -9,11 +9,11 @@ import javax.inject.Inject
 class ChosenAddressAddToCartRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
-        const val KEY_CHOSEN_ADDRESS = "chosen_address"
+        const val PARAM_KEY_CHOSEN_ADDRESS = "chosen_address"
     }
 
     fun addChosenAddressParam(requestParams: RequestParams): RequestParams {
-        requestParams.putObject(KEY_CHOSEN_ADDRESS, getChosenAddress())
+        requestParams.putObject(PARAM_KEY_CHOSEN_ADDRESS, getChosenAddress())
         return requestParams
     }
 

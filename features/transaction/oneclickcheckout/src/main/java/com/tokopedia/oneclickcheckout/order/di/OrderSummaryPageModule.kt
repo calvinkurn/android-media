@@ -5,6 +5,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -124,4 +125,11 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     open fun provideOvoActivationLink(): String {
         return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
+
+    @OrderSummaryPageScope
+    @Provides
+    fun provideChosenAddressAddToCartRequestHelper(@ApplicationContext context: Context): ChosenAddressAddToCartRequestHelper {
+        return ChosenAddressAddToCartRequestHelper(context)
+    }
+
 }
