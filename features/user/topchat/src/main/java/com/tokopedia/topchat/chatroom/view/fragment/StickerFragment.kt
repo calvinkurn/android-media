@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,13 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatComponent
-import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
-import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.StickerRecyclerView
@@ -28,21 +23,18 @@ class StickerFragment : BaseDaggerFragment() {
 
     private var stickerListener: StickerViewHolder.Listener? = null
     private var stickerList: StickerRecyclerView? = null
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelFragmentProvider.get(StickerViewModel::class.java) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelFragmentProvider.get(StickerViewModel::class.java)
+    }
 
     private var stickerGroupUID = ""
     private var stickerNeedUpdate = false
 
     interface Listener {
         fun getStickerViewHolderListener(): StickerViewHolder.Listener?
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initArguments()
-        initDagger()
-        initObserver()
     }
 
     override fun onAttach(context: Context) {
@@ -57,7 +49,10 @@ class StickerFragment : BaseDaggerFragment() {
     ): View? {
         return inflater.inflate(
                 LAYOUT, container, false
-        )
+        ).also {
+            initArguments()
+            initObserver()
+        }
     }
 
     override fun getScreenName(): String {
@@ -69,7 +64,7 @@ class StickerFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.stickers.observe(this, Observer {
+        viewModel.stickers.observe(viewLifecycleOwner, Observer {
             it?.let {
                 stickerList?.updateSticker(it)
             }
@@ -93,18 +88,6 @@ class StickerFragment : BaseDaggerFragment() {
     private fun initArguments() {
         stickerGroupUID = arguments?.getString(keyStickerGroupUID) ?: ""
         stickerNeedUpdate = arguments?.getBoolean(keyStickerNeedUpdate) ?: false
-    }
-
-    private fun initDagger() {
-        if (activity != null && (activity as Activity).application != null) {
-            context?.let {
-                val chatComponent = DaggerChatComponent.builder()
-                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                        .chatRoomContextModule(ChatRoomContextModule(it))
-                        .build()
-                chatComponent.inject(this)
-            }
-        }
     }
 
     override fun onDestroy() {
