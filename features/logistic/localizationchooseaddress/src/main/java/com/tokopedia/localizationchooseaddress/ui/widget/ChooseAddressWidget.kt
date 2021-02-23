@@ -120,10 +120,13 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun checkRollence(){
-        /**
-         * Will be implement rollence here, still need confirmation from product side
-         */
-        chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+        if (ChooseAddressUtils.isRollOutUser(context)) {
+            chooseAddressPref?.setRollenceValue(true)
+            chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+        } else {
+            chooseAddressPref?.setRollenceValue(false)
+            chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(false)
+        }
     }
 
     fun updateWidget(){

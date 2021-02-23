@@ -13,7 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
 object ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        if(isRollOutUser()){
+        if(isRollOutUser(context)){
             if(isLoginUser(context)){
                 if(hasLocalizingAddressOnCache(context)){
                     var chooseAddressPref = ChooseAddressSharePref(context)
@@ -30,22 +30,30 @@ object ChooseAddressUtils {
     }
 
     private fun hasLocalizingAddressOnCache(context: Context): Boolean {
-        var chooseAddressPref = ChooseAddressSharePref(context)
+        val chooseAddressPref = ChooseAddressSharePref(context)
         return !chooseAddressPref.checkLocalCache().isNullOrEmpty()
 
     }
 
     fun isLoginUser(context: Context): Boolean {
-        var userSession: UserSessionInterface = UserSession(context)
+        val userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
     }
 
     /**
      * temporary use return true
      */
-    fun isRollOutUser(): Boolean {
-        /* val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY */
+    fun isRollOutUser(context: Context): Boolean {
+        /*val chooseAddressPref = ChooseAddressSharePref(context)
+        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
+        return if (rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY) {
+            chooseAddressPref.setRollenceValue(true)
+            true
+        } else {
+            chooseAddressPref.setRollenceValue(false)
+            false
+        }*/
+
         return true
     }
 
