@@ -51,9 +51,11 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         }
         if (isAllowBell!!) {
-            setSound(getRingtoneUri(context))
+            setSound(ringtoneUri)
             if (isAllowVibrate!!) setVibrate(vibratePattern)
         }
+
+        createNotificationChannel()
     }
 
     override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notificationType: Int, notificationId: Int): Notification {

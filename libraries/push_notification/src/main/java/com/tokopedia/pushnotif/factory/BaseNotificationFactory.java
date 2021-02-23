@@ -1,6 +1,7 @@
 package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
+import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -200,7 +202,18 @@ public abstract class BaseNotificationFactory {
         }
     }
 
-    protected Uri getRingtoneUri(Context context) {
+    protected Uri getRingtoneUri() {
         return RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
     }
+
+    protected void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannelBuilder.create(
+                    context,
+                    getRingtoneUri(),
+                    getVibratePattern()
+            );
+        }
+    }
+
 }
