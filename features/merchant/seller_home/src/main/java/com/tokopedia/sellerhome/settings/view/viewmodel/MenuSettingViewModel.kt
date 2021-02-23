@@ -33,7 +33,7 @@ class MenuSettingViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     userSession.shopId.toIntOrZero().let { shopId ->
-                        AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING).let { requestParams ->
+                        AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_INFO).let { requestParams ->
                             mShopSettingAccessLiveData.postValue(Success(withContext(dispatchers.io) {
                                 authorizeAccessUseCase.execute(requestParams)
                             }))
