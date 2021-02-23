@@ -34,6 +34,7 @@ include 'libraries:imageuploader'
 
 include "libraries:inappupdate"
 include "libraries:smart_recycler_diffutil_helper"
+include "libraries:keys"
 include "libraries:kotlin_extensions"
 include "libraries:liveness_lib"
 include 'libraries:locationmanager'
@@ -42,6 +43,7 @@ include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
 include "libraries:mediauploader"
+include "libraries:moengage_wrapper"
 include "libraries:oms"
 include "libraries:push_notification"
 include "libraries:product_photo_adapter"

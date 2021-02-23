@@ -2,6 +2,9 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -27,6 +30,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +63,7 @@ class NotificationViewModelTest {
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk(relaxed = true)
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
+    private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
     private val dispatcher = TestDispatcherProvider()
 
@@ -83,6 +88,7 @@ class NotificationViewModelTest {
             topAdsWishlishedUseCase,
             removeWishListUseCase,
             userSessionInterface,
+            addToCartUseCase,
             dispatcher
     )
 
@@ -555,6 +561,73 @@ class NotificationViewModelTest {
 
         // then
         verify(exactly = 1) { removeWishListUseCase.createObservable(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when success addProductToCart`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(successAtc)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), onSuccess, {})
+
+        // Then
+        verify(exactly = 1) {
+            onSuccess.invoke(successAtc.data)
+        }
+    }
+
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(errorAtc)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke("Gagal menambahkan produk")
+        }
+    }
+
+    @Test
+    fun `when error throwable addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorMsg = "Gagal menambahkan produk"
+        every {
+            addToCartUseCase.createObservable(any())
+        } throws IllegalStateException(errorMsg)
+
+        // When
+        viewModel.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(errorMsg)
+        }
+    }
+
+    private fun getErrorAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 0
+            data.message.add("Gagal menambahkan produk")
+        }
+    }
+
+    private fun getSuccessAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 1
+        }
     }
 
     @After fun tearDown() {

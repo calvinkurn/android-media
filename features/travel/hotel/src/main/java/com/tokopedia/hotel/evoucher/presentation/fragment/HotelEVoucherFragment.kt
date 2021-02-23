@@ -10,11 +10,11 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
@@ -28,10 +28,10 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
 import javax.inject.Inject
 
@@ -68,7 +68,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        eVoucherViewModel.orderDetailData.observe(this, Observer {
+        eVoucherViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderData(it.data)
@@ -78,7 +78,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             }
         })
 
-        eVoucherViewModel.sharePdfData.observe(this, Observer {
+        eVoucherViewModel.sharePdfData.observe(viewLifecycleOwner, Observer {
             progressDialog.dismiss()
             shareAsPdfBottomSheets.dismiss()
         })
@@ -247,7 +247,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun renderCancellationPolicies(cancellationList: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
         cancellationPoliciesAdapter = HotelEVoucherCancellationPoliciesAdapter(cancellationList)
 
-        val layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         rv_cancellation_policies.layoutManager = layoutManager
         rv_cancellation_policies.setHasFixedSize(true)
         rv_cancellation_policies.isNestedScrollingEnabled = false
