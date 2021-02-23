@@ -102,7 +102,8 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         return blurHashDecode(
                 blurHash = hash,
                 width = 20,
-                height = 20
+                height = 20,
+                parallelTasks = 2
         )
     }
 
