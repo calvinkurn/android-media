@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class SearchProduct(
 
 	@field:SerializedName("totalData")
-	val totalData: Int? = null,
+	var totalData: Int? = null,
 
 	@field:SerializedName("isQuerySafe")
 	val isQuerySafe: Boolean? = null,

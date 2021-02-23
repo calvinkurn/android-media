@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.model.raw
+package com.tokopedia.catalog.model.raw.gql
 
 const val CATALOG_GQL_TOP_ADS: String ="""query displayTopAds(${'$'}params: String) {
   productAds: displayAdsV3(displayParams: ${'$'}params) {

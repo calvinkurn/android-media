@@ -1,16 +1,16 @@
-package com.tokopedia.catalog.model.raw
+package com.tokopedia.catalog.model.raw.gql
 
-const val CATALOG_GQL_QUICK_FILTER: String = """query DynamicAttributes(${'$'}source: String, ${'$'}q: String, ${'$'}filter: DAFilterQueryType) {
-  dynamicAttribute(source: ${'$'}source, q: ${'$'}q, filter: ${'$'}filter) {
-    data {
-      filter {
+const val CATALOG_GQL_QUICK_FILTER: String = """query filter_sort_product(${'$'}params: String!){
+  filter_sort_product(params: ${'$'}params) {
+    data{
+      filter{
         title
         template_name
-        search {
+        search{
           searchable
           placeholder
         }
-        options {
+        options{
           name
           key
           icon
@@ -20,23 +20,33 @@ const val CATALOG_GQL_QUICK_FILTER: String = """query DynamicAttributes(${'$'}so
           valMax
           valMin
           hexColor
-          child {
+          child{
             key
             value
             name
             icon
             inputType
             totalData
+            isPopular
             child {
-              key
-              value
-              name
+            key
+            value
+            name
+            icon
+            inputType
+            totalData
             }
           }
           isPopular
           isNew
           Description
         }
+      }
+      sort{
+        name
+        key
+        value
+        inputType
       }
     }
   }

@@ -1,4 +1,4 @@
-package com.tokopedia.common_category.adapter
+package com.tokopedia.catalog.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactory
 import com.tokopedia.common_category.factory.ProductTypeFactory
@@ -15,11 +16,9 @@ import com.tokopedia.common_category.model.shimmer.GridListShimmerModel
 import com.tokopedia.common_category.model.shimmer.ListShimmerModel
 import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 
-
-
-class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
-                            val visitables: ArrayList<Visitable<ProductTypeFactory>>,
-                            val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+class CatalogProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
+                                   val visitables: ArrayList<Visitable<ProductTypeFactory>>,
+                                   val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
@@ -30,6 +29,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
 
     private var currentDimension: String = ""
+
     private val defaultSortFilterMostAppropriate = "ob=23"
 
     val viewMap = HashMap<Int, Boolean>()
@@ -37,12 +37,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
     var isShimmer: Boolean = false
 
-
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
-        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        when(visitables[position]){
-            is LoadingMoreModel -> layout.isFullSpan = true
-        }
         holder.bind(visitables[position])
     }
 

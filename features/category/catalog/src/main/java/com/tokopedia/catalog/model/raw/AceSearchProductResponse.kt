@@ -11,6 +11,13 @@ data class AceSearchProductResponse(
 
     data class AceSearchProduct(
             @field:SerializedName("data")
-            val searchData: SearchProduct? = null
-    )
+            val searchData: SearchProduct? = null,
+            @field:SerializedName("header")
+            val header: Header? = null
+    ){
+        data class Header(
+                @field:SerializedName("totalData")
+                val totalData: Int = 0
+        )
+    }
 }

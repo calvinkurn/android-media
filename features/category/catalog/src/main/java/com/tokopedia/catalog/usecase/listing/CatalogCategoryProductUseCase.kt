@@ -1,7 +1,7 @@
 package com.tokopedia.catalog.usecase.listing
 
 import com.tokopedia.catalog.model.raw.AceSearchProductResponse
-import com.tokopedia.catalog.model.raw.CATALOG_GQL_SEARCH_PRODUCT
+import com.tokopedia.catalog.model.raw.gql.CATALOG_GQL_SEARCH_PRODUCT
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams

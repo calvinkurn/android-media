@@ -1,24 +1,33 @@
 package com.tokopedia.common_category.viewholders.viewholder.catalog
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.common_category.R
-import com.tokopedia.common_category.catalogcard.CatalogCardView
-import com.tokopedia.common_category.interfaces.CatalogCardListener
-import kotlinx.android.synthetic.main.catalog_card_list.view.*
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.interfaces.ProductCardListener
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import kotlinx.android.synthetic.main.category_product_card_list.view.*
 
 
-class ListCatalogCardViewHolder(itemView: View,catalogCardListener: CatalogCardListener) : CatalogCardViewHolder(itemView,catalogCardListener) {
+class ListCatalogCardViewHolder(itemView: View,productCardListener: ProductCardListener) : CatalogProductCardViewHolder(itemView,productCardListener) {
 
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.catalog_card_list
+        val LAYOUT = R.layout.category_product_card_list
     }
 
+    override fun bind(productItem: ProductsItem?) {
+        if (productItem == null) return
 
-    override fun getCatalogCardView(): CatalogCardView? {
-        return itemView.catalogCardView ?: null
+        itemView.productCardView?.setProductModel(productItem.toProductCardModel(CategoryNavConstants.RecyclerView.GridType.GRID_1))
+
+        itemView.productCardView?.setOnClickListener {
+            productListener.onItemClicked(productItem, adapterPosition)
+        }
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClicked(productItem, adapterPosition)
+        }
     }
-
 }

@@ -37,7 +37,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private lateinit var catalogDetailFragment: Fragment
     private lateinit var catalogDetailListingFragment: Fragment
-    private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var catalogName: String = ""
     private var filters: ArrayList<Filter> = ArrayList()
 
@@ -85,7 +84,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
-        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         //searchNavContainer = findViewById(R.id.search_nav_container)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
             intent.getStringExtra(EXTRA_CATALOG_ID)
@@ -96,39 +94,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     private fun prepareView() {
-        initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
-                FilterEventTracking.Event.CLICK_CATALOG_DETAIL,
-                FilterEventTracking.Category.FILTER_CATALOG_DETAIL,
-                "",
-                FilterEventTracking.Category.PREFIX_CATALOG_PAGE))
-
-    }
-
-    private fun initBottomSheetListener() {
-        bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
-            override fun onApplyFilter(filterParameter: Map<String, String>?) {
-                applyFilter(filterParameter ?: mapOf())
-            }
-
-            override fun onShow() {
-                hideBottomNavigation()
-            }
-
-            override fun onHide() {
-                showBottomNavigation()
-            }
-
-            override fun getActivity(): AppCompatActivity {
-                return this@CatalogDetailPageActivity
-            }
-        })
-        bottomSheetFilterView?.onBackPressed()
-        if (supportActionBar != null)
-            supportActionBar!!.setHomeAsUpIndicator(
-                    com.tokopedia.abstraction.R.drawable.ic_action_back
-            )
     }
 
     private fun applyFilter(filterParameter: Map<String, String>) {
@@ -175,31 +141,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
 
-    override fun onBackPressed() {
-        bottomSheetFilterView?.let {
-            if (!it.onBackPressed()) {
-                checkFragmentisCatalogDetailPageFragment()?.let { fragment ->
-                    fragment.onBackPress()
-                    return
-                }
-                super.onBackPressed()
-            }
-        }
-    }
-
-
-    private fun checkFragmentisCatalogDetailPageFragment(): CatalogDetailPageFragment? {
-        return if (catalogDetailFragment is CatalogDetailPageFragment) {
-            catalogDetailFragment as CatalogDetailPageFragment
-        } else {
-            null
-        }
-    }
-
-    fun showBottomNavigation() {
-        searchNavContainer?.show()
-    }
-
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
         navigationListenerList.add(clickListener)
     }
@@ -214,15 +155,12 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
 
     override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: Map<String, String>?) {
         this.filters.addAll(filters ?: listOf())
-        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 
     override fun setFilterResultCount(formattedResultCount: String?) {
-        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
     }
 
     override fun launchFilterBottomSheet() {
-        bottomSheetFilterView?.launchFilterBottomSheet()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -231,7 +169,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
     }
 
     // TODO CHECK

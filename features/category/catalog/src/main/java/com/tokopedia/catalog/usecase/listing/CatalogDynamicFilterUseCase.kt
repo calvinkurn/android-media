@@ -1,6 +1,6 @@
 package com.tokopedia.catalog.usecase.listing
 
-import com.tokopedia.catalog.model.raw.CATALOG_GQL_DYNAMIC_FILTER
+import com.tokopedia.catalog.model.raw.gql.CATALOG_GQL_DYNAMIC_FILTER
 import com.tokopedia.common_category.model.filter.FilterResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.data.model.GraphqlRequest

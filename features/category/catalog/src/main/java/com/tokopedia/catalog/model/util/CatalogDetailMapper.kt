@@ -1,9 +1,6 @@
 package com.tokopedia.catalog.model.util
 
-import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
+import com.tokopedia.catalog.model.datamodel.*
 import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.common_category.model.productModel.*
 import java.util.*
@@ -56,7 +53,8 @@ object CatalogDetailMapper {
                     val specifications = arrayListOf<FullSpecificationsComponentData>()
                     crudeSpecificationsData.forEachIndexed { indexComponentData, componentData ->
                         specifications.add(FullSpecificationsComponentData(componentData.name,
-                                componentData.icon, componentData.specificationsRow ?: arrayListOf()))
+                                componentData.icon, componentData.specificationsRow
+                                ?: arrayListOf()))
                     }
                     catalogFullSpecificationDataModel =  CatalogFullSpecificationDataModel(fullSpecificationsList = specifications)
                 }
@@ -118,10 +116,10 @@ object CatalogDetailMapper {
 
         // Top Specifications
         val topsSpecifications = arrayListOf<ComponentData>()
-        topsSpecifications.add(ComponentData(null,"Network","HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
-        topsSpecifications.add(ComponentData(null,"Operating System","iOS 2.0","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
-        topsSpecifications.add(ComponentData(null,"Network","HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
-        topsSpecifications.add(ComponentData(null,"Operating System","iOS 2.0","https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg",null))
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
         componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
                 1,
                 "Catalog Top Spec",

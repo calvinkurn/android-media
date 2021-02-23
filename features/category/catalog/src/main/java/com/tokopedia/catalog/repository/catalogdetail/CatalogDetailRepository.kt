@@ -2,7 +2,7 @@ package com.tokopedia.catalog.repository.catalogdetail
 
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.catalog.model.raw.CatalogResponseData
-import com.tokopedia.catalog.model.raw.GQL_CATALOG_QUERY
+import com.tokopedia.catalog.model.raw.gql.GQL_CATALOG_QUERY
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type

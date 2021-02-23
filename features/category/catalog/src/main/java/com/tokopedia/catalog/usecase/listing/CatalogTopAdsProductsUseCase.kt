@@ -1,6 +1,6 @@
 package com.tokopedia.catalog.usecase.listing
 
-import com.tokopedia.catalog.model.raw.CATALOG_GQL_TOP_ADS
+import com.tokopedia.catalog.model.raw.gql.CATALOG_GQL_TOP_ADS
 import com.tokopedia.common_category.model.topAds.TopAdsResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

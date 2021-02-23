@@ -23,16 +23,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
-import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.ProductTypeFactory
-import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
@@ -45,6 +45,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,11 +83,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private var departmentId: String = ""
     private var departmentName: String = ""
 
-    var productNavListAdapter: ProductNavListAdapter? = null
+    var productNavListAdapter: CatalogProductNavListAdapter? = null
     private lateinit var quickFilterAdapter: QuickFilterAdapter
+
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
+    var pagingRowCount = 20
 
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
     var quickFilterList = ArrayList<Filter>()
@@ -96,7 +100,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
-    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -156,15 +160,21 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             viewModel.fetchQuickFilters(getQuickFilterParams())
         }
 
+        sortFilterBottomSheet = SortFilterBottomSheet()
+
         // TODO CHANGE
         val dynamicFilterItemIcon =  dynamic_filter.findViewById<ImageView>(R.id.filter_new_icon)
         dynamicFilterItemIcon.setImageResource(R.drawable.catalog_ic_filter)
         dynamicFilterItemIcon.show()
         dynamic_filter.findViewById<TextView>(R.id.quick_filter_text).text = "Filter"
         dynamic_filter.setOnClickListener {
-            val sortFilterBottomSheet = SortFilterBottomSheet()
-            // TODO CHANGE SEARCH PARAMETER
-            sortFilterBottomSheet.show(
+            openBottomSheetFilterNew()
+        }
+    }
+
+    private fun openBottomSheetFilterNew(){
+        if(dynamicFilterModel != null){
+            sortFilterBottomSheet?.show(
                     requireFragmentManager(),
                     searchParameter.getSearchParameterHashMap(),
                     dynamicFilterModel,
@@ -173,19 +183,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    private fun getQuickFilterParams(): RequestParams {
-        val quickFilterParam = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = departmentId
-        quickFilterParam.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        quickFilterParam.putString(CategoryNavConstants.SOURCE, "quick_filter")
-        return quickFilterParam
-    }
-
     private fun setUpAdapter() {
-        productTypeFactory = ProductTypeFactoryImpl(this)
-        productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
-        productNavListAdapter?.setIsStaggered(false)
+        productTypeFactory = CatalogTypeFactoryImpl(this)
+        productNavListAdapter = CatalogProductNavListAdapter(productTypeFactory, list, this)
         productNavListAdapter?.changeListView()
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getLinearLayoutManager()
@@ -202,10 +202,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun attachScrollListener() {
-        getStaggeredGridLayoutManager()?.let {
-            staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
+        getLinearLayoutManager()?.let {
+            loadMoreTriggerListener = getEndlessRecyclerViewListener(it)
         }
-        staggeredGridLayoutLoadMoreTriggerListener?.let {
+        loadMoreTriggerListener?.let {
             product_recyclerview.addOnScrollListener(it)
         }
     }
@@ -233,7 +233,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
-                        staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+                        setHeaderCount(list.size)
+                        loadMoreTriggerListener?.updateStateAfterGetData()
                         isPagingAllowed = true
                     } else {
                         if (list.isEmpty()) {
@@ -241,7 +242,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         }
                     }
                     hideRefreshLayout()
-                    reloadFilter(createFilterParam())
+                    reloadFilter(getDynamicFilterParams())
                 }
 
                 is Fail -> {
@@ -260,7 +261,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
-                    headerTitle.text = getString(R.string.catalog_search_product_count_text,it)
                     setQuickFilterAdapter("")
                 } else {
                     setQuickFilterAdapter("")
@@ -292,6 +292,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 }
 
                 is Fail -> {
+                    quickfilter_recyclerview.hide()
                 }
             }
 
@@ -299,15 +300,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun createFilterParam(): RequestParams {
-        val paramMap = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = departmentId
-        paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
-        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(CategoryNavConstants.Q, "")
-        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
-        return paramMap
+    fun setHeaderCount(totalProductsCount : Int){
+        headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount.toString())
     }
 
     private fun reloadFilter(param: RequestParams) {
@@ -341,7 +335,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.clearData()
         productNavListAdapter?.addShimmer()
         resetPage()
-        staggeredGridLayoutLoadMoreTriggerListener?.resetState()
+        loadMoreTriggerListener?.resetState()
         fetchProductData(getProductListParamMap(getPage()))
 
         viewModel.fetchQuickFilters(getQuickFilterParams())
@@ -378,16 +372,44 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         viewModel.fetchProductListing(paramMap)
     }
 
+    private fun getQuickFilterParams(): RequestParams {
+        val param = RequestParams.create()
+        val searchFilterParams = RequestParams.create()
+        searchFilterParams.apply {
+            putString(CategoryNavConstants.DEVICE, "android")
+            // TODO ASK
+            putString(CategoryNavConstants.Q,"samsung")
+            putString(CategoryNavConstants.SOURCE, "search_product")
+            // TODO ASK
+            //putString("user_id", "-1")
+        }
+        param.putString("params", createParametersForQuery(searchFilterParams.parameters))
+        return param
+    }
+
+    private fun getDynamicFilterParams(): RequestParams {
+        val paramMap = RequestParams()
+        val daFilterQueryType = DAFilterQueryType()
+        daFilterQueryType.sc = departmentId
+        paramMap.apply {
+            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.SOURCE, "search_product")
+            putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+            putString(CategoryNavConstants.Q, "")
+        }
+        return paramMap
+    }
+
     private fun getProductListParamMap(start: Int): RequestParams {
         val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
-            putString(CategoryNavConstants.START, (start * 10).toString())
+            putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
             putString(CategoryNavConstants.SC, departmentId)
             putString(CategoryNavConstants.DEVICE, "android")
             putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
             putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-            putString(CategoryNavConstants.ROWS, "10")
+            putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
             putString(CategoryNavConstants.SOURCE, "catalog")
             putString(CategoryNavConstants.CTG_ID, "65051")
             putAllString(getSelectedSort())

@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.model.raw
+package com.tokopedia.catalog.model.raw.gql
 
 const val CATALOG_GQL_SEARCH_PRODUCT: String = """query ace_search_product(${'$'}params: String!) {
   ace_search_product(params: ${'$'}params) {
@@ -176,6 +176,22 @@ const val CATALOG_GQL_SEARCH_PRODUCT: String = """query ace_search_product(${'$'
       navSource
       liteURL
       token
+    }
+    header {
+      totalData
+      totalDataText
+      defaultView
+      processTime
+      additionalParams
+      experiment
+      suggestionInstead {
+        suggestionInstead
+        currentKeyword
+        totalData
+      }
+      responseCode
+      errorMessage
+      keyword_process
     }
   }
 }
