@@ -706,11 +706,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             }
         } else if (Id == com.tokopedia.digital_deals.R.id.cl_redeem_instructions) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL);
-//            if((dealDetail.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
-//                startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
-//            } else {
+            if((dealDetail.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
+                startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
+            } else {
                 mPresenter.getEventContent(onSuccessGetEventContent(), onErrorGetEventContent());
-         //   }
+            }
         }
     }
 
