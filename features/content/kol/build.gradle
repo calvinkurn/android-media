@@ -37,7 +37,6 @@ dependencies {
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
