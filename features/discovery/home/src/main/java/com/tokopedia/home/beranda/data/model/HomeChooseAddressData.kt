@@ -21,6 +21,7 @@ data class HomeChooseAddressData(
             this.districId = localCacheModel.district_id
             this.postCode = ""
             this.label = localCacheModel.label
+            this.postCode = localCacheModel.postal_code
         }
         return  this
     }
@@ -32,7 +33,8 @@ data class HomeChooseAddressData(
                 district_id = districId,
                 lat = lat,
                 long = long,
-                label = label
+                label = label,
+                postal_code = postCode
         )
     }
 }
