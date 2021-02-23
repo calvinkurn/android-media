@@ -612,9 +612,21 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        initImagePickerPresenter();
+        imagePickerPresenter.convertFormatImage(resultPaths, imagePickerBuilder.getConvertToWebp());
+    }
+
+    @Override
+    public void onErrorConvertFormatImage(Throwable e) {
+        hideDownloadProgressDialog();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessConvertFormatImage(ArrayList<String> resultPaths) {
         hideDownloadProgressDialog();
         onFinishWithMultipleFinalImage(resultPaths, selectedImagePaths, imageDescriptionList,
-                new ArrayList<Boolean>(selectedImagePaths.size()));
+                new ArrayList<>(selectedImagePaths.size()));
     }
 
     private void initImagePickerPresenter() {

@@ -19,6 +19,7 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -119,16 +120,19 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun checkRollence(){
-        /**
-         * Will be implement rollence here, still need confirmation from product side
-         */
-        chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+        if (ChooseAddressUtils.isRollOutUser(context)) {
+            chooseAddressPref?.setRollenceValue(true)
+            chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(true)
+        } else {
+            chooseAddressPref?.setRollenceValue(false)
+            chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(false)
+        }
     }
 
     fun updateWidget(){
         val data = chooseAddressPref?.getLocalCacheData()
         val label = context.getString(R.string.txt_send_to, data?.label)
-        textChosenAddress?.text = MethodChecker.fromHtml(label)
+        textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
     }
 
     private fun getComponent(): ChooseAddressComponent {

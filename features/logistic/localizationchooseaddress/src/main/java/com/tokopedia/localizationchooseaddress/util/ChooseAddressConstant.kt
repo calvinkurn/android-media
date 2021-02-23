@@ -5,6 +5,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 class ChooseAddressConstant {
 
     companion object {
+        val CHOOSE_ADDRESS_ROLLENCE_KEY = "ChooseAddressAndroid"
+
         val defaultAddress = LocalCacheModel(
                 address_id = "",
                 city_id = "176",

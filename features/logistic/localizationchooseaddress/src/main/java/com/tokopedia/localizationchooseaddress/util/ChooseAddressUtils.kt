@@ -1,15 +1,19 @@
 package com.tokopedia.localizationchooseaddress.util
 
 import android.content.Context
+import android.view.View
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
 object ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        if(isRollOutUser()){
+        if(isRollOutUser(context)){
             if(isLoginUser(context)){
                 if(hasLocalizingAddressOnCache(context)){
                     var chooseAddressPref = ChooseAddressSharePref(context)
@@ -26,17 +30,30 @@ object ChooseAddressUtils {
     }
 
     private fun hasLocalizingAddressOnCache(context: Context): Boolean {
-        var chooseAddressPref = ChooseAddressSharePref(context)
+        val chooseAddressPref = ChooseAddressSharePref(context)
         return !chooseAddressPref.checkLocalCache().isNullOrEmpty()
 
     }
 
     fun isLoginUser(context: Context): Boolean {
-        var userSession: UserSessionInterface = UserSession(context)
+        val userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
     }
 
-    fun isRollOutUser(): Boolean {
+    /**
+     * temporary use return true
+     */
+    fun isRollOutUser(context: Context): Boolean {
+        /*val chooseAddressPref = ChooseAddressSharePref(context)
+        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
+        return if (rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY) {
+            chooseAddressPref.setRollenceValue(true)
+            true
+        } else {
+            chooseAddressPref.setRollenceValue(false)
+            false
+        }*/
+
         return true
     }
 
@@ -91,6 +108,14 @@ object ChooseAddressUtils {
     fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
         var chooseAddressPref = ChooseAddressSharePref(context)
         chooseAddressPref.setCoachMarkState(true)
+    }
+
+    fun createCoachMarkItem(context: Context, view: View) : CoachMarkItem {
+        return CoachMarkItem(
+                view,
+                context.getString(R.string.coachmark_title),
+                context.getString(R.string.coachmark_desc)
+        )
     }
 
 }
