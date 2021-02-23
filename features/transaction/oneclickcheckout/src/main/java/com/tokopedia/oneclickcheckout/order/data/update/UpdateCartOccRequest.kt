@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.data.update
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.localizationchooseaddress.util.request.ChosenAddress
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 
 data class UpdateCartOccRequest(
         @SerializedName("cart")
@@ -41,8 +41,8 @@ data class UpdateCartOccProfileRequest(
         @SerializedName("address_id")
         val addressId: String = ""
 ) {
-        companion object {
-                const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
-                const val INSTALLMENT_TERM = "installment_term"
-        }
+    companion object {
+        const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+        const val INSTALLMENT_TERM = "installment_term"
+    }
 }

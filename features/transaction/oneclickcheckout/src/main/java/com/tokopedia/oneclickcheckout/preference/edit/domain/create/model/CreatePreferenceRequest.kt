@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.create.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.localizationchooseaddress.util.request.ChosenAddress
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 
 data class CreatePreferenceRequest(
         @SerializedName("address_id")

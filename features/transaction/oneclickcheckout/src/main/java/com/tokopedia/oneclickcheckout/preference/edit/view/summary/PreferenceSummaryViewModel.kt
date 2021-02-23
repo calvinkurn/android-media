@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -14,6 +13,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import javax.inject.Inject
 
 class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceByIdUseCase: GetPreferenceByIdUseCase,

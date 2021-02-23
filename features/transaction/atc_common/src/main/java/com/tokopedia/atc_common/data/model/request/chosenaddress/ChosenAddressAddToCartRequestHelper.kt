@@ -1,4 +1,4 @@
-package com.tokopedia.localizationchooseaddress.util.request
+package com.tokopedia.atc_common.data.model.request.chosenaddress
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -6,7 +6,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
+class ChosenAddressAddToCartRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
         const val KEY_CHOSEN_ADDRESS = "chosen_address"
@@ -17,10 +17,10 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
         return requestParams
     }
 
-    fun getChosenAddress(): ChosenAddress? {
+    fun getChosenAddress(): ChosenAddressAddToCart? {
         ChooseAddressUtils.getLocalizingAddressData(context)?.let {
-            return ChosenAddress(
-                    mode = if (it.address_id.isNotBlank()) ChosenAddress.MODE_ADDRESS else ChosenAddress.MODE_SNIPPET,
+            return ChosenAddressAddToCart(
+                    mode = if (it.address_id.isNotBlank()) ChosenAddressAddToCart.MODE_ADDRESS else ChosenAddressAddToCart.MODE_SNIPPET,
                     addressId = it.address_id,
                     districtId = it.district_id,
                     postalCode = "",
