@@ -22,6 +22,7 @@ import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
+import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +38,7 @@ public abstract class BaseNotificationFactory {
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
+        createNotificationChannel();
     }
 
     public abstract Notification createNotification(
@@ -200,11 +202,18 @@ public abstract class BaseNotificationFactory {
         }
     }
 
-    protected Uri getRingtoneUri(Context context) {
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N){
-            return RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
-        } else {
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    protected Uri getRingtoneUri() {
+        return RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
+    }
+
+    protected void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannelBuilder.create(
+                    context,
+                    getRingtoneUri(),
+                    getVibratePattern()
+            );
         }
     }
+
 }
