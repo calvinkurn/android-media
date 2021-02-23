@@ -1,29 +1,28 @@
 package com.tokopedia.topads.sdk.view.adapter.viewmodel.banner;
 
+import com.tokopedia.kotlin.model.ImpressHolder;
+import com.tokopedia.productcard.ProductCardModel;
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by errysuprayogi on 4/16/18.
  */
 
-public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
+public class BannerShopProductViewModel extends ImpressHolder implements Item<BannerAdsTypeFactory> {
 
-    private Product product;
+    private ProductCardModel product;
     private CpmData cpmData;
     private final String appLink;
+    private final String imageUrl;
     private final String adsClickUrl;
 
-    public BannerShopProductViewModel(CpmData cpmData, Product product, String appLink, String adsClickUrl) {
+    public BannerShopProductViewModel(CpmData cpmData, ProductCardModel product, String appLink, String imageUrl, String adsClickUrl) {
         this.cpmData = cpmData;
         this.product = product;
         this.appLink = appLink;
+        this.imageUrl = imageUrl;
         this.adsClickUrl = adsClickUrl;
     }
 
@@ -39,8 +38,11 @@ public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
         return adsClickUrl;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-    public Product getProduct() {
+    public ProductCardModel getProduct() {
         return product;
     }
 

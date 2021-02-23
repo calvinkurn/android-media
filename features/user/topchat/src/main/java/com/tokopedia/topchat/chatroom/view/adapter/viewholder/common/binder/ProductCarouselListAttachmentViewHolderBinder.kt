@@ -5,7 +5,6 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
@@ -70,12 +69,5 @@ object ProductCarouselListAttachmentViewHolderBinder {
             vh: RecyclerView.ViewHolder
     ) {
         rv?.restoreSavedCarouselState(vh.adapterPosition, listener)
-    }
-
-    fun bindNewOccState(
-            adapter: ProductListAdapter,
-            payload: TopchatProductAttachmentViewHolder.OccState
-    ) {
-        adapter.notifyItemChanged(payload.childPosition, payload)
     }
 }

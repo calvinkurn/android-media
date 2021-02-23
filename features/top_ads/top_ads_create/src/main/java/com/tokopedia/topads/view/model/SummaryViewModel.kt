@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.view.RequestHelper
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,13 +37,18 @@ class SummaryViewModel @Inject constructor(
                       onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    withContext(dispatcher.io) {
+                    val data = withContext(dispatcher.io) {
                         val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_activate_ads),
                                 ResponseCreateGroup::class.java, param)
                         val cacheStrategy = RequestHelper.getCacheStrategy()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    onSuccessGetDeposit()
+                    data.getSuccessData<ResponseCreateGroup>().let {
+                        if (it.topadsCreateGroupAds.errors.isNotEmpty())
+                            onErrorGetAds(Exception(it.topadsCreateGroupAds.errors.firstOrNull()?.detail))
+                        else
+                            onSuccessGetDeposit()
+                    }
                 },
                 onError = {
                     onErrorGetAds(it)

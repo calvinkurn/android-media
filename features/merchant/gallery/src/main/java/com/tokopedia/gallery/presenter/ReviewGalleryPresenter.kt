@@ -1,13 +1,15 @@
 package com.tokopedia.gallery.presenter
 
-import android.content.Context
+import com.tokopedia.gallery.GalleryView
+import com.tokopedia.gallery.domain.GetImageReviewUseCase
+import com.tokopedia.gallery.subscriber.GetImageReviewSubscriber
 
-interface ReviewGalleryPresenter {
+class ReviewGalleryPresenter(private val getImageReviewUseCase: GetImageReviewUseCase, private val galleryView: GalleryView) : ReviewGalleryPresenterContract {
 
-    fun cancelLoadDataRequest()
-    fun loadData(productId: Int, page: Int)
-
-    companion object {
-        val DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE = 21
+    override fun loadData(productId: Long, page: Int) {
+        getImageReviewUseCase.execute(
+                GetImageReviewUseCase.createRequestParams(page,
+                        ReviewGalleryPresenterContract.DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE,
+                        productId), GetImageReviewSubscriber(galleryView))
     }
 }

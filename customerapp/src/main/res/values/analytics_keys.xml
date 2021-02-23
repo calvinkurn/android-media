@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="key_appsflyer">SdSopxGtYr9yK8QEjFVHXL</string>
-    <string name="key_gtm">GTM-5W26XJC</string>
-    <string name="key_ga">UA-9801603-4</string>
-
-
-    <!-- BUILD KEY -->
-    <!--<string name="key_moengage">I5SFHN64ZTKF2RA7F667NT0P</string>-->
-
     <string name="key_sender_id">id:673352445777</string>
 </resources>

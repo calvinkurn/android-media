@@ -466,9 +466,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
-    // Topchat
+    /**
+     * Go to chat list
+     */
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
+
 
 
     //ReferralPhoneNumberVerificationActivity
