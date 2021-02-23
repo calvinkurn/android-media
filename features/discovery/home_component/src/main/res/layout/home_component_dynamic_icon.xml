@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="@dimen/home_component_margin_default"
+    android:paddingEnd="@dimen/home_component_margin_default"
     android:layout_marginTop="@dimen/dp_12"
     android:layout_marginBottom="@dimen/dp_8"
     android:orientation="horizontal">

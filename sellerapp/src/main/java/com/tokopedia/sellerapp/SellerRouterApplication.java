@@ -54,6 +54,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -112,9 +113,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
         SellerHomeRouter,
         LoginRouter {
 
-    protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
+
+    protected RemoteConfig remoteConfig;
     protected CacheManager cacheManager;
 
     private DaggerGcmUpdateComponent.Builder daggerGcmUpdateBuilder;
@@ -167,6 +169,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
+        PushNotification.init(getApplicationContext());
+
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(Constants.SPLASH);
         excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
