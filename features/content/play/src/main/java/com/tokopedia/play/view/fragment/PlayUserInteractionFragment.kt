@@ -377,7 +377,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * Pinned Voucher View Component Listener
      */
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
-        // TODO("Not yet implemented")
+        copyToClipboard(content = voucher.code)
+        doShowToaster(message = getString(R.string.play_voucher_code_copied))
     }
     //endregion
 
@@ -1027,6 +1028,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showLinkCopiedToaster() {
+        doShowToaster(message = getString(R.string.play_link_copied))
+    }
+
+    private fun doShowToaster(
+            toasterType: Int = Toaster.TYPE_NORMAL,
+            message: String,
+    ) {
         if (toasterBottomMargin == 0) {
             val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
             toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
@@ -1034,8 +1042,8 @@ class PlayUserInteractionFragment @Inject constructor(
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
                 container,
-                getString(R.string.play_link_copied),
-                type = Toaster.TYPE_NORMAL).show()
+                message,
+                type = toasterType).show()
     }
 
     //region OnStateChanged

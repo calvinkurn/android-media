@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -144,7 +147,12 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel) {
-        // TODO("copy voucher code")
+        copyToClipboard(content = voucher.code)
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_voucher_code_copied)
+        )
     }
 
     /**
@@ -311,6 +319,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 ) }
             }
         }
+    }
+
+    private fun copyToClipboard(content: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
     /**

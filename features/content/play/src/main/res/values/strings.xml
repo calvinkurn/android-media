@@ -53,5 +53,6 @@
     <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
 
     <string name="play_action_copy">Salin</string>
+    <string name="play_voucher_code_copied">Kode Promo berhasil disalin</string>
 
 </resources>
