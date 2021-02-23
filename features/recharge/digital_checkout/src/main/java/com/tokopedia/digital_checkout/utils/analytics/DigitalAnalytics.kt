@@ -190,9 +190,13 @@ class DigitalAnalytics {
 
     private fun constructProductEnhanceEcommerce(cartDigitalInfoData: CartDigitalInfoData,
                                                  productName: String): Map<String?, Any?> {
+        var productId = DigitalCheckoutTrackingConst.Value.NONE
+        cartDigitalInfoData.relationProduct?.id?.let {
+            if (it.isNotEmpty()) productId = it
+        }
         return DataLayer.mapOf(
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, productName,
-                DigitalCheckoutTrackingConst.Product.KEY_ID, cartDigitalInfoData.relationProduct?.id,
+                DigitalCheckoutTrackingConst.Product.KEY_ID, productId,
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes?.pricePlain.toString(),
                 DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes?.operatorName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes?.categoryName?.toLowerCase(),
