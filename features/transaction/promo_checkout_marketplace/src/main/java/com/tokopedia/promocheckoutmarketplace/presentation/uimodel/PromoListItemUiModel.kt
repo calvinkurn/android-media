@@ -42,11 +42,19 @@ data class PromoListItemUiModel(
             var promoCode: String = "",
             var couponAppLink: String = "",
             var currencyDetailStr: String = "",
+            var coachMark: UiCoachmarkData = UiCoachmarkData(),
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
             var clashingInfo: MutableMap<String, String> = mutableMapOf(),
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf()
+    )
+
+    data class UiCoachmarkData(
+            val isShown: Boolean = false,
+            val title: String = "",
+            val content: String = "",
+            val ctaText: String = ""
     )
 
     data class UiState(

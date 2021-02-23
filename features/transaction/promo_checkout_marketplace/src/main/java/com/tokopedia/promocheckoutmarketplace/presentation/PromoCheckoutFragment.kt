@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -139,6 +143,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
+
+        private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -468,6 +474,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observePromoListUiModel() {
         viewModel.promoListUiModel.observe(viewLifecycleOwner, Observer {
             adapter.addVisitableList(it)
+            renderPromoCoachMark(it)
         })
     }
 
@@ -845,6 +852,38 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }.show()
 
             analytics.eventViewPopupSavePromo(viewModel.getPageSource())
+        }
+    }
+
+    private fun renderPromoCoachMark(promoList: MutableList<Visitable<*>>) {
+        val coachMarkIndex = promoList.indexOfFirst { item ->
+            if (item is PromoListItemUiModel) {
+                item.uiData.coachMark.isShown
+            } else {
+                false
+            }
+        }
+
+        if (coachMarkIndex != -1 && PersistentCacheManager.instance.get(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, Boolean::class.java, false) != true) {
+            recyclerView.smoothScrollToPosition(coachMarkIndex)
+            Handler().postDelayed({
+                val holder = recyclerView.findViewHolderForAdapterPosition(coachMarkIndex)
+                holder?.let {
+                    val coachMarkItem = arrayListOf(
+                            CoachMark2Item(
+                                    holder.itemView,
+                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.title,
+                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.content
+                            )
+                    )
+
+                    context?.let {
+                        val coachMark = CoachMark2(it)
+                        coachMark.showCoachMark(coachMarkItem)
+                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, 0)
+                    }
+                }
+            }, 300)
         }
     }
 
