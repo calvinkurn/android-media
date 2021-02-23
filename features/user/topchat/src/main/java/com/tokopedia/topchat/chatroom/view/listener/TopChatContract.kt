@@ -2,8 +2,7 @@ package com.tokopedia.topchat.chatroom.view.listener
 
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -17,6 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
@@ -160,10 +160,6 @@ interface TopChatContract {
 
         fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
 
-        fun isStickerTooltipAlreadyShow(): Boolean
-
-        fun toolTipOnBoardingShown()
-
         fun setBeforeReplyTime(createTime: String)
 
         fun isInTheMiddleOfThePage(): Boolean
@@ -180,16 +176,16 @@ interface TopChatContract {
 
         fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 
-        fun addToCart(
-                addToCartOccRequestParams: AddToCartOccRequestParams,
-                onSuccess: (AddToCartDataModel) -> Unit,
-                onError: (Throwable) -> Unit
-        )
-
         fun getBackground()
 
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean
+
+        fun addProductToCart(
+                requestParams: RequestParams,
+                onSuccessAddToCart: (data: DataModel) -> Unit,
+                onError: (msg: String) -> Unit
+        )
     }
 }

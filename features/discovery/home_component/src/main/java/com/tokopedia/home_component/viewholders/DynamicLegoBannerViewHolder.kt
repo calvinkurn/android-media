@@ -78,7 +78,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(2, 15, false))
-                marginValue = convertDpToPixel(16f, itemView.context)
+                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             }
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
             marginLayoutParams.leftMargin = marginValue

@@ -87,7 +87,8 @@
     <dimen name="product_card_flashsale_pdpcount_gone_margintop">0dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_marginbottom">2dp</dimen>
 
-    <dimen name="product_card_flashsale_progressbar_height">4dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_height">16dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_height_bar">4dp</dimen>
     <dimen name="product_card_flashsale_progressbar_margintop">8dp</dimen>
     <dimen name="product_card_flashsale_progressbar_gone_margintop">8dp</dimen>
     <dimen name="product_card_flashsale_progressbar_marginbottom">2dp</dimen>
@@ -99,5 +100,13 @@
 
     <dimen name="product_card_label_best_seller_height">20dp</dimen>
     <dimen name="product_card_label_best_seller_margintop">8dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+
+    <dimen name="product_card_toko_cabang_margin_top">5dp</dimen>
+    <dimen name="product_card_toko_cabang_badge_height">12dp</dimen>
+    <dimen name="product_card_toko_cabang_badge_width">16dp</dimen>
+
+    <dimen name="product_card_text_toko_cabang_margin_top">4dp</dimen>
+    <dimen name="product_card_text_toko_cabang_height">18dp</dimen>
 
 </resources>

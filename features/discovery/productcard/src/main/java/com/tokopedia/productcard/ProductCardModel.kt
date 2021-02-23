@@ -132,6 +132,10 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_BEST_SELLER)
     }
 
+    fun getLabelFulfillment(): LabelGroup? {
+        return findLabelGroup(LABEL_FULFILLMENT)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -169,6 +173,14 @@ data class ProductCardModel (
 
     fun willShowVariant(): Boolean {
         return labelGroupVariantList.isNotEmpty()
+    }
+
+    fun willShowFulfillment(): Boolean{
+        val labelTokoCabang = getLabelFulfillment()
+
+        return labelTokoCabang != null
+                && labelTokoCabang.title.isNotEmpty()
+                && labelTokoCabang.imageUrl.isNotEmpty()
     }
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
@@ -230,5 +242,10 @@ data class ProductCardModel (
 
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
+    }
+
+    companion object {
+        const val WORDING_SEGERA_HABIS = "Segera Habis"
+        const val FIRE_OFFSET = 5f
     }
 }

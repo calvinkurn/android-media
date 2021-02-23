@@ -20,6 +20,8 @@ import java.util.Map;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BRAND;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
@@ -53,6 +55,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLO
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_SECTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_X;
@@ -73,6 +76,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MEMBERSHIP_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
@@ -126,8 +130,18 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String shopTypeDef,
             String loginNonLoginString,
             String shopId,
-            String shopRef
+            String shopRef,
+            Boolean isFulfillmentExist,
+            Boolean isFreeOngkirActive
     ) {
+        String boe;
+        if (isFulfillmentExist && isFreeOngkirActive) {
+            boe = BOE;
+        } else if (!isFulfillmentExist && isFreeOngkirActive) {
+            boe = BO_PRODUCT;
+        } else {
+            boe = NON_BO_PRODUCT;
+        }
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductUiModelList.size(); i++) {
             ShopProductUiModel viewModel = shopProductUiModelList.get(i);
@@ -142,7 +156,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     POSITION, productPosition,
                     DIMENSION_81, shopTypeDef,
                     DIMENSION_79, shopId,
-                    SHOP_REF, shopRef
+                    SHOP_REF, shopRef,
+                    DIMENSION_83, boe
             ));
             list.add(event);
         }
@@ -202,7 +217,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
                         shopId,
-                        customDimensionShopPage.shopRef
+                        customDimensionShopPage.shopRef,
+                        customDimensionShopPage.isFulfillmentExist,
+                        customDimensionShopPage.isFreeOngkirActive
                 )));
         return eventMap;
     }
@@ -255,7 +272,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                 customDimensionShopPage.shopType,
                                 loginNonLoginString,
                                 shopId,
-                                customDimensionShopPage.shopRef
+                                customDimensionShopPage.shopRef,
+                                customDimensionShopPage.isFulfillmentExist,
+                                customDimensionShopPage.isFreeOngkirActive
                         ))
         ));
         return eventMap;

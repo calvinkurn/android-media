@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -105,8 +106,21 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
             CONST_0 -> currentDate.text = context?.getString(R.string.topads_dash_hari_ini)
             CONST_2 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
-                val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
+                val text = Utils.outputFormat.format(startDate
+                        ?: Date()) + " - " + Utils.outputFormat.format(endDate ?: Date())
                 currentDate.text = text
+            }
+        }
+    }
+
+    private fun getCurrentSelected(): Int {
+        return when (currentDate.text) {
+            context?.getString(com.tokopedia.datepicker.range.R.string.yesterday) -> CONST_1
+            context?.getString(R.string.topads_dash_hari_ini) -> CONST_0
+            context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago) -> CONST_2
+            "" -> CONST_0
+            else -> {
+                CUSTOM_DATE
             }
         }
     }
@@ -121,10 +135,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     override fun onCustomDateSelected(dateSelected: Date, dateEnd: Date) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, TopAdsDashboardConstant.CUSTOM_DATE)
-            commit()
-        }
         startDate = dateSelected
         with(sharedPref.edit()) {
             putString(TopAdsDashboardConstant.START_DATE_BERANDA, Utils.outputFormat.format(startDate))
@@ -142,7 +152,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     private fun showBottomSheet() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val index = sharedPref?.getInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, CONST_2)
+        val index = getCurrentSelected()
         val customStartDate = sharedPref?.getString(TopAdsDashboardConstant.START_DATE_BERANDA, "")
         val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
         val dateRange: String
@@ -163,11 +173,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, position)
-            commit()
-        }
         startDate = Date(date1)
         endDate = Date(date2)
         setDateRangeText(position)
@@ -203,7 +208,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
                 tabLayoutManager.startSmoothScroll(smoothScroller)
                 topAdsTabAdapter?.selected(position)
                 renderGraph()
-
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -218,5 +222,15 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
         sheet.show(childFragmentManager, DATE_PICKER_SHEET)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            remove(TopAdsDashboardConstant.END_DATE_BERANDA)
+            remove(TopAdsDashboardConstant.START_DATE_BERANDA)
+            commit()
+        }
     }
 }

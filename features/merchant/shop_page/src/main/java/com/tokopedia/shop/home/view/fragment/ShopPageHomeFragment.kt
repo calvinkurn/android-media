@@ -66,6 +66,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
@@ -339,7 +340,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         isLoadInitialData = true
-        loadInitialData()
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -369,9 +369,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onResume() {
+        loadInitialDataAfterOnViewCreated()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+    }
+
+    private fun loadInitialDataAfterOnViewCreated() {
+        if (isLoadInitialData) {
+            loadInitialData()
+            isLoadInitialData = false
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -379,7 +387,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
-        loadInitialData()
     }
 
     override fun onPause() {
@@ -415,22 +422,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
-            shopHomeAdapter.clearAllElements()
-            recycler_view.visible()
-            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-            globalError_shopPage.hide()
-            showLoading()
-            shopHomeAdapter.isOwner = isOwner
-            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-            viewModel?.getShopPageHomeData(
-                    shopId,
-                    shopProductFilterParameter ?: ShopProductFilterParameter(),
-                    initialProductListData
-            )
-            isLoadInitialData = false
-        }
+        shopHomeAdapter.clearAllElements()
+        recycler_view.visible()
+        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+        globalError_shopPage.hide()
+        showLoading()
+        shopHomeAdapter.isOwner = isOwner
+        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+        viewModel?.getShopPageHomeData(
+                shopId,
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                initialProductListData
+        )
     }
 
     private fun getIntentData() {
@@ -1042,7 +1046,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT},
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
             goToPDP(it.id ?: "")
@@ -1071,7 +1077,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
         }
@@ -1111,7 +1119,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
             goToPDP(it.id ?: "")
@@ -1124,28 +1134,32 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                parentPosition + 1,
-                itemPosition + 1,
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                CustomDimensionShopPageAttribution.create(
-                        shopId,
-                        isOfficialStore,
-                        isGoldMerchant,
-                        shopHomeProductViewModel?.id.orEmpty(),
-                        shopAttribution,
-                        shopRef
-                )
-        )
+        shopHomeProductViewModel?.let {
+            shopPageHomeTracking.impressionProduct(
+                    isOwner,
+                    isLogin,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.widgetId ?: "",
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
+                    )
+            )
+        }
     }
 
     override fun onThreeDotsCarouselProductItemClicked(

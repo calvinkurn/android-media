@@ -37,6 +37,7 @@ import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
+import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -58,7 +59,9 @@ import javax.inject.Named
                 NetworkModule::class
         )
 )
-class ChatModuleStub {
+class ChatModuleStub constructor(
+        private val websocket: RxWebSocketUtilStub
+) {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -143,8 +146,7 @@ class ChatModuleStub {
             tkpdAuthInterceptor: TkpdAuthInterceptor,
             fingerprintInterceptor: FingerprintInterceptor
     ): RxWebSocketUtil {
-        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        return RxWebSocketUtil.getInstance(interceptors)
+        return websocket
     }
 
     @ChatScope

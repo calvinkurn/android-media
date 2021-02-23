@@ -151,6 +151,7 @@ public interface SearchConstant {
     }
 
     interface ProductCardLabel {
+        String LABEL_FULFILLMENT = "fulfillment";
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
         String TEXT_DARK_ORANGE = "textDarkOrange";
