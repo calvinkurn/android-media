@@ -245,7 +245,7 @@ object QueryHome {
             "          }\n" +
             "        }"
 
-    val recommendationQuery : String = "{\n" +
+    val recommendationQuery : String =
             "query getRecommendation(\$location: String)\n" +
             " {\n" +
             "  get_home_recommendation(location: \$location){\n" +
@@ -255,8 +255,7 @@ object QueryHome {
             "      image_url\n" +
             "    }\n" +
             "  }\n" +
-            " }\n" +
-            "}"
+            " }"
 
     val closeChannel = "mutation closeChannel(\$channelID: Int!){\n" +
             "  close_channel(channelID: \$channelID){\n" +
