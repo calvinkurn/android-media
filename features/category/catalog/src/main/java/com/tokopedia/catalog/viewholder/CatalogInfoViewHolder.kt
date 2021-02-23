@@ -1,15 +1,15 @@
 package com.tokopedia.catalog.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogImagesAdapter
 import com.tokopedia.catalog.adapter.CatalogImagesItemDecoration
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_catalog_product_info.view.*
 
 class CatalogInfoViewHolder (private val view : View,
@@ -39,11 +39,11 @@ class CatalogInfoViewHolder (private val view : View,
         }
         productInfo.run {
             view.product_name.text = productName
-            view.product_brand.text = productBrand
+            view.product_brand.displayTextOrHide(productBrand)
             view.price_range_value.text = priceRange
-            view.product_description.text = MethodChecker.fromHtml(description)
+            view.product_description.text = shortDescription
             if(!tag.isNullOrEmpty()){
-                view.product_tag.visibility = View.VISIBLE
+                view.product_tag.show()
                 view.product_tag.text = tag
             }
         }

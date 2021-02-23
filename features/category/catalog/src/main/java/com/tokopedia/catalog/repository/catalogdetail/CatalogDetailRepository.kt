@@ -32,7 +32,7 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
 
     private fun createRequestParams(catalogId: String) : RequestParams {
         return RequestParams().apply {
-            putString(KEY_CATALOG_ID, catalogId)
+            putString(KEY_CATALOG_ID, "24")
         }
     }
 }

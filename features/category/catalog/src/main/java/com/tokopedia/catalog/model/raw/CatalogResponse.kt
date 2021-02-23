@@ -30,6 +30,8 @@ data class CatalogResponseData (
                 val tag: String,
                 @SerializedName( "description")
                 val description: String,
+                @SerializedName( "shortDescription")
+                val shortDescription: String,
                 @SerializedName( "url")
                 val url: String,
 

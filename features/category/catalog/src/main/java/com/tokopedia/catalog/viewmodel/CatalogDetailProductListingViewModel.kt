@@ -31,7 +31,7 @@ class CatalogDetailProductListingViewModel
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.products?.let { productList ->
+                        searchProduct.products.let { productList ->
                             mProductList.value = Success((productList) as List<ProductsItem>)
                             mProductCount.value = if(productList.size == 0) "" else productList.size.toString()
                         }
@@ -78,6 +78,7 @@ class CatalogDetailProductListingViewModel
             }
         })
     }
+
     fun getDynamicFilterData(): MutableLiveData<Result<DynamicFilterModel>> {
         return mDynamicFilterModel
     }

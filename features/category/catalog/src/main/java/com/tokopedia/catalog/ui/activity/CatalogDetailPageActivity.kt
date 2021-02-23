@@ -72,9 +72,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     private fun getNewCatalogDetailFragment(): Fragment {
-        val fragment = CatalogDetailPageFragment.newInstance(catalogId)
-        fragment.setListener(this)
-        return fragment
+        return CatalogDetailPageFragment.newInstance(catalogId)
     }
 
     private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {

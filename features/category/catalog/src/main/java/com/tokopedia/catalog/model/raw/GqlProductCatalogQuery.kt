@@ -9,6 +9,7 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       brand
       tag
       description
+      shortDescription
       url
       mobileUrl
       catalogImage {
@@ -34,6 +35,11 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       type
       sticky
       data{
+        ... on CatalogModularTopSpec {
+          key
+          value
+          icon
+        }
         ... on CatalogModularSpecification {
           name
           icon

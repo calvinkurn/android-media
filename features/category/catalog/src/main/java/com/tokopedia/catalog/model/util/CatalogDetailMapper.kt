@@ -18,7 +18,8 @@ object CatalogDetailMapper {
             listOfComponents.add(CatalogInfoDataModel(name = "Catalog Info",type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, tag = tag,
                     priceRange = "${marketPrice[0].minFmt} - ${marketPrice[0].maxFmt}" ,
-                    description = description, images = catalogGetDetailModular.basicInfo.catalogImage))
+                    description = description, shortDescription = shortDescription,
+                    images = catalogGetDetailModular.basicInfo.catalogImage))
         }
 
         catalogGetDetailModular.components.forEachIndexed { index, component ->
@@ -208,6 +209,7 @@ object CatalogDetailMapper {
                 "Apple",
                 "10 HP Terbaik",
                  "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.",
+                "Apple merilis iPhone 12 sebagai alternatif dari iPhone 12 Pro dan iPhone 12 Pro Max dengan spesifikasi cukup mumpuni dengan harga lebih murah. Berbeda dengan series Pro, iPhone 12 ini hanya mempunyai dua kamera utama pada bagian belakang. Dan juga tidak ada fitur-fitur yang “tidak perlu” dari series Pro.",
                 "https://www.tokopedia.com/catalog/64743/samsung-galaxy-a10s",
                 "https://m.tokopedia.com/catalog/64743/samsung-galaxy-a10s",
                 catalogImageList,

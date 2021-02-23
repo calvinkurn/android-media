@@ -34,7 +34,7 @@ class CatalogGalleryImagePagerAdapter(val list: List<CatalogImage>, val listener
         container.removeView(`object` as View)
     }
 
-    class CatalogImageViewHolder(val itemView: View, val listener: Listener?) {
+    class CatalogImageViewHolder(private val itemView: View, val listener: Listener?) {
 
         fun bind(model: CatalogImage) {
             itemView.image.loadImage(model.imageURL)

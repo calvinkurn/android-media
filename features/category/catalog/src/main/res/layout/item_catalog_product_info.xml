@@ -18,7 +18,7 @@
         android:paddingBottom="@dimen/unify_space_2"
         android:paddingStart="@dimen/unify_space_4"
         tools:text="10 HP Terbaik 2021"
-        app:labelType="general_light_orange"
+        app:labelType="general_light_green"
         android:textSize="@dimen/unify_font_10"
         android:visibility="gone"
         tools:visibility="visible"

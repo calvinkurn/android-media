@@ -6,9 +6,10 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -40,13 +41,14 @@ import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -59,7 +61,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         ProductCardListener,
-        WishListActionListener {
+        WishListActionListener,
+        SortFilterBottomSheet.Callback{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -87,6 +90,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
     var quickFilterList = ArrayList<Filter>()
+    var dynamicFilterModel : DynamicFilterModel? = null
 
     private lateinit var productTypeFactory: ProductTypeFactory
 
@@ -137,9 +141,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         observeData()
         setUpAdapter()
         setUpNavigation()
-        if (userVisibleHint) {
-            setUpVisibleFragmentListener()
-        }
+        setUpVisibleFragmentListener()
     }
 
     private fun initView() {
@@ -148,10 +150,26 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         gcmHandler = GCMHandler(activity)
 
         activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
+        }
+
+        // TODO CHANGE
+        val dynamicFilterItemIcon =  dynamic_filter.findViewById<ImageView>(R.id.filter_new_icon)
+        dynamicFilterItemIcon.setImageResource(R.drawable.catalog_ic_filter)
+        dynamicFilterItemIcon.show()
+        dynamic_filter.findViewById<TextView>(R.id.quick_filter_text).text = "Filter"
+        dynamic_filter.setOnClickListener {
+            val sortFilterBottomSheet = SortFilterBottomSheet()
+            // TODO CHANGE SEARCH PARAMETER
+            sortFilterBottomSheet.show(
+                    requireFragmentManager(),
+                    searchParameter.getSearchParameterHashMap(),
+                    dynamicFilterModel,
+                    this
+            )
         }
     }
 
@@ -243,7 +261,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
                     headerTitle.text = getString(R.string.catalog_search_product_count_text,it)
-                    setQuickFilterAdapter(getString(R.string.catalog_result_count_template_text, it))
+                    setQuickFilterAdapter("")
                 } else {
                     setQuickFilterAdapter("")
                 }
@@ -255,6 +273,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
+                    // TODO CHANGE
+                    dynamicFilterModel = it.data
+                    dynamic_filter.show()
                 }
 
                 is Fail -> {
@@ -578,5 +599,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
         return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+
     }
 }

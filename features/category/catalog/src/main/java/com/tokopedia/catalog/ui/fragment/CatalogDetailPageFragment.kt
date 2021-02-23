@@ -30,6 +30,8 @@ import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -37,6 +39,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
@@ -130,15 +135,32 @@ class CatalogDetailPageFragment : Fragment(),
                     updateUi()
                 }
                 is Fail -> {
-
+                    onError(it.throwable)
                 }
             }
 
         })
     }
 
-    fun setListener(listener: Listener) {
 
+    private fun onError(e: Throwable) {
+        shimmerLayout?.hide()
+        catalogPageRecyclerView?.hide()
+
+        if (e is UnknownHostException
+                || e is SocketTimeoutException) {
+            global_error.setType(GlobalError.NO_CONNECTION)
+        } else {
+            global_error.setType(GlobalError.SERVER_ERROR)
+        }
+
+        global_error.show()
+        global_error.setOnClickListener {
+            catalogPageRecyclerView?.show()
+            shimmerLayout?.show()
+            global_error.hide()
+            catalogDetailPageViewModel.getProductCatalog(catalogId)
+        }
     }
 
     private fun initNavToolbar() {

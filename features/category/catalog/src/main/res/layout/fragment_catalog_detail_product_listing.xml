@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,6 +20,20 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         />
 
+    <include
+        android:id="@+id/dynamic_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/headerTitle"
+        app:layout_constraintStart_toStartOf="@id/headerTitle"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/dp_8"
+        layout="@layout/item_nav_quick_filter"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickfilter_recyclerview"
         android:layout_width="0dp"
@@ -28,7 +43,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerTitle"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dynamic_filter"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:orientation="horizontal"
@@ -39,8 +54,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constrainedHeight="true"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:nestedScrollingEnabled="true"
         app:layout_constraintTop_toBottomOf="@+id/quickfilter_recyclerview"/>
 
