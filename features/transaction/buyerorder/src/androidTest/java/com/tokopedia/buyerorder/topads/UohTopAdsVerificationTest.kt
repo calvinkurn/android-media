@@ -65,8 +65,8 @@ class UohTopAdsVerificationTest {
                 checkProduct(uohRecyclerView, i)
             }
             loading()
-            topAdsAssertion.assert()
         }
+        topAdsAssertion.assert()
     }
 
     private fun checkProduct(uohRecyclerView: RecyclerView, i: Int) {
