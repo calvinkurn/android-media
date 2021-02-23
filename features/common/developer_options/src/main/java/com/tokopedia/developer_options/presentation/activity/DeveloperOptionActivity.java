@@ -350,7 +350,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
                 } else {
                     RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
-                    Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied, please kill app", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
         });
