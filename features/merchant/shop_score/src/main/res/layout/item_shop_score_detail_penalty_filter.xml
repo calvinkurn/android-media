@@ -31,19 +31,16 @@
         app:typographyType="body_3"
         tools:text="Periode 5 Jun - 6 Aug"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivDetailPenaltyFilter"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_detail_penalty_filter"
+        app:icon_name="CALENDAR"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:padding="@dimen/spacing_lvl2"
         app:layout_constraintTop_toTopOf="@id/tvSectionDetailPenalty"
         app:layout_constraintBottom_toBottomOf="@id/tvPeriodDetailPenalty"
-        tools:src="@drawable/ic_calendar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_3"
-        tools:text="INV/20210126/XX/V/553738285" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sortFilterDetailPenalty"

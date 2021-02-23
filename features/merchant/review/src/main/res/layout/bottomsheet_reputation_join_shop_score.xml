@@ -59,24 +59,25 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_title_move_reputation"
                         app:typographyType="heading_5" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ic_speaker_green"
-                        android:layout_width="@dimen/layout_lvl0"
-                        android:layout_height="wrap_content"
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/icon_speaker_reputation"
+                        app:icon_name="SPEAKER"
+                        app:icon_color_light_enable="@color/Unify_G500"
+                        android:layout_width="@dimen/spacing_lvl5"
+                        android:layout_height="@dimen/spacing_lvl5"
                         android:layout_marginStart="@dimen/spacing_lvl4"
                         android:layout_marginTop="@dimen/dp_12"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_title_performance_page"
-                        app:srcCompat="@drawable/ic_speaker_green" />
+                        app:layout_constraintStart_toStartOf="parent"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_date_performance_page"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl3"
-                        app:layout_constraintBottom_toBottomOf="@id/ic_speaker_green"
-                        app:layout_constraintStart_toEndOf="@id/ic_speaker_green"
-                        app:layout_constraintTop_toTopOf="@id/ic_speaker_green"
+                        app:layout_constraintBottom_toBottomOf="@id/icon_speaker_reputation"
+                        app:layout_constraintStart_toEndOf="@id/icon_speaker_reputation"
+                        app:layout_constraintTop_toTopOf="@id/icon_speaker_reputation"
                         app:typographyType="body_2"
                         tools:text="Mulai dari 21 - 03 - 2020" />
 

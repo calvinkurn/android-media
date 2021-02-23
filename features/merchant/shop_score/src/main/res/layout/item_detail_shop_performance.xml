@@ -37,17 +37,17 @@
         android:textColor="@color/Neutral_N700_68"
         tools:text="Target 30 Menit"
         app:typographyType="body_3"
-        app:layout_constraintEnd_toStartOf="@id/chevronRightIcon"
+        app:layout_constraintEnd_toStartOf="@id/ic_item_performance_right"
         app:layout_constraintTop_toBottomOf="@id/tvTitlePerformanceProgress"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/chevronRightIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_mask"
-        android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@id/tvTitlePerformanceProgress"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_item_performance_right"
+        app:icon_name="CHEVRON_RIGHT"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toTopOf="@id/tvPerformanceTarget"
+        app:layout_constraintBottom_toBottomOf="@id/tvPerformanceTarget"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"

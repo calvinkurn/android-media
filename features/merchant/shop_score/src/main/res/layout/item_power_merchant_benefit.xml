@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvTitlePowerMerchantBenefit"
         app:layout_constraintBottom_toBottomOf="@id/tvTitlePowerMerchantBenefit"
-        tools:srcCompat="@drawable/ic_mask"
+        tools:srcCompat="@drawable/ic_pm_gold_badge"
         android:layout_width="@dimen/power_merchant_benefit_icon_size"
         android:layout_height="@dimen/power_merchant_benefit_icon_size"
         android:layout_marginTop="@dimen/spacing_lvl2" />

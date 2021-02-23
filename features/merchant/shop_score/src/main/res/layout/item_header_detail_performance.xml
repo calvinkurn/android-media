@@ -22,17 +22,16 @@
             app:typographyType="heading_2"
             tools:text="Level 3" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:adjustViewBounds="true"
-            android:id="@+id/ivPerformanceLevelInformation"
-            android:layout_height="wrap_content"
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_performance_level_information"
+            app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/Unify_N0"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_width="wrap_content"
-            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@id/tvPerformanceLevel"
             app:layout_constraintStart_toEndOf="@id/tvPerformanceLevel"
-            app:layout_constraintTop_toTopOf="@id/tvPerformanceLevel"
-            app:srcCompat="@drawable/ic_information" />
+            app:layout_constraintTop_toTopOf="@id/tvPerformanceLevel" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:adjustViewBounds="true"
@@ -41,8 +40,8 @@
             android:layout_marginStart="@dimen/spacing_lvl5"
             android:layout_width="wrap_content"
             android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toBottomOf="@id/ivPerformanceLevelInformation"
-            app:layout_constraintStart_toEndOf="@id/ivPerformanceLevelInformation"
+            app:layout_constraintBottom_toBottomOf="@id/ic_performance_level_information"
+            app:layout_constraintStart_toEndOf="@id/ic_performance_level_information"
             app:layout_constraintTop_toTopOf="@id/tvPerformanceLevel"
             tools:srcCompat="@drawable/ic_three_level_white" />
 
@@ -58,24 +57,23 @@
             app:layout_constraintTop_toBottomOf="@id/tvPerformanceLevel"
             app:typographyType="heading_5" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:adjustViewBounds="true"
-            android:id="@+id/ivShopPerformance"
-            android:layout_height="wrap_content"
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_shop_performance"
+            app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/Unify_N0"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_width="@dimen/layout_lvl0"
-            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@id/tvTitleShopPerformance"
             app:layout_constraintStart_toEndOf="@id/tvTitleShopPerformance"
-            app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
-            app:srcCompat="@drawable/ic_information" />
+            app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance" />
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressBarScorePerformance"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_width="@dimen/layout_lvl0"
-            app:layout_constraintEnd_toEndOf="@id/ivShopPerformance"
+            app:layout_constraintEnd_toEndOf="@id/ic_shop_performance"
             app:layout_constraintStart_toStartOf="@id/tvTitleShopPerformance"
             app:layout_constraintTop_toBottomOf="@id/tvTitleShopPerformance"
             app:unify_progress_bar_height="8" />
@@ -88,7 +86,7 @@
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@id/progressBarScorePerformance"
             app:layout_constraintStart_toEndOf="@id/progressBarScorePerformance"
-            app:layout_constraintTop_toTopOf="@id/ivShopPerformance"
+            app:layout_constraintTop_toTopOf="@id/ic_shop_performance"
             app:typographyType="heading_1"
             app:typographyWeight="bold"
             tools:text="@string/example_score_performance" />
