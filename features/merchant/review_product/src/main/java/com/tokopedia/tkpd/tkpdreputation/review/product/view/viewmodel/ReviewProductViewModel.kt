@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain
@@ -15,7 +14,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Da
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase
-import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetRatingUseCase
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel
 import com.tokopedia.user.session.UserSession
