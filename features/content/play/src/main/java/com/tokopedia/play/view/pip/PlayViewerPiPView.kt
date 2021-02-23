@@ -107,7 +107,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
-                        if (pipInfo.videoOrientation.isHorizontal) R.color.play_solid_black
+                        if (pipInfo.videoOrientation.isHorizontal) R.color.play_dms_solid_black
                         else R.color.transparent
                 )
         )

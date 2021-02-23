@@ -81,7 +81,7 @@ class PinnedViewComponent(
     private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {
         fullMessage.setSpan(
                 ForegroundColorSpan(
-                        MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
+                        MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
                 ),
                 fullMessage.indexOf(partnerName),
                 partnerName.length,

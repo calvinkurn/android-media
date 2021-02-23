@@ -5,8 +5,8 @@
     android:id="@+id/fl_loading"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_loading_overlay_background"
-    tools:background="@color/black"
+    android:background="@color/play_dms_loading_overlay_background"
+    tools:background="@color/Unify_Static_Black"
     >
 
 <!--    <com.tokopedia.unifycomponents.LoaderUnify-->
@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/play_offset_18"
         android:layout_marginEnd="@dimen/spacing_lvl6"
         android:gravity="center"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

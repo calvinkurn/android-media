@@ -29,7 +29,6 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /**
@@ -88,10 +87,10 @@ class PlayErrorFragment @Inject constructor(
         imgBack.setOnClickListener { activity?.onBackPressed() }
 
         globalError.errorTitle.setTextColor(
-                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
         )
         globalError.errorDescription.setTextColor(
-                MethodChecker.getColor(requireContext(), R.color.play_error_text_color)
+                MethodChecker.getColor(requireContext(), R.color.play_dms_error_text_color)
         )
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/Neutral_N700">
+    tools:background="@color/Unify_N700">
 
     <FrameLayout
         android:id="@+id/fl_play_pause"
@@ -60,7 +60,7 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_3"
             tools:text="00:03"
             />
@@ -68,7 +68,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             android:text="@string/play_duration_divider"
             app:typographyType="body_3"
             />
@@ -77,7 +77,7 @@
             android:id="@id/exo_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_3"
             tools:text="03:19"
             />

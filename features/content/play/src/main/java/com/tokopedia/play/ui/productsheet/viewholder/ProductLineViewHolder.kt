@@ -48,7 +48,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
                 ivProductAtc.isEnabled = false
                 btnProductBuy.text = getString(R.string.play_product_empty)
 
-                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_atc_image_disabled))
+                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_dms_atc_image_disabled))
             }
             is StockAvailable -> {
                 btnProductBuy.isEnabled = true
