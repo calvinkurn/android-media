@@ -22,7 +22,7 @@ data class RechargeHomepageSections(
     data class Section(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
             @SerializedName("object_id")
             @Expose
             val objectId: String = "",
@@ -41,6 +41,9 @@ data class RechargeHomepageSections(
             @SerializedName("app_link")
             @Expose
             val applink: String = "",
+            @SerializedName("text_link")
+            @Expose
+            val textLink: String = "",
             @SerializedName("media_url")
             @Expose
             val mediaUrl: String = "",
@@ -55,7 +58,7 @@ data class RechargeHomepageSections(
     data class Item(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
             @SerializedName("object_id")
             @Expose
             val objectId: String = "",
@@ -117,12 +120,12 @@ data class RechargeHomepageSections(
 }
 
 interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFactory> {
-    fun visitableId(): Int
+    fun visitableId(): String
     fun equalsWith(b: Any?): Boolean
 }
 
 data class RechargeHomepageBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -143,7 +146,7 @@ data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSection
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -160,7 +163,7 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -177,7 +180,7 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -194,7 +197,7 @@ data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -211,7 +214,7 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -224,12 +227,12 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
 }
 
 data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section,
-                                             val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
+                                             val channelModel: ChannelModel?, val isLoadFromCloud: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -246,7 +249,7 @@ data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSection
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -263,7 +266,7 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -276,12 +279,12 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
 }
 
 data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section,
-                                              val channelModel: ChannelModel?, val isCountDownBanner: Boolean = false) : RechargeHomepageSectionModel {
+                                              val channelModel: ChannelModel?, val isLoadFromCloud: Boolean = false) : RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 
@@ -298,7 +301,7 @@ data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSec
         return typeFactory.type(this)
     }
 
-    override fun visitableId(): Int {
+    override fun visitableId(): String {
         return section.id
     }
 

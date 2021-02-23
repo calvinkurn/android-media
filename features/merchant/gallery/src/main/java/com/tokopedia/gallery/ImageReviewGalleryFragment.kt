@@ -11,8 +11,8 @@ import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.domain.GetImageReviewUseCase
+import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -20,7 +20,7 @@ import java.util.*
 
 class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSlider.Callback, GalleryView {
 
-    private var presenter: ReviewGalleryPresenter? = null
+    private var presenter: ReviewGalleryPresenterContract? = null
     private var activity: ImageReviewGalleryActivity? = null
 
     override val isAllowLoadMore: Boolean
@@ -83,7 +83,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun initInjector() {
-        presenter = ReviewGalleryPresenterImpl(
+        presenter = ReviewGalleryPresenter(
                 GetImageReviewUseCase(context, GraphqlUseCase()),
                 this)
     }

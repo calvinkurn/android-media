@@ -102,12 +102,13 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
         goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
+        String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
         if (!GlobalConfig.isSellerApp()) {
-            startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
+            startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab, source));
             finish();
         }
         startPerformanceMonitoring();
