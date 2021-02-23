@@ -4,7 +4,6 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -14,13 +13,15 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
-import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 
-class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategoryListener)
+class HomeHeaderOvoViewHolder(itemView: View,
+                              private val listener: HomeCategoryListener,
+                              private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
+)
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
 
     companion object {
@@ -42,15 +43,12 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         val chooseAddressView = itemView.widget_choose_address
+        chooseAddressView.bindChooseAddress(chooseAddressWidgetListener)
         chooseAddressView.run {
             visibility = if (needToShowChooseAddress) {
                 View.VISIBLE
             } else {
                 View.GONE
-            }
-
-            setOnClickListener {
-                listener.onChooseAddressClick()
             }
         }
 

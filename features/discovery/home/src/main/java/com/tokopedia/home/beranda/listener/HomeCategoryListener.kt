@@ -132,5 +132,5 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun onChooseAddressClick()
+    fun onChooseAddressUpdated()
 }
