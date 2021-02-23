@@ -847,11 +847,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
             til_passport_expiration_date.setError(true)
             false
-        } else if (isNeedPassport && flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
-        getPassportExpiryDate(), sixMonthFromDeparture)){
-            til_passport_expiration_date.setError(false)
-            true
         } else {
+            til_passport_expiration_date.setError(false)
             true
         }
     }
