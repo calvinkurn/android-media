@@ -9,8 +9,8 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : RecyclerView.Adapter<BidInfoViewHolder<BidInfoViewModel>>() {
 
     var items: MutableList<BidInfoViewModel> = mutableListOf()
-    val typeList :MutableList<Int> = mutableListOf()
-    var minBid :Int = 0
+    val typeList: MutableList<Int> = mutableListOf()
+    var minBid: String = "0"
 
     override fun onBindViewHolder(holder: BidInfoViewHolder<BidInfoViewModel>, position: Int) {
         holder.bind(items[position],typeList,minBid)
@@ -34,7 +34,7 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
         notifyDataSetChanged()
     }
 
-    fun setMinimumBid(bid:Int){
+    fun setMinimumBid(bid: String) {
         minBid = bid
         notifyDataSetChanged()
     }

@@ -29,10 +29,6 @@ data class UserAccountDataModel(
         @Expose
         var debitInstant: DebitInstantModel = DebitInstantModel(),
 
-        @SerializedName("vcc_user_status")
-        @Expose
-        var vccUserStatus: VccUserStatus = VccUserStatus(),
-
         @SerializedName("isAffiliate")
         @Expose
         var isAffiliate: Boolean = false,
