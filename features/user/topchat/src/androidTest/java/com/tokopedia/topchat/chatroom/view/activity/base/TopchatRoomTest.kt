@@ -71,6 +71,10 @@ abstract class TopchatRoomTest {
             "success_get_chat_first_page_as_buyer.json",
             GetExistingChatPojo::class.java
     )
+    protected var firstPageChatAsSeller: GetExistingChatPojo = AndroidFileUtil.parse(
+            "success_get_chat_first_page_as_seller.json",
+            GetExistingChatPojo::class.java
+    )
     protected var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
