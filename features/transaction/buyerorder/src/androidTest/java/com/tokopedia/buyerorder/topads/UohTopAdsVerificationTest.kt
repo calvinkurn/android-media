@@ -66,6 +66,7 @@ class UohTopAdsVerificationTest {
             }
             loading()
         }
+        // Must be put outside of uoh robot scope, for class name report generator
         topAdsAssertion.assert()
     }
 
