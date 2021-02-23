@@ -37,5 +37,8 @@ data class WidgetModel(
         val postFilter: List<PostFilterModel>?,
         @Expose
         @SerializedName("emptyState")
-        val emptyStateModel: WidgetEmptyStateModel
+        val emptyStateModel: WidgetEmptyStateModel,
+        @Expose
+        @SerializedName("comparePeriode")
+        val isComparePeriodeOnly: Boolean = false
 )

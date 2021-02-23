@@ -232,7 +232,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = isFromCache,
-                emptyState = widget.emptyStateModel.mapToUiModel()
+                emptyState = widget.emptyStateModel.mapToUiModel(),
+                isComparePeriodeOnly = widget.isComparePeriodeOnly
         )
     }
 

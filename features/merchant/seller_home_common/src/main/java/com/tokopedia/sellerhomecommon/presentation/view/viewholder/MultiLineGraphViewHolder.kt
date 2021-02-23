@@ -102,44 +102,51 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
-        val isAnyOtherSelected = otherSelectedMetric != null
-        if (this.lastSelectedMetric == metric) {
-            if (isAnyOtherSelected) {
-                if (lastSelectedMetric?.type == metric.type) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
-                } else {
-                    otherSelectedMetric?.isSelected = false
-                    metric.isSelected = true
-                    this.lastSelectedMetric = metric
-                }
-            } else {
-                metricsAdapter.notifyDataSetChanged()
-                return
+        if (element?.isComparePeriodeOnly == true) {
+            metricsAdapter.items.forEach {
+                it.isSelected = (it == metric)
             }
+            this.lastSelectedMetric = metric
         } else {
-            if (lastSelectedMetric?.type == metric.type) {
-                if (metric.isSelected) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
+            val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
+            val isAnyOtherSelected = otherSelectedMetric != null
+            if (this.lastSelectedMetric == metric) {
+                if (isAnyOtherSelected) {
+                    if (lastSelectedMetric?.type == metric.type) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        otherSelectedMetric?.isSelected = false
+                        metric.isSelected = true
+                        this.lastSelectedMetric = metric
+                    }
                 } else {
                     metric.isSelected = true
-                    this.lastSelectedMetric?.let {
-                        it.isSelected = !checkIsMetricError(it)
-                    }
-                    this.lastSelectedMetric = metric
                 }
             } else {
-                metricsAdapter.items.forEach {
-                    if (it != metric) {
-                        it.isSelected = false
+                if (lastSelectedMetric?.type == metric.type) {
+                    if (metric.isSelected) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        metric.isSelected = true
+                        this.lastSelectedMetric?.let {
+                            it.isSelected = !checkIsMetricError(it)
+                        }
+                        this.lastSelectedMetric = metric
                     }
+                } else {
+                    metricsAdapter.items.forEach {
+                        if (it != metric) {
+                            it.isSelected = false
+                        }
+                    }
+                    lastSelectedMetric?.isSelected = false
+                    metric.isSelected = true
+                    lastSelectedMetric = metric
                 }
-                lastSelectedMetric?.isSelected = false
-                metric.isSelected = true
-                lastSelectedMetric = metric
             }
+
         }
 
         if (checkIsMetricError(metric)) {

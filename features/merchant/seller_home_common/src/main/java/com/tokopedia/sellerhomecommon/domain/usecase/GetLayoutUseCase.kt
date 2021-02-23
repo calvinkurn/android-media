@@ -57,6 +57,7 @@ class GetLayoutUseCase(
                   widgetType
                   title
                   subtitle
+                  comparePeriode
                   tooltip {
                     title
                     content
