@@ -38,6 +38,7 @@ public abstract class BaseNotificationFactory {
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
+        createNotificationChannel();
     }
 
     public abstract Notification createNotification(

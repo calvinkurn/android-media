@@ -73,7 +73,6 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             }
         }
 
-        createNotificationChannel();
         return builder.build();
     }
 

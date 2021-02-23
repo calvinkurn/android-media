@@ -45,7 +45,6 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
             setBigPictureNotification(builder, applinkNotificationModel);
         }
 
-        createNotificationChannel();
         return builder.build();
     }
 

@@ -54,8 +54,6 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             setSound(ringtoneUri)
             if (isAllowVibrate!!) setVibrate(vibratePattern)
         }
-
-        createNotificationChannel()
     }
 
     override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notificationType: Int, notificationId: Int): Notification {

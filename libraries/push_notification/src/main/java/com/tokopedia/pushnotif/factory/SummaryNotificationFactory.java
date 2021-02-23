@@ -72,7 +72,6 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
-        createNotificationChannel();
         return builder.build();
     }
 
