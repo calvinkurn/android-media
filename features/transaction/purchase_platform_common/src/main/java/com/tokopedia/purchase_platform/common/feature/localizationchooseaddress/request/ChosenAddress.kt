@@ -1,7 +1,10 @@
 package com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ChosenAddress(
         @SerializedName("mode")
         val mode: Int = 0,
@@ -13,9 +16,9 @@ data class ChosenAddress(
         val postalCode: String = "",
         @SerializedName("geolocation")
         val geolocation: String = ""
-) {
-        companion object {
-                const val MODE_ADDRESS = 1
-                const val MODE_SNIPPET = 2
-        }
+) : Parcelable {
+    companion object {
+        const val MODE_ADDRESS = 1
+        const val MODE_SNIPPET = 2
+    }
 }
