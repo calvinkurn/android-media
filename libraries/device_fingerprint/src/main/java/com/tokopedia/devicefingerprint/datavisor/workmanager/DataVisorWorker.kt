@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.*
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
+import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitResponse
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
@@ -63,15 +64,20 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             }
             val token = resultInit?.first?: ""
             result = if (token.isNotEmpty()) {
-                val resultServer = sendDataVisorToServer(applicationContext, token, runAttemptCount, "")
-                if (resultServer != null && resultServer.first) {
-                    Result.success()
-                } else {
+                try {
+                    val resultServer = sendDataVisorToServer(token, runAttemptCount, "")
+                    if (!resultServer.subDvcIntlEvent.isError) {
+                        setTokenLocal(applicationContext, token)
+                        Result.success()
+                    } else {
+                        Result.retry()
+                    }
+                } catch (e:Exception) {
                     Result.retry()
                 }
             } else {
                 val error = resultInit?.second?: ""
-                sendErrorDataVisorToServer(applicationContext, runAttemptCount, error)
+                sendErrorDataVisorToServer(runAttemptCount, error)
                 Result.retry()
             }
             result
@@ -88,24 +94,18 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         lastTimestampToken = now
     }
 
-    fun sendErrorDataVisorToServer(context: Context, runAttemptCount: Int, errorMessage: String) {
-        sendDataVisorToServer(context, DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
+    suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {
+        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
     }
 
-    private fun sendDataVisorToServer(context: Context, token: String = DEFAULT_VALUE_DATAVISOR, countAttempt: Int, errorMessage: String): Pair<Boolean, Throwable?>? {
+    private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
+                                              countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
         submitDVTokenUseCase.setParams(
                 token,
                 countAttempt,
                 errorMessage
         )
-        var result: Pair<Boolean, Throwable?>? = null
-        submitDVTokenUseCase.execute({
-            result = !(it.subDvcIntlEvent.isError) to null
-        }, {
-            result = false to it
-        })
-        setTokenLocal(context, token)
-        return result
+        return submitDVTokenUseCase.executeOnBackground()
     }
 
     companion object {
