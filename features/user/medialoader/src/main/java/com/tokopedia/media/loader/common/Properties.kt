@@ -13,22 +13,22 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
-        var data: Any? = null,
-        var renderDelay: Long = 0L,
-        var thumbnailUrl: String = "",
-        var blurHash: Boolean = true,
-        var isAnimate: Boolean = false,
-        var isCircular: Boolean = false,
-        var roundedRadius: Float = 0f,
-        var signatureKey: Key? = null,
-        var error: Int = R.drawable.media_state_default_error,
-        var placeHolder: Int = 0,
-        var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
-        var overrideSize: Resize? = null,
-        var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
-        var loaderListener: MediaListener? = null,
-        var transform: Transformation<Bitmap>? = null,
-        var transforms: List<Transformation<Bitmap>>? = null
+        internal var data: Any? = null,
+        internal var renderDelay: Long = 0L,
+        internal var thumbnailUrl: String = "",
+        internal var blurHash: Boolean = true,
+        internal var isAnimate: Boolean = false,
+        internal var isCircular: Boolean = false,
+        internal var roundedRadius: Float = 0f,
+        internal var signatureKey: Key? = null,
+        internal var error: Int = R.drawable.media_state_default_error,
+        internal var placeHolder: Int = 0,
+        internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
+        internal var overrideSize: Resize? = null,
+        internal var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
+        internal var loaderListener: MediaListener? = null,
+        internal var transform: Transformation<Bitmap>? = null,
+        internal var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
     /*
