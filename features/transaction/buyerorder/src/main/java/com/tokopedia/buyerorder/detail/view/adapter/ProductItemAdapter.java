@@ -170,7 +170,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             itemView.setOnClickListener(view -> {
-                orderListAnalytics.hitClickProductName(status.status(), userId);
+                orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
 
                 String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ orderId +"/"+ items.getOrderDetailId();
                 RouteManager.route(context, applinkSnapshot);
