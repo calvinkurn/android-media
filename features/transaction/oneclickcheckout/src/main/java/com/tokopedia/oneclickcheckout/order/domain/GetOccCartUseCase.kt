@@ -46,14 +46,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        // Todo : remove comments
         private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String) {
   get_occ_cart_page(source: ${"$"}source) {
     error_message
     status
     data {
-//      error_code
-//      pop_up_message
+      error_code
+      pop_up_message
       max_quantity
       max_char_note
       messages {
@@ -314,8 +313,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           latitude
           postal_code
           geolocation
-//          state
-//          state_detail
+          state
+          state_detail
         }
         payment {
           enable
