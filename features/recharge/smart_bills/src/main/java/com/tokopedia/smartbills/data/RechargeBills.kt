@@ -61,7 +61,17 @@ data class RechargeBills(
         @SerializedName("isChecked")
         @Expose
         var isChecked: Boolean = false,
-        var errorMessage: String = ""
+        var errorMessage: String = "",
+        @SerializedName("DueDate")
+        @Expose
+        var dueDate: String = "",
+        @SerializedName("DueMessage")
+        @Expose
+        var dueMessage: DueUrgency = DueUrgency(),
+        @SerializedName("DueDateLabel")
+        @Expose
+        var dueDateLabel: DueUrgency = DueUrgency(),
+
 ): Visitable<SmartBillsAdapterFactory> {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
