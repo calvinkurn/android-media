@@ -51,12 +51,14 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
@@ -69,6 +71,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -92,7 +96,8 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        PiPViewComponent.Listener
+        PiPViewComponent.Listener,
+        PinnedVoucherViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -113,6 +118,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
+    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -366,6 +372,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 channelType = playViewModel.channelType
         )
     }
+
+    /**
+     * Pinned Voucher View Component Listener
+     */
+    override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
+        // TODO("Not yet implemented")
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -478,6 +491,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
+        observePinnedVoucher()
 
         observeLoggedInInteractionEvent()
     }
@@ -718,6 +732,18 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeOnboarding() {
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
             if (!orientation.isLandscape) onboardingView?.showAnimated()
+        })
+    }
+
+    private fun observePinnedVoucher() {
+        playViewModel.observablePinnedVoucher.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> if (it.showPlaceholder) pinnedVoucherView?.showPlaceholder()
+                is PlayResult.Success -> pinnedVoucherView?.setVoucher(it.data)
+                is PlayResult.Failure -> {
+                    // TODO("error handling, ask praisya")
+                }
+            }
         })
     }
     //endregion

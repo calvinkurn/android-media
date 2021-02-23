@@ -10,7 +10,9 @@ sealed class PlayVoucherUiModel
 data class MerchantVoucherUiModel(
         val type: MerchantVoucherType,
         val title: String,
-        val description: String
+        val description: String,
+        val code: String,
+        val copyable: Boolean,
 ) : PlayVoucherUiModel()
 
 object VoucherPlaceholderUiModel : PlayVoucherUiModel()

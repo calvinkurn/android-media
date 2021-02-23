@@ -2,12 +2,17 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.type.MerchantVoucherType
+import com.tokopedia.play.ui.pinned.voucher.adapter.PinnedVoucherAdapter
+import com.tokopedia.play.ui.pinned.voucher.viewholder.PinnedVoucherViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifyprinciples.Typography
 
 
 /**
@@ -19,28 +24,36 @@ class PinnedVoucherViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    private val ivVoucherImage = findViewById<AppCompatImageView>(R.id.iv_pinned_voucher_image)
-    private val tvVoucherTitle = findViewById<Typography>(R.id.tv_pinned_voucher_title)
-    private val tvVoucherDescription = findViewById<Typography>(R.id.tv_pinned_voucher_description)
+    private val rvPinnedVoucherList: RecyclerView = findViewById(R.id.rv_pinned_voucher_list)
+
+    private val pinnedVoucherAdapter = PinnedVoucherAdapter(object : PinnedVoucherViewHolder.Listener {
+        override fun onVoucherClicked(voucher: MerchantVoucherUiModel) {
+            listener.onVoucherClicked(this@PinnedVoucherViewComponent, voucher)
+        }
+    })
 
     init {
-        container.setOnClickListener {
-            listener.onVoucherClicked(this)
+        rvPinnedVoucherList.apply {
+            layoutManager = LinearLayoutManager(rvPinnedVoucherList.context, RecyclerView.HORIZONTAL, false)
+            adapter = pinnedVoucherAdapter
         }
     }
 
-    fun setVoucher(voucher: MerchantVoucherUiModel) {
-        tvVoucherTitle.text = voucher.title
-        tvVoucherDescription.text = voucher.description
+    fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
+        pinnedVoucherAdapter.setItemsAndAnimateChanges(vouchers)
 
-        ivVoucherImage.setImageResource(
-                if (voucher.type == MerchantVoucherType.Shipping) R.drawable.ic_play_shipping_voucher
-                else R.drawable.ic_play_discount_voucher
+        if (vouchers.isEmpty()) rvPinnedVoucherList.hide()
+        else rvPinnedVoucherList.show()
+    }
+
+    fun showPlaceholder() {
+        setVoucher(
+                List(1) { VoucherPlaceholderUiModel }
         )
     }
 
     interface Listener {
 
-        fun onVoucherClicked(view: PinnedVoucherViewComponent)
+        fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel)
     }
 }

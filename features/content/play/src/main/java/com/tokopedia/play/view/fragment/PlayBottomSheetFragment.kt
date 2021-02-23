@@ -23,6 +23,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
@@ -140,6 +141,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int) {
         analytic.scrollMerchantVoucher(lastPositionViewed)
+    }
+
+    override fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel) {
+        // TODO("copy voucher code")
     }
 
     /**

@@ -18,7 +18,9 @@ import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
@@ -61,7 +63,11 @@ class ProductSheetViewComponent(
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
     })
-    private val voucherAdapter = MerchantVoucherAdapter()
+    private val voucherAdapter = MerchantVoucherAdapter(object : MerchantVoucherViewHolder.Listener {
+        override fun onCopyVoucherCode(voucher: MerchantVoucherUiModel) {
+            listener.onCopyVoucherCodeClicked(this@ProductSheetViewComponent, voucher)
+        }
+    })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -214,5 +220,6 @@ class ProductSheetViewComponent(
         fun onProductCardClicked(view: ProductSheetViewComponent, product: ProductLineUiModel, position: Int)
         fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
+        fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel)
     }
 }
