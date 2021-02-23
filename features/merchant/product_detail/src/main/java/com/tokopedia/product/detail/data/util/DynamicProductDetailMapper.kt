@@ -303,7 +303,7 @@ object DynamicProductDetailMapper {
         return UserLocationRequest(
                 localData.district_id,
                 localData.address_id,
-                "",
+                localData.postal_code,
                 latlong)
     }
 }
