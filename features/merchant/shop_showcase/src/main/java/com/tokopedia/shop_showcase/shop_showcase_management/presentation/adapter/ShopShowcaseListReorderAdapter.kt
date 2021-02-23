@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CUSTOM
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
@@ -33,7 +32,7 @@ class ShopShowcaseListReorderAdapter(
 
         // Handling undragable list
         for (showcase in showcaseList) {
-            if (showcase.type == ETALASE_DEFAULT) {
+            if (showcase.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) {
                 generatedSowcaseList += 1
             }
         }
@@ -84,7 +83,7 @@ class ShopShowcaseListReorderAdapter(
         fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ETALASE_CUSTOM) {
+            if (dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
                 buttonMove?.visibility = View.VISIBLE
             } else {
                 buttonMove?.visibility = View.INVISIBLE
