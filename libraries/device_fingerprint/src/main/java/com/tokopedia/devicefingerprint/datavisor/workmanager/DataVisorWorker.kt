@@ -87,8 +87,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         lastTimestampToken = now
     }
 
-    fun isErrorReachMax(runAttemptCount: Int) = runAttemptCount == MAX_RUN_ATTEMPT
-
     fun sendErrorDataVisorToServer(context: Context, runAttemptCount: Int, errorMessage: String) {
         sendDataVisorToServer(context, DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
     }
