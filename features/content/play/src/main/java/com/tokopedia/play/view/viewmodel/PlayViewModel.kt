@@ -19,6 +19,7 @@ import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.util.video.state.hasNoData
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -528,7 +529,10 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
-        if (shouldPauseVideo) playVideoPlayer.pause(preventLoadingBuffer = true)
+        if (shouldPauseVideo) {
+            if (playVideoPlayer.isVideoLive() || viewerVideoState.hasNoData) playVideoPlayer.stop()
+            else playVideoPlayer.pause(preventLoadingBuffer = true)
+        }
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
