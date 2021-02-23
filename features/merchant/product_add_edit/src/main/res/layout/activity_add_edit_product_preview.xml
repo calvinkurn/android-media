@@ -27,6 +27,7 @@
             android:focusable="true"
             android:padding="@dimen/layout_lvl1"
             android:text="@string/action_done"
+            android:visibility="gone"
             tools:visibility="visible" />
 
     </androidx.appcompat.widget.Toolbar>

@@ -127,8 +127,8 @@ class PreferenceListBottomSheet(
         rvPreferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.top = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
-                outRect.bottom = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
+                outRect.top = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                outRect.bottom = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             }
         })
         if (isNewFlow) {
@@ -141,7 +141,7 @@ class PreferenceListBottomSheet(
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
-        override fun onPreferenceSelected(preference: ProfilesItemModel) {
+        override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
             bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
