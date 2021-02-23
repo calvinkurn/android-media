@@ -7,18 +7,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class HomeViewModelChooseAddressTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
-    private val topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test

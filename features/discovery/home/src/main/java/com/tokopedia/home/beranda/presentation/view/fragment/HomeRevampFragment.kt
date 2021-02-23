@@ -343,7 +343,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser()
+        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
@@ -877,16 +877,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun validateChooseAddressWidget(): Boolean {
         var isAddressChanged = false
-        getHomeViewModel().homeChooseAddressData.localCacheModel?.let {
+        getHomeViewModel().homeChooseAddressData.toLocalCacheModel().let {
             isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
         }
 
         if (isAddressChanged) {
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            val updatedChooseAddressData = HomeChooseAddressData(
-                    isActive = true,
-                    localCacheModel = localChooseAddressData
-            )
+            val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
             viewModel.get().updateChooseAddressData(updatedChooseAddressData)
         }
 
@@ -1580,10 +1578,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onChooseAddressUpdated() {
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        viewModel.get().homeChooseAddressData = HomeChooseAddressData(
-                isActive = true,
-                localCacheModel = localCacheModel
-        )
+        viewModel.get().homeChooseAddressData =
+                HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
         Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
     }
 
