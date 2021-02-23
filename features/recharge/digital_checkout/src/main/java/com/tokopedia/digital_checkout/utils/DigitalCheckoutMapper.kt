@@ -296,7 +296,8 @@ object DigitalCheckoutMapper {
         return paymentPassData
     }
 
-    fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?): DigitalCheckoutDataParameter {
+    fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
+                          requestCheckoutDataParameter: DigitalCheckoutDataParameter): DigitalCheckoutDataParameter {
         val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
         digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.accessToken = accessToken
@@ -308,6 +309,10 @@ object DigitalCheckoutMapper {
                 ?: 0.0
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
+
+        if (requestCheckoutDataParameter.isFintechProductChecked) digitalCheckoutDataParameter.isFintechProductChecked = true
+        if (requestCheckoutDataParameter.isSubscriptionChecked) digitalCheckoutDataParameter.isSubscriptionChecked = true
+
         return digitalCheckoutDataParameter
     }
 

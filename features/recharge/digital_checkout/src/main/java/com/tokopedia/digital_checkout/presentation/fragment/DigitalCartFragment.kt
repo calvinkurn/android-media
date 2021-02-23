@@ -110,8 +110,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
 
+        //if user activate don't keep activities
         if (savedInstanceState != null) {
             viewModel.setPromoData(savedInstanceState.getParcelable(EXTRA_STATE_PROMO_DATA)
                     ?: PromoData())
@@ -120,9 +120,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
             cartPassData?.needGetCart = true
         }
 
+        initViews()
         loadData()
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(EXTRA_STATE_PROMO_DATA, viewModel.promoData.value)
@@ -411,9 +411,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
                 subscriptionWidget.hasMoreInfo(false)
 
-                if (!subscriptionWidget.isChecked()) {
+                if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
+                    subscriptionWidget.setChecked(true)
+                } else if (!subscriptionWidget.isChecked()) {
                     subscriptionWidget.setChecked(crossSellingConfig.isChecked)
                 }
+
                 viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
 
                 subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -442,9 +445,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 fintechProductWidget.visibility = View.VISIBLE
 
                 if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
-                    if (!fintechProductWidget.isChecked()) {
+
+                    if (viewModel.requestCheckoutParam.isFintechProductChecked) {
+                        fintechProductWidget.setChecked(true)
+                    } else if (!fintechProductWidget.isChecked()) {
                         fintechProductWidget.setChecked(fintechProduct.optIn)
                     }
+
                     viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
                 }
 

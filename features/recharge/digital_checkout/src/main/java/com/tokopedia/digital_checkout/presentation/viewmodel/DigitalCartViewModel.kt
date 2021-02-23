@@ -214,7 +214,7 @@ class DigitalCartViewModel @Inject constructor(
         analytics.eventAddToCart(mappedCartData, source)
         analytics.eventCheckout(mappedCartData)
 
-        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
+        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
@@ -232,7 +232,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun errorHandler(e: Throwable) {
+    private fun errorHandler(e: Throwable) {
         if (e is UnknownHostException) {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
         } else if (e is SocketTimeoutException || e is ConnectException) {
