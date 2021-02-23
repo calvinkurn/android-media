@@ -13,4 +13,9 @@ data class ChosenAddress(
         val postalCode: String = "",
         @SerializedName("geolocation")
         val geolocation: String = ""
-)
+) {
+        companion object {
+                const val MODE_ADDRESS = 1
+                const val MODE_SNIPPET = 2
+        }
+}

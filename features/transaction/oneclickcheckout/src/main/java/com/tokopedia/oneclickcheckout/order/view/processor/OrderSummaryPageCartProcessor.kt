@@ -1,7 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.content.Context
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
@@ -13,7 +16,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.localizationchooseaddress.util.request.getChosenAddress
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: ExecutorDispatchers) {
+                                                        private val executorDispatchers: ExecutorDispatchers,
+                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
@@ -116,7 +119,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
                     orderPreference.preference.address.addressId.toString()
             )
-            return UpdateCartOccRequest(arrayListOf(cart), profile, getChosenAddress())
+            return UpdateCartOccRequest(arrayListOf(cart), profile, chosenAddressRequestHelper.getChosenAddress())
         }
         return null
     }

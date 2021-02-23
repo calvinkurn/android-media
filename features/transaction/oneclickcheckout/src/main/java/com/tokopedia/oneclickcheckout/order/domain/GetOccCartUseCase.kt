@@ -3,23 +3,25 @@ package com.tokopedia.oneclickcheckout.order.domain
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.localizationchooseaddress.util.request.addChosenAddressParam
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
+class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                            private val mapper: GetOccCartMapper,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     fun createRequestParams(source: String): RequestParams {
         val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
-        addChosenAddressParam(params)
+        chosenAddressRequestHelper.addChosenAddressParam(params)
 
         return params
     }

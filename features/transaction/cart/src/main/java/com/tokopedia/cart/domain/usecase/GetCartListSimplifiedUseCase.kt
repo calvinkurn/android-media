@@ -5,10 +5,10 @@ import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.localizationchooseaddress.util.request.KEY_CHOSEN_ADDRESS
-import com.tokopedia.localizationchooseaddress.util.request.getChosenAddress
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -21,7 +21,8 @@ import javax.inject.Inject
 
 class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                        private val cartSimplifiedMapper: CartSimplifiedMapper,
-                                                       private val schedulers: ExecutorSchedulers) : UseCase<CartListData>() {
+                                                       private val schedulers: ExecutorSchedulers,
+                                                       private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CartListData>() {
 
     companion object {
         const val PARAM_GET_CART = "PARAM_GET_CART"
@@ -36,11 +37,10 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
     fun buildParams(cartId: String): Map<String, Any?> {
         return mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_SELECTED_CART_ID to cartId
-//                ,
-//                PARAM_KEY_ADDITIONAL to mapOf(
-//                        KEY_CHOSEN_ADDRESS to getChosenAddress()
-//                )
+                PARAM_KEY_SELECTED_CART_ID to cartId,
+                PARAM_KEY_ADDITIONAL to mapOf(
+                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                )
         )
     }
 

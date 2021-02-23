@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.localizationchooseaddress.util.request.ChosenAddressRequestHelper
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -13,13 +14,13 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
-import com.tokopedia.localizationchooseaddress.util.request.getChosenAddress
 import javax.inject.Inject
 
 class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceByIdUseCase: GetPreferenceByIdUseCase,
                                                      private val createPreferenceUseCase: CreatePreferenceUseCase,
                                                      private val deletePreferenceUseCase: DeletePreferenceUseCase,
-                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase) : ViewModel() {
+                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase,
+                                                     private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : ViewModel() {
 
     private val _preference: MutableLiveData<OccState<ProfilesItemModel>> = MutableLiveData()
     val preference: LiveData<OccState<ProfilesItemModel>>
@@ -96,7 +97,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
-        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, getChosenAddress()),
+        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddressRequestHelper.getChosenAddress()),
                 { message: String ->
                     _editResult.value = OccState.Success(message)
                     OccIdlingResource.decrement()
