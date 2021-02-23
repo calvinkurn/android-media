@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader.ui
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.media.loader.*
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -15,12 +17,41 @@ import kotlinx.android.synthetic.main.activity_test_media.*
 class MediaActivity : AppCompatActivity() {
 
     private lateinit var url: String
+    private val hash = "A4ADcRuO_2y?"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_media)
 
         default()
+
+        // from medialoader: normal
+        btnBlurHashFromLoader1?.setOnClickListener {
+            Handler().postDelayed({
+                imgTest?.loadImage(generateBlurHash(hash))
+            }, 3000)
+        }
+
+        // from medialoader: aspect ratio
+        btnBlurHashFromLoader2?.setOnClickListener {
+            Handler().postDelayed({
+                imgTest?.loadImage(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
+            }, 3000)
+        }
+
+        // from native: normal
+        btnBlurHashFromNative1?.setOnClickListener {
+            Handler().postDelayed({
+                imgTest?.setImageBitmap(generateBlurHash(hash))
+            }, 3000)
+        }
+
+        // from native: aspect ratio
+        btnBlurHashFromNative2?.setOnClickListener {
+            Handler().postDelayed({
+                imgTest?.setImageBitmap(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
+            }, 3000)
+        }
 
         btnNormal?.setOnClickListener { loadImage() }
         btnRoundedProperties?.setOnClickListener { loadImageRounded() }
@@ -35,6 +66,15 @@ class MediaActivity : AppCompatActivity() {
         btnBlurHash?.setOnClickListener { loadImageBlurHash() }
 
         btnLoadIcon?.setOnClickListener { loadIcon() }
+    }
+
+    private fun generateBlurHash(hash: String?, width: Int = 2, height: Int = 2): Bitmap? {
+        return BlurHashDecoder.decode(
+                blurHash = hash,
+                width = width + 10,
+                height = height + 10,
+                parallelTasks = 2
+        )
     }
 
     private fun default() {
