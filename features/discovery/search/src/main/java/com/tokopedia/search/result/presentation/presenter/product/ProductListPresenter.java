@@ -616,7 +616,7 @@ final class ProductListPresenter
         for (LabelGroup labelGroup : labelGroupList) {
             labelGroupViewModelList.add(
                     new LabelGroupViewModel(
-                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle(), ""
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle(), labelGroup.getImageUrl()
                     )
             );
         }
