@@ -231,4 +231,9 @@ data class ProductCardModel (
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
     }
+
+    companion object {
+        const val WORDING_SEGERA_HABIS = "Segera Habis"
+        const val FIRE_OFFSET = 5f
+    }
 }
