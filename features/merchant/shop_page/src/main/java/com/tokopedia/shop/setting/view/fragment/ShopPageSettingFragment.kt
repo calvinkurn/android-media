@@ -132,7 +132,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 is Fail -> onErrorGetShopInfo(it.throwable)
             }
         })
-        observeRoleAccess()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -171,6 +170,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingList.add(Support())
         shopPageSettingList.add(Shipping())
         shopPageSettingAdapter.setShopPageSettingList(shopPageSettingList)
+
+        observeRoleAccess()
 
         // get shop info
         getShopInfo()
