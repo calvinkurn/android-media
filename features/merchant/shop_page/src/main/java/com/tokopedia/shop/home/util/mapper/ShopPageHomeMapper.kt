@@ -236,17 +236,17 @@ object ShopPageHomeMapper {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
-            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductRecommendationUiModel(widgetResponse, isMyOwnProduct)
+            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
             else -> {
                 null
             }
         }
     }
 
-    private fun mapToProductRecommendationUiModel(
+    private fun mapToProductPersonalizationUiModel(
             widgetResponse: ShopLayoutWidget.Widget,
             isMyProduct: Boolean
-    ) = ShopHomeProductRecommendationCarouselUiModel(
+    ) = ShopHomeCarousellProductUiModel(
             widgetId = widgetResponse.widgetID,
             layoutOrder = widgetResponse.layoutOrder,
             name = widgetResponse.name,

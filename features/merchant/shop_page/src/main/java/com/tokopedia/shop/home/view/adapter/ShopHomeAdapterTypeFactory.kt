@@ -50,7 +50,7 @@ class ShopHomeAdapterTypeFactory(
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
-            RECENT_ACTIVITY, BUY_AGAIN -> return ShopHomeCarouselProductRecommendationViewHolder.LAYOUT
+            RECENT_ACTIVITY, BUY_AGAIN -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
             VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
@@ -142,7 +142,7 @@ class ShopHomeAdapterTypeFactory(
             }
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
-            ShopHomeCarouselProductRecommendationViewHolder.LAYOUT -> ShopHomeCarouselProductRecommendationViewHolder(parent)
+            ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder
