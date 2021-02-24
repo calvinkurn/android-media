@@ -21,11 +21,11 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
+import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.PartialInputTextView
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
-import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
