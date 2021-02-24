@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -32,6 +33,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,6 +63,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var addressList: RecyclerView? = null
     private var listener: ChooseAddressBottomSheetListener? = null
 
+    private var txtLocalization: Typography? = null
+    private var contentLayout: FrameLayout? = null
+    private var bottomLayout: ConstraintLayout? = null
+    private var errorLayout: ConstraintLayout? = null
+    private var progressBar: LoaderUnify? = null
+
     private var fm: FragmentManager? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
 
@@ -76,7 +85,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData()
-        initObserver()
+        setInitialViewState()
+        if (userSession.isLoggedIn) {
+            initObserver()
+        } else setViewState(false)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -98,6 +110,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
             listener?.onAddressDataChanged()
             this.dismiss()
+        } else if (requestCode == REQUEST_CODE_LOGIN_PAGE) {
+            listener?.onLocalizingAddressLoginSuccessBottomSheet()
+            this.dismiss()
         }
     }
 
@@ -109,7 +124,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
-        setTitle("Mau kirim belanjaan ke mana?")
         setCloseClickListener { this.dismiss() }
     }
 
@@ -122,6 +136,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         buttonAddAddress = child.findViewById(R.id.btn_chevron_add)
         buttonSnippetLocation = child.findViewById(R.id.btn_chevron_snippet)
         addressList = child.findViewById(R.id.rv_address_card)
+
+        txtLocalization = child.findViewById(R.id.txt_bottomsheet_localization)
+        contentLayout = child.findViewById(R.id.frame_content_layout)
+        bottomLayout = child.findViewById(R.id.bottom_layout)
+        progressBar = child.findViewById(R.id.progress_bar)
 
         addressList?.adapter = adapter
         addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -137,7 +156,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             when (it) {
                 is Success -> {
                     adapter.updateData(it.data)
-                    setViewState()
+                    setViewState(true)
+                }
+
+                is Fail -> {
+                    setErrorViewState()
                 }
             }
         })
@@ -170,29 +193,59 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         })
     }
 
-    private fun setViewState() {
-        if (!userSession.isLoggedIn) {
+    private fun setInitialViewState() {
+        progressBar?.visible()
+        txtLocalization?.gone()
+        contentLayout?.gone()
+        bottomLayout?.gone()
+        errorLayout?.gone()
+        setTitle("")
+        setCloseClickListener {
+            this.dismiss()
+        }
+    }
+
+    private fun setViewState(loginState: Boolean) {
+        if (!loginState) {
+            progressBar?.gone()
+            txtLocalization?.visible()
+            contentLayout?.visible()
+            bottomLayout?.visible()
+            errorLayout?.gone()
             chooseAddressLayout?.gone()
             noAddressLayout?.gone()
             loginLayout?.visible()
         } else {
             if (adapter.addressList.isEmpty()) {
+                progressBar?.gone()
+                txtLocalization?.visible()
+                contentLayout?.visible()
+                bottomLayout?.visible()
+                errorLayout?.gone()
                 chooseAddressLayout?.gone()
                 noAddressLayout?.visible()
                 loginLayout?.gone()
             } else {
+                progressBar?.gone()
+                txtLocalization?.visible()
+                contentLayout?.visible()
+                bottomLayout?.visible()
+                errorLayout?.gone()
                 chooseAddressLayout?.visible()
                 noAddressLayout?.gone()
                 loginLayout?.gone()
             }
         }
-
+        setTitle("Mau kirim belanjaan ke mana")
         renderButton()
+        setCloseClickListener {
+            this.dismiss()
+        }
     }
 
     private fun renderButton() {
         buttonLogin?.setOnClickListener {
-            startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_PAGE)
         }
 
         buttonAddAddress?.setOnClickListener {
@@ -206,6 +259,19 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS).apply {
                 putExtra(IS_LOCALIZATION, true)
             }, REQUEST_CODE_GET_DISTRICT_RECOM)
+        }
+    }
+
+    private fun setErrorViewState() {
+        progressBar?.gone()
+        txtLocalization?.gone()
+        contentLayout?.gone()
+        bottomLayout?.gone()
+        errorLayout?.visible()
+        setTitle("")
+        setCloseClickListener {
+            listener?.onLocalizingAddressServerDown()
+            this.dismiss()
         }
     }
 
@@ -238,6 +304,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
+        const val REQUEST_CODE_LOGIN_PAGE = 499
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
@@ -272,6 +339,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          * String Source of Host Page
          */
         fun getLocalizingAddressHostSourceBottomSheet(): String
+
+        /**
+         * this listen is use to notify host/fragment if login is success from bottomshet
+         */
+        fun onLocalizingAddressLoginSuccessBottomSheet()
     }
 
 }

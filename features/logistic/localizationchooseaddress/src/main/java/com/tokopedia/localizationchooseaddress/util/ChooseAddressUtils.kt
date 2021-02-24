@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.util
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -111,8 +112,16 @@ object ChooseAddressUtils {
         chooseAddressPref.setCoachMarkState(true)
     }
 
-    fun createCoachMarkItem(context: Context, view: View) : CoachMarkItem {
+    fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
         return CoachMarkItem(
+                view,
+                context.getString(R.string.coachmark_title),
+                context.getString(R.string.coachmark_desc)
+        )
+    }
+
+    fun coachMark2Item(context: Context, view: View) : CoachMark2Item {
+        return CoachMark2Item(
                 view,
                 context.getString(R.string.coachmark_title),
                 context.getString(R.string.coachmark_desc)
