@@ -37,7 +37,6 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
@@ -520,7 +519,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val invalidIndex = -1
         if (index != invalidIndex) {
             recyclerView.post {
-                recyclerView.smoothScrollToPosition(index)
+                val offset: Int = recyclerView.context.dpToPx(8).toInt()
+                mLayoutManager.scrollToPositionWithOffset(index, offset)
             }
         }
     }
