@@ -7,7 +7,7 @@ import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +41,7 @@ class GetProfileDataUseCase @Inject constructor(
             var ovoData: WalletBalanceModel? = null
             var saldoData: SaldoPojo? = null
             var userMembershipData: MembershipPojo? = null
-            var shopData: ShopInfoPojo? = null
+            var shopData: ShopData? = null
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -62,14 +62,15 @@ class GetProfileDataUseCase @Inject constructor(
             ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
             saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
             userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
                     ovoData,
                     saldoData,
                     userMembershipData,
-                    shopData,
+                    shopData?.userShopInfo,
+                    shopData?.notifications,
                     false
             )
         }

@@ -5,12 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
-import com.tokopedia.homenav.mainnav.MainNavConst
-import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
-import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
@@ -25,18 +22,23 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
+import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -466,6 +468,12 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo): Int {
+        return notificationPojo.resolution.sellerResolutionCount
+                .plus(notificationPojo.sellerOrderStatus.newOrderCount)
+                .plus(notificationPojo.sellerOrderStatus.readyToShipOrderCount)
+    }
+
     fun refreshUserShopData() {
         val newAccountData = _mainNavListVisitable.find {
             it is AccountHeaderDataModel
@@ -481,9 +489,9 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
                 val response = call.await()
-                val result = (response.takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+                val result = (response.takeIf { it is Success } as? Success<ShopData>)?.data
                 result?.let {
-                    accountModel.setUserShopName(it.info.shopName, it.info.shopId)
+                    accountModel.setUserShopName(it.userShopInfo.info.shopName, it.userShopInfo.info.shopId, getTotalOrderCount(it.notifications))
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
                 }

@@ -11,7 +11,7 @@ import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -78,7 +78,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
-        val useCase = GraphqlUseCase<ShopInfoPojo.Response>(graphqlRepository)
+        val useCase = GraphqlUseCase<ShopData>(graphqlRepository)
         return GetShopInfoUseCase(useCase)
     }
 

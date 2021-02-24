@@ -28,6 +28,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,7 +100,7 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+        val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
@@ -174,6 +175,12 @@ class AccountHeaderViewHolder(itemView: View,
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (element.shopOrderCount > 0) {
+                tvShopNotif.visible()
+                tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+            } else {
+                tvShopNotif.gone()
+            }
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
@@ -184,6 +191,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.visible()
             tvShopTitle.visible()
             shimmerShopInfo.gone()
+            tvShopNotif.gone()
 
             tvShopInfo.text = getString(R.string.error_state_shop_info)
         }
