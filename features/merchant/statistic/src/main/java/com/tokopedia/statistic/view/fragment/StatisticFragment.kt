@@ -56,6 +56,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -110,7 +111,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
-    private var selectedDataKey: String = ""
+    private var selectedWidget: String = "" //format should be : widgetType-widgetId, ex: section-109
     private val dateFilterImpressHolder = ImpressHolder()
     private val otherMenuImpressHolder = ImpressHolder()
 
@@ -307,8 +308,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
-    fun setSelectedDataKey(dataKey: String) {
-        this.selectedDataKey = dataKey
+    fun setSelectedWidget(widget: String) {
+        this.selectedWidget = widget
     }
 
     private fun setupView() = view?.run {
@@ -515,14 +516,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun scrollToWidgetBySelectedDataKey() {
-        val index = adapter.data.indexOfFirst { it.dataKey == selectedDataKey }
-        val invalidIndex = -1
-        if (index != invalidIndex) {
-            recyclerView.post {
-                val offset = 0
-                mLayoutManager.scrollToPositionWithOffset(index, offset)
+        if (selectedWidget.isBlank()) return
+
+        try {
+            val separator = "-"
+            val widgetType = selectedWidget.substring(0, selectedWidget.indexOf(separator))
+            val widgetId = selectedWidget.replace(widgetType + separator, "")
+            val index = adapter.data.indexOfFirst {
+                it.widgetType == widgetType && it.id == widgetId
             }
+            val invalidIndex = -1
+            if (index != invalidIndex) {
+                recyclerView.post {
+                    val offset = 0
+                    mLayoutManager.scrollToPositionWithOffset(index, offset)
+                }
+            }
+        } catch (e: StringIndexOutOfBoundsException) {
+            Timber.e(e)
         }
+
+        selectedWidget = ""
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {

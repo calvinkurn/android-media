@@ -9,12 +9,16 @@ import android.content.Intent
 object StatisticAppLinkHandler {
 
     private const val QUERY_PARAM_PAGE = "page"
-    private const val QUERY_PARAM_DATA_KEY = "data_key"
+    private const val QUERY_PARAM_WIDGET = "widget"
 
-    fun handleAppLink(intent: Intent?, callback: (page: String, dataKey: String) -> Unit) {
+    /**
+     * handle incoming applink to get it's value parameters
+     * applink sample : tokopedia://gold-merchant-statistic-dashboard?page=shop-insight&widget=section-187
+     * */
+    fun handleAppLink(intent: Intent?, callback: (page: String, widget: String) -> Unit) {
         val uri = intent?.data
         val page = uri?.getQueryParameter(QUERY_PARAM_PAGE).orEmpty()
-        val dataKey = uri?.getQueryParameter(QUERY_PARAM_DATA_KEY).orEmpty()
-        callback(page, dataKey)
+        val widget = uri?.getQueryParameter(QUERY_PARAM_WIDGET).orEmpty()
+        callback(page, widget)
     }
 }
