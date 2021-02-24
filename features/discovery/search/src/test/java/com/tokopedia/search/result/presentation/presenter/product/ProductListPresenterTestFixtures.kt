@@ -72,6 +72,8 @@ internal open class ProductListPresenterTestFixtures {
 
         verify {
             productListView.abTestRemoteConfig
+            productListView.isChooseAddressWidgetEnabled
+            productListView.chooseAddressData
         }
     }
 
