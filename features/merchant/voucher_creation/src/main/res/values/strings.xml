@@ -215,7 +215,10 @@
     <string name="mvc_whatsapp">Whatsapp</string>
     <string name="mvc_line">Line</string>
     <string name="mvc_twitter">Twitter</string>
+    <string name="mvc_broadcast_chat_tkpd">Broadcast Chat Tokopedia</string>
     <string name="mvc_broadcast_chat">Broadcast Chat</string>
+    <string name="mvc_broadcast_chat_quota">Untuk %s calon pembeli</string>
+    <string name="mvc_broadcast_chat_announcement">Kini kamu bisa bagikan voucher toko lewat\n Broadcast Chat. Yuk, cobain!</string>
     <string name="mvc_others">Lainnya</string>
     <string name="mvc_rp">Rp</string>
     <string name="mvc_rb">Rb</string>
@@ -263,6 +266,7 @@
     <string name="mvc_free_delivery_alert_duplicate">Duplikat Voucher Gratis Ongkir hanya tersedia di desktop</string>
     <string name="mvc_voucher_name">Voucher %s</string>
     <string name="mvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="mvc_ic_social_media_icon">ikon sosial media</string>
 
     <!-- voucher list -->
     <string name="mvc_ongoing">Berlangsung</string>

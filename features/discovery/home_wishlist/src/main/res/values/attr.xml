@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HomeWishlistSearchInputView">
+        <attr name="siv_search_icon" format="reference" />
+        <attr name="siv_search_text" format="string" />
+        <attr name="siv_search_hint" format="string" />
+        <attr name="isEditable" format="boolean" />
+    </declare-styleable>
+</resources>

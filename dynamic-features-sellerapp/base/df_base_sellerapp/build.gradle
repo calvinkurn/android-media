@@ -108,4 +108,5 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.statistic)
     implementation project(rootProject.ext.features.sellerMenu)
+    implementation project(rootProject.ext.features.sellerAction)
 }

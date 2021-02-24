@@ -249,6 +249,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun reSync() {
         fetchDiscoveryPageData()
+
+    }
+
+    private fun bindStickyViewHolder() {
+        recyclerView.rebindStickyViewHolder()
     }
 
     private fun setUpObserver() {
@@ -258,6 +263,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        bindStickyViewHolder()
                         if (listComponent.isNullOrEmpty()) {
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {

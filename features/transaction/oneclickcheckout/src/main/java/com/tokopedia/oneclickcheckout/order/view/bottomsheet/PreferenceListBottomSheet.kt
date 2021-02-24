@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -54,7 +55,7 @@ class PreferenceListBottomSheet(
             Timber.d(throwable)
             handleError(throwable)
             OccIdlingResource.decrement()
-        }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile, PreferenceEditActivity.FROM_FLOW_OSP_STRING))
     }
 
     private fun handleError(throwable: Throwable) {
@@ -126,8 +127,8 @@ class PreferenceListBottomSheet(
         rvPreferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.top = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
-                outRect.bottom = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
+                outRect.top = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                outRect.bottom = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             }
         })
         if (isNewFlow) {
@@ -140,7 +141,7 @@ class PreferenceListBottomSheet(
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
-        override fun onPreferenceSelected(preference: ProfilesItemModel) {
+        override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
             bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
