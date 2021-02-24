@@ -48,11 +48,6 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         getComponent(SettingPaymentComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeViewModel()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
     }
@@ -73,6 +68,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         }
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         updateVisibilityButtonUse()
+        observeViewModel()
     }
 
 

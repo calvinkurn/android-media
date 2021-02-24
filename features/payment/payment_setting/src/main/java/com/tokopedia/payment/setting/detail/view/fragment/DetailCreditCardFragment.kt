@@ -45,11 +45,6 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
         getComponent(SettingPaymentComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeViewModel()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run { GraphqlClient.init(this) }
@@ -73,6 +68,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
             creditCardExpiryText.text = this.getExpiredDate()
             buttonDeleteCC.setOnClickListener { showDeleteCcDialog() }
         }
+        observeViewModel()
     }
 
     private fun observeViewModel() {

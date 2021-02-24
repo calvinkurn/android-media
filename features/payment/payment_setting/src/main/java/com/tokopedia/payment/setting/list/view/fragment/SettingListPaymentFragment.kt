@@ -61,11 +61,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         super.onCreate(savedInstanceState)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeViewModel()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
     }
@@ -85,6 +80,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             }
         }
         updateViewCounter(adapter.dataSize)
+        observeViewModel()
     }
 
 
