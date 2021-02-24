@@ -110,6 +110,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageLoadingViewholder.LAYOUT
     }
 
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
+        return -1
+    }
+
     override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
         return -1
     }

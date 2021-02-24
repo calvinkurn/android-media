@@ -30,7 +30,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
-            productId: Long, productName: String, productPrice: String, productUrl: String,
+            productId: String, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
             blastId: Long, productPriceInt: Long, category: String, variant: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
@@ -70,7 +70,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
      */
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, productId: Long,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: String,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
             blastId: Long, productPriceInt: Long, category: String, variant: List<AttachmentVariant>,

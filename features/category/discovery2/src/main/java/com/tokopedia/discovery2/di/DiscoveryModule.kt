@@ -131,7 +131,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideFilterRestRepository(): FilterRepository {
-        return FilterRestRepository()
+        return repoProvider.provideFilterRepository()
     }
 
     @Provides

@@ -36,8 +36,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.moengageWrapper)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
@@ -90,8 +92,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation(rootProject.ext.analyticsDependencies.moengage)
-    implementation rootProject.ext.analyticsDependencies.moengageAmp
     implementation project(rootProject.ext.libraries.weaver)
 }
 

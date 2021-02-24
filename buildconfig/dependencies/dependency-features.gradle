@@ -210,10 +210,12 @@ ext {
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
 
+            pushNotificationCommon          : ":features:communication:push-notification-common",
+
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
-            attachcommon                   : ":features:user:attachcommon",
+            attachcommon                    : ":features:user:attachcommon",
             managepassword                  : ":features:user:managepassword",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",

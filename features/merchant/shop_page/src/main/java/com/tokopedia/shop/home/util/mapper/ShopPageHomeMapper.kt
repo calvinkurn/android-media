@@ -249,7 +249,7 @@ object ShopPageHomeMapper {
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
             ShopHomeProductUiModel().apply {
-                id = it.id.toString()
+                id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
                 originalPrice = it.price
