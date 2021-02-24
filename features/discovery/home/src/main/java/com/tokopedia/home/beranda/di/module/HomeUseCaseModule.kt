@@ -5,6 +5,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
@@ -34,7 +35,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeTickerQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
@@ -48,7 +48,6 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.play.widget.di.PlayWidgetModule
@@ -267,8 +266,8 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideAddToCartOccUseCase(graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase{
-        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper())
+    fun provideAddToCartOccUseCase(graphqlUseCase: GraphqlUseCase, chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper): AddToCartOccUseCase{
+        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper(), chosenAddressAddToCartRequestHelper)
     }
 
     @Provides

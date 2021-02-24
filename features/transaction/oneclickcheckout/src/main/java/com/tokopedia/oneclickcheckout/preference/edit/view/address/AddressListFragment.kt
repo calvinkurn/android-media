@@ -359,7 +359,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             val shippingParam = parent.getShippingParam()
             if (shippingParam != null) {
                 shippingParam.destinationDistrictId = viewModel.destinationDistrict
-                shippingParam.addressId = viewModel.selectedId.toInt()
+                shippingParam.addressId = viewModel.selectedId
                 shippingParam.destinationLatitude = viewModel.destinationLatitude
                 shippingParam.destinationLongitude = viewModel.destinationLongitude
                 shippingParam.destinationPostalCode = viewModel.destinationPostalCode

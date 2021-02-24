@@ -116,6 +116,7 @@ ext {
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
+            localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",

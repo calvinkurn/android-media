@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.checkout.request
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * Since original class CheckoutRequest contains many unnecessary data, which is currently used for analytics purpose,
@@ -52,7 +53,7 @@ data class TokopediaCornerGqlData(
 data class CheckoutGqlData(
         @SerializedName("address_id")
         @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         @SerializedName("shop_products")
         var shopProducts: List<ShopProductGqlData> = ArrayList()
 )
@@ -188,7 +189,7 @@ object CheckoutRequestGqlDataMapper {
         val checkoutGqlDataList = ArrayList<CheckoutGqlData>()
         dataCheckoutRequestList.forEach {
             checkoutGqlDataList.add(CheckoutGqlData().apply {
-                addressId = it.addressId
+                addressId = it.addressId.toLongOrZero()
                 shopProducts = if (it.shopProducts != null) mapShopProduct(it.shopProducts) else emptyList()
             })
         }

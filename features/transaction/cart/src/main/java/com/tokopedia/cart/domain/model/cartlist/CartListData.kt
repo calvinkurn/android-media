@@ -32,7 +32,8 @@ data class CartListData(
         var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",
-        var abTestButton: ABTestButton = ABTestButton()
+        var abTestButton: ABTestButton = ABTestButton(),
+        var localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress()
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
