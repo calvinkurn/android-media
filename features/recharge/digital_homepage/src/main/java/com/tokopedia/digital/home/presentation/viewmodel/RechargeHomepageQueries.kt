@@ -32,6 +32,7 @@ object RechargeHomepageQueries {
                       sub_title
                       template
                       app_link
+                      text_link
                       media_url
                       label_1
                       tracking {

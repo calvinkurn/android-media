@@ -18,5 +18,9 @@
             android:name=".stub.chatroom.view.activity.TopChatRoomActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".stub.chatsearch.view.activity.ChatSearchActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>
