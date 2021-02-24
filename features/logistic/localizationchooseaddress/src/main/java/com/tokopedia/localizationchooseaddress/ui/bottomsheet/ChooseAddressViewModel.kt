@@ -60,11 +60,10 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         }
     }
 
-    fun getStateChosenAddress() {
+    fun getStateChosenAddress(source: String) {
         viewModelScope.launch(onErrorGetDefaultChosenAddress) {
-//            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress()
-//            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
-            _test.value = Success("view model")
+            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source)
+            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
     }
 

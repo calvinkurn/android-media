@@ -123,10 +123,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             }
         })
 
-        viewModel.getDefaultAddress.observe(context as LifecycleOwner, Observer {
+        viewModel.setChosenAddress.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val data = it.data.addressData
+                    val data = it.data
                     val localData = ChooseAddressUtils.setLocalizingAddressData(
                             addressId = data.addressId.toString(),
                             cityId = data.cityId.toString(),
@@ -162,9 +162,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
+        localData?.let { chooseAddressPref?.setLocalCache(it) }
         if (localData?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = context.getString(R.string.txt_label_default)
-            viewModel.getStateChosenAddress()
+            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
         } else {
             updateWidget()
         }
@@ -200,6 +201,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
         return if (source?.isNotEmpty() == true) source
         else ""
+    }
+
+    override fun onLocalizingAddressLoginSuccessBottomSheet() {
+        chooseAddressWidgetListener?.onLocalizingAddressLoginSuccess()
     }
 
     interface ChooseAddressWidgetListener {
@@ -238,7 +243,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * String Source of Host Page
          */
         fun getLocalizingAddressHostSourceData(): String
-    }
 
+        /**
+         * this listen is use to notify host/fragment if login is success
+         * host/fragment need to refresh their page
+         */
+        fun onLocalizingAddressLoginSuccess()
+    }
 
 }
