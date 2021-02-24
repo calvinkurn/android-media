@@ -329,6 +329,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
                     buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    setSocialProofData()
                 }
             }
 

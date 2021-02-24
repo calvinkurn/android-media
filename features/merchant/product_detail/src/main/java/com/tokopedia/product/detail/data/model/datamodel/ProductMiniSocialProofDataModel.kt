@@ -69,16 +69,10 @@ data class ProductMiniSocialProofDataModel(
     }
 
     /**
-     * Social proof mini should only show 3 of this, with hierarchy
+     * Social proof mini should only show 4 of this, with hierarchy
      * When it only contains 1 data, it will show single line social proof
      */
-    val getLastThreeHirarchyData: List<Pair<String, Int>>
-        get() = listOf(firstPositionData(),
-                RATING to ratingCount,
-                BUYER_PHOTOS to buyerPhotosCount,
-                TALK to talkCount)
-                .filter { it.second > 0 }
-                .take(4)
+    private var socialProofData: List<Pair<String, Int>> = emptyList()
 
     fun shouldShowSingleViewSocialProof(): Boolean {
         return talkCount == 0 && ratingCount == 0 && buyerPhotosCount == 0
@@ -127,5 +121,18 @@ data class ProductMiniSocialProofDataModel(
                 false
             }
         }
+    }
+
+    fun setSocialProofData() {
+        socialProofData = listOf(firstPositionData(),
+                RATING to ratingCount,
+                BUYER_PHOTOS to buyerPhotosCount,
+                TALK to talkCount)
+                .filter { it.second > 0 }
+                .take(4)
+    }
+
+    fun getSocialProofData(): List<Pair<String, Int>> {
+        return socialProofData
     }
 }

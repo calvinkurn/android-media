@@ -32,7 +32,7 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
         } else {
-            val availableData = element.getLastThreeHirarchyData
+            val availableData = element.getSocialProofData()
             view.run {
                 if (availableData.isEmpty()) {
                     layoutParams.height = 0
