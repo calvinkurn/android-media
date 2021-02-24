@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
@@ -74,6 +75,27 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         )
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(isDisplayed())
+        )
+    }
+
+    @Test
+    fun click_back_btn_when_attachment_menu_opened() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        // WHen
+        clickPlusIconMenu()
+        pressBack()
+
+        // Then
+        onView(withId(R.id.fl_chat_menu)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+                matches(not(isDisplayed()))
         )
     }
 
