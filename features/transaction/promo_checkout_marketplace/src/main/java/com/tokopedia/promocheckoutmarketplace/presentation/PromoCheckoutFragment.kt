@@ -495,7 +495,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observePromoListUiModel() {
         viewModel.promoListUiModel.observe(viewLifecycleOwner, Observer {
             adapter.addVisitableList(it)
-            renderPromoCoachMark(it)
+            renderPromoCoachMark()
         })
     }
 
@@ -876,8 +876,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun renderPromoCoachMark(promoList: MutableList<Visitable<*>>) {
-        val coachMarkIndex = promoList.indexOfFirst { item ->
+    private fun renderPromoCoachMark() {
+        val coachMarkIndex = adapter.list.indexOfFirst { item ->
             if (item is PromoListItemUiModel) {
                 item.uiData.coachMark.isShown
             } else {
@@ -889,12 +889,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             recyclerView.smoothScrollToPosition(coachMarkIndex)
             Handler().postDelayed({
                 val holder = recyclerView.findViewHolderForAdapterPosition(coachMarkIndex)
+                val coachMarkData = adapter.list[coachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
                             CoachMark2Item(
                                     holder.itemView,
-                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.title,
-                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.content,
+                                    coachMarkData.uiData.coachMark.title,
+                                    coachMarkData.uiData.coachMark.content,
                                     CoachMark2.POSITION_TOP
                             )
                     )
