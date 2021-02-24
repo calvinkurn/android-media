@@ -99,6 +99,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 if (!UtilsKt.isNullOrEmpty(cartShipmentAddressFormData.getPopUpMessage())) {
                     view.showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
                 }
+                view.updateLocalCacheAddressData(userAddress);
                 break;
             case UserAddress.STATE_DISTRICT_ID_NOT_MATCH:
                 view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData);
