@@ -284,7 +284,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         ))
     }
 
-    private fun getAdItems(): MutableList<Int> {
+    private fun getAdItems(): MutableList<String> {
         return stepperModel?.selectedTopAdsProducts?.map {
             it.productID
         }?.toMutableList() ?: mutableListOf()

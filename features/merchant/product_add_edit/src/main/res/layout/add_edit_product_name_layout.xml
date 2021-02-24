@@ -27,6 +27,7 @@
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_product_name"
         android:contentDescription="@string/content_desc_tfu_product_name"
+        android:theme="@style/TextDarkMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_14"
