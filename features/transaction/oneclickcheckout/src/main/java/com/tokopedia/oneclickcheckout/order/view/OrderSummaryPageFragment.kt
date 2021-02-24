@@ -782,6 +782,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_AUTO_SELECT_ADDRESS, addressState == AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
