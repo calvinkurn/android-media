@@ -64,7 +64,7 @@ class ProductViewHolder(
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
-        itemView.labelCampaign.showWithCondition(product.hasStockReserved)
+        itemView.labelCampaign.showWithCondition(product.isCampaign)
     }
 
     private fun showVariantLabel(product: ProductUiModel) {

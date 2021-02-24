@@ -20,9 +20,10 @@ fun createProductVariantResponse(
     price: Int = 100,
     sku: String = "sku",
     stock: Int = 0,
-    pictures: List<Picture> = emptyList()
+    pictures: List<Picture> = emptyList(),
+    isCampaign: Boolean = false
 ): Product {
-    return Product(productID, status, combination, isPrimary, price, sku, stock, pictures)
+    return Product(productID, status, combination, isPrimary, isCampaign, price, sku, stock, pictures)
 }
 
 fun createSelectionResponse(
@@ -50,6 +51,7 @@ fun createProductVariant(
         status: ProductStatus = ProductStatus.ACTIVE,
         combination: List<Int> = emptyList(),
         isPrimary: Boolean = false,
+        isCampaign: Boolean = false,
         price: Int = 100,
         sku: String = "sku",
         stock: Int = 0,
@@ -57,7 +59,7 @@ fun createProductVariant(
         isAllStockEmpty: Boolean = true,
         access: ProductManageAccess = createShopOwnerAccess()
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, isAllStockEmpty, access)
+    return ProductVariant(id, name, status, combination, isPrimary, isCampaign, price, sku, stock, pictures, isAllStockEmpty, access)
 }
 
 fun createGetVariantResponse(

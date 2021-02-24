@@ -14,11 +14,18 @@ data class OtherCampaignStockData(
         @SerializedName("status")
         val status: ProductStatus = ProductStatus.ACTIVE,
         @SerializedName("stock")
-        val stock: Int = 0
+        val stock: Int = 0,
+        @SerializedName("campaign")
+        val campaign: CampaignData? = null
 ){
 
         fun getIsActive() = status == ProductStatus.ACTIVE
 }
+
+data class CampaignData(
+        @SerializedName("isActive")
+        val isActive: Boolean
+)
 
 data class CampaignStockPicture(
         @SerializedName("urlThumbnail")
