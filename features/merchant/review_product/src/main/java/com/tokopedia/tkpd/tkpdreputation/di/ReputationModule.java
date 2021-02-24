@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -17,11 +19,14 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseC
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -39,7 +44,16 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
+    CoroutineDispatchers provideCoroutineDispatchers(){
+        return CoroutineDispatchersProvider.INSTANCE;
+    }
+
+    @ReputationScope
+    @Provides
+
+    GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
 
     @ReputationScope
     @Provides
@@ -55,15 +69,23 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    ReputationRepositoryV2 provideReputationRepositoryV2(ReputationFactory reputationFactory) {
+        return new ReputationRepositoryV2(reputationFactory);
+    }
+
+    @ReputationScope
+    @Provides
     ReputationFactory provideReputationFactory(
             ReputationService reputationService,
+            ReputationServiceV2 reputationServiceV2,
             DeleteReviewResponseMapper deleteReviewResponseMapper,
             GetLikeDislikeMapper getLikeDislikeMapper,
             LikeDislikeMapper likeDislikeMapper,
             ReviewProductService reputationReviewApi,
+            ReviewProductServiceV2 reviewProductServiceV2,
             UserSessionInterface userSession) {
-        return new ReputationFactory(reputationService, deleteReviewResponseMapper,
-                getLikeDislikeMapper, likeDislikeMapper, reputationReviewApi, userSession);
+        return new ReputationFactory(reputationService, reputationServiceV2, deleteReviewResponseMapper,
+                getLikeDislikeMapper, likeDislikeMapper, reputationReviewApi, reviewProductServiceV2, userSession);
     }
 
     @ReputationScope
@@ -87,8 +109,28 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    ReputationServiceV2 provideReputationServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReputationServiceV2(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
     ReviewProductService provideReviewProductService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReviewProductService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
+    ReviewProductServiceV2 provideReviewProductServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReviewProductServiceV2(
                 context,
                 networkRouter,
                 userSession
@@ -128,7 +170,7 @@ public class ReputationModule {
                                                          LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                                          DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                                          ReviewProductListMapper productReviewListMapper,
-                                                         UserSessionInterface userSession){
+                                                         UserSessionInterface userSession) {
         return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
                 likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
     }
@@ -159,7 +201,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationTracking reputationTracking(){
+    ReputationTracking reputationTracking() {
         return new ReputationTracking();
     }
 }

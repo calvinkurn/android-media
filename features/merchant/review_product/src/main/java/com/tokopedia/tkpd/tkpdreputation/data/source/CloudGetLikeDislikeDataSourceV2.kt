@@ -1,0 +1,49 @@
+package com.tokopedia.tkpd.tkpdreputation.data.source
+
+import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.GetLikeDislikePojo
+import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikeList
+import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2
+
+class CloudGetLikeDislikeDataSourceV2(
+        private val reputationService: ReputationServiceV2
+) {
+    suspend fun getLikeDislikeReview(params: Map<String, String>): GetLikeDislikeReviewDomain {
+        val response = reputationService.api!!.getLikeDislikeReview(params)
+        return if (response.isSuccessful) {
+            response.body()?.let { responseBody ->
+                if ((!responseBody.isNullData && responseBody.errorMessageJoined.isEmpty()) ||
+                        !responseBody.isNullData && responseBody.errorMessageJoined == null) {
+                    val data = responseBody.convertDataObj(GetLikeDislikePojo::class.java)
+                    mappingToDomain(data)
+                } else {
+                    if (responseBody.errorMessages != null && responseBody.errorMessages.isNotEmpty()) {
+                        throw ErrorMessageException(responseBody.errorMessageJoined)
+                    } else throw ErrorMessageException("")
+                }
+            } ?: throw ErrorMessageException("")
+        } else {
+            val messageError = response.body()?.errorMessageJoined ?: ""
+            if (messageError.isNotEmpty()) {
+                throw ErrorMessageException(messageError)
+            } else throw RuntimeException(response.code().toString())
+        }
+    }
+
+    private fun mappingToDomain(data: GetLikeDislikePojo): GetLikeDislikeReviewDomain {
+        return GetLikeDislikeReviewDomain(mappingToList(data.list))
+    }
+
+    private fun mappingToList(list: List<LikeDislikeList>): List<LikeDislikeListDomain> {
+        return list.map { pojo ->
+            LikeDislikeListDomain(
+                    pojo.reviewId,
+                    pojo.totalLike,
+                    pojo.totalDislike,
+                    pojo.likeStatus
+            )
+        }
+    }
+}
