@@ -8,11 +8,6 @@ enum class Priority {
     P2
 }
 
-enum class Type {
-    WARNING,
-    ERROR
-}
-
 // Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$weblink;errorCode=$errorCode")
 
 fun Timber.sendLog(priority: Priority, tag: String, data: Map<String, String>) {
