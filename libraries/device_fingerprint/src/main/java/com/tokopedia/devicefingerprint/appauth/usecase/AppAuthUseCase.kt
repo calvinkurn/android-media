@@ -30,7 +30,7 @@ class AppAuthUseCase @Inject constructor(
                 version: ${'$'}version,
                 content: ${'$'}content}) {
                    status
-                   message
+                   error_message
               }
         }""".trimIndent()
 
