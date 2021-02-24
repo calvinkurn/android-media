@@ -69,6 +69,7 @@ class LoginActivityInstrumentedTest {
 
     lateinit var fragment: LoginEmailPhoneFragmentStub
 
+    private var email = "yoris.prayogo+3@tokopedia.com"
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
@@ -158,7 +159,7 @@ class LoginActivityInstrumentedTest {
     fun setInputEmailPhone(){
         val partial = fragment.view?.findViewById<PartialRegisterInputView>(R.id.login_input_view)
         mActivityTestRule.runOnUiThread {
-            partial?.findViewById<EditText>(R.id.input_email_phone)?.setText("yorisprayogo@gmail.com")
+            partial?.findViewById<EditText>(R.id.input_email_phone)?.setText(email)
         }
     }
 
