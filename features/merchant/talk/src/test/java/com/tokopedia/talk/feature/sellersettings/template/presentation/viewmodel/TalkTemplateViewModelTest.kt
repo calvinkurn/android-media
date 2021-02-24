@@ -47,7 +47,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
         viewModel.arrangeTemplate(0, 1, anyBoolean())
 
         verifyArrangeTemplateUseCaseCalled()
-        verifyTemplateMutationFail(TalkTemplateMutationResults.RearrangeTemplateFailed)
+        verifyTemplateMutationFail(TalkTemplateMutationResults.RearrangeTemplateFailed())
     }
 
     @Test
@@ -59,7 +59,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
         viewModel.arrangeTemplate(0, 1, anyBoolean())
 
         verifyArrangeTemplateUseCaseCalled()
-        verifyTemplateMutationFail(TalkTemplateMutationResults.RearrangeTemplateFailed)
+        verifyTemplateMutationFail(TalkTemplateMutationResults.RearrangeTemplateFailed())
     }
 
     @Test
@@ -173,7 +173,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
     }
 
     private fun verifyTemplateMutationFail() {
-        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed)
+        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed())
     }
 
     private fun verifyTemplateMutationFail(talkTemplateMutationResults: TalkTemplateMutationResults) {

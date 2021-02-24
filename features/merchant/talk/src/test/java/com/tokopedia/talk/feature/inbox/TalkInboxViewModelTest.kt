@@ -37,7 +37,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(expectedFilter)
+        viewModel.setFilter(expectedFilter, isSellerView = true, shouldTrack = true)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
@@ -54,8 +54,8 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), false)
-        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), true)
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = false, shouldTrack = true)
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = true, shouldTrack = true)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
@@ -113,11 +113,11 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
         Assert.assertEquals(viewModel.getActiveFilter(), filter)
     }
 
-    private fun verifyUnrespondedCount(unrespondedCount: Int) {
+    private fun verifyUnrespondedCount(unrespondedCount: Long) {
         Assert.assertEquals(viewModel.getUnrespondedCount(), unrespondedCount)
     }
 
-    private fun verifyUnreadCount(unread: Int) {
+    private fun verifyUnreadCount(unread: Long) {
         Assert.assertEquals(viewModel.getUnreadCount(), unread)
     }
 

@@ -70,7 +70,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.deleteSpecificTemplate(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean())
 
         verifyDeleteTemplateUseCaseCalled()
-        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed)
+        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed())
     }
 
     @Test
@@ -82,7 +82,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.deleteSpecificTemplate(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean())
 
         verifyDeleteTemplateUseCaseCalled()
-        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed)
+        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed())
     }
 
     @Test
@@ -164,7 +164,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
     }
 
     private fun verifyTemplateMutationFail() {
-        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed)
+        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed())
     }
 
     private fun verifyTemplateMutationFail(talkTemplateMutationResults: TalkTemplateMutationResults) {

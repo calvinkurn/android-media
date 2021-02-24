@@ -70,13 +70,17 @@ class TalkInboxViewModel @Inject constructor(
         resetFilter()
     }
 
-    fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean) {
+    fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean, shouldTrack: Boolean) {
         if (this.filter == selectedFilter) {
-            sendFilterTracker(selectedFilter, isSellerView, false)
+            if(shouldTrack) {
+                sendFilterTracker(selectedFilter, isSellerView, false)
+            }
             resetFilter()
             return
         }
-        sendFilterTracker(selectedFilter, isSellerView, true)
+        if(shouldTrack) {
+            sendFilterTracker(selectedFilter, isSellerView, true)
+        }
         this.filter = selectedFilter
         resetPage()
     }

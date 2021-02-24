@@ -79,6 +79,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val COACH_MARK_INITIAL_VALUE = true
         const val COACH_MARK_SHOWN = false
         const val COACH_MARK_LAST_INDEX = 2
+        const val INDEX_UNRESPONDED_FILTER = 0
+        const val INDEX_PROBLEM_FILTER = 1
+        const val INDEX_AUTOREPLY_FILTER = 2
         private const val DISCUSSION_PREF = "discussion.pref"
 
         fun createNewInstance(tab: TalkInboxTab? = null, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
@@ -462,14 +465,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if(GlobalConfig.isSellerApp()) {
             val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
             if (filter == FILTER_UNREAD) {
-                val indexReadFilter = talkInboxSortFilter.chipItems.indexOfFirst {  it.title == getString(R.string.inbox_read) }
-                val indexUnreadFilter = talkInboxSortFilter.chipItems.indexOfFirst { it.title == getString(R.string.inbox_unread) }
-                val readFilter = talkInboxSortFilter.chipItems.getOrNull(indexReadFilter)
-                val unreadFilter = talkInboxSortFilter.chipItems.getOrNull(indexUnreadFilter)
-                unreadFilter?.toggle()
-                selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
-                if(unreadFilter?.type == ChipsUnify.TYPE_SELECTED) {
-                    readFilter?.type = ChipsUnify.TYPE_NORMAL
+                val unrespondedFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_UNRESPONDED_FILTER)
+                val problemFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_PROBLEM_FILTER)
+                val autoRepliedFilterChip = talkInboxSortFilter.chipItems.getOrNull(INDEX_AUTOREPLY_FILTER)
+                problemFilter?.toggle()
+                selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter(), shouldTrack = false)
+                if(unrespondedFilter?.type == ChipsUnify.TYPE_SELECTED) {
+                    problemFilter?.type = ChipsUnify.TYPE_NORMAL
+                    autoRepliedFilterChip?.type = ChipsUnify.TYPE_NORMAL
                 }
             }
         }
@@ -561,8 +564,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         RouteManager.route(context, ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS)
     }
 
-    private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter, isSellerView())
+    private fun selectFilter(filter: TalkInboxFilter, shouldTrack: Boolean = true) {
+        viewModel.setFilter(filter, isSellerView(), shouldTrack)
         showFullPageLoading()
         clearAllData()
     }
