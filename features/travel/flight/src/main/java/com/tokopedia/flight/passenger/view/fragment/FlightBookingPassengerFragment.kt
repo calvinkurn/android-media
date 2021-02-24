@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -152,6 +155,20 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+        this.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                afterTextChanged.invoke(editable.toString())
+            }
+        })
+    }
+
     private fun initView() {
         context?.let {
 
@@ -165,17 +182,21 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 onSubmitData()
             }
 
+            button_submit.isEnabled = false
+
             til_birth_date.textFieldInput.isFocusable = false
             til_birth_date.textFieldInput.isClickable = true
             til_birth_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
             til_birth_date.textFieldInput.setOnClickListener { onBirthdateClicked() }
+            til_birth_date.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_passport_expiration_date.textFieldInput.isFocusable = false
             til_passport_expiration_date.textFieldInput.isClickable = true
             til_passport_expiration_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
             til_passport_expiration_date.textFieldInput.setOnClickListener { onPassportExpiredClicked() }
+            til_passport_expiration_date.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_nationality.textFieldInput.isFocusable = false
             til_nationality.textFieldInput.isClickable = true
@@ -185,6 +206,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY)
             }
+            til_nationality.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_passport_issuer_country.textFieldInput.isFocusable = false
             til_passport_issuer_country.textFieldInput.isClickable = true
@@ -194,8 +216,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
+            til_passport_issuer_country.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_first_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+            til_last_name.textFieldInput.afterTextChanged { validateAllFields() }
 
             fragment_layout.setOnTouchListener { _, _ ->
                 clearAllKeyboardFocus()
@@ -691,28 +715,16 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         resetEditTextErrorText()
 
-        if (!validateFirstName())
-            isValid = false
-            til_first_name.isFocusable = true
-        if (!validateLastName())
-            isValid = false
-            til_last_name.isFocusable = true
+        if (!validateFirstName()) isValid = false
+        if (!validateLastName()) isValid = false
         if (!validatePassengerTitle()) isValid = false
-        if (!validateBirthDate(getPassengerBirthDate()))
-            isValid = false
-            til_birth_date.isFocusable = true
-        if (!validatePassportNumber(isNeedPassport))
-            isValid = false
-            til_passport_no.isFocusable = true
-        if (!validatePassportExpiredDate(isNeedPassport))
-            isValid = false
-            til_passport_expiration_date.isFocusable = true
-        if (!validatePassportNationality(isNeedPassport))
-            isValid = false
-            til_nationality.isFocusable = true
-        if (!validatePassportIssuerCountry(isNeedPassport))
-            isValid = false
-            til_passport_issuer_country.isFocusable = true
+        if (!validateBirthDate(getPassengerBirthDate())) isValid = false
+        if (!validatePassportNumber(isNeedPassport)) isValid = false
+        if (!validatePassportExpiredDate(isNeedPassport)) isValid = false
+        if (!validatePassportNationality(isNeedPassport)) isValid = false
+        if (!validatePassportIssuerCountry(isNeedPassport)) isValid = false
+
+        button_submit.isEnabled = isValid
 
         return isValid
     }
@@ -887,31 +899,24 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun resetEditTextErrorText() {
         til_first_name.error = ""
-        til_first_name.isFocusable = false
 
         til_last_name.setMessage("")
         til_last_name.setError(false)
-        til_last_name.isFocusable = false
 
         til_birth_date.setMessage("")
         til_birth_date.setError(false)
-        til_birth_date.isFocusable = false
 
         til_passport_no.setMessage("")
         til_passport_no.setError(false)
-        til_passport_no.isFocusable = false
 
         til_passport_expiration_date.setMessage("")
         til_passport_expiration_date.setError(false)
-        til_passport_expiration_date.isFocusable = false
 
         til_nationality.setMessage("")
         til_nationality.setError(false)
-        til_nationality.isFocusable = false
 
         til_passport_issuer_country.setMessage("")
         til_passport_issuer_country.setError(false)
-        til_passport_issuer_country.isFocusable = false
 
         when {
             isAdultPassenger() -> {
