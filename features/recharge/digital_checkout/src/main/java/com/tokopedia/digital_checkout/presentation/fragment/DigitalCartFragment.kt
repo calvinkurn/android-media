@@ -231,10 +231,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
 
-        if (cartInfo.showSubscriptionsView) {
-            renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
-            renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
-        }
+        renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
+        renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
 
         cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes?.categoryName

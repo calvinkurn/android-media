@@ -131,8 +131,6 @@ object DigitalCheckoutMapper {
 
             responseCartData.attributes?.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
                 crossSellingConfig?.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = isSkipAble
@@ -245,8 +243,7 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
+
                 crossSellingConfig.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = canBeSkipped
