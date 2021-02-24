@@ -7,6 +7,7 @@ import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
@@ -132,6 +133,9 @@ open class Properties(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
+                isTrackable == other.isTrackable &&
+                imageViewSize == other.imageViewSize &&
+                urlHasQualityParam == other.urlHasQualityParam &&
                 renderDelay == other.renderDelay &&
                 loadTime == other.loadTime &&
                 isTrackable == other.isTrackable &&
@@ -153,6 +157,9 @@ open class Properties(
 
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
+        result = 31 * result + isTrackable.hashCode()
+        result = 31 * result + imageViewSize.hashCode()
+        result = 31 * result + urlHasQualityParam.hashCode()
         result = 31 * result + renderDelay.hashCode()
         result = 31 * result + loadTime.hashCode()
         result = 31 * result + isTrackable.hashCode()
@@ -173,9 +180,12 @@ open class Properties(
     }
 
     override fun toString(): String {
+        val ratio = AspectRatio.calculate(imageViewSize.first, imageViewSize.second)
         return "source: $data,\n" +
                 "is trackable: $isTrackable,\n" +
                 "url has ect: $urlHasQualityParam,\n" +
+                "imageview size: ${imageViewSize.first} * ${imageViewSize.second},\n" +
+                "imageview ratio: ${ratio.first} * ${ratio.second},\n" +
                 "load time: $loadTime,\n" +
                 "transform: ${transform?.javaClass?.name},\n" +
                 "transforms: ${transforms?.size},\n" +
