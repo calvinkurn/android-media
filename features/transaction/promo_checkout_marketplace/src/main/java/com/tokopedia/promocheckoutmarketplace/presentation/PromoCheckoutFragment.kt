@@ -894,7 +894,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                             CoachMark2Item(
                                     holder.itemView,
                                     (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.title,
-                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.content
+                                    (promoList[coachMarkIndex] as PromoListItemUiModel).uiData.coachMark.content,
+                                    CoachMark2.POSITION_TOP
                             )
                     )
 
