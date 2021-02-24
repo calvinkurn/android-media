@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.doubleClick
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
@@ -25,6 +26,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.common.util.ViewPager2IdlingResource
@@ -90,7 +92,7 @@ class ShopPageBuyerAnalyticTest {
     fun testShopPageJourney() {
         testHeader()
         testProductTab()
-//        testHomeTab()
+        testHomeTab()
 //        validateTracker()
     }
 
@@ -117,7 +119,6 @@ class ShopPageBuyerAnalyticTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(CommonActions.selectTabLayoutPosition(0))
-        waitForData(2000)
         testDisplayWidget()
         testProductWidget()
         testNplWidget()
@@ -125,35 +126,32 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testNplWidget() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        val playWidgetPosition = 3
+        val playWidgetPosition = 2
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
         )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.image_tnc))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.bottom_sheet_close))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.layout_remind_me))
-        )).perform(click())
-        waitForData(1000)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.snackbar_btn))
-        )).perform(click())
-        waitForData(200)
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.text_see_all))
         )).perform(click())
-        waitForData(200)
         Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.rv_product_carousel))
-        )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
+                withText("Tutup"))
+        )).perform(click())
+//        Espresso.onView(firstView(AllOf.allOf(
+//                withId(R.id.layout_remind_me))
+//        )).perform(click())
+//        Espresso.onView(firstView(AllOf.allOf(
+//                withId(R.id.snackbar_btn))
+//        )).perform(doubleClick())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.image_tnc))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.bottom_sheet_close))
+        )).perform(click())
+//        Espresso.onView(firstView(AllOf.allOf(
+//                withId(R.id.rv_product_carousel))
+//        )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
     }
 
     private fun testProductWidget() {
@@ -177,20 +175,16 @@ class ShopPageBuyerAnalyticTest {
                 isDisplayed())
         ))
         recyclerViewHomeWidgetInteraction.perform(ShopUiTestUtil.rvScrollToPositionWithOffset(productWidgetPosition))
-        waitForData(100)
 
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        waitForData(200)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
-        waitForData(200)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))
-        waitForData(200)
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.tvSeeAll),
                 isDisplayed()))
@@ -212,6 +206,14 @@ class ShopPageBuyerAnalyticTest {
     private fun testProductTab() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(CommonActions.selectTabLayoutPosition(1))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withText("Urutkan"),
+                isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+        )))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withText("Etalase Toko"),
+                isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+        )))
         testSelectSortOption()
         testClickEtalase()
         testProductCard()

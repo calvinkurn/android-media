@@ -484,7 +484,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
-                EspressoIdlingResource.decrement()
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (shopProductAdapter.isLoading) {
                         return
@@ -539,7 +538,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 (parentFragment as? ShopPageFragment)?.refreshData()
             }
             REQUEST_CODE_SORT -> {
-                EspressoIdlingResource.decrement()
                 if (resultCode == Activity.RESULT_OK) {
                     if (shopProductAdapter.isLoading) {
                         return
@@ -801,7 +799,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(EXTRA_BUNDLE, bundle)
-            EspressoIdlingResource.increment()
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
         }
     }
@@ -1341,7 +1338,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToShopSortPickerPage() {
         context?.run {
-            EspressoIdlingResource.increment()
             val intent = ShopProductSortActivity.createIntent(activity, sortId)
             startActivityForResult(intent, REQUEST_CODE_SORT)
         }
