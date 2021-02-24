@@ -71,7 +71,7 @@
         android:id="@+id/view_topmost_like"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginBottom="@dimen/play_offset_36"
+        android:layout_marginBottom="@dimen/play_offset_44"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
         />
 

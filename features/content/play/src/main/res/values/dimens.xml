@@ -69,7 +69,7 @@
     <dimen name="play_pinned_placeholder_height">10dp</dimen>
 
     <!--General Dimension-->
-    <dimen name="play_offset_36">36dp</dimen>
+    <dimen name="play_offset_44">44dp</dimen>
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
