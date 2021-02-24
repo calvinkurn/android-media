@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.common.data.source.cloud.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,6 +25,7 @@ public class Wishlist implements Parcelable {
     @SerializedName("image_url")
     String ImageUrl;
     @SerializedName("raw_price")
+    @SuppressLint("Invalid Data Type")
     int Price;
     @SerializedName("condition")
     String Condition;
@@ -32,10 +34,12 @@ public class Wishlist implements Parcelable {
     @SerializedName("status")
     String Status;
     @SerializedName("price")
+    @SuppressLint("Invalid Data Type")
     String PriceFmt;
     @SerializedName("minimum_order")
     int MinimumOrder;
     @SerializedName("wholesale_price")
+    @SuppressLint("Invalid Data Type")
     List<WholesalePrice> Wholesale = new ArrayList<>();
     @SerializedName("shop")
     Shop Shop;

@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.model.entity
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
@@ -63,6 +64,7 @@ data class WishlistItem(
     val imageUrl: String = "",
     @SerializedName("raw_price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val rawPrice: Int = -1,
     @SerializedName("condition")
     @Expose
@@ -75,6 +77,7 @@ data class WishlistItem(
     val status: Boolean = false,
     @SerializedName("price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val price: String  = "",
     @SerializedName("category_breadcrumb")
     @Expose
@@ -93,9 +96,11 @@ data class WishlistItem(
     val discountPercentage: Int = 0,
     @SerializedName("slash_price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val slashPrice: String = "",
     @SerializedName("wholesale_price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val wholesalePrice: List<WholesalePrice> = listOf(),
     @SerializedName("shop")
     @Expose
@@ -200,6 +205,7 @@ data class WholesalePrice (
     val maximum: Integer,
     @SerializedName("price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val price: Integer
 )
 
