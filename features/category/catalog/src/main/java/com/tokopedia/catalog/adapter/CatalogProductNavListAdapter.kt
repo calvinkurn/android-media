@@ -2,7 +2,6 @@ package com.tokopedia.catalog.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -16,9 +15,9 @@ import com.tokopedia.common_category.model.shimmer.GridListShimmerModel
 import com.tokopedia.common_category.model.shimmer.ListShimmerModel
 import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 
-class CatalogProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
-                                   val visitables: ArrayList<Visitable<ProductTypeFactory>>,
-                                   val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFactory,
+                                   private val visitables: ArrayList<Visitable<ProductTypeFactory>>,
+                                   private val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
@@ -52,8 +51,7 @@ class CatalogProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
-        val viewHolder = productTypeFactory.createViewHolder(view, viewType)
-        return viewHolder
+        return productTypeFactory.createViewHolder(view, viewType)
     }
 
     override fun getItemCount(): Int {
@@ -171,13 +169,6 @@ class CatalogProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                 }
             }
         }
-    }
-
-    private fun getProductItemPath(path: String, id: String): String {
-        if (path.isNotEmpty()) {
-            return "category$path-$id"
-        }
-        return ""
     }
 
     fun onPause() {

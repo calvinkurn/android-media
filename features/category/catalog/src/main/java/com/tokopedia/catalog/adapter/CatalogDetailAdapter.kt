@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
-import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 
 class CatalogDetailAdapter (asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
-                            private val catalogListener : CatalogDetailListener,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 
@@ -29,7 +27,7 @@ class CatalogDetailAdapter (asyncDifferConfig: AsyncDifferConfig<BaseCatalogData
         return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
     }
 
-    fun bind(holder: AbstractViewHolder<BaseCatalogDataModel>, item: BaseCatalogDataModel) {
+    private fun bind(holder: AbstractViewHolder<BaseCatalogDataModel>, item: BaseCatalogDataModel) {
         holder.bind(item)
     }
 

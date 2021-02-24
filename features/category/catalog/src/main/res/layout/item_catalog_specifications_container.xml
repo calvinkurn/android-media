@@ -57,6 +57,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:visibility="gone"
         android:background="@color/catalog_grey_line"
         />
 

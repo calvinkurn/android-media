@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.usecase.listing
 
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.usecase.mapper.ProductListMapper
 import com.tokopedia.usecase.RequestParams
@@ -16,9 +17,9 @@ class CatalogGetProductListUseCase @Inject constructor(private val categoryProdu
 
         val paramProductListing = RequestParams.create()
         val paramTopAd = RequestParams.create()
-        paramProductListing.putString("params", requestParams?.getString("product_params", ""))
+        paramProductListing.putString("params", requestParams?.getString(CatalogConstant.PRODUCT_PARAMS, ""))
 
-        paramTopAd.putString("params", requestParams?.getString("top_params", ""))
+        paramTopAd.putString("params", requestParams?.getString(CatalogConstant.TOP_ADS_PARAMS, ""))
 
         return Observable.zip(
                 categoryProductUseCase.createObservable(paramProductListing).subscribeOn(Schedulers.io()),

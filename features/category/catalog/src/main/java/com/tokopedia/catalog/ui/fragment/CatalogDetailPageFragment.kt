@@ -1,15 +1,16 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -68,7 +69,7 @@ class CatalogDetailPageFragment : Fragment(),
     private val catalogDetailAdapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
                 .build()
-        CatalogDetailAdapter(asyncDifferConfig, this, catalogAdapterFactory
+        CatalogDetailAdapter(asyncDifferConfig, catalogAdapterFactory
         )
     }
 
@@ -110,6 +111,7 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
+        openBottomSheetProductListing()
     }
 
     private fun openBottomSheetProductListing() {
@@ -197,6 +199,9 @@ class CatalogDetailPageFragment : Fragment(),
         catalogPageRecyclerView?.apply {
             layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             itemAnimator = null
+            addItemDecoration(DividerItemDecoration(activity,DividerItemDecoration.VERTICAL).apply {
+                setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
+            })
             adapter = catalogDetailAdapter
         }
     }
@@ -233,7 +238,7 @@ class CatalogDetailPageFragment : Fragment(),
                 .build()
     }
 
-    private fun showImage(catalogImage: CatalogImage, currentItem: Int) {
+    private fun showImage(currentItem: Int) {
         catalogUiUpdater?.run {
             productInfoMap?.let {
                 if(catalogUiUpdater?.productInfoMap?.images?.isNotEmpty() == true){
@@ -249,7 +254,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
-        showImage(catalogImage,position)
+        showImage(position)
     }
 
     override fun onViewMoreSpecificationsClick() {

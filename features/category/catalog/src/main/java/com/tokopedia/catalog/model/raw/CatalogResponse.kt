@@ -84,9 +84,7 @@ data class CatalogResponseData (
                     val sticky: Boolean,
                     @SerializedName( "data")
                     val data: List<ComponentData>
-            ){
-
-            }
+            )
         }
     }
 }

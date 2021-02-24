@@ -11,4 +11,7 @@ object CatalogConstant {
     // Self Made
     const val CATALOG_INFO = "catalog-info"
 
+    const val TOP_ADS_PARAMS = "top_params"
+    const val PRODUCT_PARAMS = "product_params"
+    const val QUICK_FILTER_PARAMS = "params"
 }

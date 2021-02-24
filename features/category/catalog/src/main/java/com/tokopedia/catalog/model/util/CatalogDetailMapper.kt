@@ -116,10 +116,11 @@ object CatalogDetailMapper {
 
         // Top Specifications
         val topsSpecifications = arrayListOf<ComponentData>()
-        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
-        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
-        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
-        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", "https://imagerouter.tokopedia.com/img/300/catalog/2013/4/30/63/63-8b9c93ac-b166-11e2-a736-6ca72523fab8.jpg", null))
+        val icon = "https://image.flaticon.com/icons/png/128/3524/3524636.png"
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null))
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null))
         componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
                 1,
                 "Catalog Top Spec",
@@ -142,7 +143,7 @@ object CatalogDetailMapper {
                 null,
                 null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/home-house-homepage-building-20.png",
-                rows,
+                rows
         )
         val values2 = "GSM / CDMA / HSPA / EVDO / LTE / 5G"
         val row2 = ComponentData.SpecificationsRow(
@@ -184,7 +185,7 @@ object CatalogDetailMapper {
                 null,
                 null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
-                rows3,
+                rows3
         )
 
         val specifications = arrayListOf<ComponentData>()
@@ -247,7 +248,7 @@ object CatalogDetailMapper {
                         LabelsItem("lightGreen","Cashback")
                 ),
                 Arrays.asList(
-                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true),
+                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true)
                 ),
                 0,
                 Arrays.asList(
@@ -298,7 +299,7 @@ object CatalogDetailMapper {
                         LabelsItem("lightGreen","Cashback")
                 ),
                 Arrays.asList(
-                        BadgesItem("https://images.tokopedia.net/img/power_merchant_badge.png", "Power Badge",true),
+                        BadgesItem("https://images.tokopedia.net/img/power_merchant_badge.png", "Power Badge",true)
                 ),
                 1,
                 Arrays.asList(
@@ -348,7 +349,7 @@ object CatalogDetailMapper {
                         LabelsItem("lightGreen","Cashback")
                 ),
                 Arrays.asList(
-                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true),
+                        BadgesItem("https://images.tokopedia.net/img/official_store_badge.png", "Official Store",true)
                 ),
                 0,
                 Arrays.asList(

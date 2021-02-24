@@ -79,11 +79,10 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                         setTopText(MethodChecker.fromHtml(row.key).toString())
                         setTopTextSize(14.0f)
                         setBottomLinearLayoutWeight(0.5f)
-                        setTopTextColor(MethodChecker.getColor(context, R.color.catalog_N700_44))
+                        setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                         setBottomTextSize(14.0f)
-                        setBottomTextColor(MethodChecker.getColor(context, R.color.catalog_clr_31353b))
+                        setBottomTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700))
                         doubleTextView.setBottomTextStyle("")
-                        //setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
                         setBottomText(MethodChecker.fromHtml(row.value))
                     }
                     if(0 == index){

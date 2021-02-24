@@ -10,15 +10,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     init {
-        isFullpage = true
         isDragable = true
-        isHideable = false
         clearContentPadding = true
-        isSkipCollapseState = false
         showKnob = true
         showCloseIcon = false
         showHeader = false
-        bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_HALF_EXPANDED
+        customPeekHeight = 65
+        bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

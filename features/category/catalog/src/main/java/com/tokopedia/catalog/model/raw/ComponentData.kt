@@ -31,13 +31,11 @@ data class ComponentData(
 data class FullSpecificationsComponentData(
         val name : String?,
         val icon : String?,
-        val specificationsRow : List<ComponentData.SpecificationsRow>?) : Parcelable{
-}
+        val specificationsRow : List<ComponentData.SpecificationsRow>?) : Parcelable
 
 
 @Parcelize
 data class TopSpecificationsComponentData(
         val key : String?,
         val value : String?,
-        val icon : String?) : Parcelable{
-}
+        val icon : String?) : Parcelable

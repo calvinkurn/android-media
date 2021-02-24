@@ -92,7 +92,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
-                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                TabLayoutMediator(tabLayout, viewPager) { _, _ ->
 
                 }.attach()
             }
@@ -135,7 +135,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_description)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,R.color.catalog_green))
+                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
 
             val tabTwo = Typography(context)
@@ -143,7 +143,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_spesification)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,R.color.catalog_N700_44))
+                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N75))
             }
             tabLayout.getTabAt(0)?.customView = tabOne
             tabLayout.getTabAt(1)?.customView = tabTwo

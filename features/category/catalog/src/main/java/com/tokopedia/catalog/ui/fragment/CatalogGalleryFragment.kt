@@ -46,8 +46,8 @@ class CatalogGalleryFragment : Fragment(), CatalogBottomGalleyRecyclerViewAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (arguments != null) {
-            catalogImages = arguments!!.getParcelableArrayList(ARG_EXTRA_IMAGES)
-            currentImage = arguments!!.getInt(ARG_EXTRA_CURRENT_IMAGE)
+            catalogImages = requireArguments().getParcelableArrayList(ARG_EXTRA_IMAGES)
+            currentImage = requireArguments().getInt(ARG_EXTRA_CURRENT_IMAGE)
         }
 
         if (catalogImages != null) {
