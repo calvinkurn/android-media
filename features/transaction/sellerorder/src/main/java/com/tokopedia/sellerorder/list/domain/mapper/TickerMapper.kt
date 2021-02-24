@@ -29,6 +29,6 @@ class TickerMapper @Inject constructor() {
     }
 
     private fun String.removeExtraLines(): String {
-        return removeSuffix("<br>")
+        return replace(Regex("(<br>)+$"), "")
     }
 }
