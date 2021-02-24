@@ -51,6 +51,7 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -92,7 +93,8 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        PiPViewComponent.Listener
+        PiPViewComponent.Listener,
+        ProductFeaturedViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -107,7 +109,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
-    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it) }
+    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
@@ -366,6 +368,17 @@ class PlayUserInteractionFragment @Inject constructor(
                 shopId = playViewModel.partnerId,
                 channelType = playViewModel.channelType
         )
+    }
+
+    /**
+     * Product Featured View Component Listener
+     */
+    override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+    }
+
+    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
+        openProductSheet()
     }
     //endregion
 
@@ -811,6 +824,16 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
     }
 
+    //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
+    private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
+        if (product.applink != null && product.applink.isNotEmpty()) {
+            analytic.clickProduct(product, position)
+            openPageByApplink(product.applink)
+
+            playViewModel.openPiPBrowsingPage()
+        }
+    }
+
     private fun handleVideoHorizontalImmersive(shouldImmersive: Boolean) {
         if (shouldImmersive) {
             videoSettingsView.fadeOut()
@@ -878,6 +901,7 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
             InteractionEvent.ClickPinnedProduct -> openProductSheet()
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
