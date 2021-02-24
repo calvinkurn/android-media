@@ -98,11 +98,11 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    fun getShopRestrictionInfo(input: RestrictionEngineRequestParams) {
+    fun getShopRestrictionInfo(input: RestrictionEngineRequestParams, shopId: String) {
         launchCatchError(block = {
             restrictionEngineAsync(input).await()?.run {
                 val restrictionEngineResponse = mapRestrictionEngineResponseToModel(dataResponse.firstOrNull())
-                getFollowStatusAsync(userSession.shopId).await()?.let {
+                getFollowStatusAsync(shopId).await()?.let {
                     restrictionEngineResponse.buttonLabel = it.followButton?.buttonLabel
                     restrictionEngineResponse.voucherIconUrl = it.followButton?.voucherIconURL
                 }
