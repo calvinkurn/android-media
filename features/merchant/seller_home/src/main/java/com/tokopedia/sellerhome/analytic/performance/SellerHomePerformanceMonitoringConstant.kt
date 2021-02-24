@@ -6,6 +6,7 @@ object SellerHomePerformanceMonitoringConstant {
     const val SELLER_HOME_LAYOUT_PLT_NETWORK_METRICS = "seller_home_layout_plt_network_metrics"
     const val SELLER_HOME_LAYOUT_PLT_RENDER_METRICS = "seller_home_layout_plt_render_metrics"
 
+    const val SELLER_HOME_LAYOUT_TRACE = "seller_home_layout_widget"
     const val SELLER_HOME_CARD_TRACE = "seller_home_widget_card"
     const val SELLER_HOME_LINE_GRAPH_TRACE = "seller_home_widget_line_graph"
     const val SELLER_HOME_PROGRESS_TRACE = "seller_home_widget_progress"

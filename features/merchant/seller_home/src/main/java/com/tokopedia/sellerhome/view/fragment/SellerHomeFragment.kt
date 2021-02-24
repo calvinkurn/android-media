@@ -30,6 +30,7 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
@@ -137,6 +138,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
+        startHomeLayoutCustomMetric()
         sellerHomeViewModel.getWidgetLayout()
     }
 
@@ -569,17 +571,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeWidgetLayoutLiveData() {
-        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
             recyclerView.post {
                 when (result) {
-                    is Success -> setOnSuccessGetLayout(result.data)
-                    is Fail -> setOnErrorGetLayout(result.throwable)
+                    is Success -> {
+                        stopLayoutCustomMetric(result.data)
+                        setOnSuccessGetLayout(result.data)
+                    }
+                    is Fail -> {
+                        stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, true)
+                        setOnErrorGetLayout(result.throwable)
+                    }
                 }
             }
         })
 
         view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
+    }
+
+    private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
+        val isFromCache = widgets.firstOrNull()?.isFromCache == true
+        stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, isFromCache)
+    }
+
+    private fun startHomeLayoutCustomMetric() {
+        startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE)
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
