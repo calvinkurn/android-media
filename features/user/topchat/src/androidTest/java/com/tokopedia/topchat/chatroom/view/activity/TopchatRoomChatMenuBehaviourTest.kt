@@ -35,6 +35,30 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         )
     }
 
+    @Test
+    fun click_plus_icon_twice_hide_attachment_menu() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        // When
+        clickPlusIconMenu()
+        clickPlusIconMenu()
+
+        // Then
+        onView(withId(R.id.fl_chat_menu)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.ll_sticker_container)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+                matches(not(isDisplayed()))
+        )
+    }
+
     /**
      * The attachment menu should be hidden when user tap sticker menu
      */
@@ -107,4 +131,5 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         )
     }
 
+    // TODO: Test attachment size buyer and seller
 }
