@@ -36,7 +36,7 @@ fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManage
 }
 
 private fun renderSeparatorBenefit(cartListData: CartListData, view: View) {
-    if (cartListData.shoppingSummaryData.promoValue > 0 ||
+    if (cartListData.promoSummaryData.details.isNotEmpty() ||
             cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
         view.separator_benefit.show()
     } else {
@@ -68,14 +68,14 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
 
 private fun renderPromo(cartListData: CartListData, view: View) {
     with(view) {
-        if (cartListData.promoSummaryData.title.isNotEmpty()) {
-            text_summary_promo_transaction_title.text = cartListData.promoSummaryData.title
-            text_summary_promo_transaction_title.visibility = View.VISIBLE
-        } else {
-            text_summary_promo_transaction_title.visibility = View.GONE
-        }
-
         if (cartListData.promoSummaryData.details.isNotEmpty()) {
+            if (cartListData.promoSummaryData.title.isNotEmpty()) {
+                text_summary_promo_transaction_title.text = cartListData.promoSummaryData.title
+                text_summary_promo_transaction_title.visibility = View.VISIBLE
+            } else {
+                text_summary_promo_transaction_title.visibility = View.GONE
+            }
+
             val adapter = CartPromoSummaryAdapter(cartListData.promoSummaryData.details)
 
             recycler_view_cart_promo_summary.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -84,6 +84,7 @@ private fun renderPromo(cartListData: CartListData, view: View) {
 
             recycler_view_cart_promo_summary.visibility = View.VISIBLE
         } else {
+            text_summary_promo_transaction_title.visibility = View.GONE
             recycler_view_cart_promo_summary.visibility = View.GONE
         }
     }

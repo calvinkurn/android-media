@@ -6,6 +6,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -100,10 +101,19 @@ class PromoListItemViewHolder(private val view: View,
         // set tokopoints/ovopoints cashback info
         if (element.uiData.currencyDetailStr.isNotEmpty()) {
             labelPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+
+            val params = labelPromoItemTitle.layoutParams
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            labelPromoItemTitle.layoutParams = params
             labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+
             labelPromoItemTitleInfo.show()
         } else {
+            val params = labelPromoItemTitle.layoutParams
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            labelPromoItemTitle.layoutParams = params
             labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+
             labelPromoItemTitleInfo.gone()
         }
 
