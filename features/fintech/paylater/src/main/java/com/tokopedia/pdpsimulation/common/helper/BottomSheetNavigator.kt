@@ -28,7 +28,7 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
                 PayLaterFaqBottomSheet.show(bundle, childFragmentManager)
 
             modelClass.isAssignableFrom(CreditCardsListBottomSheet::class.java) ->
-                CreditCardsListBottomSheet.show(bundle, childFragmentManager)
+                CreditCardsListBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
 
             modelClass.isAssignableFrom(CreditCardRegistrationBottomSheet::class.java) ->
                 CreditCardRegistrationBottomSheet.show(pdpSimulationCallback, childFragmentManager)

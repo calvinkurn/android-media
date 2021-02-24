@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.INTERNAL_URL
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
@@ -87,6 +88,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
             addItem(arrayListOf(FloatingButtonItem(
                     context.getString(R.string.credit_card_view_all_cards)
             ) {
+                pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.SeeMoreBankClickEvent("click"))
                 openUrlWebView(INTERNAL_URL)
             }))
         }
@@ -100,7 +102,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun onBankListLoadingFail(throwable: Throwable) {
-        dismiss()
+
     }
 
     private fun initBottomSheet() {
@@ -111,6 +113,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     private fun initAdapter() {
         baseList.adapter = CreditCardRegistrationAdapter(arrayListOf()) { creditCardList, bankName, bankSlug ->
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.ChooseBankClickEvent(bankName ?: ""))
             openBottomSheet(creditCardList, bankName, bankSlug)
             dismiss()
         }

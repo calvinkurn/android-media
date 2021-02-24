@@ -11,7 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.INTERNAL_URL
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardItem
 import com.tokopedia.pdpsimulation.creditcard.presentation.registration.adapter.CreditCardListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -36,6 +38,7 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
     private var creditCardList: ArrayList<CreditCardItem> = arrayListOf()
     private var bankName: String? = ""
@@ -55,6 +58,7 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
             addItem(arrayListOf(FloatingButtonItem(
                     context.getString(R.string.credit_card_view_more)
             ) {
+                pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.SeeMoreCardClickEvent("click"))
                 openUrlWebView("${INTERNAL_URL}bank/$bankSlug")
             }))
         }
@@ -75,13 +79,9 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        /*baseList.setOnTouchListener { v, event ->
-            v.parent.requestDisallowInterceptTouchEvent(true)
-            v.onTouchEvent(event)
-            true
-        }*/
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        baseList.adapter = CreditCardListAdapter(creditCardList, bankName) { cardSlug ->
+        baseList.adapter = CreditCardListAdapter(creditCardList, bankName) { cardName, cardSlug ->
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.ChooseCardClickEvent(cardName?: ""))
             openUrlWebView("${INTERNAL_URL}bank/${bankSlug}/${cardSlug}")
         }
         baseList.layoutManager = linearLayoutManager
@@ -108,10 +108,11 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         const val BANK_SLUG = "SLUG"
         private const val TAG = "CreditCardRegistrationBottomSheet"
 
-        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+        fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
             val creditCardsListBottomSheet = CreditCardsListBottomSheet().apply {
                 arguments = bundle
             }
+            creditCardsListBottomSheet.pdpSimulationCallback = pdpSimulationCallback
             creditCardsListBottomSheet.show(childFragmentManager, TAG)
         }
     }

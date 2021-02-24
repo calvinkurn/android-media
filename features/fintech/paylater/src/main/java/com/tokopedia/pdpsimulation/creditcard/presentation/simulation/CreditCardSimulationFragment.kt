@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.common.helper.onLinkClickedEvent
@@ -91,6 +92,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
         creditCardRegisterWidget.setOnClickListener {
             creditCardViewModel.getBankCardList()
+            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.ApplyCreditCardEvent("click"))
             pdpSimulationCallback?.openBottomSheet(Bundle(), CreditCardRegistrationBottomSheet::class.java)
         }
     }
@@ -167,6 +169,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
                 setGlobalErrors(GlobalError.PAGE_FULL)
             }
             is PdpSimulationException.CreditCardSimulationNotAvailableException -> {
+                pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.CreditCard.CCNotAvailableEvent("cc not available"))
                 creditCardTermsEmptyView.visible()
                 context?.let {
                     ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }

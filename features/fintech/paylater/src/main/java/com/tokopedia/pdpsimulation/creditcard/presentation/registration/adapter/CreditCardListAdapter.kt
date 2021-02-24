@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.credit_card_item.view.*
 class CreditCardListAdapter(
         private val creditCardList: ArrayList<CreditCardItem>,
         private val creditCardBankName: String?,
-        private val clickListener: (String?) -> Unit,
+        private val clickListener: (String?, String?) -> Unit,
 ) : RecyclerView.Adapter<CreditCardItemViewHolder>() {
     private val viewPool = RecyclerView.RecycledViewPool()
 
@@ -21,7 +21,7 @@ class CreditCardListAdapter(
         viewHolder.view.setOnClickListener {
             val position = viewHolder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                clickListener(creditCardList[position].cardSlug)
+                clickListener(creditCardList[position].cardName, creditCardList[position].cardSlug)
             }
         }
         return viewHolder
