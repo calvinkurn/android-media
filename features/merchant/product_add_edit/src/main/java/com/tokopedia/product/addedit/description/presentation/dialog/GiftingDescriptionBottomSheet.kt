@@ -18,6 +18,7 @@ class GiftingDescriptionBottomSheet: BottomSheetUnify() {
     private var onCopyTemplateButtonListener: () -> Unit = {}
 
     init {
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
@@ -45,7 +46,6 @@ class GiftingDescriptionBottomSheet: BottomSheetUnify() {
     }
 
     private fun initChildLayout() {
-        overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
                 R.layout.add_edit_product_gifting_description_bottom_sheet_content, null)
         setChild(contentView)
