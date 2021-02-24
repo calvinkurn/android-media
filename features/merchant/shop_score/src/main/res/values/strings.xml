@@ -115,6 +115,16 @@
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
 
+    <string name="title_level_1">Level 1</string>
+    <string name="title_level_2">Level 2</string>
+    <string name="title_level_3">Level 3</string>
+    <string name="title_level_4">Level 4</string>
+
+    <string name="desc_level_1"><![CDATA[<b>&lt; Rp350.000</b> atau <b>0–2</b> produk terjual]]></string>
+    <string name="desc_level_2"><![CDATA[Mulai dari <b>Rp350.000</b> dan <b>3</b> produk terjual]]></string>
+    <string name="desc_level_3"><![CDATA[Mulai dari <b>Rp10juta</b> dan <b>50</b> produk terjual]]></string>
+    <string name="desc_level_4"><![CDATA[Mulai dari <b>Rp300juta</b> dan <b>1.500</b> produk terjual]]></string>
+
     <!-- Summary Shop Performance -->
     <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>
     <string name="desc_keep_up_level_1">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
@@ -167,6 +177,7 @@
 
     <string name="title_status_penalty">Status Penalti</string>
     <string name="desc_status_penalty">Status memperlihatkan status dari setiap periode penaltimu.</string>
+    <string name="title_my_shop">Tokomu</string>
 
     <string name="title_point_have_not_been_deducted">Poin belum dipotong</string>
     <string name="desc_point_have_not_been_deducted">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
@@ -179,6 +190,57 @@
     <string name="example_desc_faq_shop_score">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
     <string name="title_section_faq_shop_score">Hal yang sering ditanyakan</string>
     <string name="title_help_center_tokopedia">Butuh bantuan dari Tokopedia? Hubungi &lt;a href="#"&gt;Pusat Bantuan&lt;/a&gt;</string>
+    <string name="ticker_info_shop_score">Mulai [DD Month YYYY], ada penilaian dan target baru Performa Toko. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+
+    <!-- FAQ Section -->
+    <string name="title_parameter_shop_score_faq">Parameter</string>
+    <string name="title_shop_score_performance">Apa itu skor Performa Toko?</string>
+    <string name="desc_shop_score_performance">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
+
+    <string name="title_shop_score_benefit">Apa keuntungan skor Performa Toko yang baru bagi toko saya?</string>
+    <string name="desc_shop_score_benefit">Skor Performa Toko yang baru memberikan panduan performa yang lebih jelas dan transparan untuk Seller. Tidak hanya itu, benefit yang diberikan juga jauh lebih baik jika dibandingkan dengan skema yang lama.
+        \n\nUntuk Power Merchant, Seller dengan grade yang tinggi akan mendapatkan benefit yang lebih baik dibandingkan dengan grade yang lebih rendah.</string>
+
+    <string name="title_shop_score_calculation">Bagaimana cara Tokopedia melakukan perhitungan skor Performa Toko?</string>
+    <string name="desc_section_1_shop_score_calculation">Pertama, Tokopedia akan melakukan kalkulasi perhitungan level pada Seller untuk menggolongkan Seller di antara 4 Level.</string>
+    <string name="desc_section_2_shop_score_calculation">Setelah itu, setiap Seller akan mendapatkan scorecard berdasarkan levelnya masing-masing. Setiap scorecard memiliki parameter &amp; skor yang sama dengan batas bawah (threshold) yang berbeda-beda.</string>
+
+    <string name="title_score_label">Skor</string>
+
+    <string name="title_parameter_shop_score_1">I. Kualitas Layanan</string>
+    <string name="desc_parameter_shop_score_1">Parameter ini merepresentasikan kualitas layanan seller, yang terdiri dari:
+                \n• Keaktifan toko
+                \n• Kecepatan memproses order
+                \n• Kecepatan membalas chat dan diskusi
+                \n• Tingkat membalas chat dan diskusi
+                \n• Tingkat penjualan sukses
+    </string>
+    <string name="score_parameter_shop_score_1">Max. 75</string>
+
+    <string name="title_parameter_shop_score_2">II. Kualitas Produk</string>
+    <string name="desc_parameter_shop_score_2">Parameter ini merepresentasikan kualitas produk terjual, yang terdiri dari:
+        \n• Presentase produk dengan rating bagus
+        \n• Jumlah pembeli unik (unique buyers)
+    </string>
+    <string name="score_parameter_shop_score_2">Max. 25</string>
+
+    <string name="title_parameter_shop_score_3">III. Penalti</string>
+    <string name="desc_parameter_shop_score_3">Penalti adalah skema pengurangan poin sebagai imbas dari adanya pelanggaran produk, transaksi, dan tindakan fraud. Setiap pelanggaran akan mengurangi jumlah skor performa toko. Apabila jumlah poin penalti mencapai batas tertentu, penjual akan mendapatkan tambahan limitasi.
+    </string>
+    <string name="score_parameter_shop_score_3">Max. -15</string>
+
+    <string name="title_changes_shop_score_during_transition">Perubahan apa saja yang akan terjadi di toko saya pada masa transisi?</string>
+    <string name="desc_changes_shop_score_during_transition">Pada periode 90 hari masa transisi, beberapa perubahan sudah berlaku efektif. Namun Tokopedia juga menerapkan waktu penyesuaian untuk memastikan bahwa Seller terbiasa dengan skema yang baru terlebih dahulu, sebagai contohnya:
+        \n- Tidak adanya penurunan Power Merchant ke penonaktifan PM
+        \n- Tidak adanya penurunan grade Power Merchant
+        \n- Seller mendapatkan grade Power Merchant dari Reputasi
+    </string>
+
+    <string name="title_calculate_shop_performance_if_parameter_value_missing">Bagaimana Tokopedia menghitung nilai skor Performa Toko jika nilai parameter saya tidak ada? (Misalnya: tidak ada chat masuk)</string>
+    <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
+
+    <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
+    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan hanya melakukan KYC.</string>
 
 
 </resources>

@@ -29,7 +29,7 @@
             android:id="@+id/levelLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:labelTitle="Tokomu"
+            app:labelTitle="@string/title_my_shop"
             app:labelType="general_dark_green"
             tools:visibility="visible"
             android:visibility="gone"
