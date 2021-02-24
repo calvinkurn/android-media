@@ -93,27 +93,39 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_ADD_ADDRESS) {
-            val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
-            if (data != null) {
-                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName, data.postalCode))
+        when (requestCode) {
+            REQUEST_CODE_ADD_ADDRESS -> {
+                val data = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+                if (data != null) {
+                    chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData(data.id.toString(), data.cityId.toString(), data.districtId.toString(), data.latitude, data.longitude, data.addressName, data.postalCode))
+                }
+                listener?.onAddressDataChanged()
+                this.dismiss()
             }
-            listener?.onAddressDataChanged()
-            this.dismiss()
-        } else if (requestCode == REQUEST_CODE_GET_DISTRICT_RECOM) {
-            val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
-            if (data != null) {
-                chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName, ""))
+            REQUEST_CODE_GET_DISTRICT_RECOM -> {
+                val data = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
+                if (data != null) {
+                    chooseAddressPref?.setLocalCache(ChooseAddressUtils.setLocalizingAddressData("", data.cityId.toString(), data.districtId.toString(), "", "", data.districtName + ", " + data.cityName, ""))
+                }
+                listener?.onAddressDataChanged()
+                this.dismiss()
             }
-            listener?.onAddressDataChanged()
-            this.dismiss()
-        } else if (requestCode == REQUEST_CODE_ADDRESS_LIST) {
-            listener?.onAddressDataChanged()
-            this.dismiss()
-        } else if (requestCode == REQUEST_CODE_LOGIN_PAGE) {
-            listener?.onLocalizingAddressLoginSuccessBottomSheet()
-            this.dismiss()
+            REQUEST_CODE_ADDRESS_LIST -> {
+                listener?.onAddressDataChanged()
+                this.dismiss()
+            }
+            REQUEST_CODE_LOGIN_PAGE -> {
+                val source = listener?.getLocalizingAddressHostSourceBottomSheet()
+                if (source != null) {
+                    viewModel.getDefaultChosenAddress("",source)
+                    setInitialViewState()
+                }
+            }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun initInjector() {
@@ -186,9 +198,34 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
                 is Fail -> {
                     listener?.onLocalizingAddressServerDown()
-                    showError(it.throwable)
+                    this.dismiss()
                 }
 
+            }
+        })
+
+        viewModel.getDefaultAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val data = it.data.addressData
+                    val localData = ChooseAddressUtils.setLocalizingAddressData(
+                            addressId = data.addressId.toString(),
+                            cityId = data.cityId.toString(),
+                            districtId = data.districtId.toString(),
+                            lat = data.latitude,
+                            long = data.longitude,
+                            label = data.addressName,
+                            postalCode = data.postalCode.toString()
+                    )
+                    chooseAddressPref?.setLocalCache(localData)
+                    listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                    this.dismiss()
+                }
+
+                is Fail -> {
+                    listener?.onLocalizingAddressServerDown()
+                    this.dismiss()
+                }
             }
         })
     }
@@ -200,9 +237,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         bottomLayout?.gone()
         errorLayout?.gone()
         setTitle("")
-        setCloseClickListener {
-            this.dismiss()
-        }
     }
 
     private fun setViewState(loginState: Boolean) {
