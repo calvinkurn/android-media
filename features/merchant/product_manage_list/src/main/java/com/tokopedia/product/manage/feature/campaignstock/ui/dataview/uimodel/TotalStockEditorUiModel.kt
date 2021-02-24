@@ -6,6 +6,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 
 class TotalStockEditorUiModel(
     val totalStock: Int,
+    val isCampaign: Boolean?,
     val access: ProductManageAccess?
 ): Visitable<CampaignStockTypeFactory> {
 

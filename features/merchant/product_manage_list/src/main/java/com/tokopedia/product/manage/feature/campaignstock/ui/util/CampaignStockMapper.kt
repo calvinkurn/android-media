@@ -34,7 +34,8 @@ object CampaignStockMapper {
                             stock = sellable.stock,
                             isActive = variant.status == ProductStatus.ACTIVE,
                             isAllStockEmpty = isAllStockEmpty,
-                            access = variant.access
+                            access = variant.access,
+                            isCampaign = variant.isCampaign
                         )
                 }
                 .toList()

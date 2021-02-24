@@ -12,6 +12,7 @@ data class ProductVariant(
         val status: ProductStatus,
         val combination: List<Int>,
         val isPrimary: Boolean,
+        val isCampaign: Boolean,
         val price: Int,
         val sku: String,
         val stock: Int,

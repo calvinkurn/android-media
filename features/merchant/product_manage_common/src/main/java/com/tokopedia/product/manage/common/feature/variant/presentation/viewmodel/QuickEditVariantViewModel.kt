@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
@@ -19,6 +20,7 @@ import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVari
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,6 +28,7 @@ import javax.inject.Inject
 class QuickEditVariantViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -60,6 +63,7 @@ class QuickEditVariantViewModel @Inject constructor(
     private val _tickerList = MutableLiveData<List<ProductManageTicker>>()
     private val _showStockInfo = MutableLiveData<Boolean>()
 
+    private var warehouseId: String? = null
     private var editVariantResult: EditVariantResult? = null
 
     fun getData(productId: String) {
@@ -83,7 +87,8 @@ class QuickEditVariantViewModel @Inject constructor(
         showProgressBar()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val requestParams = GetProductVariantUseCase.createRequestParams(productId)
+                val warehouseId = getWarehouseId(userSession.shopId)
+                val requestParams = GetProductVariantUseCase.createRequestParams(productId, warehouseId = warehouseId)
                 val response = getProductVariantUseCase.execute(requestParams)
                 val variant = response.getProductV3
                 mapToVariantsResult(variant, access)
@@ -154,6 +159,16 @@ class QuickEditVariantViewModel @Inject constructor(
         editVariantResult?.let {
             val variantList = _getProductVariantsResult.value?.variants.orEmpty()
             _onClickSaveButton.value = it.setEditStockAndStatus(variantList)
+        }
+    }
+
+    private suspend fun getWarehouseId(shopId: String): String? {
+        return if(warehouseId == null) {
+            val shopLocation = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
+            warehouseId = shopLocation.firstOrNull { it.isMainLocation() }?.locationId.toString()
+            warehouseId
+        } else {
+            warehouseId
         }
     }
 
