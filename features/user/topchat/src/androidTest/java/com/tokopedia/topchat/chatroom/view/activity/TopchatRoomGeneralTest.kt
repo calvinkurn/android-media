@@ -2,12 +2,12 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class TopchatRoomGeneralTest : TopchatRoomTest() {
@@ -49,6 +49,32 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
 
         // Then
         onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
+    }
+
+    /**
+     * The attachment menu should be hidden when user tap sticker menu
+     */
+    @Test
+    fun test_open_attachment_menu_then_open_sticker() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        stickerGroupUseCase.response = stickerGroupAsBuyer
+        chatListStickerUseCase.response = stickerListAsBuyer
+        inflateTestFragment()
+
+        // WHen
+        clickPlusIconMenu()
+        clickStickerIconMenu()
+
+        // Then
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.ll_sticker_container)).check(
+                matches(isDisplayed())
+        )
     }
 
 }

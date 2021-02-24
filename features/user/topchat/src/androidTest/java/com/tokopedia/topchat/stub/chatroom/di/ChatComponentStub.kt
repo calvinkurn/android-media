@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.ChatRoomViewModelModule
 import com.tokopedia.topchat.chatroom.di.ChatScope
@@ -21,9 +22,6 @@ import dagger.Component
         ],
         dependencies = [BaseAppComponent::class]
 )
-interface ChatComponentStub {
-    fun inject(fragment: TopChatRoomFragment)
-    fun inject(fragment: StickerFragment)
-    fun inject(service: NotificationChatService)
+interface ChatComponentStub: ChatComponent {
     fun inject(topchatRoomTest: TopchatRoomTest)
 }

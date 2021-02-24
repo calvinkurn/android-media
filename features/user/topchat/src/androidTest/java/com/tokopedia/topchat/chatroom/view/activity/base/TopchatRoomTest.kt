@@ -20,9 +20,14 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
-import com.tokopedia.topchat.stub.chatroom.di.*
+import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
+import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListGroupStickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListStickerUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
@@ -52,13 +57,19 @@ abstract class TopchatRoomTest {
                 .getInstrumentation().context.applicationContext
 
     @Inject
-    lateinit var getChatUseCase: GetChatUseCaseStub
+    protected lateinit var getChatUseCase: GetChatUseCaseStub
 
     @Inject
-    lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
+    protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
 
     @Inject
-    protected open lateinit var websocket: RxWebSocketUtilStub
+    protected lateinit var stickerGroupUseCase: ChatListGroupStickerUseCaseStub
+
+    @Inject
+    protected lateinit var chatListStickerUseCase: ChatListStickerUseCaseStub
+
+    @Inject
+    protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
@@ -78,6 +89,14 @@ abstract class TopchatRoomTest {
     protected var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
+    )
+    protected var stickerGroupAsBuyer: ChatListGroupStickerResponse = AndroidFileUtil.parse(
+            "success_chat_group_sticker.json",
+            ChatListGroupStickerResponse::class.java
+    )
+    protected var stickerListAsBuyer: StickerResponse = AndroidFileUtil.parse(
+            "success_chat_bundle_sticker.json",
+            StickerResponse::class.java
     )
 
     protected lateinit var chatComponentStub: ChatComponentStub
@@ -146,6 +165,11 @@ abstract class TopchatRoomTest {
                 )
         onView(withId(R.id.rv_topchat_attachment_menu))
                 .perform(viewAction)
+    }
+
+    protected fun clickStickerIconMenu() {
+        onView(withId(R.id.iv_chat_sticker))
+                .perform(click())
     }
 
     protected fun clickPlusIconMenu() {
