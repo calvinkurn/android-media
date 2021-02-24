@@ -519,7 +519,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val invalidIndex = -1
         if (index != invalidIndex) {
             recyclerView.post {
-                val offset: Int = recyclerView.context.dpToPx(8).toInt()
+                val offset = 0
                 mLayoutManager.scrollToPositionWithOffset(index, offset)
             }
         }
