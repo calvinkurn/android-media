@@ -43,6 +43,10 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
             override fun getLocalizingAddressHostSourceData(): String {
                 return data.hostFragment
             }
+
+            override fun onLocalizingAddressLoginSuccess() {
+
+            }
         })
     }
 
