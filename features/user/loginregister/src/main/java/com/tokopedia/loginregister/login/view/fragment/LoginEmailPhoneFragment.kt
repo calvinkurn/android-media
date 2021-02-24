@@ -838,23 +838,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun showLoading(isLoading: Boolean) {
-        val shortAnimTime = context?.resources?.getInteger(
-                android.R.integer.config_shortAnimTime)
+        val shortAnimTime = context?.resources?.getInteger(android.R.integer.config_shortAnimTime)
 
         shortAnimTime?.toLong()?.let {
-            progress_bar.animate().setDuration(it)
-                .alpha((if (isLoading) 1 else 0).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
+            progressBarLoginWithPhone?.animate()?.setDuration(it)
+                ?.alpha((if (isLoading) 1 else 0).toFloat())
+                ?.setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
-                        if (progress_bar != null) {
-                            progress_bar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                        if (progressBarLoginWithPhone != null) {
+                            progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
                         }
                     }
                 })
 
-            container.animate().setDuration(it)
-                    .alpha((if (isLoading) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
+            container?.animate()?.setDuration(it)
+                    ?.alpha((if (isLoading) 0 else 1).toFloat())
+                    ?.setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             if (container != null) {
                                 container.visibility = if (isLoading) View.GONE else View.VISIBLE

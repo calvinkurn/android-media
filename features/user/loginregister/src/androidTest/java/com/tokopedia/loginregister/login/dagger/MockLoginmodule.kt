@@ -11,6 +11,7 @@ import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.di.LoginRegisterScope
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -48,6 +49,11 @@ class MockLoginmodule {
     @Provides
     fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
         return FingerprintPreferenceHelper(context)
+    }
+
+    @Provides
+    fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
+        return SocmedBottomSheet(context)
     }
 
     @Provides

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter
+import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
@@ -161,17 +162,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun discoverLogin() {
         launchCatchError(coroutineContext, {
-            val discoverViewModel = discoverUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
-            mutableDiscoverResponse.value = Success(discoverViewModel)
+            discoverUseCase.execute(RequestParams.EMPTY, resultUsecaseCoroutineToSubscriber(
+                    onSuccessResult = { mutableDiscoverResponse.value = Success(it) },
+                    onErrorResult = { mutableDiscoverResponse.value = Fail(it) }
+            ))
         }, {
             mutableDiscoverResponse.value = Fail(it)
         })
     }
 
-    fun activateUser(
-            email: String,
-            validateToken: String
-    ) {
+    fun activateUser(email: String, validateToken: String) {
         launchCatchError(coroutineContext, {
             val params = activateUserUseCase.getParams(email, validateToken)
             mutableActivateResponse.value = Success(activateUserUseCase.getData(params).data)

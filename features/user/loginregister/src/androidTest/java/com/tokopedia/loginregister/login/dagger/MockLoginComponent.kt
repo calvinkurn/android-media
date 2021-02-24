@@ -14,6 +14,6 @@ import dagger.Component
     MockLoginmodule::class,
     MockLoginQueryModule::class,
     MockLoginUseCaseModule::class,
-    MockSeamlessViewModelModule::class
+    MockLoginViewModelModule::class
 ], dependencies = [LoginRegisterComponent::class])
 interface MockLoginComponent: LoginComponent {}

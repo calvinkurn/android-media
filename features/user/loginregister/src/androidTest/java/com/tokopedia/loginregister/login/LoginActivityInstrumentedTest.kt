@@ -99,6 +99,9 @@ class LoginActivityInstrumentedTest {
         onRegisterFooterSpannableClick()
         onSocmedBtnClick()
         clickGoogleLogin()
+
+        Thread.sleep(500)
+
         assertThat(
             getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
             hasAllSuccess()

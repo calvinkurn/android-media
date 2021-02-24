@@ -16,7 +16,7 @@ import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitial
 /**
  * @author by nisie on 10/2/18.
  */
-class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()

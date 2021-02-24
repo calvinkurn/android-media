@@ -31,7 +31,7 @@ import androidx.appcompat.widget.TintTypedArray
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.widget.TextViewCompat
-import com.tokopedia.design.R
+import com.tokopedia.loginregister.R
 import java.util.*
 
 @Deprecated("removed soon if unify component ready")
@@ -108,8 +108,7 @@ class TkpdHintTextInputLayout : LinearLayout {
 
     @SuppressLint("RestrictedApi", "ResourceType")
     private fun apply(attrs: AttributeSet?, defStyleAttr: Int) {
-        val a = TintTypedArray.obtainStyledAttributes(context, attrs,
-                R.styleable.TkpdHintTextInputLayout, defStyleAttr, com.google.android.material.R.style.Widget_Design_TextInputLayout)
+        val a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.TkpdHintTextInputLayout, defStyleAttr, com.google.android.material.R.style.Widget_Design_TextInputLayout)
         mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true)
         mHint = a.getText(R.styleable.TkpdHintTextInputLayout_android_hint)
         mHintAnimationEnabled = a.getBoolean(
@@ -141,35 +140,23 @@ class TkpdHintTextInputLayout : LinearLayout {
         mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
         mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
-        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
-                R.style.helperTextAppearance)
+        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, R.style.helperTextAppearance)
         mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
         isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
-        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance,
-                R.style.successTextAppearance)
-        mCounterEnabled = a.getBoolean(
-                R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
+        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, R.style.successTextAppearance)
+        mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength = a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
-        mCounterTextAppearance = a.getResourceId(
-                R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
-        mCounterOverflowTextAppearance = a.getResourceId(
-                R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
-        mPasswordToggleEnabled = a.getBoolean(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
-        mPasswordToggleDrawable = a.getDrawable(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
-        mPasswordToggleContentDesc = a.getText(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
+        mCounterTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
+        mCounterOverflowTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
+        mPasswordToggleEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
+        mPasswordToggleDrawable = a.getDrawable(R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
+        mPasswordToggleContentDesc = a.getText(R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
         if (a.hasValue(R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
             mHasPasswordToggleTintList = true
             mPasswordToggleTintList = a.getColorStateList(
                     R.styleable.TkpdHintTextInputLayout_passwordToggleTint)
         }
-        /*if (a.hasValue(R.styleable.TextInputLayoutv2_passwordToggleTintMode)) {
-            mHasPasswordToggleTintMode = true;
-            mPasswordToggleTintMode = parseTintMode(
-                    a.getInt(R.styleable.TextInputLayoutv2_passwordToggleTintMode, -1), null);
-        }*/
+
         val theme = context.theme
         if (theme != null) {
             val appcompatCheckAttrs = intArrayOf(
@@ -234,7 +221,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         }
     }
 
-    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect): Boolean {
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
         return if (editText != null) {
             editText!!.requestFocus()
         } else {

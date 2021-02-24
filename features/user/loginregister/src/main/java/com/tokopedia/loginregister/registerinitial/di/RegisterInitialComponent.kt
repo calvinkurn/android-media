@@ -9,7 +9,12 @@ import dagger.Component
  * @author by nisie on 10/25/18.
  */
 @RegisterInitialScope
-@Component(modules = [RegisterInitialModule::class, RegisterInitialQueryModule::class, RegisterInitialUseCaseModule::class, RegisterInitialViewModelModule::class], dependencies = [LoginRegisterComponent::class])
+@Component(modules = [
+    RegisterInitialModule::class,
+    RegisterInitialQueryModule::class,
+    RegisterInitialUseCaseModule::class,
+    RegisterInitialViewModelModule::class
+], dependencies = [LoginRegisterComponent::class])
 interface RegisterInitialComponent {
     fun inject(fragment: RegisterInitialFragment?)
     fun inject(fragment: RegisterEmailFragment?)

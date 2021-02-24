@@ -1,5 +1,7 @@
 package com.tokopedia.loginregister.registerinitial.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,6 +17,10 @@ import kotlinx.coroutines.Dispatchers.Main
  */
 @Module
 class RegisterInitialModule {
+
+    @Provides
+    fun providesContext(@ApplicationContext context: Context): Context = context
+
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository {
         return getInstance().graphqlRepository

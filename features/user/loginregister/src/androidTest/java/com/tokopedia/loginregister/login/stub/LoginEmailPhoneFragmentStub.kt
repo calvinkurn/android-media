@@ -43,13 +43,14 @@ class LoginEmailPhoneFragmentStub : LoginEmailPhoneFragment(){
 
     override fun initInjector() {
         DaggerMockLoginComponent.builder()
-                .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build())
+                .loginRegisterComponent(DaggerLoginRegisterComponent.builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .build())
                 .mockLoginQueryModule(MockLoginQueryModule())
                 .mockLoginUseCaseModule(MockLoginUseCaseModule())
                 .mockLoginmodule(MockLoginmodule())
                 .build()
                 .inject(this)
-        presenter.attachView(this, this)
     }
 
     companion object {

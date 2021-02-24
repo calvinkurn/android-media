@@ -106,12 +106,12 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
     private fun showFullProgressBar(){
         view?.container?.hide()
-        view?.progress_bar?.show()
+        view?.progressBarLoginWithPhone?.show()
     }
 
     private fun hideFullProgressBar(){
         view?.container?.show()
-        view?.progress_bar?.hide()
+        view?.progressBarLoginWithPhone?.hide()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
