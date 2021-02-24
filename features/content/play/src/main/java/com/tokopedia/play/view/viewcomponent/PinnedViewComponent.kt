@@ -25,14 +25,9 @@ class PinnedViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val tvPinnedMessage: TextView = findViewById(R.id.tv_pinned_message)
-    private val llPinnedProduct: LinearLayout = findViewById(R.id.ll_pinned_product)
-    private val tvPinnedProductMessage: TextView = findViewById(R.id.tv_pinned_product_message)
-    private val animationProduct: LottieAnimationView = findViewById(R.id.animation_product)
     private val tvPinnedAction: TextView = findViewById(R.id.tv_pinned_action)
 
     fun setPinnedMessage(pinnedMessage: PlayPinnedUiModel.PinnedMessage) {
-        llPinnedProduct.hide()
-
         val partnerName = pinnedMessage.partnerName
         val spannableString = SpannableString(
                 buildString {
@@ -57,24 +52,6 @@ class PinnedViewComponent(
             }
 
         } else tvPinnedAction.hide()
-    }
-
-    fun setPinnedProduct(pinnedProduct: PlayPinnedUiModel.PinnedProduct) {
-        llPinnedProduct.show()
-        tvPinnedAction.show()
-
-        tvPinnedAction.setOnClickListener {
-            listener.onPinnedProductActionClicked(this)
-        }
-
-        tvPinnedMessage.text = spanPartnerName(pinnedProduct.partnerName, SpannableString(pinnedProduct.partnerName))
-        tvPinnedProductMessage.text = pinnedProduct.title
-
-        animationProduct.setAnimation(
-                if (pinnedProduct.hasPromo) R.raw.anim_play_product_promo
-                else R.raw.anim_play_product
-        )
-        animationProduct.playAnimation()
     }
 
     private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {

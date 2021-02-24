@@ -1106,10 +1106,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 else pinnedView?.hide()
             }
             is PlayPinnedUiModel.PinnedProduct -> {
-                pinnedView?.setPinnedProduct(pinnedModel)
-
-                if (!bottomInsets.isAnyShown) pinnedView?.show()
-                else pinnedView?.hide()
+                pinnedView?.hide()
             }
             PlayPinnedUiModel.NoPinned -> {
                 pinnedView?.hide()
