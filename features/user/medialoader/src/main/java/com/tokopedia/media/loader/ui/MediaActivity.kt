@@ -27,30 +27,22 @@ class MediaActivity : AppCompatActivity() {
 
         // from medialoader: normal
         btnBlurHashFromLoader1?.setOnClickListener {
-            Handler().postDelayed({
-                imgTest?.loadImage(generateBlurHash(hash))
-            }, 3000)
+            imgTest?.loadImage(generateBlurHash(hash))
         }
 
         // from medialoader: aspect ratio
         btnBlurHashFromLoader2?.setOnClickListener {
-            Handler().postDelayed({
-                imgTest?.loadImage(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
-            }, 3000)
+            imgTest?.loadImage(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
         }
 
         // from native: normal
         btnBlurHashFromNative1?.setOnClickListener {
-            Handler().postDelayed({
-                imgTest?.setImageBitmap(generateBlurHash(hash))
-            }, 3000)
+            imgTest?.setImageBitmap(generateBlurHash(hash))
         }
 
         // from native: aspect ratio
         btnBlurHashFromNative2?.setOnClickListener {
-            Handler().postDelayed({
-                imgTest?.setImageBitmap(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
-            }, 3000)
+            imgTest?.setImageBitmap(generateBlurHash(hash, imgTest.measuredWidth, imgTest.measuredHeight))
         }
 
         btnNormal?.setOnClickListener { loadImage() }
@@ -69,6 +61,8 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun generateBlurHash(hash: String?, width: Int = 2, height: Int = 2): Bitmap? {
+        imgTest?.scaleType = ImageView.ScaleType.FIT_CENTER
+
         return BlurHashDecoder.decode(
                 blurHash = hash,
                 width = width + 10,

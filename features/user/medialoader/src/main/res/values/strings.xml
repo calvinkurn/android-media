@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="path_media_catalogue" translatable="false">/media-catalogue</string>
+    <string name="path_media_catalogue" translatable="false">/medialoader-lab</string>
 </resources>
