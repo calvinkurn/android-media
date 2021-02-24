@@ -59,12 +59,12 @@ data class ProductMiniSocialProofDataModel(
         return null
     }
 
-    private fun firstPositionData(): Pair<String, Int> {
+    private fun firstPositionData(): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> PAYMENT_VERIFIED to paymentVerifiedCount
-            wishlistCount != 0 -> WISHLIST to wishlistCount
-            viewCount != 0 -> VIEW_COUNT to viewCount
-            else -> "" to 0
+            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
+            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
+            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
+            else -> ProductMiniSocialProofItemDataModel(type = ProductMiniSocialProofItemType.ProductMiniSocialProofText)
         }
     }
 
@@ -72,67 +72,22 @@ data class ProductMiniSocialProofDataModel(
      * Social proof mini should only show 4 of this, with hierarchy
      * When it only contains 1 data, it will show single line social proof
      */
-    private var socialProofData: List<Pair<String, Int>> = emptyList()
+    private var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 
     fun shouldShowSingleViewSocialProof(): Boolean {
         return talkCount == 0 && ratingCount == 0 && buyerPhotosCount == 0
     }
 
-    fun generateFirstSocialProofText(context: Context): String {
-        if (firstPositionData().second == 0) return ""
-        return when (firstPositionData().first) {
-            PAYMENT_VERIFIED -> {
-                context.getString(R.string.label_terjual_builder, firstPositionData().second.productThousandFormatted())
-            }
-            WISHLIST -> {
-                context.getString(R.string.label_wishlist_builder, firstPositionData().second.productThousandFormatted())
-            }
-            VIEW_COUNT -> {
-                context.getString(R.string.label_view_builder, firstPositionData().second.productThousandFormatted())
-            }
-            else -> {
-                ""
-            }
-        }
-    }
-
-    fun generateSingleView(context: Context): String {
-        if (firstPositionData().second == 0) return ""
-        return when (firstPositionData().first) {
-            PAYMENT_VERIFIED -> {
-                context.getString(R.string.terjual_single_text_template_builder, firstPositionData().second.productThousandFormatted())
-            }
-            WISHLIST -> {
-                context.getString(R.string.wishlist_single_text_template_builder, firstPositionData().second.productThousandFormatted())
-            }
-            VIEW_COUNT -> {
-                context.getString(R.string.view_single_text__template_builder, firstPositionData().second.productThousandFormatted())
-            }
-            else -> {
-                ""
-            }
-        }
-    }
-
-    fun isFirstData(data: Pair<String, Int>): Boolean {
-        return when (data.first) {
-            PAYMENT_VERIFIED, WISHLIST, VIEW_COUNT -> true
-            else -> {
-                false
-            }
-        }
-    }
-
     fun setSocialProofData() {
         socialProofData = listOf(firstPositionData(),
-                RATING to ratingCount,
-                BUYER_PHOTOS to buyerPhotosCount,
-                TALK to talkCount)
-                .filter { it.second > 0 }
+                ProductMiniSocialProofItemDataModel(RATING, ratingCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
+                ProductMiniSocialProofItemDataModel(BUYER_PHOTOS, buyerPhotosCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
+                ProductMiniSocialProofItemDataModel(TALK, talkCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+                .filter { it.count > 0 }
                 .take(4)
     }
 
-    fun getSocialProofData(): List<Pair<String, Int>> {
+    fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
         return socialProofData
     }
 }
