@@ -19,9 +19,7 @@ class HomeHeaderOvoDataModel(
     var headerDataModel: HeaderDataModel? = HeaderDataModel()
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is HomepageBannerDataModel) {
-            createdTimeMillis == b.createdTimeMillis
-        } else false
+        return false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

@@ -26,7 +26,7 @@ class HomeRevampUseCase @Inject constructor(
         }
     }
 
-    fun getHomeCachedData(): HomeDataModel? {
+    fun getHomeCachedData(locationParam: String = ""): HomeDataModel? {
         val defaultFlag = HomeFlag()
         defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
         return homeDataMapper.mapToHomeRevampViewModel(HomeData(

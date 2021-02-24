@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -106,6 +107,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -161,6 +163,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -340,12 +343,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        //TODO 3: Get rollence flag if active
-        return true
-    }
-    private fun isChooseAddressRollenceNotActive(): Boolean {
-        //TODO 4: Get rollence flag if not active
-        return false
+        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
@@ -359,9 +357,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun chooseAddressAbTestCondition(
             ifChooseAddressActive: ()-> Unit = {},
             ifChooseAddressNotActive: ()-> Unit = {}) {
-        if (isChooseAddressRollenceActive()) {
+        val isActive = isChooseAddressRollenceActive()
+        if (isActive) {
             ifChooseAddressActive.invoke()
-        } else if (isChooseAddressRollenceNotActive()) {
+        } else {
             ifChooseAddressNotActive.invoke()
         }
     }
@@ -588,11 +587,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
-                    viewModel.get().homeChooseAddressData.isActive = true
-                    //TODO 5: Fetch choose address data and save to viewmodel
+                    onChooseAddressUpdated()
                 },
                 ifChooseAddressNotActive = {
-                    viewModel.get().homeChooseAddressData.isActive = false
+                    viewModel.get().getAddressData().isActive = false
                 }
         )
 
@@ -878,11 +876,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun validateChooseAddressWidget(): Boolean {
-        //TODO 1: Get diff from choose address library
-        val isAddressChanged = true
+        var isAddressChanged = false
+        getHomeViewModel().getAddressData().toLocalCacheModel().let {
+            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+
         if (isAddressChanged) {
-            //TODO 2: Get updated choose address data
+            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
             viewModel.get().updateChooseAddressData(updatedChooseAddressData)
         }
 
@@ -1332,7 +1334,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+                Lego6AutoBannerComponentCallback(context, this),
+                ChooseAddressWidgetCallback(context, this, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1573,8 +1576,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
-    override fun onChooseAddressClick() {
-
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        getHomeViewModel().updateChooseAddressData(
+                HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
+        )
+        Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

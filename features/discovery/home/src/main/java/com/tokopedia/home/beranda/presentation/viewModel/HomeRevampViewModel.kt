@@ -264,7 +264,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var homeNotifModel = HomeNotifModel()
 
-    var homeChooseAddressData = HomeChooseAddressData()
+    private var homeChooseAddressData = HomeChooseAddressData()
 
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
@@ -305,7 +305,8 @@ open class HomeRevampViewModel @Inject constructor(
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
                                 pageName = bestSellerDataModel.pageName,
-                                queryParam = bestSellerDataModel.widgetParam
+                                queryParam = bestSellerDataModel.widgetParam,
+                                location = getHomeLocationDataParam()
                         )
                 )
 
@@ -340,7 +341,8 @@ open class HomeRevampViewModel @Inject constructor(
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
                                 pageName = bestSellerDataModel.pageName,
-                                queryParam = if(filterChip.isActivated) filterChip.value else ""
+                                queryParam = if(filterChip.isActivated) filterChip.value else "",
+                                location = getHomeLocationDataParam()
                         )
                 )
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
@@ -809,7 +811,7 @@ open class HomeRevampViewModel @Inject constructor(
             val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
             val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
             (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-                it.needToShowChooseAddress = homeChooseAddressData.isActive
+                it.needToShowChooseAddress = getAddressData().isActive
                 list[headerIndex] = homeHeaderOvoDataModel
             }
 
@@ -914,7 +916,7 @@ open class HomeRevampViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
 
         launch {
-            val homeCacheData = homeUseCase.get().getHomeCachedData()
+            val homeCacheData = homeUseCase.get().getHomeCachedData(locationParam = getHomeLocationDataParam())
             homeCacheData?.let {it ->
                 homeVisitableListData = it.list.toMutableList()
                 val homeDataModel = evaluateChooseAddressData(it)
@@ -1193,6 +1195,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getFeedTabData() {
         if (getTabRecommendationJob != null) return
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
+            getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
             }
@@ -1370,10 +1373,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
-        this.homeChooseAddressData = homeChooseAddressData
-        refresh(isFirstInstall = false, forceRefresh = true)
-    }
+
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
@@ -1690,5 +1690,55 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun setRollanceNavigationType(type: String) {
         navRollanceType = type
+    }
+
+    fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
+        this.homeChooseAddressData = homeChooseAddressData
+        refresh(isFirstInstall = false, forceRefresh = true)
+    }
+
+    fun clearAddressData() {
+        this.homeChooseAddressData = HomeChooseAddressData()
+    }
+
+    fun getAddressData(): HomeChooseAddressData {
+        return homeChooseAddressData
+    }
+
+    fun isAddressDataEmpty(): Boolean {
+        return getAddressData().lat.isEmpty() &&
+                getAddressData().long.isEmpty() &&
+                getAddressData().districId.isEmpty() &&
+                getAddressData().cityId.isEmpty() &&
+                getAddressData().addressId.isEmpty() &&
+                getAddressData().postCode.isEmpty()
+
+    }
+
+    private fun getHomeLocationDataParam() : String {
+        return if (!isAddressDataEmpty()) {
+             buildLocationParams(
+                    getAddressData().lat,
+                    getAddressData().long,
+                    getAddressData().addressId,
+                    getAddressData().cityId,
+                    getAddressData().districId,
+                    getAddressData().postCode)
+        } else ""
+    }
+
+    private fun buildLocationParams(
+            lat: String = "",
+            long: String = "",
+            addressId: String = "",
+            cityId: String = "",
+            districtId: String = "",
+            postCode: String = ""): String {
+        return "user_lat=" + lat +
+                "&user_long=" + long +
+                "&user_addressId=" + addressId +
+                "&user_cityId=" + cityId +
+                "&user_districtId=" + districtId +
+                "&user_postCode=" + postCode
     }
 }
