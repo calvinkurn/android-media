@@ -188,7 +188,8 @@ class ProductSheetViewComponent(
     private fun getPlaceholderModel() = PlayProductTagsUiModel.Complete(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = "",
-                    partnerId = 0L
+                    partnerId = 0L,
+                    maxFeaturedProducts = 0
             ),
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
             productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }

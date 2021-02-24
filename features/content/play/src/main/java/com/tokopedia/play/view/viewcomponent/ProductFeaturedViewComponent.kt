@@ -40,18 +40,19 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
     }
 
-    fun setFeaturedProducts(featuredProducts: List<PlayProductUiModel>) {
-        adapter.setItemsAndAnimateChanges(getFinalFeaturedItems(featuredProducts))
+    fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
+        adapter.setItemsAndAnimateChanges(getFinalFeaturedItems(products, maxProducts))
 
-        if (featuredProducts.isEmpty()) rvProductFeatured.hide()
+        if (products.isEmpty()) rvProductFeatured.hide()
         else rvProductFeatured.show()
     }
 
     fun showPlaceholder() {
-        setFeaturedProducts(getPlaceholder())
+        setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
     }
 
-    private fun getFinalFeaturedItems(featuredProducts: List<PlayProductUiModel>): List<PlayProductUiModel> {
+    private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
+        val featuredProducts = products.take(maxProducts)
         return if (featuredProducts.isNotEmpty()) {
             if (featuredProducts.first() is PlayProductUiModel.Product && featuredProducts.last() != PlayProductUiModel.SeeMore) featuredProducts + PlayProductUiModel.SeeMore
             else featuredProducts
@@ -59,7 +60,12 @@ class ProductFeaturedViewComponent(
         else featuredProducts
     }
 
-    private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
+    private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
+
+    companion object {
+
+        private const val TOTAL_PLACEHOLDER = 3
+    }
 
     interface Listener {
 

@@ -21,6 +21,7 @@ sealed class PlayProductTagsUiModel {
 data class PlayProductTagsBasicInfoUiModel(
         val bottomSheetTitle: String,
         val partnerId: Long,
+        val maxFeaturedProducts: Int
 )
 
 fun PlayProductTagsUiModel.setContent(

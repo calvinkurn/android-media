@@ -1168,7 +1168,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (pinnedModel) {
             is PlayPinnedUiModel.PinnedProduct -> {
                 if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
-                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList)
+                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
                 }
 
                 if (!bottomInsets.isAnyShown) productFeaturedView?.show()

@@ -100,7 +100,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = PlayProductTagsUiModel.Incomplete(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = configResponse.pinnedProductConfig.bottomSheetTitle,
-                    partnerId = partnerResponse.id.toLongOrZero()
+                    partnerId = partnerResponse.id.toLongOrZero(),
+                    maxFeaturedProducts = 5
             )
     )
 
