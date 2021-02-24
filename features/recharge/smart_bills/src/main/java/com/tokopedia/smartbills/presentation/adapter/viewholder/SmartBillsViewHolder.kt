@@ -63,12 +63,14 @@ class SmartBillsViewHolder(val view: View,
 
             tv_smart_bills_item_description_bill_name.apply {
                 if (titleDesc.isNotEmpty()){
+                    this.show()
                     text = titleDesc
                 } else this.gone()
             }
 
             tv_smart_bills_item_description_number.apply {
                 if (description.isNotEmpty()) {
+                    this.show()
                     text = description
                 } else this.gone()
             }
@@ -116,6 +118,7 @@ class SmartBillsViewHolder(val view: View,
 
             if (!element.dueMessage.text.isNullOrEmpty() && element.dueMessage.type != 0) {
                 tv_due_message.apply {
+                    show()
                     text = element.dueMessage.text
                 }
             } else {
@@ -124,12 +127,14 @@ class SmartBillsViewHolder(val view: View,
 
             if (!element.dueDateLabel.text.isNullOrEmpty() && element.dueDateLabel.type != 0) {
                 tv_due_date_label.apply {
+                    show()
                     text = element.dueDateLabel.text
                     setTextColor(getDueUrgencyColor(element.dueDateLabel.type, context))
                     setWeight(Typography.BOLD)
                 }
 
                 iv_urgency_icon.apply {
+                    show()
                     setImageResource(getDueUrgencyIcon(element.dueDateLabel.type))
                 }
             } else {
