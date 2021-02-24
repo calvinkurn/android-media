@@ -127,6 +127,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             label.layoutParams = labelParams
 
             val value: Typography = Typography(itemView.context).apply {
+                id = View.generateViewId()
                 setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
@@ -158,8 +159,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT
                 )
-                currencyValueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
                 currencyValueParams.addRule(RelativeLayout.BELOW, value.id)
+                currencyValueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
                 currencyValue.layoutParams = currencyValueParams
 
                 if (currencyValue.parent != null) (currencyValue.parent as ViewGroup).removeView(currencyValue)
