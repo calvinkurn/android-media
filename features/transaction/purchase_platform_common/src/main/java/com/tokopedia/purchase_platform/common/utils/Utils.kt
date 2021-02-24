@@ -94,6 +94,10 @@ fun joinToString(strings: List<String>, separator: String): String = strings.joi
 
 fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
 
+fun String.isNotBlankOrZero(): Boolean {
+    return this.isNotBlank() && this.toLongOrZero() != 0L
+}
+
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
         Observable.create({ emitter: Emitter<Boolean> ->

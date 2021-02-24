@@ -27,6 +27,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -112,6 +113,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1812,7 +1814,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
-            renderChooseAddressWidget()
+            renderChooseAddressWidget(cartListData.localizationChooseAddressData)
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
                 renderCartEmpty(it)
@@ -1876,12 +1878,32 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         checkboxGlobal.isChecked = cartListData.isAllSelected
     }
 
-    private fun renderChooseAddressWidget() {
+    private fun renderChooseAddressWidget(localizationChooseAddressData: LocalizationChooseAddressData) {
         activity?.let {
+            validateLocalCacheAddress(it, localizationChooseAddressData)
+
             if (ChooseAddressUtils.isRollOutUser(it)) {
                 val cartChooseAddressHolderData = CartChooseAddressHolderData()
                 cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
             }
+        }
+    }
+
+    private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddressData: LocalizationChooseAddressData) {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(activity)
+        // Todo : change to check state
+        if (localizationChooseAddressData.addressId.isNotBlankOrZero() &&
+                localCacheModel?.address_id?.isNotBlankOrZero() == true &&
+                localizationChooseAddressData.addressId != localCacheModel.address_id) {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = activity,
+                    addressId = localizationChooseAddressData.addressId,
+                    cityId = localizationChooseAddressData.cityId,
+                    districtId = localizationChooseAddressData.districtId,
+                    lat = localizationChooseAddressData.latitude,
+                    long = localizationChooseAddressData.longitude,
+                    addressName = localizationChooseAddressData.addressName,
+                    postalCode = localizationChooseAddressData.postalCode)
         }
     }
 
