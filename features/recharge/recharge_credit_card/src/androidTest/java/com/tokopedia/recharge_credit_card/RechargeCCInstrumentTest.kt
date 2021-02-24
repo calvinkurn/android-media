@@ -34,6 +34,7 @@ class RechargeCCInstrumentTest {
     @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
     private fun typeCreditCardNumber(ccNumber: String) {
