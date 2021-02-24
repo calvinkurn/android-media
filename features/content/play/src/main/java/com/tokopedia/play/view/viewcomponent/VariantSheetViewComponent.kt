@@ -136,12 +136,12 @@ class VariantSheetViewComponent(
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
-                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toLong()?:0L,
+                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toDouble()?:0.0,
                                     discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
                                     discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                             )
                         } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong())
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toDouble())
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,

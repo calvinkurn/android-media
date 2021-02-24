@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -841,7 +842,7 @@ class PlayViewModel @Inject constructor(
 
                 val (totalView, totalLike, totalLikeFormatted) = try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
+                    Triple(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
                     Triple("", 0 , "0")
                 }
@@ -849,7 +850,7 @@ class PlayViewModel @Inject constructor(
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
                 val newLikeStatus = PlayLikeStatusInfoUiModel(
-                        totalLike = totalLike,
+                        totalLike = totalLike.toLong(),
                         totalLikeFormatted = totalLikeFormatted,
                         isLiked = isLiked,
                         source = LikeSource.Network
