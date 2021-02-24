@@ -702,6 +702,13 @@ public class ProductListFragment
     }
 
     @Override
+    public void onProductImpressed(int adapterPosition) {
+        if (presenter == null) return;
+
+        presenter.showBOELabelOnBoarding(adapterPosition);
+    }
+
+    @Override
     public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
@@ -1318,13 +1325,7 @@ public class ProductListFragment
     @Override
     public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
         if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, this::onFreeOngkirOnBoardingShown);
-        }
-    }
-
-    private void onFreeOngkirOnBoardingShown() {
-        if (presenter != null) {
-            presenter.onFreeOngkirOnBoardingShown();
+            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, null);
         }
     }
 
@@ -1638,8 +1639,6 @@ public class ProductListFragment
 
         recyclerView.post(() -> {
             View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
-
-            if (productWithBOELabel != null) recyclerView.smoothScrollToPosition(firstProductPositionWithBOELabel);
 
             recyclerView.postDelayed(() -> {
                 ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(productWithBOELabel);

@@ -233,7 +233,7 @@ public interface ProductListSectionContract {
 
         void getProductCount(Map<String, String> mapParameter);
 
-        void onFreeOngkirOnBoardingShown();
+        void showBOELabelOnBoarding(int position);
 
         void openFilterPage(Map<String, Object> searchParameter);
 

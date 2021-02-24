@@ -23,7 +23,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         `Configure on boarding shown`(boeShown = false)
         `Given view already load data`(searchProductModel)
 
-        `When free ongkir on boarding shown`()
+        `When free ongkir on boarding shown`(firstProductPosition)
 
         `Then assert view show search on boarding`(firstProductPosition)
         `Then assert search on boarding toggled as shown`()
@@ -43,8 +43,8 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadData(mapOf())
     }
 
-    private fun `When free ongkir on boarding shown`() {
-        productListPresenter.onFreeOngkirOnBoardingShown()
+    private fun `When free ongkir on boarding shown`(position: Int) {
+        productListPresenter.showBOELabelOnBoarding(position)
     }
 
     private fun `Then assert view show search on boarding`(firstProductPosition: Int) {
@@ -67,7 +67,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         `Configure on boarding shown`(boeShown = false)
         `Given view already load data`(searchProductModel)
 
-        `When free ongkir on boarding shown`()
+        `When free ongkir on boarding shown`(0)
 
         `Then assert view not show search on boarding`()
     }
@@ -77,7 +77,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         `Configure on boarding shown`(boeShown = true)
         `Given view already load data`("searchproduct/common-response.json".jsonToObject())
 
-        `When free ongkir on boarding shown`()
+        `When free ongkir on boarding shown`(0)
 
         `Then assert view not show search on boarding`()
     }

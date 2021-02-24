@@ -53,6 +53,7 @@ internal fun createProductItemListener(): ProductListener {
         override fun onThreeDotsClick(item: ProductItemViewModel?, adapterPosition: Int) {}
         override fun onItemClicked(item: ProductItemViewModel?, adapterPosition: Int) {}
         override fun onProductImpressed(item: ProductItemViewModel?) {}
+        override fun onProductImpressed(adapterPosition: Int) {}
     }
 }
 

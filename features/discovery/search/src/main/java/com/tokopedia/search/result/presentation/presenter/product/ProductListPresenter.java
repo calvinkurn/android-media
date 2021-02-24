@@ -1954,11 +1954,15 @@ final class ProductListPresenter
         }
     }
 
-    public void onFreeOngkirOnBoardingShown() {
-        if (getView() != null && !isSearchOnBoardingShown() && firstProductPositionWithBOELabel >= 0) {
+    public void showBOELabelOnBoarding(int position) {
+        if (getView() != null && !isSearchOnBoardingShown() && checkProductWithBOELabel(position)) {
             getView().showOnBoarding(firstProductPositionWithBOELabel);
             toggleSearchOnBoardingShown();
         }
+    }
+
+    private boolean checkProductWithBOELabel(int position) {
+        return firstProductPositionWithBOELabel >= 0 && firstProductPositionWithBOELabel == position;
     }
 
     private Boolean isSearchOnBoardingShown() {
