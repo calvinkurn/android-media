@@ -18,6 +18,7 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TY
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.internal.TwoFactorTracker
+import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import kotlinx.android.synthetic.main.fragment_two_factor.view.*
@@ -51,8 +52,17 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mView = inflater.inflate(R.layout.fragment_two_factor, container, false)
+        notifyActivity()
         renderViewByType(mView)
         return mView
+    }
+
+    private fun notifyActivity(){
+        activity?.run {
+            if(this is TwoFactorActivity){
+                onFragmentCreated()
+            }
+        }
     }
 
     private fun renderViewByType(mView: View?){
