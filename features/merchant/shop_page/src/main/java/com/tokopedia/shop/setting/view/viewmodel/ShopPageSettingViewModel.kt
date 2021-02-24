@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -50,27 +51,92 @@ class ShopPageSettingViewModel @Inject constructor(
             // Check for access role
             if (userSessionInterface.isShopOwner) {
                 mShopSettingAccessLiveData.value = Success(ShopSettingAccess())
+                shopInfoResp.value = Success(shopInfo.await())
             } else {
-                withContext(dispatcherProvider.io) {
-                    val addressRole = async { getSettingAddressAccess(id) }
-                    val etalaseRole = async { getSettingEtalaseAccess(id) }
-                    val notesRole = async { getSettingNotesAccess(id) }
-                    val infoRole = async { getSettingInfoAccess(id) }
-                    val shipmentRole = async { getSettingShipmentAccess(id) }
-                    val productManageRole = async { getSettingProductManageAccess(id) }
-                    mShopSettingAccessLiveData.postValue(Success(
-                            ShopSettingAccess(
-                                    isAddressAccessAuthorized = addressRole.await(),
-                                    isEtalaseAccessAuthorized = etalaseRole.await(),
-                                    isNotesAccessAuthorized = notesRole.await(),
-                                    isInfoAccessAuthorized = infoRole.await(),
-                                    isShipmentAccessAuthorized = shipmentRole.await(),
-                                    isProductManageAccessAuthorized = productManageRole.await()
-                            )
-                    ))
+                val addressRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingAddressAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                val etalaseRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingEtalaseAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                val notesRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingNotesAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                val infoRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingInfoAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                val shipmentRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingShipmentAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                val productManageRole = asyncCatchError(
+                        dispatcherProvider.io,
+                        block = { getSettingProductManageAccess(id) },
+                        onError = {
+                            if (shopInfoResp.value !is Fail) {
+                                mShopSettingAccessLiveData.postValue(Fail(it))
+                                shopInfoResp.postValue(Fail(it))
+                            }
+                            null
+                        })
+                addressRole.await()?.let { address ->
+                    etalaseRole.await()?.let { etalase ->
+                        notesRole.await()?.let { notes ->
+                            infoRole.await()?.let { info ->
+                                shipmentRole.await()?.let { shipment ->
+                                    productManageRole.await()?.let { productManage ->
+                                        mShopSettingAccessLiveData.postValue(Success(
+                                                ShopSettingAccess(
+                                                        isAddressAccessAuthorized = address,
+                                                        isEtalaseAccessAuthorized = etalase,
+                                                        isNotesAccessAuthorized = notes,
+                                                        isInfoAccessAuthorized = info,
+                                                        isShipmentAccessAuthorized = shipment,
+                                                        isProductManageAccessAuthorized = productManage
+                                                )
+                                        ))
+                                        shopInfoResp.value = Success(shopInfo.await())
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            shopInfoResp.value = Success(shopInfo.await())
         }) {
             shopInfoResp.value = Fail(it)
         }

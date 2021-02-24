@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
@@ -35,18 +36,47 @@ class MenuSettingViewModel @Inject constructor(
                     if (userSession.isShopOwner) {
                         mShopSettingAccessLiveData.value = Success(MenuSettingAccess())
                     } else {
-                        withContext(dispatchers.io) {
-                            userSession.shopId.toIntOrZero().let { shopId ->
-                                val addressRole = async { getAddressAccessRole(shopId) }
-                                val infoRole = async { getInfoAccessRole(shopId) }
-                                val notesRole = async { getNotesAccessRole(shopId) }
-                                val shipmentRole = async { getShipmentAccessRole(shopId) }
-
-                                mShopSettingAccessLiveData.postValue(Success(MenuSettingAccess(
-                                        isAddressAccessAuthorized = addressRole.await(),
-                                        isInfoAccessAuthorized = infoRole.await(),
-                                        isNotesAccessAuthorized = notesRole.await(),
-                                        isShipmentAccessAuthorized = shipmentRole.await())))
+                        userSession.shopId.toIntOrZero().let { shopId ->
+                            val addressRole = asyncCatchError(
+                                    dispatchers.io,
+                                    block = { getAddressAccessRole(shopId) },
+                                    onError = {
+                                        mShopSettingAccessLiveData.value = Fail(it)
+                                        null
+                                    })
+                            val infoRole = asyncCatchError(
+                                    dispatchers.io,
+                                    block = { getInfoAccessRole(shopId) },
+                                    onError = {
+                                        mShopSettingAccessLiveData.value = Fail(it)
+                                        null
+                                    })
+                            val notesRole = asyncCatchError(
+                                    dispatchers.io,
+                                    block = { getNotesAccessRole(shopId) },
+                                    onError = {
+                                        mShopSettingAccessLiveData.value = Fail(it)
+                                        null
+                                    })
+                            val shipmentRole = asyncCatchError(
+                                    dispatchers.io,
+                                    block = { getShipmentAccessRole(shopId) },
+                                    onError = {
+                                        mShopSettingAccessLiveData.value = Fail(it)
+                                        null
+                                    })
+                            addressRole.await()?.let { address ->
+                                infoRole.await()?.let { info ->
+                                    notesRole.await()?.let { notes ->
+                                        shipmentRole.await()?.let { shipment ->
+                                            mShopSettingAccessLiveData.postValue(Success(MenuSettingAccess(
+                                                    isAddressAccessAuthorized = address,
+                                                    isInfoAccessAuthorized = info,
+                                                    isNotesAccessAuthorized = notes,
+                                                    isShipmentAccessAuthorized = shipment)))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

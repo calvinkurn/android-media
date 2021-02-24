@@ -130,10 +130,10 @@ class ShopPageSettingViewModelTest {
         val mockShopDomain = "domain"
         every { userSessionInterface.isShopOwner } returns false
         coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+        everyCheckAdminShouldSuccess()
 
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
-        everyCheckAdminShouldSuccess()
         verifyAllCheckAdminUseCasesShouldBeCalled()
         assert(viewModel.shopSettingAccessLiveData.value is Success)
     }
@@ -150,7 +150,6 @@ class ShopPageSettingViewModelTest {
 
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
-        everyCheckAdminShouldSuccess()
         verifyAllCheckAdminUseCasesShouldBeCalled()
         assert(viewModel.shopSettingAccessLiveData.value == Success(
                 ShopSettingAccess(
@@ -169,7 +168,6 @@ class ShopPageSettingViewModelTest {
 
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
-        everyCheckAdminShouldFail()
         verifyAllCheckAdminUseCasesShouldBeCalled()
         assert(viewModel.shopSettingAccessLiveData.value is Fail)
         assert(viewModel.shopInfoResp.value is Fail)
