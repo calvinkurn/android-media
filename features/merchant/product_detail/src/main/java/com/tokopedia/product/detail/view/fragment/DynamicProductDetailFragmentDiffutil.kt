@@ -98,7 +98,6 @@ import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -117,6 +116,7 @@ import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
+import com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
@@ -1416,7 +1416,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun showCoachmark(view: Typography?) {
         context?.let {
             if (view != null) {
-                val localizationCoachmark = ChooseAddressUtils.createCoachMarkItem(it, view)
+                val localizationCoachmark = ChooseAddressUtils.coachMark2Item(it, view)
                 localizationCoachmark.position = 1
                 val coachMarkItem = arrayListOf(localizationCoachmark,localizationCoachmark)
                 val coachmark = CoachMark2(it)

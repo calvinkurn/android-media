@@ -101,7 +101,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             shipmentFreeOngkir.loadImage(freeOngkirUrl)
         }
         shipmentLabelCod?.showWithCondition(isCod && !isError)
-        shipmentLabelInstant?.showWithCondition(isInstant)
+        shipmentLabelInstant?.showWithCondition(isInstant && !isError)
     }
 
     private fun adjustIfError(isError: Boolean) = with(itemView) {

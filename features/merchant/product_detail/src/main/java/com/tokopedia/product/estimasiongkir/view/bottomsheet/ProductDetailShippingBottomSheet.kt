@@ -153,4 +153,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
     override fun getLocalizingAddressHostSourceData(): String = "product detail"
+
+    override fun onLocalizingAddressLoginSuccess() {
+    }
 }
