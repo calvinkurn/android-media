@@ -24,7 +24,7 @@ class WishlistMapper @Inject constructor() {
         val cartWishlistItemHolderData = CartWishlistItemHolderData()
         cartWishlistItemHolderData.id = wishlist.id
         cartWishlistItemHolderData.name = wishlist.name
-        cartWishlistItemHolderData.rawPrice = wishlist.price.toString()
+        cartWishlistItemHolderData.rawPrice = wishlist.price
         cartWishlistItemHolderData.price = wishlist.priceFmt
         cartWishlistItemHolderData.imageUrl = wishlist.imageUrl
         cartWishlistItemHolderData.url = wishlist.url

@@ -65,7 +65,7 @@ data class WishlistItem(
     @SerializedName("raw_price")
     @Expose
     @SuppressLint("Invalid Data Type")
-    val rawPrice: Int = -1,
+    val rawPrice: String = "",
     @SerializedName("condition")
     @Expose
     val condition: String = "",
@@ -98,10 +98,6 @@ data class WishlistItem(
     @Expose
     @SuppressLint("Invalid Data Type")
     val slashPrice: String = "",
-    @SerializedName("wholesale_price")
-    @Expose
-    @SuppressLint("Invalid Data Type")
-    val wholesalePrice: List<WholesalePrice> = listOf(),
     @SerializedName("shop")
     @Expose
     val shop: Shop = Shop(),
@@ -125,7 +121,7 @@ data class WishlistItem(
         return other is WishlistItem &&
                 id == other.id && name == other.name && imageUrl == other.imageUrl && url == other.url && rawPrice == other.rawPrice &&
                 condition == other.condition && available == other.available && status == other.status && price == other.price &&
-                minimumOrder == other.minimumOrder && wholesalePrice == other.wholesalePrice && shop == other.shop && preorder == other.preorder &&
+                minimumOrder == other.minimumOrder && shop == other.shop && preorder == other.preorder &&
                 badges.count() == badges.count() && labels.count() == labels.count() && freeOngkir == freeOngkir
     }
 
@@ -134,13 +130,12 @@ data class WishlistItem(
         result = HASH_CODE * result + name.hashCode()
         result = HASH_CODE * result + url.hashCode()
         result = HASH_CODE * result + imageUrl.hashCode()
-        result = HASH_CODE * result + rawPrice
+        result = HASH_CODE * result + rawPrice.hashCode()
         result = HASH_CODE * result + condition.hashCode()
         result = HASH_CODE * result + available.hashCode()
         result = HASH_CODE * result + status.hashCode()
         result = HASH_CODE * result + price.hashCode()
         result = HASH_CODE * result + minimumOrder
-        result = HASH_CODE * result + wholesalePrice.hashCode()
         result = HASH_CODE * result + shop.hashCode()
         result = HASH_CODE * result + preorder.hashCode()
         result = HASH_CODE * result + badges.hashCode()
@@ -195,19 +190,6 @@ data class Shop (
                 location == other.location
     }
 }
-
-data class WholesalePrice (
-    @SerializedName("minimum")
-    @Expose
-    val minimum: Integer,
-    @SerializedName("maximum")
-    @Expose
-    val maximum: Integer,
-    @SerializedName("price")
-    @Expose
-    @SuppressLint("Invalid Data Type")
-    val price: Integer
-)
 
 data class Wishlist (
     @SerializedName("has_next_page")
