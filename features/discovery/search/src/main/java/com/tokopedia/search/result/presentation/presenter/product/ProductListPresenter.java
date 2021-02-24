@@ -226,7 +226,8 @@ final class ProductListPresenter
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
         isABTestNavigationRevamp = isABTestNavigationRevamp();
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled();
-        chooseAddressData = view.getChooseAddressData();
+        if (isEnableChooseAddress)
+            chooseAddressData = view.getChooseAddressData();
     }
 
     private boolean isABTestNavigationRevamp() {
