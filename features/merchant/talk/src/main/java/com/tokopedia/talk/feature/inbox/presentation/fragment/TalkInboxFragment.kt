@@ -468,7 +468,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 val unrespondedFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_UNRESPONDED_FILTER)
                 val problemFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_PROBLEM_FILTER)
                 val autoRepliedFilterChip = talkInboxSortFilter.chipItems.getOrNull(INDEX_AUTOREPLY_FILTER)
-                problemFilter?.toggle()
+                unrespondedFilter?.toggle()
                 selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter(), shouldTrack = false)
                 if(unrespondedFilter?.type == ChipsUnify.TYPE_SELECTED) {
                     problemFilter?.type = ChipsUnify.TYPE_NORMAL
