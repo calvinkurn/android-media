@@ -890,13 +890,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 Toaster.build(it, addressState.popupMessage).show()
             }
         }
-        when (addressState.state) {
-            AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC -> {
-                if (addressState.errorCode == AddressState.IS_ERROR) {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-                    startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
-                }
-            }
+
+        if (addressState.errorCode == AddressState.IS_ERROR) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+            startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         }
     }
 
