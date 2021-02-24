@@ -125,8 +125,6 @@ class DiscoveryFragment :
     private var showOldToolbar: Boolean = false
     private var userAddressData : LocalCacheModel? = null
 
-
-
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
@@ -517,7 +515,7 @@ class DiscoveryFragment :
     }
 
     private fun fetchDiscoveryPageData() {
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
@@ -778,11 +776,15 @@ class DiscoveryFragment :
         return "discovery"
     }
 
+    override fun onLocalizingAddressLoginSuccess() {
+
+    }
+
     override fun onLocalizingAddressUpdatedFromBackground() {
 
     }
 
-    private fun fetchUserLatestAddressData(){
+    private fun fetchUserLatestAddressData() {
         context?.let {
             userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
         }
