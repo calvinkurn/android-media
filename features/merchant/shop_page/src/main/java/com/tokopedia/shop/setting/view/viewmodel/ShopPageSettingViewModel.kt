@@ -42,16 +42,22 @@ class ShopPageSettingViewModel @Inject constructor(
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopInfo = async {
-                withContext(dispatcherProvider.io) {
-                    getShopInfo(id, shopDomain, isRefresh)
-                }
-            }
+            val shopInfo = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        getShopInfo(id, shopDomain, isRefresh)
+                    },
+                    onError = {
+                        shopInfoResp.value = Fail(it)
+                        null
+                    })
 
             // Check for access role
             if (userSessionInterface.isShopOwner) {
                 mShopSettingAccessLiveData.value = Success(ShopSettingAccess())
-                shopInfoResp.value = Success(shopInfo.await())
+                shopInfo.await()?.let {
+                    shopInfoResp.value = Success(it)
+                }
             } else {
                 val addressRole = asyncCatchError(
                         dispatcherProvider.io,
@@ -129,7 +135,9 @@ class ShopPageSettingViewModel @Inject constructor(
                                                         isProductManageAccessAuthorized = productManage
                                                 )
                                         ))
-                                        shopInfoResp.value = Success(shopInfo.await())
+                                        shopInfo.await()?.let {
+                                            shopInfoResp.value = Success(it)
+                                        }
                                     }
                                 }
                             }
