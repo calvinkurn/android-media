@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:padding="@dimen/unify_space_12"
-    android:background="@color/Unify_N0">
+    android:padding="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDigitalCheckoutInputPriceLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:text="@string/digital_cart_user_price_info"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Masukkan jumlah yang dibayar"
-        android:layout_marginTop="@dimen/spacing_lvl2" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
@@ -33,9 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:text_field_input_type="number"
-                app:text_field_prepend_text="Rp"
-                app:text_field_label_static="false"
                 app:text_field_label="@string/digital_cart_hint_input_price"
+                app:text_field_label_static="false"
+                app:text_field_prepend_text="Rp"
                 tools:layout_height="@dimen/spacing_lvl6" />
         </FrameLayout>
 

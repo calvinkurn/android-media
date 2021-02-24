@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.presentation.widget
 
 import android.content.Context
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -25,15 +24,12 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_input_price_view, this, true)
     }
 
-    fun setLabelText(minPayment: String, maxPayment: String) {
-        tvDigitalCheckoutInputPriceLabel.text = resources.getString(R.string.digital_cart_user_price_info, minPayment, maxPayment)
-    }
-
     fun getPriceInput(): Long = priceInput
 
-    fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long) {
+    fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long,
+                         minPaymentString: String, maxPaymentString: String) {
         etDigitalCheckoutInputPrice.textFieldInput.setText(totalPayment)
-        etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object: TextWatcher{
+        etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().isNotEmpty()) {
                     val price: Long = s.toString().toLong()
@@ -45,14 +41,25 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
                 }
                 actionListener?.onInputPriceByUserFilled(priceInput)
 
-                if (isUserInputValid(s.toString(), minPayment, maxPayment)) {
-                    etDigitalCheckoutInputPrice.setError(false)
-                    etDigitalCheckoutInputPrice.setMessage("")
-                    actionListener?.enableCheckoutButton()
-                } else {
-                    etDigitalCheckoutInputPrice.setError(true)
-                    etDigitalCheckoutInputPrice.setMessage(resources.getString(R.string.digital_cart_error_input_price))
-                    actionListener?.disableCheckoutButton()
+                when {
+                    isUserInputValid(priceInput, minPayment, maxPayment) -> {
+                        etDigitalCheckoutInputPrice.setError(false)
+                        etDigitalCheckoutInputPrice.setMessage(resources
+                                .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                        actionListener?.enableCheckoutButton()
+                    }
+                    priceInput > maxPayment -> {
+                        etDigitalCheckoutInputPrice.setError(true)
+                        etDigitalCheckoutInputPrice.setMessage(resources
+                                .getString(R.string.digital_cart_error_input_price_more_than_max, maxPaymentString))
+                        actionListener?.disableCheckoutButton()
+                    }
+                    else -> {
+                        etDigitalCheckoutInputPrice.setError(true)
+                        etDigitalCheckoutInputPrice.setMessage(resources
+                                .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                        actionListener?.disableCheckoutButton()
+                    }
                 }
             }
 
@@ -62,15 +69,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         })
     }
 
-    private fun isUserInputValid(userInput: String, minPayment: Long, maxPayment: Long): Boolean {
-        var priceInput = 0L
-        if (!TextUtils.isEmpty(userInput)) {
-            try {
-                priceInput = userInput.toLong()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-        }
+    private fun isUserInputValid(priceInput: Long, minPayment: Long, maxPayment: Long): Boolean {
         return priceInput in minPayment..maxPayment
     }
 

@@ -746,7 +746,8 @@ class DigitalCartViewModelTest {
         val userInput = 100000.0
 
         // when
-        digitalCartViewModel.setTotalPrice(userInput)
+        addToCart_onSuccess()
+        digitalCartViewModel.setTotalPriceBasedOnUserInput(userInput, false)
 
         // then
         assert(digitalCartViewModel.totalPrice.value == userInput)

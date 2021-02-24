@@ -319,8 +319,8 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun setTotalPrice(totalPrice: Double) {
-        _totalPrice.postValue(totalPrice)
+    fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
+        updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
     }
 
     fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {

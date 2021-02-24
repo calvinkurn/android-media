@@ -493,14 +493,16 @@ class DigitalCartFragment : BaseDaggerFragment() {
         userInputPriceDigital?.let {
             inputPriceContainer.visibility = View.VISIBLE
 
-            inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment
-                    ?: "", userInputPriceDigital.maxPayment ?: "")
-            inputPriceHolderView.setMinMaxPayment(total
-                    ?: "", userInputPriceDigital.minPaymentPlain.toLong(),
-                    userInputPriceDigital.maxPaymentPlain.toLong())
+            inputPriceHolderView.setMinMaxPayment(
+                    total ?: "",
+                    userInputPriceDigital.minPaymentPlain.toLong(),
+                    userInputPriceDigital.maxPaymentPlain.toLong(),
+                    userInputPriceDigital.minPayment ?: "",
+                    userInputPriceDigital.maxPayment ?: "")
+
             inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
                 override fun onInputPriceByUserFilled(paymentAmount: Long) {
-                    viewModel.setTotalPrice(paymentAmount.toDouble())
+                    viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
                 }
 
                 override fun enableCheckoutButton() {
