@@ -32,10 +32,10 @@ interface DigitalCartMyBillsContract {
 
         fun onSubcriptionCheckedListener(checked: Boolean)
 
-        fun onEgoldCheckedListener(checked: Boolean)
+        fun onEgoldCheckedListener(checked: Boolean, inputPrice: Long)
 
         fun onEgoldMoreInfoClicked()
 
-        fun updateTotalPriceWithFintechAmount(checked: Boolean)
+        fun updateTotalPriceWithFintechAmount(checked: Boolean, inputPrice: Long)
     }
 }

@@ -46,7 +46,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
         view.cartInfoData.crossSellingConfig?.run {
             view.updateCheckoutButtonText(checkoutButtonText)
-            view.updateToolbarTitle(headerTitle)
+            if (!headerTitle.isNullOrEmpty()) view.updateToolbarTitle(headerTitle)
 
             val description = if (isChecked) bodyContentAfter else bodyContentBefore
             val isSubscribed = view.digitalSubscriptionParams.isSubscribed
@@ -62,8 +62,8 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         view.updateTotalPriceWithFintechAmount()
     }
 
-    override fun onEgoldCheckedListener(checked: Boolean) {
-        updateTotalPriceWithFintechAmount(checked)
+    override fun onEgoldCheckedListener(checked: Boolean, inputPrice: Long) {
+        updateTotalPriceWithFintechAmount(checked, inputPrice)
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
@@ -104,16 +104,18 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         }
     }
 
-    override fun updateTotalPriceWithFintechAmount(checked: Boolean) {
+    override fun updateTotalPriceWithFintechAmount(checked: Boolean, inputPrice: Long) {
         view.cartInfoData.attributes?.run {
             // Check fintech product type
             if (fintechProduct?.getOrNull(0)?.transactionType == TRANSACTION_TYPE_PROTECTION) {
-                digitalAnalytics.eventClickProtection(checked, categoryName, operatorName, userSession?.userId ?: "")
+                digitalAnalytics.eventClickProtection(checked, categoryName, operatorName, userSession?.userId
+                        ?: "")
             } else {
-                digitalAnalytics.eventClickCrossSell(checked, categoryName, operatorName, userSession?.userId ?: "")
+                digitalAnalytics.eventClickCrossSell(checked, categoryName, operatorName, userSession?.userId
+                        ?: "")
             }
 
-            var totalPrice = pricePlain
+            var totalPrice = if (inputPrice > 0) inputPrice else pricePlain
             if (checked) {
                 val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount
                         ?: 0

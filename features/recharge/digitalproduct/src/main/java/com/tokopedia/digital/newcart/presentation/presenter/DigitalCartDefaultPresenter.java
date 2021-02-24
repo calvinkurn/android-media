@@ -41,6 +41,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
             case DigitalCartCrossSellingType.DEALS:
                 getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                 break;
+            case DigitalCartCrossSellingType.DEFAULT:
             case DigitalCartCrossSellingType.MYBILLS:
                 subParams.setSubscribed(false);
                 getView().inflateMyBillsSubscriptionPage(

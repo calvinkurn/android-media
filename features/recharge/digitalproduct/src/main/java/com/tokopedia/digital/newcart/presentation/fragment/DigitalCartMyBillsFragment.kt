@@ -129,6 +129,11 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun isEgoldChecked(): Boolean = mybillEgold.isChecked()
 
     override fun renderMyBillsSusbcriptionView(headerTitle: String?, description: String?, checked: Boolean, isSubscribed: Boolean) {
+        if (headerTitle.isNullOrEmpty() && description.isNullOrEmpty()) {
+            mybillSubscription.visibility = View.GONE
+            return
+        }
+
         mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             run {
                 presenter.onSubcriptionCheckedListener(isChecked)
@@ -150,6 +155,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         if (headerTitle != null) {
             mybillSubscription.setHeaderTitle(headerTitle)
         }
+
         mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             run {
                 presenter.onSubcriptionCheckedListener(isChecked)
@@ -162,7 +168,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             with(data) {
                 mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
                     run {
-                        presenter.onEgoldCheckedListener(isChecked)
+                        presenter.onEgoldCheckedListener(isChecked, inputPriceHolderView.priceInput)
                     }
                 })
 
@@ -230,7 +236,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
 
     override fun updateTotalPriceWithFintechAmount() {
         if (mybillEgold.visibility == View.VISIBLE) {
-            presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked())
+            presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), inputPriceHolderView.priceInput)
         }
     }
 }
