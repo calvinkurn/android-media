@@ -18,6 +18,8 @@
     <color name="play_dms_gradient_start">#7F31353B</color>
     <color name="play_dms_gradient_end">#0031353B</color>
 
+    <color name="play_dms_summary_background">#7031353B</color>
+
     <!--Schedule-->
     <color name="play_dms_broadcast_schedule_info">#FFFFFF</color>
     <color name="play_dms_broadcast_schedule_divider">#66FFFFFF</color>
