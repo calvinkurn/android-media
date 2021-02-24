@@ -1292,6 +1292,8 @@ class ShopPageFragment :
     }
 
     fun refreshData() {
+        button_chat?.hide()
+        button_chat_old?.hide()
         val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
@@ -1535,7 +1537,8 @@ class ShopPageFragment :
     private fun updateFloatingChatButtonMargin() {
         val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
         if (stickyLoginView?.isShowing() == true) {
-            val stickyLoginViewHeight = stickyLoginView?.height.orZero()
+            stickyLoginView?.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED)
+            val stickyLoginViewHeight = stickyLoginView?.measuredHeight.orZero()
             buttonChatLayoutParams.setMargins(
                     buttonChatLayoutParams.leftMargin,
                     buttonChatLayoutParams.topMargin,

@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -36,6 +35,7 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.ui.chooseaddress.ChooseAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
 import kotlinx.android.synthetic.main.empty_manage_address.*
 import kotlinx.android.synthetic.main.fragment_manage_address.*
@@ -58,7 +59,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener, ChooseAddressWidget.ChooseAddressWidgetListener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -81,7 +82,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
-    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressButton: Typography? = null
 
     private var buttonChooseAddress: UnifyButton? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
@@ -163,7 +164,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
-        chooseAddressWidget = view?.findViewById(R.id.choose_address_widget)
+        chooseAddressButton = view?.findViewById(R.id.text_choose_address)
 
         chooseAddressPref = ChooseAddressSharePref(context)
 
@@ -174,8 +175,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
-
-        chooseAddressWidget?.bindChooseAddress(this)
+        chooseAddressButton?.setOnClickListener {
+            startActivity(context?.let { it -> ChooseAddressActivity.newInstance(it) })
+        }
 
         initScrollListener()
 
@@ -417,31 +419,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    override fun onLocalizingAddressUpdatedFromWidget() {
-        //fetchData()
-        chooseAddressWidget?.updateWidget()
-    }
-
-    override fun onLocalizingAddressUpdatedFromBackground() {
-        //
-    }
-
-    override fun onLocalizingAddressServerDown() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLocalizingAddressRollOutUser(active: Boolean) {
-        //
-    }
-
-    override fun getLocalizingAddressHostFragment(): ManageAddressFragment {
-        return this
-    }
-
-    override fun getLocalizingAddressHostSourceData(): String {
-        return "address"
-    }
-
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
         _selectedAddressItem = peopleAddress
     }
@@ -455,7 +432,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     districtId = addr.destinationDistrictId,
                     lat = addr.latitude,
                     long = addr.longitude,
-                    addressName = addr.addressName) }
+                    addressName = addr.addressName,
+                    postalCode = addr.postalCode) }
         }
 
         if (isFromCheckout == true) {

@@ -11,8 +11,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListModel
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,35 +44,50 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         get() = _test
 
 
-    fun getChosenAddressList() {
-        viewModelScope.launch {
-            /*val getChosenAddressList = chooseAddressRepo.getChosenAddressList()
-            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))*/
-            val getChosenAddressList = fakeChooseAddressRepo.getChosenAddressList()
+    fun getChosenAddressList(source: String) {
+        viewModelScope.launch(onErrorGetChosenAddressList) {
+            val getChosenAddressList = chooseAddressRepo.getChosenAddressList(source)
             _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
+            /*val getChosenAddressList = fakeChooseAddressRepo.getChosenAddressList()
+            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))*/
         }
     }
 
-    fun setStateChosenAddress() {
-        viewModelScope.launch {
-            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress()
+    fun setStateChosenAddress(status: Int, addressId: String, receiverName: String, addressName: String, latitude: String, longitude: String, districtId: String, postalCode: String) {
+        viewModelScope.launch(onErrorSetStateChosenAddress) {
+            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId.toInt(), receiverName, addressName, latitude, longitude, districtId.toInt(), postalCode)
             _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
     }
 
-    fun getStateChosenAddress() {
-        viewModelScope.launch {
-//            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress()
-//            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
-            _test.value = Success("view model")
+    fun getStateChosenAddress(source: String) {
+        viewModelScope.launch(onErrorGetDefaultChosenAddress) {
+            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source)
+            _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
     }
 
-    fun getDefaultChosenAddress() {
-        viewModelScope.launch {
-            val getDefaultChosenAddress = chooseAddressRepo.getDefaultChosenAddress()
+    fun getDefaultChosenAddress(latLong: String?, source: String) {
+        viewModelScope.launch(onErrorGetDefaultChosenAddress) {
+            val getDefaultChosenAddress = chooseAddressRepo.getDefaultChosenAddress(latLong, source)
             _getDefaultAddress.value  = Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
         }
+    }
+
+    private val onErrorGetChosenAddressList = CoroutineExceptionHandler{ _, e ->
+        _chosenAddressList.value = Fail(e)
+    }
+
+    private val onErrorSetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
+        _chosenAddressList.value = Fail(e)
+    }
+
+    private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
+        _chosenAddressList.value = Fail(e)
+    }
+
+    private val onErrorGetDefaultChosenAddress = CoroutineExceptionHandler{ _, e ->
+        _chosenAddressList.value = Fail(e)
     }
 
 }
