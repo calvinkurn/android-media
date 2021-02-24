@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
+import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.MediaTarget
 import kotlinx.android.synthetic.main.activity_test_media.*
 
@@ -60,13 +61,18 @@ class MediaActivity : AppCompatActivity() {
         btnLoadIcon?.setOnClickListener { loadIcon() }
     }
 
-    private fun generateBlurHash(hash: String?, width: Int = 2, height: Int = 2): Bitmap? {
+    private fun generateBlurHash(hash: String?, width: Int? = 2, height: Int? = 2): Bitmap? {
         imgTest?.scaleType = ImageView.ScaleType.FIT_CENTER
+
+        val ratio = AspectRatio.calculate(
+                (width?: 2) + 10,
+                (height?: 2) + 10
+        )
 
         return BlurHashDecoder.decode(
                 blurHash = hash,
-                width = width + 10,
-                height = height + 10,
+                width = ratio.first,
+                height = ratio.second,
                 parallelTasks = 2
         )
     }
