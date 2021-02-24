@@ -65,7 +65,7 @@
                 android:paddingTop="@dimen/spacing_lvl1"
                 android:paddingBottom="@dimen/spacing_lvl1"
                 android:background="@drawable/bg_play_discount_badge"
-                android:textColor="@color/Unify_R400"
+                android:textColor="@color/play_dms_discount_price"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="57%"

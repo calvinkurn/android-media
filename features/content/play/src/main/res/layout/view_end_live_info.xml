@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3"
             tools:text="@string/play_mock_view"
             />
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3"
             android:text="@string/play_mock_like"
             />

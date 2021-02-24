@@ -94,7 +94,7 @@ class VideoViewComponent(
 
         fun configureBackground() {
             rootView.setBackgroundColor(MethodChecker.getColor(rootView.context,
-                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_dms_solid_black
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
                     else R.color.transparent
             ))
         }

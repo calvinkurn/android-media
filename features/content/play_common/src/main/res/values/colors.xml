@@ -9,4 +9,8 @@
 
     <color name="play_dms_bottom_gradient_lighter">#00000000</color>
     <color name="play_dms_bottom_gradient_darker">#B331353B</color>
+
+    <color name="play_dms_R500">#EF144A</color>
+    <color name="play_dms_R400">#FF5C84</color>
+    <color name="play_dms_N700_68">#AD31353B</color>
 </resources>

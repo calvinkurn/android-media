@@ -70,7 +70,7 @@
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:background="@drawable/bg_play_discount_badge"
-            android:textColor="@color/Unify_R400"
+            android:textColor="@color/play_dms_discount_price"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="57%"
@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toEndOf="@id/btn_product_buy"
         app:layout_constraintTop_toBottomOf="@id/btn_product_buy"
         app:layout_constraintBottom_toBottomOf="@id/fl_product_image"
-        app:srcCompat="@drawable/ic_cart_grayscale_20"
+        app:srcCompat="@drawable/ic_play_cart"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
