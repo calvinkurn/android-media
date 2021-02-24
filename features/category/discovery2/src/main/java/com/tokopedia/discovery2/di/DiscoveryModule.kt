@@ -113,7 +113,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
-        return repoProvider.provideDiscoveryPageRepository(provideGetStringMethod(context), context)
+        return repoProvider.provideDiscoveryPageRepository(provideGetStringMethod(context))
     }
 
     @Provides

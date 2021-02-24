@@ -10,7 +10,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
@@ -21,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 
@@ -51,5 +49,5 @@ interface DiscoveryComponent {
     fun inject(quickFilterViewModel: QuickFilterViewModel)
     fun inject(emptyStateViewModel: EmptyStateViewModel)
 
-    fun provideSubComponent(): UIWidgetComponent
+    fun provideSubComponent() : UIWidgetComponent
 }

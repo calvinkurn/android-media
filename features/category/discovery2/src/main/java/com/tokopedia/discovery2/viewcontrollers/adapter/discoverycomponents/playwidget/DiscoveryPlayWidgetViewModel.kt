@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -10,7 +9,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -35,20 +33,20 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
         get() = Dispatchers.Main + SupervisorJob()
 
     fun getPlayWidgetData() {
-        if (!dataPresent)
-            launchCatchError(block = {
-                Log.e(DiscoveryPlayWidgetViewHolder.TestTag, "getPlayWidgetData - Block")
-                components.data?.firstOrNull()?.playWidgetPlayID?.let { widgetID ->
-                    playWidgetUIMutableLiveData.value = processPlayWidget(widgetID)
-                }
-                dataPresent = true
-            }, onError = {
-                dataPresent = true
-//                TODO::ERROR HANDLING
-                Log.e(DiscoveryPlayWidgetViewHolder.TestTag, "getPlayWidgetData - onError")
-                Log.e(DiscoveryPlayWidgetViewHolder.TestTag, "Error - ${it}")
-                playWidgetUIMutableLiveData.value = null
-            })
+        if (!dataPresent) {
+            dataPresent = true
+            hitPlayWidgetService()
+        }
+    }
+
+    fun hitPlayWidgetService() {
+        launchCatchError(block = {
+            components.data?.firstOrNull()?.playWidgetPlayID?.let { widgetID ->
+                playWidgetUIMutableLiveData.value = processPlayWidget(widgetID)
+            }
+        }, onError = {
+            playWidgetUIMutableLiveData.value = null
+        })
     }
 
 
@@ -56,13 +54,10 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
 
         val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.DiscoveryPage(widgetID))
         val uiModel = playWidgetTools.mapWidgetToModel(response)
-        if(widgetID == "6")
-            throw RuntimeException()
         return uiModel
     }
 
     fun updatePlayWidgetTotalView(channelId: String, totalView: String) {
-        Log.e(DiscoveryPlayWidgetViewHolder.TestTag, "updatePlayWidgetTotalView - channelId $channelId totalView $totalView ")
         if (channelId.isNotEmpty() && totalView.isNotEmpty()) {
             val currentValue = playWidgetUIMutableLiveData.value
             currentValue?.let {
@@ -70,5 +65,4 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
             }
         }
     }
-
 }

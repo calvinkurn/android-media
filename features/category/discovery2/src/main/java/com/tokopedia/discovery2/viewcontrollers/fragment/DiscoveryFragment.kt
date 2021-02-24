@@ -122,6 +122,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var showOldToolbar: Boolean = false
 
 
+
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
@@ -159,7 +160,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun initInjector() {
         with(context) {
-            if (this is DiscoveryActivity) {
+            if(this is DiscoveryActivity) {
                 this.discoveryComponent
                         .inject(this@DiscoveryFragment)
             }
@@ -404,23 +405,21 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerDataMapper(data), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if (linkerShareData.url != null) {
+                if(linkerShareData.url != null) {
                     Utils.shareData(activity, data?.share?.description, linkerShareData.url)
                 }
             }
-
             override fun onError(linkerError: LinkerError) {
                 Utils.shareData(activity, data?.share?.description, data?.share?.url)
             }
         }))
     }
 
-    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data : PageInfo?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url
-                ?: "", discoComponentQuery)
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoComponentQuery)
         linkerData.description = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
