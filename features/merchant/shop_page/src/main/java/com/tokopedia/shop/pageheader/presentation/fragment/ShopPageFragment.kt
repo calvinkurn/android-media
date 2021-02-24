@@ -100,6 +100,8 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
+import com.tokopedia.shop.common.util.EspressoIdlingResource
+import com.tokopedia.shop.common.util.ViewPager2IdlingResource
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -343,6 +345,7 @@ class ShopPageFragment :
         viewPager.isUserInputEnabled = false
         viewPager.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
         viewPager.adapter = viewPagerAdapter
+        ViewPager2IdlingResource.setViewPagerIdlingResource(viewPager, "shop page")
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -389,6 +392,7 @@ class ShopPageFragment :
 
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel?.shopPageP1Data?.observe(owner, Observer { result ->
+            EspressoIdlingResource.decrement()
             stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
             startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
@@ -731,6 +735,7 @@ class ShopPageFragment :
 
     private  fun getShopPageP1Data(){
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
+        EspressoIdlingResource.increment()
         shopViewModel?.getShopPageTabData(
                 shopId.toIntOrZero(),
                 shopDomain.orEmpty(),
