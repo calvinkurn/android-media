@@ -274,6 +274,7 @@
     <string name="menu_delete">Hapus</string>
     <string name="close_reply">Tutup Balasan</string>
     <string name="menu_report">Laporkan</string>
+    <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_home_npl_campaign_follow">Follow Toko</string>
