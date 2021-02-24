@@ -62,8 +62,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
-        val editButton = itemView.findViewById<UnifyButton>(R.id.action_edit)
-        val lainnyaButton = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
+        val btnPrimary = itemView.findViewById<UnifyButton>(R.id.btn_primary)
+        val btnSecondary = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
         val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
@@ -90,7 +90,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 }
                 val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
                 val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
-                lainnyaButton.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
+                btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected = selectedPos == layoutPosition
                 cardAddress.hasCheckIcon = cardSelected
@@ -129,10 +129,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         }
 
         private fun setListener(itemView: View, peopleAddress: RecipientAddressModel) {
-            editButton.setOnClickListener  {
+            btnPrimary.setOnClickListener  {
                 listener.onManageAddressEditClicked(peopleAddress)
             }
-            lainnyaButton.setOnClickListener {
+            btnSecondary.setOnClickListener {
                 listener.onManageAddressLainnyaClicked(peopleAddress)
             }
             cardAddress.setOnClickListener {

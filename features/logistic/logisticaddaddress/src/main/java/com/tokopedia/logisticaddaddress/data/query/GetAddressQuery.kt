@@ -32,6 +32,9 @@ object GetAddressQuery {
               partner_name
               type
               is_corner
+              state
+              state_detail
+              is_state_chosen_address
             }
             token {
               district_recommendation
