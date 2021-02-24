@@ -33,7 +33,9 @@ class TwoFactorActivity: BaseSimpleActivity(), ActivePageListener {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+    }
 
+    fun onFragmentCreated(){
         fragment?.run {
             if(this is TwoFactorFragment){
                 this.setActiveListener(this@TwoFactorActivity)
