@@ -26,19 +26,19 @@ open class LoginModule {
     @LoginScope
     @Provides
     @Named(LOGIN_CACHE)
-    open fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, LOGIN_CACHE)
     }
 
     @LoginScope
     @Provides
-    open fun provideMainDispatcher(): CoroutineDispatcher {
+    fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
     }
 
     @LoginScope
     @Provides
-    open fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
+    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
         override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
@@ -54,13 +54,13 @@ open class LoginModule {
 
     @LoginScope
     @Provides
-    open fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
+    fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
         return FingerprintPreferenceHelper(context)
     }
 
     @LoginScope
     @Provides
-    open fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
+    fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
         return SocmedBottomSheet(context)
     }
 
