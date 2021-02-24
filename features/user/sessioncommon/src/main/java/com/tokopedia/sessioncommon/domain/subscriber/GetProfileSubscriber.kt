@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
@@ -57,9 +58,9 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
 
     private fun getAdminType(profile: ProfilePojo) {
         getAdminTypeUseCase?.execute(GetAdminTypeSubscriber(
-            userSession,
-            onSuccessGetAdminType(profile),
-            onErrorGetAdminType()
+                userSession,
+                onSuccessGetAdminType(profile),
+                onErrorGetAdminType()
         ), GET_ADMIN_TYPE_SOURCE)
     }
 
@@ -70,7 +71,10 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
 
             // If shopId in profile is empty, set shopId from admin data response
             // for user other than location admin.
-            val userProfile = if(!isLocationAdmin && shopId.isEmpty()) {
+            // Also, if shop is inactive, set shopId to zero
+            val shouldSetShopIdFromAdminData =
+                    (!isLocationAdmin && shopId.isEmpty()) || !it.data.isShopActive()
+            val userProfile = if(shouldSetShopIdFromAdminData) {
                 setShopIdFromAdminData(profile, it)
             } else {
                 profile
@@ -86,7 +90,13 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
     }
 
     private fun setShopIdFromAdminData(profile: ProfilePojo, adminData: AdminDataResponse): ProfilePojo {
-        val shopId = adminData.shopId
+        val isShopActive = adminData.data.isShopActive()
+        val shopId =
+                if (isShopActive) {
+                    adminData.shopId
+                } else {
+                    ""
+                }
         val shopInfo = profile.shopInfo
         val shopData = shopInfo.shopData.copy(shopId = shopId)
         val shopBasicData = shopInfo.copy(shopData = shopData)
