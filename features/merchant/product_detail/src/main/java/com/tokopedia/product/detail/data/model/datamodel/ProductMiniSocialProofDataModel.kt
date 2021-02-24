@@ -59,12 +59,12 @@ data class ProductMiniSocialProofDataModel(
         return null
     }
 
-    private fun firstPositionData(): ProductMiniSocialProofItemDataModel {
+    private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
-            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
-            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount, ProductMiniSocialProofItemType.ProductMiniSocialProofText)
-            else -> ProductMiniSocialProofItemDataModel(type = ProductMiniSocialProofItemType.ProductMiniSocialProofText)
+            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount, type)
+            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount, type)
+            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount, type)
+            else -> ProductMiniSocialProofItemDataModel(type = type)
         }
     }
 
@@ -79,7 +79,11 @@ data class ProductMiniSocialProofDataModel(
     }
 
     fun setSocialProofData() {
-        socialProofData = listOf(firstPositionData(),
+        if(shouldShowSingleViewSocialProof()) {
+            socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
+            return
+        }
+        socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText),
                 ProductMiniSocialProofItemDataModel(RATING, ratingCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
                 ProductMiniSocialProofItemDataModel(BUYER_PHOTOS, buyerPhotosCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
                 ProductMiniSocialProofItemDataModel(TALK, talkCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip))

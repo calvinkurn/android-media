@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -59,6 +58,10 @@ class ProductMiniSocialProofChipViewHolder(
                     }
                 }
                 ProductMiniSocialProofItemType.ProductMiniSocialProofText -> {
+                    val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
+                    firstSocialProofTxt.text = generateFirstSocialProofText(socialProof)
+                }
+                ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText -> {
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
                     firstSocialProofTxt.text = generateSingleView(socialProof)
                 }
