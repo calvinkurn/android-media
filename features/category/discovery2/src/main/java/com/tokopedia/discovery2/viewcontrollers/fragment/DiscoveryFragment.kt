@@ -178,13 +178,8 @@ class DiscoveryFragment :
     }
 
     private fun initChooseAddressWidget(view: View) {
-        context?.let {
-            if(ChooseAddressUtils.isRollOutUser(it)){
-                chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
-                chooseAddressWidget?.bindChooseAddress(this)
-                fetchUserLatestAddressData()
-            }
-        }
+        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidget?.bindChooseAddress(this)
     }
 
     private fun initToolbar(view: View) {
@@ -263,7 +258,6 @@ class DiscoveryFragment :
 
     fun reSync() {
         fetchDiscoveryPageData()
-
     }
 
     private fun bindStickyViewHolder() {
@@ -271,7 +265,7 @@ class DiscoveryFragment :
     }
 
     private fun setUpObserver() {
-        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
@@ -294,7 +288,7 @@ class DiscoveryFragment :
             mSwipeRefreshLayout.isRefreshing = false
         })
 
-        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -308,7 +302,7 @@ class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     setToolBarPageInfoOnSuccess(it.data)
@@ -320,7 +314,7 @@ class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, {
             when (it) {
                 is RouteToApplink -> {
                     RouteManager.route(context, it.applink)
@@ -332,13 +326,24 @@ class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     setBottomNavigationComp(it)
                 }
                 is Fail -> {
                     bottomNav?.hide()
+                }
+            }
+        })
+
+        discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
+            context?.let {
+                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
+                    chooseAddressWidget?.show()
+                    fetchUserLatestAddressData()
+                }else{
+                    chooseAddressWidget?.hide()
                 }
             }
         })
@@ -761,7 +766,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-        if(isRollOutUser){
+        if(isRollOutUser && discoveryViewModel.getAddressVisibilityValue()){
             chooseAddressWidget?.show()
         }else{
             chooseAddressWidget?.gone()

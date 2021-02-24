@@ -65,6 +65,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
+    var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
     private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
@@ -113,6 +114,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
+            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
@@ -248,4 +250,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel){
         WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
     }
+
+    fun checkAddressVisibility() = chooseAddressVisibilityLiveData
+    fun getAddressVisibilityValue() = chooseAddressVisibilityLiveData.value ?: false
 }

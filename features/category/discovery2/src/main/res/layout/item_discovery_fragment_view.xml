@@ -10,8 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_34"
         android:paddingStart="@dimen/dp_19"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
         android:id="@+id/discovery_recyclerView"
