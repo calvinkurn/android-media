@@ -31,6 +31,11 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
@@ -42,6 +47,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
@@ -87,6 +94,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var isFragmentVisible = false
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -192,7 +200,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
@@ -202,7 +210,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return com.tokopedia.product.addedit.R.id.recycler_view
+        return R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -210,6 +218,9 @@ class AddEditProductDescriptionFragment:
 
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription?.textFieldInput?.apply {
@@ -298,6 +309,42 @@ class AddEditProductDescriptionFragment:
         stopPreparePagePerformanceMonitoring()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            inputAllDataInInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
+            descriptionViewModel.isAddMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
+            descriptionViewModel.isEditMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            descriptionViewModel.isDraftMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            descriptionViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    descriptionViewModel.updateProductInputModel(this)
+                    if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) {
+                        applyEditMode()
+                    } else {
+                        btnNext.visibility = View.VISIBLE
+                        btnSave.visibility = View.GONE
+                    }
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
     private fun sendClickAddProductVariant() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickAddProductVariant(shopId)
@@ -308,6 +355,7 @@ class AddEditProductDescriptionFragment:
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 

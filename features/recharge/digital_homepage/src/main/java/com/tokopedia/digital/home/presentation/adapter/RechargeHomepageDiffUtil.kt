@@ -12,10 +12,10 @@ class RechargeHomepageDiffUtil(private val oldList: List<Visitable<*>>, private 
         val newItem = newList[newItemPosition]
         return when {
             oldItem is RechargeHomepageSectionModel && newItem is RechargeHomepageSectionModel -> {
-                oldItem.visitableId() == newItem.visitableId()
+                oldItem.visitableId().equals(newItem.visitableId())
             }
             oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable -> {
-                oldItem.visitableId() == newItem.visitableId()
+                (oldItem.visitableId() ?: "").equals(newItem.visitableId() ?: "")
             }
             else -> false
         }

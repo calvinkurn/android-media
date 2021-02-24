@@ -518,7 +518,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>app_enable_pdp_diffutil</key>
-        <value>true</value>
+        <key>is_go_to_pdp_for_old_normal_checkout</key>
+        <value>false</value>
     </entry>
 </defaultsMap>

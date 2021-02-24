@@ -13,13 +13,13 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
 public class AttachProductItemUiModel implements Parcelable, Visitable<AttachProductListAdapterTypeFactory>  {
     protected String productUrl;
     protected String productName;
-    protected int productId;
+    protected String productId;
     protected String productImageFull;
     protected String productImage;
     protected String productPrice;
     protected String shopName;
 
-    public AttachProductItemUiModel(String productUrl, String productName, int productId,
+    public AttachProductItemUiModel(String productUrl, String productName, String productId,
                                     String productImageFull, String productImage,
                                     String productPrice, String shopName) {
         this.productUrl = productUrl;
@@ -39,7 +39,7 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         return productName;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
@@ -71,7 +71,7 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productUrl);
         dest.writeString(this.productName);
-        dest.writeInt(this.productId);
+        dest.writeString(this.productId);
         dest.writeString(this.productImageFull);
         dest.writeString(this.productImage);
         dest.writeString(this.productPrice);
@@ -81,7 +81,7 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
     protected AttachProductItemUiModel(Parcel in) {
         this.productUrl = in.readString();
         this.productName = in.readString();
-        this.productId = in.readInt();
+        this.productId = in.readString();
         this.productImageFull = in.readString();
         this.productImage = in.readString();
         this.productPrice = in.readString();

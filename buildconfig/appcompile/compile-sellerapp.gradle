@@ -123,6 +123,8 @@ include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 
+include "features:communication:push-notification-common"
+
 include "features:user:attachproduct"
 include "features:user:attachcommon"
 include "features:user:chat_common"
@@ -153,6 +155,7 @@ include "features:user:liveness"
 include "features:user:loginfingerprint"
 include 'features:user:notif-troubleshooter'
 include "features:user:additional_check"
+include "features:user:inbox_common"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"

@@ -754,18 +754,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun loadInitialData() {
-        if (isOnViewCreated && isShopProductTabSelected()  && userVisibleHint) {
-            isLoadingNewProductData = true
-            shopProductAdapter.clearAllElements()
-            stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
-            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
-            showLoading()
-            initialProductListData?.let{
-                viewModel.setInitialProductList(shopId, it)
-            }
-            viewModel.getShopFilterData(shopId)
-            isOnViewCreated = false
+        isLoadingNewProductData = true
+        shopProductAdapter.clearAllElements()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
+        showLoading()
+        initialProductListData?.let{
+            viewModel.setInitialProductList(shopId, it)
         }
+        viewModel.getShopFilterData(shopId)
+        isOnViewCreated = false
     }
 
     private fun promoClicked(url: String?) {
@@ -805,7 +803,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
+            snackbar.setAction(requireActivity().getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
@@ -975,12 +973,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
-        loadInitialData()
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        loadInitialData()
+    override fun onResume() {
+        loadInitialDataAfterOnViewCreated()
+        super.onResume()
+    }
+
+    private fun loadInitialDataAfterOnViewCreated() {
+        if (isOnViewCreated) {
+            loadInitialData()
+            isOnViewCreated = false
+        }
     }
 
     private fun getArgumentsData() {
@@ -1312,14 +1316,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToasterError(message: String) {
         activity?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.clearMembershipData()
         activity?.let {
-            Toaster.make(view!!, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(requireView(), ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

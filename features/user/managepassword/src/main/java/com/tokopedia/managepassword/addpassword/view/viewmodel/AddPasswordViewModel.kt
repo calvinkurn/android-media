@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
 import com.tokopedia.managepassword.common.ManagePasswordConstant
+import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
+import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class AddPasswordViewModel @Inject constructor(
         private val usecase: AddPasswordUseCase,
+        private val getProfileCompletionUseCase: GetProfileCompletionUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -30,6 +33,17 @@ class AddPasswordViewModel @Inject constructor(
     val validatePasswordConfirmation: LiveData<Result<String>>
         get() = _validatePasswordConfirmation
 
+    private val _profileData = MutableLiveData<Result<ProfileDataModel>>()
+    val profileDataModel: LiveData<Result<ProfileDataModel>>
+        get() = _profileData
+
+    fun checkPassword() {
+        getProfileCompletionUseCase.getData(onSuccess = {
+            _profileData.postValue(Success(it))
+        }, onError = {
+            _profileData.postValue(Fail(it))
+        })
+    }
 
     fun createPassword(password: String, confirmationPassword: String) {
         launchCatchError(coroutineContext, {

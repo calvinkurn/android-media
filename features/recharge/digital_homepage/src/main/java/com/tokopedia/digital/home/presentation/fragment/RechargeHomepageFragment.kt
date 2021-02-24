@@ -36,6 +36,7 @@ import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewMod
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
@@ -217,7 +218,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
                 homeComponent.visitableId()?.toInt()
             }
-            homeComponentsData = it.filter { section -> section.id in homeComponentIDs }
+            homeComponentsData = it.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
             adapter.renderList(mappedData)
         })
     }
@@ -230,10 +231,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: Int) {
-        if (sectionID >= 0) {
+    override fun loadRechargeSectionData(sectionID: String, isLoadFromCloud: Boolean) {
+        if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), enablePersonalize)
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize),
+                    isLoadFromCloud
             )
         }
     }
@@ -242,9 +244,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int) {
+    override fun onRechargeLegoBannerItemClicked(sectionID: String, itemID: String, itemPosition: Int) {
         if (::homeComponentsData.isInitialized) {
-            val bannerItem = homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }
+            val bannerItem = homeComponentsData.find {
+                it.id.equals(sectionID)
+            }?.items?.find { it.id.equals(itemID) }
             bannerItem?.run {
                 tracking.find {
                     it.action == RechargeHomepageAnalytics.ACTION_CLICK
@@ -262,9 +266,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeReminderWidgetClicked(sectionID: Int) {
+    override fun onRechargeReminderWidgetClicked(sectionID: String) {
         if (::homeComponentsData.isInitialized) {
-            val reminderData = homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()
+            val reminderData = homeComponentsData.find {
+                it.id.equals(sectionID)
+            }?.items?.firstOrNull()
             reminderData?.run {
                 tracking.find {
                     it.action == RechargeHomepageAnalytics.ACTION_CLICK
@@ -277,14 +283,16 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeReminderWidgetClosed(sectionID: Int, toggleTracking: Boolean) {
-        val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID }
+    override fun onRechargeReminderWidgetClosed(sectionID: String, toggleTracking: Boolean) {
+        val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId().equals(sectionID) }
         if (index >= 0 && ::homeComponentsData.isInitialized) {
             // Trigger close reminder widget action
-            val section = homeComponentsData.find { it.id == sectionID }
+            val section = homeComponentsData.find {
+                it.id.equals(sectionID)
+            }
             if (toggleTracking && section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
-                        viewModel.createRechargeHomepageSectionActionParams(sectionID, "ActionClose", section.objectId, section.items.first().objectId)
+                        viewModel.createRechargeHomepageSectionActionParams(sectionID.toIntOrZero(), "ActionClose", section.objectId, section.items.first().objectId)
                 )
             }
             onRechargeSectionEmpty(sectionID)
@@ -292,13 +300,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section) {
-        val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId() == section.id }
+        val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId().equals(section.id) }
         if (index >= 0) {
             // Trigger close product banner action
             if (section.items.isNotEmpty()) {
                 with(section) {
                     viewModel.triggerRechargeSectionAction(
-                            viewModel.createRechargeHomepageSectionActionParams(id, "ActionClose", objectId, items.first().objectId)
+                            viewModel.createRechargeHomepageSectionActionParams(id.toIntOrZero(), "ActionClose", objectId, items.first().objectId)
                     )
                 }
             }
@@ -326,9 +334,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeReminderWidgetImpression(sectionID: Int) {
+    override fun onRechargeReminderWidgetImpression(sectionID: String) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
+            homeComponentsData.find { it.id.equals(sectionID) }?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION
             }?.run {
                 rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
@@ -336,9 +344,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeLegoBannerImpression(sectionID: Int) {
+    override fun onRechargeLegoBannerImpression(sectionID: String) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
+            homeComponentsData.find { it.id.equals(sectionID) }?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION
             }?.run {
                 rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
@@ -346,10 +354,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeSectionEmpty(sectionID: Int) {
+    override fun onRechargeSectionEmpty(sectionID: String) {
         val index = adapter.data.indexOfFirst {
-            (it is RechargeHomepageSectionModel && it.visitableId() == sectionID) ||
-                    (it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID)
+            (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
+                    (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
         if (index >= 0) {
             recycler_view.post {

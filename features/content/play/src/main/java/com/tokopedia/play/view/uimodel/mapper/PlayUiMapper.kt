@@ -8,11 +8,13 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import javax.inject.Inject
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-object PlayUiMapper {
+class PlayUiMapper @Inject constructor(private val htmlTextTransformer: HtmlTextTransformer) {
 
     fun createCompleteInfoModel(
             channel: Channel,
@@ -29,11 +31,11 @@ object PlayUiMapper {
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
-                    channel.partner.name,
+                    parsePartnerName(channel.partner.name),
                     channel.pinnedMessage
             ),
             pinnedProduct = mapPinnedProduct(
-                    channel.partner.name,
+                    parsePartnerName(channel.partner.name),
                     channel.configuration),
             quickReply = mapQuickReply(channel.quickReplies),
             totalView = mapTotalViews(channel.stats.view.formatted),
@@ -64,11 +66,13 @@ object PlayUiMapper {
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
             id = partner.id.toLongOrZero(),
-            name = partner.name,
+            name = parsePartnerName(partner.name),
             type = PartnerType.getTypeByValue(partner.type),
             isFollowed = true,
             isFollowable = false
     )
+
+    private fun parsePartnerName(partnerName: String) = htmlTextTransformer.transform(partnerName)
 
     private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
             contentId = feedInfo.contentId,

@@ -58,6 +58,15 @@ object SmartBillsQueries {
                   }
                   billName: BillName
                   isChecked: IsChecked
+                  DueDate
+                  DueMessage{
+                     Type
+                     Text
+                  }
+                  DueDateLabel{
+                     Type
+                     Text
+                  }
                 }
               }
             }

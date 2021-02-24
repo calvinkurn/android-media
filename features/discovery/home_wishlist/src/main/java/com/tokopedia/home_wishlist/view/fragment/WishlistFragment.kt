@@ -119,7 +119,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val COACH_MARK_TAG = "wishlist"
+        const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
         private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
         private const val CACHE_CART = "CART"
