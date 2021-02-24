@@ -181,17 +181,8 @@ data class PromoCoachmark(
         val title: String = "",
         @SerializedName("content")
         @Expose
-        val content: String = "",
-        @SerializedName("cta")
-        @Expose
-        val cta: ClickToAction = ClickToAction()
-) {
-    data class ClickToAction(
-            @SerializedName("text")
-            @Expose
-            val text: String = ""
-    )
-}
+        val content: String = ""
+)
 
 data class AttemptedPromoCodeError(
         @SerializedName("code")

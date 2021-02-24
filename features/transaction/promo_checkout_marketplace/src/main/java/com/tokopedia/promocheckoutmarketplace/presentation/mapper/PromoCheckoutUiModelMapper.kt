@@ -117,8 +117,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     coachMark = PromoListItemUiModel.UiCoachmarkData(
                             isShown = couponItem.coachMark.isShown,
                             title = couponItem.coachMark.title,
-                            content = couponItem.coachMark.content,
-                            ctaText = couponItem.coachMark.cta.text
+                            content = couponItem.coachMark.content
                     )
                     val clashingInfoMap = HashMap<String, String>()
                     if (couponItem.clashingInfos.isNotEmpty()) {

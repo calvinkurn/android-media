@@ -53,8 +53,7 @@ data class PromoListItemUiModel(
     data class UiCoachmarkData(
             val isShown: Boolean = false,
             val title: String = "",
-            val content: String = "",
-            val ctaText: String = ""
+            val content: String = ""
     )
 
     data class UiState(
