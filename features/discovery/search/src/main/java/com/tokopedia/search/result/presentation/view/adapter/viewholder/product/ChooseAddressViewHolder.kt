@@ -60,6 +60,10 @@ internal class ChooseAddressViewHolder(
             override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+
+            override fun onLocalizingAddressLoginSuccess() {
+
+            }
         })
     }
 
