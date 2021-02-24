@@ -34,7 +34,8 @@ object SellerUiModelMapper {
         return NotificationUiModel(
             notifications.inbox.talk,
             notifications.notifCenterTotalUnread.seller,
-            shopOrderUiModel
+            shopOrderUiModel,
+            response.notifications.resolution.sellerResolutionCount
         )
     }
 }

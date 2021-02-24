@@ -20,6 +20,7 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
@@ -175,6 +176,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 is Success -> {
                     val order = it.data.order
                     adapter.showOrderSection(order)
+                    adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
+                        item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
+                    })
                 }
             }
             swipeRefreshLayout.isRefreshing = false

@@ -5,5 +5,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 data class NotificationUiModel(
     val inboxTalkUnread: Int,
     val notifCenterTotalUnread: Int,
-    val order: ShopOrderUiModel
+    val order: ShopOrderUiModel,
+    val resolutionCount: Int
 )

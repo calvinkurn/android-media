@@ -15,6 +15,9 @@ internal object SellerMenuNotification {
                 inbox {
                     talk
                 }
+                resolutionAs {
+                    resolution_as_seller
+                }
             }
         }
     """.trimIndent()
