@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
@@ -116,6 +117,7 @@ abstract class TopchatRoomTest {
 
     protected fun setupChatRoomActivity(
             sourcePage: String? = null,
+            isSellerApp: Boolean = false,
             intentModifier: (Intent) -> Unit = {}
     ) {
         val intent = Intent().apply {
@@ -131,6 +133,9 @@ abstract class TopchatRoomTest {
                 activity.supportFragmentManager,
                 TopChatRoomActivityStub.TAG
         )
+        if (isSellerApp) {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        }
     }
 
     protected fun waitForFragmentResumed() {
