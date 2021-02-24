@@ -37,11 +37,7 @@ class ListProductItemViewHolder(
             productListener.onItemClicked(productItem, adapterPosition)
         }
 
-        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
-
-        itemView.addOnImpressionListener(productItem) {
-            productListener.onProductImpressed(adapterPosition)
-        }
+        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem, adapterPosition))
     }
 
     override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {

@@ -63,10 +63,10 @@ abstract class ProductItemViewHolder(
         } ?: listOf()
     }
 
-    protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
+    protected fun createImageProductViewHintListener(productItem: ProductItemViewModel, adapterPosition: Int): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                productListener.onProductImpressed(productItem)
+                productListener.onProductImpressed(productItem, adapterPosition)
             }
         }
     }

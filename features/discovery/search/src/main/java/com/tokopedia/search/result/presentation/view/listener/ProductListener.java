@@ -7,7 +7,5 @@ public interface ProductListener {
 
     void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
 
-    void onProductImpressed(ProductItemViewModel item);
-
-    void onProductImpressed(int adapterPosition);
+    void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 }
