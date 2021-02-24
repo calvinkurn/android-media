@@ -24,7 +24,7 @@ class PinnedVoucherViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    private val rvPinnedVoucherList: RecyclerView = findViewById(R.id.rv_pinned_voucher_list)
+    private val rvPinnedVoucherList: RecyclerView = rootView as RecyclerView
 
     private val pinnedVoucherAdapter = PinnedVoucherAdapter(object : PinnedVoucherViewHolder.Listener {
         override fun onVoucherClicked(voucher: MerchantVoucherUiModel) {
@@ -33,10 +33,7 @@ class PinnedVoucherViewComponent(
     })
 
     init {
-        rvPinnedVoucherList.apply {
-            layoutManager = LinearLayoutManager(rvPinnedVoucherList.context, RecyclerView.HORIZONTAL, false)
-            adapter = pinnedVoucherAdapter
-        }
+        rvPinnedVoucherList.adapter = pinnedVoucherAdapter
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {

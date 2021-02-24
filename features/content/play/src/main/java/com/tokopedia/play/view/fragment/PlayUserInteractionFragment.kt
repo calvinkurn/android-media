@@ -72,8 +72,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**

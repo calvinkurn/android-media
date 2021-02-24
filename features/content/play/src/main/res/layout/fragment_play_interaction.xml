@@ -90,12 +90,12 @@
     <include
         android:id="@+id/view_pinned_voucher"
         layout="@layout/view_pinned_voucher"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@id/view_pinned"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
         app:layout_constraintStart_toStartOf="@id/space_size"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         />
