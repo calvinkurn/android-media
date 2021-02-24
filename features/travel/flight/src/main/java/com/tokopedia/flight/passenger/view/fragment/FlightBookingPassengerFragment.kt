@@ -691,14 +691,28 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         resetEditTextErrorText()
 
-        if (!validateFirstName()) isValid = false
-        if (!validateLastName()) isValid = false
+        if (!validateFirstName())
+            isValid = false
+            til_first_name.isFocusable = true
+        if (!validateLastName())
+            isValid = false
+            til_last_name.isFocusable = true
         if (!validatePassengerTitle()) isValid = false
-        if (!validateBirthDate(getPassengerBirthDate())) isValid = false
-        if (!validatePassportNumber(isNeedPassport)) isValid = false
-        if (!validatePassportExpiredDate(isNeedPassport)) isValid = false
-        if (!validatePassportNationality(isNeedPassport)) isValid = false
-        if (!validatePassportIssuerCountry(isNeedPassport)) isValid = false
+        if (!validateBirthDate(getPassengerBirthDate()))
+            isValid = false
+            til_birth_date.isFocusable = true
+        if (!validatePassportNumber(isNeedPassport))
+            isValid = false
+            til_passport_no.isFocusable = true
+        if (!validatePassportExpiredDate(isNeedPassport))
+            isValid = false
+            til_passport_expiration_date.isFocusable = true
+        if (!validatePassportNationality(isNeedPassport))
+            isValid = false
+            til_nationality.isFocusable = true
+        if (!validatePassportIssuerCountry(isNeedPassport))
+            isValid = false
+            til_passport_issuer_country.isFocusable = true
 
         return isValid
     }
@@ -848,6 +862,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_expiration_date.setError(true)
             false
         } else {
+            til_passport_expiration_date.setError(false)
             true
         }
     }
@@ -872,24 +887,31 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun resetEditTextErrorText() {
         til_first_name.error = ""
+        til_first_name.isFocusable = false
 
         til_last_name.setMessage("")
         til_last_name.setError(false)
+        til_last_name.isFocusable = false
 
         til_birth_date.setMessage("")
         til_birth_date.setError(false)
+        til_birth_date.isFocusable = false
 
         til_passport_no.setMessage("")
         til_passport_no.setError(false)
+        til_passport_no.isFocusable = false
 
         til_passport_expiration_date.setMessage("")
         til_passport_expiration_date.setError(false)
+        til_passport_expiration_date.isFocusable = false
 
         til_nationality.setMessage("")
         til_nationality.setError(false)
+        til_nationality.isFocusable = false
 
         til_passport_issuer_country.setMessage("")
         til_passport_issuer_country.setError(false)
+        til_passport_issuer_country.isFocusable = false
 
         when {
             isAdultPassenger() -> {
