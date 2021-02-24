@@ -52,7 +52,6 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        const val TEXT_TOKO_SAYA = "Toko saya:  %s"
         private const val GREETINGS_0_2 = "Selamat tidur~"
         private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
         private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
@@ -175,6 +174,7 @@ class AccountHeaderViewHolder(itemView: View,
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tvShopInfo.setOnClickListener { onShopClicked() }
             if (element.shopOrderCount > 0) {
                 tvShopNotif.visible()
                 tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
