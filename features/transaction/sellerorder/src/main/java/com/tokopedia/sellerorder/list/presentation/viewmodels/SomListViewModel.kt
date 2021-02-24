@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -218,12 +219,16 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        getFiltersJob?.cancel()
-        getFiltersJob = launchCatchError(block = {
-            val result = somListGetFilterListUseCase.executeOnBackground().apply { refreshOrder = refreshOrders }
-            _filterResult.postValue(Success(result))
+        if (somListGetFilterListUseCase.isFirstLoad) {
+            somListGetFilterListUseCase.isFirstLoad = false
+            launchCatchError(context = dispatcher.main, block = {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+            }, onError = {})
+        }
+        launchCatchError(context = dispatcher.main, block = {
+            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
         }, onError = {
-            _filterResult.postValue(Fail(it))
+            _filterResult.value = Fail(it)
         })
     }
 
@@ -345,4 +350,8 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
+
+    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
+        return this.getOrderListParams.statusList != orderStatusIds
+    }
 }
