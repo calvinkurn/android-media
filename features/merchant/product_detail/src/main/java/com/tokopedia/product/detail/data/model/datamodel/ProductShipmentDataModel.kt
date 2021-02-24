@@ -42,6 +42,5 @@ data class ProductShipmentDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
-    override val impressHolder: ImpressHolder
-        get() = ImpressHolder()
+    override val impressHolder: ImpressHolder = ImpressHolder()
 }

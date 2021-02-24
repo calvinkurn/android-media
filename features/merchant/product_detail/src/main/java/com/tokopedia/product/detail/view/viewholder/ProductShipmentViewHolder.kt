@@ -59,6 +59,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             else -> {
                 // receive rates data
                 val isError = element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0
+                itemView.addOnImpressionListener(element.impressHolder) {
+                    listener.showCoachmark(shipmentTitle)
+                }
+
                 hideShipmentLoading()
                 renderText(data)
                 renderTokoCabang(element.isFullfillment)

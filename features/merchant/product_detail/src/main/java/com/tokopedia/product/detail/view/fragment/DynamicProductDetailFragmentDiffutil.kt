@@ -52,6 +52,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -149,6 +150,7 @@ import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -1408,6 +1410,18 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
             onSuccessGetDataP2(it)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
+        }
+    }
+
+    override fun showCoachmark(view: Typography?) {
+        context?.let {
+            if (view != null) {
+                val localizationCoachmark = ChooseAddressUtils.createCoachMarkItem(it, view)
+                localizationCoachmark.position = 1
+                val coachMarkItem = arrayListOf(localizationCoachmark,localizationCoachmark)
+                val coachmark = CoachMark2(it)
+                coachmark.showCoachMark(coachMarkItem, null, 0)
+            }
         }
     }
 
