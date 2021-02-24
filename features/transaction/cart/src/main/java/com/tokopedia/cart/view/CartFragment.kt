@@ -1803,7 +1803,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 return@let
             }
 
-            sendAnalyuticsScreenNameCartPage()
+            sendAnalyticsScreenNameCartPage()
             updateStateAfterFinishGetCartList(it)
 
             renderAbTestButton(cartListData.abTestButton)
@@ -1832,7 +1832,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.resetData()
     }
 
-    private fun sendAnalyuticsScreenNameCartPage() {
+    private fun sendAnalyticsScreenNameCartPage() {
         cartPageAnalytics.sendScreenName(activity, screenName)
     }
 
