@@ -8,7 +8,6 @@ import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +22,7 @@ class CatalogDetailProductListingViewModel
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     val mProductCount = MutableLiveData<String>()
-    var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
+    var mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
     fun fetchProductListing(params: RequestParams) {
@@ -50,9 +49,9 @@ class CatalogDetailProductListingViewModel
 
     fun fetchQuickFilters(params: RequestParams) {
 
-        quickFilterUseCase.execute(params, object : Subscriber<List<Filter>>() {
-            override fun onNext(t: List<Filter>?) {
-                mQuickFilterModel.value = Success(t as List<Filter>)
+        quickFilterUseCase.execute(params, object : Subscriber<DynamicFilterModel>() {
+            override fun onNext(t: DynamicFilterModel?) {
+                mQuickFilterModel.value = Success(t as DynamicFilterModel)
             }
 
             override fun onCompleted() {

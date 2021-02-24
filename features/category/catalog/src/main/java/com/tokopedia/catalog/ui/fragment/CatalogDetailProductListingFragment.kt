@@ -40,13 +40,19 @@ import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -146,6 +152,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         setUpAdapter()
         setUpNavigation()
         setUpVisibleFragmentListener()
+        initSearchQuickSortFilter(view)
+        addDefaultSelectedSort()
     }
 
     private fun initView() {
@@ -156,7 +164,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
-            fetchProductData(getProductListParamMap(getPage()))
+            fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
         }
 
@@ -168,19 +176,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         dynamicFilterItemIcon.show()
         dynamic_filter.findViewById<TextView>(R.id.quick_filter_text).text = "Filter"
         dynamic_filter.setOnClickListener {
-            openBottomSheetFilterNew()
+            openBottomSheetFilterRevamp()
         }
-    }
-
-    private fun openBottomSheetFilterNew(){
-        if(dynamicFilterModel != null){
-            sortFilterBottomSheet?.show(
-                    requireFragmentManager(),
-                    searchParameter.getSearchParameterHashMap(),
-                    dynamicFilterModel,
-                    this
-            )
-        }
+        dynamic_filter.hide()
     }
 
     private fun setUpAdapter() {
@@ -213,7 +211,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                fetchProductData(getProductListParamMap(page))
+                fetchProductData(getProductListParams(page))
                 productNavListAdapter?.addLoading()
             }
         }
@@ -275,7 +273,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     renderDynamicFilter(it.data.data)
                     // TODO CHANGE
                     dynamicFilterModel = it.data
+                    setDynamicFilter(it.data)
                     dynamic_filter.show()
+                    dynamic_filter.hide()
+                    quickfilter_recyclerview.hide()
                 }
 
                 is Fail -> {
@@ -288,7 +289,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    initQuickFilter(it.data as ArrayList)
+                    initQuickFilter(it.data.data.filter as ArrayList)
+                    startFilter(it.data.data)
                 }
 
                 is Fail -> {
@@ -336,9 +338,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.addShimmer()
         resetPage()
         loadMoreTriggerListener?.resetState()
-        fetchProductData(getProductListParamMap(getPage()))
+        fetchProductData(getProductListParams(getPage()))
 
         viewModel.fetchQuickFilters(getQuickFilterParams())
+        setSortFilterIndicatorCounter()
     }
 
     override fun getDepartMentId(): String {
@@ -400,7 +403,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         return paramMap
     }
 
-    private fun getProductListParamMap(start: Int): RequestParams {
+    private fun getProductListParams(start: Int): RequestParams {
         val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
@@ -623,11 +626,244 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 
-    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+    /*********************************   Sort Filter ******************************/
+
+    private var searchSortFilter: SortFilter? = null
+
+    fun initSearchQuickSortFilter(rootView: View) {
+        searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
+    }
+
+    fun initFilterControllerForQuickFilter(quickFilterList : List<Filter>) {
+        filterController!!.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList)
+    }
+
+    fun setSortFilterIndicatorCounter() {
+        searchSortFilter!!.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
+    }
+
+    fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
+        var sortFilterCount = 0
+
+        val mutableMapParameter = mapParameter.toMutableMap()
+        val sortFilterParameter = mutableMapParameter.createAndCountSortFilterParameter {
+            sortFilterCount += it
+        }
+
+        if (sortFilterParameter.hasMinAndMaxPriceFilter()) sortFilterCount -= 1
+        if (sortFilterParameter.isSortHasDefaultValue()) sortFilterCount -= 1
+
+        return sortFilterCount
+    }
+
+    private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (Int) -> Unit): Map<String, Any> {
+        val iterator = iterator()
+
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+
+            if (entry.isNotSortAndFilterEntry()) {
+                iterator.remove()
+                continue
+            }
+
+            count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+        }
+
+        return this
+    }
+
+    private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
+        return isNotFilterAndSortKey() || isPriceFilterWithZeroValue()
+    }
+
+    private  val NON_FILTER_PREFIX = "srp_"
+
+    private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
+        return nonFilterParameterKeyList.contains(key) || key.startsWith(NON_FILTER_PREFIX)
+    }
+
+    private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
+        return (key == SearchApiConst.PMIN && value.toString() == "0")
+                || (key == SearchApiConst.PMAX && value.toString() == "0")
+    }
+
+    internal val nonFilterParameterKeyList = setOf(
+            SearchApiConst.Q,
+            SearchApiConst.RF,
+            SearchApiConst.ACTIVE_TAB,
+            SearchApiConst.SOURCE,
+            SearchApiConst.LANDING_PAGE,
+            SearchApiConst.PREVIOUS_KEYWORD,
+            SearchApiConst.ORIGIN_FILTER,
+            SearchApiConst.SKIP_REWRITE,
+            SearchApiConst.NAVSOURCE,
+            SearchApiConst.SKIP_BROADMATCH,
+            SearchApiConst.HINT,
+            SearchApiConst.FIRST_INSTALL,
+            SearchApiConst.SEARCH_REF
+    )
+
+    private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
+        var hasMinPriceFilter = false
+        var hasMaxPriceFilter = false
+
+        for(entry in this) {
+            if (entry.key == SearchApiConst.PMIN) hasMinPriceFilter = true
+            if (entry.key == SearchApiConst.PMAX) hasMaxPriceFilter = true
+
+            // Immediately return so it doesn't continue the loop
+            if (hasMinPriceFilter && hasMaxPriceFilter) return true
+        }
+
+        return false
+    }
+
+    fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
+        val sortValue = this[SearchApiConst.OB]
+
+        return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+    }
+
+    private fun addDefaultSelectedSort() {
+        if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
+            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        }
+    }
+
+    fun hideQuickFilterShimmering() {
 
     }
 
-    override fun getResultCount(mapParameter: Map<String, String>) {
+    fun setQuickFilter(items : List<SortFilterItem> ) {
+        searchSortFilter!!.sortFilterItems.removeAllViews()
+        searchSortFilter!!.visibility = View.VISIBLE
+        searchSortFilter!!.sortFilterHorizontalScrollView.scrollX = 0
+        searchSortFilter!!.addItem(items as ArrayList<SortFilterItem>)
+        searchSortFilter!!.textView.text = "Filter"
+        searchSortFilter!!.parentListener = { this.openBottomSheetFilterRevamp() }
+        setSortFilterNewNotification(items)
+    }
 
+    private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
+        val quickFilterOptionList: List<Option> = quickFilterOptionList
+        for (i in items.indices) {
+            if (i >= quickFilterOptionList.size) break
+            val item = items[i]
+            val quickFilterOption = quickFilterOptionList[i]
+            sortFilterItemShowNew(item, quickFilterOption.isNew)
+        }
+    }
+
+    private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
+        if (item.refChipUnify != null) item.refChipUnify.showNewNotification = isNew
+    }
+
+    private var quickFilterOptionList: List<Option> = ArrayList()
+
+    private fun startFilter(quickFilterData : DataValue){
+        processQuickFilter(quickFilterData)
+    }
+
+    private fun processQuickFilter(quickFilterData: DataValue) {
+        if (dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
+        val sortFilterItems = arrayListOf<SortFilterItem>()
+        quickFilterOptionList = arrayListOf()
+        for (filter in quickFilterData.filter) {
+            val options = filter.options
+            (quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
+            convertToSortFilterItem(filter.title, options)?.let { sortFilterItems.addAll(it) }
+        }
+        if (sortFilterItems.size > 0) {
+            hideQuickFilterShimmering()
+            setQuickFilter(sortFilterItems)
+        }
+    }
+
+    private fun convertToSortFilterItem(title: String, options: List<Option>): List<SortFilterItem>? {
+        val list: MutableList<SortFilterItem> = java.util.ArrayList()
+        list.add(createSortFilterItem(options[0].name, options[0]))
+        return list
+    }
+
+    private fun createSortFilterItem(title: String, option: Option): SortFilterItem {
+        val item = SortFilterItem(title) {}
+        setSortFilterItemListener(item, option)
+        setSortFilterItemState(item, option)
+        return item
+    }
+
+    private fun setSortFilterItemListener(item: SortFilterItem, option: Option) {
+        item.listener = {
+            onQuickFilterSelected(option)
+        }
+    }
+
+    private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
+        if (isQuickFilterSelected(option)) {
+            item.type = ChipsUnify.TYPE_SELECTED
+            item.typeUpdated = false
+        }
+    }
+
+    /*******************************  Bottom Sheet Filter **************************/
+
+    private fun openBottomSheetFilterRevamp(){
+        if(dynamicFilterModel != null){
+            sortFilterBottomSheet = SortFilterBottomSheet()
+            sortFilterBottomSheet?.show(
+                    requireFragmentManager(),
+                    searchParameter.getSearchParameterHashMap(),
+                    dynamicFilterModel,
+                    this
+            )
+            sortFilterBottomSheet!!.setOnDismissListener {
+                sortFilterBottomSheet = null
+            }
+        }
+    }
+
+    fun openBottomSheetFilter(dynamicFilterModel: DynamicFilterModel){
+        sortFilterBottomSheet = SortFilterBottomSheet()
+        sortFilterBottomSheet!!.show(
+                requireFragmentManager(),
+                searchParameter.getSearchParameterHashMap(),
+                dynamicFilterModel,
+                this
+        )
+
+        sortFilterBottomSheet!!.setOnDismissListener {
+            sortFilterBottomSheet = null
+        }
+    }
+
+    fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
+        if (searchParameter != null) {
+            filterController!!.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
+        }
+
+        if (sortFilterBottomSheet != null) {
+            sortFilterBottomSheet!!.setDynamicFilterModel(dynamicFilterModel)
+        }
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        sortFilterBottomSheet = null
+        filterController!!.refreshMapParameter(applySortFilterModel.mapParameter)
+        searchParameter.getSearchParameterHashMap().clear()
+        searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
+        reloadData()
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        // API HIT MISSING query SearchProduct($params: String!) {\n   searchProduct(params:$params) {\n       count_text\n    }\n}
+        // getProductCount(mapParameter)
+        setProductCount("Terapakan Filter")
+    }
+
+    fun setProductCount(productCountText : String){
+        if (sortFilterBottomSheet == null) return
+        //sortFilterBottomSheet!!.setResultCountText(String.format(getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text), productCountText))
+        sortFilterBottomSheet!!.setResultCountText(productCountText)
     }
 }

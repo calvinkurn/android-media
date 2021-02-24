@@ -7,6 +7,8 @@ interface CatalogDetailListener {
     /**
      * CatalogInfoViewHolder
      */
+    fun onDescriptionClick()
+
     fun onViewMoreDescriptionClick()
 
 

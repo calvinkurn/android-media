@@ -110,14 +110,10 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        openBottomSheetProductListing()
     }
 
     private fun openBottomSheetProductListing() {
-        // TODO REMOVE
-        Handler().postDelayed({
-            CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
-        },3000)
+        CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
     }
 
     private fun initViews() {
@@ -258,6 +254,10 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreSpecificationsClick() {
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+    }
+
+    override fun onDescriptionClick() {
+        openBottomSheetProductListing()
     }
 
     override fun onViewMoreDescriptionClick() {

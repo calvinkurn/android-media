@@ -35,6 +35,7 @@ abstract class CatalogProductCardViewHolder(itemView: View,
                 freeOngkir = freeOngkir?.toProductCardModelFreeOngkir()
                         ?: ProductCardModel.FreeOngkir(),
                 isTopAds = isTopAds,
+                countSoldRating = rating.toString(),
                 labelGroupList = labelGroups.toProductCardModelLabelGroup(),
                 hasThreeDots = productListener.hasThreeDots()
         )
