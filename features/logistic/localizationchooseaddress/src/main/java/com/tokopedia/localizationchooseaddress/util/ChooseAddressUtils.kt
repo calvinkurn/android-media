@@ -75,6 +75,7 @@ object ChooseAddressUtils {
         if (latestChooseAddressData?.lat != localizingAddressStateData.lat) validate = true
         if (latestChooseAddressData?.long != localizingAddressStateData.long) validate = true
         if (latestChooseAddressData?.label != localizingAddressStateData.label) validate = true
+        if (latestChooseAddressData?.postal_code != localizingAddressStateData.postal_code) validate = true
         return validate
     }
 
