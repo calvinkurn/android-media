@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -78,49 +80,62 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private void showGeneralInfoMessage() {
         try {
-            String className = getClass().getCanonicalName();
-            String webviewSwitchConfig = "";
+            String rawConfig = "";
 
             if (GlobalConfig.isSellerApp()) {
-                webviewSwitchConfig = getRemoteConfig().getString(SELLERAPP_GENERAL_INFO);
+                rawConfig = getRemoteConfig().getString(SELLERAPP_GENERAL_INFO);
             } else {
-                webviewSwitchConfig = getRemoteConfig().getString(MAINAPP_GENERAL_INFO);
+                rawConfig = getRemoteConfig().getString(MAINAPP_GENERAL_INFO);
             }
 
-            if (TextUtils.isEmpty(webviewSwitchConfig)) return;
+            if (TextUtils.isEmpty(rawConfig)) return;
 
-            JSONObject configJSON = new JSONObject(webviewSwitchConfig);
+            JSONArray configList = new JSONArray(rawConfig);
 
-            JSONObject switchData = configJSON.optJSONObject(className);
-
-            if (switchData == null) return;
-
-            String environment = switchData.optString("environment");
-            String versions = switchData.optString("versions");
-            String message = switchData.optString("message");
-
-            if (GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment)) return;
-            if (!GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment)) return;
-
-            List<String> versionList = Arrays.asList(versions.split(","));
-            if (!versionList.contains(GlobalConfig.VERSION_NAME)) return;
-
-            Timber.w("P1#DISPLAY_GENERAL_INFO#'"+ className +"';message='" + message + "'");
-            showGeneralInfoSnackbar(message);
-
+            for(int i = 0; i < configList.length(); i++) {
+                JSONObject config = configList.optJSONObject(i);
+                handleConfig(config);
+            }
         } catch(Exception e) { }
     }
 
-    private void showGeneralInfoSnackbar(String message) {
-        final Snackbar snackBar = SnackbarManager.make(this, message,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.action_dismiss, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //dismiss
-                    }
-                });
-        snackBar.show();
+    private void handleConfig(JSONObject config) {
+        try {
+            String className = getClass().getCanonicalName();
+
+            String pages = config.optString("pages");
+            String environment = config.optString("environment");
+            String versions = config.optString("versions");
+            String message = config.optString("message");
+
+            List<String> pageList = Arrays.asList(pages.trim().split("\\s*,\\s*"));
+            if (!"all".equals(pageList.get(0)) && !pageList.contains(className))
+                return;
+
+            if (!"all".equals(environment) && GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment))
+                return;
+            if (!"all".equals(environment) && !GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment))
+                return;
+
+            List<String> versionList = Arrays.asList(versions.trim().split("\\s*,\\s*"));
+            if (!"all".equals(versionList.get(0)) && !versionList.contains(GlobalConfig.VERSION_NAME))
+                return;
+
+            Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
+                    + "';dev='" + GlobalConfig.isAllowDebuggingTools()
+                    + "';ver='" + GlobalConfig.VERSION_NAME
+                    + "';message='" + message + "'");
+
+            showPopUp(message);
+        } catch (Exception e) {}
+    }
+
+    private void showPopUp(String message) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.action_dismiss, null)
+                .show();
     }
 
     private RemoteConfig getRemoteConfig() {
