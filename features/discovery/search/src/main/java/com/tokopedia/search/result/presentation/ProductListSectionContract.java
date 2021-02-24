@@ -90,8 +90,6 @@ public interface ProductListSectionContract {
 
         void setDefaultLayoutType(int defaultView);
 
-        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();

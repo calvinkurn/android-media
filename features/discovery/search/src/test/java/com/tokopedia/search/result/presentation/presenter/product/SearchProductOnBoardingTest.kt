@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -20,19 +19,18 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Test show on boarding`(searchProductModel: SearchProductModel, firstProductPosition: Int) {
-        `Configure on boarding shown`(boeShown = false)
+        `Configure on boarding shown`(shouldShow = true)
         `Given view already load data`(searchProductModel)
 
         `When free ongkir on boarding shown`(firstProductPosition)
 
         `Then assert view show search on boarding`(firstProductPosition)
-        `Then assert search on boarding toggled as shown`()
     }
 
     private fun `Configure on boarding shown`(
-            boeShown: Boolean
+            shouldShow: Boolean
     ) {
-        every { searchOnBoardingLocalCache.getBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN) } answers { boeShown }
+        every { searchCoachMarkLocalCache.shouldShowBoeCoachmark() } answers { shouldShow }
     }
 
     private fun `Given view already load data`(searchProductModel: SearchProductModel) {
@@ -53,18 +51,11 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun `Then assert search on boarding toggled as shown`() {
-        verify {
-            searchOnBoardingLocalCache.putBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN, true)
-            searchOnBoardingLocalCache.applyEditor()
-        }
-    }
-
     @Test
     fun `Show search on boarding after free ongkir on boarding shown - with no BOE product found`() {
         val searchProductModel = "searchproduct/globalnavwidget/show-topads-true.json".jsonToObject<SearchProductModel>()
 
-        `Configure on boarding shown`(boeShown = false)
+        `Configure on boarding shown`(shouldShow = true)
         `Given view already load data`(searchProductModel)
 
         `When free ongkir on boarding shown`(0)
@@ -74,7 +65,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Do not show search on boarding if already shown`() {
-        `Configure on boarding shown`(boeShown = true)
+        `Configure on boarding shown`(shouldShow = false)
         `Given view already load data`("searchproduct/common-response.json".jsonToObject())
 
         `When free ongkir on boarding shown`(0)
@@ -85,8 +76,6 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     private fun `Then assert view not show search on boarding`() {
         verify(exactly = 0) {
             productListView.showOnBoarding(any())
-            searchOnBoardingLocalCache.putBoolean(BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN, true)
-            searchOnBoardingLocalCache.applyEditor()
         }
     }
 }

@@ -1317,13 +1317,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
-        if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, null);
-        }
-    }
-
-    @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
         if (getActivity() == null || redirectionListener == null) return;
 
