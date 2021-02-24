@@ -45,22 +45,18 @@ class RechargeCCInstrumentTest {
     private fun openConfirmationDialogThenClickNext() {
         onView(withId(R.id.cc_button_next)).perform(click())
         onView(withText(R.string.cc_title_dialog))
-                .inRoot(isDialog())
                 .check(matches(isDisplayed()))
 
         onView(allOf(withText(R.string.cc_cta_btn_primary), isDisplayed()))
-                .inRoot(isDialog())
                 .perform(click())
     }
 
     private fun openConfirmationDialogThenClickBack() {
         onView(withId(R.id.cc_button_next)).perform(click())
         onView(withText(R.string.cc_title_dialog))
-                .inRoot(isDialog())
                 .check(matches(isDisplayed()))
 
         onView(allOf(withText(R.string.cc_cta_btn_secondary), isDisplayed()))
-                .inRoot(isDialog())
                 .perform(click())
     }
 
