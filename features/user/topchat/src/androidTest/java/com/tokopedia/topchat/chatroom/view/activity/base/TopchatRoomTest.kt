@@ -76,6 +76,7 @@ abstract class TopchatRoomTest {
 
     protected open val exMessageId = "66961"
 
+    protected val KEYBOARD_DELAY = TimeUnit.SECONDS.toMillis(1)
     protected val RV_DELAY = TimeUnit.SECONDS.toMillis(2)
 
     protected var firstPageChatAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
