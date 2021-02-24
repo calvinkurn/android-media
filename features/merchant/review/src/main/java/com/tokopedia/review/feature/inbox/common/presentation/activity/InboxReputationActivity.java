@@ -115,7 +115,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
-        initView();
+        initView(tab);
         setupTabViewpager(tab);
         openBuyerReview();
     }
