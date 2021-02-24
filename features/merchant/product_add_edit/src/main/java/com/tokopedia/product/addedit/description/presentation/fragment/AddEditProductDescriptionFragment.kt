@@ -2,6 +2,9 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -41,6 +45,7 @@ import com.tokopedia.product.addedit.description.presentation.constant.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.MAX_VIDEOS
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VALIDATE_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VIDEO_REQUEST_DELAY
+import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
@@ -68,6 +73,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -655,7 +661,7 @@ class AddEditProductDescriptionFragment:
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
         fragmentManager?.let {
-            val tooltipBottomSheet = TooltipBottomSheet()
+           /* val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<NumericTooltipModel> = ArrayList()
             val tooltipTitle = getString(R.string.title_tooltip_description_tips)
             tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_1)))
@@ -667,6 +673,13 @@ class AddEditProductDescriptionFragment:
                 setItemMenuList(tips)
                 setDividerVisible(false)
                 show(it, null)
+            }*/
+
+            GiftingDescriptionBottomSheet().apply {
+                setOnCopyTemplateButtonListener {
+                    copyDescriptionTemplate()
+                }
+                show(it)
             }
         }
     }
@@ -789,5 +802,14 @@ class AddEditProductDescriptionFragment:
             btnSave.isEnabled = this
             btnNext.isEnabled = this
         }
+    }
+
+    private fun copyDescriptionTemplate() {
+        val template = getString(R.string.label_gifting_description_template)
+        val clipboard = requireView().context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText(template, template)
+        clipboard.setPrimaryClip(clipData)
+        Toaster.build(requireView(), getString(R.string.label_gifting_description_copied_message),
+                Snackbar.LENGTH_LONG).show()
     }
 }
