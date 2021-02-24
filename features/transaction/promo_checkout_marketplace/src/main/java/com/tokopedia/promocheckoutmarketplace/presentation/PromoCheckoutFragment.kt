@@ -78,6 +78,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
@@ -145,6 +146,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
 
+        private const val COACHMARK_PERIOD_ONE_YEAR : Long = 365
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
 
         fun createInstance(pageSource: Int,
@@ -903,7 +905,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     context?.let {
                         val coachMark = CoachMark2(it)
                         coachMark.showCoachMark(coachMarkItem)
-                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, 0)
+                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, TimeUnit.DAYS.toMillis(COACHMARK_PERIOD_ONE_YEAR))
                     }
                 }
             }, 300)
