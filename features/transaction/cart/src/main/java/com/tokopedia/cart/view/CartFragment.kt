@@ -94,9 +94,9 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
+import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
-import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
@@ -113,7 +113,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1890,11 +1889,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddressData: LocalizationChooseAddressData) {
-        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(activity)
-        // Todo : change to check state
-        if (localizationChooseAddressData.addressId.isNotBlankOrZero() &&
-                localCacheModel?.address_id?.isNotBlankOrZero() == true &&
-                localizationChooseAddressData.addressId != localCacheModel.address_id) {
+        if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddressData.addressId,
