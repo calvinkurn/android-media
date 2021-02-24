@@ -36,4 +36,8 @@ class ChooseAddressWidgetCallback(
     override fun getLocalizingAddressHostSourceData(): String {
         return "home"
     }
+
+    override fun onLocalizingAddressLoginSuccess() {
+
+    }
 }
