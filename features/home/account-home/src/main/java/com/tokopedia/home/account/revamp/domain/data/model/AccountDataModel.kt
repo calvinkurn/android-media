@@ -54,14 +54,6 @@ data class AccountDataModel(
         @Expose
         var debitInstant: DebitInstantModel = DebitInstantModel(),
 
-        @SerializedName("vcc_user_status")
-        @Expose
-        var vccUserStatus: VccUserStatus = VccUserStatus(),
-
-        @SerializedName("vcc_user_balance")
-        @Expose
-        var vccUserBalanceDataModel: VccUserBalanceDataModel = VccUserBalanceDataModel(),
-
         @SerializedName("kycStatus")
         @Expose
         val kycStatusPojo: KycStatusPojo = KycStatusPojo(),
@@ -82,5 +74,7 @@ data class AccountDataModel(
         @Expose
         var uohOrderCount: UohCounterDataModel = UohCounterDataModel(),
 
-        var shortcutResponse: ShortcutResponse = ShortcutResponse()
+        var shortcutResponse: ShortcutResponse = ShortcutResponse(),
+
+        var adminTypeText: String? = null
 )

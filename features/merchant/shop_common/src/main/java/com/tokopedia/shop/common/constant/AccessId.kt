@@ -15,6 +15,7 @@ import androidx.annotation.IntDef
         AccessId.SOM_LIST,
         AccessId.SOM_DETAIL,
         AccessId.SOM_MULTI_ACCEPT,
+        AccessId.CHAT_LIST,
         AccessId.CHAT_REPLY,
         AccessId.PRODUCT_ADD,
         AccessId.PRODUCT_EDIT,
@@ -34,6 +35,7 @@ annotation class AccessId {
         const val SOM_LIST = 25
         const val SOM_DETAIL = 26
         const val SOM_MULTI_ACCEPT = 28
+        const val CHAT_LIST = 76
         const val CHAT_REPLY = 82
         const val PRODUCT_ADD = 101
         const val PRODUCT_EDIT = 121

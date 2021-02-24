@@ -203,6 +203,21 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_payment_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_payment_info"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_payment"
                 android:layout_width="wrap_content"
@@ -227,7 +242,7 @@
                 android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_info" />
+                app:layout_constraintTop_toBottomOf="@+id/ticker_payment_info" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_main_preference"

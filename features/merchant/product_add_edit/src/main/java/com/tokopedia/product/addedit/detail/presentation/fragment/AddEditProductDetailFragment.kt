@@ -39,6 +39,11 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
@@ -67,6 +72,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
@@ -130,6 +137,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
     private var hasCategoryFromPicker = false
+    private var isFragmentVisible = false
+    private var needToSetCategoryName = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -263,7 +272,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -455,11 +467,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isAdding && viewModel.isFirstMoved) {
-            submitTextView?.text = getString(R.string.action_continue)
-        } else {
-            submitTextView?.text = getString(R.string.action_save)
-        }
+        setupButton()
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
@@ -490,6 +498,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             override fun afterTextChanged(editable: Editable) {
                 viewModel.isProductNameChanged = true
                 Handler().postDelayed({ viewModel.validateProductNameInput(editable.toString()) }, DEBOUNCE_DELAY_MILLIS)
+                // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
+                if (needToSetCategoryName && editable.isNotBlank()) {
+                    needToSetCategoryName = false
+                }
             }
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -644,6 +656,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupMultiLocationShopValues()
+        productStockField?.setMessage(viewModel.productStockMessage)
+
         setupSpecificationField()
         enableProductNameField()
         onFragmentResult()
@@ -669,8 +685,45 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         stopPerformanceMonitoring()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            inputAllDataInProductInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(viewModel.productInputModel))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, viewModel.isAdding)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, viewModel.isEditing)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, viewModel.isDrafting)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, viewModel.isFirstMoved)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
+            viewModel.isAdding = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
+            viewModel.isEditing = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            viewModel.isDrafting = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            viewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
+                val productInputModel = mapJsonToObject(productInputModelJson, ProductInputModel::class.java)
+                viewModel.productInputModel = productInputModel
+                if (!productInputModel.detailInputModel.imageUrlOrPathList.isNullOrEmpty()) {
+                    viewModel.productPhotoPaths = productInputModel.detailInputModel.imageUrlOrPathList as MutableList<String>
+                }
+                fillProductDetailForm(productInputModel.detailInputModel)
+                setupButton()
+            }
+            // only need set category, no need to get category list
+            needToSetCategoryName = true
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
@@ -713,6 +766,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setupButton() {
+        if (viewModel.isAdding && viewModel.isFirstMoved) {
+            submitTextView?.text = getString(R.string.action_continue)
+        } else {
+            submitTextView?.text = getString(R.string.action_save)
+        }
     }
 
     private fun removeObservers() {
@@ -848,15 +909,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     productCategoryLayout?.show()
-                    productCategoryRecListView?.show()
-                    val selectedCategory = ArrayList<ListItemUnify>()
-                    val selectedCategoryItemUnify = ListItemUnify(categoryName, "")
-                    selectedCategoryItemUnify.isBold = false
-                    selectedCategory.add(selectedCategoryItemUnify)
-                    productCategoryRecListView?.setData(selectedCategory)
+                    productCategoryRecListView?.setToDisplayText(categoryName, requireContext())
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
+
+                    // only need set category, no need to get category list
+                    needToSetCategoryName = true
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -1139,12 +1198,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product category
         if (detailInputModel.categoryName.isNotBlank()) {
             productCategoryLayout?.show()
-            productCategoryRecListView?.show()
-            val selectedCategory = ArrayList<ListItemUnify>()
-            val listItemUnify = ListItemUnify(detailInputModel.categoryName, "")
-            listItemUnify.isBold = false
-            selectedCategory.add(listItemUnify)
-            productCategoryRecListView?.setData(selectedCategory)
+            productCategoryRecListView?.setToDisplayText(detailInputModel.categoryName, requireContext())
             productCategoryId = detailInputModel.categoryId
         }
 
@@ -1195,6 +1249,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             productConditions.forEachIndexed { index, listItemUnify ->
+                listItemUnify.setTextColorToUnify(requireContext())
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     productConditionListView?.setSelected(productConditions, index) {
                         if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
@@ -1227,13 +1282,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
-                // show category recommendations to the product that has no variants
-                if (viewModel.isAdding && !viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
+                // show category recommendations to the product that has no variants and no category name before
+                if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
+                    viewModel.getCategoryRecommendation(productNameInput)
+                }
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
-                // keep the category if the product has variants
-                if (viewModel.isAdding && !viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
+                // keep the category
+                if (viewModel.isAdding && !viewModel.hasVariants) {
+                    productCategoryRecListView?.setData(ArrayList(emptyList()))
+                }
+            }
+
+            if (needToSetCategoryName) {
+                productCategoryLayout?.show()
+                if (productCategoryName.isBlank()) {
+                    productCategoryName = viewModel.productInputModel.detailInputModel.categoryName
+                }
+                productCategoryRecListView?.setToDisplayText(productCategoryName, requireContext())
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false
@@ -1526,7 +1593,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
         submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
     }
 
     private fun disableSubmitButton() {
@@ -1660,6 +1727,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             items.forEachIndexed { position, listItemUnify ->
+                listItemUnify.setTextColorToUnify(requireContext())
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     if (viewModel.isAdding) {
                         ProductAddMainTracking.clickProductCategoryRecom(shopId)

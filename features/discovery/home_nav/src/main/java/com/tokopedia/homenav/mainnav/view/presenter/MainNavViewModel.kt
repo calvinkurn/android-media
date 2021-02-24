@@ -31,6 +31,10 @@ import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.searchbar.navigation_component.NavConstant
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +54,8 @@ class MainNavViewModel @Inject constructor(
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
         private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
-        private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>
+        private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
+        private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
     companion object {
@@ -59,6 +64,8 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_HOME_BACK_ICON = 2
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val INDEX_DEFAULT_BU_POSITION = 1
+
+        private const val SOURCE = "dave_home_nav"
     }
 
     private var haveLogoutData: Boolean? = false
@@ -322,8 +329,16 @@ class MainNavViewModel @Inject constructor(
 
     suspend fun updateProfileData() {
         try {
-            val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
-            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+            val accountHeaderModel = async { getProfileDataUseCase.get().executeOnBackground() }
+            val adminData = async { getAdminData() }
+
+            accountHeaderModel.await().apply {
+                adminData.await().let { (adminRoleText, canGoToSellerAccount) ->
+                    setAdminData(adminRoleText, canGoToSellerAccount)
+                }
+            }.let {
+                updateWidget(it, INDEX_MODEL_ACCOUNT)
+            }
         } catch (e: Exception) {
             val accountModel = _mainNavListVisitable.find {
                 it is AccountHeaderDataModel
@@ -480,10 +495,19 @@ class MainNavViewModel @Inject constructor(
                         getShopInfoUseCase.get().executeOnBackground()
                     }
                 }
+                val adminDataCall = async {
+                    withContext(baseDispatcher.get().io()) {
+                        getAdminData()
+                    }
+                }
                 val response = call.await()
+                val (adminRoleText, canGoToSellerAccount) = adminDataCall.await()
                 val result = (response.takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
                 result?.let {
-                    accountModel.setUserShopName(it.info.shopName, it.info.shopId)
+                    accountModel.run {
+                        setUserShopName(it.info.shopName, it.info.shopId)
+                        setAdminData(adminRoleText, canGoToSellerAccount)
+                    }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
                 }
@@ -519,6 +543,36 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun onlyForNonLoggedInUser(function: suspend ()-> Unit) {
         if (!userSession.get().isLoggedIn) function.invoke()
+    }
+
+    /**
+     * Check for account admin info if is not shop owner
+     * and update shop related user session values accordingly
+     *
+     * @return  Pair of admin role text (if is admin) and boolean to determine if seller can go to
+     *          account page
+     */
+    private suspend fun getAdminData(): Pair<String?, Boolean> {
+        val (adminDataResponse, refreshedShopData) =
+                if (userSession.get().isShopOwner) {
+                    Pair(null, null)
+                } else {
+                    accountAdminInfoUseCase.get().run {
+                        requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
+                        isLocationAdmin = userSession.get().isLocationAdmin
+                        setStrategyCloudThenCache()
+                        executeOnBackground()
+                    }
+                }
+        adminDataResponse?.let {
+            userSession.get().refreshUserSessionAdminData(it)
+        }
+        refreshedShopData?.let {
+            userSession.get().refreshUserSessionShopData(it)
+        }
+        val canGoToSellerAccount: Boolean = adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true
+        val adminRoleText: String? = adminDataResponse?.data?.adminTypeText
+        return Pair(adminRoleText, canGoToSellerAccount)
     }
 
     private fun onlyForLoggedInUserUi(function: ()-> Unit) {

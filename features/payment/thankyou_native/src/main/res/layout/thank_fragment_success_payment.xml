@@ -18,6 +18,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/topTicker"
+                app:closeButtonVisibility="gone"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"/>
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
@@ -26,7 +36,7 @@
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/topTicker" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_success"

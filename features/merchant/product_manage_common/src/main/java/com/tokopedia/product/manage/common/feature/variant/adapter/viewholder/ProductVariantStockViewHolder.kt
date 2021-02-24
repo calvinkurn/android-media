@@ -159,7 +159,7 @@ class ProductVariantStockViewHolder(
             override fun afterTextChanged(s: Editable?) {
                 val input = s?.toString().orEmpty()
                 val stock = if (input.isNotEmpty()) {
-                    input.toInt()
+                    itemView.quantityEditorStock.getValue()
                 } else {
                     MINIMUM_STOCK
                 }
@@ -250,9 +250,10 @@ class ProductVariantStockViewHolder(
     }
 
     private fun getCurrentStockInput(): Int {
-        val input = itemView.quantityEditorStock.editText.text.toString()
+        val quantityEditorStock = itemView.quantityEditorStock
+        val input = quantityEditorStock.editText.text.toString()
         return if(input.isNotEmpty()) {
-            input.toIntOrZero()
+            quantityEditorStock.getValue()
         } else {
             MINIMUM_STOCK
         }
