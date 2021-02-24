@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class MultiLineGraphWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val subtitle: String,
@@ -30,6 +31,6 @@ data class MultiLineGraphWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
-        return MultiLineGraphWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, isComparePeriodeOnly)
+        return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, isComparePeriodeOnly)
     }
 }

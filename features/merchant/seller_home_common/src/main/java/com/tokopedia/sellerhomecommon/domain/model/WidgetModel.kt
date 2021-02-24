@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName
 
 data class WidgetModel(
         @Expose
+        @SerializedName("ID")
+        val id: Long?,
+        @Expose
         @SerializedName("applink")
         val appLink: String?,
         @Expose

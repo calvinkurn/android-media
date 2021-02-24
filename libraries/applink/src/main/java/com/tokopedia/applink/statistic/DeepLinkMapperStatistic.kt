@@ -11,16 +11,22 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 object DeepLinkMapperStatistic {
 
     private const val QUERY_PARAM_PAGE = "page"
-    private const val QUERY_PARAM_DATA_KEY = "data_key"
+    private const val QUERY_PARAM_WIDGET = "widget"
 
+    /**
+     * mapping the external applink to internal applink
+     * example :
+     * input : tokopedia://gold-merchant-statistic-dashboard?page=shop-insight&widget=pieChart-183
+     * output : tokopedia-android-internal://merchant/statistic_dashboard?page=shop-insight&widget=pieChart-183
+     * */
     fun getStatisticAppLink(uri: Uri): String {
         val page = uri.getQueryParameter(QUERY_PARAM_PAGE).orEmpty()
-        val dataKey = uri.getQueryParameter(QUERY_PARAM_DATA_KEY).orEmpty()
+        val widget = uri.getQueryParameter(QUERY_PARAM_WIDGET).orEmpty()
         val internalAppLinkStatistic = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
         if (page.isNotBlank()) {
             val param = mapOf<String, Any>(
                     QUERY_PARAM_PAGE to page,
-                    QUERY_PARAM_DATA_KEY to dataKey
+                    QUERY_PARAM_WIDGET to widget
             )
             return UriUtil.buildUriAppendParams(internalAppLinkStatistic, param)
         }
