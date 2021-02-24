@@ -17,7 +17,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun click_plus_icon_once_show_attachment_menu() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
 
@@ -40,7 +40,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun click_plus_icon_twice_hide_chat_menu() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
 
@@ -64,7 +64,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun click_sticker_icon_once_show_sticker_container() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
@@ -89,7 +89,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun click_sticker_icon_twice_hide_chat_menu_and_show_keyboard() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
@@ -120,7 +120,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun test_open_attachment_menu_then_open_sticker() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
@@ -143,7 +143,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     fun click_back_btn_when_attachment_menu_opened() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = firstPageChatAsSeller
+        getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
 
