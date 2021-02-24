@@ -35,7 +35,7 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
         mSemiPaint.strokeWidth = STROKE_WIDTH
 
         mBlackTransparentPaint = Paint()
-        mBlackTransparentPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        mBlackTransparentPaint.color = resources.getColor(R.color.play_dms_N700_68)
 
         centerOfX = (right - left).toFloat() / 2
         bottomDetailHeight = resources.getDimensionPixelSize(R.dimen.play_cover_bottom_detail)

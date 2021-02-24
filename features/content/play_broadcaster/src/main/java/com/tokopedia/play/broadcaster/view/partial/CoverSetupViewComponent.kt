@@ -176,7 +176,7 @@ class CoverSetupViewComponent(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
                         if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Unify_R500
-                        else com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        else com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 )
         )
     }
@@ -194,7 +194,7 @@ class CoverSetupViewComponent(
                 when {
                     isValid && hasFocus -> com.tokopedia.unifyprinciples.R.color.Unify_G400
                     !isValid && hasFocus && !isFirstFocus -> com.tokopedia.unifyprinciples.R.color.Unify_R500
-                    else -> com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    else -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 }
         )
     }

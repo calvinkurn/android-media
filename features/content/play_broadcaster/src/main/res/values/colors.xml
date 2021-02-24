@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="play_dms_broadcaster_background">#AD31353B</color>
+    <color name="play_dms_broadcaster_error_background">#26292E</color>
+    <color name="play_dms_broadcaster_camera_background">#F531353B</color>
 
     <color name="play_dms_bg_dark_transparent">#CC000000</color>
     <color name="play_dms_granted_permission">#979797</color>
@@ -15,4 +18,8 @@
     <!--Schedule-->
     <color name="play_dms_broadcast_schedule_info">#FFFFFF</color>
     <color name="play_dms_broadcast_schedule_divider">#66FFFFFF</color>
+
+    <color name="play_dms_N700_68">#AD31353B</color>
+    <color name="play_dms_N700_96">#F531353B</color>
+    <color name="play_dms_N150">#B5BBC5</color>
 </resources>

@@ -132,7 +132,7 @@
                     android:imeOptions="actionDone"
                     android:includeFontPadding="false"
                     android:inputType="textMultiLine"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_Static_White"
                     android:textColorHint="@color/play_dms_white_68"
                     android:textCursorDrawable="@drawable/bg_cover_title_cursor"
                     />
@@ -142,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_Static_White"
                     android:visibility="invisible"
                     app:typographyType="body_3"
                     tools:text="31/38"

@@ -255,7 +255,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun setImmediateCapture() {
         if (!isTimerRunning) {
-            tvTimer0.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvTimer0.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             cameraTimerEnum = CameraTimerEnum.Immediate
@@ -265,7 +265,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private fun setTimerFiveSecondsCapture() {
         if (!isTimerRunning) {
             tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
-            tvTimer5.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             cameraTimerEnum = CameraTimerEnum.Five
         }
@@ -275,7 +275,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         if (!isTimerRunning) {
             tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
-            tvTimer10.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             cameraTimerEnum = CameraTimerEnum.Ten
         }
     }
