@@ -55,58 +55,72 @@ open class Properties(
         this.urlHasQualityParam = url
     }
 
+    // to display the image with specific time to delay (ms)
     fun setDelay(timeInMs: Long) = apply {
         this.renderDelay = timeInMs
     }
 
+    // set the main URL of image
     fun setSource(data: Any?) = apply {
         this.data = data
     }
 
+    // display a thumbnail before rendering the actual image
     fun thumbnailUrl(url: String) = apply {
         this.thumbnailUrl = url
     }
 
+    // an activation of blurHash (as the placeholder replacement)
     fun useBlurHash(condition: Boolean) = apply {
         this.blurHash = condition
     }
 
+    // display image with built-in Glide animation
     fun isAnimate(condition: Boolean) = apply {
         this.isAnimate = condition
     }
 
+    // transform the actual image into circleCrop()
     fun isCircular(condition: Boolean) = apply {
         this.isCircular = condition
     }
 
+    // transform the actual image into RoundedRadius() with specific radius for the corners
     fun setRoundedRadius(radius: Float) = apply {
         this.roundedRadius = radius
     }
 
+    // use custom signature key for image caching
     fun setSignatureKey(key: Key?) = apply {
         this.signatureKey = key
     }
 
+    // set custom error drawable
     fun setErrorDrawable(resourceId: Int) = apply {
         this.error = resourceId
     }
 
+    // set custom placeholder drawable
     fun setPlaceHolder(resourceId: Int) = apply {
         this.placeHolder = resourceId
     }
 
+    // use custom cache strategy for image rendering
     fun setCacheStrategy(strategy: MediaCacheStrategy) = apply {
         this.cacheStrategy = strategy
     }
 
+    // overriding the size of actual image before display
     fun overrideSize(newSize: Resize) = apply {
         this.overrideSize = newSize
     }
 
+    // use custom decode format, default: PREFER_ARGB_8888/DEFAULT
     fun decodeFormat(format: MediaDecodeFormat) = apply {
         this.decodeFormat = format
     }
 
+    // use custom listener for the image loader callback
     fun listener(
             onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
             onError: (MediaException?) -> Unit = { _ -> }
@@ -122,10 +136,12 @@ open class Properties(
         }
     }
 
+    // mapping single transform
     fun transform(transform: Transformation<Bitmap>) = apply {
         this.transform = transform
     }
 
+    // mapping multiple transform
     fun transforms(transforms: List<Transformation<Bitmap>>) = apply {
         this.transforms = transforms
     }

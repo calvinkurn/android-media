@@ -15,13 +15,15 @@ import com.tokopedia.media.loader.tracker.PerformanceTracker
 
 internal object MediaLoaderApi {
 
+    private val handler by lazy(LazyThreadSafetyMode.NONE) { Handler() }
+
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    private val handler by lazy(LazyThreadSafetyMode.NONE) {
-        Handler()
-    }
-
+    /*
+    * the medialoader will automatically scaling up based on
+    * scale_type properties (if exist) on imageView
+    * */
     private fun automateScaleType(
             imageView: ImageView,
             request: GlideRequest<Bitmap>
@@ -109,7 +111,7 @@ internal object MediaLoaderApi {
 
     // temporarily the GIF loader
     fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
-        val context = imageView.context
+        val context = imageView.context.applicationContext
 
         if (context.isValid()) {
             GlideApp.with(context)

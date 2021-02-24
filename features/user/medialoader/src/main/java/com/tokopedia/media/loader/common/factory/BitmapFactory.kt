@@ -105,14 +105,14 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
 
     private fun generateBlurHash(hash: String?, width: Int?, height: Int?): Bitmap? {
         val ratio = AspectRatio.calculate(
-                (width?: 2) + 10,
-                (height?: 2) + 10
+                (width?: 2) + 10, // default value is 2*10 = 20 px
+                (height?: 2) + 10 // default value is 2*10 = 20 px
         )
+
         return blurHashDecode(
                 blurHash = hash,
                 width = ratio.first,
-                height = ratio.second,
-                parallelTasks = 2
+                height = ratio.second
         )
     }
 
