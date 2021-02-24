@@ -10,6 +10,7 @@ import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.common.MediaLoaderFactory
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideRequest
+import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.listener.MediaListenerBuilder.callback as callbackListener
 import com.tokopedia.media.loader.transform.BlurHashDecoder.decode as blurHashDecode
 
@@ -102,11 +103,15 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         }
     }
 
-    private fun generateBlurHash(hash: String?, width: Int = 2, height: Int = 2): Bitmap? {
+    private fun generateBlurHash(hash: String?, width: Int?, height: Int?): Bitmap? {
+        val ratio = AspectRatio.calculate(
+                (width?: 2) + 10,
+                (height?: 2) + 10
+        )
         return blurHashDecode(
                 blurHash = hash,
-                width = width + 10,
-                height = height + 10,
+                width = ratio.first,
+                height = ratio.second,
                 parallelTasks = 2
         )
     }
