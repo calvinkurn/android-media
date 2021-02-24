@@ -167,6 +167,7 @@
     <string name="label_gifting_description_example">Contoh deskripsi produk</string>
     <string name="label_gifting_description_template">Detail Paket Lebaran\n[Makanan/Sembako/Barang]\n\n1 set Paket terdiri dari:\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- 1 kartu ucapan \n\nTanggal kedaluwarsa produk (jika ada):\n[Tanggal Bulan Tahun]\n\nSetiap Paket berukuran:\n[Ukuran dalam cm] x [Ukuran dalam cm] x [Ukuran dalam cm]\n\nCatatan lain untuk pemesanan Paket Lebaran ini:\n- Jika ada ucapan personal, tuliskan detail ucapan di Catatan Toko pada saat checkout.\n- Chat langsung ke toko kami jika ada yang ditanyakan, ya.</string>
     <string name="label_gifting_description_copied_message">Template deskripsi produk berhasil disalin.</string>
+    <string name="label_gifting_description_tips">Tips buat deskripsi produk Parcel/Hampers</string>
     <string name="action_copy_template">Salin Template Deskripsi Produk</string>
     <string name="action_add_video">Tambah video</string>
     <string name="action_next_button">Lanjut</string>

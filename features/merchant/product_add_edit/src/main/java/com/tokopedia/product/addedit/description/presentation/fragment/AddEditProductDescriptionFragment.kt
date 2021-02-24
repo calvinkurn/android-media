@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -41,10 +42,10 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.MAX_VIDEOS
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VALIDATE_REQUEST_DELAY
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDetailConstants.Companion.VIDEO_REQUEST_DELAY
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VALIDATE_REQUEST_DELAY
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VIDEO_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -235,6 +236,7 @@ class AddEditProductDescriptionFragment:
         observeProductInputModel()
         observeDescriptionValidation()
         observeProductVideo()
+        observeIsHampersProduct()
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
@@ -402,12 +404,12 @@ class AddEditProductDescriptionFragment:
             showDescriptionTips()
         }
 
-        textFieldDescription?.setCounter(AddEditProductDetailConstants.MAX_DESCRIPTION_CHAR)
+        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription?.textFieldInput?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
-                if (it.length >= AddEditProductDetailConstants.MAX_DESCRIPTION_CHAR) {
+                if (it.length >= MAX_DESCRIPTION_CHAR) {
                     textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
                     textFieldDescription?.setError(true)
                 } else {
@@ -490,15 +492,26 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun observeProductInputModel() {
-        descriptionViewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+        descriptionViewModel.productInputModel.observe(viewLifecycleOwner) {
             updateVariantLayout()
-        })
+        }
     }
 
     private fun observeDescriptionValidation() {
-        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
+        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner) {
             updateDescriptionFieldErrorMessage(it)
-        })
+        }
+    }
+
+    private fun observeIsHampersProduct() {
+        descriptionViewModel.isHampersProduct.observe(viewLifecycleOwner) { isHampers ->
+            if (isHampers) {
+                layoutDescriptionTips.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
+                layoutDescriptionTips.setOnClickListener {
+                    showGiftingDescription()
+                }
+            }
+        }
     }
 
     private fun updateVariantLayout() {
@@ -523,7 +536,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun observeProductVideo() {
-        descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
+        descriptionViewModel.videoYoutube.observe(viewLifecycleOwner) { result ->
             val position = result.first
             val isItemStillTheSame: Boolean
             descriptionViewModel.isFetchingVideoData[position] = false
@@ -549,7 +562,7 @@ class AddEditProductDescriptionFragment:
             }
             refreshDuplicateVideo(position)
             updateSaveButtonStatus()
-        })
+        }
     }
 
     private fun displayErrorOnSelectedVideo(index: Int): Boolean {
@@ -660,27 +673,29 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
-        fragmentManager?.let {
-           /* val tooltipBottomSheet = TooltipBottomSheet()
-            val tips: ArrayList<NumericTooltipModel> = ArrayList()
-            val tooltipTitle = getString(R.string.title_tooltip_description_tips)
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_1)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_2)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_3)))
 
-            tooltipBottomSheet.apply {
-                setTitle(tooltipTitle)
-                setItemMenuList(tips)
-                setDividerVisible(false)
-                show(it, null)
-            }*/
+        val tooltipBottomSheet = TooltipBottomSheet()
+        val tips: ArrayList<NumericTooltipModel> = ArrayList()
+        val tooltipTitle = getString(R.string.title_tooltip_description_tips)
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_1)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_2)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_3)))
 
-            GiftingDescriptionBottomSheet().apply {
-                setOnCopyTemplateButtonListener {
-                    copyDescriptionTemplate()
-                }
-                show(it)
+        tooltipBottomSheet.apply {
+            setTitle(tooltipTitle)
+            setItemMenuList(tips)
+            setDividerVisible(false)
+        }
+        tooltipBottomSheet.show(parentFragmentManager, null)
+    }
+
+    private fun showGiftingDescription() {
+        val fragmentManager = parentFragmentManager
+        GiftingDescriptionBottomSheet().apply {
+            setOnCopyTemplateButtonListener {
+                copyDescriptionTemplate()
             }
+            show(fragmentManager)
         }
     }
 
@@ -690,22 +705,21 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickHelpVariant(shopId)
         }
-        fragmentManager?.let {
-            val tooltipBottomSheet = TooltipBottomSheet()
-            val tips: ArrayList<NumericTooltipModel> = ArrayList()
-            val tooltipTitle = getString(R.string.title_tooltip_variant_tips)
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_1)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_2)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_3)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_4)))
 
-            tooltipBottomSheet.apply {
-                setTitle(tooltipTitle)
-                setItemMenuList(tips)
-                setDividerVisible(false)
-                show(it, null)
-            }
+        val tooltipBottomSheet = TooltipBottomSheet()
+        val tips: ArrayList<NumericTooltipModel> = ArrayList()
+        val tooltipTitle = getString(R.string.title_tooltip_variant_tips)
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_1)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_2)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_3)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_4)))
+
+        tooltipBottomSheet.apply {
+            setTitle(tooltipTitle)
+            setItemMenuList(tips)
+            setDividerVisible(false)
         }
+        tooltipBottomSheet.show(parentFragmentManager, null)
     }
 
     override fun loadData(page: Int) {
