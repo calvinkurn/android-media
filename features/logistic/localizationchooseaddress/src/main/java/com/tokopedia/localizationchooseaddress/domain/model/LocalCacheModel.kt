@@ -6,5 +6,6 @@ data class LocalCacheModel (
         var district_id: String = "",
         var lat: String = "",
         var long: String = "",
+        var postal_code: String = "",
         var label: String = ""
 )

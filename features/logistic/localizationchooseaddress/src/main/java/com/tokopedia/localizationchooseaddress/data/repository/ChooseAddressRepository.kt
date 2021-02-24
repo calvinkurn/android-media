@@ -13,16 +13,25 @@ import javax.inject.Inject
 
 class ChooseAddressRepository @Inject constructor(private val gql: GraphqlRepository){
 
-    suspend fun getChosenAddressList(): GetChosenAddressListQglResponse {
+    suspend fun getChosenAddressList(source: String): GetChosenAddressListQglResponse {
+        val param = mapOf("source" to source)
         val request = GraphqlRequest(ChooseAddressQuery.getChosenAddressList,
-                GetChosenAddressListQglResponse::class.java)
+                GetChosenAddressListQglResponse::class.java, param)
         return gql.getResponse(request)
     }
 
-    /*update param*/
-    suspend fun setStateChosenAddress(): SetStateChosenAddressQqlResponse {
+    suspend fun setStateChosenAddress(status: Int, addressId: Int, receiverName: String, addressName: String, latitude: String, longitude: String, districtId: Int, postalCode: String): SetStateChosenAddressQqlResponse {
+        val param = mapOf("input" to mapOf(
+                "status" to status,
+                "addr_id" to addressId,
+                "addr_name" to addressName,
+                "receiver_name" to receiverName,
+                "district" to districtId,
+                "latitude" to latitude,
+                "longitude" to longitude,
+                "postal_code" to postalCode))
         val request = GraphqlRequest(ChooseAddressQuery.setStateChosenAddress,
-                SetStateChosenAddressQqlResponse::class.java)
+                SetStateChosenAddressQqlResponse::class.java, param)
         return gql.getResponse(request)
     }
 
@@ -33,9 +42,10 @@ class ChooseAddressRepository @Inject constructor(private val gql: GraphqlReposi
         return gql.getResponse(request)
     }
 
-    suspend fun getDefaultChosenAddress(): GetDefaultChosenAddressGqlResponse {
+    suspend fun getDefaultChosenAddress(latLong: String?, source: String): GetDefaultChosenAddressGqlResponse {
+        val param = mapOf("lat_long" to latLong, "source" to source)
         val request = GraphqlRequest(ChooseAddressQuery.getDefaultChosenAddress,
-                GetDefaultChosenAddressGqlResponse::class.java)
+                GetDefaultChosenAddressGqlResponse::class.java, param)
         return gql.getResponse(request)
     }
 }
