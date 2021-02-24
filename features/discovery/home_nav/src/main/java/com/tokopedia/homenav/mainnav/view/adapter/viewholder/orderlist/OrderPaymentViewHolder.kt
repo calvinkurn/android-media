@@ -87,7 +87,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     paymentModel.navPaymentModel.statusText)
-            RouteManager.route(context, if(paymentModel.navPaymentModel.statusText == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
+            RouteManager.route(context, if(itemView.order_payment_status.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
         }
     }
 }
