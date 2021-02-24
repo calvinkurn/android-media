@@ -6,7 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
+import com.tokopedia.topchat.matchers.hasTotalItemOf
 import com.tokopedia.topchat.matchers.isKeyboardShown
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.`is`
@@ -177,7 +177,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 matches(isDisplayed())
         )
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                RecyclerViewItemCountAssertion(3)
+                hasTotalItemOf(3)
         )
     }
 
@@ -197,7 +197,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 matches(isDisplayed())
         )
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                RecyclerViewItemCountAssertion(4)
+                hasTotalItemOf(4)
         )
     }
 

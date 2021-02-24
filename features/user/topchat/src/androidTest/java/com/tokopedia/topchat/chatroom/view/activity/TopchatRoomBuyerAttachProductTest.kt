@@ -23,7 +23,7 @@ import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
+import com.tokopedia.topchat.matchers.hasTotalItemOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -72,7 +72,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(RecyclerViewItemCountAssertion(1))
+                .check(hasTotalItemOf(1))
     }
 
     @Test
@@ -91,7 +91,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(RecyclerViewItemCountAssertion(1))
+                .check(hasTotalItemOf(1))
     }
 
     @Test
@@ -115,7 +115,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(RecyclerViewItemCountAssertion(1))
+                .check(hasTotalItemOf(1))
     }
 
     @Test
@@ -158,7 +158,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(RecyclerViewItemCountAssertion(3))
+                .check(hasTotalItemOf(3))
     }
 
     @Test
@@ -207,7 +207,7 @@ class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(RecyclerViewItemCountAssertion(1))
+                .check(hasTotalItemOf(1))
     }
 
     private fun clickCloseAttachmentPreview(position: Int) {
