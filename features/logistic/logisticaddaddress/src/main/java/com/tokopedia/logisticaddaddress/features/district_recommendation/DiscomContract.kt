@@ -24,6 +24,7 @@ interface DiscomContract {
         companion object {
             const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address"
             const val ARGUMENT_DATA_TOKEN = "token"
+            const val IS_LOCALIZATION = "is_localization"
         }
     }
 }

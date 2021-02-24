@@ -41,6 +41,14 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.chooseaddress.ChooseAddressActivity"
+            android:label="Choose Address"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" >
+        </activity>
+
     </application>
 
 </manifest>

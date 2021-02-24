@@ -9,15 +9,21 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
+class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                            private val mapper: GetOccCartMapper,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     fun createRequestParams(source: String): RequestParams {
-        return RequestParams.create().apply {
+        val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
+        chosenAddressRequestHelper.addChosenAddressParam(params)
+
+        return params
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
@@ -45,6 +51,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     error_message
     status
     data {
+      error_code
+      pop_up_message
       max_quantity
       max_char_note
       messages {
@@ -305,6 +313,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           latitude
           postal_code
           geolocation
+          state
+          state_detail
         }
         payment {
           enable

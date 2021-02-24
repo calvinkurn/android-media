@@ -87,6 +87,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("ab_test_button")
     @Expose
     private ABTestButtonResponse abTestButton;
+    @SerializedName("pop_up_message")
+    @Expose
+    private String popUpMessage = "";
 
     public List<String> getErrors() {
         return errors;
@@ -180,5 +183,9 @@ public class ShipmentAddressFormDataResponse {
 
     public ABTestButtonResponse getAbTestButton() {
         return abTestButton;
+    }
+
+    public String getPopUpMessage() {
+        return popUpMessage;
     }
 }

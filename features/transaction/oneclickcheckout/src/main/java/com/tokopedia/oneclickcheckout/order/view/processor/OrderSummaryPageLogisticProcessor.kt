@@ -60,7 +60,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             isPreorder = orderProduct.isPreorder != 0
             categoryIds = orderProduct.categoryId.toString()
             uniqueId = orderCart.cartString
-            addressId = address.addressId
+            addressId = address.addressId.toString()
             products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir))
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderProduct.productFinsurance

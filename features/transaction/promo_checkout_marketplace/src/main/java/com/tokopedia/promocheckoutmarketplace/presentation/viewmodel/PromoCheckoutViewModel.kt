@@ -23,6 +23,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -42,8 +43,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics,
-                                                 private val userSession: UserSessionInterface,
-                                                 private val gson: Gson)
+                                                 private val gson: Gson,
+                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -171,6 +172,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
         resetGetPromoRequestData(promoCode, promoRequest)
+
+        // Add current selected address from local cache
+        promoRequest.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
 
         // For refresh state, add current selected promo code to request param
         promoRequest.orders.forEach { order ->
@@ -593,6 +597,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         removeInvalidPromoCode(validateUsePromoRequest, selectedPromoList, bboPromoCodes)
 
         validateUsePromoRequest.skipApply = 0
+
+        // Add current selected address from local cache
+        validateUsePromoRequest.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
 
         // Set param
         val applyPromoRequestParam = mapOf(
