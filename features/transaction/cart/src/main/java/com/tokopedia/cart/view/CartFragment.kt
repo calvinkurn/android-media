@@ -774,7 +774,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (hasLoadRecommendation) {
-                    dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
+                    loadRecommendation()
                 }
             }
         }
@@ -1632,7 +1632,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.setShopSelected(itemPosition, checked)
         onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 
         val params = generateParamValidateUsePromoRevamp(checked, -1, -1, false)
@@ -1681,7 +1681,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
 
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         cartAdapter.setItemSelected(position, parentPosition, checked)
         val params = generateParamValidateUsePromoRevamp(checked, parentPosition, position, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
@@ -1803,73 +1803,111 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 return@let
             }
 
-            cartPageAnalytics.sendScreenName(activity, screenName)
+            sendAnalyuticsScreenNameCartPage()
+            updateStateAfterFinishGetCartList(it)
 
             renderAbTestButton(cartListData.abTestButton)
-
-            endlessRecyclerViewScrollListener.resetState()
-            refreshHandler?.finishRefresh()
-            this.cartListData = it
-            cartAdapter.resetData()
-
             renderTickerAnnouncement(it)
             renderChooseAddressWidget(cartListData.localizationChooseAddressData)
 
-            if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
-                renderCartEmpty(it)
-            } else {
-                renderCartNotEmpty(it)
-            }
-
-            if (wishLists == null) {
-                dPresenter.processGetWishlistData()
-            } else {
-                renderWishlist(null, false)
-            }
-
-            if (recentViewList == null || shouldReloadRecentViewList) {
-                dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
-            } else {
-                renderRecentView(null)
-            }
-
-            dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
-
-            if (dPresenter.isLastApplyValid()) {
-                // Render promo from last apply
-                cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
-                    // show toaster if any promo applied has been changed
-                    if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
-                        showToastMessageGreen(lastApplyData.additionalInfo.errorDetail.message)
-                        PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
-                    }
-                    renderPromoCheckout(lastApplyData)
-                }
-
-                // Render promo from last validate use from cart page (check / uncheck result) if any
-                dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-            } else {
-                // Render promo from last validate use from promo page
-                dPresenter.getValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-
-                // Render promo from last validate use from cart page (check / uncheck result) if any
-                dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-            }
+            validateRenderCart(it)
+            validateShowPopUpMessage(cartListData)
+            validateRenderWishlist()
+            validateRenderRecentView()
+            loadRecommendation()
+            validateRenderPromo(cartListData)
 
             setInitialCheckboxGlobalState(cartListData)
             setGlobalDeleteVisibility()
             setTopLayoutVisibility(false)
 
-            cartAdapter.checkForShipmentForm()
+            validateGoToCheckout()
+        }
+    }
+
+    private fun updateStateAfterFinishGetCartList(it: CartListData) {
+        this.cartListData = it
+        endlessRecyclerViewScrollListener.resetState()
+        refreshHandler?.finishRefresh()
+        cartAdapter.resetData()
+    }
+
+    private fun sendAnalyuticsScreenNameCartPage() {
+        cartPageAnalytics.sendScreenName(activity, screenName)
+    }
+
+    private fun loadRecommendation() {
+        dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
+    }
+
+    private fun validateRenderRecentView() {
+        if (recentViewList == null || shouldReloadRecentViewList) {
+            dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
+        } else {
+            renderRecentView(null)
+        }
+    }
+
+    private fun validateRenderWishlist() {
+        if (wishLists == null) {
+            dPresenter.processGetWishlistData()
+        } else {
+            renderWishlist(null, false)
+        }
+    }
+
+    private fun validateRenderCart(it: CartListData) {
+        if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
+            renderCartEmpty(it)
+        } else {
+            renderCartNotEmpty(it)
+        }
+    }
+
+    private fun validateRenderPromo(cartListData: CartListData) {
+        if (dPresenter.isLastApplyValid()) {
+            // Render promo from last apply
+            validateRenderPromoFromLastApply(cartListData)
+
+            // Render promo from last validate use from cart page (check / uncheck result) if any
+            validateRenderPromoFromValidateUseCartPage()
+        } else {
+            // Render promo from last validate use from promo page
+            validateRenderPromoFromValidateUsePromoPage()
+
+            // Render promo from last validate use from cart page (check / uncheck result) if any
+            validateRenderPromoFromValidateUseCartPage()
+        }
+    }
+
+    private fun validateRenderPromoFromValidateUsePromoPage() {
+        dPresenter.getValidateUseLastResponse()?.promoUiModel?.let {
+            val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
+            renderPromoCheckout(lastApplyUiModel)
+        }
+    }
+
+    private fun validateRenderPromoFromValidateUseCartPage() {
+        dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
+            val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
+            renderPromoCheckout(lastApplyUiModel)
+        }
+    }
+
+    private fun validateRenderPromoFromLastApply(cartListData: CartListData) {
+        cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
+            // show toaster if any promo applied has been changed
+            if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+                showToastMessageGreen(lastApplyData.additionalInfo.errorDetail.message)
+                PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
+            }
+            renderPromoCheckout(lastApplyData)
+        }
+    }
+
+    private fun validateShowPopUpMessage(cartListData: CartListData) {
+        if (cartListData.popUpMessage.isNotBlank()) {
+            showToastMessageGreen(cartListData.popUpMessage)
         }
     }
 
@@ -1947,8 +1985,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         renderCartUnavailableItems(cartListData)
 
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
-
-        cartAdapter.checkForShipmentForm()
 
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
@@ -3358,12 +3394,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
         }
+    }
+
+    private fun validateGoToCheckout() {
+        cartAdapter.checkForShipmentForm()
     }
 
     override fun navigateToPromoRecommendation() {
