@@ -42,23 +42,18 @@ class SellableStockProductViewHolder(itemView: View?,
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
-            if (element.isActive) {
-                label_campaign_stock_inactive?.visibility = View.INVISIBLE
-            } else {
-                label_campaign_stock_inactive?.visible()
-            }
+            label_campaign_stock_inactive.showWithCondition(!element.isActive)
+            label_campaign_stock.showWithCondition(element.isCampaign)
             switch_campaign_stock_variant_editor?.run {
                 isChecked = element.isActive
                 setOnCheckedChangeListener { _, isChecked ->
                     element.isActive = isChecked
-                    val status =
-                            if (isChecked) {
-                                this@with.label_campaign_stock_inactive?.visibility = View.INVISIBLE
-                                ProductStatus.ACTIVE
-                            } else {
-                                this@with.label_campaign_stock_inactive?.visible()
-                                ProductStatus.INACTIVE
-                            }
+                    val status = if (isChecked) {
+                        ProductStatus.ACTIVE
+                    } else {
+                        ProductStatus.INACTIVE
+                    }
+                    this@with.label_campaign_stock_inactive.showWithCondition(!isChecked)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
                 }

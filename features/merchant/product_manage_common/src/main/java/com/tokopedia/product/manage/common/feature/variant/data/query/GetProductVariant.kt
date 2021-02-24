@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.common.feature.variant.data.query
 internal object GetProductVariant {
 
     val QUERY = """
-        query getProductV3(${'$'}productID:String!, ${'$'}options:OptionV3!){
-          getProductV3(productID:${'$'}productID, options:${'$'}options){
+        query getProductV3(${'$'}productID:String!, ${'$'}options:OptionV3!, ${'$'}extraInfo:ExtraInfoV3!, ${'$'}warehouseID:String){
+          getProductV3(productID:${'$'}productID, options:${'$'}options, extraInfo:${'$'}extraInfo, warehouseID:${'$'}warehouseID){
             productName
             variant{
               products{
@@ -12,6 +12,7 @@ internal object GetProductVariant {
                 status
                 combination
                 isPrimary
+                isCampaign
                 price
                 sku
                 stock
