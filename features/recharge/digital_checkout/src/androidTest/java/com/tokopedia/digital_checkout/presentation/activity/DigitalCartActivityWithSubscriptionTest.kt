@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -19,10 +20,13 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.utils.CustomActionUtils
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.*
@@ -30,7 +34,7 @@ import org.junit.*
 /**
  * @author by jessica on 03/02/21
  */
-class DigitalCartActivityTest {
+class DigitalCartActivityWithSubscriptionTest {
 
     @get:Rule
     var mActivityRule = ActivityTestRule(DigitalCartActivity::class.java,
@@ -52,7 +56,14 @@ class DigitalCartActivityTest {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setUpMockResponse()
         validateCartInfoOnUi()
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_DEFAULT_CART),
+        validateSubscriptionWidgetUi()
+        validateFintechProductOnUi()
+        validatePaymentPriceOnUi()
+        validateTypeOnInputView()
+        validateOnClickPromo()
+
+        Thread.sleep(1000)
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_SUBSCRIPTION_CART),
                 hasAllSuccess())
     }
 
@@ -60,7 +71,7 @@ class DigitalCartActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_DG_CHECKOUT_GET_CART,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.digital_checkout.test.R.raw.response_mock_get_cart),
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.digital_checkout.test.R.raw.response_mock_get_cart_subscription),
                     MockModelConfig.FIND_BY_CONTAINS
             )
         }
@@ -85,7 +96,7 @@ class DigitalCartActivityTest {
 
     private fun validateCartInfoOnUi() {
         //Info Cart Detail
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         onView(withId(R.id.productTitle)).check(matches(withText("Angsuran Kredit")))
 
         val detailRecyclerView: RecyclerView = mActivityRule.activity.findViewById(R.id.rvDetails)
@@ -100,34 +111,70 @@ class DigitalCartActivityTest {
 
         onView(withId(R.id.tvSeeDetailToggle)).check(matches(isDisplayed()))
         onView(withId(R.id.tvSeeDetailToggle)).check(matches(withText("Lihat Detail")))
+    }
 
-        //should show Additional Info
-        onView(withId(R.id.tvSeeDetailToggle)).perform(click())
+    private fun validateSubscriptionWidgetUi() {
+        //check subscription widget
         Thread.sleep(1000)
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailSubtitle), withText("Data Pelanggan"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Nomor Polisi"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("B1234ACD"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Jatuh Tempo"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("23/07/2020"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Tagihan Ke"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("103"))).check(matches(isDisplayed()))
+        val checkoutSubscriptionHeaderTitle = onView(AllOf.allOf(withText("Subscription body, this is a description (is subscribed)"),
+                withId(R.id.tvCheckoutMyBillsHeaderTitle)) )
+        checkoutSubscriptionHeaderTitle.perform(CustomActionUtils.nestedScrollTo())
+        checkoutSubscriptionHeaderTitle.check(matches(isDisplayed()))
 
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailSubtitle), withText("Detail Tagihan"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Denda"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 0"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Biaya Lain"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 1"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Admin"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 2.500"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Tagihan"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 10.000"))).check(matches(isDisplayed()))
+        val checkoutSubcriptionBody = onView(AllOf.allOf(withText("Text Before Checked"),
+                withId(R.id.tvCheckoutMyBillsDescription)) )
+        checkoutSubcriptionBody.check(matches(isDisplayed()))
+    }
 
+    private fun validateFintechProductOnUi() {
+        //check fintech widget
+        Thread.sleep(1000)
+        val checkoutMyBillsHeaderTitle = onView(AllOf.allOf(withText("This is purchase Protection"),
+                withId(R.id.tvCheckoutMyBillsHeaderTitle)) )
+        checkoutMyBillsHeaderTitle.perform(CustomActionUtils.nestedScrollTo())
+        checkoutMyBillsHeaderTitle.check(matches(isDisplayed()))
+
+        val checkoutMyBillsSubtitle = onView(AllOf.allOf(withText("Rp 500"),
+                withId(R.id.tvCheckoutMyBillsDescription)) )
+        checkoutMyBillsSubtitle.check(matches(isDisplayed()))
+
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
+        Thread.sleep(1000)
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
+    }
+
+    private fun validatePaymentPriceOnUi() {
+        //check payment price
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+    }
+
+    private fun validateTypeOnInputView() {
+        //type input view
+        Thread.sleep(1000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click()).perform(ViewActions.clearText(),
+                ViewActions.closeSoftKeyboard())
+        Thread.sleep(1000)
+        // if inputview invalid
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_wrapper)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCheckout)).check(matches(not(isEnabled())))
 
         Thread.sleep(1000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click()).perform(ViewActions.typeText("10000"),
+                ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 10.000")))
+    }
+
+    private fun validateOnClickPromo() {
+        //click use promo
+        Thread.sleep(1000)
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
     }
 
     @After
@@ -137,7 +184,7 @@ class DigitalCartActivityTest {
 
     companion object {
         const val KEY_DG_CHECKOUT_GET_CART = "rechargeGetCart"
-        const val ANALYTIC_VALIDATOR_DIGITAL_DEFAULT_CART = "tracker/recharge/digital_checkout/digital_default_checkout.json"
+        const val ANALYTIC_VALIDATOR_DIGITAL_SUBSCRIPTION_CART = "tracker/recharge/digital_checkout/digital_subscription_checkout.json"
     }
 
 }

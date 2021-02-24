@@ -6,9 +6,11 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalUrl
@@ -21,19 +23,16 @@ import com.tokopedia.digital_checkout.di.DigitalCartQualifier
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
-import okhttp3.Interceptor
+import java.lang.reflect.Type
 import javax.inject.Inject
 
-class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val authInterceptor: ArrayList<Interceptor>,
-                                                  @ApplicationContext val context: Context)
-    : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
+class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val repository: RestRepository)
+    : RestRequestUseCase(repository) {
 
-    override fun buildRequest(requestParams: RequestParams): MutableList<RestRequest> {
-        val networkRequest = mutableListOf<RestRequest>()
-        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
+    private val url = DigitalUrl.CART
+    var requestParams = RequestParams()
 
-        val url = DigitalUrl.CART
-
+    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val requestBodyAtcDigital = requestParams.getObject(PARAM_REQUEST_BODY_ATC_DIGITAL) as RequestBodyAtcDigital
         val jsonElement = JsonParser().parse(Gson().toJson(requestBodyAtcDigital))
         val requestBody = JsonObject()
@@ -44,21 +43,24 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val auth
         mapHeader[KEY_IDEM_POTENCY_KEY] = idemPotencyKeyHeader
         mapHeader[KEY_CONTENT_TYPE] = VALUE_CONTENT_TYPE
 
+        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
         val restRequest = RestRequest.Builder(url, token)
                 .setRequestType(RequestType.POST)
                 .setBody(requestBody)
                 .setHeaders(mapHeader)
                 .build()
-        networkRequest.add(restRequest)
-        return networkRequest
+
+
+        restRequestList.clear()
+        restRequestList.add(restRequest)
+        return repository.getResponses(restRequestList)
     }
 
-    fun createRequestParams(requestBodyAtcDigital: RequestBodyAtcDigital?,
-                            idemPotencyKeyHeader: String?): RequestParams {
-        val requestParams = RequestParams.create()
+    fun setRequestParams(requestBodyAtcDigital: RequestBodyAtcDigital?,
+                         idemPotencyKeyHeader: String?) {
+        requestParams = RequestParams.create()
         requestParams.putObject(PARAM_REQUEST_BODY_ATC_DIGITAL, requestBodyAtcDigital)
         requestParams.putString(PARAM_IDEM_POTENCY_KEY, idemPotencyKeyHeader)
-        return requestParams
     }
 
     companion object {

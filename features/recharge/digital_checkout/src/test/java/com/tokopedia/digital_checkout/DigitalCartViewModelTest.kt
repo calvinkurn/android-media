@@ -40,6 +40,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import rx.Subscriber
+import java.io.IOException
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -373,13 +374,7 @@ class DigitalCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        every {
-            digitalAddToCartUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
-        }
+        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -534,13 +529,7 @@ class DigitalCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        every {
-            digitalPatchOtpUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
-        }
+        coEvery { digitalPatchOtpUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -558,13 +547,7 @@ class DigitalCartViewModelTest {
     @Test
     fun onPatchOtp_onFailed() {
         // given
-        every {
-            digitalPatchOtpUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onError(Throwable())
-        }
+        coEvery { digitalPatchOtpUseCase.executeOnBackground() } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -591,13 +574,7 @@ class DigitalCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        every {
-            digitalCheckoutUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
-        }
+        coEvery { digitalCheckoutUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -618,13 +595,7 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onFailed() {
         // given
-        every {
-            digitalCheckoutUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onError(Throwable())
-        }
+        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 

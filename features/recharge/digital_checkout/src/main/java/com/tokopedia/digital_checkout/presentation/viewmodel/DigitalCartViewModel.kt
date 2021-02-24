@@ -34,12 +34,13 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import java.lang.reflect.Type
 import java.net.ConnectException
@@ -60,7 +61,7 @@ class DigitalCartViewModel @Inject constructor(
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
         private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
         private val userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
@@ -131,25 +132,65 @@ class DigitalCartViewModel @Inject constructor(
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
-            val requestParams: RequestParams = digitalAddToCartUseCase.createRequestParams(
-                    DigitalAddToCartUseCase.getRequestBodyAtcDigital(
-                            digitalCheckoutPassData,
-                            userSession.userId.toInt(),
-                            digitalIdentifierParam,
-                            digitalSubscriptionParams
-                    ), digitalCheckoutPassData.idemPotencyKey)
-            digitalAddToCartUseCase.execute(requestParams, getSubscriberCart(digitalCheckoutPassData.source))
+
+            launchCatchError(block = {
+                val data = withContext(dispatcher) {
+                    digitalAddToCartUseCase.setRequestParams(
+                            DigitalAddToCartUseCase.getRequestBodyAtcDigital(
+                                    digitalCheckoutPassData,
+                                    userSession.userId.toInt(),
+                                    digitalIdentifierParam,
+                                    digitalSubscriptionParams
+                            ), digitalCheckoutPassData.idemPotencyKey)
+                    digitalAddToCartUseCase.executeOnBackground()
+                }
+                onSuccessAddToCart(data, digitalCheckoutPassData.source)
+
+            }) {
+                it.printStackTrace()
+                _showLoading.postValue(false)
+                errorHandler(it)
+            }
         }
+    }
+
+    private fun onSuccessAddToCart(data: Map<Type, RestResponse?>, source: Int) {
+
+        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
+        val restResponse = data[token]
+        val lala = restResponse!!.getData<DataResponse<*>>()
+        val responseCartData: ResponseCartData = lala.data as ResponseCartData
+        val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
+
+        mapDataSuccessCart(source, mappedCartData)
     }
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
                             digitalCheckoutPassData: DigitalCheckoutPassData,
                             errorNotLoginMessage: String = "") {
-        val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
-        val requestBodyOtpSuccess = RequestBodyOtpSuccess(DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_OTP_CART_TYPE,
-                requestCheckoutParam.cartId ?: "", attributes)
-        val requestParams = digitalPatchOtpUseCase.createRequestParams(requestBodyOtpSuccess)
-        digitalPatchOtpUseCase.execute(requestParams, getSubscriberOtp(digitalCheckoutPassData, errorNotLoginMessage))
+        launchCatchError(block = {
+            val otpResponse = withContext(dispatcher) {
+                val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
+                val requestBodyOtpSuccess = RequestBodyOtpSuccess(DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_OTP_CART_TYPE,
+                        requestCheckoutParam.cartId ?: "", attributes)
+                digitalPatchOtpUseCase.setRequestParams(requestBodyOtpSuccess)
+                digitalPatchOtpUseCase.executeOnBackground()
+            }
+
+            val token = object : TypeToken<DataResponse<ResponsePatchOtpSuccess>>() {}.type
+            val restResponse = otpResponse[token]
+            val data = restResponse!!.getData<DataResponse<*>>()
+            val responsePatchOtpSuccess = data.data as ResponsePatchOtpSuccess
+
+            if (responsePatchOtpSuccess.success) {
+                getCart(digitalCheckoutPassData, errorNotLoginMessage)
+            }
+
+        }) {
+            it.printStackTrace()
+            _showLoading.postValue(false)
+            errorHandler(it)
+        }
     }
 
     private fun onSuccessGetCart(source: Int): (RechargeGetCart.Response) -> Unit {
@@ -170,27 +211,23 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun getSubscriberCart(source: Int): Subscriber<Map<Type, RestResponse>> {
-        return object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-                _showLoading.postValue(false)
-                errorHandler(e)
-            }
+    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
+        analytics.eventAddToCart(mappedCartData, source)
+        analytics.eventCheckout(mappedCartData)
 
-            override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
-                val restResponse = typeRestResponseMap[token]
-                val data = restResponse!!.getData<DataResponse<*>>()
-                val responseCartData: ResponseCartData = data.data as ResponseCartData
-                val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
+        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
 
-                mapDataSuccessCart(source, mappedCartData)
-            }
+        if (mappedCartData.isNeedOtp) {
+            _isNeedOtp.postValue(userSession.phoneNumber)
+        } else {
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
+            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
+            _cartDigitalInfoData.postValue(mappedCartData)
+            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
         }
     }
-
 
     private fun getSubscriberOtp(digitalCheckoutPassData: DigitalCheckoutPassData,
                                  errorNotLoginMessage: String = ""): Subscriber<Map<Type, RestResponse>> {
@@ -215,25 +252,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
-        analytics.eventAddToCart(mappedCartData, source)
-        analytics.eventCheckout(mappedCartData)
-
-        requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken)
-
-        if (mappedCartData.isNeedOtp) {
-            _isNeedOtp.postValue(userSession.phoneNumber)
-        } else {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
-            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
-            _cartDigitalInfoData.postValue(mappedCartData)
-            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-            _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
-        }
-    }
-
-    private fun errorHandler(e: Throwable) {
+    fun errorHandler(e: Throwable) {
         if (e is UnknownHostException) {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
         } else if (e is SocketTimeoutException || e is ConnectException) {
@@ -335,23 +354,16 @@ class DigitalCartViewModel @Inject constructor(
             if (requestCheckoutParam.isNeedOtp) {
                 _isNeedOtp.postValue(userSession.phoneNumber)
             }
-            val requestParams: RequestParams = digitalCheckoutUseCase.createRequestParams(
-                    getRequestBodyCheckout(requestCheckoutParam, digitalIdentifierParam,
-                            it.attributes?.fintechProduct?.getOrNull(0)))
-            digitalCheckoutUseCase.execute(requestParams, getSubscriberCheckout())
-        }
-    }
 
-    private fun getSubscriberCheckout(): Subscriber<Map<Type, RestResponse>> {
-        return object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-                _showLoading.postValue(false)
-                errorHandler(e)
-            }
+            launchCatchError(block = {
+                val checkoutDigitalData = withContext(dispatcher) {
+                    digitalCheckoutUseCase.setRequestParams(
+                            getRequestBodyCheckout(requestCheckoutParam, digitalIdentifierParam,
+                                    it.attributes?.fintechProduct?.getOrNull(0)))
 
-            override fun onNext(checkoutDigitalData: Map<Type, RestResponse>) {
+                    digitalCheckoutUseCase.executeOnBackground()
+                }
+
                 val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
                 val restResponse = checkoutDigitalData[token]
                 val data = restResponse!!.getData<DataResponse<*>>()
@@ -360,6 +372,11 @@ class DigitalCartViewModel @Inject constructor(
 
                 _showLoading.postValue(false)
                 _paymentPassData.postValue(checkoutData)
+
+            }) {
+                it.printStackTrace()
+                _showLoading.postValue(false)
+                errorHandler(it)
             }
         }
     }

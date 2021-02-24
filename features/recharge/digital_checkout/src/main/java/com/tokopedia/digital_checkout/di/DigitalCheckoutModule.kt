@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
@@ -79,6 +81,26 @@ class DigitalCheckoutModule {
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return if (context is NetworkRouter) context
         else throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
+    }
+
+    @Provides
+    @DigitalCheckoutScope
+    @DigitalCartCheckoutQualifier
+    fun provideCheckoutRestRepository(@DigitalCartCheckoutQualifier interceptors: ArrayList<Interceptor>,
+                                      @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @Provides
+    @DigitalCheckoutScope
+    @DigitalCartQualifier
+    fun provideRestRepository(@DigitalCartQualifier interceptors: ArrayList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
     }
 
     @DigitalCheckoutScope

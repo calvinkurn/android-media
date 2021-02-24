@@ -1,0 +1,120 @@
+{
+  "readme": "Digital checkout with subscription (user haven't subscribed) & a fintech product",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "add_to_cart",
+      "eventCategory": "digital - native",
+      "eventAction": "click beli",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "cart_id": "{{.*}}",
+          "quantity": "{{\\d*.\\d*}}",
+          "category_id": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "begin_checkout",
+      "eventCategory": "digital - checkout",
+      "eventAction": "view checkout",
+      "eventLabel": "{{.* - .*}}",
+      "checkout_step": "1",
+      "checkout_option": "cart page loaded",
+      "currentSite": "tokopediadigital",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "cart_id": "{{.*}}",
+          "quantity": "{{\\d*.\\d*}}",
+          "category_id": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "tick cross sell",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "untick cross sell",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "click promo button",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "tick auto debit",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "untick auto debit",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event":"clickCheckout",
+      "eventCategory":"digital - checkout page",
+      "eventAction":"tick cross sell",
+      "eventLabel":"{{.+ - .+}}",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigital",
+      "userId":"{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event":"clickCheckout",
+      "eventCategory":"digital - checkout page",
+      "eventAction":"untick cross sell",
+      "eventLabel":"{{.+ - .+}}",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigital",
+      "userId":"{{.+}}",
+      "sessionIris": "{{.+}}"
+    }
+  ]
+}
