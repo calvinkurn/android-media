@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -74,6 +78,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
@@ -140,6 +145,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
+
+        private const val COACHMARK_PERIOD_ONE_YEAR : Long = 365
+        private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -489,6 +497,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observePromoListUiModel() {
         viewModel.promoListUiModel.observe(viewLifecycleOwner, Observer {
             adapter.addVisitableList(it)
+            renderPromoCoachMark()
         })
     }
 
@@ -866,6 +875,40 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }.show()
 
             analytics.eventViewPopupSavePromo(viewModel.getPageSource())
+        }
+    }
+
+    private fun renderPromoCoachMark() {
+        val coachMarkIndex = adapter.list.indexOfFirst { item ->
+            if (item is PromoListItemUiModel) {
+                item.uiData.coachMark.isShown
+            } else {
+                false
+            }
+        }
+
+        if (coachMarkIndex != -1 && PersistentCacheManager.instance.get(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, Boolean::class.java, false) != true) {
+            recyclerView.smoothScrollToPosition(coachMarkIndex)
+            Handler().postDelayed({
+                val holder = recyclerView.findViewHolderForAdapterPosition(coachMarkIndex)
+                val coachMarkData = adapter.list[coachMarkIndex] as PromoListItemUiModel
+                holder?.let {
+                    val coachMarkItem = arrayListOf(
+                            CoachMark2Item(
+                                    holder.itemView,
+                                    coachMarkData.uiData.coachMark.title,
+                                    coachMarkData.uiData.coachMark.content,
+                                    CoachMark2.POSITION_TOP
+                            )
+                    )
+
+                    context?.let {
+                        val coachMark = CoachMark2(it)
+                        coachMark.showCoachMark(coachMarkItem)
+                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, TimeUnit.DAYS.toMillis(COACHMARK_PERIOD_ONE_YEAR))
+                    }
+                }
+            }, 300)
         }
     }
 
