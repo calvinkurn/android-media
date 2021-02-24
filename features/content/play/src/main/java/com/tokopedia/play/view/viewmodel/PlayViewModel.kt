@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -19,10 +20,12 @@ import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.util.video.state.hasNoData
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
@@ -101,6 +104,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiP
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+    val observablePinnedVoucher: LiveData<PlayResult<List<PlayVoucherUiModel>>> /**Added**/
+        get() = _observablePinnedVoucher
 
     val videoOrientation: VideoOrientation
         get() {
@@ -230,6 +235,7 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observablePinnedVoucher = MutableLiveData<PlayResult<List<PlayVoucherUiModel>>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -301,8 +307,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private val videoStateProcessor = videoStateProcessorFactory.create(playVideoPlayer, viewModelScope) { channelType }
-    private val channelStateProcessor = channelStateProcessorFactory.create(viewModelScope) { channelType }
-    private val videoBufferGovernor = videoBufferGovernorFactory.create(viewModelScope)
+    private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope) { channelType }
+    private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
     init {
         videoStateProcessor.addStateListener(videoStateListener)
@@ -527,7 +533,10 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
-        if (shouldPauseVideo) playVideoPlayer.pause(preventLoadingBuffer = true)
+        if (shouldPauseVideo) {
+            if (playVideoPlayer.isVideoLive() || viewerVideoState.hasNoData) playVideoPlayer.stop()
+            else playVideoPlayer.pause(preventLoadingBuffer = true)
+        }
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
@@ -839,7 +848,7 @@ class PlayViewModel @Inject constructor(
 
                 val (totalView, totalLike, totalLikeFormatted) = try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
+                    Triple(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
                     Triple("", 0 , "0")
                 }
@@ -847,7 +856,7 @@ class PlayViewModel @Inject constructor(
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
                 val newLikeStatus = PlayLikeStatusInfoUiModel(
-                        totalLike = totalLike,
+                        totalLike = totalLike.toLong(),
                         totalLikeFormatted = totalLikeFormatted,
                         isLiked = isLiked,
                         source = LikeSource.Network
@@ -888,6 +897,7 @@ class PlayViewModel @Inject constructor(
                 _observableProductSheetContent.value = PlayResult.Failure(it) {
                     updateProductTagsInfo(productTags, pinnedInfo, channelId)
                 }
+                _observablePinnedVoucher.value = PlayResult.Failure(it)
             })
         }
     }
@@ -950,12 +960,16 @@ class PlayViewModel @Inject constructor(
                 showPlaceholder = true
         )
 
+        _observablePinnedVoucher.value = PlayResult.Loading(showPlaceholder = true) // TODO("rapihin met")
+
         val productTagsResponse = withContext(dispatchers.io) {
             getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
             getProductTagItemsUseCase.executeOnBackground()
         }
         val productTags = playUiModelMapper.mapProductTags(productTagsResponse.listOfProducts)
         val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.listOfVouchers)
+
+        _observablePinnedVoucher.value = PlayResult.Success(merchantVouchers) // TODO("map only the highlighted voucher")
 
         val newProductSheet = PlayProductTagsUiModel.Complete(
                 basicInfo = productTagsBasicInfo,

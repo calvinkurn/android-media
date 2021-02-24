@@ -52,12 +52,14 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
@@ -70,6 +72,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -94,7 +98,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
-        ProductFeaturedViewComponent.Listener
+        ProductFeaturedViewComponent.Listener,
+        PinnedVoucherViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -116,6 +121,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
+    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -380,6 +386,14 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
         openProductSheet()
     }
+
+    /**
+     * Pinned Voucher View Component Listener
+     */
+    override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
+        copyToClipboard(content = voucher.code)
+        doShowToaster(message = getString(R.string.play_voucher_code_copied))
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -492,6 +506,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
+        observePinnedVoucher()
 
         observeLoggedInInteractionEvent()
     }
@@ -735,6 +750,18 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeOnboarding() {
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
             if (!orientation.isLandscape) onboardingView?.showAnimated()
+        })
+    }
+
+    private fun observePinnedVoucher() {
+        playViewModel.observablePinnedVoucher.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> if (it.showPlaceholder) pinnedVoucherView?.showPlaceholder()
+                is PlayResult.Success -> pinnedVoucherView?.setVoucher(it.data)
+                is PlayResult.Failure -> {
+                    // TODO("error handling, ask praisya")
+                }
+            }
         })
     }
     //endregion
@@ -1029,6 +1056,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showLinkCopiedToaster() {
+        doShowToaster(message = getString(R.string.play_link_copied))
+    }
+
+    private fun doShowToaster(
+            toasterType: Int = Toaster.TYPE_NORMAL,
+            message: String,
+    ) {
         if (toasterBottomMargin == 0) {
             val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
             toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
@@ -1036,8 +1070,8 @@ class PlayUserInteractionFragment @Inject constructor(
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
                 container,
-                getString(R.string.play_link_copied),
-                type = Toaster.TYPE_NORMAL).show()
+                message,
+                type = toasterType).show()
     }
 
     //region OnStateChanged

@@ -28,7 +28,9 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
                     1 -> MerchantVoucherType.Shipping
                     2,3 -> MerchantVoucherType.Discount
                     else -> MerchantVoucherType.Unknown
-                }
+                },
+                code = input.code,
+                copyable = true // TODO("check API Contract")
         )
     }
 }

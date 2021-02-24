@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 class Voucher (
         @SerializedName("voucher_id")
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: String = "",
         @SerializedName("voucher_type")
         val voucherType: Int = 0,
         @SerializedName("voucher_name")

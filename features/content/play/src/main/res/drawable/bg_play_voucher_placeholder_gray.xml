@@ -7,6 +7,6 @@
         android:radius="@dimen/play_pinned_voucher_radius"
         />
     <solid
-        android:color="@color/play_dms_voucher_bg"
+        android:color="@color/play_dms_voucher_placeholder_bg"
         />
 </shape>

@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +26,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
@@ -141,6 +145,15 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int) {
         analytic.scrollMerchantVoucher(lastPositionViewed)
+    }
+
+    override fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel) {
+        copyToClipboard(content = voucher.code)
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_voucher_code_copied)
+        )
     }
 
     /**
@@ -307,6 +320,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 ) }
             }
         }
+    }
+
+    private fun copyToClipboard(content: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
     /**

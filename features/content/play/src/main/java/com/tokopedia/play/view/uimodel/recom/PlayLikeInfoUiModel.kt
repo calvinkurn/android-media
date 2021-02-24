@@ -21,7 +21,7 @@ data class PlayLikeParamInfoUiModel(
 )
 
 data class PlayLikeStatusInfoUiModel(
-        val totalLike: Int,
+        val totalLike: Long,
         val totalLikeFormatted: String,
         val isLiked: Boolean,
         val source: LikeSource
