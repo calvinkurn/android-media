@@ -9,6 +9,7 @@ fun getQueryCartRevamp(): String {
             status
             data {
               errors
+              pop_up_message
               localization_choose_address {
                 address_id
                 address_name
