@@ -51,7 +51,7 @@ fun getQueryCartRevamp(): String {
                     type
                     amount_str
                     amount
-                    currency_detail_str
+                    currency_details_str
                 }
               }
               max_quantity

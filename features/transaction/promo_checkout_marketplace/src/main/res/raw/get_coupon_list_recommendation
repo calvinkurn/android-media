@@ -70,7 +70,7 @@ mutation coupon_list_recommendation($params: PromoStackRequest) {
                             code
                             message
                         }
-                        currency_detail_str
+                        currency_details_str
                         coachmark {
                             is_shown
                             title

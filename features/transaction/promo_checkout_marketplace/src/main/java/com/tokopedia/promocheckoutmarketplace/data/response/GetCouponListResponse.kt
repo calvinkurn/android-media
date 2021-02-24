@@ -159,7 +159,7 @@ data class Coupon(
         val radioCheckState: String = "",
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
-        @SerializedName("currency_detail_str")
+        @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
         val coachMark: PromoCoachmark = PromoCoachmark()
