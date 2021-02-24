@@ -154,7 +154,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
             cartDetailInfoAdapter.setAdditionalInfoItems(it)
-            tvSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            containerSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -231,7 +231,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
 
-        renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
+        if (cartInfo.showSubscriptionsView) renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
         renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
 
         cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
@@ -265,7 +265,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         rvDetails.layoutManager = LinearLayoutManager(context)
         rvDetails.isNestedScrollingEnabled = false
         rvDetails.adapter = cartDetailInfoAdapter
-        tvSeeDetailToggle.setOnClickListener { cartDetailInfoAdapter.toggleIsExpanded() }
+        containerSeeDetailToggle.setOnClickListener { cartDetailInfoAdapter.toggleIsExpanded() }
 
         showPromoTicker()
 
@@ -392,7 +392,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig?) {
         crossSellingConfig?.let { crossSellingConfig ->
-
             if ((crossSellingConfig.bodyTitle ?: "").isNotEmpty()) {
                 subscriptionWidget.visibility = View.VISIBLE
 

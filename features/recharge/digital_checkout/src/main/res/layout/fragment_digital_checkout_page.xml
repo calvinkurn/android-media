@@ -15,57 +15,81 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_lvl4"
-                android:background="@color/Unify_N0">
+                android:background="@color/Unify_N0"
+                android:paddingHorizontal="@dimen/spacing_lvl4"
+                android:paddingVertical="@dimen/spacing_lvl3">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/iconCheckout"
-                    android:layout_width="@dimen/layout_lvl3"
-                    android:layout_height="@dimen/layout_lvl3"/>
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/productTitle"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/iconCheckout"
-                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
                     android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintBottom_toBottomOf="@id/iconCheckout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iconCheckout"
+                    app:layout_constraintTop_toTopOf="@id/iconCheckout"
                     app:typographyType="heading_4"
                     tools:text="Listrik PLN" />
 
                 <View
                     android:id="@+id/titleViewSeperator"
-                    android:layout_below="@+id/productTitle"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:background="@color/Unify_N75"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"/>
+                    app:layout_constraintTop_toBottomOf="@id/iconCheckout" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDetails"
-                    android:layout_below="@+id/titleViewSeperator"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    app:layout_constraintTop_toBottomOf="@id/titleViewSeperator" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvSeeDetailToggle"
-                    android:layout_below="@id/rvDetails"
+                <LinearLayout
+                    android:id="@+id/containerSeeDetailToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/spacing_lvl3"
-                    android:text="@string/digital_cart_detail_see_detail_label"
-                    android:textColor="@color/Unify_G500"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:visibility="gone"
-                    app:typographyType="body_2" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rvDetails"
+                    tools:visibility="visible">
 
-            </RelativeLayout>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvSeeDetailToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/digital_cart_detail_see_detail_label"
+                        android:textColor="@color/Unify_G500"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
+                        android:layout_marginStart="@dimen/spacing_lvl1"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/inputPriceContainer"
@@ -77,26 +101,26 @@
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
                     android:id="@+id/inputPriceHolderView"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl3" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutMyBills"
-                android:layout_below="@+id/inputPriceContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/inputPriceContainer"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/spacing_lvl4">
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"/>
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:visibility="gone" />
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/fintechProductWidget"
@@ -115,9 +139,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/Unify_N0"
         android:focusableInTouchMode="true"
-        android:background="@color/Unify_N0">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
             android:id="@+id/digitalPromoBtnView"
@@ -130,49 +154,41 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:text="@string/digital_checkout_total_payment_label"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/btnCheckout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"/>
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTotalPayment"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
             app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
             app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
-            app:typographyType="heading_4"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp.102.500" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnCheckout"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:minWidth="@dimen/digital_checkout_checkout_button_width"
             android:text="@string/digital_cart_checkout_pay_label"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="transaction" />
+            app:unifyButtonSize="medium" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/viewEmptyState"
@@ -187,9 +203,9 @@
         android:id="@+id/loaderCheckout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
         android:gravity="center"
-        android:visibility="gone"
-        android:background="@color/Unify_N0">
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"

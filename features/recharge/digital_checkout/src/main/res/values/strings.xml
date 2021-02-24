@@ -8,8 +8,9 @@
     <string name="digital_cart_detail_close_label">Tutup</string>
 
     <string name="digital_checkout_total_payment_label">Total Tagihan</string>
-    <string name="digital_cart_checkout_pay_label">Bayar</string>
-    <string name="digital_cart_hint_input_price">Contoh: 422500</string>
+    <string name="digital_cart_checkout_pay_label">Pilih Pembayaran</string>
+    <string name="digital_cart_hint_input_price">Nominal Pembayaran</string>
+    <string name="digital_cart_prepend_text_input_price">Rp</string>
 
     <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
 

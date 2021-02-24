@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/spacing_lvl4"
+    android:padding="@dimen/unify_space_12"
     android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -13,15 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="Masukkan jumlah yang dibayar" />
+        tools:text="Masukkan jumlah yang dibayar"
+        android:layout_marginTop="@dimen/spacing_lvl2" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/etDigitalCheckoutInputPrice"
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_input_type="number"
-        app:text_field_placeholder="@string/digital_cart_hint_input_price"
-        tools:layout_height="@dimen/spacing_lvl6" />
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:padding="@dimen/spacing_lvl4">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/etDigitalCheckoutInputPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text_field_input_type="number"
+                app:text_field_prepend_text="Rp"
+                app:text_field_label_static="false"
+                app:text_field_label="@string/digital_cart_hint_input_price"
+                tools:layout_height="@dimen/spacing_lvl6" />
+        </FrameLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
 </LinearLayout>
