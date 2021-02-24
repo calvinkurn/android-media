@@ -36,7 +36,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                     playWidgetViewHolder.bind(uiModel, this)
 //                TODO:: Impression GTM
                     if (uiModel is ImpressionableModel)
-                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId)
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, discoveryPlayWidgetViewModel.position)
                 } else {
                     val playWidgetView = itemView as PlayWidgetView
                     playWidgetView.removeAllViews()
@@ -61,7 +61,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         if (fragment is DiscoveryFragment) {
             fragment.openPlay(discoveryPlayWidgetViewModel.position, appLink)
 //        TODO::CLICK GTM
-            fragment.getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, appLink)
+            fragment.getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, appLink, discoveryPlayWidgetViewModel.position)
         }
     }
 
