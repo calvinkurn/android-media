@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class LocalizationChooseAddress(
+data class LocalizationChooseAddressData(
         var addressId: String = "",
         var addressName: String = "",
         var address: String = "",
