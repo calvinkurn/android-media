@@ -118,7 +118,7 @@
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/play_widget_dms_info_container_white"
+            android:background="@color/play_widget_dms_info_container"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent">

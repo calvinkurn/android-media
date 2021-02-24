@@ -37,7 +37,7 @@
         tools:text="Tonton keseruannya"
         tools:visibility="visible" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/play_widget_medium_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
