@@ -27,7 +27,7 @@ open class ProductBasicViewHolder(
     private val tvOriginalPrice: TextView = itemView.findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
 
-    private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
+    private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
 
     open fun bind(item: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(item.imageUrl, imageRadius)

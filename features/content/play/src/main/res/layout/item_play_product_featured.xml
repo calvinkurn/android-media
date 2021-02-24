@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/play_product_featured_width"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_lvl2"
     android:background="@drawable/bg_play_product_featured"
     android:padding="@dimen/spacing_lvl2"
     >

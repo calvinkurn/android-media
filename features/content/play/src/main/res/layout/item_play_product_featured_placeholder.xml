@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/play_product_featured_width"
+    android:layout_height="@dimen/play_product_featured_height"
+    android:background="@drawable/bg_play_product_featured"
+    android:padding="@dimen/spacing_lvl3"
+    >
 
     <View
         android:id="@+id/ph_product_image"
-        style="@style/PlayPlaceholder"
+        style="@style/PlayPlaceholderLight"
         android:layout_width="@dimen/play_product_image_size"
         android:layout_height="@dimen/play_product_image_size"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -22,14 +24,14 @@
 
     <View
         android:id="@+id/ph_product_title"
-        style="@style/PlayPlaceholder"
+        style="@style/PlayPlaceholderLight"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_placeholder_product_line_title"
+        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
         android:layout_marginStart="@dimen/play_product_line_title_image_margin"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toTopOf="@id/ph_current_price"
+        app:layout_constraintBottom_toTopOf="@id/ph_product_ori_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ph_product_image"
         app:layout_constraintTop_toTopOf="@id/ph_product_image"
@@ -37,16 +39,31 @@
         />
 
     <View
-        android:id="@+id/ph_current_price"
-        style="@style/PlayPlaceholder"
+        android:id="@+id/ph_product_ori_price"
+        style="@style/PlayPlaceholderLight"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_placeholder_product_line_price"
+        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/ph_product_final_price"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/ph_product_title"
+        app:layout_constraintTop_toBottomOf="@id/ph_product_title"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        />
+
+    <View
+        android:id="@+id/ph_product_final_price"
+        style="@style/PlayPlaceholderLight"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/ph_product_image"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/ph_product_title"
-        app:layout_constraintTop_toBottomOf="@id/ph_product_title"
+        app:layout_constraintTop_toBottomOf="@id/ph_product_ori_price"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4"
         />

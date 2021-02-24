@@ -59,7 +59,7 @@ class VariantSheetViewComponent(
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
 
-    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
+    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
     private val toasterMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 

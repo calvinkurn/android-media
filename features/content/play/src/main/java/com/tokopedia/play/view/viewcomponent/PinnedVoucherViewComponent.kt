@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.pinned.voucher.adapter.PinnedVoucherAdapter
 import com.tokopedia.play.ui.pinned.voucher.viewholder.PinnedVoucherViewHolder
+import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
@@ -34,6 +35,7 @@ class PinnedVoucherViewComponent(
 
     init {
         rvPinnedVoucherList.adapter = pinnedVoucherAdapter
+        rvPinnedVoucherList.addItemDecoration(ProductFeaturedItemDecoration(rvPinnedVoucherList.context))
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {

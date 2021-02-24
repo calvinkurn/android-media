@@ -505,6 +505,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeStatusInfo()
         observeShareInfo()
         observePinnedVoucher()
+        observeProductContent()
 
         observeLoggedInInteractionEvent()
     }
@@ -759,6 +760,14 @@ class PlayUserInteractionFragment @Inject constructor(
                 is PlayResult.Failure -> {
                     // TODO("error handling, ask praisya")
                 }
+            }
+        })
+    }
+
+    private fun observeProductContent() {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> if (it.showPlaceholder) productFeaturedView?.showPlaceholder()
             }
         })
     }

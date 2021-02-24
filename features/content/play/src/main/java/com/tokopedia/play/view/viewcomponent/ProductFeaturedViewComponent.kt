@@ -2,6 +2,8 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
@@ -40,12 +42,24 @@ class ProductFeaturedViewComponent(
 
     fun setFeaturedProducts(featuredProducts: List<PlayProductUiModel>) {
         adapter.setItemsAndAnimateChanges(getFinalFeaturedItems(featuredProducts))
+
+        if (featuredProducts.isEmpty()) rvProductFeatured.hide()
+        else rvProductFeatured.show()
+    }
+
+    fun showPlaceholder() {
+        setFeaturedProducts(getPlaceholder())
     }
 
     private fun getFinalFeaturedItems(featuredProducts: List<PlayProductUiModel>): List<PlayProductUiModel> {
-        return if (featuredProducts.isNotEmpty() && featuredProducts.last() != PlayProductUiModel.SeeMore) featuredProducts + PlayProductUiModel.SeeMore
+        return if (featuredProducts.isNotEmpty()) {
+            if (featuredProducts.first() is PlayProductUiModel.Product && featuredProducts.last() != PlayProductUiModel.SeeMore) featuredProducts + PlayProductUiModel.SeeMore
+            else featuredProducts
+        }
         else featuredProducts
     }
+
+    private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
 
     interface Listener {
 

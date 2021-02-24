@@ -18,8 +18,9 @@
     <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
     <dimen name="play_product_voucher_margin">12dp</dimen>
 
-    <dimen name="play_product_line_image_size">61dp</dimen>
-    <dimen name="play_product_line_image_radius">6dp</dimen>
+    <dimen name="play_product_image_size">61dp</dimen>
+    <dimen name="play_product_image_radius">6dp</dimen>
+
     <dimen name="play_product_line_title_image_margin">14dp</dimen>
     <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
@@ -60,6 +61,7 @@
 
     <dimen name="play_product_grid_radius">8dp</dimen>
     <dimen name="play_product_featured_width">240dp</dimen>
+    <dimen name="play_product_featured_height">72dp</dimen>
     <dimen name="play_product_grid_more_action_size">32dp</dimen>
 
     <dimen name="play_pinned_voucher_radius">8dp</dimen>

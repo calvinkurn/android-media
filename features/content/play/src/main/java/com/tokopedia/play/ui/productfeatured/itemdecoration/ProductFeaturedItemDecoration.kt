@@ -19,7 +19,7 @@ class ProductFeaturedItemDecoration(context: Context) : RecyclerView.ItemDecorat
         val position = parent.getChildAdapterPosition(view)
         val itemCount = parent.adapter?.itemCount.orZero()
 
-        outRect.left = if (position == 0) startEndOffset
+        outRect.left = if (position <= 0) startEndOffset
         else inBetweenOffset
 
         if (position == itemCount - 1) outRect.right = startEndOffset
