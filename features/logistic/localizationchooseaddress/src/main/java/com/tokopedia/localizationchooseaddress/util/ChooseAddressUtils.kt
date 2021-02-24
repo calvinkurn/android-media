@@ -111,7 +111,7 @@ object ChooseAddressUtils {
         chooseAddressPref.setCoachMarkState(true)
     }
 
-    fun createCoachMarkItem(context: Context, view: View) : CoachMarkItem {
+    fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
         return CoachMarkItem(
                 view,
                 context.getString(R.string.coachmark_title),

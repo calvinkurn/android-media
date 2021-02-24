@@ -57,4 +57,8 @@ class ChooseAddressFragment: BaseDaggerFragment(), ChooseAddressWidget.ChooseAdd
         return "src"
     }
 
+    override fun onLocalizingAddressLoginSuccess() {
+        //
+    }
+
 }
