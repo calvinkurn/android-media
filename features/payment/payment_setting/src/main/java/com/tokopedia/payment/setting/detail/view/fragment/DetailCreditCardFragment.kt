@@ -28,8 +28,7 @@ import kotlinx.android.synthetic.main.fragment_credit_card_detail.*
 import kotlinx.android.synthetic.main.fragment_credit_card_detail.view.*
 import javax.inject.Inject
 
-class DetailCreditCardFragment : BaseDaggerFragment(),
-        DeleteCreditCardDialogPayment.DeleteCreditCardDialogListener {
+class DetailCreditCardFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -124,7 +123,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
         progressDialog.hide()
     }
 
-    override fun onConfirmDelete(tokenId: String?) {
+    fun onConfirmDelete(tokenId: String?) {
         tokenId?.let {
             showProgressDialog()
             viewModel.deleteCreditCard(tokenId)
