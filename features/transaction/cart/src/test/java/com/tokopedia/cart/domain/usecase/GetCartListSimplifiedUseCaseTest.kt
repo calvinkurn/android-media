@@ -22,7 +22,7 @@ import java.lang.reflect.Type
 
 object GetCartListSimplifiedUseCaseTest : Spek({
 
-    val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
+    val graphqlUseCase = GraphqlUseCase()
     val cartMapperV3 = mockk<CartSimplifiedMapper>()
     val chosenAddressRequestHelper = mockk<ChosenAddressRequestHelper>()
     val usecase by memoized {

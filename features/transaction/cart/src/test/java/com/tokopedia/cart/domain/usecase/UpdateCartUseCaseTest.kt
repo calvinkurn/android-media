@@ -21,7 +21,7 @@ import java.lang.reflect.Type
 
 object UpdateCartUseCaseTest : Spek({
 
-    val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
+    val graphqlUseCase = GraphqlUseCase()
     val chosenAddressRequestHelper = mockk<ChosenAddressRequestHelper>()
     val useCase by memoized { UpdateCartUseCase(graphqlUseCase, TestSchedulers, chosenAddressRequestHelper) }
 

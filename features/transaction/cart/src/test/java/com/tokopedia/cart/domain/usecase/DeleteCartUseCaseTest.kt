@@ -22,7 +22,7 @@ import java.lang.reflect.Type
 
 object DeleteCartUseCaseTest : Spek({
 
-    val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
+    val graphqlUseCase = GraphqlUseCase()
     val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
     val useCase by memoized { DeleteCartUseCase(graphqlUseCase, TestSchedulers) }
 
