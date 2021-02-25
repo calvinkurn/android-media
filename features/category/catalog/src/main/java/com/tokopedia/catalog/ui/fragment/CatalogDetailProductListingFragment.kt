@@ -266,7 +266,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
-    fun setHeaderCount(totalProductsCount : Int){
+    private fun setHeaderCount(totalProductsCount : Int){
         headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount.toString())
     }
 
@@ -368,7 +368,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
             putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
             putString(CategoryNavConstants.SOURCE, "catalog")
-            putString(CategoryNavConstants.CTG_ID, "65051")
+            putString(CategoryNavConstants.CTG_ID, catalogId)
             putAllString(getSelectedSort())
             putAllString(getSelectedFilter())
         }

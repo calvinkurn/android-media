@@ -18,6 +18,8 @@ class CatalogDetailUseCase @Inject constructor(private val catalogDetailReposito
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
 //        if(data != null)
 //            catalogDetailDataModel.value = Success(mapIntoModel(data))
+        // TODO Error Model
+
         Handler().postDelayed({
             catalogDetailDataModel.value = Success(mapIntoModel(CatalogDetailMapper.getDummyCatalogData()))
         },600)

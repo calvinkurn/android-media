@@ -3,48 +3,33 @@ package com.tokopedia.catalog.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
-import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
-import com.tokopedia.filter.widget.BottomSheetFilterView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 
 class CatalogDetailPageActivity :  BaseSimpleActivity(),
         CatalogDetailPageFragment.Listener,
         CategoryNavigationListener,
-        BottomSheetListener,
-        SearchNavigationView.SearchNavClickListener,
         BaseCategorySectionFragment.SortAppliedListener{
 
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
-    private var searchNavContainer: SearchNavigationView? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
-    private lateinit var catalogDetailFragment: Fragment
+    private lateinit var catalogDetailFragment: CatalogDetailPageFragment
     private lateinit var catalogDetailListingFragment: Fragment
     private var catalogName: String = ""
-    private var filters: ArrayList<Filter> = ArrayList()
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
-        private const val ORDER_BY = "ob"
         @JvmStatic
         fun createIntent(context: Context, catalogId: String?): Intent {
             val intent = Intent(context, CatalogDetailPageActivity::class.java)
@@ -70,7 +55,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         return AppScreen.SCREEN_CATALOG
     }
 
-    private fun getNewCatalogDetailFragment(): Fragment {
+    private fun getNewCatalogDetailFragment(): CatalogDetailPageFragment {
         return CatalogDetailPageFragment.newInstance(catalogId)
     }
 
@@ -84,51 +69,22 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
-        //searchNavContainer = findViewById(R.id.search_nav_container)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
             intent.getStringExtra(EXTRA_CATALOG_ID)
         else {
             intent.data?.path?.replace("/", "") ?: ""
         }
+        initData()
         prepareView()
+    }
+
+    private fun initData() {
+        catalogDetailFragment.setCatalogId(catalogId)
     }
 
     private fun prepareView() {
 
     }
-
-    private fun applyFilter(filterParameter: Map<String, String>) {
-        val fragment = catalogDetailListingFragment as BaseCategorySectionFragment
-
-        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
-            searchNavContainer?.onFilterSelected(true)
-        } else {
-            searchNavContainer?.onFilterSelected(false)
-        }
-        val presentFilterList = fragment.getSelectedFilter()
-        if (presentFilterList.size < filterParameter.size) {
-            for (i in filterParameter.entries) {
-                if (!presentFilterList.containsKey(i.key)) {
-                    var title = ""
-                    for (filter in filters) {
-                        val option = filter.options.firstOrNull {
-                            it.key == i.key
-                        }
-                        if (option != null) {
-                            title = filter.title
-                            break
-                        }
-                    }
-                    CatalogDetailPageAnalytics.trackEvenFilterApplied(title, i.key, i.value)
-                }
-            }
-        }
-        fragment.applyFilterToSearchParameter(filterParameter)
-        fragment.setSelectedFilter(HashMap(filterParameter))
-        fragment.clearDataFilterSort()
-        fragment.reloadData()
-    }
-
 
     override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId: String) {
         this.shareData = shareData
@@ -150,39 +106,10 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     override fun hideBottomNavigation() {
-        searchNavContainer?.hide()
-    }
 
-    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: Map<String, String>?) {
-        this.filters.addAll(filters ?: listOf())
-    }
-
-    override fun setFilterResultCount(formattedResultCount: String?) {
-    }
-
-    override fun launchFilterBottomSheet() {
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        handleDefaultActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    }
-
-    // TODO CHECK
-    override fun onSortButtonClicked() {
-        //CatalogDetailPageAnalytics.trackEventClickSort()
-        //visibleFragmentListener?.onSortClick()
-    }
-
-    override fun onFilterButtonClicked() {
-        //CatalogDetailPageAnalytics.trackEventClickFilter()
-        //visibleFragmentListener?.onFilterClick()
     }
 
     override fun onSortApplied(showTick: Boolean) {
-        //searchNavContainer?.onSortSelected(showTick)
+
     }
 }

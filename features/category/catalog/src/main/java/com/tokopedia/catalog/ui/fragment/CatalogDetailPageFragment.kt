@@ -114,8 +114,13 @@ class CatalogDetailPageFragment : Fragment(),
         openBottomSheetProductListing()
     }
 
+    fun setCatalogId(catalogId: String){
+        this.catalogId = catalogId
+        requireArguments().putString(ARG_EXTRA_CATALOG_ID,catalogId)
+    }
+
     private fun openBottomSheetProductListing() {
-        CatalogPreferredProductsBottomSheet.newInstance().show(childFragmentManager,"")
+        CatalogPreferredProductsBottomSheet.newInstance(catalogId).show(childFragmentManager,"")
     }
 
     private fun initViews() {
