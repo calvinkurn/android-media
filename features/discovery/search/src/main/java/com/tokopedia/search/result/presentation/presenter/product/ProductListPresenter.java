@@ -1953,8 +1953,8 @@ final class ProductListPresenter
     }
 
     public void showBOELabelOnBoarding(int position) {
-        if (getView() != null && shouldShowBoeCoachmark() && checkProductWithBOELabel(position)) {
-            getView().showOnBoarding(firstProductPositionWithBOELabel);
+        if (getView() != null && checkProductWithBOELabel(position)) {
+            if (shouldShowBoeCoachmark()) getView().showOnBoarding(firstProductPositionWithBOELabel);
         }
     }
 
