@@ -698,8 +698,7 @@ public class ProductListFragment
     public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item);
-        presenter.showBOELabelOnBoarding(adapterPosition);
+        presenter.onProductImpressed(item, adapterPosition);
     }
 
     @Override

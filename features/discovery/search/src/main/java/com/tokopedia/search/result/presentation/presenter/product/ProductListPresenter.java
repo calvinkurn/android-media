@@ -1828,13 +1828,15 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item) {
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (getView() == null || item == null) return;
 
         if (item.isTopAds())
             getViewToTrackImpressedTopAdsProduct(item);
         else
             getViewToTrackImpressedOrganicProduct(item);
+
+        checkShouldShowBOELabelOnBoarding(adapterPosition);
     }
 
     private void getViewToTrackImpressedTopAdsProduct(ProductItemViewModel item) {
@@ -1868,6 +1870,12 @@ final class ProductListPresenter
         if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
 
         return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
+    }
+
+    private void checkShouldShowBOELabelOnBoarding(int position) {
+        if (getView() != null && checkProductWithBOELabel(position)) {
+            if (shouldShowBoeCoachmark()) getView().showOnBoarding(firstProductPositionWithBOELabel);
+        }
     }
 
     @Override
@@ -1949,12 +1957,6 @@ final class ProductListPresenter
     private void setProductCount(String productCountText) {
         if (isViewAttached()) {
             getView().setProductCount(productCountText);
-        }
-    }
-
-    public void showBOELabelOnBoarding(int position) {
-        if (getView() != null && checkProductWithBOELabel(position)) {
-            if (shouldShowBoeCoachmark()) getView().showOnBoarding(firstProductPositionWithBOELabel);
         }
     }
 

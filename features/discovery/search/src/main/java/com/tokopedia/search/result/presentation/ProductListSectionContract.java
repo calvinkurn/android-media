@@ -223,15 +223,13 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item);
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
 
         void getProductCount(Map<String, String> mapParameter);
-
-        void showBOELabelOnBoarding(int position);
 
         void openFilterPage(Map<String, Object> searchParameter);
 
