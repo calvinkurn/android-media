@@ -28,7 +28,7 @@ class ValidatorListFragment : Fragment() {
 
     val viewModel: ValidatorViewModel by lazy {
         activity?.application?.let {
-            ViewModelProvider(activity!!, ViewModelProvider.AndroidViewModelFactory(it))
+            ViewModelProvider(requireActivity(), ViewModelProvider.AndroidViewModelFactory(it))
                     .get(ValidatorViewModel::class.java)
         } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
     }
@@ -39,7 +39,7 @@ class ValidatorListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val listTests = Utils.listAssetFiles(context!!, "tracker")
+        val listTests = Utils.listAssetFiles(requireContext(), TRACKER_ROOT_PATH)
         Timber.d("List files: %s", listTests)
 
         val listingAdapter = FileListingAdapter().also {
@@ -110,6 +110,8 @@ class ValidatorListFragment : Fragment() {
     }
 
     companion object {
+
+        const val TRACKER_ROOT_PATH = "tracker"
         fun newInstance(): ValidatorListFragment = ValidatorListFragment()
     }
 }

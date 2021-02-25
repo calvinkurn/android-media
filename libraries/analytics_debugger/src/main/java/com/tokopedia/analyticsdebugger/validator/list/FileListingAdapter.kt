@@ -23,7 +23,8 @@ class FileListingAdapter : RecyclerView.Adapter<FileListingAdapter.ItemViewHolde
     override fun getItemCount(): Int = mItems.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.itemView.findViewById<TextView>(R.id.tv_item).text = mItems[position]
+        holder.itemView.findViewById<TextView>(R.id.tv_item).text =
+                mItems[position].removePrefix(ValidatorListFragment.TRACKER_ROOT_PATH)
     }
 
     fun setOnItemClickListener(callback: (String) -> Unit) {
