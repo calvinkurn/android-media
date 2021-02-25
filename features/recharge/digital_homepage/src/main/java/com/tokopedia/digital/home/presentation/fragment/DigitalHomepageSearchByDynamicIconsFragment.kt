@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.view_recharge_home_search.*
 
 /**
@@ -11,7 +12,7 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
 
     private var platformId: Int = 0
     private var enablePersonalized: Boolean = true
-    private var sectionId: ArrayList<Int> = arrayListOf()
+    private var sectionId: List<Int> = arrayListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -19,7 +20,10 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
         arguments?.let {
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
             enablePersonalized = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
-            sectionId = it.getIntegerArrayList(EXTRA_SECTION_ID) ?: arrayListOf()
+            sectionId = ((it.getStringArrayList(EXTRA_SECTION_ID)
+                    ?: arrayListOf()).map { sectionId ->
+                sectionId.toIntOrZero()
+            })
             initSearchBarView(it.getString(EXTRA_SEARCH_BAR_PLACE_HOLDER, ""))
         }
     }
@@ -38,14 +42,15 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
         private const val EXTRA_SECTION_ID = "section_id"
         private const val EXTRA_SEARCH_BAR_PLACE_HOLDER = "search_bar_place_holder"
 
-        fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sectionId: ArrayList<Int>,
+        fun newInstance(platformId: Int, enablePersonalize: Boolean = false,
+                        sectionId: ArrayList<String>,
                         searchBarPlaceHolder: String = "")
                 : DigitalHomepageSearchByDynamicIconsFragment {
             val fragment = DigitalHomepageSearchByDynamicIconsFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
-            bundle.putIntegerArrayList(EXTRA_SECTION_ID, sectionId)
+            bundle.putStringArrayList(EXTRA_SECTION_ID, sectionId)
             bundle.putString(EXTRA_SEARCH_BAR_PLACE_HOLDER, searchBarPlaceHolder)
             fragment.arguments = bundle
             return fragment

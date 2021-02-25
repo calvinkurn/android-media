@@ -27,7 +27,7 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         val bundle = intent.extras
         val platformId = bundle?.getInt(PARAM_PLATFORM_ID)
         val enablePersonalize = bundle?.getBoolean(PARAM_ENABLE_PERSONALIZE) ?: true
-        val sectionId = bundle?.getIntegerArrayList(PARAM_SECTION_ID) ?: arrayListOf()
+        val sectionId = bundle?.getStringArrayList(PARAM_SECTION_ID) ?: arrayListOf()
         val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCH_BAR_PLACE_HOLDER, "") ?: ""
 
         return if (platformId != null && sectionId.isNotEmpty()) {
@@ -53,12 +53,12 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageSearchActivity::class.java)
 
         fun getCallingIntent(context: Context, platformID: Int,
-                             enablePersonalize: Boolean = true, sectionId: ArrayList<Int>,
+                             enablePersonalize: Boolean = true, sectionId: ArrayList<String>,
                              searchBarPlaceHolder: String): Intent {
             val intent = Intent(context, DigitalHomePageSearchActivity::class.java)
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
-            intent.putIntegerArrayListExtra(PARAM_SECTION_ID, sectionId)
+            intent.putStringArrayListExtra(PARAM_SECTION_ID, sectionId)
             intent.putExtra(PARAM_SEARCH_BAR_PLACE_HOLDER, searchBarPlaceHolder)
             return intent
         }

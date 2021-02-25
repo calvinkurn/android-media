@@ -138,12 +138,11 @@ class RechargeHomepageViewModel @Inject constructor(
         )
     }
 
-    fun getDynamicIconsSectionIds(): ArrayList<Int> {
+    fun getDynamicIconsSectionIds(): ArrayList<String> {
         return if (rechargeHomepageSectionSkeleton.value is Success) {
-            val dynamicIconSectionsIds = arrayListOf<Int>()
-            (rechargeHomepageSectionSkeleton.value as Success).data.sections.filter { it.template == SECTION_DYNAMIC_ICONS }.forEach {
-                dynamicIconSectionsIds.add(it.id)
-            }
+            val dynamicIconSectionsIds = arrayListOf<String>()
+            (rechargeHomepageSectionSkeleton.value as Success).data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
+                    .forEach { dynamicIconSectionsIds.add(it.id) }
             dynamicIconSectionsIds
         } else arrayListOf()
     }
