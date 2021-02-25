@@ -20,7 +20,7 @@ data class ChosenAddressList(
         var provinceName: String = "",
         var cityName: String = "",
         var districtName: String = "",
-        var status: String = "",
+        var status: Int = -1,
         var country: String = "",
         var latitude: String = "",
         var longitude: String = "",

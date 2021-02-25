@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.playServicesDependencies.location
@@ -54,6 +55,7 @@ dependencies {
     //-------------------------------------------------------------------//
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     //-------------------------------------------------------------------//
 }
 

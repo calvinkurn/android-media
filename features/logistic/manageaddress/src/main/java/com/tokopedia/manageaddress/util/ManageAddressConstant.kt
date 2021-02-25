@@ -19,4 +19,5 @@ object ManageAddressConstant {
 
     const val SCREEN_NAME_USER_NEW = "/user/address/create"
     const val EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT = "EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT"
+    const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
 }

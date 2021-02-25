@@ -118,7 +118,7 @@ object ChooseAddressUtils {
 
     fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
         var chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setCoachMarkState(true)
+        chooseAddressPref.setCoachMarkState(false)
     }
 
     fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
