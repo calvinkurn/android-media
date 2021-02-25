@@ -16,13 +16,18 @@ class SomListGetFilterListUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<SomListFilterUiModel>(gqlRepository) {
 
     override suspend fun executeOnBackground(): SomListFilterUiModel {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): SomListFilterUiModel {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListFilterResponse.Data::class.java)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListFilterResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<SomListFilterResponse.Data>()
-            return mapper.mapResponseToUiModel(response.orderFilterSom)
+            return mapper.mapResponseToUiModel(response.orderFilterSom, useCache)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
