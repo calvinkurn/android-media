@@ -64,7 +64,8 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
 
     override fun renderCrossSellingCart(cartDigitalInfoData: CartDigitalInfoData?) {
         super.renderCrossSellingCart(cartDigitalInfoData)
-        if (cartDigitalInfoData?.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
+        if (cartDigitalInfoData?.crossSellingType == DigitalCartCrossSellingType.MYBILLS
+                || cartDigitalInfoData?.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED) {
             view.showMyBillsSubscriptionView()
         } else {
             view.hideMyBillsSubscriptionView()
