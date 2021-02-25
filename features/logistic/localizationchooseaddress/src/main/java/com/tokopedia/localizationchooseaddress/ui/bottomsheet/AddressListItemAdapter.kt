@@ -86,7 +86,6 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
                 addressDistrict.text = item.districtName
 
                 setSelectedData(item)
-                selectedCardAddress(item)
             }
         }
 
@@ -97,15 +96,11 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             if (localAddrId == data.addressId) {
                 cardAddress.hasCheckIcon = true
                 cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                cardAddress.setOnClickListener(null)
             } else {
                 cardAddress.hasCheckIcon = false
                 cardAddress.cardType = CardUnify.TYPE_BORDER
-            }
-        }
-
-        private fun selectedCardAddress(data: ChosenAddressList) {
-            cardAddress.setOnClickListener {
-                listener.onItemClicked(data)
+                cardAddress.setOnClickListener { listener.onItemClicked(data) }
             }
         }
 
