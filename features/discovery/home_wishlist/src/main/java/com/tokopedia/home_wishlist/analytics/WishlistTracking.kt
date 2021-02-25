@@ -121,12 +121,16 @@ object WishlistTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, when {
-                    item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
-                    item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
-                    else -> VALUE_NONE_OTHER
-                }
+                FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
         )
+    }
+
+    private fun generateFreeOngkirTrackingValue(item: WishlistItem): String {
+        return when {
+            item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
+            item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
+            else -> VALUE_NONE_OTHER
+        }
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
@@ -171,11 +175,7 @@ object WishlistTracking {
                                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                                 FIELD_PRODUCT_POSITION, position,
-                                FIELD_DIMENSION_83, when {
-                                    item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
-                                    item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
-                                    else -> VALUE_NONE_OTHER
-                                }
+                                FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
                         )
                 )
         )
@@ -225,11 +225,7 @@ object WishlistTracking {
                         FIELD_CATEGORY_ID, VALUE_NONE_OTHER,
                         FIELD_DIMENSION_45, cartId,
                         FIELD_DIMENSION_40, list,
-                        FIELD_DIMENSION_83, when {
-                            item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
-                            item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
-                            else -> VALUE_NONE_OTHER
-                        }
+                        FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
                 )
         )
         )
