@@ -60,7 +60,7 @@
     <string name="wait_generate_address">Harap Tunggu . . .</string>
     <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota/Kecamatan</string>
     <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
     <string name="message_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
 

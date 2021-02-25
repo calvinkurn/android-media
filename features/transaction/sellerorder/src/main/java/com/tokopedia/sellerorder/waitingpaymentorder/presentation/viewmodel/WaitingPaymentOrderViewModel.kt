@@ -3,8 +3,8 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_RESULT
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.GetWaitingPaymentOrderUseCase
@@ -21,9 +21,9 @@ import javax.inject.Inject
  */
 
 class WaitingPaymentOrderViewModel @Inject constructor(
-        dispatcher: SomDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val getWaitingPaymentOrderUseCase: GetWaitingPaymentOrderUseCase
-) : BaseViewModel(dispatcher.ui()) {
+) : BaseViewModel(dispatcher.io) {
 
     private val _waitingPaymentOrderResult = MutableLiveData<Result<List<WaitingPaymentOrderUiModel>>>()
     val waitingPaymentOrderUiModelResult: LiveData<Result<List<WaitingPaymentOrderUiModel>>>

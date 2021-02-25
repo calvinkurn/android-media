@@ -26,6 +26,7 @@ public class FlightDateUtil {
     public static final String YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
+    public static final String FORMAT_DATE_SHORT_MONTH = "EEEE, dd MMM yyyy";
     public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;

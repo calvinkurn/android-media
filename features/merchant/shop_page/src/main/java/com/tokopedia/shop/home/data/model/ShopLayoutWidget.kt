@@ -68,7 +68,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("productID")
-                val productID: Int = -1,
+                val productID: String = "",
                 @SerializedName("name")
                 val name: String = "",
                 @SerializedName("campaignID")
@@ -116,7 +116,9 @@ data class ShopLayoutWidget(
                 @SerializedName("cashback")
                 val cashback: Int = -1,
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf()
         ) {
             data class Banner(
                     @SerializedName("imageID")
@@ -131,7 +133,7 @@ data class ShopLayoutWidget(
 
             data class Product(
                     @SerializedName("id")
-                    val id: Int = -1,
+                    val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("url")

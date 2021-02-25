@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLI
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
@@ -722,6 +723,9 @@ object DynamicProductDetailTracking {
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
                     ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
+            val bebasOngkirValue = if(product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            else if(product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
@@ -742,7 +746,7 @@ object DynamicProductDetailTracking {
                                     ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                                     ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                     ProductTrackingConstant.Tracking.PROMO_POSITION, position + 1,
-                                    ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                                    ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirValue,
                                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString()
                             )
                     ))
@@ -931,7 +935,9 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.TOPADS_ATC_CLICK + actionValuePostfix,
                     pageTitle
             )
-
+            val bebasOngkirValue = if(product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            else if(product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
             mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
                     ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.ACTION_FIELD, DataLayer.mapOf(ProductTrackingConstant.Tracking.LIST, listValue),
@@ -944,7 +950,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                             ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                             ProductTrackingConstant.Tracking.PROMO_POSITION, position,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirValue
                     )
             )
             )
@@ -1583,7 +1589,9 @@ object DynamicProductDetailTracking {
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
                     ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_IMPRESSION + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
-
+            val bebasOngkirValue = if(product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            else if(product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
             val enhanceEcommerceData = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_VIEW,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
@@ -1603,7 +1611,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                             ProductTrackingConstant.Tracking.PROMO_POSITION, position + 1,
                             ProductTrackingConstant.Tracking.LIST, listValue,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirValue,
                             ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString()
                     )
             ))
@@ -1741,7 +1749,9 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.TOPADS_IMPRESSION + valueActionPostfix,
                     pageTitle
             )
-
+            val bebasOngkirValue = if(product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            else if(product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
             with(ProductTrackingConstant.Tracking) {
                 val impressions = DataLayer.listOf(DataLayer.mapOf(
                         PROMO_NAME, product.name,
@@ -1752,7 +1762,7 @@ object DynamicProductDetailTracking {
                         VARIANT, DEFAULT_VALUE,
                         LIST, listValue,
                         PROMO_POSITION, position,
-                        KEY_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        KEY_DIMENSION_83, bebasOngkirValue
                 ))
 
                 mapEvent[KEY_ECOMMERCE] = DataLayer.mapOf(

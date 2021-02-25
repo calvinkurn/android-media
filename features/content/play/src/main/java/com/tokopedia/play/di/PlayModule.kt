@@ -11,6 +11,8 @@ import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
@@ -102,5 +104,11 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun provideRemoteConfig(): RemoteConfig {
         return FirebaseRemoteConfigImpl(mContext)
+    }
+
+    @PlayScope
+    @Provides
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
     }
 }

@@ -5,10 +5,12 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
@@ -20,10 +22,13 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import rx.Observable
 import javax.inject.Inject
@@ -56,6 +61,23 @@ class HomeRevampRepositoryImpl @Inject constructor(
     val gson = Gson()
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
+
+    override fun getHomeCachedAtfData(): HomeAtfData? {
+        return HomeAtfData(
+                dataList = homeCachedDataSource.getCachedAtfData().map {
+                    AtfData(
+                            id = it.id,
+                            name = it.name,
+                            component = it.component,
+                            param = it.param,
+                            isOptional = false,
+                            content = it.content,
+                            status = AtfKey.STATUS_SUCCESS
+                    )
+                },
+                isProcessingAtf = false
+        )
+    }
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -171,7 +193,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     atfData.content = null
                                 }
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                    homeCachedDataSource.saveToDatabase(homeData)
+                                    saveToDatabase(homeData)
                                 })
                                 atfData
                             }
@@ -181,7 +203,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                             val job = async {
                                 try {
                                     val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
-                                    dynamicIcon?.let {
+                                    dynamicIcon.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
@@ -190,7 +212,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     atfData.status = AtfKey.STATUS_ERROR
                                 }
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                    homeCachedDataSource.saveToDatabase(homeData)
+                                    saveToDatabase(homeData)
                                 })
                                 atfData
                             }
@@ -237,7 +259,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
 
                 homeData.isProcessingDynamicChannel = false
-                homeCachedDataSource.saveToDatabase(homeData)
+                saveToDatabase(homeData, true)
             } else if (dynamicChannelResponseValue == null) {
                 /**
                  * 7.1 Emit error pagination only when atf is empty
@@ -250,7 +272,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 } else {
                     emit(Result.error(Throwable(), null))
                 }
-                homeCachedDataSource.saveToDatabase(homeData)
+                saveToDatabase(homeData)
             }
 
             /**
@@ -272,7 +294,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                          * 7. Submit current data to database, to trigger HomeViewModel flow
                          */
                         homeData.isProcessingDynamicChannel = false
-                        homeCachedDataSource.saveToDatabase(it)
+                        saveToDatabase(it, true)
                     }
                 } catch (e: Exception) {
                     /**
@@ -282,8 +304,29 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
                         emit(Result.errorPagination(Throwable(),null))
                     }
-                    homeCachedDataSource.saveToDatabase(homeData)
+                    saveToDatabase(homeData)
                 }
+            }
+        }
+    }
+
+    private suspend fun saveToDatabase(homeData: HomeData?, saveAtf: Boolean = false) {
+        homeCachedDataSource.saveToDatabase(homeData)
+        if (saveAtf) {
+            homeData?.atfData?.let {
+                homeCachedDataSource.saveCachedAtf(
+                        it.dataList.map {atfData ->
+                            AtfCacheEntity(
+                                    id = atfData.id,
+                                    name = atfData.name,
+                                    component = atfData.component,
+                                    param = atfData.param,
+                                    isOptional = atfData.isOptional,
+                                    content = atfData.content,
+                                    status = atfData.status
+                            )
+                        }
+                )
             }
         }
     }

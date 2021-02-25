@@ -69,6 +69,7 @@ object QueryHome {
             "                title\n" +
             "                position\n" +
             "                type\n" +
+            "                url\n" +
             "              }\n" +
             "              has_buy_button\n" +
             "              rating\n" +

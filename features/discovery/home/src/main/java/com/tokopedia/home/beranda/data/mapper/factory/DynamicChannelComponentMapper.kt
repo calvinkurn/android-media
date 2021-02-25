@@ -94,7 +94,8 @@ object DynamicChannelComponentMapper {
                                 LabelGroup(
                                         title = label.title,
                                         position = label.position,
-                                        type = label.type
+                                        type = label.type,
+                                        url = label.imageUrl
                                 )
                             },
                             hasBuyButton = it.hasBuyButton,

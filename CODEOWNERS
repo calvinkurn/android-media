@@ -157,6 +157,7 @@
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
+/features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -284,6 +285,7 @@
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
 /libraries/logger/										@tokopedia/android-core-dev
+/libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/mediauploader/			                    @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev

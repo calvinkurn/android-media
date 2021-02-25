@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.domain.mapper;
 
+import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel;
 import com.tokopedia.logisticaddaddress.domain.model.Address;
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress;
 
@@ -24,6 +25,20 @@ public class AddressMapper {
         districtAddress.setZipCodes(address.getZipCodes());
 
         return districtAddress;
+    }
+
+    public DistrictRecommendationAddressModel convertToAddressLocalizationModel(Address address) {
+        DistrictRecommendationAddressModel districtAddressModel = new DistrictRecommendationAddressModel();
+
+        districtAddressModel.setCityId(address.getCityId());
+        districtAddressModel.setCityName(address.getCityName());
+        districtAddressModel.setDistrictId(address.getDistrictId());
+        districtAddressModel.setDistrictName(address.getDistrictName());
+        districtAddressModel.setProvinceId(address.getProvinceId());
+        districtAddressModel.setProvinceName(address.getProvinceName());
+        districtAddressModel.setProvinceCode(address.getZipCodes());
+
+        return districtAddressModel;
     }
 
 }

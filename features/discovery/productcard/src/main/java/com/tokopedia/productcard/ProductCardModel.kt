@@ -176,11 +176,11 @@ data class ProductCardModel (
     }
 
     fun willShowFulfillment(): Boolean{
-        val labelTokoCabang = getLabelFulfillment()
+        val labelFulfillment = getLabelFulfillment()
 
-        return labelTokoCabang != null
-                && labelTokoCabang.title.isNotEmpty()
-                && labelTokoCabang.imageUrl.isNotEmpty()
+        return labelFulfillment != null
+                && labelFulfillment.title.isNotEmpty()
+                && labelFulfillment.imageUrl.isNotEmpty()
     }
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
@@ -242,5 +242,10 @@ data class ProductCardModel (
 
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
+    }
+
+    companion object {
+        const val WORDING_SEGERA_HABIS = "Segera Habis"
+        const val FIRE_OFFSET = 5f
     }
 }
