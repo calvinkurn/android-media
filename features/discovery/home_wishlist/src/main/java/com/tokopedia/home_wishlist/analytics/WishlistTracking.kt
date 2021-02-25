@@ -102,7 +102,7 @@ object WishlistTracking {
     private const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir ekstra"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
     private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     private fun getTracker(): ContextAnalytics {
