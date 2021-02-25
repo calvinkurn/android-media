@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login
 
+import android.widget.EditText
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -20,7 +21,9 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
+import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
+import com.tokopedia.loginregister.login.stub.PartialInputTextView
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -76,11 +79,12 @@ class LoginActivityInstrumentedTest {
         activity = mActivityTestRule.activity
         fragment = activity.setupTestFragment() as LoginEmailPhoneFragmentStub
 
-        val idlingResource = TkpdIdlingResource("login_idling_resource")
+        val idlingResource = TkpdIdlingResource("LOGIN")
         tkpdIdlingResource = idlingResource.countingIdlingResource
 
         IdlingRegistry.getInstance().register(tkpdIdlingResource)
         setupGraphqlMockResponse(LoginMockResponse())
+        mActivityTestRule.launchActivity(activity.intent)
     }
 
     @After
@@ -131,8 +135,9 @@ class LoginActivityInstrumentedTest {
 
     /* click login email */
     fun onLoginViaEmail() {
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
-        onView(withId(R.id.register_btn)).perform(click())
+        Thread.sleep(1000)
+        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(PartialInputTextView())
+        onView(allOf(withId(R.id.register_btn), withText("Selanjutnya"), withContentDescription("button submit"))).perform(click())
     }
 
     fun clickUbahButton(){
@@ -145,52 +150,21 @@ class LoginActivityInstrumentedTest {
         onView(withId(R.id.register_btn)).perform(click())
     }
 
+    fun setInputEmailPhone(){
+        val partial = fragment.view?.findViewById<PartialRegisterInputView>(R.id.login_input_view)
+        mActivityTestRule.runOnUiThread {
+            partial?.findViewById<EditText>(R.id.input_email_phone)?.setText("yorisprayogo@gmail.com")
+        }
+    }
     /* goto forgot password if clicked */
     fun forgotPassClick() {
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
-        onView(withId(R.id.register_btn)).perform(click())
+        Thread.sleep(1000)
+        setInputEmailPhone()
+        onView(allOf(isDisplayed(), withId(R.id.register_btn), withContentDescription(R.string.content_desc_register_btn))).perform(click())
         onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
     }
 
     fun onRegisterFooterSpannableClick(){
         onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
     }
-
-//    @Test
-//    /* Go to register initial if clicked */
-//    fun onRegisterToolbarClick(){
-//        onView(withId(LoginEmailPhoneFragment.ID_ACTION_REGISTER)).perform(click())
-//        intended(hasComponent(RegisterInitialActivity::class.java.name))
-//    }
-
-//    /* show fingerprint button if available */
-//    fun showFingerprintBtnIfAvailable(){
-//        fragment.setFingerprintEnable(true)
-//        fingerprintSetting.registerFingerprint()
-//
-//        onView(allOf(withId(R.id.fingerprint_btn), withText("Sidik Jari"))).check(matches(isDisplayed()))
-
-
-    /* Go to tokopedia care on click */
-//    fun goToTokopediaCare (){
-//        onView(withId(R.id.to_tokopedia_care)).perform(click())
-//    }
-
-    /* Show password field if email exist */
-//    fun showPasswordField (){
-//        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
-//        onView(withId(R.id.register_btn)).perform(click())
-//        onView(allOf(withId(R.id.wrapper_password), withContentDescription(R.string.content_desc_wrapper_pass_partial))).check(matches(isDisplayed()))
-//    }
-
-
-    /* goto verification phone if phone number exist */
-//    fun goToVerificationPhone(){
-//        val activityUnderTest: LoginEmailPhoneActivityStub = mActivityTestRule.activity
-//        activityUnderTest.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-//
-//        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
-//        onView(withId(R.id.register_btn)).perform(click())
-//        intended(hasComponent(VerificationActivity::class.java.name))
-//    }
 }

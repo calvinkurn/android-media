@@ -6,7 +6,7 @@ import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.login.dagger.DaggerMockLoginComponent
 import com.tokopedia.loginregister.login.dagger.MockLoginQueryModule
 import com.tokopedia.loginregister.login.dagger.MockLoginUseCaseModule
-import com.tokopedia.loginregister.login.dagger.MockLoginmodule
+import com.tokopedia.loginregister.login.dagger.MockLoginModule
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -48,7 +48,7 @@ class LoginEmailPhoneFragmentStub : LoginEmailPhoneFragment(){
                         .build())
                 .mockLoginQueryModule(MockLoginQueryModule())
                 .mockLoginUseCaseModule(MockLoginUseCaseModule())
-                .mockLoginmodule(MockLoginmodule())
+                .mockLoginModule(MockLoginModule())
                 .build()
                 .inject(this)
     }

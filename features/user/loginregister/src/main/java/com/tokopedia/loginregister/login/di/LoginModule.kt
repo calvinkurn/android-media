@@ -22,7 +22,7 @@ import javax.inject.Named
  * @author by nisie on 10/10/18.
  */
 @Module
-class LoginModule {
+open class LoginModule {
     @LoginScope
     @Provides
     @Named(LOGIN_CACHE)
