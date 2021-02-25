@@ -185,7 +185,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
             val chooseAddressBottomSheet = ChooseAddressBottomSheet()
             chooseAddressBottomSheet.setListener(this)
-            chooseAddressBottomSheet.show(fragment?.parentFragmentManager)
+            chooseAddressBottomSheet.show(fragment?.childFragmentManager)
         }
     }
 
