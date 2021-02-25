@@ -13,7 +13,6 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent" />
 

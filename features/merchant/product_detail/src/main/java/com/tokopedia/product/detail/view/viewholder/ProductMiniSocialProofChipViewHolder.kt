@@ -47,7 +47,7 @@ class ProductMiniSocialProofChipViewHolder(
                         }
                         else -> {
                             view.isClickable = true
-                            view.setOnClickListener { listener.onSeeAllLastItemImageReview(componentTrackDataModel) }
+                            view.setOnClickListener { listener.onBuyerPhotosClicked(componentTrackDataModel) }
                             firstSocialProofTxt?.run {
                                 text = view.context.getString(R.string.label_buyer_photos)
                             }

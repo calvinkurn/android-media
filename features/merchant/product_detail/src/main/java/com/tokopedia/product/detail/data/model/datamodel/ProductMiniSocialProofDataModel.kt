@@ -1,10 +1,7 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
-import android.content.Context
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**

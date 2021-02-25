@@ -157,7 +157,6 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import timber.log.Timber
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -2040,6 +2039,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         reportProduct({
             DynamicProductDetailTracking.Click.eventClickReportFromComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
         }, {})
+    }
+
+    override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel ?: ComponentTrackDataModel())
+        goToReviewImagePreview()
     }
 
     private fun reportProductFromToolbar() {
