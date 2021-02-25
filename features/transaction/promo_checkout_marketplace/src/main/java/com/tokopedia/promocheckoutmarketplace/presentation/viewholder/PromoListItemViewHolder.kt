@@ -121,30 +121,26 @@ class PromoListItemViewHolder(private val view: View,
                         R.id.label_promo_item_title_info,
                         ConstraintSet.TOP,
                         R.id.label_promo_item_title,
-                        ConstraintSet.BOTTOM,
-                        0
+                        ConstraintSet.BOTTOM
                 )
                 constraintSet.connect(
                         R.id.label_promo_item_title_info,
                         ConstraintSet.LEFT,
                         R.id.label_promo_item_title,
-                        ConstraintSet.LEFT,
-                        0
+                        ConstraintSet.LEFT
                 )
             } else {
                 constraintSet.connect(
                         R.id.label_promo_item_title_info,
                         ConstraintSet.TOP,
                         R.id.label_promo_item_title,
-                        ConstraintSet.TOP,
-                        0
+                        ConstraintSet.TOP
                 )
                 constraintSet.connect(
                         R.id.label_promo_item_title_info,
                         ConstraintSet.LEFT,
                         R.id.label_promo_item_title,
-                        ConstraintSet.RIGHT,
-                        0
+                        ConstraintSet.RIGHT
                 )
             }
             constraintSet.applyTo(containerConstraintPromoCheckout)
