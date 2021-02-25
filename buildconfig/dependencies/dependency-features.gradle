@@ -209,10 +209,12 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
 
+            pushNotificationCommon          : ":features:communication:push-notification-common",
+
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
-            attachcommon                   : ":features:user:attachcommon",
+            attachcommon                    : ":features:user:attachcommon",
             managepassword                  : ":features:user:managepassword",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
@@ -231,6 +233,8 @@ ext {
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             topchat                         : ":features:user:topchat",
+            inbox                           : ":features:user:inbox",
+            inboxCommon                     : ":features:user:inbox_common",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
             seamlessLoginCommon             : ":features:user:seamless_login_common",

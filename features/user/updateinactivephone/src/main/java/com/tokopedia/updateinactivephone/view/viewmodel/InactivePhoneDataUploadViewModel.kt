@@ -75,7 +75,11 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             submitDataUseCase.setParam(email, oldPhone, newPhone, userIndex, idCardObj, selfieObj)
             submitDataUseCase.execute(onSuccess = {
-                _submitData.postValue(Success(it))
+                if (it.status.isSuccess) {
+                    _submitData.postValue(Success(it))
+                } else {
+                    _submitData.postValue(Fail(Throwable(it.status.errorMessage)))
+                }
             }, onError = {
                 _submitData.postValue(Fail(it))
             })

@@ -31,13 +31,13 @@ class NotificationSellerActivity : BaseSimpleActivity() {
 
     private fun setThemeWhiteIfSellerApp() {
         if (GlobalConfig.isSellerApp()) {
-            setTheme(com.tokopedia.design.R.style.Theme_White)
+            setTheme(com.tokopedia.abstraction.R.style.Theme_WhiteUnify)
         }
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

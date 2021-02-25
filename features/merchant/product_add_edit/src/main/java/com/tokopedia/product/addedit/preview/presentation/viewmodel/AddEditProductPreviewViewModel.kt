@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -25,6 +26,9 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationU
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
@@ -48,6 +52,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val validateProductNameUseCase: ValidateProductNameUseCase,
         private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -108,8 +113,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
-    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
-
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -118,6 +121,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
                     is Success -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
 
@@ -127,6 +133,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         } else {
                             productInputModel.itemSold = 0 // reset item sold when duplicate product
                             productInputModel.detailInputModel.currentProductName = ""
+                            updateSpecificationFromRemote(productInputModel.detailInputModel.categoryId, it.data.productID)
                         }
 
                         // decrement wholesale min order by one because of > symbol
@@ -145,7 +152,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(detailInputModel) {
@@ -336,13 +348,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     .joinToString("\n")
             val validationResult = if (response.productValidateV3.isSuccess)
                 VALIDATION_SUCCESS else VALIDATION_ERROR
-            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mValidationResult.value = ValidationResultModel(validationResult, MessageErrorException(validationMessage))
             mIsLoading.value = false
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
-                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
             mIsLoading.value = false
         })
     }
@@ -381,7 +392,39 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun resetValidateResult() {
         mValidationResult.value?.result = UNVALIDATED
-        mValidationResult.value?.message = ""
+        mValidationResult.value?.exception = Exception()
+    }
+
+    fun updateSpecificationFromRemote(categoryId: String, productId: String) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            }
+            updateSpecificationByAnnotationCategory(result)
+            mIsLoading.value = false
+        }, onError = {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mIsLoading.value = false
+        })
+    }
+
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
+            }
+        }
+
+        productInputModel.value?.apply {
+            detailInputModel.specifications = result
+        }
     }
 
 }

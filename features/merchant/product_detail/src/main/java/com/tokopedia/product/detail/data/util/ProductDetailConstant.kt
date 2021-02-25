@@ -7,7 +7,6 @@ object ProductDetailConstant {
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-    const val ENABLE_PDP_DIFFUTIL = "app_enable_pdp_diffutil"
 
     //report product
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
@@ -180,4 +179,9 @@ object ProductDetailConstant {
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
 
+
+    //General Ticker
+    const val LAYOUT_FLOATING = "floating"
+    const val PARAMS_PAGE = "page"
+    const val PARAMS_PAGE_PDP = "pdp"
 }

@@ -11,7 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.R
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -35,12 +35,12 @@ class PltHomeDynamicChannelPerformanceTest {
     private var pltIdlingResource: IdlingResource? = PerformanceAnalyticsUtil.performanceIdlingResource
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
+            setupTotalSizeInterceptor(listOf("dynamicPosition", "getDynamicChannel"))
             setupRemoteConfig()
             setupIdlingResource()
             Thread.sleep(2000)
@@ -70,18 +70,13 @@ class PltHomeDynamicChannelPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    @Before
-    fun deleteDatabase() {
-        activityRule. activity.deleteDatabase("HomeCache.db")
-    }
-
     @Test
     fun testPageLoadTimePerformance() {
         onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
         activityRule.activity.finishAndRemoveTask()
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {

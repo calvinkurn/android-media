@@ -36,10 +36,9 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.BaseMatcher
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -115,7 +114,7 @@ class HotelHomepageActivityTest {
     }
 
     private fun modifyGuestAndRoomCount() {
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         onView(withTagStringValue(R.id.tv_hotel_homepage_guest_info.toString())).perform(ViewActions.click())
         Thread.sleep(1000)
 
@@ -177,39 +176,11 @@ class HotelHomepageActivityTest {
         val cal = Calendar.getInstance()
         cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
                 Calendar.DATE, 2)
-        var tomorrowDate = cal[Calendar.DATE]
-
-        if (tomorrowDate > 1) {
-            try {
-                onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
-            } catch (e: Exception) {
-                onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 2)).perform(click())
-            }
-        } else {
-            onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 2)).perform(click())
-        }
-    }
-
-    fun getElementFromMatchAtPosition(
-            matcher: Matcher<View>,
-            position: Int
-    ): Matcher<View?>? {
-        return object : BaseMatcher<View?>() {
-            var counter = 0
-            override fun matches(item: Any): Boolean {
-                if (matcher.matches(item)) {
-                    if (counter == position) {
-                        counter++
-                        return true
-                    }
-                    counter++
-                }
-                return false
-            }
-
-            override fun describeTo(description: Description) {
-                description.appendText("Element at hierarchy position $position")
-            }
+        val tomorrowDate = cal[Calendar.DATE]
+        try {
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+        } catch (e: Exception) {
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 1)).perform(click())
         }
     }
 
