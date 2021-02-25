@@ -18,7 +18,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
+import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
 import com.tokopedia.otp.verification.common.ViewActionSpannable
 import com.tokopedia.otp.verification.email.stub.OTPEmailMockResponse
 import com.tokopedia.otp.verification.email.stub.VerificationActivityStub
@@ -66,7 +66,7 @@ class OTPEmailTest {
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResource.getIdlingResource("OTP_REGISTER_EMAIL")
+        idlingResource = EspressoIdlingResource.idlingResource
         if (idlingResource != null)
             IdlingRegistry.getInstance().register(idlingResource)
         else

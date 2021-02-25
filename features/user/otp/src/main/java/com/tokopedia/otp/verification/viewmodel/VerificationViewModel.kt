@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
-import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData

@@ -18,7 +18,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
+import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
@@ -57,7 +57,7 @@ class OTPPhoneTest {
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResource.getIdlingResource("OTP_PICK_METHOD_PHONE")
+        idlingResource = EspressoIdlingResource.idlingResource
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
