@@ -550,6 +550,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
             it.uiState.hasAnyPromoSelected = hasPreSelectedPromo
+            it.uiState.hasFailedToLoad = false
+            it.uiData.exception = null
             _fragmentUiModel.value = it
         }
     }
