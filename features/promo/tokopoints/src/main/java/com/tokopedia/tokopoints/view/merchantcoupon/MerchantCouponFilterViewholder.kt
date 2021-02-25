@@ -36,9 +36,9 @@ class MerchantCouponFilterViewholder(itemView: View, var filterCallback: FilterC
             }
 
             AnalyticsTrackerUtil.sendEvent(
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_CHIP_FILTER, "mvc section - ${productCategoriesFilterItem.rootName}",
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_CHIP_FILTER, "{${productCategoriesFilterItem.rootName}}",
                     AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
                     AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
             )

@@ -22,6 +22,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.view.adapter.MerchantCouponItemDecoration
 import com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
@@ -36,7 +37,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     @Inject
     lateinit var factory: ViewModelFactory
 
-    private var arrayList = ArrayList<ProductCategoriesFilterItem>()
     private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, factory)[MerchantCouponViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this) }
@@ -48,10 +48,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var appBarLayout: View
     private var statusBarBgView: View? = null
-
     private var categoryId: String = ""
-    private var canLoadMore: Boolean = false
-    private var hasLoadedOnce: Boolean = false
 
     override fun getScreenName(): String {
         return AnalyticsTrackerUtil.ScreenKeys.MERCHANT_COUPONLIST_SCREEN_NAME
@@ -118,13 +115,14 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
                 LinearLayoutManager.HORIZONTAL,
                 false)
         exploreFilterRv.layoutManager = linearLayoutManagerFilter
-        exploreFilterRv.addItemDecoration(MerchantListItemDecorator(convertDpToPixel(10, exploreCouponRv.context)))
+        exploreFilterRv.addItemDecoration(MerchantListItemDecorator(convertDpToPixel(10, exploreFilterRv.context)))
         exploreFilterRv.adapter = mFilterAdapter
 
         val linearLayoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL,
                 false)
         exploreCouponRv.layoutManager = linearLayoutManager
+        exploreCouponRv.addItemDecoration(MerchantCouponItemDecoration(convertDpToPixel(8, exploreCouponRv.context)))
         exploreCouponRv.adapter = mCouponAdapter
     }
 
@@ -228,11 +226,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         swipe_refresh_layout?.isRefreshing = false
     }
 
-    override fun onDestroyView() {
-        //  mCouponAdapter.onDestroyView()
-        super.onDestroyView()
-    }
-
     private fun setLayoutParams() {
         val statusBarHeight = getStatusBarHeight(activity)
         val layoutParams = merchantRewardToolbar?.layoutParams as FrameLayout.LayoutParams
@@ -296,12 +289,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         view?.postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
     }
-
-/*    override fun filterClickListener(rootID: String?) {
-        if (rootID != null) {
-            mViewModel.setCategoryRootId(rootID)
-        }
-    }*/
 
     override fun onFilterTypeSelected(adapterPosition: Int, productCategoriesFilterItem: ProductCategoriesFilterItem) {
         if (productCategoriesFilterItem.rootID != null) {

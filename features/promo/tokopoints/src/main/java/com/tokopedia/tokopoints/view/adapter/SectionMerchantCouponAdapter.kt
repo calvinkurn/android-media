@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
@@ -16,7 +17,7 @@ import java.util.*
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
         return CouponListViewHolder(view)
     }
 
@@ -88,13 +89,14 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         }
 
         vh.itemView.setOnClickListener {
+            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE)
 
         }
 
     }
 
-    fun sendCouponClickEvent(shopName: String?, eventAction: String) {
+    private fun sendCouponClickEvent(shopName: String?, eventAction: String) {
         AnalyticsTrackerUtil.sendEvent(
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -109,9 +111,11 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         val item: MutableMap<String, Any?> = HashMap()
         val (shopInfo, _, title, _, _) = arrayList[holder.adapterPosition] ?: return
         val eventLabel = "mvc - {${holder.adapterPosition}} - {${shopInfo?.name}}"
-        item["name"] = shopInfo?.name
+        item["item_name"] = shopInfo?.name
         item["position"] = holder.adapterPosition.toString()
-        item["creative"] = title
+        item["creative_name"] = title
+        item["item_id"] = shopInfo?.id
+
         val promotions = HashMap<String, Any>()
         promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,

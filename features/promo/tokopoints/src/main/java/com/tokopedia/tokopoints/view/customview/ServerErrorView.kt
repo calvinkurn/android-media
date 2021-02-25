@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
@@ -22,7 +23,7 @@ class ServerErrorView : NestedScrollView {
     private var btnError: RoundButton? = null
     private var errorTitle: CharSequence? = null
     private var errorSubTitle: CharSequence? = null
-    private var errorBackArrow: ImageUnify? = null
+    private var errorBackArrow: ImageButton? = null
     private var buttonFontSize: Int? = null
     private var buttonColor: Int? = null
     private var buttonFontColor: Int? = null

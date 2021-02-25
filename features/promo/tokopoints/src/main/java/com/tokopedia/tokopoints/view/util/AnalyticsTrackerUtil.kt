@@ -189,6 +189,7 @@ object AnalyticsTrackerUtil {
             const val POSITION = "position"
             const val NAME = "name"
             const val CREATIVE = "creative"
+            const val ID = "id"
             const val PROMOTIONS = "promotions"
             const val BUSINESSUNIT = " buyer growth platform"
             const val CURRENTSITE = " tokopediamarketplace"

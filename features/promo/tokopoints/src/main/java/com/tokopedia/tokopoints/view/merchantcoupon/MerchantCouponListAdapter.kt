@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.model.merchantcoupon.Productlist
@@ -89,6 +90,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         }
 
         vh.itemView.setOnClickListener {
+            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE)
         }
 
@@ -110,7 +112,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     fun sendCouponClickEvent(shopName: String?, eventAction: String) {
         AnalyticsTrackerUtil.sendEvent(
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON ,
                 AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
                 eventAction, "{$shopName}",
                 AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
@@ -131,9 +133,10 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             val item: MutableMap<String, Any?> = HashMap()
             val (shopInfo, _, title, _, _) = data
             val eventLabel = "mvc - {${holder.adapterPosition}} - {${shopInfo?.name}}"
-            item["name"] = shopInfo?.name
+            item["item_name"] = shopInfo?.name
             item["position"] = holder.adapterPosition.toString()
-            item["creative"] = title
+            item["creative_name"] = title
+            item["item_id"] = shopInfo?.id
             val promotions = HashMap<String, Any>()
             promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
             AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,

@@ -10,7 +10,7 @@
         android:layout_height="@dimen/dp_56"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
@@ -22,11 +22,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <ImageButton
                     android:id="@+id/iv_back_error"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:padding="@dimen/dp_2"
+                    android:padding="@dimen/dp_8"
                     app:srcCompat="@drawable/ic_tp_arrow_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
