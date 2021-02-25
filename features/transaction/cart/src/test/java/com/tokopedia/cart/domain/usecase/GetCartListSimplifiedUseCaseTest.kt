@@ -10,6 +10,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -23,8 +24,9 @@ object GetCartListSimplifiedUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val cartMapperV3 = mockk<CartSimplifiedMapper>()
+    val chosenAddressRequestHelper = mockk<ChosenAddressRequestHelper>()
     val usecase by memoized {
-        GetCartListSimplifiedUseCase(graphqlUseCase, cartMapperV3, TestSchedulers)
+        GetCartListSimplifiedUseCase(graphqlUseCase, cartMapperV3, TestSchedulers, chosenAddressRequestHelper)
     }
 
     every { cartMapperV3.convertToCartItemDataList(any()) } returns CartListData()

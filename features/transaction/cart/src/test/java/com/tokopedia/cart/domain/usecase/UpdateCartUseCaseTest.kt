@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
@@ -21,7 +22,8 @@ import java.lang.reflect.Type
 object UpdateCartUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
-    val useCase by memoized { UpdateCartUseCase(graphqlUseCase, TestSchedulers) }
+    val chosenAddressRequestHelper = mockk<ChosenAddressRequestHelper>()
+    val useCase by memoized { UpdateCartUseCase(graphqlUseCase, TestSchedulers, chosenAddressRequestHelper) }
 
     val params = RequestParams().apply {
         putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, arrayListOf(UpdateCartRequest()))
