@@ -493,6 +493,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
         userInputPriceDigital?.let {
             inputPriceContainer.visibility = View.VISIBLE
 
+            if (!userInputPriceDigital.minPayment.isNullOrEmpty())
+                inputPriceHolderView.setMessageText(getString(R.string.digital_cart_error_input_price_less_than_min,
+                        userInputPriceDigital.minPayment))
+
             inputPriceHolderView.setMinMaxPayment(
                     total ?: "",
                     userInputPriceDigital.minPaymentPlain.toLong(),

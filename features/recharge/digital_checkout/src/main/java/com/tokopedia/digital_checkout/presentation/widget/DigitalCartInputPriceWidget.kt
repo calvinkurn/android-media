@@ -26,6 +26,10 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
     fun getPriceInput(): Long = priceInput
 
+    fun setMessageText(message: String) {
+        etDigitalCheckoutInputPrice.setMessage(message)
+    }
+
     fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long,
                          minPaymentString: String, maxPaymentString: String) {
         etDigitalCheckoutInputPrice.textFieldInput.setText(totalPayment)
@@ -43,22 +47,28 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
                 when {
                     isUserInputValid(priceInput, minPayment, maxPayment) -> {
-                        etDigitalCheckoutInputPrice.setError(false)
-                        etDigitalCheckoutInputPrice.setMessage(resources
-                                .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
-                        actionListener?.enableCheckoutButton()
+                        if (minPayment > 0L && maxPayment > 0L) {
+                            etDigitalCheckoutInputPrice.setError(false)
+                            etDigitalCheckoutInputPrice.setMessage(resources
+                                    .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                            actionListener?.enableCheckoutButton()
+                        }
                     }
                     priceInput > maxPayment -> {
-                        etDigitalCheckoutInputPrice.setError(true)
-                        etDigitalCheckoutInputPrice.setMessage(resources
-                                .getString(R.string.digital_cart_error_input_price_more_than_max, maxPaymentString))
-                        actionListener?.disableCheckoutButton()
+                        if (maxPayment > 0L) {
+                            etDigitalCheckoutInputPrice.setError(true)
+                            etDigitalCheckoutInputPrice.setMessage(resources
+                                    .getString(R.string.digital_cart_error_input_price_more_than_max, maxPaymentString))
+                            actionListener?.disableCheckoutButton()
+                        }
                     }
                     else -> {
-                        etDigitalCheckoutInputPrice.setError(true)
-                        etDigitalCheckoutInputPrice.setMessage(resources
-                                .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
-                        actionListener?.disableCheckoutButton()
+                        if (minPayment > 0L) {
+                            etDigitalCheckoutInputPrice.setError(true)
+                            etDigitalCheckoutInputPrice.setMessage(resources
+                                    .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                            actionListener?.disableCheckoutButton()
+                        }
                     }
                 }
             }

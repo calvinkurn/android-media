@@ -221,9 +221,12 @@ class DigitalCartViewModel @Inject constructor(
         } else {
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
-            _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
             _cartDigitalInfoData.postValue(mappedCartData)
             _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+
+            val pricePlain = mappedCartData.attributes?.pricePlain ?: 0.0
+            _totalPrice.postValue(pricePlain)
+            requestCheckoutParam.transactionAmount = pricePlain
 
             val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
             promoData?.let {
@@ -320,6 +323,7 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
+        requestCheckoutParam.transactionAmount = totalPrice
         updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
     }
 
@@ -327,7 +331,6 @@ class DigitalCartViewModel @Inject constructor(
         val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
-            requestCheckoutParam.transactionAmount = _totalPrice.value ?: 0.0
             requestCheckoutParam.voucherCode = promoCode
 
             _showLoading.postValue(true)
