@@ -105,6 +105,7 @@ class ShopProductModule {
                     position
                     type
                     title
+                    url
                   }
                   total_review
                   rating
