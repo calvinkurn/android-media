@@ -26,6 +26,10 @@
     <string name="tokopedia_note_delimeter">[Tokopedia Note:</string>
     <string name="ubah_alamat">Ubah Alamat</string>
 
+    <string name="set_default_address">Jadikan Alamat Utama</string>
+    <string name="set_default_choose_address">Jadikan Alamat Utama &amp; Pilih</string>
+    <string name="delete_address">Hapus Alamat</string>
+
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="shipping_address">Alamat Pengiriman</string>
