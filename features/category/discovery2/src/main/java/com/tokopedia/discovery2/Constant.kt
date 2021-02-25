@@ -64,4 +64,8 @@ object Constant {
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
     }
+
+    object ChooseAddressGTMSSource{
+        const val HOST_SOURCE = "discovery"
+    }
 }

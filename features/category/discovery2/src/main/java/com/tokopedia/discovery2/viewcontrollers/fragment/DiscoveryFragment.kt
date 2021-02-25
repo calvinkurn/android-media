@@ -778,7 +778,7 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return "discovery"
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {

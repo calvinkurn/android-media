@@ -22,5 +22,6 @@
     <dimen name="disco_product_card_width">165dp</dimen>
     <dimen name="dp_34">34dp</dimen>
     <dimen name="dp_19">19dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
 
 </resources>
