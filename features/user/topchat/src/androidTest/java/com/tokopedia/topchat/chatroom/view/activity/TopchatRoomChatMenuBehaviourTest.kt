@@ -88,6 +88,32 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     }
 
     @Test
+    fun click_compose_area_when_sticker_menu_visible() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        // When
+        clickStickerIconMenu()
+        clickComposeArea()
+        waitForIt(KEYBOARD_DELAY)
+
+        // Then
+        assertThat(isKeyboardShown(), `is`(true))
+        onView(withId(R.id.fl_chat_menu)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.ll_sticker_container)).check(
+                matches(not(isDisplayed()))
+        )
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+                matches(not(isDisplayed()))
+        )
+    }
+
+    @Test
     fun click_sticker_icon_once_show_sticker_container() {
         // Given
         setupChatRoomActivity()
