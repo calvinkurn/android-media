@@ -51,7 +51,6 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             val isSubscribed = view.digitalSubscriptionParams.isSubscribed
             view.renderMyBillsSusbcriptionView(bodyTitle, description, isChecked, isSubscribed)
         }
-        view.renderMyBillsEgoldView(view.cartInfoData.attributes?.fintechProduct?.getOrNull(0))
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {

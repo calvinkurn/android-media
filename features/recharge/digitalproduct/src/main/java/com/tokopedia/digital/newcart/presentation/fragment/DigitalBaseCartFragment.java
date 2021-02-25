@@ -583,7 +583,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 mybillEgold.getSubscriptionCheckbox().setVisibility(View.GONE);
             } else {
                 mybillEgold.getSubscriptionCheckbox().setVisibility(View.VISIBLE);
-                mybillEgold.setChecked(fintechProduct.getOptIn());
+                if (!mybillEgold.isChecked()) mybillEgold.setChecked(fintechProduct.getOptIn());
+                presenter.onEgoldCheckedListener(mybillEgold.isChecked(), inputPriceHolderView.getPriceInput());
             }
 
             mybillEgold.hasMoreInfo(true);
