@@ -31,9 +31,9 @@ class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
         changeResponseStartTime(
                 wsResponseText, TopChatRoomPresenterStub.exStartTime
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         onView(withId(R.id.new_comment))
                 .perform(click())
                 .perform(typeText(myMsg))
