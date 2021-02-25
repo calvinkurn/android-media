@@ -45,7 +45,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
             }
 
             override fun onLocalizingAddressLoginSuccess() {
-
+                // No-op
             }
         })
     }

@@ -112,7 +112,8 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         if (_directPaymentStep) {
             ft.replace(R.id.container, PaymentMethodFragment.newInstance(true)).commit()
         } else if (_profileId == 0) {
-            ft.replace(R.id.container, AddressListFragment.newInstance()).commit()
+            val isAutoSelectAddress = intent.getBooleanExtra(EXTRA_AUTO_SELECT_ADDRESS, false)
+            ft.replace(R.id.container, AddressListFragment.newInstance(false, isAutoSelectAddress)).commit()
         } else {
             ft.replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
         }
@@ -318,6 +319,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val EXTRA_PAYMENT_PROFILE = "payment_profile"
         const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
+        const val EXTRA_AUTO_SELECT_ADDRESS = "is_auto_select_address"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"

@@ -782,6 +782,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_AUTO_SELECT_ADDRESS, addressState == AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
@@ -888,13 +890,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 Toaster.build(it, addressState.popupMessage).show()
             }
         }
-        when (addressState.state) {
-            AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC -> {
-                if (addressState.errorCode == AddressState.IS_ERROR) {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-                    startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
-                }
-            }
+
+        if (addressState.errorCode == AddressState.IS_ERROR) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+            intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.state)
+            startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         }
     }
 

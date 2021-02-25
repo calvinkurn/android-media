@@ -72,10 +72,41 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
         cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
+        cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
+        cartListData.popUpMessage = cartDataListResponse.popUpMessage
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
+    }
+
+    private fun mapLocalizationChooseAddressData(data: LocalizationChooseAddress): LocalizationChooseAddressData {
+        return LocalizationChooseAddressData(
+                addressId = data.addressId,
+                addressName = data.addressName,
+                address = data.addressName,
+                postalCode = data.postalCode,
+                phone = data.phone,
+                receiverName = data.receiverName,
+                status = data.status,
+                country = data.country,
+                provinceId = data.provinceId,
+                provinceName = data.provinceName,
+                cityId = data.cityId,
+                cityName = data.cityName,
+                districtId = data.districtId,
+                districtName = data.districtName,
+                address2 = data.address2,
+                latitude = data.latitude,
+                longitude = data.longitude,
+                cornerId = data.cornerId,
+                isCorner = data.isCorner,
+                isPrimary = data.isPrimary,
+                buyerStoreCode = data.buyerStoreCode,
+                type = data.type,
+                state = data.state,
+                stateDetail = data.stateDetail
+        )
     }
 
     private fun mapActionAvailableGroupData(actions: List<Action>): List<ActionData> {

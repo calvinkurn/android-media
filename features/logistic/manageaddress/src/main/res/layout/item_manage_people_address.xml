@@ -144,7 +144,7 @@
             tools:text="Sudah Pin Point" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/action_edit"
+            android:id="@+id/btn_primary"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:text="@string/ubah_alamat"
@@ -167,10 +167,10 @@
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_10"
-            app:layout_constraintStart_toEndOf="@id/action_edit"
+            app:layout_constraintStart_toEndOf="@id/btn_primary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/action_edit"
-            app:layout_constraintBottom_toBottomOf="@id/action_edit"
+            app:layout_constraintTop_toTopOf="@id/btn_primary"
+            app:layout_constraintBottom_toBottomOf="@id/btn_primary"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="medium"/>

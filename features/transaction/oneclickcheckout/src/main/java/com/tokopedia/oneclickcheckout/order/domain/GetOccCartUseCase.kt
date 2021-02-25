@@ -46,8 +46,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String) {
-  get_occ_cart_page(source: ${"$"}source) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_cart_page(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {

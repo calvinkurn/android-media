@@ -2,13 +2,14 @@ package com.tokopedia.cart.domain.usecase
 
 fun getQueryCartRevamp(): String {
     return """
-        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String) {
+        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id) {
+          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
             status
             data {
               errors
+              pop_up_message
               localization_choose_address {
                 address_id
                 address_name

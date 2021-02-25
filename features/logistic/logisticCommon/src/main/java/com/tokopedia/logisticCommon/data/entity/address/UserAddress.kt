@@ -29,9 +29,9 @@ data class UserAddress(
 ) : Parcelable {
 
     companion object {
-        const val STATE_CHOSEN_ADDRESS_MATCH = 1
-        const val STATE_ADDRESS_ID_NOT_MATCH = 2
-        const val STATE_DISTRICT_ID_NOT_MATCH = 3
-        const val STATE_NO_ADDRESS = 4
+        const val STATE_CHOSEN_ADDRESS_MATCH = 101
+        const val STATE_ADDRESS_ID_NOT_MATCH = 102
+        const val STATE_DISTRICT_ID_NOT_MATCH = 103
+        const val STATE_NO_ADDRESS = 104
     }
 }

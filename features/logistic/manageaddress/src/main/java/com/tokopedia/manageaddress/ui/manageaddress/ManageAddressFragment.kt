@@ -317,14 +317,30 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
-            if (data.addressStatus == 2) layout_utama.gone() else layout_utama.visible()
-            btn_alamat_utama.setOnClickListener {
+            if (data.addressStatus == 2) {
+                layout_utama?.gone()
+                layout_utama_choose?.gone()
+            } else {
+                if (!data.isStateChosenAddress) {
+                    layout_utama_choose?.visible()
+                    layout_utama?.gone()
+                } else {
+                    layout_utama?.visible()
+                    layout_utama_choose?.gone()
+                }
+            }
+            btn_alamat_utama?.setOnClickListener {
                 viewModel.setDefaultPeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
             }
-            btn_hapus_alamat.setOnClickListener {
+            btn_hapus_alamat?.setOnClickListener {
                 viewModel.deletePeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
+            }
+            btn_alamat_utama_choose?.setOnClickListener {
+                //TODO: hit jadikan & pilih sekaligus
+                //TODO: dismiss bottomSheet
+                //TODO: finish activity & set result back if source is from checkout
             }
         }
 

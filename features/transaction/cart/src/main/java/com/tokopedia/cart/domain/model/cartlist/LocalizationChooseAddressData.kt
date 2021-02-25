@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class LocalizationChooseAddress(
+data class LocalizationChooseAddressData(
         var addressId: String = "",
         var addressName: String = "",
         var address: String = "",
@@ -29,4 +29,13 @@ data class LocalizationChooseAddress(
         var type: Int = 0,
         var state: Int = 0,
         var stateDetail: String = ""
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+        const val STATE_CHOSEN_ADDRESS_MATCH = 101
+        const val STATE_ADDRESS_ID_NOT_MATCH = 102
+        const val STATE_DISTRICT_ID_NOT_MATCH = 103
+        const val STATE_NO_ADDRESS = 104
+    }
+
+}

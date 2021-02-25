@@ -33,20 +33,6 @@ data class CartListData(
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",
         var abTestButton: ABTestButton = ABTestButton(),
-        var localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress()
-) : Parcelable {
-
-    override fun equals(other: Any?): Boolean {
-        if (other is CartListData) {
-            val `object` = other as CartListData?
-            return `object`?.isError == isError &&
-                    `object`.isAllSelected == isAllSelected &&
-                    `object`.unavailableGroupData == unavailableGroupData &&
-                    `object`.shopGroupAvailableDataList == shopGroupAvailableDataList &&
-                    `object`.isShowOnboarding == isShowOnboarding &&
-                    `object`.isPromoCouponActive == isPromoCouponActive
-        }
-        return super.equals(other)
-    }
-
-}
+        var localizationChooseAddressData: LocalizationChooseAddressData = LocalizationChooseAddressData(),
+        var popUpMessage: String = ""
+) : Parcelable

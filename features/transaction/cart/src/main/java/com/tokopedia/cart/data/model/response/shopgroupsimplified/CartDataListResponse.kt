@@ -56,5 +56,7 @@ data class CartDataListResponse(
         @SerializedName("ab_test_button")
         val abTestButton: ABTestButtonResponse = ABTestButtonResponse(),
         @SerializedName("localization_choose_address")
-        val localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress()
+        val localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress(),
+        @SerializedName("pop_up_message")
+        val popUpMessage: String = ""
 )

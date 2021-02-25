@@ -25,7 +25,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -81,11 +83,13 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_IS_AUTO_SELECT_ADDRESS = "ARG_IS_AUTO_SELECT_ADDRESS"
 
-        fun newInstance(isEdit: Boolean = false): AddressListFragment {
+        fun newInstance(isEdit: Boolean = false, isAutoSelectAddress: Boolean = false): AddressListFragment {
             val addressListFragment = AddressListFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putBoolean(ARG_IS_AUTO_SELECT_ADDRESS, isAutoSelectAddress)
             addressListFragment.arguments = bundle
             return addressListFragment
         }
@@ -123,6 +127,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
                     addressListRv?.scrollToPosition(0)
+                    validateAutoSelectAddress(it)
                     adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.resetState()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
@@ -130,7 +135,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 }
 
                 is OccState.Success -> {
-                    adapter?.setData(it.data.listAddress, it. data.hasNext ?: false)
+                    adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.updateStateAfterGetData()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
                     validateButton()
@@ -146,6 +151,20 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+    }
+
+    private fun validateAutoSelectAddress(addressModel: OccState.FirstLoad<AddressListModel>) {
+        activity?.let { activity ->
+            if (arguments?.getBoolean(ARG_IS_AUTO_SELECT_ADDRESS) == true) {
+                val localizingAddressData = ChooseAddressUtils.getLocalizingAddressData(activity)
+                addressModel.data.listAddress.forEach { address ->
+                    if (address.id == localizingAddressData?.address_id) {
+                        address.isSelected = true
+                        return@forEach
+                    }
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
