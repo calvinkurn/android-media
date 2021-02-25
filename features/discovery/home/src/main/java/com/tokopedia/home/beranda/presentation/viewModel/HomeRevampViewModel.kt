@@ -305,8 +305,7 @@ open class HomeRevampViewModel @Inject constructor(
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
                                 pageName = bestSellerDataModel.pageName,
-                                queryParam = bestSellerDataModel.widgetParam,
-                                location = getHomeLocationDataParam()
+                                queryParam = bestSellerDataModel.widgetParam
                         )
                 )
 
@@ -341,8 +340,7 @@ open class HomeRevampViewModel @Inject constructor(
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
                                 pageName = bestSellerDataModel.pageName,
-                                queryParam = if(filterChip.isActivated) filterChip.value else "",
-                                location = getHomeLocationDataParam()
+                                queryParam = if(filterChip.isActivated) filterChip.value else ""
                         )
                 )
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
@@ -916,7 +914,7 @@ open class HomeRevampViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
 
         launch {
-            val homeCacheData = homeUseCase.get().getHomeCachedData(locationParam = getHomeLocationDataParam())
+            val homeCacheData = homeUseCase.get().getHomeCachedData()
             homeCacheData?.let {it ->
                 homeVisitableListData = it.list.toMutableList()
                 val homeDataModel = evaluateChooseAddressData(it)
@@ -1697,10 +1695,6 @@ open class HomeRevampViewModel @Inject constructor(
         refresh(isFirstInstall = false, forceRefresh = true)
     }
 
-    fun clearAddressData() {
-        this.homeChooseAddressData = HomeChooseAddressData()
-    }
-
     fun getAddressData(): HomeChooseAddressData {
         return homeChooseAddressData
     }
@@ -1717,7 +1711,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
-             buildLocationParams(
+            buildLocationParams(
                     getAddressData().lat,
                     getAddressData().long,
                     getAddressData().addressId,

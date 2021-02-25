@@ -14,6 +14,7 @@ import com.tokopedia.home.account.domain.GetBuyerAccountUseCase;
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase;
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -47,19 +48,6 @@ public class BuyerAccountModule {
     @Provides
     RemoveWishListUseCase provideRemoveWishlistUseCase(@ApplicationContext Context context) {
         return new RemoveWishListUseCase(context);
-    }
-
-    @Provides
-    GetRecommendationUseCase provideGetRecomendationUseCase(@Named("recommendationQuery") String recomQuery,
-                                                            GraphqlUseCase graphqlUseCase,
-                                                            UserSession userSession) {
-        return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession);
-    }
-
-    @Provides
-    @Named("recommendationQuery")
-    String provideRecommendationRawQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
     }
 
     @Provides
