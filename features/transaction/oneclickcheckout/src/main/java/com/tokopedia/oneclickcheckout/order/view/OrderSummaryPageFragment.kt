@@ -1516,9 +1516,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun setSourceFromPDP() {
-        if (arguments?.getBoolean(SOURCE_PDP, false) == true) {
-            source = SOURCE_PDP
-        }
+        source = SOURCE_PDP
     }
 
     companion object {
@@ -1556,10 +1554,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         @JvmStatic
-        fun newInstance(isFromPDP: Boolean, productId: String?): OrderSummaryPageFragment {
+        fun newInstance(productId: String?): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(SOURCE_PDP, isFromPDP)
                     putString(QUERY_PRODUCT_ID, productId)
                 }
             }

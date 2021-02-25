@@ -30,10 +30,7 @@ class GetOccCartMapper @Inject constructor() {
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
                 purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
-            shop = generateOrderShop(cart.shop).apply {
-                errors = cart.errors
-                isFulfillment = cart.warehouse.isFulfillment
-            }
+            shop = generateOrderShop(cart)
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }
         return OrderData(mapTicker(data.tickers),
@@ -82,7 +79,8 @@ class GetOccCartMapper @Inject constructor() {
         return shopShipmentListResult
     }
 
-    private fun generateOrderShop(shop: ShopDataResponse): OrderShop {
+    private fun generateOrderShop(cart: CartDataResponse): OrderShop {
+        val shop = cart.shop
         return OrderShop().apply {
             shopId = shop.shopId
             userId = shop.userId
@@ -105,8 +103,11 @@ class GetOccCartMapper @Inject constructor() {
             addressStreet = shop.addressStreet
             provinceId = shop.provinceId
             cityId = shop.cityId
-            cityName = shop.cityName
             shopShipment = generateShopShipment(shop.shopShipments)
+            errors = cart.errors
+            isFulfillment = cart.warehouse.isFulfillment
+            fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
+            cityName = if (cart.warehouse.isFulfillment) cart.tokoCabangInfo.message else shop.cityName
         }
     }
 
@@ -117,13 +118,18 @@ class GetOccCartMapper @Inject constructor() {
             productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
-            productImageUrl = product.productImage.imageSrc
+            productImageUrl = product.productImage.imageSrc200Square
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
+            isFreeOngkirExtra = product.freeShippingExtra.eligible
             isFreeOngkir = product.freeShipping.eligible
-            freeOngkirImg = product.freeShipping.badgeUrl
+            freeOngkirImg = when {
+                isFreeOngkirExtra -> product.freeShippingExtra.badgeUrl
+                isFreeOngkir -> product.freeShipping.badgeUrl
+                else -> ""
+            }
             wholesalePrice = mapWholesalePrice(product.wholesalePrice)
             notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) {
                 product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH)
