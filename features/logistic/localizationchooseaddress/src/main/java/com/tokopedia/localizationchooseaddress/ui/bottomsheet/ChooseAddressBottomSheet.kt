@@ -164,6 +164,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         txtLocalization = child.findViewById(R.id.txt_bottomsheet_localization)
         contentLayout = child.findViewById(R.id.frame_content_layout)
         bottomLayout = child.findViewById(R.id.bottom_layout)
+        errorLayout = child.findViewById(R.id.error_state_layout)
         progressBar = child.findViewById(R.id.progress_bar)
 
         addressList?.adapter = adapter
@@ -188,7 +189,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
         })
-
 
         viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
