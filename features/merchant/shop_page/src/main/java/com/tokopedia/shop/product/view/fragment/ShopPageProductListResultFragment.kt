@@ -318,7 +318,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         )
                     )
                 }
-                viewModel.getShopRestrictionInfo(restrictionParam)
+                viewModel.getShopRestrictionInfo(restrictionParam, shopId.toString())
             }
         }
     }

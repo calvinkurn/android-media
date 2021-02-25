@@ -387,6 +387,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.isLoading = false
         followButton.text = followShop.buttonLabel
         isShopFavorite = followShop.isFollowing == true
+        removeCompoundDrawableFollowButton()
         changeColorButton()
     }
 
