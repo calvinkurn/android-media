@@ -207,11 +207,6 @@ class MvcDetailView @JvmOverloads constructor(
             }
         }
 
-        val shopName = response.data?.shopName
-        if (!shopName.isNullOrEmpty()) {
-            tempList.add(TickerText(shopName, removeTickerTopMargin))
-        }
-
         response.data?.catalogList?.forEach {
             var quotaTextLength = 0
             if (it != null) {
@@ -234,6 +229,11 @@ class MvcDetailView @JvmOverloads constructor(
                         ?: "", spannableString2)
                 tempList.add(mvcListItem)
             }
+        }
+
+        val shopName = response.data?.shopName
+        if (!tempList.isNullOrEmpty() && !shopName.isNullOrEmpty()) {
+            tempList.add(TickerText(shopName, removeTickerTopMargin))
         }
 
         adapter.updateList(tempList)
