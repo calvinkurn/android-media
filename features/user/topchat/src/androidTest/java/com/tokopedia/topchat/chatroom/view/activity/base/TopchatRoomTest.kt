@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 import android.content.Context
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
@@ -23,13 +24,11 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
-import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
-import com.tokopedia.topchat.stub.chatroom.usecase.ChatListGroupStickerUseCaseStub
-import com.tokopedia.topchat.stub.chatroom.usecase.ChatListStickerUseCaseStub
-import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.websocket.WebSocketResponse
@@ -68,6 +67,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var chatListStickerUseCase: ChatListStickerUseCaseStub
+
+    @Inject
+    protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
@@ -193,4 +195,22 @@ abstract class TopchatRoomTest {
                 .perform(click())
     }
 
+    protected fun clickTemplateChatAt(position: Int) {
+        val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, click()
+        )
+        onView(withId(R.id.list_template)).perform(viewAction)
+    }
+
+    protected fun generateTemplateResponse(
+            enable: Boolean = true,
+            success: Boolean = true,
+            templates: List<String> = listOf("Template Chat 1", "Template Chat 2")
+    ): TemplateData {
+        return TemplateData().apply {
+            this.isIsEnable = enable
+            this.isSuccess = success
+            this.templates = templates
+        }
+    }
 }
