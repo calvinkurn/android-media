@@ -360,7 +360,7 @@ final class ProductListPresenter
     }
 
     private void putRequestParamsChooseAddress(RequestParams requestParams) {
-        if (chooseAddressData == null) return;
+        if (!isEnableChooseAddress || chooseAddressData == null) return;
 
         requestParams.putAllString(SearchKotlinExtKt.toSearchParams(chooseAddressData));
     }
