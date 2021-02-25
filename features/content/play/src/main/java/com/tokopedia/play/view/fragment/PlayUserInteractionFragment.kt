@@ -319,7 +319,7 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickPinnedMessage(message, applink)
         openPageByApplink(applink)
 
-        playViewModel.openPiPBrowsingPage()
+        playViewModel.requestPiPBrowsingPage()
     }
 
     override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
@@ -359,7 +359,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
-        playViewModel.watchInPiP()
+        playViewModel.requestWatchInPiP()
         pipAnalytic.clickPiPIcon(
                 channelId = channelId,
                 shopId = playViewModel.partnerId,
@@ -830,7 +830,7 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickShop(partnerId.toString())
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
 
-        playViewModel.openPiPBrowsingPage()
+        playViewModel.requestPiPBrowsingPage()
     }
 
     private fun openProfilePage(partnerId: Long) {

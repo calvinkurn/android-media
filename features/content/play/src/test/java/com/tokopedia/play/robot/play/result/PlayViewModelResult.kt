@@ -75,5 +75,5 @@ class PlayViewModelRobotResult(
         get() = PlayChannelDataResult(viewModel.latestCompleteChannelData)
 
     val pipModeFieldResult: PlayPiPModeResult
-        get() = PlayPiPModeResult(viewModel.pipMode)
+        get() = PlayPiPModeResult(viewModel.pipState)
 }

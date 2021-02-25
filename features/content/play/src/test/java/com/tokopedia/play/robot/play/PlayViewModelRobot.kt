@@ -115,8 +115,8 @@ class PlayViewModelRobot(
 
     fun setPiPMode(pipMode: PiPMode) {
         when(pipMode) {
-            PiPMode.WatchInPip -> viewModel.watchInPiP()
-            PiPMode.BrowsingOtherPage -> viewModel.openPiPBrowsingPage()
+            PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
+            PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
             PiPMode.StopPip -> viewModel.stopPiP()
         }.exhaustive
     }

@@ -190,11 +190,11 @@ class PlayFragment @Inject constructor(
         return isIntercepted || !videoOrientation.isHorizontal
     }
 
-    override fun onEnterPiPMode(pipMode: PiPMode) {
+    override fun onEnterPiPState(pipState: PiPState) {
         if (playViewModel.isPiPAllowed) {
             childFragmentManager.fragments
                     .forEach {
-                        if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
+                        if (it is PlayFragmentContract) it.onEnterPiPState(pipState)
                     }
         }
     }
@@ -287,7 +287,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.pipMode.isInPiP && activity?.isFinishing == true))
+        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.pipState.isInPiP && activity?.isFinishing == true))
     }
 
     private fun invalidateVideoTopBounds(
@@ -454,10 +454,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
-            if (it != PiPMode.StopPip) {
-                onEnterPiPMode(it)
-            }
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
+            if (it is PiPState.Requesting) onEnterPiPState(it)
         })
     }
     //endregion

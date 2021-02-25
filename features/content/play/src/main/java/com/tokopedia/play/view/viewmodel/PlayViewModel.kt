@@ -99,8 +99,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableShareInfo
     val observableLikeStatusInfo: LiveData<PlayLikeStatusInfoUiModel> /**Added**/
         get() = _observableLikeStatusInfo
-    val observableEventPiP: LiveData<Event<PiPMode>>
-        get() = _observableEventPiP
+    val observableEventPiPState: LiveData<Event<PiPState>>
+        get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
 
@@ -188,8 +188,8 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-    val pipMode: PiPMode
-        get() = _observableEventPiP.value?.peekContent() ?: PiPMode.StopPip
+    val pipState: PiPState
+        get() = _observableEventPiPState.value?.peekContent() ?: PiPState.Stop
 
     val isPiPAllowed: Boolean
         get() {
@@ -230,7 +230,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinned = MediatorLiveData<PlayPinnedUiModel>() /**Changed**/
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
-    private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
+    private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
@@ -334,7 +334,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
-        if (!pipMode.isInPiP) stopPlayer()
+        if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         channelStateProcessor.removeStateListener(channelStateListener)
@@ -456,16 +456,24 @@ class PlayViewModel @Inject constructor(
         return playVideoPlayer.getVideoDuration()
     }
 
-    fun watchInPiP() {
-        _observableEventPiP.value = Event(PiPMode.WatchInPip)
+    fun requestWatchInPiP() {
+        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPip))
     }
 
-    fun openPiPBrowsingPage() {
-        _observableEventPiP.value = Event(PiPMode.BrowsingOtherPage)
+    fun requestPiPBrowsingPage() {
+        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.BrowsingOtherPage))
     }
 
     fun stopPiP() {
-        _observableEventPiP.value = Event(PiPMode.StopPip)
+        _observableEventPiPState.value = Event(PiPState.Stop)
+    }
+
+    fun goPiP() {
+        when (val state = pipState) {
+            is PiPState.Requesting -> {
+                _observableEventPiPState.value = Event(PiPState.InPiP(state.pipMode))
+            }
+        }
     }
 
     private fun initiateVideo(videoPlayer: PlayVideoPlayerUiModel.General) {
