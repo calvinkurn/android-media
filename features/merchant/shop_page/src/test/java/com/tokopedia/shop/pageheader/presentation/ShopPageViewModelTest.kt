@@ -7,6 +7,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.domain.interactor.*
@@ -96,6 +97,8 @@ class ShopPageViewModelTest {
 
     private val SAMPLE_SHOP_ID = "123"
 
+    private val addressWidgetData: LocalCacheModel = LocalCacheModel()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -151,7 +154,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                false
+                false,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -178,7 +182,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -196,7 +201,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -213,7 +219,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }

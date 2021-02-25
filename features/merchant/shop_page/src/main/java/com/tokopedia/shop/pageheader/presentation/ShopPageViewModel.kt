@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -129,7 +130,8 @@ class ShopPageViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -155,7 +157,8 @@ class ShopPageViewModel @Inject constructor(
                                 shopProductFilterParameter,
                                 keyword,
                                 etalaseId,
-                                isRefresh
+                                isRefresh,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -188,7 +191,8 @@ class ShopPageViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            widgetUserAddressLocalData: LocalCacheModel
     ): ShopProduct.GetShopProduct {
         val useCase = getShopProductListUseCase.get()
         val isDisableProductListCache = firebaseRemoteConfig.getBoolean(
@@ -208,6 +212,10 @@ class ShopPageViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    userDistrictId = widgetUserAddressLocalData.district_id
+                    userCityId = widgetUserAddressLocalData.city_id
+                    userLat = widgetUserAddressLocalData.lat
+                    userLong = widgetUserAddressLocalData.long
                 }
         )
         return useCase.executeOnBackground()

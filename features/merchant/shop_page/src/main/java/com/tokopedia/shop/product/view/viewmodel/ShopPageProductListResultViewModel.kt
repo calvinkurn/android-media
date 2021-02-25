@@ -22,6 +22,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -127,7 +128,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             search: String = "",
             isForceRefresh: Boolean = false,
             etalaseType: Int,
-            shopProductFilterParameter: ShopProductFilterParameter
+            shopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val getProductResp = withContext(dispatcherProvider.io) {
@@ -141,7 +143,11 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                 shopProductFilterParameter.getSortId().toIntOrZero(),
                                 shopProductFilterParameter.getRating(),
                                 shopProductFilterParameter.getPmax(),
-                                shopProductFilterParameter.getPmin()
+                                shopProductFilterParameter.getPmin(),
+                                widgetUserAddressLocalData.district_id,
+                                widgetUserAddressLocalData.city_id,
+                                widgetUserAddressLocalData.lat,
+                                widgetUserAddressLocalData.long
                         ),
                         isForceRefresh,
                         etalaseType
@@ -160,11 +166,22 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             sortId: Int = 0,
             etalase: String = "",
             search: String = "",
-            isForceRefresh: Boolean = true
+            isForceRefresh: Boolean = true,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val getProductResp = withContext(dispatcherProvider.io) {
-                val productFilter = ShopProductFilterInput(page, perPage, search, etalase, sortId)
+                val productFilter = ShopProductFilterInput().apply {
+                    this.page = page
+                    this.perPage = perPage
+                    searchKeyword = search
+                    etalaseMenu = etalase
+                    sort = sortId
+                    userDistrictId = widgetUserAddressLocalData.district_id
+                    userCityId = widgetUserAddressLocalData.city_id
+                    userLat = widgetUserAddressLocalData.lat
+                    userLong = widgetUserAddressLocalData.long
+                }
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)
                 getShopProductUseCase.isFromCacheFirst = !isForceRefresh
@@ -285,10 +302,22 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    fun getFilterResultCount(shopId: String, searchKeyword: String, etalaseId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
+    fun getFilterResultCount(
+            shopId: String,
+            searchKeyword: String,
+            etalaseId: String,
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
+    ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, searchKeyword, etalaseId, tempShopProductFilterParameter)
+                getFilterResultCountData(
+                        shopId,
+                        searchKeyword,
+                        etalaseId,
+                        tempShopProductFilterParameter,
+                        widgetUserAddressLocalData
+                )
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {
@@ -300,7 +329,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             shopId: String,
             searchKeyword: String,
             etalaseId: String,
-            tempShopProductFilterParameter: ShopProductFilterParameter
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
@@ -310,7 +340,11 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
-                tempShopProductFilterParameter.getPmin()
+                tempShopProductFilterParameter.getPmin(),
+                widgetUserAddressLocalData.district_id,
+                widgetUserAddressLocalData.city_id,
+                widgetUserAddressLocalData.lat,
+                widgetUserAddressLocalData.long
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
