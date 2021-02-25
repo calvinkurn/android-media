@@ -70,7 +70,13 @@ data class ManageAddressData(
         @SerializedName("status")
         var status: Int = 0,
         @SerializedName("type")
-        var type: Int = 0
+        var type: Int = 0,
+        @SerializedName("state")
+        var state: Int = 0,
+        @SerializedName("state_detail")
+        var stateDetail: String = "",
+        @SerializedName("is_state_chosen_address")
+        var isStateChosenAddress: Boolean = false
 )
 
 data class Token(

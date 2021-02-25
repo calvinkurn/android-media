@@ -46,6 +46,7 @@ class AddressCornerMapper @Inject constructor() : Func1<GetPeopleAddressResponse
             this.isCornerAddress = it.isCorner
             this.partnerId = it.partnerId
             this.partnerName = it.partnerName
+            this.isStateChosenAddress = it.isStateChosenAddress
         }
     }
 }

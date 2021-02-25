@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
-import com.tokopedia.localizationchooseaddress.data.repository.FakeChooseAddressRepo
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListModel
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,8 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: ChooseAddressRepository,
-                                                 private val chooseAddressMapper: ChooseAddressMapper,
-                                                 private val fakeChooseAddressRepo: FakeChooseAddressRepo) : ViewModel(){
+                                                 private val chooseAddressMapper: ChooseAddressMapper) : ViewModel(){
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
     val chosenAddressList: LiveData<Result<List<ChosenAddressList>>>
@@ -61,7 +58,7 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     }
 
     fun getStateChosenAddress(source: String) {
-        viewModelScope.launch(onErrorGetDefaultChosenAddress) {
+        viewModelScope.launch(onErrorGetStateChosenAddress) {
             val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source)
             _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
@@ -79,15 +76,15 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     }
 
     private val onErrorSetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
-        _chosenAddressList.value = Fail(e)
+        _setChosenAddress.value = Fail(e)
     }
 
     private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
-        _chosenAddressList.value = Fail(e)
+        _getChosenAddress.value = Fail(e)
     }
 
     private val onErrorGetDefaultChosenAddress = CoroutineExceptionHandler{ _, e ->
-        _chosenAddressList.value = Fail(e)
+        _getDefaultAddress.value = Fail(e)
     }
 
 }
