@@ -340,6 +340,7 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
+            pipState: PiPState = playViewModel.pipState,
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
@@ -348,7 +349,9 @@ class PlayVideoFragment @Inject constructor(
             videoView.setPlayer(null)
             videoView.hide()
             return
-        } else if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+        }
+
+        if (pipState is PiPState.InPiP) return
 
         when (videoPlayer) {
             is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()
