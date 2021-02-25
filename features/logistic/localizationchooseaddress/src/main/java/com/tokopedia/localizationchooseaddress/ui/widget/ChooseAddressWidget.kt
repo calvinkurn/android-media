@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -22,7 +22,9 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
@@ -34,6 +36,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private var textChosenAddress: Typography? = null
     private var buttonChooseAddress: IconUnify? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -62,19 +67,6 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun initObservers() {
-        /**
-         * Test only, gql not ready yet from BE side
-         * Hit viewModel on the first start
-         */
-        viewModel.test.observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                }
-            }
-
-        })
-
         viewModel.getChosenAddress.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -95,6 +87,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                     }
+                }
+                is Fail -> {
+                    chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                 }
             }
         })
@@ -120,6 +115,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                     }
                 }
+                is Fail -> {
+                    chooseAddressWidgetListener?.onLocalizingAddressServerDown()
+                }
             }
         })
 
@@ -138,6 +136,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     )
                     chooseAddressPref?.setLocalCache(localData)
                     chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                }
+
+                is Fail -> {
+                    chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                 }
             }
         })
@@ -183,6 +185,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
         buttonChooseAddress?.setOnClickListener {
             val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+            val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+            source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
             val chooseAddressBottomSheet = ChooseAddressBottomSheet()
             chooseAddressBottomSheet.setListener(this)
             chooseAddressBottomSheet.show(fragment?.childFragmentManager)

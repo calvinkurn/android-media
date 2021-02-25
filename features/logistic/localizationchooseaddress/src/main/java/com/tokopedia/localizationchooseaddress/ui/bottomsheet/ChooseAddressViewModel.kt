@@ -36,17 +36,10 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     val getDefaultAddress: LiveData<Result<DefaultChosenAddressModel>>
         get() = _getDefaultAddress
 
-    private val _test = MutableLiveData<Result<String>>()
-    val test: LiveData<Result<String>>
-        get() = _test
-
-
     fun getChosenAddressList(source: String) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
             val getChosenAddressList = chooseAddressRepo.getChosenAddressList(source)
             _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
-            /*val getChosenAddressList = fakeChooseAddressRepo.getChosenAddressList()
-            _chosenAddressList.value = Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))*/
         }
     }
 
