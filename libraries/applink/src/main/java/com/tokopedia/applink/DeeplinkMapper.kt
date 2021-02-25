@@ -201,7 +201,16 @@ object DeeplinkMapper {
         val uri = Uri.parse(deeplink)
         val query = uri.query ?: ""
         val path = uri.lastPathSegment ?: ""
+        val paramFilter = "filter"
         var deepLinkInternal = ApplinkConstInternalGlobal.INBOX_TALK
+        if (GlobalConfig.isSellerApp()) {
+            if (uri.getQueryParameter(paramFilter)?.isNotBlank() == true) {
+                return Uri.parse(deepLinkInternal)
+                        .buildUpon()
+                        .appendQueryParameter(paramFilter, uri.getQueryParameter(paramFilter))
+                        .build().toString()
+            }
+        }
         if (path.isNotEmpty()) {
             deepLinkInternal = "${ApplinkConstInternalGlobal.TALK_REPLY_BASE}$path/"
         }

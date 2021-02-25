@@ -452,6 +452,15 @@
             android:text="Send Log to Server"
             android:textColor="@color/Neutral_N0" />
 
+        <CheckBox
+            android:id="@+id/toggle_seller_app_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Seller App Review Debugging" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -545,6 +554,40 @@
             android:layout_height="wrap_content"
             android:id="@+id/resetOnboardingNavigation"
             android:text="RESET ONBOARDING NAVIGATION!" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rollance AB Testing Manual Switcher : "/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_rollence_key"
+            android:hint="input rollence key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_rollence_variant"
+                android:hint="input rollence variant"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btn_apply_rollence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APPLY"/>
+        </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/dp_10"

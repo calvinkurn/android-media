@@ -33,6 +33,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
 
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
+    var recomResponse:GamingRecommendationParamResponse?=null
 
     var shopId = 0L
     var pageName = ""
@@ -44,22 +45,28 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
             withContext(workerDispatcher) {
                 val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName))
                 recommendationLiveData.postValue(LiveDataResult.success(response))
-                getProducts(0)
+                getProducts(0, response)
             }
         }, onError = {
             recommendationLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
-    fun getProducts(page: Int) {
+    fun getProducts(page: Int, recomResponse:GamingRecommendationParamResponse?=null) {
 
         launchCatchError(block = {
-            val params = recommendationLiveData.value!!.data!!.params
+            if(recomResponse !=null){
+                this.recomResponse = recomResponse
+            }
+            val params = this.recomResponse!!.params
             recommendationProductUseCase.useEmptyShopId = useEmptyShopId
             val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page, shopId, pageName)).first()
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
-
-            productLiveData.postValue(LiveDataResult.success(list))
+            if(list.isNullOrEmpty() && useEmptyShopId){
+                productLiveData.postValue(LiveDataResult.error(Exception("Getting empty personal recommendataion")))
+            }else {
+                productLiveData.postValue(LiveDataResult.success(list))
+            }
         }, onError = {
             productLiveData.postValue(LiveDataResult.error(it))
         })

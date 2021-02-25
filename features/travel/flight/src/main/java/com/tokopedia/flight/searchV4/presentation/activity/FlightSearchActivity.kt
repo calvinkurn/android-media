@@ -145,7 +145,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     open fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
                 flightSearchPassDataModel.departureDate
         )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
@@ -213,7 +213,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         val arrivalCode = if (getArrivalAirport().airportCode != null && getArrivalAirport().airportCode.isNotEmpty())
             getArrivalAirport().airportCode else getArrivalAirport().cityCode
         val title = "${getDepartureAirport().cityName} (${departureCode}) ➝ ${getArrivalAirport().cityName} (${arrivalCode})"
-        val subtitle = "$dateString | $passengerString | $classString"
+        val subtitle = "$dateString | $passengerString"
 
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
