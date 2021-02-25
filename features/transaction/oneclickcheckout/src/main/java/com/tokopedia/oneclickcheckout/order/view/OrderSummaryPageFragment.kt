@@ -893,6 +893,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         if (addressState.errorCode == AddressState.IS_ERROR) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+            intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.state)
             startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         }
     }

@@ -67,7 +67,7 @@ public interface ShipmentContract {
 
         void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
         void renderDataChanged();
 

@@ -155,6 +155,7 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
@@ -790,8 +791,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+        intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 

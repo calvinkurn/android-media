@@ -102,7 +102,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.updateLocalCacheAddressData(userAddress);
                 break;
             case UserAddress.STATE_DISTRICT_ID_NOT_MATCH:
-                view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData);
+                view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress.getState());
                 break;
             case UserAddress.STATE_NO_ADDRESS:
                 view.renderCheckoutPageNoAddress(cartShipmentAddressFormData);
