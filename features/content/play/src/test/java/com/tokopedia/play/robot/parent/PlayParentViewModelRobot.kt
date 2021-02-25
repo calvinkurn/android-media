@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
@@ -60,7 +61,7 @@ fun givenParentViewModelRobot(
         savedStateHandle: SavedStateHandle = mockk(relaxed = true),
         channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
         getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true),
-        playChannelMapper: PlayChannelDetailsWithRecomMapper = PlayChannelDetailsWithRecomMapper(),
+        playChannelMapper: PlayChannelDetailsWithRecomMapper = ClassBuilder().getPlayChannelDetailsRecomMapper(),
         dispatchers: TestCoroutineDispatchersProvider = TestCoroutineDispatchersProvider,
         userSession: UserSessionInterface = mockk(relaxed = true),
         pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
