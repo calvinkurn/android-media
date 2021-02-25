@@ -11,7 +11,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/unify_space_8"
+        android:padding="@dimen/unify_space_16"
         app:card_type="shadow">
 
         <RelativeLayout
@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_12"
                 android:layout_toStartOf="@+id/radioSelectedAuth"
                 android:textColor="@color/Unify_N700"
                 app:typographyType="heading_4"
