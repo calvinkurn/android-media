@@ -173,6 +173,11 @@ abstract class TopchatRoomTest {
                 .perform(viewAction)
     }
 
+    protected fun clickComposeArea() {
+        onView(withId(R.id.new_comment))
+                .perform(click())
+    }
+
     protected fun clickStickerIconMenu() {
         onView(withId(R.id.iv_chat_sticker))
                 .perform(click())
