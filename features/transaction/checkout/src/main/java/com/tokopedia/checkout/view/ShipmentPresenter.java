@@ -49,7 +49,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -556,7 +555,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
-                    new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
+                    new TickerAnnouncementHolderData(cartShipmentAddressFormData.getTickerData().getId(),
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
@@ -985,8 +984,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag() != null ? productDataCheckoutRequest.getCodFlag() : "");
                                     enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag() != null ? productDataCheckoutRequest.getTokopediaCornerFlag() : "");
                                     enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment() != null ? productDataCheckoutRequest.getIsFulfillment() : "");
-                                    enhancedECommerceProductCartMapData.setDimension83(productDataCheckoutRequest.isFreeShipping() ?
-                                            EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR : EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+                                    if (productDataCheckoutRequest.isFreeShippingExtra()) {
+                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA);
+                                    } else if (productDataCheckoutRequest.isFreeShipping()) {
+                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
+                                    } else {
+                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+                                    }
                                     enhancedECommerceProductCartMapData.setCampaignId(String.valueOf(productDataCheckoutRequest.getCampaignId()));
 
                                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
@@ -1626,12 +1630,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setCartIdStr(String.valueOf(cartItemModel.getCartId()));
                     if (isTradeInDropOff) {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
+                                newRecipientAddressModel.getLocationDataModel().getAddrId() : "0"
                         );
                         dataChangeAddressRequest.setIndomaret(true);
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                Integer.parseInt(newRecipientAddressModel.getId()) : 0
+                                newRecipientAddressModel.getId() : "0"
                         );
                         dataChangeAddressRequest.setIndomaret(false);
                     }
@@ -1805,13 +1809,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        int addressId = 0;
-        try {
-            addressId = Integer.parseInt(recipientAddressModel.getId());
-        } catch (NumberFormatException e) {
-            // No-op
-        }
-        shippingParam.setAddressId(addressId);
+        shippingParam.setAddressId(recipientAddressModel.getId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);

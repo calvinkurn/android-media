@@ -4,7 +4,9 @@ import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
+import com.tokopedia.checkout.data.model.response.shipment_address_form.FreeShipping;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentInformation;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -30,6 +32,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
+import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
@@ -56,6 +59,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.Pu
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -220,7 +224,6 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setCampaignTimerUi(timerUi);
             }
 
-
             if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
@@ -382,6 +385,8 @@ public class ShipmentMapper implements IShipmentMapper {
                         userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
                         userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
                         userAddressResult.setCorner(groupAddress.getUserAddress().isCorner());
+                        userAddressResult.setState(groupAddress.getUserAddress().getState());
+                        userAddressResult.setStateDetail(groupAddress.getUserAddress().getStateDetail());
 
                         groupAddressResult.setUserAddress(userAddressResult);
                     }
@@ -417,22 +422,31 @@ public class ShipmentMapper implements IShipmentMapper {
                             groupShopResult.setFulfillment(groupShop.isFulfillment());
                             if (groupShop.getWarehouse() != null) {
                                 groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
-                                groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
+                            }
+                            TokoCabangInfo tokoCabangInfo = groupShop.getTokoCabangInfo();
+                            if (tokoCabangInfo != null) {
+                                groupShopResult.setFulfillmentBadgeUrl(tokoCabangInfo.getBadgeUrl());
+                                groupShopResult.setFulfillmentName(tokoCabangInfo.getMessage());
                             }
 
-                            if (groupShop.getShipmentInformation() != null) {
+                            ShipmentInformation shipmentInformation = groupShop.getShipmentInformation();
+                            if (shipmentInformation != null) {
                                 FreeShippingData freeShippingData = new FreeShippingData();
-                                freeShippingData.setBadgeUrl(groupShop.getShipmentInformation().getFreeShipping().getBadgeUrl());
-                                freeShippingData.setEligible(groupShop.getShipmentInformation().getFreeShipping().getEligible());
+                                freeShippingData.setBadgeUrl(shipmentInformation.getFreeShipping().getBadgeUrl());
+                                freeShippingData.setEligible(shipmentInformation.getFreeShipping().getEligible());
+
+                                FreeShipping freeShippingExtra = shipmentInformation.getFreeShippingExtra();
+                                FreeShippingData freeShippingExtraData = new FreeShippingData(freeShippingExtra.getEligible(), freeShippingExtra.getBadgeUrl());
 
                                 PreorderData preorderData = new PreorderData();
-                                preorderData.setDuration(groupShop.getShipmentInformation().getPreorder().getDuration());
-                                preorderData.setPreorder(groupShop.getShipmentInformation().getPreorder().isPreorder());
+                                preorderData.setDuration(shipmentInformation.getPreorder().getDuration());
+                                preorderData.setPreorder(shipmentInformation.getPreorder().isPreorder());
 
                                 ShipmentInformationData shipmentInformationData = new ShipmentInformationData();
-                                shipmentInformationData.setEstimation(groupShop.getShipmentInformation().getEstimation());
-                                shipmentInformationData.setShopLocation(groupShop.getShipmentInformation().getShopLocation());
+                                shipmentInformationData.setEstimation(shipmentInformation.getEstimation());
+                                shipmentInformationData.setShopLocation(shipmentInformation.getShopLocation());
                                 shipmentInformationData.setFreeShipping(freeShippingData);
+                                shipmentInformationData.setFreeShippingExtra(freeShippingExtraData);
                                 shipmentInformationData.setPreorder(preorderData);
 
                                 groupShopResult.setShipmentInformationData(shipmentInformationData);
@@ -543,7 +557,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     } else {
                                         analyticsProductCheckoutData.setCodFlag(String.valueOf(false));
                                     }
-                                    if (groupAddressResult.getUserAddress() != null && groupAddressResult.getUserAddress().getCornerId() != 0) {
+                                    if (groupAddressResult.getUserAddress() != null && Utils.isNotNullOrEmptyOrZero(groupAddressResult.getUserAddress().getCornerId())) {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(true));
                                     } else {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
@@ -602,10 +616,11 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setTickerMessage(product.getProductTicker().getMessage());
                                     }
 
-                                    if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
-                                            !UtilsKt.isNullOrEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    if (product.getFreeShippingExtra() != null && product.getFreeShippingExtra().getEligible()) {
+                                        productResult.setFreeShippingExtra(true);
+                                    }
+                                    if (product.getFreeShipping() != null && product.getFreeShipping().getEligible()) {
                                         productResult.setFreeShipping(true);
-                                        productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
                                     }
 
                                     if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
@@ -716,6 +731,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setGroupAddress(groupAddressListResult);
                 dataResult.setHasError(checkCartHasError(dataResult));
             }
+
+            dataResult.setPopUpMessage(shipmentAddressFormDataResponse.getPopUpMessage());
         }
 
         return dataResult;

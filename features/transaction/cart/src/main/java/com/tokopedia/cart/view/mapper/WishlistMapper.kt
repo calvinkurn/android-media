@@ -33,13 +33,8 @@ class WishlistMapper @Inject constructor() {
         cartWishlistItemHolderData.reviewCount = wishlist.reviewCount
         cartWishlistItemHolderData.minOrder = wishlist.minimumOrder
         cartWishlistItemHolderData.category = wishlist.getCategoryBreadcrumb()
-        cartWishlistItemHolderData.freeShippingExtra = wishlist.freeOngkirExtra?.isActive == true
         cartWishlistItemHolderData.freeShipping = wishlist.freeOngkir?.isActive == true
-        cartWishlistItemHolderData.freeShippingUrl = when {
-            wishlist.freeOngkirExtra?.isActive == true -> wishlist.freeOngkirExtra?.imageUrl ?: ""
-            wishlist.freeOngkir?.isActive == true -> wishlist.freeOngkir?.imageUrl ?: ""
-            else -> ""
-        }
+        cartWishlistItemHolderData.freeShippingUrl = if (wishlist.freeOngkir?.isActive == true) wishlist.freeOngkir?.imageUrl ?: "" else ""
         if (wishlist.shop != null) {
             cartWishlistItemHolderData.shopId = wishlist.shop.id
             cartWishlistItemHolderData.shopName = wishlist.shop.name

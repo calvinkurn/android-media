@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital.R

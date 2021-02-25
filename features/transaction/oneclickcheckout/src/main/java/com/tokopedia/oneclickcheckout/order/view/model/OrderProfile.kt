@@ -6,6 +6,8 @@ data class OrderProfile(
         val onboardingHeaderMessage: String = "",
         val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         val hasPreference: Boolean = false,
+        val profileRevampWording: String = "",
+        val isRecom: Boolean = false,
         val profileId: Int = 0,
         val status: Int = 0,
         val enable: Boolean = true,
@@ -29,7 +31,9 @@ data class OrderProfileAddress(
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",
-        val postalCode: String = ""
+        val postalCode: String = "",
+        val state: Int = 0,
+        val stateDetail: String = ""
 )
 
 data class OrderProfileShipment(

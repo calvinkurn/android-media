@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.valida
 import android.os.Parcelable
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import kotlinx.android.parcel.Parcelize
 
 @Generated("com.robohorse.robopojogenerator")
@@ -31,5 +32,8 @@ data class ValidateUsePromoRequest(
         var cartType: String = "", // ocs & default & occ
 
         @field:SerializedName("state")
-        var state: String = "" // cart & checkout
+        var state: String = "", // cart & checkout
+
+        @SerializedName("chosen_address")
+        var chosenAddress: ChosenAddress? = null
 ) : Parcelable

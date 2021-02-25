@@ -40,7 +40,8 @@ data class CartShipmentAddressFormData(
         var promoCheckoutErrorDefault: PromoCheckoutErrorDefault? = null,
         var isOpenPrerequisiteSite: Boolean = false,
         var isEligibleNewShippingExperience: Boolean = false,
-        var abTestButton: ABTestButton = ABTestButton()
+        var abTestButton: ABTestButton = ABTestButton(),
+        var popUpMessage: String = ""
 ) : Parcelable {
 
     val isAvailablePurchaseProtection: Boolean

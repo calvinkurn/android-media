@@ -117,6 +117,7 @@ include "features:logistic:logisticCommon"
 include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
+include "features:logistic:localizationchooseaddress"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
@@ -190,6 +191,8 @@ include "features:transaction:checkout"
 include "features:transaction:promo_checkout_marketplace"
 include "features:transaction:sellerorder"
 include "features:transaction:oneclickcheckout"
+
+include "features:communication:push-notification-common"
 
 include "features:user:attachproduct"
 include "features:user:attachinvoice"

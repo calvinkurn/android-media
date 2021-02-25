@@ -121,8 +121,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        if (preference.preference.status == MAIN_PROFILE_STATUS) {
+        if (preference.preference.profileRevampWording.isNotEmpty()) {
+            tvCardHeader?.text = preference.preference.profileRevampWording
+        } else {
+            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
+        }
+        if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
             lblDefaultPreference?.visible()
         } else {
             lblDefaultPreference?.gone()
@@ -171,7 +175,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+                    tvShippingCourier?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
