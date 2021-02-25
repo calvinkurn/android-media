@@ -8,6 +8,8 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
@@ -28,6 +30,9 @@ class PromoListItemViewHolder(private val view: View,
                               private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListItemUiModel>(view) {
 
+    private val containerConstraintPromoCheckout by lazy {
+        view.findViewById<ConstraintLayout>(R.id.container_constraint_promo_checkout)
+    }
     private val containerImagePromoItem by lazy {
         view.findViewById<FlexboxLayout>(R.id.container_image_promo_item)
     }
@@ -106,6 +111,43 @@ class PromoListItemViewHolder(private val view: View,
             params.width = ViewGroup.LayoutParams.WRAP_CONTENT
             labelPromoItemTitle.layoutParams = params
             labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+
+            // set tokopoints info layout for dynamic position
+            val constraintSet = ConstraintSet().apply {
+                clone(containerConstraintPromoCheckout)
+            }
+            if (labelPromoItemTitleInfo.lineCount > 1) {
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.TOP,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.BOTTOM,
+                        0
+                )
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.LEFT,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.LEFT,
+                        0
+                )
+            } else {
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.TOP,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.TOP,
+                        0
+                )
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.LEFT,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.RIGHT,
+                        0
+                )
+            }
+            constraintSet.applyTo(containerConstraintPromoCheckout)
 
             labelPromoItemTitleInfo.show()
         } else {
