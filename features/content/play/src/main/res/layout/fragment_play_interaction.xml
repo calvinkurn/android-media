@@ -233,7 +233,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
+        app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"
