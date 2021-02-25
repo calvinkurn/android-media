@@ -27,6 +27,7 @@ import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.utils.each
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -142,6 +143,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -162,6 +164,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -182,6 +185,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -202,6 +206,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -222,6 +227,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -242,6 +248,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
