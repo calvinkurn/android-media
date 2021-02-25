@@ -95,6 +95,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -161,7 +162,6 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -308,7 +308,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        ticker_occ_layout.gone()
         super.onSwipeRefresh()
     }
 
@@ -1285,7 +1284,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
+                viewModel.getBebasOngkirDataByProductId()
         )
 
         /*
@@ -1664,47 +1663,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         actionButtonView.visibility = !isAffiliate
     }
 
-    private fun setupTickerOcc() {
-        var willShowTicker = false
-        if (actionButtonView.onSuccessGetCartType && actionButtonView.visibility) {
-            val data = actionButtonView.cartTypeData
-            if (data != null) {
-                for (button in data.availableButtons.withIndex()) {
-                    val onboardingMessage = button.value.onboardingMessage
-                    if (onboardingMessage.isNotEmpty()) {
-                        var selectedButton: View? = null
-                        if (button.index == 0) {
-                            selectedButton = actionButtonView.view.btn_buy_now
-                        } else if (button.index == 1) {
-                            selectedButton = actionButtonView.view.btn_add_to_cart
-                        }
-                        if (selectedButton != null && selectedButton.visibility == View.VISIBLE) {
-                            view?.let {
-                                ticker_occ_arrow.post {
-                                    ticker_occ_text?.text = onboardingMessage
-                                    ticker_occ_arrow?.translationX = selectedButton.x + (selectedButton.width / 2)
-                                    ticker_occ?.setOnClickListener {
-                                        ticker_occ_layout?.gone()
-                                    }
-                                    ticker_occ_layout?.visible()
-                                }
-                            }
-                            willShowTicker = true
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        if (!willShowTicker) {
-            ticker_occ_layout.gone()
-        }
-    }
-
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
         updateNplButtonFollowers(it.restrictionInfo)
         updateButtonState()
-        setupTickerOcc()
 
         if (it.vouchers.isNullOrEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)
@@ -2251,7 +2212,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 onAffiliateClick()
             }
             actionButtonView.gone()
-            ticker_occ_layout.gone()
         } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate_dynamic.gone()
         }
@@ -3258,7 +3218,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun renderInitialAffiliate() {
         if (isAffiliate) {
             actionButtonView.gone()
-            ticker_occ_layout.gone()
             base_btn_affiliate_dynamic.visible()
             loadingAffiliateDynamic.visible()
         }

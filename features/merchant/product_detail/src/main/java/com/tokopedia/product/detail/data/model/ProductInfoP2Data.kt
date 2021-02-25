@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
@@ -102,7 +103,11 @@ data class ProductInfoP2Data(
 
         @SerializedName("ratesEstimate")
         @Expose
-        var ratesEstimate: List<P2RatesEstimate> = listOf()
+        var ratesEstimate: List<P2RatesEstimate> = listOf(),
+
+        @SerializedName("bebasOngkir")
+        @Expose
+        var bebasOngkir: BebasOngkir = BebasOngkir()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

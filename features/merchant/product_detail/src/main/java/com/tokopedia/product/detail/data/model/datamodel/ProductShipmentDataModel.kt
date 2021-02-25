@@ -14,9 +14,18 @@ data class ProductShipmentDataModel(
         var rates: P2RatesEstimateData = P2RatesEstimateData(),
         var isFullfillment: Boolean = false,
         var freeOngkirUrl: String = "",
+        var freeOngkirType: Int = 0,
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false
 ) : DynamicPdpDataModel {
+
+    fun getFreeOngkirImageUrl(): String {
+        return if (freeOngkirType == 0) {
+            ""
+        } else {
+            freeOngkirUrl
+        }
+    }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
@@ -42,5 +51,6 @@ data class ProductShipmentDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
-    override val impressHolder: ImpressHolder = ImpressHolder()
+    override val impressHolder: ImpressHolder
+        get() = ImpressHolder()
 }

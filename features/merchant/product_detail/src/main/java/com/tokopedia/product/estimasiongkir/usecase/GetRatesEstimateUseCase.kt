@@ -106,6 +106,9 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                           min_etd
                                           max_etd
                                       }
+                                      eta {
+                                        text_eta
+                                      }
                                       texts {
                                           text_range_price
                                           text_etd

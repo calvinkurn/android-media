@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculatio
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -35,4 +36,5 @@ data class ProductInfoP2UiData(
         var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
         var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
         var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
-        var ratesEstimate: List<P2RatesEstimate> = listOf())
+        var ratesEstimate: List<P2RatesEstimate> = listOf(),
+        var bebasOngkir: BebasOngkir = BebasOngkir())

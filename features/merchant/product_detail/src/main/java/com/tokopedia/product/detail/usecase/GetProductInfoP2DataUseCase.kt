@@ -343,6 +343,17 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            bebasOngkir{
+                  products{
+                    productID
+                    boType
+                  }
+                  images{
+                    boType
+                    imageURL
+                    tokoCabangImageURL
+                  }
+            }
             ratesEstimate{
               warehouseID
               products
@@ -423,6 +434,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.ratesEstimate = ratesEstimate
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.bebasOngkir = bebasOngkir
         }
         return p2UiData
     }

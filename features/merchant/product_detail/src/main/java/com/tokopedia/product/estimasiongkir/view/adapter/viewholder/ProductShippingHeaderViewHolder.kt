@@ -23,7 +23,6 @@ class ProductShippingHeaderViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_product_shipping_header
     }
-
     private val txtShippingFrom: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_header_from)
     private val txtShippingTo: ChooseAddressWidget? = itemView.findViewById(R.id.txt_shipping_header_to)
     private val txtFreeOngkirPrice: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price)

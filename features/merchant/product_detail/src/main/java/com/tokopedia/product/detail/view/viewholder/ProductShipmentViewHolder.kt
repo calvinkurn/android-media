@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
@@ -44,6 +45,8 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLabelInstant: Label? = itemView.findViewById(R.id.label_pdp_shipment_instant)
     private val shipmentArrow: IconUnify? = itemView.findViewById(R.id.ic_pdp_shipment_arrow_right)
 
+    private val impressHolder = ImpressHolder()
+
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
 
@@ -59,14 +62,14 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             else -> {
                 // receive rates data
                 val isError = element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0
-                itemView.addOnImpressionListener(element.impressHolder) {
+                itemView.addOnImpressionListener(impressHolder) {
                     listener.showCoachmark(shipmentTitle)
                 }
 
                 hideShipmentLoading()
                 renderText(data)
                 renderTokoCabang(element.isFullfillment)
-                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.freeOngkirUrl, isError)
+                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.getFreeOngkirImageUrl(), isError)
             }
         }
     }

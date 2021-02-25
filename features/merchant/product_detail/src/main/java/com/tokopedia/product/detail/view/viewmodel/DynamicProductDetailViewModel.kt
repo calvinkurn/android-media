@@ -284,6 +284,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return result
     }
 
+    fun getBebasOngkirDataByProductId() : Pair<Int,String> {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        val boType = _p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
+        val image = _p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType }?.imageURL ?: ""
+        return boType to image
+    }
+
     /**
      * If variant change, make sure this function is called after update product Id
      */
