@@ -3,8 +3,8 @@ package com.tokopedia.payment.setting.detail.view.fragment
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.tokopedia.payment.setting.R
 
 
