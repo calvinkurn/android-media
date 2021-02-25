@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.list.domain.model.SomListGetShopTopAdsCategoryResponse
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class SomListGetTopAdsCategoryUseCase @Inject constructor(
@@ -11,8 +10,13 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<Int>(gqlRepository) {
 
     override suspend fun executeOnBackground(): Int {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): Int {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListGetShopTopAdsCategoryResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListGetShopTopAdsCategoryResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
@@ -24,9 +28,7 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
     }
 
     fun setParams(shopId: Int) {
-        params = RequestParams.create().apply {
-            putInt(PARAM_SHOP_ID, shopId)
-        }
+        params.putInt(PARAM_SHOP_ID, shopId)
     }
 
     companion object {
