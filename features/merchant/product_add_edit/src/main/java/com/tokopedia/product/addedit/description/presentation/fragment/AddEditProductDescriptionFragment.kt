@@ -686,11 +686,11 @@ class AddEditProductDescriptionFragment:
             setItemMenuList(tips)
             setDividerVisible(false)
         }
-        tooltipBottomSheet.show(parentFragmentManager, null)
+        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     private fun showGiftingDescription() {
-        val fragmentManager = parentFragmentManager
+        val fragmentManager = childFragmentManager
         GiftingDescriptionBottomSheet().apply {
             setOnCopyTemplateButtonListener {
                 copyDescriptionTemplate()
@@ -719,7 +719,7 @@ class AddEditProductDescriptionFragment:
             setItemMenuList(tips)
             setDividerVisible(false)
         }
-        tooltipBottomSheet.show(parentFragmentManager, null)
+        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     override fun loadData(page: Int) {
