@@ -5,19 +5,22 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 
 object TkpdIdlingResource {
+    private const val SOURCE = "verification"
     private var idlingResource: CountingIdlingResource? = null
 
     fun increment() {
-        idlingResource!!.increment()
+        idlingResource?.increment()
     }
 
     fun decrement() {
-        idlingResource!!.decrement()
+        idlingResource?.decrement()
     }
 
     @VisibleForTesting
-    fun getIdlingResource(resName: String): IdlingResource {
-        idlingResource = CountingIdlingResource(resName)
-        return idlingResource!!
+    fun getIdlingResource(): IdlingResource? {
+        if(idlingResource == null) {
+            idlingResource = CountingIdlingResource(SOURCE)
+        }
+        return idlingResource
     }
 }

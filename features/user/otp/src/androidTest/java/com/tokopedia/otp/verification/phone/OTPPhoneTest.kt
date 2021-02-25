@@ -52,12 +52,12 @@ class OTPPhoneTest {
     fun setup() {
         Intents.init()
         gtmLogDBSource.deleteAll().subscribe()
-        setupIdlingResource()
         setupGraphqlMockResponse(OTPMethodPhoneMockResponse())
+        setupIdlingResource()
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResource.getIdlingResource("OTP_PICK_METHOD_PHONE")
+        idlingResource = TkpdIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
@@ -90,7 +90,7 @@ class OTPPhoneTest {
 
     private fun getTestIntent(): Intent {
         val intent = Intent()
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "09000123")
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "09000124")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 116) //OTP_TYPE_REGISTER_PHONE_NUMBER
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)

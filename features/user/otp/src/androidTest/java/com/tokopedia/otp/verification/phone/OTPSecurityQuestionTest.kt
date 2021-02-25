@@ -54,17 +54,17 @@ class OTPSecurityQuestionTest {
     fun setup() {
         Intents.init()
         gtmLogDBSource.deleteAll().subscribe()
-        setupIdlingResource()
         setupGraphqlMockResponse(OTPMethodPhoneMockResponse())
+        setupIdlingResource()
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResource.getIdlingResource("OTP_PICK_METHOD_PHONE")
+        idlingResource = TkpdIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @Test
-    fun `check_otp_method_phone_success_tracker`() {
+    fun `check_otp_SQ_phone_success_tracker`() {
         activityRule.launchActivity(getTestIntent())
 
         checkClickOnSms()
@@ -92,7 +92,7 @@ class OTPSecurityQuestionTest {
     }
 
     private fun checkClickOnKirimUlang() {
-        Thread.sleep(1000)
+        Thread.sleep(31000)
         Espresso.onView(ViewMatchers.withText(CoreMatchers.endsWith("Kirim ulang")))
                 .check(matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActionSpannable.clickClickableSpan("Kirim ulang"))
