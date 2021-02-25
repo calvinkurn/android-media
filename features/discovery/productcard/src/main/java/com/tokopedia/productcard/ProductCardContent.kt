@@ -45,6 +45,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
+    renderTextETA(productCardModel)
 }
 
 
@@ -388,4 +389,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
         textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
+private fun View.renderTextETA(productCardModel: ProductCardModel) {
+    textViewETA?.initLabelGroup(productCardModel.getLabelETA())
+}
 
