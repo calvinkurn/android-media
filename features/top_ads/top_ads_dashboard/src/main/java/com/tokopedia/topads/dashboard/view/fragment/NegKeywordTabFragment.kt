@@ -27,11 +27,10 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.loader
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -237,7 +236,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(NegKeywordEmptyViewModel())
+        adapter.items.add(NegKeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
         } else {
@@ -256,7 +255,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             (max / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(NegKeywordItemViewModel(result))
+            adapter.items.add(NegKeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
         (activity as TopAdsGroupDetailViewActivity).setNegKeywordCount(adapter.itemCount)

@@ -752,7 +752,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         showDoneLoading();
 
         initImageCropPresenter();
-        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true);
+        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true, convertToWebp);
     }
 
     @Override
@@ -829,6 +829,18 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        initImagePickerPresenter();
+        imagePickerPresenter.convertFormatImage(resultPaths, convertToWebp);
+    }
+
+    @Override
+    public void onErrorConvertFormatImage(Throwable e) {
+        hideDoneLoading();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessConvertFormatImage(ArrayList<String> resultPaths) {
         hideDoneLoading();
         onFinishEditingImage(resultPaths);
     }
