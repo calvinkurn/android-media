@@ -22,7 +22,7 @@ interface HomeAccountUserListener {
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
 
-    fun onFinancialErrorClicked()
+    fun onFinancialErrorClicked(type: Int)
     fun onMemberErrorClicked()
 
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)

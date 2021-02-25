@@ -6,11 +6,14 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -29,7 +32,6 @@ class DataViewMapper @Inject constructor(
                 email = userSession.email,
                 avatar = accountDataModel.profile.profilePicture,
                 members = mapToMemberDataView(accountDataModel),
-                financial = mapSaldo(context, accountDataModel),
                 backdrop = accountDataModel.tokopoints.status.tier.backgroundImgUrl
         )
     }
@@ -45,7 +47,7 @@ class DataViewMapper @Inject constructor(
     fun mapMemberItemDataView(shortcutResponse: ShortcutResponse): ArrayList<MemberItemDataView> {
         val items = arrayListOf<MemberItemDataView>()
         val shortcutGroupList = shortcutResponse.tokopointsShortcutList.shortcutGroupList
-        if(shortcutGroupList.isNotEmpty()) {
+        if (shortcutGroupList.isNotEmpty()) {
             val shortcutList = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList
             if (shortcutList.isNotEmpty()) {
                 shortcutList.forEach {
@@ -64,58 +66,75 @@ class DataViewMapper @Inject constructor(
         return items
     }
 
-    fun mapToFinancialData(context: Context?, wallet: WalletModel): List<CommonDataView> {
+    fun mapToFinancialData(context: Context?, wallet: WalletModel): CommonDataView {
         val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
 
-        val items = arrayListOf<CommonDataView>()
-        if(wallet.walletType != null && wallet.walletType == OVO) {
-            if(!wallet.isLinked) {
-                val body =  if (wallet.amountPendingCashback > 0) {
+        var item = CommonDataView()
+        if (wallet.walletType != null && wallet.walletType == OVO) {
+            if (!wallet.isLinked) {
+                val body = if (wallet.amountPendingCashback > 0) {
                     "(+" + wallet.pendingCashback + ")"
                 } else {
                     wallet.text.toEmptyStringIfNull()
                 }
 
-                val item = CommonDataView(
+                item = CommonDataView(
                         title = wallet.action?.text.toEmptyStringIfNull(),
                         body = body,
                         urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
                         applink = wallet.action?.applink.toEmptyStringIfNull(),
-                        icon = R.drawable.ic_account_ovo
+                        icon = R.drawable.ic_account_ovo,
+                        type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS
                 )
-                items.add(item)
             } else {
-                val item = CommonDataView(
-                        title = wallet.cashBalance.toEmptyStringIfNull(),
+                item = CommonDataView(
+                        title = CurrencyFormatUtil.convertPriceValueToIdrFormat(wallet.rawCashBalance, false),
                         body = getString(context, R.string.account_title_points_item) + " " + wallet.pointBalance.toEmptyStringIfNull(),
-                        type = CommonViewHolder.TYPE_DEFAULT,
                         applink = wallet.applink.toEmptyStringIfNull(),
-                        icon = R.drawable.ic_account_ovo
+                        icon = R.drawable.ic_account_ovo,
+                        type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS
                 )
-                items.add(item)
             }
         }
-        return items
+        return item
     }
 
-    fun mapSaldo(context: Context?, accountDataModel: UserAccountDataModel): SettingDataView {
-        val dataView = SettingDataView(getString(context, R.string.account_title_saldo_section))
-        val saldoItem = CommonDataView(
-                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
+    fun mapSaldo(context: Context?, balance: Balance): CommonDataView {
+        return CommonDataView(
+                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.buyerAll.toLong(), false),
                 body = getString(context, R.string.account_title_saldo_item),
-                type = CommonViewHolder.TYPE_DEFAULT,
+                type = FinancialItemViewHolder.TYPE_SALDO,
                 icon = R.drawable.ic_account_balance,
                 applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
         )
-        dataView.items.add(saldoItem)
-        return dataView
+    }
+
+    fun mapTokopoints(context: Context?, tokopointsDrawerList: TokopointsDrawerList): CommonDataView {
+        val tokopoint: DrawerList? = tokopointsDrawerList.drawerList.find { it.type == TOKOPOINTS }
+        return CommonDataView(
+                title = tokopoint?.sectionContent?.get(0)?.textAttributes?.text ?: "",
+                body = tokopoint?.sectionContent?.get(1)?.textAttributes?.text ?: "",
+                type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS,
+                icon = R.drawable.ic_account_tokopoint,
+                applink = tokopoint?.redirectAppLink ?: ""
+        )
+    }
+
+    fun mapError(context: Context?, type: Int, icon: Int): CommonDataView {
+        return CommonDataView(
+                title = getString(context, R.string.new_home_account_finance_failed_to_load),
+                body = getString(context, R.string.new_home_account_finance_try_again),
+                type = type,
+                icon = icon
+        )
     }
 
     private fun getString(context: Context?, stringResource: Int): String {
-       return context?.getString(stringResource).toEmptyStringIfNull()
+        return context?.getString(stringResource).toEmptyStringIfNull()
     }
 
     companion object {
         private val OVO = "OVO"
+        private val TOKOPOINTS = "TokoPoints"
     }
 }

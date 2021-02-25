@@ -15,7 +15,7 @@ public class WalletModel {
     private boolean linked = false;
     @SerializedName("rawBalance")
     @Expose
-    private Double rawBalance = 0.0;
+    private Long rawBalance = 0L;
     @SerializedName("balance")
     @Expose
     private String balance = "";
@@ -34,6 +34,9 @@ public class WalletModel {
     @SerializedName("cash_balance")
     @Expose
     private String cashBalance = "";
+    @SerializedName("raw_cash_balance")
+    @Expose
+    private Long rawCashBalance = 0L;
     @SerializedName("wallet_type")
     @Expose
     private String walletType = "";
@@ -81,11 +84,11 @@ public class WalletModel {
         this.applink = applink;
     }
 
-    public Double getRawBalance() {
+    public Long getRawBalance() {
         return rawBalance;
     }
 
-    public void setRawBalance(Double rawBalance) {
+    public void setRawBalance(Long rawBalance) {
         this.rawBalance = rawBalance;
     }
 
@@ -135,5 +138,13 @@ public class WalletModel {
 
     public void setAmountPendingCashback(int amountPendingCashback) {
         this.amountPendingCashback = amountPendingCashback;
+    }
+
+    public Long getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public void setRawCashBalance(Long rawCashBalance) {
+        this.rawCashBalance = rawCashBalance;
     }
 }

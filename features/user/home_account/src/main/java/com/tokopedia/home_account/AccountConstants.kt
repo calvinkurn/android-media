@@ -13,7 +13,7 @@ object AccountConstants {
     const val RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon"
     const val TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp"
     const val SALDO_QUERY = "saldo_query"
-    const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
+    const val REWARD_SHORTCUT_QUERY = "reward_shortcut_query"
     const val SHOP_LOCATION_QUERY = "query_shop_location"
     const val TITLE_UOH_MENUNGGU_PEMBAYARAN = "Menunggu Pembayaran"
     const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
@@ -207,6 +207,9 @@ object AccountConstants {
     object Query {
         const val NEW_QUERY_BUYER_ACCOUNT_HOME = "query_account_buyer"
         const val QUERY_USER_REWARDSHORCUT = "query_account_shortcut"
+        const val QUERY_GET_BALANCE = "query_get_balance"
+        const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
+        const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"
     }
 
     object Url {

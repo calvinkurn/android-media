@@ -33,9 +33,5 @@ data class UserAccountDataModel(
         @Expose
         var isAffiliate: Boolean = false,
 
-        @SerializedName("balance")
-        @Expose
-        var saldo: DepositDataModel = DepositDataModel(),
-
         var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

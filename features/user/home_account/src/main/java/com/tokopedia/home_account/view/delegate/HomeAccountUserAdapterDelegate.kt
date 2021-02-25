@@ -15,10 +15,11 @@ import com.tokopedia.home_account.view.viewholder.ProfileViewHolder
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserAdapterDelegate (val listener: HomeAccountUserListener, val financialAdapter: HomeAccountFinancialAdapter?, val memberAdapter: HomeAccountMemberAdapter?) :
-        TypedAdapterDelegate<ProfileDataView, Any, ProfileViewHolder>(
-                ProfileViewHolder.LAYOUT
-        ) {
+class HomeAccountUserAdapterDelegate(
+        val listener: HomeAccountUserListener,
+        private val financialAdapter: HomeAccountFinancialAdapter?,
+        private val memberAdapter: HomeAccountMemberAdapter?
+) : TypedAdapterDelegate<ProfileDataView, Any, ProfileViewHolder>(ProfileViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: ProfileDataView, holder: ProfileViewHolder) {
         val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams

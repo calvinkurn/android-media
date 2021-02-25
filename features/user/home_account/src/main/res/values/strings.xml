@@ -74,5 +74,8 @@
     <string name="account_title_saldo_section"><![CDATA[Dana & Investasi]]></string>
     <string name="account_title_saldo_item">Saldo</string>
     <string name="account_title_points_item">Points </string>
+    
+    <string name="new_home_account_finance_failed_to_load">Gagal Memuat</string>
+    <string name="new_home_account_finance_try_again">Coba Lagi</string>
 
 </resources>
