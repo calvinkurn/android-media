@@ -523,6 +523,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShopName.setText(shopName);
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
         if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
