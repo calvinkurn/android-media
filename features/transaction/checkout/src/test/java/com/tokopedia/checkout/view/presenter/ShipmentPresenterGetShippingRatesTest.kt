@@ -206,7 +206,7 @@ class ShipmentPresenterGetShippingRatesTest {
         val isTradeInDropOff = true
         val recipientAddressModel = RecipientAddressModel().apply {
             locationDataModel = LocationDataModel().apply {
-                district = 1
+                district = "1"
                 postalCode = "1"
                 latitude = "1"
                 longitude = "1"
