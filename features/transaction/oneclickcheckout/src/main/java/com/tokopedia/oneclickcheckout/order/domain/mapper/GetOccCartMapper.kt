@@ -304,7 +304,6 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        var isEnable = revamp.isEnable
-        return OccRevampData(isEnable, revamp.totalProfile, revamp.changeTemplateText)
+        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }
