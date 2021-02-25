@@ -57,7 +57,6 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -255,7 +254,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllNonDataElement()
         shopProductAdapter.clearProductList()
         showLoading()
-        EspressoIdlingResource.increment()
         viewModel.getProductListData(
                 shopId,
                 START_PAGE,
@@ -762,10 +760,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
-            EspressoIdlingResource.increment()
             viewModel.setInitialProductList(shopId, it)
         }
-        EspressoIdlingResource.increment()
         viewModel.getShopFilterData(shopId)
         isOnViewCreated = false
     }
@@ -837,7 +833,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun loadData(page: Int) {
-        EspressoIdlingResource.increment()
         viewModel.getProductListData(
                 shopId,
                 page,
@@ -1046,7 +1041,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun observeViewModelLiveData() {
         viewModel.shopSortFilterData.observe(viewLifecycleOwner, Observer {
-            EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     onSuccessGetEtalaseListData(it.data.etalaseList)
@@ -1090,7 +1084,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
 
         viewModel.productListData.observe(viewLifecycleOwner, Observer {
-            EspressoIdlingResource.decrement()
             stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
             startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
             startMonitoringPltRenderPage()
@@ -1286,7 +1279,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             viewModel.getBuyerViewContentData(shopId, data, isShowNewShopHomeTab())
         }
         if (initialProductListData == null){
-            EspressoIdlingResource.increment()
             viewModel.getProductListData(
                     shopId,
                     START_PAGE,

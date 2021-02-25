@@ -101,7 +101,6 @@ import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.shop.common.util.EspressoIdlingResource
-import com.tokopedia.shop.common.util.ViewPager2IdlingResource
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -127,7 +126,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import io.hansel.core.utils.HSLUtils.dpToPx
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
@@ -345,7 +343,6 @@ class ShopPageFragment :
         viewPager.isUserInputEnabled = false
         viewPager.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
         viewPager.adapter = viewPagerAdapter
-        ViewPager2IdlingResource.setViewPagerIdlingResource(viewPager, "shop page")
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {

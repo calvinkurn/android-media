@@ -27,7 +27,6 @@ import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.EspressoIdlingResource
-import com.tokopedia.shop.common.util.ViewPager2IdlingResource
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
@@ -38,7 +37,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.constant.Constant
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -83,7 +81,6 @@ class ShopPageBuyerAnalyticTest {
         }
         activityRule.launchActivity(intent)
         IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
-        IdlingRegistry.getInstance().register(ViewPager2IdlingResource.idlingResource)
     }
 
     @Test
