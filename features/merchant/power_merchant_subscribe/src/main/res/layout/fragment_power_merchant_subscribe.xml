@@ -18,19 +18,19 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantRegistrationView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantRegistrationView
                 android:id="@+id/registrationLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantMembershipView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantMembershipView
                 android:id="@+id/membershipLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFreeShippingView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantFreeShippingView
                 android:id="@+id/freeShippingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,14 +50,14 @@
                 android:layout_marginTop="@dimen/spacing_lvl5"
                 android:visibility="gone" />
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFeatureView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantFeatureView
                 android:id="@+id/featureLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl6"
                 android:visibility="gone"/>
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantBenefitView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantBenefitView
                 android:id="@+id/benefitLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
