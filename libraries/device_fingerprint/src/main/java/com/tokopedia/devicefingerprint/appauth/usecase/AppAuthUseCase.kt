@@ -1,47 +1,41 @@
 package com.tokopedia.devicefingerprint.appauth.usecase
 
 import com.tokopedia.devicefingerprint.appauth.data.AppAuthResponse
+import com.tokopedia.devicefingerprint.appauth.data.MutationSignDvcRequest
+import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class AppAuthUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<AppAuthResponse>)
-    : UseCase<AppAuthResponse>() {
-    init {
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase.setTypeClass(AppAuthResponse::class.java)
-    }
-    companion object {
+        repository: GraphqlRepository) : GraphqlUseCase<AppAuthResponse>(repository) {
 
-        const val PARAM_VERSION = "version"
-        const val PARAM_CONTENT = "content"
+    init {
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(AppAuthResponse::class.java)
     }
 
     private var params: RequestParams = RequestParams.create()
 
     private val query =
-        """
-           mutation mutationSignDvc(${'$'}version: String!, ${'$'}content: String!){
-              mutationSignDvc(input: {
-                version: ${'$'}version,
-                content: ${'$'}content}) {
-                   status
-                   error_message
+            """
+            mutation mutationSignDvc(${'$'}input: MutationSignDvcRequest!){
+              mutationSignDvc(input: ${'$'}input) {
+                success
+                error_message
               }
-        }""".trimIndent()
-
-    override suspend fun executeOnBackground(): AppAuthResponse {
-        graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(params.parameters)
-        return graphqlUseCase.executeOnBackground()
-    }
+            }
+        """.trimIndent()
 
     fun setParams(content: String, version: String = "1") {
-        params.putString(PARAM_VERSION, version)
-        params.putString(PARAM_CONTENT, content)
+        val params: Map<String, Any?> = mutableMapOf(
+                SubmitDeviceInfoUseCase.PARAM_INPUT to MutationSignDvcRequest(
+                        version, content
+                )
+        )
+        setRequestParams(params)
     }
 }
