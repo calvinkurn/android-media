@@ -122,7 +122,7 @@ data class WishlistItem(
                 id == other.id && name == other.name && imageUrl == other.imageUrl && url == other.url && rawPrice == other.rawPrice &&
                 condition == other.condition && available == other.available && status == other.status && price == other.price &&
                 minimumOrder == other.minimumOrder && shop == other.shop && preorder == other.preorder &&
-                badges.count() == badges.count() && labels.count() == labels.count() && freeOngkir == freeOngkir
+                badges.count() == badges.count() && labels.count() == labels.count() && freeOngkir == freeOngkir && freeOngkirExtra == freeOngkirExtra
     }
 
     override fun hashCode(): Int {
@@ -141,6 +141,7 @@ data class WishlistItem(
         result = HASH_CODE * result + badges.hashCode()
         result = HASH_CODE * result + labels.hashCode()
         result = HASH_CODE * result + freeOngkir.hashCode()
+        result = HASH_CODE * result + freeOngkirExtra.hashCode()
         return result
     }
 
