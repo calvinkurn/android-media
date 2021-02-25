@@ -24,6 +24,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
@@ -341,12 +344,32 @@ class DiscoveryFragment :
             context?.let {
                 if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
                     chooseAddressWidget?.show()
+                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                        showLocalizingAddressCoachMark()
+                    }
                     fetchUserLatestAddressData()
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                 }else{
                     chooseAddressWidget?.hide()
                 }
             }
         })
+    }
+
+    private fun showLocalizingAddressCoachMark() {
+        chooseAddressWidget?.let {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                val coachMark = CoachMark2(requireContext())
+                coachMarkItem.add(
+                        CoachMark2Item(
+                                chooseAddressWidget!!,
+                                "Bisa pilih alamat pengirimanmu dulu",
+                                "Biar pengalaman belanja lebih asyik & dapatkan \\nrekomendasi barang terdekat dari alamatmu!",
+                        )
+                )
+
+                coachMark.showCoachMark(coachMarkItem)
+            }
     }
 
     private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
