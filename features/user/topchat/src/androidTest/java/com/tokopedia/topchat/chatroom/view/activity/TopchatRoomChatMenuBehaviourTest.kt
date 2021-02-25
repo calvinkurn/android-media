@@ -162,7 +162,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     }
 
     @Test
-    fun attachment_size_is_3_in_mainappattachment_size_is_3_in_mainapp() {
+    fun attachment_size_is_3_in_mainapp() {
         // Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
