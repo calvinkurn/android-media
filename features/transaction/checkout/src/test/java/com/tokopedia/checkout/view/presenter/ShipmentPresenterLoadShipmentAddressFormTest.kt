@@ -242,7 +242,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
         }
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popUpMessage = "message"))
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
@@ -254,6 +254,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
             view.renderCheckoutPage(any(), any(), any())
+            view.showToastNormal(any())
+            view.updateLocalCacheAddressData(any())
             view.stopTrace()
         }
     }
