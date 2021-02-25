@@ -38,7 +38,6 @@ data class CartDataListResponse(
         @SerializedName("shopping_summary")
         val shoppingSummary: ShoppingSummary = ShoppingSummary(),
         @SerializedName("promo_summary")
-        @Expose
         val promoSummary: PromoSummary = PromoSummary(),
         @SerializedName("fulfillment_message")
         val fulfillmentMessage: String = "",
@@ -55,5 +54,9 @@ data class CartDataListResponse(
         @SerializedName("total_product_error")
         val totalProductError: Int = 0,
         @SerializedName("ab_test_button")
-        val abTestButton: ABTestButtonResponse = ABTestButtonResponse()
+        val abTestButton: ABTestButtonResponse = ABTestButtonResponse(),
+        @SerializedName("localization_choose_address")
+        val localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress(),
+        @SerializedName("pop_up_message")
+        val popUpMessage: String = ""
 )

@@ -10,6 +10,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provi
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,7 +33,7 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
     private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
     private var analytics: PromoCheckoutAnalytics = mockk()
     private var gson = Gson()
-    private var userSession: UserSessionInterface = mockk()
+    private var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -40,7 +41,7 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
     @Before
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, userSession, gson)
+        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson, chosenAddressRequestHelper)
     }
 
     @Test

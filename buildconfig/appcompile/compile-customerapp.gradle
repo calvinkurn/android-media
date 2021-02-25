@@ -117,6 +117,7 @@ include "features:logistic:logisticCommon"
 include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
+include "features:logistic:localizationchooseaddress"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"

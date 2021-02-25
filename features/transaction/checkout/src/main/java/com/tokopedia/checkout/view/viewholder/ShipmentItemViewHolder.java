@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.viewholder;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -168,9 +169,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private SaveStateDebounceListener saveStateDebounceListener;
     private TextView tvFulfillName;
     private ImageUnify imgFulfillmentBadge;
+    private Typography separatorFreeShipping;
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
+    private Typography separatorPreOrder;
     private Label labelPreOrder;
+    private Typography separatorIncidentShopLevel;
     private Label labelIncidentShopLevel;
 
     // order prioritas
@@ -279,13 +283,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
+        separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
         tvTradeInShippingPriceTitle = itemView.findViewById(R.id.tv_trade_in_shipping_price_title);
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
         productTicker = itemView.findViewById(R.id.product_ticker);
         textOrderNumber = itemView.findViewById(R.id.text_order_number);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
         labelIncidentShopLevel = itemView.findViewById(R.id.label_incident_shop_level);
+        separatorIncidentShopLevel = itemView.findViewById(R.id.separator_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
         layoutProductInfo = itemView.findViewById(R.id.layout_product_info);
 
@@ -464,8 +471,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (!TextUtils.isEmpty(shipmentCartItemModel.getPreOrderInfo())) {
             labelPreOrder.setText(shipmentCartItemModel.getPreOrderInfo());
             labelPreOrder.setVisibility(View.VISIBLE);
+            separatorPreOrder.setVisibility(View.VISIBLE);
         } else {
             labelPreOrder.setVisibility(View.GONE);
+            separatorPreOrder.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getFreeShippingBadgeUrl())) {
@@ -473,15 +482,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
             );
             imgFreeShipping.setVisibility(View.VISIBLE);
+            separatorFreeShipping.setVisibility(View.VISIBLE);
         } else {
             imgFreeShipping.setVisibility(View.GONE);
+            separatorFreeShipping.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getShopAlertMessage())) {
             labelIncidentShopLevel.setText(shipmentCartItemModel.getShopAlertMessage());
             labelIncidentShopLevel.setVisibility(View.VISIBLE);
+            separatorIncidentShopLevel.setVisibility(View.VISIBLE);
         } else {
             labelIncidentShopLevel.setVisibility(View.GONE);
+            separatorIncidentShopLevel.setVisibility(View.GONE);
         }
 
         boolean hasTradeInItem = false;
@@ -510,6 +523,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShopName.setText(shopName);
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
         if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
@@ -610,6 +624,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else productTicker.setVisibility(View.GONE);
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
         initInnerRecyclerView(cartItemModels);

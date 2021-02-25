@@ -241,6 +241,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val data = cartDataList[position]
         return when (data) {
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
+            is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
@@ -267,6 +268,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
                 return CartSelectAllViewHolder(view, actionListener, compositeSubscription)
+            }
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(CartChooseAddressViewHolder.LAYOUT, parent, false)
+                return CartChooseAddressViewHolder(view, actionListener)
             }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val view = LayoutInflater.from(parent.context)
@@ -357,70 +363,74 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        when {
-            viewType == CartSelectAllViewHolder.LAYOUT -> {
+        when (viewType) {
+            CartSelectAllViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSelectAllHolderData
                 (holder as CartSelectAllViewHolder).bind(data)
             }
-            viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartChooseAddressHolderData
+                (holder as CartChooseAddressViewHolder).bind(data)
+            }
+            CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
             }
-            viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
+            CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
-                (holder as CartTickerErrorViewHolder).bindData(data, position)
+                (holder as CartTickerErrorViewHolder).bindData(data)
             }
-            viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
+            ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 val data = cartDataList[position] as ShipmentSellerCashbackModel
                 (holder as ShipmentSellerCashbackViewHolder).bindViewHolder(data)
             }
-            viewType == CartEmptyViewHolder.LAYOUT -> {
+            CartEmptyViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartEmptyHolderData
                 (holder as CartEmptyViewHolder).bind(data)
             }
-            viewType == CartRecentViewViewHolder.LAYOUT -> {
+            CartRecentViewViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecentViewHolderData
                 (holder as CartRecentViewViewHolder).bind(data)
                 cartRecentViewAdapter = holder.recentViewAdapter
             }
-            viewType == CartWishlistViewHolder.LAYOUT -> {
+            CartWishlistViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartWishlistHolderData
                 (holder as CartWishlistViewHolder).bind(data)
                 cartWishlistAdapter = holder.wishlistAdapter
             }
-            viewType == CartSectionHeaderViewHolder.LAYOUT -> {
+            CartSectionHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSectionHeaderHolderData
                 (holder as CartSectionHeaderViewHolder).bind(data)
             }
-            viewType == CartRecommendationViewHolder.LAYOUT -> {
+            CartRecommendationViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecommendationItemHolderData
                 (holder as CartRecommendationViewHolder).bind(data)
             }
-            viewType == CartLoadingViewHolder.LAYOUT -> {
+            CartLoadingViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartLoadingHolderData
                 (holder as CartLoadingViewHolder).bind(data)
             }
-            viewType == TickerAnnouncementViewHolder.LAYOUT -> {
+            TickerAnnouncementViewHolder.LAYOUT -> {
                 val cartTickerData = cartDataList[position] as TickerAnnouncementHolderData
                 (holder as TickerAnnouncementViewHolder).bind(cartTickerData)
             }
-            viewType == DisabledItemHeaderViewHolder.LAYOUT -> {
+            DisabledItemHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
                 (holder as DisabledItemHeaderViewHolder).bind(data)
             }
-            viewType == DisabledReasonViewHolder.LAYOUT -> {
+            DisabledReasonViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledReasonHolderData
                 (holder as DisabledReasonViewHolder).bind(data)
             }
-            viewType == DisabledShopViewHolder.LAYOUT -> {
+            DisabledShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledShopHolderData
                 (holder as DisabledShopViewHolder).bind(data)
             }
-            viewType == DisabledCartItemViewHolder.LAYOUT -> {
+            DisabledCartItemViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledCartItemHolderData
                 (holder as DisabledCartItemViewHolder).bind(data)
             }
-            viewType == DisabledAccordionViewHolder.LAYOUT -> {
+            DisabledAccordionViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledAccordionHolderData
                 (holder as DisabledAccordionViewHolder).bind(data)
             }
@@ -440,6 +450,27 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun clearCompositeSubscription() {
         compositeSubscription.clear()
+    }
+
+    fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
+        cartDataList.add(0, tickerAnnouncementHolderData)
+    }
+
+    fun addChooseAddressWidget(data: CartChooseAddressHolderData) {
+        var position = 0
+        if (cartDataList.firstOrNull() != null && cartDataList.first() is TickerAnnouncementHolderData) {
+            position = 1
+        }
+        cartDataList.add(position, data)
+    }
+
+    fun addCartTickerError(cartItemTickerErrorHolderData: CartItemTickerErrorHolderData) {
+        cartDataList.add(cartItemTickerErrorHolderData)
+        checkForShipmentForm()
+    }
+
+    fun addSelectAll(data: CartSelectAllHolderData) {
+        cartDataList.add(data)
     }
 
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
@@ -492,6 +523,91 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addNotAvailableAccordion(accordionHolderData: DisabledAccordionHolderData) {
         cartDataList.add(accordionHolderData)
+    }
+
+    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
+        cartDataList.add(cartEmptyHolderData)
+    }
+
+    fun addCartWishlistData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
+                            cartWishlistHolderData: CartWishlistHolderData) {
+        var wishlistIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData
+            ) {
+                wishlistIndex = index
+            }
+        }
+        cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> wishlistIndex
+            else -> min(firstCartSectionHeaderPosition, wishlistIndex)
+        }
+        cartDataList.add(++wishlistIndex, cartWishlistHolderData)
+        notifyDataSetChanged()
+    }
+
+    fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
+                              cartRecentViewHolderData: CartRecentViewHolderData) {
+        var recentViewIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is CartWishlistHolderData ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recentViewIndex = index
+            }
+        }
+        cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> recentViewIndex
+            else -> min(firstCartSectionHeaderPosition, recentViewIndex)
+        }
+        cartDataList.add(++recentViewIndex, cartRecentViewHolderData)
+        notifyDataSetChanged()
+    }
+
+    fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
+                                  cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
+        var recommendationIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is CartRecentViewHolderData ||
+                    item is CartWishlistHolderData ||
+                    item is CartRecommendationItemHolderData ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recommendationIndex = index
+            }
+        }
+
+        cartSectionHeaderHolderData?.let {
+            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
+            firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+                -1 -> recommendationIndex
+                else -> min(firstCartSectionHeaderPosition, recommendationIndex)
+            }
+        }
+
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
+        notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
     }
 
     fun setShopSelected(position: Int, selected: Boolean) {
@@ -551,65 +667,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         checkForShipmentForm()
     }
 
-    fun addCartTickerError(cartItemTickerErrorHolderData: CartItemTickerErrorHolderData) {
-        cartDataList.add(cartItemTickerErrorHolderData)
-        checkForShipmentForm()
-    }
-
-    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
-        cartDataList.add(cartEmptyHolderData)
-    }
-
-    fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-                              cartRecentViewHolderData: CartRecentViewHolderData) {
-        var recentViewIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is CartWishlistHolderData ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData) {
-                recentViewIndex = index
-            }
-        }
-        cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
-        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-            -1 -> recentViewIndex
-            else -> min(firstCartSectionHeaderPosition, recentViewIndex)
-        }
-        cartDataList.add(++recentViewIndex, cartRecentViewHolderData)
-        notifyDataSetChanged()
-    }
-
-    fun addCartWishlistData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-                            cartWishlistHolderData: CartWishlistHolderData) {
-        var wishlistIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData
-            ) {
-                wishlistIndex = index
-            }
-        }
-        cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
-        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-            -1 -> wishlistIndex
-            else -> min(firstCartSectionHeaderPosition, wishlistIndex)
-        }
-        cartDataList.add(++wishlistIndex, cartWishlistHolderData)
-        notifyDataSetChanged()
-    }
-
     fun updateCartWishlistData(cartWishlistHolderData: CartWishlistHolderData): Int {
         var wishlistIndex = 0
         for ((index, item) in cartDataList.withIndex()) {
@@ -636,35 +693,18 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return CartWishlistHolderData()
     }
 
-    fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
-                                  cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
-        var recommendationIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is CartRecentViewHolderData ||
-                    item is CartWishlistHolderData ||
-                    item is CartRecommendationItemHolderData ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData) {
-                recommendationIndex = index
+    fun removeChooseAddressWidget() {
+        var index = -1
+        cartDataList.forEachIndexed { i, data ->
+            if (data is CartChooseAddressHolderData) {
+                index = i
             }
         }
 
-        cartSectionHeaderHolderData?.let {
-            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
-            firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-                -1 -> recommendationIndex
-                else -> min(firstCartSectionHeaderPosition, recommendationIndex)
-            }
+        if (index != -1) {
+            cartDataList.removeAt(index)
+            notifyItemRemoved(index)
         }
-
-        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
     }
 
     fun removeCartEmptyData() {
@@ -1097,14 +1137,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         return Pair(toBeRemovedIndex, toBeUpdatedIndex)
-    }
-
-    fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
-        cartDataList.add(0, tickerAnnouncementHolderData)
-    }
-
-    fun addSelectAll(data: CartSelectAllHolderData) {
-        cartDataList.add(data)
     }
 
     fun getItemCountBeforeCartItem(): Int {

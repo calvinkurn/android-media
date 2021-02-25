@@ -181,7 +181,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
                 REQUEST_CODE_OVO_TOP_UP -> refresh()
                 REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(resultCode, data)
+                REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
             }
+        }
+    }
+
+    private fun onResultFromAddressList(resultCode: Int) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            activity?.finish()
+        } else {
+            refresh()
         }
     }
 
@@ -281,6 +290,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
+        viewModel.addressState.observe(viewLifecycleOwner, {
+            validateAddressState(it)
+        })
+
         viewModel.orderPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
@@ -769,6 +782,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_AUTO_SELECT_ADDRESS, addressState == AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
@@ -866,6 +881,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
             }
+        }
+    }
+
+    private fun validateAddressState(addressState: AddressState) {
+        if (addressState.popupMessage.isNotBlank()) {
+            view?.let {
+                Toaster.build(it, addressState.popupMessage).show()
+            }
+        }
+
+        if (addressState.errorCode == AddressState.IS_ERROR) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+            intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.state)
+            startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         }
     }
 
@@ -1487,9 +1516,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun setSourceFromPDP() {
-        if (arguments?.getBoolean(SOURCE_PDP, false) == true) {
-            source = SOURCE_PDP
-        }
+        source = SOURCE_PDP
     }
 
     companion object {
@@ -1509,6 +1536,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         const val REQUEST_CODE_EDIT_PAYMENT = 19
 
+        const val REQUEST_CODE_OPEN_ADDRESS_LIST = 20
+
         const val QUERY_PRODUCT_ID = "product_id"
 
         private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
@@ -1525,10 +1554,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         @JvmStatic
-        fun newInstance(isFromPDP: Boolean, productId: String?): OrderSummaryPageFragment {
+        fun newInstance(productId: String?): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(SOURCE_PDP, isFromPDP)
                     putString(QUERY_PRODUCT_ID, productId)
                 }
             }

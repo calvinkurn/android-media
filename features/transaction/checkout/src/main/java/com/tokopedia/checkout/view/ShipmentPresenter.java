@@ -49,7 +49,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -1631,12 +1630,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setCartIdStr(String.valueOf(cartItemModel.getCartId()));
                     if (isTradeInDropOff) {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
+                                newRecipientAddressModel.getLocationDataModel().getAddrId() : "0"
                         );
                         dataChangeAddressRequest.setIndomaret(true);
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                Integer.parseInt(newRecipientAddressModel.getId()) : 0
+                                newRecipientAddressModel.getId() : "0"
                         );
                         dataChangeAddressRequest.setIndomaret(false);
                     }
@@ -1810,13 +1809,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        int addressId = 0;
-        try {
-            addressId = Integer.parseInt(recipientAddressModel.getId());
-        } catch (NumberFormatException e) {
-            // No-op
-        }
-        shippingParam.setAddressId(addressId);
+        shippingParam.setAddressId(recipientAddressModel.getId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);

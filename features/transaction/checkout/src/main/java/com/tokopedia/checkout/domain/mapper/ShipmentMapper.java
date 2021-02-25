@@ -59,6 +59,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.Pu
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -223,7 +224,6 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setCampaignTimerUi(timerUi);
             }
 
-
             if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
@@ -385,6 +385,8 @@ public class ShipmentMapper implements IShipmentMapper {
                         userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
                         userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
                         userAddressResult.setCorner(groupAddress.getUserAddress().isCorner());
+                        userAddressResult.setState(groupAddress.getUserAddress().getState());
+                        userAddressResult.setStateDetail(groupAddress.getUserAddress().getStateDetail());
 
                         groupAddressResult.setUserAddress(userAddressResult);
                     }
@@ -555,7 +557,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     } else {
                                         analyticsProductCheckoutData.setCodFlag(String.valueOf(false));
                                     }
-                                    if (groupAddressResult.getUserAddress() != null && groupAddressResult.getUserAddress().getCornerId() != 0) {
+                                    if (groupAddressResult.getUserAddress() != null && Utils.isNotNullOrEmptyOrZero(groupAddressResult.getUserAddress().getCornerId())) {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(true));
                                     } else {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
@@ -729,6 +731,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setGroupAddress(groupAddressListResult);
                 dataResult.setHasError(checkCartHasError(dataResult));
             }
+
+            dataResult.setPopUpMessage(shipmentAddressFormDataResponse.getPopUpMessage());
         }
 
         return dataResult;
