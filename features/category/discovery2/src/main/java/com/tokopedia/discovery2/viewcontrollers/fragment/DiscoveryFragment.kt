@@ -345,10 +345,10 @@ class DiscoveryFragment :
                 if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
                     chooseAddressWidget?.show()
                     if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
                     fetchUserLatestAddressData()
-                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                 }else{
                     chooseAddressWidget?.hide()
                 }
@@ -364,10 +364,9 @@ class DiscoveryFragment :
                         CoachMark2Item(
                                 chooseAddressWidget!!,
                                 "Bisa pilih alamat pengirimanmu dulu",
-                                "Biar pengalaman belanja lebih asyik & dapatkan \\nrekomendasi barang terdekat dari alamatmu!",
+                                "Biar pengalaman belanjamu lebih asyik dan mudah."
                         )
                 )
-
                 coachMark.showCoachMark(coachMarkItem)
             }
     }

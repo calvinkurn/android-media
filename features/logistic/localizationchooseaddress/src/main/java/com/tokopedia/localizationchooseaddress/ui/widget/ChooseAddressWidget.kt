@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
-import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+//import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -186,7 +186,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         buttonChooseAddress?.setOnClickListener {
             val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
             val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-            source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+//            source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
             val chooseAddressBottomSheet = ChooseAddressBottomSheet()
             chooseAddressBottomSheet.setListener(this)
             chooseAddressBottomSheet.show(fragment?.childFragmentManager)
