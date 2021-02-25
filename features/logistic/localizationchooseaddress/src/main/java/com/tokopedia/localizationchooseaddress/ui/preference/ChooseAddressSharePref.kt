@@ -7,7 +7,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 class ChooseAddressSharePref(context: Context?) {
 
-    val PREFERENCE_NAME = "LocalCacheAddress"
+    val PREFERENCE_NAME = "local_choose_address"
     val EXTRA_IS_CHOSEN_ADDRESS = "EXTRA_IS_CHOSEN_ADDRESS"
     val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
 
