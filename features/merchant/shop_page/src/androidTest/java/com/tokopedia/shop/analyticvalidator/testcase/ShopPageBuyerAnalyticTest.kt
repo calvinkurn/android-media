@@ -8,7 +8,6 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.doubleClick
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
@@ -22,7 +21,6 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
@@ -93,12 +91,11 @@ class ShopPageBuyerAnalyticTest {
         testHeader()
         testProductTab()
         testHomeTab()
-//        validateTracker()
+        validateTracker()
     }
 
     private fun validateTracker() {
         activityRule.activity.finish()
-        waitForData(5000)
         //header
         doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_CLICK_SEARCH_BAR_TRACKER_MATCHER_PATH)
@@ -108,10 +105,10 @@ class ShopPageBuyerAnalyticTest {
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_CLICK_ETALASE_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_PRODUCT_CARD_TRACKER_MATCHER_PATH)
 
-//        //home tab
-//        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
-//        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
-//        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
+        //home tab
+        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
+        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
+        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
 
     }
 
@@ -132,26 +129,26 @@ class ShopPageBuyerAnalyticTest {
                 isDisplayed())
         )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
         Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.rv_product_carousel))
+        )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
+        Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.text_see_all))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withText("Tutup"))
         )).perform(click())
-//        Espresso.onView(firstView(AllOf.allOf(
-//                withId(R.id.layout_remind_me))
-//        )).perform(click())
-//        Espresso.onView(firstView(AllOf.allOf(
-//                withId(R.id.snackbar_btn))
-//        )).perform(doubleClick())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.layout_remind_me))
+        )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.image_tnc))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.bottom_sheet_close))
         )).perform(click())
-//        Espresso.onView(firstView(AllOf.allOf(
-//                withId(R.id.rv_product_carousel))
-//        )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.snackbar_btn))
+        )).perform(click())
     }
 
     private fun testProductWidget() {
@@ -286,10 +283,6 @@ class ShopPageBuyerAnalyticTest {
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
-    }
-
-    private fun waitForData(ms: Long) {
-        Thread.sleep(ms)
     }
 
     private fun testClickSearchBar() {
