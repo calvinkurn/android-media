@@ -4,7 +4,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -17,7 +16,12 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.recharge_credit_card.mock.CCMockResponseConfig
+import com.tokopedia.recharge_credit_card.utils.ResourceUtils
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -27,6 +31,7 @@ import org.junit.Test
 class RechargeCCInstrumentTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var activityRule = ActivityTestRule(RechargeCCActivity::class.java)
@@ -34,6 +39,8 @@ class RechargeCCInstrumentTest {
     @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
+        graphqlCacheManager.deleteAll()
+        setupGraphqlMockResponse(CCMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
@@ -63,7 +70,7 @@ class RechargeCCInstrumentTest {
     private fun openBankListBottomSheetThenClose() {
         onView(withId(R.id.list_bank_btn)).perform(click())
         onView(withId(R.id.desc_bank_list)).check(matches(isDisplayed()))
-        Thread.sleep(100)
+        Thread.sleep(2000)
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
