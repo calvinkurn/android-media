@@ -6,7 +6,9 @@ import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.source.CloudGetLikeDislikeDataSource;
 import com.tokopedia.tkpd.tkpdreputation.data.source.CloudGetLikeDislikeDataSourceV2;
 import com.tokopedia.tkpd.tkpdreputation.data.source.CloudLikeDislikeDataSource;
+import com.tokopedia.tkpd.tkpdreputation.data.source.CloudLikeDislikeDataSourceV2;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudDeleteReviewResponseDataSource;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudDeleteReviewResponseDataSourceV2;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
@@ -14,6 +16,7 @@ import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetHelpfulReviewCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetHelpfulReviewCloudV2;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetListProductCloud;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetListProductCloudV2;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetStarCountCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetStarCountCloudV2;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -100,8 +103,18 @@ public class ReputationFactory {
     }
 
     public CloudGetLikeDislikeDataSourceV2 createCloudGetLikeDislikeDataSourceV2() {
-        return new CloudGetLikeDislikeDataSourceV2(
-                reputationServiceV2
-        );
+        return new CloudGetLikeDislikeDataSourceV2(reputationServiceV2);
+    }
+
+    public ReviewProductGetListProductCloudV2 createCloudGetReviewProductListV2() {
+        return new ReviewProductGetListProductCloudV2(reviewProductServiceV2);
+    }
+
+    public CloudDeleteReviewResponseDataSourceV2 createCloudDeleteReviewResponseDataSourceV2() {
+        return new CloudDeleteReviewResponseDataSourceV2(reputationServiceV2, userSession);
+    }
+
+    public CloudLikeDislikeDataSourceV2 createCloudLikeDislikeDataSourceV2() {
+        return new CloudLikeDislikeDataSourceV2(reputationServiceV2, userSession);
     }
 }

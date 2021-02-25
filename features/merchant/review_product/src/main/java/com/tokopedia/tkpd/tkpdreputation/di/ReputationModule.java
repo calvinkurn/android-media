@@ -14,8 +14,10 @@ import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCaseV2;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCaseV2;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
@@ -24,11 +26,6 @@ import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -145,6 +142,12 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    LikeDislikeReviewUseCaseV2 provideLikeDislikeReviewUseCaseV2(ReputationRepositoryV2 reputationRepository) {
+        return new LikeDislikeReviewUseCaseV2(reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
     GetLikeDislikeMapper provideGetLikeDislikeMapper() {
         return new GetLikeDislikeMapper();
     }
@@ -164,19 +167,6 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReviewProductPresenter provideProductReviewPresenter(ReviewProductGetListUseCase productReviewGetListUseCase,
-                                                         ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase,
-                                                         ReviewProductGetRatingUseCase productReviewGetRatingUseCase,
-                                                         LikeDislikeReviewUseCase likeDislikeReviewUseCase,
-                                                         DeleteReviewResponseUseCase deleteReviewResponseUseCase,
-                                                         ReviewProductListMapper productReviewListMapper,
-                                                         UserSessionInterface userSession) {
-        return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
-                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
-    }
-
-    @ReputationScope
-    @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
@@ -185,6 +175,12 @@ public class ReputationModule {
     @Provides
     DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(ReputationRepository reputationRepository) {
         return new DeleteReviewResponseUseCase(reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    DeleteReviewResponseUseCaseV2 provideDeleteReviewResponseUseCaseV2(ReputationRepositoryV2 reputationRepository) {
+        return new DeleteReviewResponseUseCaseV2(reputationRepository);
     }
 
     @ReputationScope

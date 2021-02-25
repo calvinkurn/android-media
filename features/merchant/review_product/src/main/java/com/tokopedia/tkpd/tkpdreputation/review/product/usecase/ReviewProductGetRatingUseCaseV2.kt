@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.usecase
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,10 +14,16 @@ class ReviewProductGetRatingUseCaseV2 @Inject constructor(
         const val PRODUCT_ID = "product_id"
     }
 
-    val params = hashMapOf<String, String>()
+    lateinit var params: Params
 
     override suspend fun executeOnBackground(): DataResponseReviewStarCount {
-        return reputationRepository.getReviewStarCount(params[PRODUCT_ID] ?: "")
+        if (::params.isInitialized) {
+            return reputationRepository.getReviewStarCount(params.productId)
+        } else throw ErrorMessageException("params not initialized")
     }
+
+    data class Params(
+            val productId: String
+    )
 
 }
