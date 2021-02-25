@@ -15,7 +15,11 @@ data class ProductShippingHeaderDataModel(
         val freeOngkirEstimation: String = "",
         val freeOngkirPrice: String = "",
         val freeOngkirImageUrl: String = "",
-        val isFullfillment: Boolean = false
+
+        val isFulfillment: Boolean = false,
+        val tokoCabangIcon: String = "",
+        val tokoCabangTitle: String = "",
+        val tokoCabangContent: String = ""
 ) : ProductShippingVisitable {
     override fun uniqueId(): Long = id
 

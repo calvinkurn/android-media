@@ -14,7 +14,8 @@ data class RatesEstimateRequest(
         val productId: String = "",
         val productWeightUnit: String = "",
         val isFreeOngkir: Boolean = false,
-        val isFullfillment: Boolean = false,
+        val isFulfillment: Boolean = false,
+        val destination: String = "",
         val forceRefresh: Boolean = false
 //TODO new free ongkir url
 ) {

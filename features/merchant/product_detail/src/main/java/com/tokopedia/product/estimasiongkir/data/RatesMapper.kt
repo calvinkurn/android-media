@@ -22,10 +22,13 @@ object RatesMapper {
                 shippingFrom = "${address.districtName}, ${address.provinceName}",
                 weight = weightFormatted,
                 isFreeOngkir = request.isFreeOngkir,
-                freeOngkirEstimation = "",
+                freeOngkirEstimation = ratesModel.freeShipping.etaText,
                 freeOngkirImageUrl = "",
-                freeOngkirPrice = "",
-                isFullfillment = request.isFullfillment
+                freeOngkirPrice = ratesModel.freeShipping.shipping_price,
+                isFulfillment = request.isFulfillment,
+                tokoCabangContent = ratesModel.tokoCabangData.content,
+                tokoCabangIcon = ratesModel.tokoCabangData.iconUrl,
+                tokoCabangTitle = ratesModel.tokoCabangData.title
         )
         val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(ratesModel.rates)
         productServiceData.add(0, productShippingHeader)

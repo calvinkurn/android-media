@@ -20,6 +20,14 @@ data class RatesEstimationModel(
         @Expose
         val rates: RatesModel = RatesModel(),
 
+        @SerializedName("tokocabang_from")
+        @Expose
+        val tokoCabangData: TokoCabangData = TokoCabangData(),
+
+        @SerializedName("free_shipping")
+        @Expose
+        val freeShipping: FreeShipping = FreeShipping(),
+
         @SerializedName("is_blackbox")
         @Expose
         val isBlackbox: Boolean = false
@@ -36,3 +44,31 @@ data class RatesEstimationModel(
             val data: Data? = Data()
     )
 }
+
+data class TokoCabangData(
+        @SerializedName("icon_url")
+        @Expose
+        val iconUrl: String = "",
+
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("content")
+        @Expose
+        val content: String = "",
+)
+
+data class FreeShipping(
+        @SerializedName("flag")
+        @Expose
+        val flag: Int = 0,
+
+        @SerializedName("shipping_price")
+        @Expose
+        val shipping_price: String = "",
+
+        @SerializedName("eta_text")
+        @Expose
+        val etaText: String = ""
+)

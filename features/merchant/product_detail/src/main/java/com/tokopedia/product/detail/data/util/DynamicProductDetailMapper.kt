@@ -306,4 +306,9 @@ object DynamicProductDetailMapper {
                 localData.postal_code,
                 latlong)
     }
+
+    fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
+        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        return "${localData.district_id}|${localData.postal_code}|${latlong}"
+    }
 }

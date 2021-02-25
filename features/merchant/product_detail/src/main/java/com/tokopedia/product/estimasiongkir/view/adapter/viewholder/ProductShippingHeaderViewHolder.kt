@@ -36,7 +36,7 @@ class ProductShippingHeaderViewHolder(view: View,
     override fun bind(element: ProductShippingHeaderDataModel) {
         txtShippingTo?.bindChooseAddress(chooseAddressListener)
 
-        renderShipmentTrack(element.shippingFrom, element.isFullfillment)
+        renderShipmentTrack(element.shippingFrom, element.isFulfillment)
         renderBo(element.isFreeOngkir, element.freeOngkirEstimation, element.freeOngkirImageUrl, element.freeOngkirPrice)
         renderWeight(element.weight)
     }

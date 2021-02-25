@@ -19,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 16/02/21
  */
-class RatesEstimationBoeViewModel @Inject constructor(val ratesUseCase: GetRatesEstimateUseCase, val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
+class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: GetRatesEstimateUseCase, val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     private val _ratesRequest = MutableLiveData<RatesEstimateRequest>()
 
@@ -41,7 +41,7 @@ class RatesEstimationBoeViewModel @Inject constructor(val ratesUseCase: GetRates
 
     private suspend fun getRatesEstimate(request: RatesEstimateRequest): RatesEstimationModel {
         return ratesUseCase.executeOnBackground(
-                GetRatesEstimateUseCase.createParams(request.getWeightRequest(), request.shopDomain, request.origin, request.productId, request.shopId),
+                GetRatesEstimateUseCase.createParams(request.getWeightRequest(), request.shopDomain, request.origin, request.productId, request.shopId, request.isFulfillment, request.destination),
                 request.forceRefresh)
     }
 

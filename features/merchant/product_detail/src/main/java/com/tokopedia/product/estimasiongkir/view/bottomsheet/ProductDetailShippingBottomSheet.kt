@@ -1,6 +1,7 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -16,9 +17,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
-import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
@@ -44,6 +43,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
     }
+    private var shouldRefresh: Boolean = false
 
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
@@ -70,6 +70,13 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         val dialogFragment = dialog as BottomSheetDialog
         dialogFragment.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialogFragment.behavior.skipCollapsed = true
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (shouldRefresh) {
+            sharedViewModel.setAddressChanged(true)
+        }
     }
 
     override fun getTheme(): Int {
@@ -128,26 +135,25 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
 
     override fun onChooseAddressClicked() {
-        showShimmerPage(rv?.height ?: 0)
-        viewModel?.setRatesRequest(sharedViewModel.rateEstimateRequest.value?.copy(forceRefresh = true)
-                ?: RatesEstimateRequest())
-        viewContainer?.showToasterSuccess("Clicked bottom sheet")
+        shouldRefresh = true
+        dismiss()
+//        showShimmerPage(rv?.height ?: 0)
+//        viewModel?.setRatesRequest(sharedViewModel.rateEstimateRequest.value?.copy(forceRefresh = true)
+//                ?: RatesEstimateRequest())
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
         onChooseAddressClicked()
+        shouldRefresh = true
     }
 
     override fun onLocalizingAddressUpdatedFromBackground() {
-
     }
 
     override fun onLocalizingAddressServerDown() {
-
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-
     }
 
     override fun getLocalizingAddressHostFragment(): Fragment = this

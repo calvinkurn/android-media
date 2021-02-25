@@ -339,6 +339,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         observeP2Other()
         observeTopAdsImageData()
         observeVideoDetail()
+        observeShippingAddressChanged()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -1201,6 +1202,14 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         })
     }
 
+    private fun observeShippingAddressChanged() {
+        activity?.let { activity ->
+            sharedViewModel?.isAddressChanged?.observe(activity, {
+                if (it) onSwipeRefresh()
+            })
+        }
+    }
+
     private fun observeTopAdsImageData() {
         viewLifecycleOwner.observe(viewModel.topAdsImageView) { data ->
             data.doSuccessOrFail({
@@ -1417,7 +1426,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             if (view != null) {
                 val localizationCoachmark = ChooseAddressUtils.coachMark2Item(it, view)
                 localizationCoachmark.position = 1
-                val coachMarkItem = arrayListOf(localizationCoachmark,localizationCoachmark)
+                val coachMarkItem = arrayListOf(localizationCoachmark, localizationCoachmark)
                 val coachmark = CoachMark2(it)
                 coachmark.showCoachMark(coachMarkItem, null, 0)
             }
@@ -1677,16 +1686,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
         }
 
-        if (it.ratesEstimate.isEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.SHIPMENT)
-        } else {
-            pdpUiUpdater?.updateShipmentData(
-                    viewModel.getP2RatesEstimateByProductId(),
-                    viewModel.getMultiOriginByProductId().isFulfillment,
-                    viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                    viewModel.getDynamicProductInfoP1?.data?.isFreeOngkir?.imageURL ?: ""
-            )
-        }
+        pdpUiUpdater?.updateShipmentData(
+                viewModel.getP2RatesEstimateByProductId(),
+                viewModel.getMultiOriginByProductId().isFulfillment,
+                viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
+                viewModel.getBebasOngkirDataByProductId()
+        )
 
         if (it.upcomingCampaigns.values.isEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.NOTIFY_ME)
@@ -1886,6 +1891,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     it.basic.weightUnit,
                     it.data.isFreeOngkir.isActive,
                     viewModel.getMultiOriginByProductId().isFulfillment,
+                    generateUserLocationRequestRates(viewModel.userLocationCache),
                     shouldRefreshShippingBottomSheet
             ))
             shouldRefreshShippingBottomSheet = false

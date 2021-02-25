@@ -25,19 +25,33 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val PARAM_ORIGIN = "origin"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_PRODUCT_ID = "product_id"
+        private const val PARAM_IS_FULFILLMENT = "is_fulfillment"
+        private const val PARAM_DESTINATION = "destination"
 
-        fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String, shopId: String): Map<String, Any?> = mapOf(
+        fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String, shopId: String, isFulfillment: Boolean, destination: String): Map<String, Any?> = mapOf(
                 PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain,
                 PARAM_ORIGIN to origin,
                 PARAM_SHOP_ID to shopId,
-                PARAM_PRODUCT_ID to productId)
-
+                PARAM_PRODUCT_ID to productId,
+                PARAM_IS_FULFILLMENT to isFulfillment,
+                PARAM_DESTINATION to destination)
 
         val QUERY = """
-            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String) {
-                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id}) {
+            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean) {
+                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment }) {
                       data{
+                          tokocabang_from{
+                               icon_url
+                               title
+                               content
+                          }
+                          free_shipping{
+                              flag 
+                              shipping_price 
+                              eta_text
+                              error_code 
+                          }
                           address {
                               city_name
                               province_name

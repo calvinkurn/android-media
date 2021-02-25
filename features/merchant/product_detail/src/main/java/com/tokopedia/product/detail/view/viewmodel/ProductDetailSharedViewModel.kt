@@ -24,6 +24,10 @@ class ProductDetailSharedViewModel : ViewModel() {
         get() = _rateEstimateRequest
     private val _rateEstimateRequest = MutableLiveData<RatesEstimateRequest>()
 
+    val isAddressChanged: LiveData<Boolean>
+        get() = _isAddressChanged
+    private val _isAddressChanged = MutableLiveData<Boolean>()
+
     //Give video data from pdp fragment to video detail
     fun updateVideoDetailData(currentVideoData: ProductVideoDetailDataModel) {
         _productVideoDetailData.value = currentVideoData
@@ -37,5 +41,9 @@ class ProductDetailSharedViewModel : ViewModel() {
     //Give request data to shipping bottom sheet
     fun setRequestData(data: RatesEstimateRequest) {
         _rateEstimateRequest.value = data
+    }
+
+    fun setAddressChanged(shouldChanged:Boolean) {
+        _isAddressChanged.value = shouldChanged
     }
 }
