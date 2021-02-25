@@ -333,8 +333,14 @@ class MainNavViewModel @Inject constructor(
             val adminData = async { getAdminData() }
 
             accountHeaderModel.await().apply {
-                adminData.await().let { (adminRoleText, canGoToSellerAccount) ->
-                    setAdminData(adminRoleText, canGoToSellerAccount)
+                adminData.await().let { (adminRoleText, canGoToSellerAccount, isShopActive) ->
+                    val adminRole =
+                            if (isShopActive) {
+                                adminRoleText
+                            } else {
+                                null
+                            }
+                    setAdminData(adminRole, canGoToSellerAccount)
                 }
             }.let {
                 updateWidget(it, INDEX_MODEL_ACCOUNT)
@@ -501,12 +507,24 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
                 val response = call.await()
-                val (adminRoleText, canGoToSellerAccount) = adminDataCall.await()
+                val (adminRoleText, canGoToSellerAccount, isShopActive) = adminDataCall.await()
                 val result = (response.takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
                 result?.let {
                     accountModel.run {
-                        setUserShopName(it.info.shopName, it.info.shopId)
-                        setAdminData(adminRoleText, canGoToSellerAccount)
+                        val shopName: String
+                        val shopId: String
+                        val adminRole: String?
+                        if (isShopActive) {
+                            shopName = it.info.shopName
+                            shopId = it.info.shopId
+                            adminRole = adminRoleText
+                        } else {
+                            shopName = ""
+                            shopId = ""
+                            adminRole = null
+                        }
+                        setUserShopName(shopName, shopId)
+                        setAdminData(adminRole, canGoToSellerAccount)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
@@ -549,10 +567,10 @@ class MainNavViewModel @Inject constructor(
      * Check for account admin info if is not shop owner
      * and update shop related user session values accordingly
      *
-     * @return  Pair of admin role text (if is admin) and boolean to determine if seller can go to
-     *          account page
+     * @return  Triple of admin role text (if is admin), boolean to determine if seller can go to
+     *          account page, and boolean if shop is active
      */
-    private suspend fun getAdminData(): Pair<String?, Boolean> {
+    private suspend fun getAdminData(): Triple<String?, Boolean, Boolean> {
         val (adminDataResponse, refreshedShopData) =
                 if (userSession.get().isShopOwner) {
                     Pair(null, null)
@@ -564,15 +582,22 @@ class MainNavViewModel @Inject constructor(
                         executeOnBackground()
                     }
                 }
+        val isShopActive = adminDataResponse?.data?.isShopActive() == true
         adminDataResponse?.let {
             userSession.get().refreshUserSessionAdminData(it)
         }
         refreshedShopData?.let {
-            userSession.get().refreshUserSessionShopData(it)
+            val shopId =
+                    if(isShopActive) {
+                        it.shopId
+                    } else {
+                        ""
+                    }
+            userSession.get().refreshUserSessionShopData(it.copy(shopId = shopId))
         }
         val canGoToSellerAccount: Boolean = adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true
         val adminRoleText: String? = adminDataResponse?.data?.adminTypeText
-        return Pair(adminRoleText, canGoToSellerAccount)
+        return Triple(adminRoleText, canGoToSellerAccount, isShopActive)
     }
 
     private fun onlyForLoggedInUserUi(function: ()-> Unit) {

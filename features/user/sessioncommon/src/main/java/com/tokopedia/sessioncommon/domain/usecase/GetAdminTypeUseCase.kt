@@ -28,6 +28,7 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
                       is_shop_owner            
                     }
                   }
+                  status
                 }
               }
             }

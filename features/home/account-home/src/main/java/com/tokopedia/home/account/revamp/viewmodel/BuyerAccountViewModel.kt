@@ -88,10 +88,16 @@ class BuyerAccountViewModel @Inject constructor (
                         }
                     }
             withContext(dispatcher.main()) {
+                val isShopActive = adminDataResponse?.data?.isShopActive() == true
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
-                accountModel.adminTypeText = adminDataResponse?.data?.adminTypeText
+                accountModel.adminTypeText =
+                        if (isShopActive) {
+                            adminDataResponse?.data?.adminTypeText
+                        } else {
+                            null
+                        }
                 saveLocallyAttributes(accountModel)
                 adminDataResponse?.let {
                     userSession.refreshUserSessionAdminData(it)
@@ -100,7 +106,13 @@ class BuyerAccountViewModel @Inject constructor (
                     _canGoToSellerAccount.postValue(canGoToSellerAccount)
                 }
                 shopData?.let {
-                    userSession.refreshUserSessionShopData(it)
+                    val shopId =
+                            if (isShopActive) {
+                                it.shopId
+                            } else {
+                                ""
+                            }
+                    userSession.refreshUserSessionShopData(it.copy(shopId = shopId))
                 }
                 _buyerAccountData.postValue(Success(accountModel))
             }
