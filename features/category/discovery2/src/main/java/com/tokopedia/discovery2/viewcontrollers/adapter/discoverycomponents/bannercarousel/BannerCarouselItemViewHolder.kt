@@ -1,8 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel
 
-import android.app.Activity
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -26,7 +24,7 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     private var titleTextView: TextView = itemView.findViewById(R.id.subTitle_tv)
     private val bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
-    private val displayMetrics = getDisplayMetric(fragment.context)
+    private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerCarouselItemViewModel = discoveryBaseViewModel as BannerCarouselItemViewModel
@@ -70,9 +68,4 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
         }
     }
 
-    private fun getDisplayMetric(context: Context?): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
-    }
 }

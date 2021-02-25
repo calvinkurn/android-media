@@ -1,14 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations
 
-import android.app.Activity
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -24,7 +22,7 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
     private val brandRecomTitle: Typography = itemView.findViewById(R.id.brand_recom_title) as Typography
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var brandRecommendationViewModel: BrandRecommendationViewModel
-    private val displayMetrics = getDisplayMetric(fragment.context)
+    private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
     init {
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -49,9 +47,9 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
             brandRecommendationViewModel.getListDataLiveData().observe(lifecycle, { item ->
                 if (item.isNotEmpty()) {
-                    val noOfItems:Double = if (item.size > 4) 4.5 else 4.0
-                    val widthOfSingleChild = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap)) / noOfItems)
-                    val heightOfRecyclerView = (widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap) / 2).toInt()
+                    val noOfItems:Double = if (item.size > STATIC_WIDGET_ITEM_LIMIT) CAROUSEL_WIDGET_ITEM_LIMIT else STATIC_WIDGET_ITEM_LIMIT.toDouble()
+                    val widthOfSingleChild = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.brand_recom_carousel_gap)) / noOfItems)
+                    val heightOfRecyclerView = (widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)).toInt()
                     if(recyclerView.layoutParams.height != heightOfRecyclerView) {
                         val params = recyclerView.layoutParams
                         params.height = heightOfRecyclerView
@@ -80,9 +78,9 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         brandRecomTitle.text = title
     }
 
-    private fun getDisplayMetric(context: Context?): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
+    companion object{
+        const val STATIC_WIDGET_ITEM_LIMIT = 4
+        const val CAROUSEL_WIDGET_ITEM_LIMIT = 4.5
     }
+
 }
