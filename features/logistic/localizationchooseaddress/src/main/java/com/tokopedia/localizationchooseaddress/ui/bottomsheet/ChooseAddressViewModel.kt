@@ -43,9 +43,9 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         }
     }
 
-    fun setStateChosenAddress(status: Int, addressId: String, receiverName: String, addressName: String, latitude: String, longitude: String, districtId: String, postalCode: String) {
+    fun setStateChosenAddress(status: Int, addressId: String?, receiverName: String, addressName: String, latitude: String?, longitude: String?, districtId: String, postalCode: String) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
-            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId.toInt(), receiverName, addressName, latitude, longitude, districtId.toInt(), postalCode)
+            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId?.toInt(), receiverName, addressName, latitude, longitude, districtId.toInt(), postalCode)
             _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
     }
