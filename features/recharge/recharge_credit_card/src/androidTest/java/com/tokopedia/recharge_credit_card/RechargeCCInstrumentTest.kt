@@ -18,8 +18,6 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.recharge_credit_card.mock.CCMockResponseConfig
-import com.tokopedia.recharge_credit_card.utils.ResourceUtils
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
@@ -70,7 +68,7 @@ class RechargeCCInstrumentTest {
     private fun openBankListBottomSheetThenClose() {
         onView(withId(R.id.list_bank_btn)).perform(click())
         onView(withId(R.id.desc_bank_list)).check(matches(isDisplayed()))
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
