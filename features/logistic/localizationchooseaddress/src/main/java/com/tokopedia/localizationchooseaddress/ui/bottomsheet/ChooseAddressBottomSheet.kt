@@ -360,39 +360,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun requestLocation(isLogin: Boolean) {
-        activity?.let {
-            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            setViewLocationDisabled(isLogin)
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            setViewLocationDisabled(isLogin)
-                        }
-
-                        @SuppressLint("MissingPermission")
-                        override fun onPermissionGranted() {
-                            fusedLocationClient?.lastLocation?.addOnSuccessListener { location ->
-                                if (location != null) {
-                                    setStateWithLocation(location)
-                                }
-                            }
-                        }
-
-                    }, it.getString(R.string.rationale_need_location))
-        }
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
-    }
-
     override fun getComponent(): ChooseAddressComponent {
         return DaggerChooseAddressComponent.builder()
                 .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
