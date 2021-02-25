@@ -1,15 +1,12 @@
 
 package com.tokopedia.recharge_credit_card
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -29,7 +26,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -102,32 +98,26 @@ class RechargeCCInstrumentTest {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
-    private fun next_button_is_enabled_on_inserted_valid_credit_card_number() {
-        Thread.sleep(2000)
+    @Test
+    fun next_button_is_enabled_on_inserted_valid_credit_card_number() {
         onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
         typeCreditCardNumber(VALID_CC_NUMBER)
-        Thread.sleep(2000)
+        Thread.sleep(500)
         onView(withId(R.id.cc_button_next)).check(matches(isEnabled()))
-        Thread.sleep(3000)
     }
 
 
-    private fun next_button_is_disabled_on_inserted_invalid_credit_card_number() {
-        Thread.sleep(2000)
+    @Test
+    fun next_button_is_disabled_on_inserted_invalid_credit_card_number() {
         onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
         typeCreditCardNumber(INVALID_CC_NUMBER)
-        Thread.sleep(2000)
+        Thread.sleep(500)
         onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
         onView(withText(R.string.cc_error_invalid_number)).check(matches(isDisplayed()))
-
-        Thread.sleep(3000)
     }
 
     @Test
     fun validate_credit_card_user_journey() {
-//        next_button_is_enabled_on_inserted_valid_credit_card_number()
-//        next_button_is_disabled_on_inserted_invalid_credit_card_number()
-
         typeCreditCardNumber(VALID_CC_NUMBER)
         openBankListBottomSheetThenClose()
         openConfirmationDialogThenClickBack()
@@ -135,8 +125,6 @@ class RechargeCCInstrumentTest {
         openConfirmationDialogThenClickNext()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY), hasAllSuccess())
-
-        Thread.sleep(5000)
     }
 
     @After
