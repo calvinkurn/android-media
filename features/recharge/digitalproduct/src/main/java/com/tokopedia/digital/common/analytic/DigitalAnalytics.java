@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.track.TrackApp;
@@ -31,39 +30,6 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Action.CLICK_PANDUAN_SECTION,
                 categoryName.toLowerCase()
         ));
-    }
-
-    public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
-        String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
-                cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
-        List<Object> products = new ArrayList<>();
-        products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", DigitalEventTracking.Event.ADD_TO_CART,
-                        "eventCategory", extraComeFrom == DigitalCheckoutPassData.Companion.getPARAM_WIDGET() ? DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET :
-                                DigitalEventTracking.Category.DIGITAL_NATIVE,
-                        "eventAction", DigitalEventTracking.Action.CLICK_BELI,
-                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() +
-                                " - " + (cartDigitalInfoData.isInstantCheckout() ? "instant" : "non instant"),
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(
-                                                products.toArray(new Object[products.size()]))
-                                )
-                        ),
-                        "currentSite", DigitalEventTracking.Label.SITE
-                )
-        );
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        "ecommerce", null,
-                        "currentSite", null
-                )
-        );
-
     }
 
     private Map<String, Object> constructProductEnhanceEcommerce(CartDigitalInfoData cartDigitalInfoData,

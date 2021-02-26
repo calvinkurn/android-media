@@ -211,7 +211,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
 
-                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
                 digitalAnalytics.eventCheckout(cartDigitalInfoData);
 
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
