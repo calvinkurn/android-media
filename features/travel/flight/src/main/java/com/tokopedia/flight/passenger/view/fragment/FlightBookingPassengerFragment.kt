@@ -210,6 +210,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY)
             }
             til_nationality.textFieldInput.afterTextChanged { validateAllFields() }
+            til_passport_no.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_passport_issuer_country.textFieldInput.isFocusable = false
             til_passport_issuer_country.textFieldInput.isClickable = true
