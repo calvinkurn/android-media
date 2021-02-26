@@ -389,14 +389,16 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
-        val dialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(postPaidPopupAttribute.title)
-        dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
-        dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
+        if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
+            val dialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(postPaidPopupAttribute.title)
+            dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
+            dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.show()
     }
 
     private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {

@@ -82,12 +82,14 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         val subParams = DigitalSubscriptionParams()
         val showSubscribePopUpArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP)
         val autoSubscribeArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE)
-        if (showSubscribePopUpArg != null) {
-            subParams.showSubscribePopUp = showSubscribePopUpArg.toBoolean()
+
+        showSubscribePopUpArg?.let {
+            subParams.showSubscribePopUp = it.toBoolean()
         }
-        if (autoSubscribeArg != null) {
+        autoSubscribeArg?.let {
             subParams.autoSubscribe = autoSubscribeArg.toBoolean()
         }
+
         return subParams
     }
 
@@ -103,7 +105,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         return DigitalCheckoutComponentInstance.getDigitalCheckoutComponent(application)
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): kotlin.Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
             KeyboardHandler.hideSoftKeyboard(this)
             currentFocus?.clearFocus()
