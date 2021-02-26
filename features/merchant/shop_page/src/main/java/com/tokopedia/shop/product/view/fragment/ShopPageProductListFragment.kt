@@ -1239,7 +1239,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherUiModel) {
-        shopPageTracking?.impressionSeeEntryPoint(shopId, viewModel.userId)
+        shopPageTracking?.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel.userId)
         shopProductAdapter.setMerchantVoucherDataModel(data)
     }
 
