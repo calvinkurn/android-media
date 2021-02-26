@@ -34,12 +34,3 @@ data class GtmLogDB (
     @AnalyticsSource
     var source: String? = null
 )
-
-fun GtmLogDB.toUiClass(): AnalyticsDebuggerViewModel {
-    return AnalyticsDebuggerViewModel(
-            id = this.id,
-            name = this.name,
-            category = this.category
-    )
-}
-
