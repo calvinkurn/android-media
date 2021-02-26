@@ -1,12 +1,7 @@
 package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,14 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -47,7 +36,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -56,8 +44,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 
-internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressComponent>,
-        AddressListItemAdapter.AddressListItemAdapterListener, DialogInterface.OnShowListener{
+class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressComponent>,
+        AddressListItemAdapter.AddressListItemAdapterListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -112,7 +100,7 @@ internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<Choos
         super.onViewCreated(view, savedInstanceState)
         initData()
         setInitialViewState()
-        if (userSession.isLoggedIn && false) {
+        if (userSession.isLoggedIn) {
             initObserver()
         } else setViewState(false)
     }
@@ -190,6 +178,9 @@ internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<Choos
         setupView(view)
         setChild(view)
         setCloseClickListener { this.dismiss() }
+        setShowListener {
+            onBottomSheetShown()
+        }
     }
 
     private fun setupView(child: View) {
@@ -305,6 +296,7 @@ internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<Choos
             noAddressLayout?.gone()
             loginLayout?.visible()
             shouldShowGpsPopUp = true
+            showGpsPopUp()
         } else {
             if (adapter.addressList.isEmpty()) {
                 progressBar?.gone()
@@ -423,7 +415,6 @@ internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<Choos
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
-        const val REQUEST_LOCATION_PERMISSION = 1
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
@@ -511,22 +502,8 @@ internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<Choos
         }
     }
 
-    @NonNull
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        println("++ masuk onCreateDialog")
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener {
-            println("++ onShowListener")
-        }
-        return dialog
-    }
-
-    override fun onShow(p0: DialogInterface?) {
-        println("++ onShow!!")
-    }
-
     // This is a workaround to make sure Permissions Dialog is shown after the bottom sheet is shown
-    fun onShowBottomSheet() {
+    private fun onBottomSheetShown() {
         hasBottomSheetShown = true
         showGpsPopUp()
     }
