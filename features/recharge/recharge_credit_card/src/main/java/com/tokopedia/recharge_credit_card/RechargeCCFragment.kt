@@ -27,6 +27,7 @@ import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
+import com.tokopedia.recharge_credit_card.util.GqlQuery
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
@@ -190,8 +191,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun getTickerData() {
-        rechargeCCViewModel.getMenuDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
+        rechargeCCViewModel.getMenuDetail(GqlQuery.catalogMenuDetail, menuId)
     }
 
     private fun renderTicker(tickers: List<TickerCreditCard>) {
@@ -218,7 +218,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
         rechargeCCViewModel.getPrefixes(
-                GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
+                GqlQuery.catalogPrefix,
                 clientNumber, menuId)
     }
 
@@ -262,8 +262,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val mapParam = rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
 
-            rechargeSubmitCCViewModel.postCreditCard(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_cc_signature), categoryId, mapParam)
+            rechargeSubmitCCViewModel.postCreditCard(GqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
             navigateUserLogin()
         }
