@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -29,12 +28,12 @@ import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
-import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.INTENT_ADDRESS_SELECTED
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -103,7 +102,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setInitialViewState()
         if (userSession.isLoggedIn) {
             initObserver()
-        } else setViewState(false)
+        } else {
+            setViewState(false)
+        }
     }
 
     private fun getPermissions(): Array<String> {
@@ -114,7 +115,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        println("++ getLocation()")
         fusedLocationClient = context?.let { FusedLocationProviderClient(it) }
         fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
             if (location != null) {
@@ -405,11 +405,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         this.listener = listener
     }
 
-    private fun showError(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
     override fun getComponent(): ChooseAddressComponent {
         return DaggerChooseAddressComponent.builder()
                 .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
@@ -447,29 +442,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(EXTRA_IS_LOCALIZATION, true)
         startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
-    }
-
-    interface ChooseAddressBottomSheetListener {
-        /**
-         * this listen if we get server down on widget/bottomshet.
-         * Host mandatory to GONE LocalizingAddressWidget
-         */
-        fun onLocalizingAddressServerDown();
-
-        /**
-         * Only use by bottomsheet, to notify every changes in address data
-         */
-        fun onAddressDataChanged()
-
-        /**
-         * String Source of Host Page
-         */
-        fun getLocalizingAddressHostSourceBottomSheet(): String
-
-        /**
-         * this listen is use to notify host/fragment if login is success from bottomshet
-         */
-        fun onLocalizingAddressLoginSuccessBottomSheet()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -518,5 +490,28 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun onBottomSheetShown() {
         hasBottomSheetShown = true
         showGpsPopUp()
+    }
+
+    interface ChooseAddressBottomSheetListener {
+        /**
+         * this listen if we get server down on widget/bottomshet.
+         * Host mandatory to GONE LocalizingAddressWidget
+         */
+        fun onLocalizingAddressServerDown();
+
+        /**
+         * Only use by bottomsheet, to notify every changes in address data
+         */
+        fun onAddressDataChanged()
+
+        /**
+         * String Source of Host Page
+         */
+        fun getLocalizingAddressHostSourceBottomSheet(): String
+
+        /**
+         * this listen is use to notify host/fragment if login is success from bottomshet
+         */
+        fun onLocalizingAddressLoginSuccessBottomSheet()
     }
 }
