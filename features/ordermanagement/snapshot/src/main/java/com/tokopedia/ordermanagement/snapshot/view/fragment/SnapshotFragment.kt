@@ -164,12 +164,12 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                         visible()
                         text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId)
                             userSession.userId?.let { userId ->
                                 if (isSnapshotFromSOM) {
-                                    SnapshotAnalytics.clickSeeProductPageFromSOM(result.data.orderDetail.productId.toString(), userId)
+                                    SnapshotAnalytics.clickSeeProductPageFromSOM(result.data.orderDetail.productId, userId)
                                 } else {
-                                    SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
+                                    SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId, userId)
                                 }
                             }
                         }
@@ -207,11 +207,10 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
             RouteManager.route(it, ApplinkConst.SHOP, shopId)
         }
         userSession.userId?.let { userId ->
-            SnapshotAnalytics.clickShopPage(shopId, userId)
             if (isSnapshotFromSOM) {
-                SnapshotAnalytics.clickShopPageFromSOM(shopId.toString(), userId)
+                SnapshotAnalytics.clickShopPageFromSOM(shopId, userId)
             } else {
-                SnapshotAnalytics.clickShopPage(shopId.toString(), userId)
+                SnapshotAnalytics.clickShopPage(shopId, userId)
             }
         }
     }
