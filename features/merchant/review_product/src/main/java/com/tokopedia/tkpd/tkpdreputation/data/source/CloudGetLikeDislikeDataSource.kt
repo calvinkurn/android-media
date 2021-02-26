@@ -5,10 +5,10 @@ import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikeList
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
-import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationService
 
-class CloudGetLikeDislikeDataSourceV2(
-        private val reputationService: ReputationServiceV2
+class CloudGetLikeDislikeDataSource(
+        private val reputationService: ReputationService
 ) {
     suspend fun getLikeDislikeReview(params: Map<String, String>): GetLikeDislikeReviewDomain {
         val response = reputationService.api!!.getLikeDislikeReview(params)

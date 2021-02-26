@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-open class BaseReputationServiceV2 {
+open class BaseReputationService {
 
     fun createRetrofit(
             context: Context,

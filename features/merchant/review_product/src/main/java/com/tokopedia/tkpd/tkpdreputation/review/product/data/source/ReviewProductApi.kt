@@ -9,7 +9,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
 
-interface ReviewProductApiV2 {
+interface ReviewProductApi {
 
     @GET(ReputationBaseURL.PATH_GET_REVIEW_PRODUCT_LIST)
     suspend fun getReviewProductList(@QueryMap params: Map<String, String>): Response<DataResponse<DataResponseReviewProduct>>

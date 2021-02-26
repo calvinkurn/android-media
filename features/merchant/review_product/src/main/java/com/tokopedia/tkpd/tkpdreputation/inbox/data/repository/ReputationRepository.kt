@@ -9,7 +9,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Da
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
 import javax.inject.Inject
 
-class ReputationRepositoryV2 @Inject constructor(
+class ReputationRepository @Inject constructor(
         private val reputationFactory: ReputationFactory
 ) {
 

@@ -13,12 +13,12 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCaseV2;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCaseV2;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2;
-import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2;
-import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -53,15 +53,15 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationRepositoryV2 provideReputationRepositoryV2(ReputationFactory reputationFactory) {
-        return new ReputationRepositoryV2(reputationFactory);
+    ReputationRepository provideReputationRepositoryV2(ReputationFactory reputationFactory) {
+        return new ReputationRepository(reputationFactory);
     }
 
     @ReputationScope
     @Provides
     ReputationFactory provideReputationFactory(
-            ReputationServiceV2 reputationService,
-            ReviewProductServiceV2 reviewProductService,
+            ReputationService reputationService,
+            ReviewProductService reviewProductService,
             UserSessionInterface userSession) {
         return new ReputationFactory(reputationService, reviewProductService, userSession);
     }
@@ -77,8 +77,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationServiceV2 provideReputationServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ReputationServiceV2(
+    ReputationService provideReputationServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReputationService(
                 context,
                 networkRouter,
                 userSession
@@ -87,8 +87,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReviewProductServiceV2 provideReviewProductServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ReviewProductServiceV2(
+    ReviewProductService provideReviewProductServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReviewProductService(
                 context,
                 networkRouter,
                 userSession
@@ -97,8 +97,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    LikeDislikeReviewUseCaseV2 provideLikeDislikeReviewUseCaseV2(ReputationRepositoryV2 reputationRepository) {
-        return new LikeDislikeReviewUseCaseV2(reputationRepository);
+    LikeDislikeReviewUseCase provideLikeDislikeReviewUseCaseV2(ReputationRepository reputationRepository) {
+        return new LikeDislikeReviewUseCase(reputationRepository);
     }
 
     @ReputationScope
@@ -122,8 +122,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    DeleteReviewResponseUseCaseV2 provideDeleteReviewResponseUseCaseV2(ReputationRepositoryV2 reputationRepository) {
-        return new DeleteReviewResponseUseCaseV2(reputationRepository);
+    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCaseV2(ReputationRepository reputationRepository) {
+        return new DeleteReviewResponseUseCase(reputationRepository);
     }
 
     @ReputationScope

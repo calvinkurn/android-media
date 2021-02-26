@@ -5,11 +5,11 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikePojo
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
-import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationService
 import com.tokopedia.user.session.UserSessionInterface
 
-class CloudLikeDislikeDataSourceV2(
-        private val reputationService: ReputationServiceV2,
+class CloudLikeDislikeDataSource(
+        private val reputationService: ReputationService,
         private val userSession: UserSessionInterface
 ) {
 

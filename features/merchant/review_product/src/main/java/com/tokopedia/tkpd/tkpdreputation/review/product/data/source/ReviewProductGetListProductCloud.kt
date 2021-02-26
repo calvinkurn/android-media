@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.data.source
 
-import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct
 
-class ReviewProductGetListProductCloudV2(
-        private val reviewProductService: ReviewProductServiceV2
+class ReviewProductGetListProductCloud(
+        private val reviewProductService: ReviewProductService
 ) {
 
     companion object {

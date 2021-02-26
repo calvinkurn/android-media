@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.usecase
 
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCaseV2
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review
@@ -11,10 +11,10 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class ReviewProductGetHelpfulUseCaseV2 @Inject constructor(
-        private val reputationRepository: ReputationRepositoryV2,
+class ReviewProductGetHelpfulUseCase @Inject constructor(
+        private val reputationRepository: ReputationRepository,
         private val userSession: UserSession,
-        private val getLikeDislikeReviewUseCase: GetLikeDislikeReviewUseCaseV2
+        private val getLikeDislikeReviewUseCase: GetLikeDislikeReviewUseCase
 ) : UseCase<DataResponseReviewHelpful>() {
 
     lateinit var params: Params
@@ -27,7 +27,7 @@ class ReviewProductGetHelpfulUseCaseV2 @Inject constructor(
             if (::params.isInitialized) {
                 val reviewList = dataResponseReviewHelpful.list
                 if (reviewList != null && reviewList.isNotEmpty()) {
-                    getLikeDislikeReviewUseCase.params = GetLikeDislikeReviewUseCaseV2.Params(
+                    getLikeDislikeReviewUseCase.params = GetLikeDislikeReviewUseCase.Params(
                             reviewIds = createReviewIds(reviewList),
                             userId = params.userId
                     )

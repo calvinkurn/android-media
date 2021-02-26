@@ -1,13 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.domain.interactor
 
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetLikeDislikeReviewUseCaseV2 @Inject constructor(
-        private val reputationRepository: ReputationRepositoryV2
+class GetLikeDislikeReviewUseCase @Inject constructor(
+        private val reputationRepository: ReputationRepository
 ) : UseCase<GetLikeDislikeReviewDomain>() {
 
     companion object {

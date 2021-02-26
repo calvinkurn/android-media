@@ -1,17 +1,17 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.domain
 
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCaseV2
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ReviewProductGetListUseCaseV2 @Inject constructor(
-        private val reputationRepository: ReputationRepositoryV2,
-        private val getLikeDislikeReviewUseCase: GetLikeDislikeReviewUseCaseV2
+class ReviewProductGetListUseCase @Inject constructor(
+        private val reputationRepository: ReputationRepository,
+        private val getLikeDislikeReviewUseCase: GetLikeDislikeReviewUseCase
 ) : UseCase<DataResponseReviewProduct>() {
 
     companion object {
@@ -34,7 +34,7 @@ class ReviewProductGetListUseCaseV2 @Inject constructor(
                     else DEFAULT_NO_ATTACHMENT
             ).let { dataResponseReviewProduct ->
                 return if (dataResponseReviewProduct.list != null && dataResponseReviewProduct.list.isNotEmpty()) {
-                    getLikeDislikeReviewUseCase.params = GetLikeDislikeReviewUseCaseV2.Params(
+                    getLikeDislikeReviewUseCase.params = GetLikeDislikeReviewUseCase.Params(
                             reviewIds = createReviewIds(dataResponseReviewProduct),
                             userId = params.userId
                     )

@@ -5,11 +5,11 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.tkpd.tkpdreputation.constant.ReputationBaseURL
 import com.tokopedia.user.session.UserSession
 
-class ReputationServiceV2(
+class ReputationService(
         private val context: Context,
         private val networkRouter: NetworkRouter,
         private val userSession: UserSession
-) : BaseReputationServiceV2() {
+) : BaseReputationService() {
 
     init {
         initApiService()
