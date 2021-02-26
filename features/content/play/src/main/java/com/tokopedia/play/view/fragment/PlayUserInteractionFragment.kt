@@ -469,13 +469,11 @@ class PlayUserInteractionFragment @Inject constructor(
         observeQuickReply()
         observeToolbarInfo()
         observeLikeStatus()
-        observeTotalLikes()
         observeTotalViews()
         observeNewChat()
         observeChatList()
         observePinned()
         observeCartInfo()
-        observeLikeContent()
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
@@ -579,12 +577,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeTotalLikes() {
-//        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
-//            likeView.setTotalLikes(it)
-//        })
-    }
-
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
@@ -614,21 +606,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
-    }
-
-    private fun observeLikeContent() {
-//        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
-//            private var isFirstTime = true
-//            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
-//                likeView.setEnabled(true)
-//
-//                if (result is NetworkResult.Success) {
-//                    val likeModel = result.data
-//                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
-//                    isFirstTime = false
-//                }
-//            }
-//        })
     }
 
     private fun observeBottomInsetsState() {
@@ -750,16 +727,12 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.isFreezeOrBanned || isBroadcasterLoading() -> {
                 container.alpha = VISIBLE_ALPHA
                 playFullscreenManager.onExitFullscreen()
-//                systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) playFullscreenManager.onEnterFullscreen()
                 else playFullscreenManager.onExitFullscreen()
-//                systemUiVisibility =
-//                        if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
-//                        else PlayFullScreenHelper.getShowSystemUiVisibility()
                 triggerFullImmersive(shouldImmersive, false)
             }
         }

@@ -111,7 +111,6 @@ class PlayActivity : BaseActivity(),
         setupViewModel()
         setupPage()
         setupObserve()
-//        setupView(channelId)
     }
 
     override fun onResume() {
@@ -137,13 +136,6 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onNewChannel(channelId: String?) {
-//        supportFragmentManager.beginTransaction()
-//                .replace(R.id.fl_fragment, getFragment(channelId.orEmpty()), PLAY_FRAGMENT_TAG)
-//                .commit()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     override fun onEnterPiPMode() {
@@ -203,10 +195,6 @@ class PlayActivity : BaseActivity(),
                 .build()
                 .inject(this)
     }
-
-//    private fun getFragment(channelId: String?): Fragment {
-//        return getPlayFragment(channelId)
-//    }
 
     private fun setupViewModel() {
         val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
