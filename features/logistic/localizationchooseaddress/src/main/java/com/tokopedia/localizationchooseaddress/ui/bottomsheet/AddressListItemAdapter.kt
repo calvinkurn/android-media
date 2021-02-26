@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListVisitable
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.OtherAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.unifycomponents.CardUnify
@@ -18,7 +19,6 @@ import com.tokopedia.unifyprinciples.Typography
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.BaseViewHolder<*>>() {
 
     var addressList = mutableListOf<ChosenAddressListVisitable>()
-    private var selectedPosition = RecyclerView.NO_POSITION
 
     interface AddressListItemAdapterListener {
         fun onItemClicked(address: ChosenAddressList)
@@ -90,10 +90,9 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
         }
 
         private fun setSelectedData(data: ChosenAddressList) {
-            val localAddrId = chooseAddressPref.getLocalCacheData()?.address_id
+            val localAddr = chooseAddressPref.getLocalCacheData()
 
-            //temporary, compare || isStateChosenAddress
-            if (localAddrId == data.addressId) {
+            if (dataIsSame(localAddr, data)) {
                 cardAddress.hasCheckIcon = true
                 cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 cardAddress.setOnClickListener(null)
@@ -104,6 +103,15 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             }
         }
 
+    }
+
+    private fun dataIsSame(localCacheModel: LocalCacheModel?, data: ChosenAddressList): Boolean {
+        var validate = true
+        if (localCacheModel?.address_id != data.addressId) validate = false
+        if (localCacheModel?.city_id != data.cityId) validate = false
+        if (localCacheModel?.district_id != data.districtId) validate = false
+        if (localCacheModel?.postal_code != data.postalCode) validate = false
+        return validate
     }
 
     inner class OtherAddressViewHolder(itemView: View) : AddressListItemAdapter.BaseViewHolder<ChosenAddressListVisitable>(itemView) {

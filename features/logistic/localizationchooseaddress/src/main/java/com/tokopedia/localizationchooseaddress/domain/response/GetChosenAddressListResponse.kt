@@ -9,7 +9,7 @@ data class GetChosenAddressListQglResponse (
 
 data class GetChosenAddressListResponse(
         @SerializedName("data")
-        var addressList: List<ChosenAddressListResponse> = listOf(),
+        var addressList: List<ChosenAddressListResponse> = emptyList(),
         @SerializedName("status")
         var status: String = "",
         @SerializedName("server_process_time")
@@ -47,7 +47,7 @@ data class ChosenAddressListResponse(
         var districtName: String = "",
         @SerializedName("status")
         var status: Int = 0,
-        @SerializedName("coountry")
+        @SerializedName("country")
         var country: String = "",
         @SerializedName("latitude")
         var latitude: String = "",
