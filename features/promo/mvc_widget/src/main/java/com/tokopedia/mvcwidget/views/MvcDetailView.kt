@@ -199,14 +199,16 @@ class MvcDetailView @JvmOverloads constructor(
     fun setupData(response: TokopointsCatalogMVCListResponse) {
         var removeTickerTopMargin = false
         val tempList = arrayListOf<MvcListItem>()
+
         response.data?.followWidget?.let {
             if (it.isShown == true) {
-                tempList.add(it)
+                tempList.add(0,it)
             } else {
                 removeTickerTopMargin = true
             }
         }
 
+        val tempCouponList = arrayListOf<MvcListItem>()
         response.data?.catalogList?.forEach {
             var quotaTextLength = 0
             if (it != null) {
@@ -227,13 +229,17 @@ class MvcDetailView @JvmOverloads constructor(
                 spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
                         ?: "", spannableString2)
-                tempList.add(mvcListItem)
+                tempCouponList.add(mvcListItem)
             }
         }
 
         val shopName = response.data?.shopName
-        if (!tempList.isNullOrEmpty() && !shopName.isNullOrEmpty()) {
+        if (!tempCouponList.isNullOrEmpty() && !shopName.isNullOrEmpty()) {
             tempList.add(TickerText(shopName, removeTickerTopMargin))
+        }
+
+        if(!tempCouponList.isNullOrEmpty()){
+            tempList.addAll(tempCouponList)
         }
 
         adapter.updateList(tempList)

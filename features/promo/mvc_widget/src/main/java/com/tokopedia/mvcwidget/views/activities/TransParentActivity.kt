@@ -68,7 +68,7 @@ class TransParentActivity : BaseActivity() {
             bottomSheet.bottomSheetTitle.setMargin(titleMargin, 0, 0, 0)
         }
 
-        bottomSheet.setOnDismissListener {
+        bottomSheet.setCloseClickListener {
             finish()
             Tracker.closeMainBottomSheet(shopId,UserSession(this).userId,mvcSource)
         }
