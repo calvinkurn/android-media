@@ -434,7 +434,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         if (isFreeOngkirActive && hasLabelGroupFulfillment()) {
             return "bebas ongkir extra";
         }
-        else if (isFreeOngkirActive) {
+        else if (isFreeOngkirActive && !hasLabelGroupFulfillment()) {
             return "bebas ongkir";
         }
         else {

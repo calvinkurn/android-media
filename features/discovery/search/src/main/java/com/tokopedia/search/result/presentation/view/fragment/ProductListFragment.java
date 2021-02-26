@@ -695,10 +695,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item) {
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item);
+        presenter.onProductImpressed(item, adapterPosition);
     }
 
     @Override
@@ -1316,19 +1316,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
-        if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, this::onFreeOngkirOnBoardingShown);
-        }
-    }
-
-    private void onFreeOngkirOnBoardingShown() {
-        if (presenter != null) {
-            presenter.onFreeOngkirOnBoardingShown();
-        }
-    }
-
-    @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
         if (getActivity() == null || redirectionListener == null) return;
 
@@ -1636,20 +1623,16 @@ public class ProductListFragment
     public void showOnBoarding(int firstProductPositionWithBOELabel) {
         if (recyclerView == null || getContext() == null) return;
 
-        recyclerView.post(() -> {
-            View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
+        View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
 
-            if (productWithBOELabel != null) recyclerView.smoothScrollToPosition(firstProductPositionWithBOELabel);
+        recyclerView.postDelayed(() -> {
+            ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(productWithBOELabel);
 
-            recyclerView.postDelayed(() -> {
-                ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(productWithBOELabel);
+            if (coachMark2ItemList.size() <= 0) return;
 
-                if (coachMark2ItemList.size() <= 0) return;
-
-                CoachMark2 coachMark = new CoachMark2(getContext());
-                coachMark.showCoachMark(coachMark2ItemList, null, 0);
-            }, 200);
-        });
+            CoachMark2 coachMark = new CoachMark2(getContext());
+            coachMark.showCoachMark(coachMark2ItemList, null, 0);
+        }, 200);
     }
 
     private View getFirstProductWithBOELabel(int firstProductPositionWithBOELabel) {

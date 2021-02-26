@@ -313,11 +313,12 @@ public class TopAdsGtmTracker {
 
     private static String setFreeOngkirDataLayer(Product item) {
         boolean isFreeOngkirActive = isFreeOngkirActive(item);
+        boolean hasLabelGroupFulfillment = hasLabelGroupFulfillment(item.getLabelGroupList());
 
-        if (isFreeOngkirActive && hasLabelGroupFulfillment(item.getLabelGroupList())) {
+        if (isFreeOngkirActive && hasLabelGroupFulfillment) {
             return "bebas ongkir extra";
         }
-        else if (isFreeOngkirActive) {
+        else if (isFreeOngkirActive && !hasLabelGroupFulfillment) {
             return "bebas ongkir";
         }
         else {

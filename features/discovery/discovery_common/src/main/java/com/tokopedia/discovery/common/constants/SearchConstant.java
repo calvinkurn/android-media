@@ -162,7 +162,6 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
-        String BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN = "BEBAS_ONGKIR_EXTRA_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {

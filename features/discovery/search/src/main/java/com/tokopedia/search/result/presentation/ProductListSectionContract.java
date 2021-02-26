@@ -90,8 +90,6 @@ public interface ProductListSectionContract {
 
         void setDefaultLayoutType(int defaultView);
 
-        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
@@ -225,15 +223,13 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item);
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
 
         void getProductCount(Map<String, String> mapParameter);
-
-        void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
 
