@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.pinned.voucher.adapter.delegate
+package com.tokopedia.play.ui.pinnedvoucher.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup

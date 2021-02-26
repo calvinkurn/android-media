@@ -13,6 +13,7 @@ data class MerchantVoucherUiModel(
         val description: String,
         val code: String,
         val copyable: Boolean,
+        val highlighted: Boolean
 ) : PlayVoucherUiModel()
 
 object VoucherPlaceholderUiModel : PlayVoucherUiModel()

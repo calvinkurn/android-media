@@ -25,7 +25,6 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
@@ -104,8 +103,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiP
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
-    val observablePinnedVoucher: LiveData<PlayResult<List<PlayVoucherUiModel>>> /**Added**/
-        get() = _observablePinnedVoucher
 
     val videoOrientation: VideoOrientation
         get() {
@@ -235,7 +232,6 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
-    private val _observablePinnedVoucher = MutableLiveData<PlayResult<List<PlayVoucherUiModel>>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -897,7 +893,6 @@ class PlayViewModel @Inject constructor(
                 _observableProductSheetContent.value = PlayResult.Failure(it) {
                     updateProductTagsInfo(productTags, pinnedInfo, channelId)
                 }
-                _observablePinnedVoucher.value = PlayResult.Failure(it)
             })
         }
     }
@@ -960,16 +955,12 @@ class PlayViewModel @Inject constructor(
                 showPlaceholder = true
         )
 
-        _observablePinnedVoucher.value = PlayResult.Loading(showPlaceholder = true) // TODO("rapihin met")
-
         val productTagsResponse = withContext(dispatchers.io) {
             getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
             getProductTagItemsUseCase.executeOnBackground()
         }
         val productTags = playUiModelMapper.mapProductTags(productTagsResponse.listOfProducts)
         val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.listOfVouchers)
-
-        _observablePinnedVoucher.value = PlayResult.Success(merchantVouchers) // TODO("map only the highlighted voucher")
 
         val newProductSheet = PlayProductTagsUiModel.Complete(
                 basicInfo = productTagsBasicInfo,

@@ -51,8 +51,8 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -112,6 +112,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
+    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
     private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
@@ -119,7 +120,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
-    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -504,7 +504,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
-        observePinnedVoucher()
         observeProductContent()
 
         observeLoggedInInteractionEvent()
@@ -752,22 +751,15 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observePinnedVoucher() {
-        playViewModel.observablePinnedVoucher.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> if (it.showPlaceholder) pinnedVoucherView?.showPlaceholder()
-                is PlayResult.Success -> pinnedVoucherView?.setVoucher(it.data)
-                is PlayResult.Failure -> {
-                    // TODO("error handling, ask praisya")
-                }
-            }
-        })
-    }
-
     private fun observeProductContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
-                is PlayResult.Loading -> if (it.showPlaceholder) productFeaturedView?.showPlaceholder()
+                is PlayResult.Loading -> {
+                    if (it.showPlaceholder) {
+                        pinnedVoucherView?.showPlaceholder()
+                        productFeaturedView?.showPlaceholder()
+                    }
+                }
             }
         })
     }
@@ -1168,13 +1160,21 @@ class PlayUserInteractionFragment @Inject constructor(
         when (pinnedModel) {
             is PlayPinnedUiModel.PinnedProduct -> {
                 if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
+                    pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
                     productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
                 }
 
-                if (!bottomInsets.isAnyShown) productFeaturedView?.show()
-                else productFeaturedView?.hide()
+                if (!bottomInsets.isAnyShown) {
+                    pinnedVoucherView?.show()
+                    productFeaturedView?.show()
+                } else {
+                    pinnedVoucherView?.show()
+                    productFeaturedView?.hide()
+                }
+            } else -> {
+                pinnedVoucherView?.hide()
+                productFeaturedView?.hide()
             }
-            else -> productFeaturedView?.hide()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.pinned.voucher.viewholder
+package com.tokopedia.play.ui.pinnedvoucher.viewholder
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView

@@ -1,9 +1,9 @@
-package com.tokopedia.play.ui.pinned.voucher.adapter
+package com.tokopedia.play.ui.pinnedvoucher.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.ui.pinned.voucher.adapter.delegate.PinnedVoucherAdapterDelegate
-import com.tokopedia.play.ui.pinned.voucher.adapter.delegate.PinnedVoucherPlaceholderAdapterDelegate
-import com.tokopedia.play.ui.pinned.voucher.viewholder.PinnedVoucherViewHolder
+import com.tokopedia.play.ui.pinnedvoucher.adapter.delegate.PinnedVoucherAdapterDelegate
+import com.tokopedia.play.ui.pinnedvoucher.adapter.delegate.PinnedVoucherPlaceholderAdapterDelegate
+import com.tokopedia.play.ui.pinnedvoucher.viewholder.PinnedVoucherViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
 

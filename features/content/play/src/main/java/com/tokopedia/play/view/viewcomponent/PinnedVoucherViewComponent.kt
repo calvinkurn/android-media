@@ -2,13 +2,12 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.pinned.voucher.adapter.PinnedVoucherAdapter
-import com.tokopedia.play.ui.pinned.voucher.viewholder.PinnedVoucherViewHolder
+import com.tokopedia.play.ui.pinnedvoucher.adapter.PinnedVoucherAdapter
+import com.tokopedia.play.ui.pinnedvoucher.viewholder.PinnedVoucherViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -39,20 +38,29 @@ class PinnedVoucherViewComponent(
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
-        pinnedVoucherAdapter.setItemsAndAnimateChanges(vouchers)
+        pinnedVoucherAdapter.setItemsAndAnimateChanges(getHighlightedItems(vouchers))
 
         if (vouchers.isEmpty()) rvPinnedVoucherList.hide()
         else rvPinnedVoucherList.show()
     }
 
     fun showPlaceholder() {
-        setVoucher(
-                List(1) { VoucherPlaceholderUiModel }
-        )
+        setVoucher(List(TOTAL_PLACEHOLDER) { VoucherPlaceholderUiModel })
+    }
+
+    private fun getHighlightedItems(vouchers: List<PlayVoucherUiModel>) : List<PlayVoucherUiModel> {
+        return if (vouchers.isNotEmpty()) {
+            if (vouchers.first() is MerchantVoucherUiModel) vouchers.filter { (it as MerchantVoucherUiModel).highlighted }
+            else vouchers
+        } else vouchers
     }
 
     interface Listener {
 
         fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel)
+    }
+
+    companion object {
+        private const val TOTAL_PLACEHOLDER = 1
     }
 }
