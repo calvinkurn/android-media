@@ -15,7 +15,7 @@ class ChooseAddressMapper @Inject constructor() {
                     it.addressName,
                     it.address1,
                     it.address2,
-                    it.postalCode.toString(),
+                    it.postalCode,
                     it.provinceId.toString(),
                     it.cityId.toString(),
                     it.districtId.toString(),

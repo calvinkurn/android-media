@@ -14,19 +14,19 @@ import com.tokopedia.user.session.UserSessionInterface
 object ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        if(isRollOutUser(context)){
-            if(isLoginUser(context)){
-                if(hasLocalizingAddressOnCache(context)){
-                    var chooseAddressPref = ChooseAddressSharePref(context)
-                    return chooseAddressPref.getLocalCacheData()
-                }else{
-                    return ChooseAddressConstant.emptyAddress
+        return if (isRollOutUser(context)) {
+            if (hasLocalizingAddressOnCache(context)) {
+                val chooseAddressPref = ChooseAddressSharePref(context)
+                chooseAddressPref.getLocalCacheData()
+            } else {
+                if (isLoginUser(context)) {
+                    ChooseAddressConstant.emptyAddress
+                } else {
+                    ChooseAddressConstant.defaultAddress
                 }
-            }else{
-                return ChooseAddressConstant.defaultAddress
             }
-        }else{
-            return ChooseAddressConstant.emptyAddress
+        } else {
+            ChooseAddressConstant.emptyAddress
         }
     }
 

@@ -436,18 +436,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setChoosenAddress() {
-/*        _selectedAddressItem?.let { addr ->
-            context?.let { ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addr.id,
-                    cityId = addr.cityId,
-                    districtId = addr.destinationDistrictId,
-                    lat = addr.latitude,
-                    long = addr.longitude,
-                    addressName = addr.addressName,
-                    postalCode = addr.postalCode) }
-        }*/
-
         if (isLocalization == true) {
             ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
             val resultIntent = Intent().apply {
