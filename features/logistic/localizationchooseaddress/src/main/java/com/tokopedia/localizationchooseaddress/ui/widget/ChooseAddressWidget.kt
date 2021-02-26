@@ -164,6 +164,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
             val chooseAddressBottomSheet = ChooseAddressBottomSheet()
             chooseAddressBottomSheet.setListener(this)
+            chooseAddressBottomSheet.setShowListener {
+                chooseAddressBottomSheet.onShowBottomSheet()
+            }
             chooseAddressBottomSheet.show(fragment?.childFragmentManager)
         }
     }

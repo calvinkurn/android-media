@@ -47,6 +47,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +56,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 
-class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressComponent>,
+internal class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressComponent>,
         AddressListItemAdapter.AddressListItemAdapterListener, DialogInterface.OnShowListener{
 
     @Inject
@@ -65,7 +66,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: ChooseAddressViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[ChooseAddressViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ChooseAddressViewModel::class.java]
     }
 
     private val adapter = AddressListItemAdapter(this)
@@ -89,8 +90,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private val locationPermission = ACCESS_FINE_LOCATION
-    private var shouldShowGpsPopUp: Boolean? = false
+    // flag variable to ask permission
+    private var shouldShowGpsPopUp: Boolean = false
+    // state variable to prevent asking permission when a permission dialog is showing
+    private var isCurrentlyAskingPermission: Boolean = false
+    // flag variable for asking permission after bottom sheet is shown
+    private var hasBottomSheetShown: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,74 +112,15 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         super.onViewCreated(view, savedInstanceState)
         initData()
         setInitialViewState()
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn && false) {
             initObserver()
         } else setViewState(false)
-        showGpsPopUp()
-    }
-
-    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        println("++ onActivityCreated")
-        *//*if (!checkLocationPermission()) {
-            println("++ !checkLocationPermission()")
-            requestLocationPermission()
-        } else {
-            getLocation()
-        }*//*
-    }*/
-
-    private fun checkLocationPermission(): Boolean {
-        getPermissions().forEach {
-            if (context?.let { it1 -> ContextCompat.checkSelfPermission(it1, it) } != PackageManager.PERMISSION_GRANTED) {
-                return false
-            }
-        }
-        return true
     }
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
-    }
-
-    private fun requestLocationPermission() {
-        // optional implementation of shouldShowRequestPermissionRationale
-        if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, locationPermission) } == true) {
-            context?.let {
-                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(getString(R.string.permission_title))
-                dialog.setDescription(getString(R.string.rationale_need_location))
-                dialog.setPrimaryCTAText(getString(R.string.permission_btn_ok))
-                dialog.setSecondaryCTAText(getString(R.string.permission_cancel))
-                dialog.setCancelable(true)
-                dialog.setPrimaryCTAClickListener {
-                    // ActivityCompat.requestPermissions(activity, arrayOf(locationPermission), REQUEST_LOCATION_PERMISSION)
-                    dialog.dismiss()
-                }
-                dialog.setSecondaryCTAClickListener {
-                    dialog.dismiss()
-                }
-                dialog.show()
-                // sampe sini
-                /*AlertDialog.Builder(it)
-                        .setMessage("Need location permission to get current place")
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            // ActivityCompat.requestPermissions(activity!!, locationPermissions, REQUEST_LOCATION_PERMISSION)
-                            requestPermissions(arrayOf(locationPermission), REQUEST_LOCATION_PERMISSION)
-                        }
-                        .setNegativeButton(android.R.string.cancel) { _, _ ->
-                            dismiss()
-                        }
-                        .show()*/
-            }
-        }
-        else {
-            // ActivityCompat.requestPermissions(activity!!, locationPermissions, REQUEST_LOCATION_PERMISSION)
-            requestPermissions(arrayOf(locationPermission), REQUEST_LOCATION_PERMISSION)
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -271,7 +217,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun initObserver() {
-        viewModel.chosenAddressList.observe(viewLifecycleOwner, Observer {
+        viewModel.chosenAddressList.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     adapter.updateData(it.data)
@@ -285,7 +231,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         })
 
 
-        viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
+        viewModel.setChosenAddress.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_SUCCESS)
@@ -313,7 +259,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
         })
 
-        viewModel.getDefaultAddress.observe(viewLifecycleOwner, Observer {
+        viewModel.getDefaultAddress.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val data = it.data.addressData
@@ -370,6 +316,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 noAddressLayout?.visible()
                 loginLayout?.gone()
                 shouldShowGpsPopUp = true
+                showGpsPopUp()
             } else {
                 progressBar?.gone()
                 txtLocalization?.visible()
@@ -522,27 +469,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         fun onLocalizingAddressLoginSuccessBottomSheet()
     }
 
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        var isAllowed = false
-        for (i in permissions.indices) {
-            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                isAllowed = true
-                break
-            }
-        }
-        if (isAllowed) {
-            fusedLocationClient = context?.let { FusedLocationProviderClient(it) }
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    setStateWithLocation(location)
-                }
-            }
-        } else {
-            // setViewLocationDisabled(userSession.isLoggedIn)
-        }
+        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
     private fun setStateWithLocation(location: Location) {
@@ -561,13 +490,24 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showGpsPopUp() {
-        if (shouldShowGpsPopUp == true) {
-            if (!checkLocationPermission()) {
-                println("++ !checkLocationPermission()")
-                requestLocationPermission()
-            } else {
-                getLocation()
-            }
+        if (shouldShowGpsPopUp && hasBottomSheetShown && !isCurrentlyAskingPermission) {
+            isCurrentlyAskingPermission = true
+            permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    setViewLocationDisabled(userSession.isLoggedIn)
+                    isCurrentlyAskingPermission = false
+                }
+
+                override fun onNeverAskAgain(permissionText: String) {
+                    setViewLocationDisabled(userSession.isLoggedIn)
+                    isCurrentlyAskingPermission = false
+                }
+
+                override fun onPermissionGranted() {
+                    getLocation()
+                    isCurrentlyAskingPermission = false
+                }
+            })
         }
     }
 
@@ -583,5 +523,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onShow(p0: DialogInterface?) {
         println("++ onShow!!")
+    }
+
+    // This is a workaround to make sure Permissions Dialog is shown after the bottom sheet is shown
+    fun onShowBottomSheet() {
+        hasBottomSheetShown = true
+        showGpsPopUp()
     }
 }

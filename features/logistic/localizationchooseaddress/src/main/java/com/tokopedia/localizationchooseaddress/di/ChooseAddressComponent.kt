@@ -7,7 +7,7 @@ import dagger.Component
 
 @ChooseAddressScope
 @Component(modules = [ChooseAddressModule::class, ChooseAddressViewModelModule::class], dependencies = [BaseAppComponent::class])
-interface ChooseAddressComponent  {
+internal interface ChooseAddressComponent  {
     fun inject(chooseAddressWidget: ChooseAddressWidget)
     fun inject(fragment: ChooseAddressBottomSheet)
 }
