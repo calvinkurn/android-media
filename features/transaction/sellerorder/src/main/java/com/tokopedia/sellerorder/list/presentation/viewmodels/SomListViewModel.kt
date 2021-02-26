@@ -3,11 +3,11 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -22,8 +22,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -34,7 +36,7 @@ class SomListViewModel @Inject constructor(
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         userSession: UserSessionInterface,
-        dispatcher: SomDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
         private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
         private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
@@ -217,12 +219,16 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        getFiltersJob?.cancel()
-        getFiltersJob = launchCatchError(block = {
-            val result = somListGetFilterListUseCase.executeOnBackground().apply { refreshOrder = refreshOrders }
-            _filterResult.postValue(Success(result))
+        if (somListGetFilterListUseCase.isFirstLoad) {
+            somListGetFilterListUseCase.isFirstLoad = false
+            launchCatchError(context = dispatcher.main, block = {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+            }, onError = {})
+        }
+        launchCatchError(context = dispatcher.main, block = {
+            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
         }, onError = {
-            _filterResult.postValue(Fail(it))
+            _filterResult.value = Fail(it)
         })
     }
 
@@ -263,11 +269,15 @@ class SomListViewModel @Inject constructor(
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
                 getUserRolesJob()?.join()
                 getFiltersJob?.join()
-                refreshOrderJobs.remove(refreshOrder)
-                _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                withContext(dispatcher.main) {
+                    refreshOrderJobs.remove(refreshOrder)
+                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                }
             }, onError = {
-                _refreshOrderResult.value = Fail(it)
-                containsFailedRefreshOrder = true
+                withContext(dispatcher.main) {
+                    _refreshOrderResult.value = Fail(it)
+                    containsFailedRefreshOrder = true
+                }
             })
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
@@ -340,4 +350,8 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
+
+    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
+        return this.getOrderListParams.statusList != orderStatusIds
+    }
 }
