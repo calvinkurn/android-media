@@ -36,7 +36,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
         try {
             val data = AnalyticsLogData(
                     source = source,
-                    category = mapData["eventCategory"] as String?,
                     name = name,
                     data = URLDecoder.decode(gson.toJson(mapData)
                             .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
@@ -62,7 +61,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
         gtmErrorLogDB.timestamp = System.currentTimeMillis()
         if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
             val data = AnalyticsLogData(
-                    category = "",
                     name = "error GTM v5",
                     data = errorData
             )

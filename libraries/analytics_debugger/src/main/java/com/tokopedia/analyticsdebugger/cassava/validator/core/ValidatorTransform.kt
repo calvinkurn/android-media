@@ -21,5 +21,5 @@ internal fun JsonMap.toJson(): String =
                 .toJson(this)
 
 internal fun GtmLogDB.toUiModel() = GtmLogUi(
-        this.id, this.data, this.name, this.category, this.timestamp
+        this.id, this.data, this.name, this.timestamp
 )

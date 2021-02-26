@@ -24,9 +24,6 @@ data class GtmLogDB (
     @ColumnInfo(name = "name")
     var name: String? = null,
 
-    @ColumnInfo(name = "category")
-    var category: String? = null,
-
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0,
 

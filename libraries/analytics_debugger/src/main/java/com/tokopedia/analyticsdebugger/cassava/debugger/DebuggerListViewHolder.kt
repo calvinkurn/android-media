@@ -13,7 +13,6 @@ import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 class DebuggerListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val eventName: TextView = itemView.findViewById(R.id.text_event_name)
-    private val eventCategory: TextView = itemView.findViewById(R.id.text_event_category)
     private val data: TextView = itemView.findViewById(R.id.text_data_excerpt)
     private val timestamp: TextView = itemView.findViewById(R.id.text_timestamp)
 
@@ -25,20 +24,12 @@ class DebuggerListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             eventName.text = name
             eventName.visibility = View.VISIBLE
         }
-
-        val category = element.category
-        if (TextUtils.isEmpty(category)) {
-            eventCategory.visibility = View.GONE
-        } else {
-            eventCategory.text = category
-            eventCategory.visibility = View.VISIBLE
-        }
         data.text = formatDataExcerpt(element.data)
         timestamp.text = Utils.getTimeStampFormat(element.timestamp)
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_analytics_debugger
+        val LAYOUT = R.layout.item_debugger_list
     }
 }

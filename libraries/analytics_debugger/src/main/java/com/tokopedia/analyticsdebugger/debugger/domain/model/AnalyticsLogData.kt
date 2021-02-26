@@ -8,6 +8,5 @@ import com.tokopedia.analyticsdebugger.AnalyticsSource
 data class AnalyticsLogData (
     var data: String? = null,
     var name: String? = null,
-    var category: String? = null,
     @AnalyticsSource var source: String? = null
 )

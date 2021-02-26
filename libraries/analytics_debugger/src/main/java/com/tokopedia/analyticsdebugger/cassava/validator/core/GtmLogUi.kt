@@ -8,12 +8,10 @@ data class GtmLogUi(
         var id: Long = 0,
         var data: String? = null,
         var name: String? = null,
-        var category: String? = null,
         var timestamp: Long = 0
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readLong(),
-            source.readString(),
             source.readString(),
             source.readString(),
             source.readLong()
@@ -25,7 +23,6 @@ data class GtmLogUi(
         writeLong(id)
         writeString(data)
         writeString(name)
-        writeString(category)
         writeLong(timestamp)
     }
 

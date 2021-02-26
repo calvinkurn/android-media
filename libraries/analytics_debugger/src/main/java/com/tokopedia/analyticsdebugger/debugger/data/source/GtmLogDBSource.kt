@@ -32,7 +32,6 @@ constructor(context: Context) {
         return Observable.just(data).map { analyticsLogData ->
             val gtmLogDB = GtmLogDB()
             gtmLogDB.name = analyticsLogData.name
-            gtmLogDB.category = analyticsLogData.category
             gtmLogDB.data = analyticsLogData.data
             gtmLogDB.timestamp = Date().time
             gtmLogDB.source = data.source

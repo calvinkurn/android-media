@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.debugger.ui.viewholder.AnalyticsDebuggerViewHolder
 
 class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(DIFF_CALLBACK) {
 
@@ -18,7 +17,7 @@ class DebuggerListAdapter() : ListAdapter<GtmLogDB, DebuggerListViewHolder>(DIFF
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebuggerListViewHolder {
         val vh = LayoutInflater.from(parent.context)
-                .inflate(AnalyticsDebuggerViewHolder.LAYOUT, parent, false)
+                .inflate(DebuggerListViewHolder.LAYOUT, parent, false)
         return DebuggerListViewHolder(vh).apply {
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {

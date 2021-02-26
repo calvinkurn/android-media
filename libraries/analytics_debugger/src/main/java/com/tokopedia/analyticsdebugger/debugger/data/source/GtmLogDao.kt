@@ -27,7 +27,7 @@ interface GtmLogDao {
     fun insertAll(vararg gtmLogDbs: GtmLogDB)
 
     @Query("SELECT * FROM gtm_log WHERE name LIKE :keyword OR data LIKE :keyword " +
-            "OR category LIKE :keyword ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
+            "ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
     fun getData(keyword: String, offset: Int, limit: Int = PER_PAGE): List<GtmLogDB>
 
     @Query("SELECT * FROM gtm_log")
