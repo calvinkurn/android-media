@@ -106,6 +106,7 @@ class CheckableImageButton @JvmOverloads constructor(
         }
 
         companion object {
+            @JvmField
             val CREATOR: Parcelable.Creator<SavedState> = object : ClassLoaderCreator<SavedState> {
                 override fun createFromParcel(`in`: Parcel, loader: ClassLoader): SavedState {
                     return SavedState(`in`, loader)
