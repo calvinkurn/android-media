@@ -77,6 +77,7 @@ class RechargeCCInstrumentTest {
         onView(withId(R.id.cc_button_next)).perform(click())
         onView(withText(R.string.cc_title_dialog))
                 .check(matches(isDisplayed()))
+        Thread.sleep(1000)
 
         onView(allOf(withText(R.string.cc_cta_btn_primary), isDisplayed()))
                 .perform(click())
@@ -86,6 +87,7 @@ class RechargeCCInstrumentTest {
         onView(withId(R.id.cc_button_next)).perform(click())
         onView(withText(R.string.cc_title_dialog))
                 .check(matches(isDisplayed()))
+        Thread.sleep(1000)
 
         onView(allOf(withText(R.string.cc_cta_btn_secondary), isDisplayed()))
                 .perform(click())
@@ -104,6 +106,7 @@ class RechargeCCInstrumentTest {
         typeCreditCardNumber(VALID_CC_NUMBER)
         Thread.sleep(500)
         onView(withId(R.id.cc_button_next)).check(matches(isEnabled()))
+        Thread.sleep(2000)
     }
 
 
@@ -114,6 +117,7 @@ class RechargeCCInstrumentTest {
         Thread.sleep(500)
         onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
         onView(withText(R.string.cc_error_invalid_number)).check(matches(isDisplayed()))
+        Thread.sleep(2000)
     }
 
     @Test
