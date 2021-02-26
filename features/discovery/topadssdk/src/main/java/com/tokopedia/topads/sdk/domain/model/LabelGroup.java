@@ -99,6 +99,6 @@ public class LabelGroup implements Parcelable {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return imageUrl == null ? "" : imageUrl;
     }
 }
