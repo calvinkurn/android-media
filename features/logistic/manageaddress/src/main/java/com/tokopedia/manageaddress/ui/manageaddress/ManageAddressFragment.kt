@@ -179,7 +179,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         buttonChooseAddress = view?.findViewById(R.id.btn_choose_address)
         buttonChooseAddress?.setOnClickListener {
-            setChoosenAddress()
+            setChosenAddress()
         }
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
@@ -435,7 +435,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
 
-    private fun setChoosenAddress() {
+    private fun setChosenAddress() {
         if (isLocalization == true) {
             ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
             val resultIntent = Intent().apply {

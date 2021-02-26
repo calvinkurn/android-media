@@ -1,11 +1,8 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
-import com.google.gson.annotations.SerializedName
-
 data class DefaultChosenAddressModel(
         var addressData: DefaultChosenAddress = DefaultChosenAddress(),
         var keroAddrError: KeroDefaultAddressError = KeroDefaultAddressError()
-
 )
 
 data class DefaultChosenAddress(
@@ -14,7 +11,7 @@ data class DefaultChosenAddress(
         var addressName: String = "",
         var address1: String = "",
         var address2: String = "",
-        var postalCode: Int = 0,
+        var postalCode: String = "",
         var provinceId: Int = 0,
         var cityId: Int = 0,
         var districtId: Int = 0,
