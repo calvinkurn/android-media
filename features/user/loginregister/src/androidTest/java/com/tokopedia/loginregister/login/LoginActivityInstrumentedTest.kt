@@ -108,8 +108,6 @@ class LoginActivityInstrumentedTest {
         onLoginViaPhone()
         onRegisterFooterSpannableClick()
         clickGoogleLogin()
-        Thread.sleep(500)
-        onClickButtonMasuk()
 
         Thread.sleep(500)
 
@@ -193,11 +191,5 @@ class LoginActivityInstrumentedTest {
 
     fun onRegisterFooterSpannableClick(){
         onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
-    }
-
-    fun onClickButtonMasuk(){
-        setInputEmailPhone()
-        Thread.sleep(500)
-        onView(allOf(withId(R.id.register_btn))).perform(click())
     }
 }
