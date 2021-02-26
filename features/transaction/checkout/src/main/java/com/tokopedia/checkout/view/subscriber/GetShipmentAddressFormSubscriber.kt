@@ -44,6 +44,11 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
             view.hideInitialLoading()
         }
 
+        validateShipmentAddressFormData(cartShipmentAddressFormData)
+        view.stopTrace()
+    }
+
+    private fun validateShipmentAddressFormData(cartShipmentAddressFormData: CartShipmentAddressFormData?) {
         if (cartShipmentAddressFormData == null) {
             view.onShipmentAddressFormEmpty()
         } else {
@@ -67,7 +72,6 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                 }
             }
         }
-        view.stopTrace()
     }
 
     private fun validateRenderCheckoutPage(cartShipmentAddressFormData: CartShipmentAddressFormData, userAddress: UserAddress) {
