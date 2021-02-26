@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -50,6 +51,9 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -76,6 +80,7 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
+import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
@@ -146,7 +151,8 @@ public class ProductListFragment
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
         SearchNavigationClickListener,
-        TopAdsImageViewListener  {
+        TopAdsImageViewListener,
+        ChooseAddressListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -322,6 +328,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
+                this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -420,6 +427,13 @@ public class ProductListFragment
         }
 
         return null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (presenter != null) presenter.onViewResumed();
     }
 
     @Override
@@ -1847,5 +1861,50 @@ public class ProductListFragment
         if (getContext() == null) return;
 
         RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
+    }
+
+    @Override
+    public void onLocalizingAddressSelected() {
+        if (presenter != null)
+            presenter.onLocalizingAddressSelected();
+    }
+
+    @NotNull
+    @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
+    public boolean isChooseAddressWidgetEnabled() {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isRollOutUser(getContext());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public LocalCacheModel getChooseAddressData() {
+        if (getContext() == null) return ChooseAddressConstant.Companion.getEmptyAddress();
+
+        try {
+            return ChooseAddressUtils.INSTANCE.getLocalizingAddressData(getContext());
+        } catch (Exception e) {
+            return ChooseAddressConstant.Companion.getEmptyAddress();
+        }
+    }
+
+    @Override
+    public boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData) {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isLocalizingAddressHasUpdated(getContext(), currentChooseAddressData);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
