@@ -569,7 +569,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register appLink then should return empty in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/registration"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, "")
     }
 
