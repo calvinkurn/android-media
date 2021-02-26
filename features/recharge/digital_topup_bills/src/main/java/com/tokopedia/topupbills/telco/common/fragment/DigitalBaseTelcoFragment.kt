@@ -30,6 +30,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.common.util.GqlQuery
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
@@ -213,8 +214,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco), getTelcoMenuId())
+        viewModel.getPrefixOperator(GqlQuery.prefixSelectTelco, getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
