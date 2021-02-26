@@ -22,7 +22,7 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".validator.MainValidatorActivity"
+            android:name="com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity"
             android:exported="true"
             android:label="Analytics Validator"
             android:launchMode="singleTask"

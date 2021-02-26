@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.cassava.validator
 
 import android.content.Context
 import com.google.gson.Gson

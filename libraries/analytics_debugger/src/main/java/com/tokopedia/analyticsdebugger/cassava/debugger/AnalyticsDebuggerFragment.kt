@@ -18,8 +18,8 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
 import com.tokopedia.analyticsdebugger.cassava.throttleFirst
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
-import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
-import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow

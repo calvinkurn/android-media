@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.main
+package com.tokopedia.analyticsdebugger.cassava.validator.main
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -9,9 +9,9 @@ import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
-import com.tokopedia.analyticsdebugger.validator.core.Validator
-import com.tokopedia.analyticsdebugger.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

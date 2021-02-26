@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.core
+package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.tokopedia.VALID_QUERY
 import com.tokopedia.VALID_QUERY_NO_README

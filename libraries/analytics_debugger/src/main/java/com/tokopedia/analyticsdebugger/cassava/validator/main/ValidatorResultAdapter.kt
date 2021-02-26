@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.main
+package com.tokopedia.analyticsdebugger.cassava.validator.main
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Status
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 
 class ValidatorResultAdapter(private val listener: (Validator) -> Unit)
     : RecyclerView.Adapter<ValidatorResultAdapter.ResultItemViewHolder>() {

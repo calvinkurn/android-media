@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.detail
+package com.tokopedia.analyticsdebugger.cassava.validator.detail
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
+import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import java.util.ArrayList
 
 class ValidatorDetailFragment : Fragment() {

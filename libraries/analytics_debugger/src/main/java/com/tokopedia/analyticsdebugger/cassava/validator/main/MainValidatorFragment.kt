@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.main
+package com.tokopedia.analyticsdebugger.cassava.validator.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.validator.Utils
-import com.tokopedia.analyticsdebugger.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import timber.log.Timber
 
 class MainValidatorFragment : Fragment() {

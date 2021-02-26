@@ -3,11 +3,11 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils
-import com.tokopedia.analyticsdebugger.validator.core.Validator
-import com.tokopedia.analyticsdebugger.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.validator.core.toCassavaQuery
-import com.tokopedia.analyticsdebugger.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toCassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import rx.Observable
 import rx.schedulers.Schedulers
 

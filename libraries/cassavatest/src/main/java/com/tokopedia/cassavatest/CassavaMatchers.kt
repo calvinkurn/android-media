@@ -1,7 +1,7 @@
 package com.tokopedia.cassavatest
 
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Status
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher

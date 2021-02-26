@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.core
+package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

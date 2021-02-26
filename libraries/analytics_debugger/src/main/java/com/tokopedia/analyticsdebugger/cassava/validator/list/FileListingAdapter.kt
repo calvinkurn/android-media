@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.list
+package com.tokopedia.analyticsdebugger.cassava.validator.list
 
 import android.view.LayoutInflater
 import android.view.View

@@ -13,7 +13,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
-import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
+import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
 import rx.schedulers.Schedulers

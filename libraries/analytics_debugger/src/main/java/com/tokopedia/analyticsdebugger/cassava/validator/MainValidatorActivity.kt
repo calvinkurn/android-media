@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.cassava.validator
 
 import android.content.Context
 import android.content.Intent
@@ -11,11 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
-import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailFragment
-import com.tokopedia.analyticsdebugger.validator.list.ValidatorListFragment
-import com.tokopedia.analyticsdebugger.validator.main.MainValidatorFragment
-import com.tokopedia.analyticsdebugger.validator.main.ValidatorViewModel
+import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
+import com.tokopedia.analyticsdebugger.cassava.validator.detail.ValidatorDetailFragment
+import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
+import com.tokopedia.analyticsdebugger.cassava.validator.main.MainValidatorFragment
+import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 
 class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listener, ValidatorListFragment.Listener {
 

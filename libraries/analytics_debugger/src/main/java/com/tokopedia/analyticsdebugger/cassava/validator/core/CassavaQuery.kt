@@ -1,7 +1,7 @@
-package com.tokopedia.analyticsdebugger.validator.core
+package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 
 data class CassavaQuery(
         val mode: QueryMode,

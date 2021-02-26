@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.core
+package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.google.gson.internal.LinkedTreeMap
 

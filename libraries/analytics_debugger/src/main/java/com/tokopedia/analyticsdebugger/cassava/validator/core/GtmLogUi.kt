@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.core
+package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import android.os.Parcel
 import android.os.Parcelable
