@@ -32,6 +32,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.DistrictRecommendationAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.INTENT_ADDRESS_SELECTED
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -141,7 +142,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
-                val discomModel = data?.getParcelableExtra<DistrictRecommendationAddressModel>("district_recommendation_address")
+                val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
                 val latitude = data?.getStringExtra("latitude")
                 val longitude = data?.getStringExtra("longitude")
                 if (discomModel != null) {
@@ -159,8 +160,19 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_ADDRESS_LIST -> {
-                listener?.onAddressDataChanged()
-                this.dismiss()
+                val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(INTENT_ADDRESS_SELECTED)
+                if (recipientAddress != null) {
+                    viewModel.setStateChosenAddress(
+                            status = 2,
+                            addressId = recipientAddress.id.toString(),
+                            receiverName = recipientAddress.recipientName,
+                            addressName = recipientAddress.addressName,
+                            latitude = recipientAddress.latitude,
+                            longitude = recipientAddress.longitude,
+                            districtId = recipientAddress.destinationDistrictId.toString(),
+                            postalCode = recipientAddress.postalCode
+                    )
+                }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
                 viewModel.getDefaultChosenAddress("", source)
@@ -196,6 +208,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         txtLocalization = child.findViewById(R.id.txt_bottomsheet_localization)
         contentLayout = child.findViewById(R.id.frame_content_layout)
         bottomLayout = child.findViewById(R.id.bottom_layout)
+        errorLayout = child.findViewById(R.id.error_state_layout)
         progressBar = child.findViewById(R.id.progress_bar)
 
         addressList?.adapter = adapter
@@ -220,7 +233,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
         })
-
 
         viewModel.setChosenAddress.observe(viewLifecycleOwner, {
             when (it) {

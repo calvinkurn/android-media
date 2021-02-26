@@ -29,6 +29,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.playServicesDependencies.location
 
+    implementation project(rootProject.ext.features.logisticCommon)
+
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
