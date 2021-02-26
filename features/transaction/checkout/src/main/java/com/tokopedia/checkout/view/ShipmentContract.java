@@ -63,6 +63,8 @@ public interface ShipmentContract {
 
         void onCacheExpired(String message);
 
+        void onShipmentAddressFormEmpty();
+
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
         void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);

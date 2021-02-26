@@ -81,37 +81,33 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
             }
         } else {
             List<GroupAddress> groupAddressList = cartShipmentAddressFormData.getGroupAddress();
-            if (groupAddressList.isEmpty() || groupAddressList.get(0) == null || groupAddressList.get(0).getUserAddress() == null) {
-                view.renderCheckoutPageNoAddress(cartShipmentAddressFormData);
+            if (cartShipmentAddressFormData.getErrorCode() == 0 && (groupAddressList.isEmpty() || groupAddressList.get(0) == null || groupAddressList.get(0).getUserAddress() == null)) {
+                view.onShipmentAddressFormEmpty();
             } else {
                 UserAddress userAddress = groupAddressList.get(0).getUserAddress();
-                renderCheckoutPage(cartShipmentAddressFormData, userAddress);
+
+                int errorCode = cartShipmentAddressFormData.getErrorCode();
+                if (errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
+                    view.renderCheckoutPageNoAddress(cartShipmentAddressFormData);
+                } else if (errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
+                    view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress.getState());
+                } else {
+                    if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
+                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
+                        if (!UtilsKt.isNullOrEmpty(cartShipmentAddressFormData.getPopUpMessage())) {
+                            view.showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
+                        }
+                        view.updateLocalCacheAddressData(userAddress);
+                    } else {
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
+                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
+                    }
+                }
+
                 view.stopTrace();
             }
         }
     }
 
-    private void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData, UserAddress userAddress) {
-        switch (userAddress.getState()) {
-            case UserAddress.STATE_ADDRESS_ID_NOT_MATCH:
-                shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
-                if (!UtilsKt.isNullOrEmpty(cartShipmentAddressFormData.getPopUpMessage())) {
-                    view.showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
-                }
-                view.updateLocalCacheAddressData(userAddress);
-                break;
-            case UserAddress.STATE_DISTRICT_ID_NOT_MATCH:
-                view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress.getState());
-                break;
-            case UserAddress.STATE_NO_ADDRESS:
-                view.renderCheckoutPageNoAddress(cartShipmentAddressFormData);
-                break;
-            case UserAddress.STATE_CHOSEN_ADDRESS_MATCH:
-            default:
-                shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
-                break;
-        }
-    }
 }
