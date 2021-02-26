@@ -104,6 +104,30 @@ class PromoListItemViewHolder(private val view: View,
         }
 
         // set tokopoints/ovopoints cashback info
+        renderPromoInfo(element)
+
+        labelPromoItemTitle.text = element.uiData.title
+        formatSubTitle(element)
+
+        if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+            if (element.uiState.isDisabled) {
+                renderDisablePromoItem(element)
+            } else {
+                renderEnablePromoItem(element)
+            }
+        } else {
+            renderDisablePromoItem(element)
+        }
+
+        cardPromoItem.setOnClickListener {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+                listener.onClickPromoListItem(element)
+            }
+        }
+
+    }
+
+    private fun renderPromoInfo(element: PromoListItemUiModel) {
         if (element.uiData.currencyDetailStr.isNotEmpty()) {
             labelPromoItemTitleInfo.text = element.uiData.currencyDetailStr
 
@@ -144,6 +168,7 @@ class PromoListItemViewHolder(private val view: View,
                 )
             }
             constraintSet.applyTo(containerConstraintPromoCheckout)
+            containerConstraintPromoCheckout.requestLayout()
 
             labelPromoItemTitleInfo.show()
         } else {
@@ -154,26 +179,6 @@ class PromoListItemViewHolder(private val view: View,
 
             labelPromoItemTitleInfo.gone()
         }
-
-        labelPromoItemTitle.text = element.uiData.title
-        formatSubTitle(element)
-
-        if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-            if (element.uiState.isDisabled) {
-                renderDisablePromoItem(element)
-            } else {
-                renderEnablePromoItem(element)
-            }
-        } else {
-            renderDisablePromoItem(element)
-        }
-
-        cardPromoItem.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
-                listener.onClickPromoListItem(element)
-            }
-        }
-
     }
 
     private fun renderEnablePromoItem(element: PromoListItemUiModel) {
