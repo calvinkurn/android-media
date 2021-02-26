@@ -139,7 +139,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItem.name
                     ?: EMPTY_STRING
         } - ${componentsItem.creativeName ?: EMPTY_STRING} - $destinationURL")
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - play"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -162,7 +162,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER, componentsItem.name
                 ?: EMPTY_STRING)
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - play"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
