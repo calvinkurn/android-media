@@ -1,6 +1,9 @@
 package com.tokopedia.common_digital.common
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -10,6 +13,8 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.RechargeLinkerData
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import rx.Subscriber
 import java.util.*
 
@@ -70,6 +75,59 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         }
         rechargeLinkerData.categoryId = categoryId
         return rechargeLinkerData
+    }
+
+    fun eventAddToCart(digitalAtcTrackingModel: DigitalAtcTrackingModel) {
+        val productName: String = "${digitalAtcTrackingModel.operatorName.toLowerCase()} " +
+                "${digitalAtcTrackingModel.priceText.toLowerCase()}"
+
+        val products: MutableList<Any> = ArrayList()
+
+        val eventCategory = when (digitalAtcTrackingModel.source) {
+            DigitalCheckoutPassData.PARAM_WIDGET -> DigitalTrackingConst.Category.HOMEPAGE_DIGITAL_WIDGET
+            else -> DigitalTrackingConst.Category.DIGITAL_NATIVE
+        }
+
+        val eventLabel = digitalAtcTrackingModel.categoryName.toLowerCase() + " - " +
+                if (digitalAtcTrackingModel.isInstantCheckout) DigitalTrackingConst.Value.INSTANT
+                else DigitalTrackingConst.Value.NON_INSTANT
+
+        products.add(constructProductEnhanceEcommerce(digitalAtcTrackingModel, productName))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.ADD_TO_CART,
+                        TrackAppUtils.EVENT_CATEGORY, eventCategory,
+                        TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
+                        TrackAppUtils.EVENT_LABEL, eventLabel,
+                        BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                        DigitalTrackingConst.CurrencyCode.KEY, DigitalTrackingConst.CurrencyCode.IDR,
+                        DigitalTrackingConst.Label.ADD,
+                        DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.SITE
+                )
+        )
+    }
+
+    private fun constructProductEnhanceEcommerce(digitalAtcTrackingModel: DigitalAtcTrackingModel,
+                                                 productName: String)
+            : Map<String?, Any?> {
+        var productId = DigitalTrackingConst.Value.NONE
+        if (digitalAtcTrackingModel.productId.isNotEmpty()) productId = digitalAtcTrackingModel.productId
+
+        return DataLayer.mapOf(
+                DigitalTrackingConst.Product.KEY_NAME, productName,
+                DigitalTrackingConst.Product.KEY_ID, productId,
+                DigitalTrackingConst.Product.KEY_PRICE, digitalAtcTrackingModel.pricePlain.toString(),
+                DigitalTrackingConst.Product.KEY_BRAND, digitalAtcTrackingModel.operatorName.toLowerCase(),
+                DigitalTrackingConst.Product.KEY_CATEGORY, digitalAtcTrackingModel.categoryName.toLowerCase(),
+                DigitalTrackingConst.Product.KEY_VARIANT, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_QUANTITY, "1",
+                DigitalTrackingConst.Product.KEY_CATEGORY_ID, digitalAtcTrackingModel.categoryId,
+                DigitalTrackingConst.Product.KEY_CART_ID, digitalAtcTrackingModel.cartId,
+                DigitalTrackingConst.Product.KEY_SHOP_ID, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_SHOP_NAME, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_SHOP_TYPE, DigitalTrackingConst.Value.NONE
+        )
     }
 
     private fun getDefaultRechargePushEventRecommendationSubsriber(): Subscriber<GraphqlResponse> {
