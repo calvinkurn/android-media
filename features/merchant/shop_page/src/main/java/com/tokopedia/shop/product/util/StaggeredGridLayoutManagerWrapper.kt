@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.util
+package com.tokopedia.shop.product.util
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
