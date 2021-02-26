@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -435,7 +436,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setChoosenAddress() {
-        _selectedAddressItem?.let { addr ->
+/*        _selectedAddressItem?.let { addr ->
             context?.let { ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = it,
                     addressId = addr.id,
@@ -445,9 +446,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     long = addr.longitude,
                     addressName = addr.addressName,
                     postalCode = addr.postalCode) }
-        }
+        }*/
 
-        if (isLocalization == true) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
+        if (isLocalization == true) {
+            ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
+            val resultIntent = Intent().apply {
+                putExtra(ChooseAddressConstant.INTENT_ADDRESS_SELECTED, _selectedAddressItem)
+            }
+            activity?.setResult(Activity.RESULT_OK, resultIntent)
+        }
 
         if (isFromCheckout == true) {
             val resultIntent: Intent
