@@ -273,9 +273,9 @@ object MoengageInteractor {
                 initialiseMoengage()
         }, {
             if (isMoengageInitialised) {
-                setPushListener(null)
-                setInAppListener(null)
-                setInAppListener(null)
+                MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(null)
+                PushManager.getInstance().setMessageListener(null)
+                InAppManager.getInstance().setInAppListener(null)
             }
         })
     }
