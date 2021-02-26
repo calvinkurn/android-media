@@ -18,10 +18,10 @@ class GetStoreMapper @Inject constructor() {
     }
 
     fun mapToIntentModel(input: DropoffNearbyModel): LocationDataModel = LocationDataModel(
-            input.addrId, input.addrName, input.address1, input.address2, input.city,
-            input.cityName, input.country, input.district, input.districtName,
+            input.addrId.toString(), input.addrName, input.address1, input.address2, input.city.toString(),
+            input.cityName, input.country, input.district.toString(), input.districtName,
             input.latitude, input.longitude, input.openingHours, input.phone, input.postalCode,
-            input.province, input.provinceName, input.receiverName, input.status, input.storeCode,
+            input.province.toString(), input.provinceName, input.receiverName, input.status, input.storeCode,
             input.storeDistance
     )
 

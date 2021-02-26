@@ -158,6 +158,7 @@ query RatesV3($param: OngkirRatesV3Input!) {
               text_eta
               error_code
             }
+        is_bebas_ongkir_extra
       }
       info {
         blackbox_info {

@@ -92,12 +92,14 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_ADDRESS_STATE = "address_state"
         private const val DEFAULT_PREFERENCE_STATUS = 2
 
-        fun newInstance(isEdit: Boolean = false): PreferenceSummaryFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): PreferenceSummaryFragment {
             val preferenceSummaryFragment = PreferenceSummaryFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARG_ADDRESS_STATE, addressState)
             preferenceSummaryFragment.arguments = bundle
             return preferenceSummaryFragment
         }
@@ -374,11 +376,13 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         globalError?.gone()
         swipeRefreshLayout?.isRefreshing = true
 
+        val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
+
         buttonChangeAddress?.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahAddressInPreferenceSettingPage()
-                parent.addFragment(AddressListFragment.newInstance(true))
+                parent.addFragment(AddressListFragment.newInstance(isEdit = true, addressState = addressState))
             }
         }
 
@@ -386,7 +390,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val parent = activity
             if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahShippingInPreferenceSettingPage()
-                parent.addFragment(ShippingDurationFragment.newInstance(true))
+                parent.addFragment(ShippingDurationFragment.newInstance(true, addressState))
             }
         }
 
@@ -394,7 +398,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val parent = activity
             if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahPaymentInPreferenceSettingPage()
-                parent.addFragment(PaymentMethodFragment.newInstance(true))
+                parent.addFragment(PaymentMethodFragment.newInstance(true, addressState))
             }
         }
 

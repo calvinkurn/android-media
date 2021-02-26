@@ -49,8 +49,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
     private var adapter: AddressListItemAdapter? = null
     private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
-    fun show(fragment: OrderSummaryPageFragment, addressId: String) {
+    fun show(fragment: OrderSummaryPageFragment, addressId: String, addressState: Int) {
         selectedId = addressId
+        this.addressState = addressState
         fragment.context?.let { context ->
             fragment.fragmentManager?.let {
                 bottomSheet?.dismiss()
@@ -231,6 +232,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
     private var destinationLongitude: String = ""
     private var destinationDistrict: String = ""
     private var destinationPostalCode: String = ""
+    private var addressState: Int = 0 // Todo : add this param to GetAddressCornerUseCase
     var token: Token? = null
 
     private var page = 1

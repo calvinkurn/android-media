@@ -5,10 +5,9 @@ import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.SingleProductRecommendationMapper
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,16 +23,16 @@ constructor(
         private val context: Context,
         private val recomRawString: String,
         private val graphqlUseCase: GraphqlUseCase,
-        private val userSession: UserSessionInterface) : UseCase<SingleProductRecommendationEntity.RecommendationData>() {
+        private val userSession: UserSessionInterface) : UseCase<RecommendationEntity.RecommendationData>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<SingleProductRecommendationEntity.RecommendationData> {
+    override fun createObservable(requestParams: RequestParams): Observable<RecommendationEntity.RecommendationData> {
         val graphqlRequest = GraphqlRequest(recomRawString, SingleProductRecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
-                    entity.productRecommendationWidget?.data
+                    entity.productRecommendationWidget.data
                 }
     }
 
@@ -53,16 +52,6 @@ constructor(
         params.putString(QUERY_PARAM, newQueryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
-    }
-
-    fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData?): List<RecommendationItem>{
-        if(data == null) return listOf()
-        return SingleProductRecommendationMapper.convertIntoRecommendationList(
-                data.recommendation,
-                data.title,
-                data.pageName,
-                data.layoutType
-        )
     }
 
     companion object {

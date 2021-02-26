@@ -39,6 +39,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.R;
@@ -125,7 +126,7 @@ public class SearchActivity extends BaseActivity
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
     private boolean isABTestNavigationRevamp = false;
-
+    private boolean isEnableChooseAddress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class SearchActivity extends BaseActivity
         setContentView(R.layout.search_activity_search);
 
         isABTestNavigationRevamp = isABTestNavigationRevamp();
+        isEnableChooseAddress = getIsEnableChooseAddress();
 
         setStatusBarColor();
         getExtrasFromIntent(getIntent());
@@ -165,6 +167,16 @@ public class SearchActivity extends BaseActivity
             return RemoteConfigInstance.getInstance().getABTestPlatform()
                     .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
                     .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean getIsEnableChooseAddress() {
+        try {
+            return ChooseAddressUtils.INSTANCE.isRollOutUser(this);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -317,6 +329,12 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
+        }
+
+        if (isEnableChooseAddress) {
+            buttonChangeGrid.setVisibility(View.GONE);
+        } else {
+            buttonChangeGrid.setVisibility(View.VISIBLE);
         }
     }
 

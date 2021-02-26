@@ -351,17 +351,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         sortFilterView?.let { sortFilterView ->
             if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
                 sortFilterView.sortFilterPrefix.hide()
-            }
-            if(filters.isEmpty()) {
                 sortFilterView.hide()
-            } else if(!sortFilterView.isVisible) {
-                sortFilterView.resetAllFilters()
-                sortFilterView.show()
-                sortFilterView.sortFilterPrefix.show()
+            } else {
+                if(!sortFilterView.isVisible){
+                    sortFilterView.resetAllFilters()
+                    sortFilterView.show()
+                    sortFilterView.sortFilterPrefix.show()
+                }
+                sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
             }
             val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
             val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
-            sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
             sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
             sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.getOptions().getCountSelected() + selectedSort
         }

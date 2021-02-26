@@ -35,7 +35,8 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String) {
+    fun searchAddress(query: String, addressState: Int?) {
+        // Todo : add addressState param to GetAddressCornerUseCase
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(

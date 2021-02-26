@@ -63,6 +63,7 @@ object ProductTrackingConstant {
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_DEFAULT_VALUE = "IDR"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val VALUE_NONE_OTHER = "none / other"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"

@@ -78,8 +78,8 @@ data class CartItemData(
             var promoCodes: String? = null,
             var promoDetails: String? = null,
             var priceOriginal: Long = 0,
+            var isFreeShippingExtra: Boolean = false,
             var isFreeShipping: Boolean = false,
-            var freeShippingBadgeUrl: String? = null,
             var listPromoCheckout: List<String> = emptyList(),
             var variant: String = "",
             var warningMessage: String = "", // eg : sisa 3
