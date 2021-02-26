@@ -26,8 +26,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -51,6 +53,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
 import kotlinx.android.synthetic.main.empty_manage_address.*
 import kotlinx.android.synthetic.main.fragment_manage_address.*
@@ -60,6 +63,9 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -91,6 +97,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
     private var isFromCheckout: Boolean? = false
+    private var isLocalization: Boolean? = false
     private var typeRequest: Int? = -1
 
     override fun getScreenName(): String = ""
@@ -115,6 +122,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
         isFromCheckout = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT)
+        isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
     }
 
@@ -152,6 +160,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun initHeader() {
         manageAddressListener?.setAddButtonOnClickListener {
+            if (isLocalization == true) ChooseAddressTracking.onClickButtonTambahAlamat(userSession.userId)
             openFormAddressView(null)
         }
     }
@@ -258,6 +267,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
         performSearch(searchKey)
+        if (isLocalization == true) ChooseAddressTracking.impressAddressListPage(userSession.userId)
     }
 
     private fun initSearchView() {
@@ -291,6 +301,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {
+        if (isLocalization == true) ChooseAddressTracking.onClickButtonUbahAlamat(userSession.userId)
         openFormAddressView(peopleAddress)
     }
 
@@ -421,19 +432,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
         _selectedAddressItem = peopleAddress
+        if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
 
     private fun setChoosenAddress() {
-        _selectedAddressItem?.let { addr ->
-            context?.let { ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addr.id,
-                    cityId = addr.cityId,
-                    districtId = addr.destinationDistrictId,
-                    lat = addr.latitude,
-                    long = addr.longitude,
-                    addressName = addr.addressName,
-                    postalCode = addr.postalCode) }
+        if (isLocalization == true) {
+            ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
+            val resultIntent = Intent().apply {
+                putExtra(ChooseAddressConstant.INTENT_ADDRESS_SELECTED, _selectedAddressItem)
+            }
+            activity?.setResult(Activity.RESULT_OK, resultIntent)
         }
 
         if (isFromCheckout == true) {

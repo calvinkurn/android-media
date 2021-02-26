@@ -15,8 +15,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -42,6 +45,7 @@ public class DiscomActivity extends BaseSimpleActivity
 
     private CheckoutAnalyticsChangeAddress analytics;
     private FusedLocationProviderClient fusedLocationClient;
+    private Boolean isLocalization;
 
     public static Intent newInstance(Activity activity, Token token, Boolean isLocalization) {
         Intent intent = new Intent(activity, DiscomActivity.class);
@@ -63,7 +67,7 @@ public class DiscomActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         Token  token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
-        boolean isLocalization = getIntent().getBooleanExtra(IS_LOCALIZATION, false);
+        isLocalization = getIntent().getBooleanExtra(IS_LOCALIZATION, false);
         if (token == null) {
             return DiscomFragment.newInstance(isLocalization);
         } else {
@@ -78,7 +82,9 @@ public class DiscomActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        gtmOnBackPressClicked();
+        UserSessionInterface userSession = new UserSession(this);
+        if (isLocalization) ChooseAddressTracking.INSTANCE.onClickCloseKotaKecamatan(userSession.getUserId());
+        else gtmOnBackPressClicked();
         super.onBackPressed();
     }
 

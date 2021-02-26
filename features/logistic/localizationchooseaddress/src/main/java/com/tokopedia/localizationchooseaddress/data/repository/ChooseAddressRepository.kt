@@ -20,7 +20,7 @@ class ChooseAddressRepository @Inject constructor(private val gql: GraphqlReposi
         return gql.getResponse(request)
     }
 
-    suspend fun setStateChosenAddress(status: Int, addressId: Int, receiverName: String, addressName: String, latitude: String, longitude: String, districtId: Int, postalCode: String): SetStateChosenAddressQqlResponse {
+    suspend fun setStateChosenAddress(status: Int, addressId: Int?, receiverName: String, addressName: String, latitude: String?, longitude: String?, districtId: Int, postalCode: String): SetStateChosenAddressQqlResponse {
         val param = mapOf("input" to mapOf(
                 "status" to status,
                 "addr_id" to addressId,

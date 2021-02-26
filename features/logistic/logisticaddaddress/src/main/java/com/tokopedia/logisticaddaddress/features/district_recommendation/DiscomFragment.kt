@@ -19,6 +19,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
@@ -31,6 +32,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
@@ -50,6 +52,8 @@ PopularCityAdapter.ActionListener {
     private var dividerCurrLocation: View? = null
     private var isLocalization: Boolean? = null
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var addressMapper: AddressMapper
     @Inject
@@ -107,6 +111,7 @@ PopularCityAdapter.ActionListener {
             rlCurrLocation?.apply {
                 visibility = View.VISIBLE
                 setOnClickListener {
+                    ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
                     if (AddNewAddressUtils.isGpsEnabled(it.context)) {
                         requestLocation()
                     }
@@ -115,7 +120,9 @@ PopularCityAdapter.ActionListener {
             dividerCurrLocation?.visibility = View.VISIBLE
             llDiscomPopularCity?.visibility = View.VISIBLE
             fusedLocationClient = FusedLocationProviderClient(requireActivity())
-
+            searchInputView.setOnClickListener {
+                ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
+            }
         } else {
             rlCurrLocation?.visibility = View.GONE
             dividerCurrLocation?.visibility = View.GONE
@@ -161,13 +168,16 @@ PopularCityAdapter.ActionListener {
 
     override fun onItemClicked(address: Address) {
         setBackAddressResult(address, "", "")
+        if (isLocalization == true) {
+            ChooseAddressTracking.onClickSuggestionKotaKecamatan(userSession.userId)
+        }
     }
 
     private fun setBackAddressResult(address: Address, latitude: String, longitude: String) {
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertToAddressLocalizationModel(address))
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address))
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, address.districtId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, address.districtName)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, address.cityId)
@@ -260,6 +270,7 @@ PopularCityAdapter.ActionListener {
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
+                            ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
                             permissionCheckerHelper?.onPermissionDenied(it, permissionText)
                         }
 
@@ -271,6 +282,7 @@ PopularCityAdapter.ActionListener {
                         override fun onPermissionGranted() {
                             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                                 if (data != null) {
+                                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                                     setBackAddressResult(Address(), data.latitude.toString(), data.longitude.toString())
                                 }
                             }
@@ -326,6 +338,7 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun onCityChipClicked(city: String) {
+        ChooseAddressTracking.onClickChipsKotaPopuler(userSession.userId)
         searchInputView.searchText = city
     }
 }
