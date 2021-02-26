@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -12,6 +11,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
@@ -111,7 +111,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Inspiratio
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS;
@@ -145,7 +144,7 @@ final class ProductListPresenter
     private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
     private GetRecommendationUseCase recommendationUseCase;
     private UserSessionInterface userSession;
-    private LocalCacheHandler searchOnBoardingLocalCache;
+    private CoachMarkLocalCache searchCoachMarkLocalCache;
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
     private Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase;
@@ -178,7 +177,7 @@ final class ProductListPresenter
     private List<Option> quickFilterOptionList = new ArrayList<>();
     private DynamicFilterModel dynamicFilterModel;
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
-    private int firstProductPosition = 0;
+    private int firstProductPositionWithBOELabel = -1;
     private boolean hasFullThreeDotsOptions = false;
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
@@ -196,7 +195,7 @@ final class ProductListPresenter
             GetRecommendationUseCase recommendationUseCase,
             UserSessionInterface userSession,
             @Named(SearchConstant.OnBoarding.LOCAL_CACHE_NAME)
-            LocalCacheHandler searchOnBoardingLocalCache,
+            CoachMarkLocalCache searchCoachMarkLocalCache,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
             Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase,
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
@@ -211,7 +210,7 @@ final class ProductListPresenter
         this.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
         this.recommendationUseCase = recommendationUseCase;
         this.userSession = userSession;
-        this.searchOnBoardingLocalCache = searchOnBoardingLocalCache;
+        this.searchCoachMarkLocalCache = searchCoachMarkLocalCache;
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
         this.getLocalSearchRecommendationUseCase = getLocalSearchRecommendationUseCase;
@@ -630,7 +629,7 @@ final class ProductListPresenter
         for (LabelGroup labelGroup : labelGroupList) {
             labelGroupViewModelList.add(
                     new LabelGroupViewModel(
-                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle(), ""
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle(), labelGroup.getImageUrl()
                     )
             );
         }
@@ -1143,12 +1142,11 @@ final class ProductListPresenter
 
         addSearchInTokopedia(searchProduct, list);
 
-        firstProductPosition = getFirstProductPosition(list);
+        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list);
 
         getView().removeLoading();
         getView().setProductList(list);
         getView().backToTop();
-        getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
         if (productViewModel.getTotalData() > Integer.parseInt(getSearchRows())) {
             getView().addLoading();
@@ -1157,12 +1155,16 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private int getFirstProductPosition(List<Visitable> list) {
-        if (productList.isEmpty()) return 0;
+    private int getFirstProductPositionWithBOELabel(List<Visitable> list) {
+        if (productList.isEmpty()) return -1;
 
-        int firstProductPosition = list.indexOf(productList.get(0));
+        ProductItemViewModel product = (ProductItemViewModel) CollectionsKt.firstOrNull(productList, prod -> ((ProductItemViewModel) prod).hasLabelGroupFulfillment());
 
-        return Math.max(firstProductPosition, 0);
+        if (product == null) return -1;
+
+        int firstProductPositionWithBOELabel = list.indexOf(product);
+
+        return Math.max(firstProductPositionWithBOELabel, -1);
     }
 
     private void addPageTitle(List<Visitable> list) {
@@ -1843,13 +1845,15 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item) {
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (getView() == null || item == null) return;
 
         if (item.isTopAds())
             getViewToTrackImpressedTopAdsProduct(item);
         else
             getViewToTrackImpressedOrganicProduct(item);
+
+        checkShouldShowBOELabelOnBoarding(adapterPosition);
     }
 
     private void getViewToTrackImpressedTopAdsProduct(ProductItemViewModel item) {
@@ -1883,6 +1887,12 @@ final class ProductListPresenter
         if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
 
         return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
+    }
+
+    private void checkShouldShowBOELabelOnBoarding(int position) {
+        if (getView() != null && checkProductWithBOELabel(position)) {
+            if (shouldShowBoeCoachmark()) getView().showOnBoarding(firstProductPositionWithBOELabel);
+        }
     }
 
     @Override
@@ -1967,20 +1977,12 @@ final class ProductListPresenter
         }
     }
 
-    public void onFreeOngkirOnBoardingShown() {
-        if (getView() != null && !isSearchOnBoardingShown()) {
-            getView().showOnBoarding(firstProductPosition, hasFullThreeDotsOptions);
-            toggleSearchOnBoardingShown();
-        }
+    private boolean checkProductWithBOELabel(int position) {
+        return firstProductPositionWithBOELabel >= 0 && firstProductPositionWithBOELabel == position;
     }
 
-    private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions;
-    }
-
-    private void toggleSearchOnBoardingShown() {
-        if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
-        searchOnBoardingLocalCache.applyEditor();
+    private Boolean shouldShowBoeCoachmark() {
+        return searchCoachMarkLocalCache.shouldShowBoeCoachmark();
     }
 
     @Override

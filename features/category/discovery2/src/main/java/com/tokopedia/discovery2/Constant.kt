@@ -55,4 +55,6 @@ object Constant {
         const val FILTER_BUTTON_TEXT = "Reset Filter"
         const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
     }
+
+    const val LABEL_FULFILLMENT = "fulfillment"
 }

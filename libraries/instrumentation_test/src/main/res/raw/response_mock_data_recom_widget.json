@@ -165,7 +165,9 @@
                 "labels": [
                   {
                     "title": "Grosir",
-                    "color": "#ffffff"
+                    "color": "#ffffff",
+                    "position": "fulfillment",
+                    "url": "http://coba.com"
                   }
                 ],
                 "badges": [
