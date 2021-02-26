@@ -42,13 +42,6 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
-    @Named(NAMED_GTM_ERROR_ANALYTICS)
-    fun provideGtmErrorPresenter(getGtmErrorLogUseCase: GetGtmErrorLogUseCase,
-                                 deleteGtmErrorLogUseCase: DeleteGtmErrorLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsGtmErrorDebuggerPresenter(getGtmErrorLogUseCase, deleteGtmErrorLogUseCase)
-    }
-
-    @Provides
     @Named(NAMED_IRIS_SAVE)
     fun provideIrisSavePresenter(getIrisSaveLogUseCase: GetIrisSaveLogUseCase,
                                  getIrisSaveCountLogUseCase: GetIrisSaveCountLogUseCase,

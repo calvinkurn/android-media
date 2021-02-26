@@ -45,13 +45,6 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity"
-            android:exported="true"
-            android:label="Analytics Debugger - GTM Error"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.tokopedia.analytics.task"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
             android:name=".debugger.ui.activity.AnalyticsIrisSaveDebuggerActivity"
             android:exported="true"
             android:label="Analytics Debugger - Iris Save"

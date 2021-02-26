@@ -34,6 +34,7 @@ class AnalyticsDebuggerActivity : AppCompatActivity() {
     }
 
     companion object {
+        @JvmStatic
         fun newInstance(context: Context): Intent {
             return Intent(context, AnalyticsDebuggerActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }

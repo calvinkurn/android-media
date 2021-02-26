@@ -60,6 +60,7 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
     }
 
     companion object {
+        @JvmStatic
         fun newInstance(context: Context): Intent {
             return Intent(context, MainValidatorActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }

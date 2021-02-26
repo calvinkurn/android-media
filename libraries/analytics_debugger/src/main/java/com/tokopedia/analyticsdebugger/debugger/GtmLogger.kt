@@ -6,20 +6,14 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity
-import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
 import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.net.URLDecoder
 
-/**
- * @author okasurya on 5/16/18.
- */
 class GtmLogger private constructor(private val context: Context) : AnalyticsLogger {
 
     private val gson: Gson by lazy { GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create() }
@@ -29,24 +23,24 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
     override val isNotificationEnabled: Boolean
         get() = cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false) ?: false
 
-    override fun save(name: String, mapData: Map<String, Any>, @AnalyticsSource source: String) {
+    override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source: String) {
         try {
-            val data = AnalyticsLogData(
+            val logData = AnalyticsLogData(
                     source = source,
                     name = name,
-                    data = URLDecoder.decode(gson.toJson(mapData)
+                    data = URLDecoder.decode(gson.toJson(data)
                             .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
                             .replace("\\+".toRegex(), "%2B"), "UTF-8")
             )
-            if (!TextUtils.isEmpty(data.name) && data.name != "null") {
-                dbSource.insertAll(data)
+            if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
+                dbSource.insertAll(logData)
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(defaultSubscriber())
             }
 
             if (isNotificationEnabled) {
-                NotificationHelper.show(context, data)
+                NotificationHelper.show(context, logData)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -67,22 +61,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(defaultSubscriber())
-    }
-
-    override fun wipe() {
-        dbSource.deleteAll().subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
-    }
-
-    override fun openActivity() {
-        context.startActivity(AnalyticsDebuggerActivity.newInstance(context))
-    }
-
-    override fun openErrorActivity() {
-        context.startActivity(AnalyticsGtmErrorDebuggerActivity.newInstance(context))
-    }
-
-    override fun navigateToValidator() {
-        context.startActivity(MainValidatorActivity.newInstance(context))
     }
 
     override fun enableNotification(status: Boolean) {
@@ -136,22 +114,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 }
 
                 override fun saveError(errorData: String) {
-
-                }
-
-                override fun wipe() {
-
-                }
-
-                override fun openActivity() {
-
-                }
-
-                override fun openErrorActivity() {
-
-                }
-
-                override fun navigateToValidator() {
 
                 }
 
