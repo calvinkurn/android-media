@@ -58,9 +58,6 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 
 /**
@@ -111,8 +108,6 @@ class PlayFragment @Inject constructor(
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     private var isFirstTopBoundsCalculated = false
-
-//    private var hasFetchedChannelInfo: Boolean = false
 
     override fun getScreenName(): String = "Play"
 
@@ -351,7 +346,6 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -365,27 +359,6 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeGetChannelInfo() {
-//        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
-//            when (result) {
-//                NetworkResult.Loading -> {
-//                    if (!hasFetchedChannelInfo) loaderPage.show()
-//                    else loaderPage.hide()
-//
-//                    fragmentErrorViewOnStateChanged(shouldShow = false)
-//                }
-//                is NetworkResult.Success -> {
-//                    hasFetchedChannelInfo = true
-//                    loaderPage.hide()
-//                    fragmentErrorViewOnStateChanged(shouldShow = false)
-//                }
-//                is NetworkResult.Fail -> {
-//                    loaderPage.hide()
-//                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
-//                }
-//            }
-//        })
-    }
 
     private fun observeSocketInfo() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
@@ -603,7 +576,5 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        private const val DELAY_FREEZE_AUTO_SWIPE = 2500L
     }
 }

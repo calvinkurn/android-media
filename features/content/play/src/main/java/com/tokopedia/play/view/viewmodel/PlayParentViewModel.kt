@@ -7,8 +7,8 @@ import com.tokopedia.play.PLAY_KEY_SOURCE_ID
 import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
