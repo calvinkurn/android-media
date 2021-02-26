@@ -399,21 +399,23 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getNotification() {
-        try {
-            val result = getNavNotification.get().executeOnBackground()
-            val complainNotification = result.unreadCountComplain
-            val inboxTicketNotification = result.unreadCountInboxTicket
-            val reviewNotification = result.unreadCountReview
-            navNotification = NavNotificationModel(
-                    unreadCountComplain = complainNotification,
-                    unreadCountInboxTicket = inboxTicketNotification,
-                    unreadCountReview = reviewNotification
-            )
-            if (complainNotification.isMoreThanZero()) findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
-            if (inboxTicketNotification.isMoreThanZero()) findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
-            if (reviewNotification.isMoreThanZero()) findMenu(ID_REVIEW)?.updateBadgeCounter(reviewNotification.toString())
-        } catch (e: Exception) {
-            e.printStackTrace()
+        launch {
+            try {
+                val result = getNavNotification.get().executeOnBackground()
+                val complainNotification = result.unreadCountComplain
+                val inboxTicketNotification = result.unreadCountInboxTicket
+                val reviewNotification = result.unreadCountReview
+                navNotification = NavNotificationModel(
+                        unreadCountComplain = complainNotification,
+                        unreadCountInboxTicket = inboxTicketNotification,
+                        unreadCountReview = reviewNotification
+                )
+                if (complainNotification.isMoreThanZero()) findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
+                if (inboxTicketNotification.isMoreThanZero()) findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
+                if (reviewNotification.isMoreThanZero()) findMenu(ID_REVIEW)?.updateBadgeCounter(reviewNotification.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -535,7 +537,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun HomeNavMenuDataModel.updateBadgeCounter(counter: String) {
         val indexOfMenu = _mainNavListVisitable.indexOf(this)
-        this.notifCount = counter
-        updateWidget(this, indexOfMenu)
+        updateWidget(this.copy(notifCount = counter), indexOfMenu)
     }
 }
