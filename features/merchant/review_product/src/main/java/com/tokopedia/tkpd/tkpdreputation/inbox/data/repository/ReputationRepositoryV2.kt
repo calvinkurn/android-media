@@ -15,17 +15,17 @@ class ReputationRepositoryV2 @Inject constructor(
 
     suspend fun getReviewStarCount(productId: String): DataResponseReviewStarCount {
         return reputationFactory
-                .createCloudGetReviewStarCountV2()
+                .createCloudGetReviewStarCount()
                 .getReviewStarCount(productId)
     }
 
     suspend fun getReviewHelpful(shopId: String, productId: String): DataResponseReviewHelpful {
-        return reputationFactory.createCloudGetReviewHelpfulV2()
+        return reputationFactory.createCloudGetReviewHelpful()
                 .getReviewHelpfulList(shopId, productId)
     }
 
     suspend fun getLikeDislikeReview(params: Map<String, String>): GetLikeDislikeReviewDomain {
-        return reputationFactory.createCloudGetLikeDislikeDataSourceV2().getLikeDislikeReview(params)
+        return reputationFactory.createCloudGetLikeDislikeDataSource().getLikeDislikeReview(params)
     }
 
     suspend fun getReviewProductList(
@@ -36,17 +36,17 @@ class ReputationRepositoryV2 @Inject constructor(
             withAttachment: String
     ): DataResponseReviewProduct {
         return reputationFactory
-                .createCloudGetReviewProductListV2()
+                .createCloudGetReviewProductList()
                 .getReviewProductList(productId, page, perPage, rating, withAttachment)
     }
 
     suspend fun deleteReviewResponse(params: Map<String, String>): DeleteReviewResponseDomain {
-        return reputationFactory.createCloudDeleteReviewResponseDataSourceV2().deleteReviewResponse(params)
+        return reputationFactory.createCloudDeleteReviewResponseDataSource().deleteReviewResponse(params)
 
     }
 
     suspend fun likeDislikeReview(params: Map<String, String>): LikeDislikeDomain {
-        return reputationFactory.createCloudLikeDislikeDataSourceV2().getLikeDislikeReview(params)
+        return reputationFactory.createCloudLikeDislikeDataSource().getLikeDislikeReview(params)
     }
 
 }

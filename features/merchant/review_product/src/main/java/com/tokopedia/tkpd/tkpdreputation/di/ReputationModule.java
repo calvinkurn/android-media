@@ -13,18 +13,11 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCaseV2;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCaseV2;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryV2;
-import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationServiceV2;
-import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductServiceV2;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -60,12 +53,6 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationRepository provideReputationRepository(ReputationFactory reputationFactory) {
-        return new ReputationRepositoryImpl(reputationFactory);
-    }
-
-    @ReputationScope
-    @Provides
     ReputationRepositoryV2 provideReputationRepositoryV2(ReputationFactory reputationFactory) {
         return new ReputationRepositoryV2(reputationFactory);
     }
@@ -73,16 +60,10 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     ReputationFactory provideReputationFactory(
-            ReputationService reputationService,
-            ReputationServiceV2 reputationServiceV2,
-            DeleteReviewResponseMapper deleteReviewResponseMapper,
-            GetLikeDislikeMapper getLikeDislikeMapper,
-            LikeDislikeMapper likeDislikeMapper,
-            ReviewProductService reputationReviewApi,
-            ReviewProductServiceV2 reviewProductServiceV2,
+            ReputationServiceV2 reputationService,
+            ReviewProductServiceV2 reviewProductService,
             UserSessionInterface userSession) {
-        return new ReputationFactory(reputationService, reputationServiceV2, deleteReviewResponseMapper,
-                getLikeDislikeMapper, likeDislikeMapper, reputationReviewApi, reviewProductServiceV2, userSession);
+        return new ReputationFactory(reputationService, reviewProductService, userSession);
     }
 
     @ReputationScope
@@ -96,28 +77,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationService provideReputationService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ReputationService(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
     ReputationServiceV2 provideReputationServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReputationServiceV2(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
-    ReviewProductService provideReviewProductService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ReviewProductService(
                 context,
                 networkRouter,
                 userSession
@@ -136,12 +97,6 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    LikeDislikeReviewUseCase provideLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
-        return new LikeDislikeReviewUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
     LikeDislikeReviewUseCaseV2 provideLikeDislikeReviewUseCaseV2(ReputationRepositoryV2 reputationRepository) {
         return new LikeDislikeReviewUseCaseV2(reputationRepository);
     }
@@ -150,12 +105,6 @@ public class ReputationModule {
     @Provides
     GetLikeDislikeMapper provideGetLikeDislikeMapper() {
         return new GetLikeDislikeMapper();
-    }
-
-    @ReputationScope
-    @Provides
-    GetLikeDislikeReviewUseCase provideGetLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
-        return new GetLikeDislikeReviewUseCase(reputationRepository);
     }
 
 
@@ -169,12 +118,6 @@ public class ReputationModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @ReputationScope
-    @Provides
-    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(ReputationRepository reputationRepository) {
-        return new DeleteReviewResponseUseCase(reputationRepository);
     }
 
     @ReputationScope

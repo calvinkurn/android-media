@@ -14,6 +14,6 @@ class ReviewProductGetHelpfulReviewCloudV2(
 
     suspend fun getReviewHelpfulList(shopId: String, productId: String): DataResponseReviewHelpful {
         val params = mapOf(SHOP_ID to shopId, PRODUCT_ID to productId)
-        return reviewProductService.api!!.getReviewHelpfulList(params).body()!!.data
+        return reviewProductService.api.getReviewHelpfulList(params).body()!!.data
     }
 }

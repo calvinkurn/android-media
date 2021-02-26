@@ -10,10 +10,6 @@ class ReviewProductGetRatingUseCaseV2 @Inject constructor(
         private val reputationRepository: ReputationRepositoryV2
 ) : UseCase<DataResponseReviewStarCount>() {
 
-    companion object {
-        const val PRODUCT_ID = "product_id"
-    }
-
     lateinit var params: Params
 
     override suspend fun executeOnBackground(): DataResponseReviewStarCount {

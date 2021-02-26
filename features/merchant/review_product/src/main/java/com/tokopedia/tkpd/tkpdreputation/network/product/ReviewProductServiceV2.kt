@@ -13,21 +13,16 @@ class ReviewProductServiceV2(
         private val userSession: UserSession
 ) : BaseReputationServiceV2() {
 
-    init {
-        initApiService()
-    }
+    val api: ReviewProductApiV2 = initApiService()
 
-    var api: ReviewProductApiV2? = null
-        private set
-
-    private fun initApiService() {
+    private fun initApiService(): ReviewProductApiV2 {
         val retrofit = createRetrofit(
                 context,
                 ReputationBaseURL.BASE_DOMAIN,
                 networkRouter,
                 userSession
         )
-        api = retrofit.create(ReviewProductApiV2::class.java)
+        return retrofit.create(ReviewProductApiV2::class.java)
     }
 
 }
