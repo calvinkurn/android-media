@@ -778,8 +778,6 @@ class PlayViewModel @Inject constructor(
             viewModelScope.launch(dispatchers.main) {
                 delay(ONBOARDING_DELAY)
                 _observableOnboarding.value = Event(Unit)
-
-                playPreference.setOnboardingShown(userId)
             }
         }
     }
