@@ -36,9 +36,9 @@ import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewMod
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -141,9 +141,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private fun hideStatusBar() {
         digital_homepage_container.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            digital_homepage_container.requestApplyInsets()
-        }
+        digital_homepage_container.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = digital_homepage_container.systemUiVisibility
