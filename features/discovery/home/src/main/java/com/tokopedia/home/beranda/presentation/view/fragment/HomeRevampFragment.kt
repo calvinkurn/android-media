@@ -670,17 +670,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         //add location
-        val chooseLocationWidget = getLocationWidgetView()
-        chooseLocationWidget?.let {
-            this.add(
-                    CoachMark2Item(
-                            chooseLocationWidget,
-                            getString(R.string.onboarding_coachmark_address_title),
-                            getString(R.string.onboarding_coachmark_address_description)
-                    )
-            )
+        val needShowLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext()) ?: false
+        if (needShowLocalization) {
+            val chooseLocationWidget = getLocationWidgetView()
+            chooseLocationWidget?.let {
+                this.add(
+                        ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                )
+            }
         }
-
         //add balance widget
         val balanceWidget = getBalanceWidgetView()
         balanceWidget?.let {
@@ -702,11 +700,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         coachMarkItem.buildHomeCoachmark()
         coachMark.setStepListener(object: CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (currentIndex == 0) {
-
-                }
-                if (coachMarkItem.title.equals(getString(R.string.onboarding_coachmark_title))) {
-                    Toast.makeText(activity, "wah sama ni", Toast.LENGTH_SHORT).show()
+                if (coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true)) {
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(requireContext())
                 }
             }
         })
