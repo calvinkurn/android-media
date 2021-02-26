@@ -17,6 +17,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -103,28 +105,29 @@ class SellerHomeViewModel @Inject constructor(
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
 
-    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
-        executeOnBackground()
-    }
-
-    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
-            useCase.isFirstLoad = false
-            try {
-                useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeUseCase())
-            } catch (_: Exception) {
-                // ignore exception from cache
-            }
+    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>) {
+        if (!collectingResult) {
+            collectingResult = true
+            launchCatchError(block = {
+                resultFlow.asFlow()
+                        .collect {
+                            withContext(dispatcher.main) {
+                                liveData.value = Success(it)
+                            }
+                        }
+            }, onError = {
+                liveData.value = Fail(it)
+            })
         }
-        useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeUseCase())
     }
 
     fun getTicker() {
         launchCatchError(block = {
-            getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
-            getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
+            val params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+            getTickerUseCase.get().run {
+                startCollectingResult(_homeTicker)
+                executeOnBackground(params, firstLoad)
+            }
         }, onError = {
             _homeTicker.value = Fail(it)
         })
@@ -132,8 +135,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getWidgetLayout() {
         launchCatchError(block = {
-            getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
-            getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
+            val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
+            getLayoutUseCase.get().run {
+                startCollectingResult(_widgetLayout)
+                executeOnBackground(params, firstLoad)
+            }
         }, onError = {
             _widgetLayout.value = Fail(it)
         })
@@ -141,8 +147,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getCardDataUseCase.get().params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getCardDataUseCase.get(), _cardWidgetData)
+            val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getCardDataUseCase.get().run {
+                startCollectingResult(_cardWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _cardWidgetData.value = Fail(it)
         })
@@ -150,8 +159,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getLineGraphDataUseCase.get(), _lineGraphWidgetData)
+            val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getLineGraphDataUseCase.get().run {
+                startCollectingResult(_lineGraphWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _lineGraphWidgetData.value = Fail(it)
         })
@@ -160,8 +172,11 @@ class SellerHomeViewModel @Inject constructor(
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
-            getProgressDataUseCase.get().params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
-            getDataFromUseCase(getProgressDataUseCase.get(), _progressWidgetData)
+            val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
+            getProgressDataUseCase.get().run {
+                startCollectingResult(_progressWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _progressWidgetData.value = Fail(it)
         })
@@ -169,8 +184,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
-            getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
+            val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getPostDataUseCase.get().run {
+                startCollectingResult(_postListWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _postListWidgetData.value = Fail(it)
         })
@@ -178,8 +196,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getCarouselDataUseCase.get().params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-            getDataFromUseCase(getCarouselDataUseCase.get(), _carouselWidgetData)
+            val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+            getCarouselDataUseCase.get().run {
+                startCollectingResult(_carouselWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _carouselWidgetData.value = Fail(it)
         })
@@ -187,8 +208,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getTableWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getTableDataUseCase.get().params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData)
+            val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getTableDataUseCase.get().run {
+                startCollectingResult(_tableWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _tableWidgetData.value = Fail(it)
         })
@@ -196,8 +220,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getPieChartDataUseCase.get().params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getPieChartDataUseCase.get(), _pieChartWidgetData)
+            val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getPieChartDataUseCase.get().run {
+                startCollectingResult(_pieChartWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _pieChartWidgetData.value = Fail(it)
         })
@@ -205,8 +232,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            getBarChartDataUseCase.get().params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getBarChartDataUseCase.get(), _barChartWidgetData)
+            val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getBarChartDataUseCase.get().run {
+                startCollectingResult(_barChartWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _barChartWidgetData.value = Fail(it)
         })
@@ -214,11 +244,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
-                getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
-            })
-            _multiLineGraphWidgetData.value = result
+            val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getMultiLineGraphUseCase.get().run {
+                startCollectingResult(_multiLineGraphWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _multiLineGraphWidgetData.value = Fail(it)
         })
@@ -226,11 +256,11 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
-                getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
-                return@withContext getAnnouncementUseCase.get().executeOnBackground()
-            })
-            _announcementWidgetData.value = result
+            val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+            getAnnouncementUseCase.get().run {
+                startCollectingResult(_announcementWidgetData)
+                executeOnBackground(params)
+            }
         }, onError = {
             _announcementWidgetData.value = Fail(it)
         })

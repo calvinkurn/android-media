@@ -1,13 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -16,22 +13,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetPieChartDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: PieChartMapper
-) : BaseGqlUseCase<List<PieChartDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: PieChartMapper
+) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(gqlRepository, mapper, true, GetPieChartDataResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<PieChartDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetPieChartDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+    var firstLoad: Boolean = true
 
-        val errors = gqlResponse.getError(GetPieChartDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetPieChartDataResponse>()
-            val pieChartData: List<PieChartWidgetDataModel> = data.fetchPieChartWidgetData.data
-            return mapper.mapRemoteModelToUiModel(pieChartData, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {

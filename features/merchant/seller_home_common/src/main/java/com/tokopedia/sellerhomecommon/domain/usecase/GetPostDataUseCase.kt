@@ -1,11 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -18,22 +13,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetPostDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val postMapper: PostMapper
-) : BaseGqlUseCase<List<PostListDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        postMapper: PostMapper
+) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(gqlRepository, postMapper, true, GetPostDataResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<PostListDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+    var firstLoad: Boolean = true
 
-        val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetPostDataResponse>()
-            val widgetDataList = data.getPostWidgetData?.data.orEmpty()
-            return postMapper.mapRemoteDataModelToUiDataModel(widgetDataList, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {

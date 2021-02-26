@@ -1,10 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
-import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
-import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
-import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
-import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
+import com.tokopedia.sellerhomecommon.domain.model.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
@@ -12,10 +9,10 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/07/20
  */
 
-class BarChartMapper @Inject constructor() {
+class BarChartMapper @Inject constructor(): BaseResponseMapper<GetBarChartDataResponse, List<BarChartDataUiModel>> {
 
-    fun mapRemoteModelToUiModel(barChartDataList: List<BarChartWidgetDataModel>, isFromCache: Boolean): List<BarChartDataUiModel> {
-        return barChartDataList.map {
+    override fun mapRemoteDataToUiData(response: GetBarChartDataResponse, isFromCache: Boolean): List<BarChartDataUiModel> {
+        return response.fetchBarChartWidgetData.data.map {
             BarChartDataUiModel(
                     dataKey = it.dataKey,
                     error = it.errorMsg,

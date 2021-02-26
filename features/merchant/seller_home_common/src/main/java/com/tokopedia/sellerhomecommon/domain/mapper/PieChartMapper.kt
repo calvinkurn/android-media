@@ -1,8 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
+import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PieChartItemModel
-import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.ChartSummaryUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartItemUiModel
@@ -13,10 +13,10 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 06/07/20
  */
 
-class PieChartMapper @Inject constructor() {
+class PieChartMapper @Inject constructor() : BaseResponseMapper<GetPieChartDataResponse, List<PieChartDataUiModel>> {
 
-    fun mapRemoteModelToUiModel(data: List<PieChartWidgetDataModel>, isFromCache: Boolean): List<PieChartDataUiModel> {
-        return data.map {
+    override fun mapRemoteDataToUiData(response: GetPieChartDataResponse, isFromCache: Boolean): List<PieChartDataUiModel> {
+        return response.fetchPieChartWidgetData.data.map {
             PieChartDataUiModel(
                     dataKey = it.dataKey,
                     error = it.errorMsg,

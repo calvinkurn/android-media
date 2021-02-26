@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -12,21 +11,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetTickerUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: TickerMapper
-) : BaseGqlUseCase<List<TickerItemUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: TickerMapper
+) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(gqlRepository, mapper, true, GetTickerResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<TickerItemUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetTickerResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+    var firstLoad: Boolean = true
 
-        val errors = gqlResponse.getError(GetTickerResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetTickerResponse>()
-            return mapper.mapRemoteModelToUiModel(data.ticker?.tickers.orEmpty())
-        } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {

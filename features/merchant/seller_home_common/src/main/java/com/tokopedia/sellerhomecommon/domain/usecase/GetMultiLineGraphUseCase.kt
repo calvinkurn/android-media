@@ -1,15 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
-import com.tokopedia.sellerhomecommon.domain.model.MultiTrendlineWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -18,22 +13,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetMultiLineGraphUseCase (
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: MultiLineGraphMapper
-): BaseGqlUseCase<List<MultiLineGraphDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: MultiLineGraphMapper
+): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(gqlRepository, mapper, true, GetMultiLineGraphResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<MultiLineGraphDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetMultiLineGraphResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+    var firstLoad: Boolean = true
 
-        val errors: List<GraphqlError>? = gqlResponse.getError(GetMultiLineGraphResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetMultiLineGraphResponse>()
-            val multiLineData: List<MultiTrendlineWidgetDataModel>? = data.fetchMultiTrendlineWidgetData?.fetchMultiTrendlineData
-            return mapper.mapRemoteModelToUiModel(multiLineData, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {

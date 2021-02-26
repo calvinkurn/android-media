@@ -1,8 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -15,22 +13,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetTableDataUseCase(
-        private val graphqlRepository: GraphqlRepository,
-        private val mapper: TableMapper
-) : BaseGqlUseCase<List<TableDataUiModel>>() {
+        graphqlRepository: GraphqlRepository,
+        mapper: TableMapper
+) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(graphqlRepository, mapper, true, GetTableDataResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<TableDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+    var firstLoad: Boolean = true
 
-        val errors = gqlResponse.getError(GetTableDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetTableDataResponse>()
-            val tableData = data.fetchSearchTableWidgetData.data
-            return mapper.mapRemoteModelToUiModel(tableData, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {

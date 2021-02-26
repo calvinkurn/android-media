@@ -1,9 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -16,22 +13,14 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetProgressDataUseCase constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val progressMapper: ProgressMapper
-) : BaseGqlUseCase<List<ProgressDataUiModel>>() {
+        graphqlRepository: GraphqlRepository,
+        progressMapper: ProgressMapper
+) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(graphqlRepository, progressMapper, true, GetProgressDataResponse::class.java, QUERY, false) {
 
-    override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+    var firstLoad: Boolean = true
 
-        val errors = gqlResponse.getError(GetProgressDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetProgressDataResponse>()
-            val widgetData = data.getProgressBarData?.progressData.orEmpty()
-            return progressMapper.mapResponseToUi(widgetData, cacheStrategy.type == CacheType.CACHE_ONLY)
-        } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
     }
 
     companion object {
