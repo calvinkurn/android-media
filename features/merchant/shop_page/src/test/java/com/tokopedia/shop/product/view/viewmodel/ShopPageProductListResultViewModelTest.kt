@@ -206,7 +206,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true,
                     widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
@@ -225,7 +224,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true,
                     widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
@@ -247,7 +245,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true,
                     widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
@@ -269,7 +266,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true,
                     widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
@@ -291,7 +287,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     perPage = 10,
                     etalase = "123",
                     search = "search",
-                    isForceRefresh = true,
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
                     widgetUserAddressLocalData = addressWidgetData

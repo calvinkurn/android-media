@@ -157,7 +157,6 @@ class ShopPageViewModel @Inject constructor(
                                 shopProductFilterParameter,
                                 keyword,
                                 etalaseId,
-                                isRefresh,
                                 widgetUserAddressLocalData
                         )
                     },
@@ -191,16 +190,9 @@ class ShopPageViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
-            isRefresh: Boolean,
             widgetUserAddressLocalData: LocalCacheModel
     ): ShopProduct.GetShopProduct {
         val useCase = getShopProductListUseCase.get()
-        val isDisableProductListCache = firebaseRemoteConfig.getBoolean(
-                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
-                false
-        )
-        useCase.isFromCacheFirst = (!isRefresh).takeIf { !isDisableProductListCache } ?: false
-        useCase.cacheTime = TEN_MINUTE_MS
         useCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {

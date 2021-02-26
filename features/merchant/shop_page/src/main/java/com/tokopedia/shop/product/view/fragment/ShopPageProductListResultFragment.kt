@@ -345,7 +345,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ShopPageConstant.DEFAULT_PER_PAGE,
                     selectedEtalaseId,
                     keyword,
-                    isNeedToReloadData,
                     selectedEtalaseType,
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     localCacheModel ?: LocalCacheModel()
@@ -394,7 +393,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     sortId.toIntOrZero(),
                     selectedEtalaseId,
                     keywordEmptyState,
-                    true,
                     localCacheModel ?: LocalCacheModel()
             )
         }
@@ -830,7 +828,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         ShopPageConstant.DEFAULT_PER_PAGE,
                         selectedEtalaseId,
                         keyword,
-                        isNeedToReloadData,
                         selectedEtalaseType,
                         shopProductFilterParameter ?: ShopProductFilterParameter(),
                         localCacheModel ?: LocalCacheModel()

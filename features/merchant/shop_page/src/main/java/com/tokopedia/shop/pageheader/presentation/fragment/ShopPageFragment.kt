@@ -1012,7 +1012,7 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
             remoteConfig?.let { nonNullableRemoteConfig ->
-                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget()
+                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig)
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }

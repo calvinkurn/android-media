@@ -14,12 +14,11 @@ class GetShopFeaturedProductUseCase (private val gqlQuery: String,
                                      private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<List<ShopFeaturedProduct>>() {
 
     var params = mapOf<String, Any>()
-    var isFromCacheFirst: Boolean = true
 
     override suspend fun executeOnBackground(): List<ShopFeaturedProduct> {
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.CLOUD_THEN_CACHE).build())
 
         val gqlRequest = GraphqlRequest(gqlQuery, ShopFeaturedProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)

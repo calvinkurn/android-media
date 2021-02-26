@@ -20,6 +20,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -123,10 +124,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setupChooseAddressWidget() {
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
         view.choose_address_widget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
-            if (isRollOutUser) {
+            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                    true
+            )
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
                 show()
                 val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
                 if(isCoachMarkAlreadyShown == false) {

@@ -126,7 +126,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             perPage: Int = 10,
             etalase: String = "",
             search: String = "",
-            isForceRefresh: Boolean = false,
             etalaseType: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
@@ -149,7 +148,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                 widgetUserAddressLocalData.lat,
                                 widgetUserAddressLocalData.long
                         ),
-                        isForceRefresh,
                         etalaseType
                 )
             }
@@ -166,7 +164,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             sortId: Int = 0,
             etalase: String = "",
             search: String = "",
-            isForceRefresh: Boolean = true,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
@@ -184,7 +181,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 }
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)
-                getShopProductUseCase.isFromCacheFirst = !isForceRefresh
                 val productListResponse = getShopProductUseCase.executeOnBackground()
                 productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
             }
@@ -264,11 +260,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     private suspend fun getShopProductData(
             shopId: String,
             productFilter: ShopProductFilterInput,
-            isForceRefresh: Boolean,
             etalaseType: Int
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
-        getShopProductUseCase.isFromCacheFirst = !isForceRefresh
         val productListResponse = getShopProductUseCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(productFilter.page, productFilter.perPage, productListResponse.totalData)
         val totalProductData  = productListResponse.totalData
