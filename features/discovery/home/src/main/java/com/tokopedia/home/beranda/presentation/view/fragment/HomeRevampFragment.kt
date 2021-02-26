@@ -658,7 +658,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         //inbox
-
         val inboxIcon = navToolbar?.getInboxIconView()
         inboxIcon?.let {
             this.add(
@@ -681,8 +680,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     )
             )
         }
-        //add balance widget
 
+        //add balance widget
         val balanceWidget = getBalanceWidgetView()
         balanceWidget?.let {
             this.add(
@@ -731,8 +730,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getLocationWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         if (view != null && view is HomeHeaderOvoViewHolder) {
-            if (view.itemView.widget_choose_address.isVisible)
-                return view.itemView.widget_choose_address
+            val locationView = view.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+            if (locationView.isVisible)
+                return locationView
         }
         return null
     }
