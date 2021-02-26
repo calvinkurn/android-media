@@ -320,7 +320,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         );
     }
 
-    public void impressionSeeEntryPoint(
+    public void impressionSeeEntryPointMerchantVoucherCoupon(
             String shopId,
             String userId
     ) {

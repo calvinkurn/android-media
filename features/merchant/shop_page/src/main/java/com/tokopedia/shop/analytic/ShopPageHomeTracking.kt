@@ -97,7 +97,7 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    fun impressionSeeEntryPoint(
+    fun impressionSeeEntryPointMerchantVoucherCoupon(
             shopId: String,
             userId: String?
     ) {
