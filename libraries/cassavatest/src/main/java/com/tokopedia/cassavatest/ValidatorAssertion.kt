@@ -50,9 +50,8 @@ fun hasAllSuccess(): Matcher<List<Validator>> {
 }
 
 private fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
-    val analyticValidatorJSON =
-            Utils.getJsonDataFromAsset(context, queryFileName)
-                    ?: throw AssertionError("Validator Query not found: \"$queryFileName\"")
+    val analyticValidatorJSON = Utils.getJsonDataFromAsset(context, queryFileName)
+                    ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
     val query = analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
     val mode = analyticValidatorJSON.toJsonMap().getMode()
 

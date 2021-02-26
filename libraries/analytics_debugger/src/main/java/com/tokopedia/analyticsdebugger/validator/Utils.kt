@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.validator
 
 import android.content.Context
+import com.google.gson.Gson
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -8,6 +9,8 @@ import kotlin.collections.ArrayList
 
 
 object Utils {
+
+    private val jsonParser = Gson()
 
     fun getJsonDataFromAsset(context: Context, fileName: String): String? {
         val jsonString: String
@@ -46,5 +49,7 @@ object Utils {
         val dateFormat = SimpleDateFormat("dd-MM HH:mm:ss.SSS", Locale.getDefault())
         return dateFormat.format(Date(ts))
     }
+
+    fun provideJsonParser(): Gson = jsonParser
 
 }

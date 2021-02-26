@@ -22,14 +22,14 @@ class MainValidatorFragment : Fragment() {
         arguments?.getString(ARGUMENT_TEST_PATH)
                 ?: throw IllegalArgumentException("Path not found!!")
     }
-    private val query: JsonMap by lazy {
-        Utils.getJsonDataFromAsset(requireContext(), testPath)?.toJsonMap()
+    private val query by lazy {
+        Utils.getJsonDataFromAsset(requireContext(), testPath)?.toCassavaQuery()
                 ?: throw QueryTestParseException()
     }
 
     val viewModel: ValidatorViewModel by lazy {
         activity?.application?.let {
-            ViewModelProvider(activity!!, ViewModelProvider.AndroidViewModelFactory(it))
+            ViewModelProvider(requireActivity(), ViewModelProvider.AndroidViewModelFactory(it))
                     .get(ValidatorViewModel::class.java)
         } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
     }
@@ -46,24 +46,20 @@ class MainValidatorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val readme = query["readme"]
-        if (readme != null && readme is String && readme.isNotEmpty()) {
+        if (query.readme != null) {
             view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
-            view.findViewById<TextView>(R.id.tv_readme).text = readme
+            view.findViewById<TextView>(R.id.tv_readme).text = query.readme
         } else {
             view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
         }
-        val mode = query["mode"] as? String ?: "exact"
-        val value = query["query"] as? List<Map<String, Any>>
-                ?: throw QueryTestParseException("Error while parsing the query")
-        viewModel.run(value, mode)
+        viewModel.run(query.query, query.mode.value)
         with(view.findViewById<RecyclerView>(R.id.rv)) {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = mAdapter
         }
 
-        viewModel.testCases.observe(this, Observer<List<Validator>> {
+        viewModel.testCases.observe(viewLifecycleOwner, Observer<List<Validator>> {
             Timber.d("Validator got ${it.size}")
             mAdapter.setData(it)
         })

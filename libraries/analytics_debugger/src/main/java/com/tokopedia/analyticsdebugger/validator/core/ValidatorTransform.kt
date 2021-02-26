@@ -9,23 +9,23 @@ internal typealias JsonMap = Map<String, Any>
 
 fun JsonMap.toDefaultValidator() = Validator(this)
 
-internal fun JsonMap.toJson(): String =
-        GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(this)
-
 fun String.toJsonMap(): JsonMap {
     val jsonType = object : TypeToken<Map<String, Any>>() {}.type
     return Gson().fromJson(this, jsonType)
 }
-
-internal fun GtmLogDB.toUiModel() = GtmLogUi(
-        this.id, this.data, this.name, this.category, this.timestamp
-)
 
 fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
     return this["query"] as List<Map<String, Any>>
 }
 
 fun Map<String, Any>.getMode(): String = this["mode"] as String
+
+internal fun JsonMap.toJson(): String =
+        GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(this)
+
+internal fun GtmLogDB.toUiModel() = GtmLogUi(
+        this.id, this.data, this.name, this.category, this.timestamp
+)
