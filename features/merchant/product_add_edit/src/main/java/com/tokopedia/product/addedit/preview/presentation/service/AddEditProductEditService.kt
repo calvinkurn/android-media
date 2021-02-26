@@ -175,7 +175,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     private suspend fun getHeadquartersLocationId(shopId: String): String? {
         getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero()).let { locationList ->
-            return locationList.find { it.isMainLocation() }?.locationId?.toString()
+            return locationList.find { it.isMainLocation() }?.locationId
         }
     }
 
