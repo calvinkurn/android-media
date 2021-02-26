@@ -556,13 +556,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialActionButton.setOnClickListener {
             showLoadingLogin()
             analytics.trackClickOnNext(emailPhoneEditText.text.toString())
+            activity?.let { it1 -> analytics.eventClickLoginEmailButton(it1) }
             registerCheck(emailPhoneEditText.text.toString())
         }
 
         wrapper_password?.textFieldInput?.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
-                loginEmail(emailPhoneEditText.text.toString().trim(),
-                        wrapper_password?.textFieldInput?.text.toString())
+                loginEmail(emailPhoneEditText.text.toString().trim(), wrapper_password?.textFieldInput?.text.toString())
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)

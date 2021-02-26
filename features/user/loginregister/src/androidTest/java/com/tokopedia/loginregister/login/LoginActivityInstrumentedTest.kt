@@ -26,6 +26,7 @@ import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.PartialInputTextView
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
+import com.tokopedia.test.application.annotations.UiAnalyticsTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,6 +49,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
+@UiAnalyticsTest
 class LoginActivityInstrumentedTest {
 
     val trackerPath = "tracker/user/loginregister/login_register_p1.json"
@@ -106,6 +108,8 @@ class LoginActivityInstrumentedTest {
         onLoginViaPhone()
         onRegisterFooterSpannableClick()
         clickGoogleLogin()
+        Thread.sleep(500)
+        onClickButtonMasuk()
 
         Thread.sleep(500)
 
@@ -189,5 +193,11 @@ class LoginActivityInstrumentedTest {
 
     fun onRegisterFooterSpannableClick(){
         onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
+    }
+
+    fun onClickButtonMasuk(){
+        setInputEmailPhone()
+        Thread.sleep(500)
+        onView(allOf(withId(R.id.register_btn))).perform(click())
     }
 }
