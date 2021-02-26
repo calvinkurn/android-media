@@ -229,9 +229,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             if (it.status.isSuccess()) {
                 it.data?.let { data ->
                     sortFilterView?.show()
-                    val popularOption = data.filterAndSort.filterChip.map { it.copy(
-                            options = it.options.filter { it.isPopular }
-                    ) }
                     setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
                 }
             } else if(it.status.isLoading()){
@@ -354,17 +351,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         sortFilterView?.let { sortFilterView ->
             if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
                 sortFilterView.sortFilterPrefix.hide()
+            }
+            if(filters.isEmpty()) {
                 sortFilterView.hide()
-            } else {
-                if(!sortFilterView.isVisible){
-                    sortFilterView.resetAllFilters()
-                    sortFilterView.show()
-                    sortFilterView.sortFilterPrefix.show()
-                }
-                sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
+            } else if(!sortFilterView.isVisible) {
+                sortFilterView.resetAllFilters()
+                sortFilterView.show()
+                sortFilterView.sortFilterPrefix.show()
             }
             val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
             val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
+            sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
             sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
             sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.getOptions().getCountSelected() + selectedSort
         }

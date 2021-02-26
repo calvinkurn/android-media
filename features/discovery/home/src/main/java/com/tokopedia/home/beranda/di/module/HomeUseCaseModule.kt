@@ -34,7 +34,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeTickerQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
@@ -48,7 +47,6 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.play.widget.di.PlayWidgetModule
@@ -58,9 +56,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -70,7 +66,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [PlayWidgetModule::class])
+@Module(includes = [PlayWidgetModule::class, RecommendationCoroutineModule::class])
 class HomeUseCaseModule {
     @HomeScope
     @Provides
@@ -310,16 +306,4 @@ class HomeUseCaseModule {
     @Provides
     fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
 
-    @HomeScope
-    @Provides
-    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository) : GetRecommendationFilterChips {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
-        return GetRecommendationFilterChips(useCase)
-    }
-
-    @HomeScope
-    @Provides
-    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository) : GetRecommendationUseCase {
-        return GetRecommendationUseCase(graphqlRepository)
-    }
 }
