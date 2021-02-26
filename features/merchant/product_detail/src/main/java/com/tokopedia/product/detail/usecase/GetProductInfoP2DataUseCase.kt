@@ -370,7 +370,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
               data {
                 totalService
-                isSupportInstantCourier
+                courierLabel
                 destination
                 icon
                 title

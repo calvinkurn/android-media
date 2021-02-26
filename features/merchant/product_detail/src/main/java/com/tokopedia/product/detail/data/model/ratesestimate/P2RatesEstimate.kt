@@ -30,9 +30,9 @@ data class P2RatesEstimateData(
         @Expose
         val totalService: Int = 0,
 
-        @SerializedName("isSupportInstantCourier")
+        @SerializedName("courierLabel")
         @Expose
-        val isSupportInstantCourier: Boolean = false,
+        val instanLabel: String = "",
 
         @SerializedName("destination")
         @Expose

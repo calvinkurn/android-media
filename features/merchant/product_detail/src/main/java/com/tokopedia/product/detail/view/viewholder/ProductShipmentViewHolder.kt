@@ -79,9 +79,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         otherCourierTxt?.text = subtitle
 
         shipmentOtherContainer?.setOnClickListener(null)
-        otherCourierTxt?.setOnClickListener {
-            listener.openShipmentBottomSheetWhenError()
-        }
 
         otherCourierTxt?.show()
         hideLabelAndBo()
@@ -94,12 +91,12 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         hideShipmentLoading()
         renderText(element.rates)
         renderTokoCabang(element.isFullfillment, element.tokoCabangIconUrl)
-        renderOtherSection(element.rates.isSupportInstantCourier, element.rates.subtitle, element.isCod)
+        renderOtherSection(element.rates.instanLabel, element.rates.subtitle, element.isCod)
     }
 
-    private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean) = with(itemView) {
+    private fun renderOtherSection(instantLabel: String, subtitle: String, isCod: Boolean) = with(itemView) {
         adjustUiSuccess()
-        if (!isInstant && !isCod) {
+        if (instantLabel.isEmpty() && !isCod) {
             renderSubtitleGreen()
             hideLabelAndBo()
             return@with
@@ -107,7 +104,9 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
         renderSubtitleNormal(subtitle)
         shipmentLabelCod?.showWithCondition(isCod)
-        shipmentLabelInstant?.showWithCondition(isInstant)
+        shipmentLabelInstant?.shouldShowWithAction(instantLabel.isNotEmpty()) {
+            shipmentLabelInstant.setLabel(instantLabel)
+        }
     }
 
     private fun renderSubtitleGreen() = with(itemView) {
@@ -163,7 +162,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun adjustUiSuccess() = with(itemView) {
-        otherCourierTxt?.setOnClickListener(null)
         shipmentOtherContainer?.setOnClickListener {
             listener.openShipmentClickedBottomSheet()
         }
