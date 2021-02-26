@@ -238,7 +238,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun getReviewCounterAbIsUnify(): Boolean {
-        return remoteConfig.getString(EXP_NAME, CONTROL) == VARIANT
+        return remoteConfig.getString(EXP_NAME, VARIANT) == VARIANT
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
