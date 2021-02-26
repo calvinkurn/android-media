@@ -1499,7 +1499,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun getFirstNewOrder(orders: List<SomListOrderUiModel>): Int {
         return orders.indexOfFirst {
-            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && it.cancelRequest == 0
+            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && (it.cancelRequest == 0 || (it.cancelRequest == 1 && it.cancelRequestStatus == 0))
         }
     }
 
@@ -1869,13 +1869,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             val filterResult = viewModel.filterResult.value
             if (filterResult is Success) {
                 val hasNewOrder = filterResult.data.statusList.find {
-                    it.key == SomConsts.STATUS_NEW_ORDER
+                    it.key == STATUS_NEW_ORDER
                 }?.amount.orZero() > 0
                 if (hasNewOrder) {
                     val firstNewOrderViewPosition = getFirstNewOrder(newOrders)
-                    var firstNewOrderViewPositionInAdapter = getFirstNewOrder(adapter.data.filterIsInstance<SomListOrderUiModel>())
                     if (firstNewOrderViewPosition != -1) {
-                        firstNewOrderViewPositionInAdapter = adapter.data.indexOf(newOrders[firstNewOrderViewPosition])
+                        val firstNewOrderViewPositionInAdapter: Int = adapter.data.indexOf(newOrders[firstNewOrderViewPosition])
                         if (firstNewOrderViewPositionInAdapter != -1) {
                             rvSomList?.stopScroll()
                             somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderViewPositionInAdapter, 0)
@@ -1900,9 +1899,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                                 }
                             }
                         }
-                    } else if (firstNewOrderViewPositionInAdapter == -1) {
-                        rvSomList?.stopScroll()
-                        somListLayoutManager?.scrollToPositionWithOffset(adapter.dataSize - 1, 0)
                     }
                 }
             }

@@ -251,9 +251,15 @@ class SomListViewModel @Inject constructor(
             val result = somListGetOrderListUseCase.executeOnBackground(params)
             getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first.toLongOrZero()
-            _orderListResult.postValue(Success(result.second))
+            withContext(dispatcher.main) {
+                getOrderListJob = null
+                _orderListResult.value = Success(result.second)
+            }
         }, onError = {
-            _orderListResult.postValue(Fail(it))
+            withContext(dispatcher.main) {
+                getOrderListJob = null
+                _orderListResult.value = Fail(it)
+            }
         })
     }
 
