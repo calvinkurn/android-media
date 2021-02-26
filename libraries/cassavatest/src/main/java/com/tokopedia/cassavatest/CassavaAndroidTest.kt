@@ -1,6 +1,7 @@
 package com.tokopedia.cassavatest
 
 import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
@@ -26,14 +27,14 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
 }
 
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
-    val queryPairs = queryFormat(queryString)
+    val queryPairs = getTestCases(InstrumentationRegistry.getInstrumentation().context, queryString)
     return ValidatorEngine(gtmLogDBSource)
             .computeRx(queryPairs.first, queryPairs.second)
             .toBlocking()
             .first()
 }
 
-private fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
+internal fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
     val cassavaQueryStr = Utils.getJsonDataFromAsset(context, queryFileName)
             ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
     return queryFormat(cassavaQueryStr)
