@@ -209,6 +209,7 @@ ext {
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
+            snapshot                        : ":features:ordermanagement:snapshot",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 

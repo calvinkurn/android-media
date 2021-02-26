@@ -129,6 +129,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
@@ -487,6 +488,9 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(BELANJA_INTERNAL_ORDER) ||
                         it.startsWith(MARKETPLACE_INTERNAL_ORDER)
             }, DF_BASE, R.string.title_buyerorder))
+
+            // snapshot
+            add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT)}, DF_BASE, R.string.title_snapshot))
         }
     }
 
