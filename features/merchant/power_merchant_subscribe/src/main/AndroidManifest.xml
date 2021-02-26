@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view_old.activity.PowerMerchantSubscribeActivity"
+            android:name=".view.activity.SubscriptionActivity"
             android:label="@string/pm_title_activity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -22,6 +22,14 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".view_old.activity.PowerMerchantSubscribeActivity"
+            android:label="@string/pm_title_activity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".view_old.activity.TransitionPeriodPmActivity"

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollViewPmSubscription"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toTopOf="@+id/viewContainerPmUnsubscribe"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerPmCommunicationPeriod"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PowerMerchantStatusView
+                android:id="@+id/viewPmStatus"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tickerPmCommunicationPeriod"
+                tools:maxHeight="@dimen/layout_lvl9" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmLabelFeatures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl4"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/layout_lvl4"
+                android:paddingTop="@dimen/spacing_lvl2"
+                android:paddingEnd="@dimen/layout_lvl3"
+                android:paddingBottom="@dimen/spacing_lvl2"
+                android:text="@string/pm_power_merchant_exclusive_features"
+                android:textColor="@color/Unify_N0"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewPmStatus"
+                tools:background="@drawable/bg_pm_feature_title" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPmFeatures"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmLabelFeatures"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_pm_power_merchant_feature"
+                tools:orientation="horizontal" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnPmLearnMore"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_lvl2"
+                android:gravity="center"
+                android:text="@string/power_merchant_learn_more"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvPmFeatures"
+                app:unifyButtonVariant="ghost" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/viewContainerPmUnsubscribe"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmUnsubscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/unify_space_12"
+            android:gravity="center"
+            android:textAlignment="center"
+            tools:text="Berhenti jadi Power Merchant" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

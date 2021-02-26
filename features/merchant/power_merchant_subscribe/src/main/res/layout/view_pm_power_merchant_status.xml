@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageMembership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_pm_membership" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStatusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/power_merchant_horizontal_spacing_small"
+        android:text="@string/power_merchant_status_label"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toTopOf="@id/textStatus"
+        app:layout_constraintStart_toEndOf="@id/imageMembership"
+        app:layout_constraintTop_toTopOf="@id/imageMembership"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@id/imageMembership"
+        app:layout_constraintStart_toStartOf="@id/textStatusLabel"
+        app:layout_constraintTop_toBottomOf="@id/textStatusLabel"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Aktif" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textPerformanceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="@string/power_merchant_shop_performance_label"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/imageMembership"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textShopScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textPerformanceLabel"
+        app:typographyType="heading_2"
+        tools:text="32" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textShopMaxScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:text="@string/power_merchant_max_score"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@id/textShopScore"
+        app:layout_constraintStart_toEndOf="@id/textShopScore"
+        app:layout_constraintTop_toTopOf="@id/textShopScore"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textShopScoreDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@id/textShopScore"
+        app:layout_constraintStart_toEndOf="@id/textShopMaxScore"
+        app:layout_constraintTop_toTopOf="@id/textShopScore"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="“Kurang, tingkatkan lagi!”" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textShopScoreHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textShopScore"
+        app:typographyType="body_2"
+        tools:text="Pertahankan skor performa toko **minimum 75 poin** untuk tetap menjadi Power Merchant." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnPerformanceTips"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:text="@string/power_merchant_performance_tips"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/rightGuideline"
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textShopScoreHint"
+        app:unifyButtonSize="medium"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/spacing_lvl4" />
+</androidx.constraintlayout.widget.ConstraintLayout>
