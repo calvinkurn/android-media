@@ -30,11 +30,12 @@ constructor(context: Context) {
 
     fun insertAll(data: AnalyticsLogData): Observable<Boolean> {
         return Observable.just(data).map { analyticsLogData ->
-            val gtmLogDB = GtmLogDB()
-            gtmLogDB.name = analyticsLogData.name
-            gtmLogDB.data = analyticsLogData.data
-            gtmLogDB.timestamp = Date().time
-            gtmLogDB.source = data.source
+            val gtmLogDB = GtmLogDB(
+                    data = analyticsLogData.data,
+                    name = analyticsLogData.name,
+                    timestamp = Date().time,
+                    source =  analyticsLogData.source
+            )
             gtmLogDao.insertAll(gtmLogDB)
             true
         }

@@ -19,7 +19,7 @@ data class GtmLogDB (
     var id: Long = 0,
 
     @ColumnInfo(name = "data")
-    var data: String? = null,
+    var data: String,
 
     @ColumnInfo(name = "name")
     var name: String? = null,

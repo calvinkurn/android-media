@@ -6,7 +6,7 @@ import com.tokopedia.analyticsdebugger.AnalyticsSource
  * @author okasurya on 5/16/18.
  */
 data class AnalyticsLogData (
-    var data: String? = null,
-    var name: String? = null,
+    var data: String,
+    var name: String,
     @AnalyticsSource var source: String? = null
 )

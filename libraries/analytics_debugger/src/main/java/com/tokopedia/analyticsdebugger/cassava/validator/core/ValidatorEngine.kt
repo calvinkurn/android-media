@@ -69,7 +69,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
     private fun List<GtmLogDB>.findAllContaining(comparator: Validator): List<GtmLogDB> {
         val resultList: MutableList<GtmLogDB> = mutableListOf()
         for (gtm in this) {
-            val mapGtm = gtm.data!!.toJsonMap()
+            val mapGtm = gtm.data.toJsonMap()
             if (comparator.data.canValidate(mapGtm, currentMode.isInExact())) {
                 resultList.add(gtm)
             }
@@ -79,7 +79,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
 
     private fun List<GtmLogDB>.findContaining(comparator: Validator): GtmLogDB? {
         for (gtm in this) {
-            val mapGtm = gtm.data!!.toJsonMap()
+            val mapGtm = gtm.data.toJsonMap()
             if (comparator.data.canValidate(mapGtm, currentMode.isInExact())) {
                 return gtm
             }
