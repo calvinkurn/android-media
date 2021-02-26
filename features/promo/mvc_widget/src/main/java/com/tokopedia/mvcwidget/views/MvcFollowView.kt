@@ -154,10 +154,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
         val bottomsheet = BottomSheetUnify()
         bottomsheet.setTitle(context.getString(R.string.mvc_tentang_toko_member))
-//        bottomsheet.showCloseIcon = false
-//        bottomsheet.showKnob = true
-//        bottomsheet.isDragable = true
-//        bottomsheet.isHideable = true
         bottomsheet.isSkipCollapseState = true
 
         val child = View.inflate(activity, R.layout.mvc_tokomember_bm, null)
