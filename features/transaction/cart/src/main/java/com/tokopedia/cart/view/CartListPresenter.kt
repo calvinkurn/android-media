@@ -995,7 +995,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
             } else if(recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
-            }  else {
+            } else {
                 setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             }
         }
