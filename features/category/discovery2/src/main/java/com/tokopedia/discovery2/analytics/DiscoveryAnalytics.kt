@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -289,7 +290,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[LIST] = productCardItemList
-            productMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+            productMap[DIMENSION83] = getProductDime83(it)
             addSourceData(productMap)
             if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                 productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -308,6 +309,16 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
         productCardItemList = EMPTY_STRING
+    }
+
+    private fun getProductDime83(dataItem: DataItem): String {
+        return if (dataItem.freeOngkir?.isActive == true && dataItem.labelsGroupList?.firstOrNull()?.type == LABEL_FULFILLMENT){
+            BEBAS_ONGKIR_EXTRA
+        }else if(dataItem.freeOngkir?.isActive == true){
+            BEBAS_ONGKIR
+        }else {
+            NONE_OTHER
+        }
     }
 
     override fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {
@@ -352,7 +363,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[KEY_VARIANT] = NONE_OTHER
                 listMap[KEY_POSITION] = componentsItems.position + 1
                 listMap[LIST] = productCardItemList
-                listMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+                listMap[DIMENSION83] = getProductDime83(it)
                 addSourceData(listMap)
                 if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                     listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
