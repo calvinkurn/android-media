@@ -4,13 +4,13 @@ import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import javax.inject.Inject
 
-class ChatAttachmentUseCaseStub constructor(
-        private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse> = GraphqlUseCaseStub(),
-        mapper: ChatAttachmentMapper = ChatAttachmentMapper(),
-        dispatchers: TopchatCoroutineContextProvider = TopchatAndroidTestCoroutineContextDispatcher()
+class ChatAttachmentUseCaseStub @Inject constructor(
+        private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
+        mapper: ChatAttachmentMapper,
+        dispatchers: TopchatAndroidTestCoroutineContextDispatcher
 ) : ChatAttachmentUseCase(gqlUseCase, mapper, dispatchers) {
 
     var response = ChatAttachmentResponse()
