@@ -13,17 +13,18 @@ object NotificationChannelBuilder {
 
     @JvmStatic
     @RequiresApi(api = Build.VERSION_CODES.O)
-    fun create(context: Context, ringtoneUri: Uri, vibratePattern: LongArray?) {
+    fun create(context: Context, ringtoneUri: Uri?, vibratePattern: LongArray?) {
         val notificationManager = context.getSystemService(NotificationManager::class.java)
 
         NotificationChannel(Constant.NotificationChannel.GENERAL,
                 Constant.NotificationChannel.GENERAL,
                 NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            setSound(ringtoneUri, AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    .build())
-
+            ringtoneUri?.let {
+                setSound(ringtoneUri, AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build())
+            }
             description = Constant.NotificationChannel.GENERAL
             vibrationPattern = vibratePattern
 
