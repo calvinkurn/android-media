@@ -48,8 +48,6 @@ class PlayBottomSheetViewModelTest {
     private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: ProductDetailVariantCommonResponse = modelBuilder.buildProductVariant()
 
-    private val playUiMapper: PlayUiMapper = PlayUiMapper(TestHtmlTextTransformer())
-
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
 
     @Before
