@@ -40,28 +40,46 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
 suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
     if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
     else {
+        val vto = viewTreeObserver
         val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (measuredWidth > 0 && measuredHeight > 0) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    when {
+                        vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
+                        else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                     cont.resume(Unit)
                 }
             }
         }
-        cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-        viewTreeObserver.addOnGlobalLayoutListener(listener)
+        cont.invokeOnCancellation {
+            when {
+                vto.isAlive -> vto.removeOnGlobalLayoutListener(listener)
+                else -> viewTreeObserver.removeOnGlobalLayoutListener(listener)
+            }
+        }
+        vto.addOnGlobalLayoutListener(listener)
     }
 }
 
 suspend inline fun View.awaitNextGlobalLayout() = suspendCancellableCoroutine<Unit> { cont ->
+    val vto = viewTreeObserver
     val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            when {
+                vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
+                else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
             cont.resume(Unit)
         }
     }
-    cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-    viewTreeObserver.addOnGlobalLayoutListener(listener)
+    cont.invokeOnCancellation {
+        when {
+            vto.isAlive -> vto.removeOnGlobalLayoutListener(listener)
+            else -> viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+    vto.addOnGlobalLayoutListener(listener)
 }
 
 inline fun View.doOnPreDraw(crossinline action: (view: View) -> Unit) {

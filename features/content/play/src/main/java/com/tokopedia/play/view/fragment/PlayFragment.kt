@@ -78,9 +78,6 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
 
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(dispatchers.main + job)
-
     private lateinit var ivClose: ImageView
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
@@ -160,7 +157,6 @@ class PlayFragment @Inject constructor(
         )
         onPageDefocused()
         super.onPause()
-        job.cancelChildren()
     }
 
     override fun onDestroyView() {
@@ -169,7 +165,6 @@ class PlayFragment @Inject constructor(
 
         destroyInsets(requireView())
         super.onDestroyView()
-        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
