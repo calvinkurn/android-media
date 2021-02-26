@@ -706,12 +706,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
             }
         })
-        coachMark.container?.setOnClickListener {
-//            val navigationBundle = Bundle()
-//            navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
-//            RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
-//            coachMark.dismissCoachMark()
-        }
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
