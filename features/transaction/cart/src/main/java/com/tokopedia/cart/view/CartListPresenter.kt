@@ -989,9 +989,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategoryId("")
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            if (cartRecommendationItemHolderData.recommendationItem.isFreeOngkirActive) {
+
+            val recommendationItem = cartRecommendationItemHolderData.recommendationItem
+            if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
+            } else if(recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
-            } else {
+            }  else {
                 setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             }
         }
