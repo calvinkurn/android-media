@@ -15,7 +15,7 @@ class ChooseAddressMapper @Inject constructor() {
                     it.addressName,
                     it.address1,
                     it.address2,
-                    it.postalCode.toString(),
+                    it.postalCode,
                     it.provinceId.toString(),
                     it.cityId.toString(),
                     it.districtId.toString(),
@@ -23,7 +23,7 @@ class ChooseAddressMapper @Inject constructor() {
                     it.provinceName,
                     it.cityName,
                     it.districtName,
-                    it.status.toString(),
+                    it.status,
                     it.country,
                     it.latitude,
                     it.longitude,
@@ -33,7 +33,7 @@ class ChooseAddressMapper @Inject constructor() {
     }
 
     fun mapSetStateChosenAddress(response: SetStateChosenAddressResponse): ChosenAddressModel {
-        val data = response.data
+        val data = response.data.chosenAddressData
         return ChosenAddressModel().apply {
             addressId = data.addressId
             receiverName = data.receiverName
