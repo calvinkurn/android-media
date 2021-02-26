@@ -155,6 +155,8 @@ include "features:operational:contact_us"
 include "features:operational:csat_rating"
 include "features:ovop2p"
 
+include "features:ordermanagement:snapshot"
+
 include "features:payment:common_payment"
 include "features:payment:payment"
 include "features:payment:thankyou_native"
