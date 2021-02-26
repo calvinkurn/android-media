@@ -1,7 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.debugger
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.core.os.bundleOf
@@ -18,13 +17,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
 import com.tokopedia.analyticsdebugger.cassava.throttleFirst
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 
 @ExperimentalCoroutinesApi
@@ -142,7 +142,7 @@ class AnalyticsDebuggerFragment : Fragment() {
                 recyclerView.addOnScrollListener(cb)
                 awaitClose { recyclerView.clearOnScrollListeners() }
             }.throttleFirst(1000).collect {
-                Log.d(TAG, "initRecyclerView: firing requetsmore")
+                Timber.d("initRecyclerView: firing requetsmore")
                 viewModel.listScrolled()
             }
         }
