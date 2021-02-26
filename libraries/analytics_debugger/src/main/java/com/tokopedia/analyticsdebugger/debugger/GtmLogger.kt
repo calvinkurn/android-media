@@ -7,13 +7,11 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.AnalyticsSource
 import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity
-import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
+import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
-import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
 import rx.schedulers.Schedulers
@@ -26,7 +24,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
 
     private val gson: Gson by lazy { GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create() }
     private val dbSource: GtmLogDBSource = GtmLogDBSource(context)
-    private val dbErrorSource: GtmErrorLogDBSource = GtmErrorLogDBSource(context)
     private val cache: LocalCacheHandler = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
 
     override val isNotificationEnabled: Boolean
@@ -41,9 +38,11 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                             .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
                             .replace("\\+".toRegex(), "%2B"), "UTF-8")
             )
-
             if (!TextUtils.isEmpty(data.name) && data.name != "null") {
-                dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
+                dbSource.insertAll(data)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(defaultSubscriber())
             }
 
             if (isNotificationEnabled) {
@@ -56,18 +55,18 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
     }
 
     override fun saveError(errorData: String) {
-        val gtmErrorLogDB = GtmErrorLogDB()
-        gtmErrorLogDB.data = errorData
-        gtmErrorLogDB.timestamp = System.currentTimeMillis()
+        val data = AnalyticsLogData(
+                name = "ERROR GTM V5",
+                data = errorData,
+                source = AnalyticsSource.ERROR
+        )
         if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
-            val data = AnalyticsLogData(
-                    name = "error GTM v5",
-                    data = errorData
-            )
             NotificationHelper.show(context, data)
         }
-        dbErrorSource.insertAll(gtmErrorLogDB).subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
+        dbSource.insertAll(data)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(defaultSubscriber())
     }
 
     override fun wipe() {
