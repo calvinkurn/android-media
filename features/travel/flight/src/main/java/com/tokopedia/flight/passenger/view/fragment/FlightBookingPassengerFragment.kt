@@ -600,7 +600,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun showCalendarPickerDialog(selectedDate: Date, minDate: Date? = null, maxDate: Date, onDateSetListener: DatePickerDialog.OnDateSetListener) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(activity!!, onDateSetListener, calendar.get(Calendar.YEAR),
+        val datePicker = DatePickerDialog(requireActivity(), onDateSetListener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
