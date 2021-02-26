@@ -12,9 +12,9 @@ data class PMPeriodTypeResponse(
     data class GoldGetPMSettingInfo(
             @Expose
             @SerializedName("data")
-            val `data`: GoldPMSettingInfoData = GoldPMSettingInfoData()
+            val `data`: Data = Data()
     ) {
-        data class GoldPMSettingInfoData(
+        data class Data(
                 @Expose
                 @SerializedName("period_type")
                 val periodType: String = ""

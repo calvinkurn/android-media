@@ -7,3 +7,5 @@ const val IMG_URL_REGULAR_MERCHANT_POPUP = "https://ecs7.tokopedia.net/img/andro
 const val IMG_URL_POWER_MERCHANT_IDLE_POPUP = "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_idle.png"
 const val GM_BADGE_TITLE = "Power Badge"
 const val GM_TITLE = "Power Merchant"
+const val PATTERN_DATE_SHOP_INFO = "yyyy-MM-dd"
+const val PATTERN_DATE_PARAM = "dd/MM/yyyy"

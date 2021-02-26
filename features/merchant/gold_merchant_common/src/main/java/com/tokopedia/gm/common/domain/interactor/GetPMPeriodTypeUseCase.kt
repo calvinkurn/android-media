@@ -12,7 +12,7 @@ class GetPMPeriodTypeUseCase @Inject constructor(
     companion object {
         const val SHOP_ID = "shopID"
         const val SOURCE = "source"
-        private const val GOLD_MERCHANT_SOURCE = "goldmerchant"
+        const val GOLD_MERCHANT_SOURCE = "goldmerchant"
         val PM_SETTING_INFO_QUERY = """
             query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
               goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {

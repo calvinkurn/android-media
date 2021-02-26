@@ -1,3 +1,5 @@
 package com.tokopedia.gm.common.presentation
 
-data class ShopInfoTransitionUiModel(val isNewSeller: Boolean = false, val periodType: String = "")
+data class ShopInfoTransitionUiModel(var isNewSeller: Boolean = false,
+                                     var periodType: String = "",
+                                     var joinDate: String = "")
