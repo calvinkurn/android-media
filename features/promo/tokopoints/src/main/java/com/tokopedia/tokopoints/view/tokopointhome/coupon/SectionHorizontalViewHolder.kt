@@ -40,9 +40,9 @@ class SectionHorizontalViewHolder(val view: View)
             countDownView.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
             countDownView.onFinish = { view.visibility = View.GONE }
 
-            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
+            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(R.dimen.dp_180)
         } else {
-            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
+            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(R.dimen.dp_280)
         }
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all)

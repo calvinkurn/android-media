@@ -102,24 +102,25 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
         goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
+        String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
         if (!GlobalConfig.isSellerApp()) {
-            startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
+            startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab, source));
             finish();
         }
         startPerformanceMonitoring();
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
-        initView();
+        initView(tab);
         setupTabViewpager(tab);
         openBuyerReview();
     }
 
-    private void initView() {
+    private void initView(String tab) {
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
         toolbar = findViewById(R.id.headerInboxReputation);
@@ -129,7 +130,11 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
-            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+            if(isExistParamTab(tab)) {
+                reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, goToReputationHistory);
+            } else {
+                reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+            }
             reviewSellerFragment.setArguments(reviewSellerBundle);
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
             sellerReputationFragment = SellerReputationFragment.createInstance();
@@ -161,7 +166,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         viewPager.setAdapter(sectionAdapter);
 
         if (GlobalConfig.isSellerApp()) {
-            if (tab != null && !tab.isEmpty()) {
+            if (isExistParamTab(tab)) {
                 if (tab.equals(SELLER_INBOX_REVIEW_TAB)) {
                     viewPager.setCurrentItem(TAB_SELLER_INBOX_REVIEW);
                 }
@@ -177,6 +182,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_START_END_TAB), (int) ReviewUtil.INSTANCE.DptoPx(this, MARGIN_TAB));
+    }
+
+    private boolean isExistParamTab(String tab) {
+        return tab != null && !tab.isEmpty();
     }
 
     private void setupTabName() {

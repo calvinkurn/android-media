@@ -357,7 +357,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
         }
-        sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
+        activity?.let {
+            sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
+        }
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
@@ -587,8 +589,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
+            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             val productDetailSheet = ProductDetailInfoBottomSheet()
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
@@ -1178,10 +1181,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun observeVideoDetail() {
-        sharedViewModel?.productVideoData?.observe(requireActivity(), {
-            if (it.isEmpty()) return@observe
-            productVideoCoordinator?.updateAndResume(it)
-        })
+        activity?.let { activity ->
+            sharedViewModel?.productVideoData?.observe(activity, {
+                if (it.isEmpty()) return@observe
+                productVideoCoordinator?.updateAndResume(it)
+            })
+        }
     }
 
     private fun observeTopAdsImageData() {
