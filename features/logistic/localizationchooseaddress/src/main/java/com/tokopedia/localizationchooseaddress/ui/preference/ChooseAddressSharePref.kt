@@ -7,10 +7,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 class ChooseAddressSharePref(context: Context?) {
 
-    val PREFERENCE_NAME = "LocalCacheAddress"
+    val PREFERENCE_NAME = "local_choose_address"
     val EXTRA_IS_CHOSEN_ADDRESS = "EXTRA_IS_CHOSEN_ADDRESS"
     val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
-    val EXTRA_IS_ROLLENCE_VALUE = "EXTRA_IS_ROLLENCE_VALUE"
 
     private val sharedPref: SharedPreferences? by lazy {
         context?.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -42,12 +41,4 @@ class ChooseAddressSharePref(context: Context?) {
         return sharedPref?.getBoolean(EXTRA_IS_COACHMARK, true)
     }
 
-    fun setRollenceValue(state: Boolean) {
-        editor?.putBoolean(EXTRA_IS_ROLLENCE_VALUE, state)
-        editor?.apply()
-    }
-
-    fun getRollenceValue(): Boolean? {
-        return sharedPref?.getBoolean(EXTRA_IS_ROLLENCE_VALUE, false)
-    }
 }

@@ -26,6 +26,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -51,6 +52,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
 import kotlinx.android.synthetic.main.empty_manage_address.*
 import kotlinx.android.synthetic.main.fragment_manage_address.*
@@ -60,6 +62,9 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -91,6 +96,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
     private var isFromCheckout: Boolean? = false
+    private var isLocalization: Boolean? = false
     private var typeRequest: Int? = -1
 
     override fun getScreenName(): String = ""
@@ -115,6 +121,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
         isFromCheckout = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT)
+        isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
     }
 
@@ -152,6 +159,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun initHeader() {
         manageAddressListener?.setAddButtonOnClickListener {
+            if (isLocalization == true) ChooseAddressTracking.onClickButtonTambahAlamat(userSession.userId)
             openFormAddressView(null)
         }
     }
@@ -258,6 +266,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
         performSearch(searchKey)
+        if (isLocalization == true) ChooseAddressTracking.impressAddressListPage(userSession.userId)
     }
 
     private fun initSearchView() {
@@ -291,6 +300,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {
+        if (isLocalization == true) ChooseAddressTracking.onClickButtonUbahAlamat(userSession.userId)
         openFormAddressView(peopleAddress)
     }
 
@@ -317,14 +327,30 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
-            if (data.addressStatus == 2) layout_utama.gone() else layout_utama.visible()
-            btn_alamat_utama.setOnClickListener {
+            if (data.addressStatus == 2) {
+                layout_utama?.gone()
+                layout_utama_choose?.gone()
+            } else {
+                if (!data.isStateChosenAddress) {
+                    layout_utama_choose?.visible()
+                    layout_utama?.gone()
+                } else {
+                    layout_utama?.visible()
+                    layout_utama_choose?.gone()
+                }
+            }
+            btn_alamat_utama?.setOnClickListener {
                 viewModel.setDefaultPeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
             }
-            btn_hapus_alamat.setOnClickListener {
+            btn_hapus_alamat?.setOnClickListener {
                 viewModel.deletePeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
+            }
+            btn_alamat_utama_choose?.setOnClickListener {
+                //TODO: hit jadikan & pilih sekaligus
+                //TODO: dismiss bottomSheet
+                //TODO: finish activity & set result back if source is from checkout
             }
         }
 
@@ -405,6 +431,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
         _selectedAddressItem = peopleAddress
+        if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
 
     private fun setChoosenAddress() {
@@ -419,6 +446,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     addressName = addr.addressName,
                     postalCode = addr.postalCode) }
         }
+
+        if (isLocalization == true) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
 
         if (isFromCheckout == true) {
             val resultIntent: Intent
