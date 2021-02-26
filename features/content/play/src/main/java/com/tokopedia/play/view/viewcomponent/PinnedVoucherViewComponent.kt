@@ -40,8 +40,8 @@ class PinnedVoucherViewComponent(
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
         pinnedVoucherAdapter.setItemsAndAnimateChanges(getHighlightedItems(vouchers))
 
-        if (vouchers.isEmpty()) rvPinnedVoucherList.hide()
-        else rvPinnedVoucherList.show()
+        if (vouchers.isEmpty()) hide()
+        else show()
     }
 
     fun showPlaceholder() {

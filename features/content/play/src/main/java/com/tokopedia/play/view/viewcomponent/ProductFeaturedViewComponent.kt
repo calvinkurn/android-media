@@ -41,10 +41,11 @@ class ProductFeaturedViewComponent(
     }
 
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
-        adapter.setItemsAndAnimateChanges(getFinalFeaturedItems(products, maxProducts))
+        val featuredItems = getFinalFeaturedItems(products, maxProducts)
+        adapter.setItemsAndAnimateChanges(featuredItems)
 
-        if (products.isEmpty()) rvProductFeatured.hide()
-        else rvProductFeatured.show()
+        if (featuredItems.isEmpty()) hide()
+        else show()
     }
 
     fun showPlaceholder() {
