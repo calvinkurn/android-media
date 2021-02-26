@@ -6,7 +6,7 @@ data class AddressState(
         var popupMessage: String = ""
 ) {
     companion object {
-        const val IS_ERROR = "1"
+        const val IS_ERROR = "4"
         const val STATE_DEFAULT = 0
         const val STATE_ADDRESS_ID_MATCH_DEFAULT_OCC = 201
         const val STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC = 202
