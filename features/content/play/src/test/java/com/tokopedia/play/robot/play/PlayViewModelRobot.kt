@@ -13,6 +13,7 @@ import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
@@ -113,11 +114,22 @@ class PlayViewModelRobot(
         every { userSession.userId } returns userId
     }
 
-    fun setPiPMode(pipMode: PiPMode) {
-        when(pipMode) {
-            PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-            PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
-            PiPMode.StopPip -> viewModel.stopPiP()
+    fun setPiPState(pipState: PiPState) {
+        when(pipState) {
+            is PiPState.Requesting -> when (pipState.mode) {
+                PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
+                PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+                else -> {}
+            }
+            is PiPState.InPiP -> {
+                when (pipState.mode) {
+                    PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
+                    PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+                    else -> {}
+                }
+                viewModel.goPiP()
+            }
+            PiPState.Stop -> viewModel.stopPiP()
         }.exhaustive
     }
 

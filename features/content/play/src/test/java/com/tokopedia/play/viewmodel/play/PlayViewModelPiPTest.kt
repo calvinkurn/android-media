@@ -8,6 +8,7 @@ import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
 import io.mockk.every
@@ -47,9 +48,10 @@ class PlayViewModelPiPTest {
     fun `when watch in pip mode, the mode field should also be watch in pip mode`() {
         givenPlayViewModelRobot(
         ) andWhen {
-            setPiPMode(PiPMode.WatchInPip)
+            setPiPState(PiPState.InPiP(PiPMode.WatchInPip))
         } thenVerify {
-            pipModeFieldResult
+            pipStateFieldResult
+                    .pipMode
                     .isEqualTo(PiPMode.WatchInPip)
         }
     }
@@ -58,9 +60,10 @@ class PlayViewModelPiPTest {
     fun `when open browsing other page in pip mode, the mode field should also be open browsing other page in pip mode`() {
         givenPlayViewModelRobot(
         ) andWhen {
-            setPiPMode(PiPMode.BrowsingOtherPage)
+            setPiPState(PiPState.InPiP(PiPMode.BrowsingOtherPage))
         } thenVerify {
-            pipModeFieldResult
+            pipStateFieldResult
+                    .pipMode
                     .isEqualTo(PiPMode.BrowsingOtherPage)
         }
     }
@@ -69,10 +72,12 @@ class PlayViewModelPiPTest {
     fun `when stop pip mode, the mode field should also be stop pip mode`() {
         givenPlayViewModelRobot(
         ) andWhen {
-            setPiPMode(PiPMode.StopPip)
+            setPiPState(PiPState.Stop)
         } thenVerify {
-            pipModeFieldResult
-                    .isEqualTo(PiPMode.StopPip)
+            pipStateFieldResult
+                    .isEqualTo(PiPState.Stop)
+                    .pipMode
+                    .isEqualTo(null)
         }
     }
 
