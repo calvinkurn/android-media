@@ -90,7 +90,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
-    private var chooseAddressButton: Typography? = null
 
     private var buttonChooseAddress: UnifyButton? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
@@ -175,7 +174,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
-        chooseAddressButton = view?.findViewById(R.id.text_choose_address)
 
         chooseAddressPref = ChooseAddressSharePref(context)
 
@@ -186,9 +184,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
-        chooseAddressButton?.setOnClickListener {
-            startActivity(context?.let { it -> ChooseAddressActivity.newInstance(it) })
-        }
 
         initScrollListener()
 
