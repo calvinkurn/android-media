@@ -1,8 +1,9 @@
 package com.tokopedia.loginregister.login.dagger
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
-import com.tokopedia.loginregister.login.di.*
+import com.tokopedia.loginregister.login.di.LoginComponent
+import com.tokopedia.loginregister.login.di.LoginModule
+import com.tokopedia.loginregister.login.di.LoginScope
 import dagger.Component
 
 /**
@@ -11,7 +12,7 @@ import dagger.Component
  */
 @LoginScope
 @Component(modules = [
-    MockLoginmodule::class,
+    LoginModule::class,
     MockLoginQueryModule::class,
     MockLoginUseCaseModule::class,
     MockLoginViewModelModule::class

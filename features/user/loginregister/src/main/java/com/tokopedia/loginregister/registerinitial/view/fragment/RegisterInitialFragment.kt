@@ -31,6 +31,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -1223,6 +1225,9 @@ val intent = Intent()
             it.setResult(Activity.RESULT_OK, intent)
             it.finish()
             saveFirstInstallTime()
+
+            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(requireContext(), true)
         }
     }
 
