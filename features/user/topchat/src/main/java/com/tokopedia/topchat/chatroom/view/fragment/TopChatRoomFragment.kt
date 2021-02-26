@@ -26,7 +26,6 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -75,8 +74,7 @@ import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
-import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
-import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
@@ -205,6 +203,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        presenter.attachView(this)
         initFireBase()
     }
 
@@ -377,16 +376,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            context?.let {
-                val chatComponent = DaggerChatComponent.builder()
-                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                        .chatRoomContextModule(ChatRoomContextModule(it))
-                        .build()
-                chatComponent.inject(this)
-            }
-            presenter.attachView(this)
-        }
+        getComponent(ChatComponent::class.java).inject(this)
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
