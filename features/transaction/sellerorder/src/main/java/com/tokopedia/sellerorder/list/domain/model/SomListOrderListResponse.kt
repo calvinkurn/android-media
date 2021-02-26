@@ -37,6 +37,9 @@ data class SomListOrderListResponse(
                     @SerializedName("cancel_request_time")
                     @Expose
                     val cancelRequestTime: String = "",
+                    @SerializedName("cancel_request_status")
+                    @Expose
+                    val cancelRequestStatus: Int = 0,
                     @SerializedName("deadline_color")
                     @Expose
                     val deadlineColor: String = "",

@@ -1206,7 +1206,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 val searchBarContainer = searchBarSomList?.searchBarTextField?.parent as? View
                 val horizontalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt()
                 val verticalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
-                if (searchBarContainer?.paddingBottom == 0) {
+                if (searchBarContainer?.paddingBottom != verticalPadding || searchBarContainer?.paddingTop != verticalPadding) {
+                    bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
                     searchBarContainer?.setPadding(
                             horizontalPadding,
                             verticalPadding,
@@ -1215,6 +1216,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     return@addOnPreDrawListener false
                 }
             }
+            bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
             true
         }
     }
