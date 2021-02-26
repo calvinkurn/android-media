@@ -18,21 +18,16 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Provider
 
 @ExperimentalCoroutinesApi
 class MenuSettingViewModelTest {
 
     @RelaxedMockK
-    lateinit var authorizeAddressAccessUseCase: AuthorizeAccessUseCase
+    lateinit var authorizeAccessUseCaseProvider: Provider<AuthorizeAccessUseCase>
 
     @RelaxedMockK
-    lateinit var authorizeInfoAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeNotesAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeShipmentAccessUseCase: AuthorizeAccessUseCase
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -46,14 +41,13 @@ class MenuSettingViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = MenuSettingViewModel(
-                authorizeAddressAccessUseCase, authorizeInfoAccessUseCase, authorizeNotesAccessUseCase,
-                authorizeShipmentAccessUseCase, userSession, CoroutineTestDispatchersProvider)
+        viewModel = MenuSettingViewModel(authorizeAccessUseCaseProvider, userSession, CoroutineTestDispatchersProvider)
     }
 
     @Test
     fun `check shop setting access if shop owner should update value to success`() {
         every { userSession.isShopOwner } returns true
+        everyProviderGetUseCase()
 
         viewModel.checkShopSettingAccess()
 
@@ -62,9 +56,10 @@ class MenuSettingViewModelTest {
 
     @Test
     fun `check shop setting access if not shop owner should update value to success if response success`() = runBlocking {
-        val expectedEligibility = true
+        val expectedEligibility = false
+        everyProviderGetUseCase()
         every { userSession.isShopOwner } returns false
-        everyCheckAccessRoleShouldSuccess(expectedEligibility, expectedEligibility, expectedEligibility, expectedEligibility)
+        everyCheckAccessRoleShouldSuccess(expectedEligibility)
 
         viewModel.checkShopSettingAccess()
 
@@ -76,6 +71,7 @@ class MenuSettingViewModelTest {
     @Test
     fun `check shop setting access if not shop owner should update value to fail if response failed`() = runBlocking {
         every { userSession.isShopOwner } returns false
+        everyProviderGetUseCase()
         everyCheckAccessRoleShouldFail()
 
         viewModel.checkShopSettingAccess()
@@ -83,22 +79,16 @@ class MenuSettingViewModelTest {
         assert(viewModel.shopSettingAccessLiveData.value is Fail)
     }
 
+    private fun everyProviderGetUseCase() {
+        every { authorizeAccessUseCaseProvider.get() } returns authorizeAccessUseCase
+    }
 
-    private fun everyCheckAccessRoleShouldSuccess(addressRole: Boolean,
-                                                  infoRole: Boolean,
-                                                  notesRole: Boolean,
-                                                  shipmentRole: Boolean) {
-        coEvery { authorizeAddressAccessUseCase.execute(any()) } returns addressRole
-        coEvery { authorizeInfoAccessUseCase.execute(any()) } returns infoRole
-        coEvery { authorizeNotesAccessUseCase.execute(any()) } returns notesRole
-        coEvery { authorizeShipmentAccessUseCase.execute(any()) } returns shipmentRole
+    private fun everyCheckAccessRoleShouldSuccess(isEligible: Boolean) {
+        coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
     }
 
     private fun everyCheckAccessRoleShouldFail() {
-        coEvery { authorizeAddressAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeInfoAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeNotesAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeShipmentAccessUseCase.execute(any()) } throws ResponseErrorException()
+        coEvery { authorizeAccessUseCase.execute(any()) } throws ResponseErrorException()
     }
 
 }

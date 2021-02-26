@@ -67,8 +67,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
         private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
 
-        private const val SHIPPING_SERVICE_ALIAS = "shipping service"
-        private const val PASSWORD_ALIAS = "password"
         private const val LOGOUT_ALIAS = "logout"
 
         @JvmStatic
@@ -114,7 +112,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(menuSettingViewModel)
         setupView()
     }
 
