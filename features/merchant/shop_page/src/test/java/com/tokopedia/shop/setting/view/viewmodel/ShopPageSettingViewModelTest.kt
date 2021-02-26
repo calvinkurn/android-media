@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Provider
 
 @ExperimentalCoroutinesApi
 class ShopPageSettingViewModelTest {
@@ -30,22 +31,10 @@ class ShopPageSettingViewModelTest {
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
 
     @RelaxedMockK
-    lateinit var authorizeAddressAccessUseCase: AuthorizeAccessUseCase
+    lateinit var authorizeAccessUseCaseProvider: Provider<AuthorizeAccessUseCase>
 
     @RelaxedMockK
-    lateinit var authorizeEtalaseAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeNotesAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeInfoAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeShipmentAccessUseCase: AuthorizeAccessUseCase
-
-    @RelaxedMockK
-    lateinit var authorizeProductManageAccessUseCase: AuthorizeAccessUseCase
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     private val dispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
@@ -55,12 +44,7 @@ class ShopPageSettingViewModelTest {
         ShopPageSettingViewModel(
                 userSessionInterface,
                 getShopInfoUseCase,
-                authorizeAddressAccessUseCase,
-                authorizeEtalaseAccessUseCase,
-                authorizeNotesAccessUseCase,
-                authorizeInfoAccessUseCase,
-                authorizeShipmentAccessUseCase,
-                authorizeProductManageAccessUseCase,
+                authorizeAccessUseCaseProvider,
                 dispatcherProvider
         )
     }
@@ -74,6 +58,7 @@ class ShopPageSettingViewModelTest {
     fun `check whether shopInfoResp post Success value if getShop is called and response is success`() {
         val mockShopId = "123"
         val mockShopDomain = "domain"
+        everyGetProviderUseCase()
         every { userSessionInterface.isShopOwner } returns true
         coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
         everyCheckAdminShouldSuccess()
@@ -86,6 +71,7 @@ class ShopPageSettingViewModelTest {
     fun `check whether shopInfoResp post Fail value if getShop is called and response is error`() {
         val mockShopId = "shopId"
         val mockShopDomain = "domain"
+        everyGetProviderUseCase()
         every { userSessionInterface.isShopOwner } returns true
         coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
         everyCheckAdminShouldSuccess()
@@ -128,6 +114,7 @@ class ShopPageSettingViewModelTest {
     fun `check whether access related use cases is called if user is not shop owner`() {
         val mockShopId = "123"
         val mockShopDomain = "domain"
+        everyGetProviderUseCase()
         every { userSessionInterface.isShopOwner } returns false
         coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
         everyCheckAdminShouldSuccess()
@@ -143,10 +130,10 @@ class ShopPageSettingViewModelTest {
         val mockShopId = "123"
         val mockShopDomain = "domain"
         val mockIsEligible = true
+        everyGetProviderUseCase()
         every { userSessionInterface.isShopOwner } returns false
         coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
-        everyCheckAdminShouldSuccess(mockIsEligible, mockIsEligible, mockIsEligible,
-                mockIsEligible, mockIsEligible, mockIsEligible)
+        everyCheckAdminShouldSuccess(mockIsEligible)
 
         viewModel.getShop(mockShopId, mockShopDomain, true)
 
@@ -162,6 +149,7 @@ class ShopPageSettingViewModelTest {
     fun `check whether shopSettingAccess and shopInfoResp post Fail value if response is failed`() {
         val mockShopId = "123"
         val mockShopDomain = "domain"
+        everyGetProviderUseCase()
         every { userSessionInterface.isShopOwner } returns false
         coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
         everyCheckAdminShouldFail()
@@ -172,40 +160,24 @@ class ShopPageSettingViewModelTest {
         assert(viewModel.shopSettingAccessLiveData.value is Fail)
         assert(viewModel.shopInfoResp.value is Fail)
     }
+
+    private fun everyGetProviderUseCase() {
+        every {
+            authorizeAccessUseCaseProvider.get()
+        } returns authorizeAccessUseCase
+    }
     
-    private fun everyCheckAdminShouldSuccess(
-            addressRole: Boolean = true,
-            etalaseRole: Boolean = true,
-            notesRole: Boolean = true,
-            infoRole: Boolean = true,
-            shipmentRole: Boolean = true,
-            productManageRole: Boolean = true
-    ) {
-        coEvery { authorizeAddressAccessUseCase.execute(any()) } returns addressRole
-        coEvery { authorizeEtalaseAccessUseCase.execute(any()) } returns etalaseRole
-        coEvery { authorizeNotesAccessUseCase.execute(any()) } returns notesRole
-        coEvery { authorizeInfoAccessUseCase.execute(any()) } returns infoRole
-        coEvery { authorizeShipmentAccessUseCase.execute(any()) } returns shipmentRole
-        coEvery { authorizeProductManageAccessUseCase.execute(any()) } returns productManageRole
+    private fun everyCheckAdminShouldSuccess(isEligible: Boolean = true) {
+        coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
     }
 
     private fun everyCheckAdminShouldFail() {
-        coEvery { authorizeAddressAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeEtalaseAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeNotesAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeInfoAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeShipmentAccessUseCase.execute(any()) } throws ResponseErrorException()
-        coEvery { authorizeProductManageAccessUseCase.execute(any()) } throws ResponseErrorException()
+        coEvery { authorizeAccessUseCase.execute(any()) } throws ResponseErrorException()
     }
 
     private fun verifyAllCheckAdminUseCasesShouldBeCalled() {
         coVerify {
-            authorizeAddressAccessUseCase.execute(any())
-            authorizeEtalaseAccessUseCase.execute(any())
-            authorizeNotesAccessUseCase.execute(any())
-            authorizeInfoAccessUseCase.execute(any())
-            authorizeShipmentAccessUseCase.execute(any())
-            authorizeProductManageAccessUseCase.execute(any())
+            authorizeAccessUseCase.execute(any())
         }
     }
 

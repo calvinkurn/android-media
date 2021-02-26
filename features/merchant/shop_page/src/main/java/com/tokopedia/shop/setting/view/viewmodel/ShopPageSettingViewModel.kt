@@ -17,16 +17,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import javax.inject.Provider
 
 class ShopPageSettingViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val authorizeAddressAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeEtalaseAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeNotesAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeInfoAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeShipmentAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeProductManageAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
         private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -37,6 +33,13 @@ class ShopPageSettingViewModel @Inject constructor(
         get() = mShopSettingAccessLiveData
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
+
+    private val adminAccessList by lazy {
+        listOf(
+                AccessId.SHOP_SETTING_ADDRESS, AccessId.SHOP_SETTING_ETALASE, AccessId.SHOP_SETTING_NOTES,
+                AccessId.SHOP_SETTING_INFO, AccessId.SHOP_SETTING_SHIPMENT, AccessId.PRODUCT_LIST
+        )
+    }
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -59,90 +62,39 @@ class ShopPageSettingViewModel @Inject constructor(
                     shopInfoResp.value = Success(it)
                 }
             } else {
-                val addressRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingAddressAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                val etalaseRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingEtalaseAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                val notesRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingNotesAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                val infoRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingInfoAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                val shipmentRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingShipmentAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                val productManageRole = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getSettingProductManageAccess(id) },
-                        onError = {
-                            if (shopInfoResp.value !is Fail) {
-                                mShopSettingAccessLiveData.postValue(Fail(it))
-                                shopInfoResp.postValue(Fail(it))
-                            }
-                            null
-                        })
-                addressRole.await()?.let { address ->
-                    etalaseRole.await()?.let { etalase ->
-                        notesRole.await()?.let { notes ->
-                            infoRole.await()?.let { info ->
-                                shipmentRole.await()?.let { shipment ->
-                                    productManageRole.await()?.let { productManage ->
-                                        mShopSettingAccessLiveData.postValue(Success(
-                                                ShopSettingAccess(
-                                                        isAddressAccessAuthorized = address,
-                                                        isEtalaseAccessAuthorized = etalase,
-                                                        isNotesAccessAuthorized = notes,
-                                                        isInfoAccessAuthorized = info,
-                                                        isShipmentAccessAuthorized = shipment,
-                                                        isProductManageAccessAuthorized = productManage
-                                                )
-                                        ))
-                                        shopInfo.await()?.let {
-                                            shopInfoResp.value = Success(it)
-                                        }
-                                    }
-                                }
-                            }
+                val adminAccessEligibilityMap = adminAccessList.associateBy(
+                        { it },
+                        { accessId ->
+                            asyncCatchError(
+                                    dispatcherProvider.io,
+                                    block = {
+                                        getSettingAccess(id, accessId, authorizeAccessUseCase.get())
+                                    },
+                                    onError = {
+                                        mShopSettingAccessLiveData.postValue(Fail(it))
+                                        shopInfoResp.postValue(Fail(it))
+                                        null
+                                    })
                         }
-                    }
+                )
+
+                val adminAccessMap: Map<Int, Boolean> =
+                        adminAccessEligibilityMap.mapValues {
+                            it.value.await().let { eligibility ->
+                                eligibility ?: return@launchCatchError }
+                        }
+                mShopSettingAccessLiveData.postValue(Success(
+                        ShopSettingAccess(
+                                isAddressAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_ADDRESS] ?: false,
+                                isEtalaseAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_ETALASE] ?: false,
+                                isNotesAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_NOTES] ?: false,
+                                isInfoAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_INFO] ?: false,
+                                isShipmentAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_SHIPMENT] ?: false,
+                                isProductManageAccessAuthorized = adminAccessMap[AccessId.PRODUCT_LIST] ?: false
+                        )
+                ))
+                shopInfo.await()?.let {
+                    shopInfoResp.value = Success(it)
                 }
             }
         }) {
@@ -157,33 +109,9 @@ class ShopPageSettingViewModel @Inject constructor(
         return getShopInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getSettingAddressAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_ADDRESS)
-        return authorizeAddressAccessUseCase.execute(requestParams)
+    private suspend fun getSettingAccess(shopId: Int, @AccessId accessId: Int, useCase: AuthorizeAccessUseCase): Boolean {
+        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
+        return useCase.execute(requestParams)
     }
 
-    private suspend fun getSettingEtalaseAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_ETALASE)
-        return authorizeEtalaseAccessUseCase.execute(requestParams)
-    }
-
-    private suspend fun getSettingNotesAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_NOTES)
-        return authorizeNotesAccessUseCase.execute(requestParams)
-    }
-
-    private suspend fun getSettingInfoAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_INFO)
-        return authorizeInfoAccessUseCase.execute(requestParams)
-    }
-
-    private suspend fun getSettingShipmentAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.SHOP_SETTING_SHIPMENT)
-        return authorizeShipmentAccessUseCase.execute(requestParams)
-    }
-
-    private suspend fun getSettingProductManageAccess(shopId: Int): Boolean {
-        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.PRODUCT_LIST)
-        return authorizeProductManageAccessUseCase.execute(requestParams)
-    }
 }
