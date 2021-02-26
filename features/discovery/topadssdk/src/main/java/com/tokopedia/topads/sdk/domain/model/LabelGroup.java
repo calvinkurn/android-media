@@ -30,7 +30,7 @@ public class LabelGroup implements Parcelable {
 
     @SerializedName(KEY_URL)
     @Expose
-    private String imageUrl;
+    private String imageUrl = "";
 
     public LabelGroup(String position, String type, String title, String imageUrl) {
         this.position = position;
