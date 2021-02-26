@@ -100,7 +100,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         super.onViewCreated(view, savedInstanceState)
         setInitialViewState()
         initObserver()
-        if (userSession.isLoggedIn && false) {
+        if (userSession.isLoggedIn) {
             initData()
         } else {
             setViewState(false)
