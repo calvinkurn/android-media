@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.localizationchooseaddress
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -23,8 +24,14 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
 
     fun getChosenAddress(): ChosenAddress? {
         ChooseAddressUtils.getLocalizingAddressData(getContext())?.let {
+            if (it.address_id.isBlank()) {
+                it.address_id = "0"
+            }
+            if (it.district_id.isBlank()) {
+                it.district_id = "0"
+            }
             return ChosenAddress(
-                    mode = if (it.address_id.isNotBlank()) ChosenAddress.MODE_ADDRESS else ChosenAddress.MODE_SNIPPET,
+                    mode = if (it.address_id.toLongOrZero() != 0L) ChosenAddress.MODE_ADDRESS else ChosenAddress.MODE_SNIPPET,
                     addressId = it.address_id,
                     districtId = it.district_id,
                     postalCode = it.postal_code,

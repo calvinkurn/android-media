@@ -52,6 +52,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_ADDRESS_STATE = "address_state"
 
         private const val MERCHANT_CODE = "tokopedia"
         private const val PROFILE_CODE = "EXPRESS_SAVE"
@@ -61,10 +62,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         private const val QUERY_PARAM_SUCCESS = "success"
         private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
 
-        fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARG_ADDRESS_STATE, addressState)
             paymentMethodFragment.arguments = bundle
             return paymentMethodFragment
         }
@@ -265,7 +267,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.goBack()
             } else {
                 preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
-                parent.addFragment(PreferenceSummaryFragment.newInstance())
+                val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
+                parent.addFragment(PreferenceSummaryFragment.newInstance(addressState = addressState))
             }
         }
     }

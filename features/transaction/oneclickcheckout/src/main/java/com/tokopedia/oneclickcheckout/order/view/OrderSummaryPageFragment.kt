@@ -783,6 +783,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                 val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                 putExtra(PreferenceEditActivity.EXTRA_AUTO_SELECT_ADDRESS, addressState == AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
@@ -919,6 +920,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
@@ -958,7 +961,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
-                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get())
+                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get(), viewModel.addressState.value.state)
             }
         }
 
@@ -997,6 +1000,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1017,6 +1022,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
         }
@@ -1116,6 +1123,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                val addressState = viewModel.addressState.value.state
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
         }
@@ -1202,6 +1211,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                                val addressState = viewModel.addressState.value.state
+                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                             }
                             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
                         }
@@ -1224,6 +1235,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
+                                val addressState = viewModel.addressState.value.state
+                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                             }
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                         }

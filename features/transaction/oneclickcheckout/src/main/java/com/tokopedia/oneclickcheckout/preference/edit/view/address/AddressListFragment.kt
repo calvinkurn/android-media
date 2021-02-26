@@ -84,15 +84,21 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
         private const val ARG_IS_AUTO_SELECT_ADDRESS = "ARG_IS_AUTO_SELECT_ADDRESS"
+        private const val ARGS_ADDRESS_STATE = "ARGS_ADDRESS_STATE"
 
-        fun newInstance(isEdit: Boolean = false, isAutoSelectAddress: Boolean = false): AddressListFragment {
+        fun newInstance(isEdit: Boolean = false, isAutoSelectAddress: Boolean = false, addressState: Int): AddressListFragment {
             val addressListFragment = AddressListFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
             bundle.putBoolean(ARG_IS_AUTO_SELECT_ADDRESS, isAutoSelectAddress)
+            bundle.putInt(ARGS_ADDRESS_STATE, addressState)
             addressListFragment.arguments = bundle
             return addressListFragment
         }
+    }
+
+    private fun getAddressState(): Int? {
+        return arguments?.getInt(ARGS_ADDRESS_STATE)
     }
 
     override fun getScreenName(): String = ""
@@ -219,7 +225,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
 
-        viewModel.searchAddress(searchKey)
+        viewModel.searchAddress(searchKey, getAddressState())
     }
 
     private fun initView() {
@@ -312,11 +318,11 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 viewModel.destinationLatitude = saveAddressDataModel.latitude
                 viewModel.destinationPostalCode = saveAddressDataModel.postalCode
                 viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
-                viewModel.searchAddress("")
+                viewModel.searchAddress("", getAddressState())
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState())
         }
 
     }
@@ -329,13 +335,13 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAddress?.clearFocus()
-                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState())
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
         searchAddress?.clearListener = {
-            viewModel.searchAddress("")
+            viewModel.searchAddress("", getAddressState())
         }
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
@@ -419,7 +425,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             searchAddress?.searchBarTextField?.setText("")
-            viewModel.searchAddress("")
+            viewModel.searchAddress("", getAddressState())
         }
         searchAddress?.gone()
         textSearchError?.gone()
