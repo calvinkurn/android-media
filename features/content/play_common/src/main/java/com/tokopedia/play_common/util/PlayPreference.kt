@@ -15,7 +15,7 @@ class PlayPreference @Inject constructor(
         private const val PLAY_PREFERENCE = "play_preference"
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
-        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s_%s"
+        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)

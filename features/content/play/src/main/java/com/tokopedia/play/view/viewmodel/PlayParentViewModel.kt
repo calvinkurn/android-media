@@ -111,7 +111,7 @@ class PlayParentViewModel constructor(
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 val response = getChannelDetailsWithRecomUseCase.apply {
-                    params = GetChannelDetailsWithRecomUseCase.createParams(nextKey)
+                    setRequestParams(GetChannelDetailsWithRecomUseCase.createParams(nextKey))
                 }.executeOnBackground()
 
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
