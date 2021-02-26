@@ -817,7 +817,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
         secondaryBottomSheet = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
-            setTitle(getString(R.string.som_detail_other_bottomsheet_title))
+            setTitle(context?.getString(R.string.som_detail_other_bottomsheet_title).orEmpty())
             setCloseClickListener { dismiss() }
         }
 
