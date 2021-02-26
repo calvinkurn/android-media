@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -278,7 +279,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) {
-        assert((viewModel.somDetailChatEligibility.value as? Success)?.equals(pairs) == true)
+        Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
     }
 }
 
