@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextUtils
@@ -61,6 +62,7 @@ import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
+import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -164,7 +166,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
             override fun afterTextChanged(editable: Editable?) {
-                afterTextChanged.invoke(editable.toString())
+                Handler().postDelayed({
+                    afterTextChanged.invoke(editable.toString())
+                }, 500)
             }
         })
     }
@@ -196,7 +200,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_expiration_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
             til_passport_expiration_date.textFieldInput.setOnClickListener { onPassportExpiredClicked() }
-            til_passport_expiration_date.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_nationality.textFieldInput.isFocusable = false
             til_nationality.textFieldInput.isClickable = true
@@ -219,6 +222,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_issuer_country.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_first_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+            et_first_name.afterTextChanged { validateAllFields() }
             til_last_name.textFieldInput.afterTextChanged { validateAllFields() }
 
             fragment_layout.setOnTouchListener { _, _ ->
@@ -241,11 +245,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 })
         (et_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
-
     }
 
     private fun onSubmitData() {
-        if (validateAllFields()) {
             passengerModel.passengerTitle = getPassengerTitle()
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
@@ -258,7 +260,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             upsertContactList()
             finishActivityWithData()
-        }
     }
 
     private fun upsertContactList() {
@@ -652,6 +653,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            validateAllFields()
         }
     }
 
@@ -741,6 +743,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 }
                 flightPassengerInfoValidator.validateFirstNameIsMoreThanMaxLength(getFirstName()) -> {
                     til_first_name.error = getString(R.string.flight_booking_passenger_first_name_max_error)
+                    false
+                }
+                flightPassengerInfoValidator.validateLastNameIsLessThanMinLength(getFirstName()) -> {
+                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_error)
                     false
                 }
                 else -> true
