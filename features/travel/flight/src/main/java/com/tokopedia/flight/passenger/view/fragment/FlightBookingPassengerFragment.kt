@@ -248,6 +248,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun onSubmitData() {
+        if(validateAllFields()) {
             passengerModel.passengerTitle = getPassengerTitle()
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
@@ -260,6 +261,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             upsertContactList()
             finishActivityWithData()
+        }
     }
 
     private fun upsertContactList() {
