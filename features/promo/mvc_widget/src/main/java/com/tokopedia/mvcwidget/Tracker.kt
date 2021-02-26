@@ -147,7 +147,7 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
-    //5,9,20, 24
+    //5,9,20,24,44,45 - DO NOT SEND TRACKERS YET - IT IS MUTUALLY DECIDED WITH PO
     fun viewCoupons(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
 
@@ -175,7 +175,7 @@ object Tracker {
             }
         }
         fillCommonItems(map, userId)
-        getTracker().sendGeneralEvent(map)
+//        getTracker().sendGeneralEvent(map)
     }
 
     //2,6,17,21
@@ -344,7 +344,7 @@ object Tracker {
     }
 
     //Outside MVC - entryPoint
-    //35,36,37,38,39,40,41,42,43,44,45
+    //35,36,37,38,39,40,41,42,43
 }
 
 @Retention(AnnotationRetention.SOURCE)
