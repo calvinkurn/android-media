@@ -31,9 +31,6 @@ interface AnalyticsDebuggerComponent {
     @get:Named(NAMED_TOPADS)
     val topAdsPresenter: TopAdsDebugger.Presenter
 
-    @get:Named(NAMED_GTM_ERROR_ANALYTICS)
-    val gtmErrorPresenter: AnalyticsDebugger.Presenter
-
     @get:Named(NAMED_IRIS_SAVE)
     val gtmIrisSavePresenter: AnalyticsDebugger.Presenter
 
