@@ -18,7 +18,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
@@ -54,17 +54,17 @@ class OTPSecurityQuestionTest {
     fun setup() {
         Intents.init()
         gtmLogDBSource.deleteAll().subscribe()
-        setupIdlingResource()
         setupGraphqlMockResponse(OTPMethodPhoneMockResponse())
+        setupIdlingResource()
     }
 
     private fun setupIdlingResource() {
-        idlingResource = EspressoIdlingResource.idlingResource
+        idlingResource = TkpdIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @Test
-    fun `check_otp_method_phone_success_tracker`() {
+    fun `check_otp_SQ_phone_success_tracker`() {
         activityRule.launchActivity(getTestIntent())
 
         checkClickOnSms()
@@ -92,7 +92,7 @@ class OTPSecurityQuestionTest {
     }
 
     private fun checkClickOnKirimUlang() {
-        Thread.sleep(1000)
+        Thread.sleep(31000)
         Espresso.onView(ViewMatchers.withText(CoreMatchers.endsWith("Kirim ulang")))
                 .check(matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActionSpannable.clickClickableSpan("Kirim ulang"))

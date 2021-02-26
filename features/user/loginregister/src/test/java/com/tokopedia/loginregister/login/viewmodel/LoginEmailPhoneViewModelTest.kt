@@ -236,7 +236,9 @@ class LoginEmailPhoneViewModelTest {
                 DiscoverItemDataModel("123", "", "", "", "")
         ), "")
 
-        coEvery { discoverUseCase.createObservable(RequestParams.EMPTY).toBlocking().single() } returns discoverViewModel
+        every { discoverUseCase.execute(any(), any()) } answers {
+            secondArg<Subscriber<DiscoverDataModel>>().onNext(discoverViewModel)
+        }
 
         viewModel.discoverLogin()
 
@@ -260,7 +262,9 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Failed Discover`() {
         /* When */
-        coEvery { discoverUseCase.createObservable(RequestParams.EMPTY).toBlocking().single() } throws throwable
+        every { discoverUseCase.execute(any(), any()) } answers {
+            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
+        }
 
         viewModel.discoverLogin()
 

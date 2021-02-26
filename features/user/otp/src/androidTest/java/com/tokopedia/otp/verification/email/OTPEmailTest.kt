@@ -18,17 +18,13 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.common.ViewActionSpannable
 import com.tokopedia.otp.verification.email.stub.OTPEmailMockResponse
 import com.tokopedia.otp.verification.email.stub.VerificationActivityStub
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.endsWith
 import org.junit.After
@@ -55,22 +51,17 @@ class OTPEmailTest {
     val gtmLogDBSource = GtmLogDBSource(context)
     var idlingResource: IdlingResource? = null
 
-    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
         Intents.init()
-        Dispatchers.setMain(TestCoroutineDispatcher())
         gtmLogDBSource.deleteAll().subscribe()
-        setupIdlingResource()
         setupGraphqlMockResponse(OTPEmailMockResponse())
+        setupIdlingResource()
     }
 
     private fun setupIdlingResource() {
-        idlingResource = EspressoIdlingResource.idlingResource
-        if (idlingResource != null)
-            IdlingRegistry.getInstance().register(idlingResource)
-        else
-            throw RuntimeException("No idling resource found")
+        idlingResource = TkpdIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @Test
@@ -95,7 +86,7 @@ class OTPEmailTest {
     }
 
     private fun checkClickOnKirimUlang() {
-        Thread.sleep(1000)
+        Thread.sleep(31000)
         Espresso.onView(ViewMatchers.withText(endsWith("Kirim ulang")))
                 .check(matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActionSpannable.clickClickableSpan("Kirim ulang"))

@@ -18,7 +18,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
@@ -52,12 +52,12 @@ class OTPPhoneTest {
     fun setup() {
         Intents.init()
         gtmLogDBSource.deleteAll().subscribe()
-        setupIdlingResource()
         setupGraphqlMockResponse(OTPMethodPhoneMockResponse())
+        setupIdlingResource()
     }
 
     private fun setupIdlingResource() {
-        idlingResource = EspressoIdlingResource.idlingResource
+        idlingResource = TkpdIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
@@ -90,7 +90,7 @@ class OTPPhoneTest {
 
     private fun getTestIntent(): Intent {
         val intent = Intent()
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "09000123")
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "09000124")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 116) //OTP_TYPE_REGISTER_PHONE_NUMBER
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
