@@ -105,7 +105,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 lat = data.latitude,
                                 long = data.longitude,
                                 label = data.addressName,
-                                postalCode = data.postalCode.toString()
+                                postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()

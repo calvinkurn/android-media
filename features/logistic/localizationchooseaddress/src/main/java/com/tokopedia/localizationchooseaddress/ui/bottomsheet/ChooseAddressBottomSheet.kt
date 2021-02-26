@@ -80,10 +80,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var fusedLocationClient: FusedLocationProviderClient? = null
     // flag variable to ask permission
     private var shouldShowGpsPopUp: Boolean = false
-    // state variable to prevent asking permission when a permission dialog is showing
-    private var isCurrentlyAskingPermission: Boolean = false
     // flag variable for asking permission after bottom sheet is shown
     private var hasBottomSheetShown: Boolean = false
+    // flag variable to differentiate login and GPS flow
+    private var isLoginFlow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,10 +98,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
         setInitialViewState()
-        if (userSession.isLoggedIn) {
-            initObserver()
+        initObserver()
+        if (userSession.isLoggedIn && false) {
+            initData()
         } else {
             setViewState(false)
         }
@@ -115,10 +115,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        fusedLocationClient = context?.let { FusedLocationProviderClient(it) }
-        fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                setStateWithLocation(location)
+        if (ChooseAddressUtils.isGpsEnabled(context)) {
+            fusedLocationClient = context?.let { FusedLocationProviderClient(it) }
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    setStateWithLocation(location)
+                }
             }
         }
     }
@@ -175,6 +177,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
+                isLoginFlow = true
                 viewModel.getDefaultChosenAddress("", source)
                 setInitialViewState()
             }
@@ -273,10 +276,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             lat = data.latitude,
                             long = data.longitude,
                             label = data.addressName,
-                            postalCode = data.postalCode.toString()
+                            postalCode = data.postalCode
                     )
                     chooseAddressPref?.setLocalCache(localData)
-                    listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                    if (isLoginFlow) {
+                        listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                    }
                     this.dismiss()
                 }
 
@@ -337,25 +342,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setCloseClickListener {
             this.dismiss()
         }
-    }
-
-    private fun renderViewState() {
-        progressBar?.gone()
-        txtLocalization?.visible()
-        contentLayout?.visible()
-        bottomLayout?.visible()
-        errorLayout?.gone()
-        chooseAddressLayout?.gone()
-    }
-
-    private fun renderViewNonLogin() {
-        noAddressLayout?.gone()
-        loginLayout?.visible()
-    }
-
-    private fun renderViewEmptyAddressList() {
-        noAddressLayout?.visible()
-        loginLayout?.gone()
     }
 
     private fun renderButton() {
@@ -450,37 +436,24 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun setStateWithLocation(location: Location) {
-        println("++ setStateWithLocation --> long = ${location.longitude}, lat = ${location.latitude}")
-        viewModel.setStateChosenAddress(2, "", "", "", location.latitude.toString(), location.longitude.toString(), "", "")
-        this.dismiss()
-    }
-
-    private fun setViewLocationDisabled(isLogin: Boolean) {
-        renderViewState()
-        if (!isLogin) {
-            renderViewNonLogin()
-        } else {
-            renderViewEmptyAddressList()
-        }
+        isLoginFlow = false
+        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", "address")
+        setInitialViewState()
     }
 
     private fun showGpsPopUp() {
-        if (shouldShowGpsPopUp && hasBottomSheetShown && !isCurrentlyAskingPermission) {
-            isCurrentlyAskingPermission = true
+        if (shouldShowGpsPopUp && hasBottomSheetShown) {
             permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
-                    setViewLocationDisabled(userSession.isLoggedIn)
-                    isCurrentlyAskingPermission = false
+                    //no op
                 }
 
                 override fun onNeverAskAgain(permissionText: String) {
-                    setViewLocationDisabled(userSession.isLoggedIn)
-                    isCurrentlyAskingPermission = false
+                    //no op
                 }
 
                 override fun onPermissionGranted() {
                     getLocation()
-                    isCurrentlyAskingPermission = false
                 }
             })
         }
