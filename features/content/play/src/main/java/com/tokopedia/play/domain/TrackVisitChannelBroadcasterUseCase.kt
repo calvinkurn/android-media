@@ -23,7 +23,7 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(private val graphq
             success
           }
         }
-    """
+    """.trimIndent()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, VisitChannelTracking.Response::class.java, params)

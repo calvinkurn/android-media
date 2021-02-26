@@ -1004,7 +1004,7 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
         getChannelStatusUseCase.apply {
-            params = GetChannelStatusUseCase.createParams(arrayOf(channelId))
+            setRequestParams(GetChannelStatusUseCase.createParams(arrayOf(channelId)))
         }.executeOnBackground()
     }
 

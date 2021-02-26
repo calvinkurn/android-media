@@ -43,7 +43,7 @@ class GetReportSummariesUseCase @Inject constructor(private val gqlUseCase: Grap
                 }
               }
             }
-            """
+            """.trimIndent()
 
         fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(

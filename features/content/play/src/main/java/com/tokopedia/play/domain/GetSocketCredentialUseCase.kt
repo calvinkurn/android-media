@@ -26,7 +26,7 @@ class GetSocketCredentialUseCase @Inject constructor(
             }
           }
         }
-        """
+        """.trimIndent()
 
     override suspend fun executeOnBackground(): SocketCredential {
         val gqlRequest = GraphqlRequest(query, SocketCredential.Response::class.java, emptyMap())

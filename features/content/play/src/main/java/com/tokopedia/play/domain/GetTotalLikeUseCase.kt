@@ -53,7 +53,7 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRep
                 }
               }
             }
-            """
+            """.trimIndent()
 
         fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(

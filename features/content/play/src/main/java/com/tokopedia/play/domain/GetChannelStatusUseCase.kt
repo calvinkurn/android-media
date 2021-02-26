@@ -1,21 +1,19 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ChannelStatusResponse
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 01/02/21.
  */
-class GetChannelStatusUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository): UseCase<ChannelStatusResponse>() {
-
-    var params: Map<String, Any> = emptyMap()
+class GetChannelStatusUseCase @Inject constructor(
+        gqlRepository: GraphqlRepository
+): GraphqlUseCase<ChannelStatusResponse>(gqlRepository) {
 
     private val query = """
         query GetChannelStatus(${'$'}channelIds: [String]){
@@ -28,19 +26,13 @@ class GetChannelStatusUseCase @Inject constructor(private val gqlUseCase: Graphq
             }
           }
         }
-    """
+    """.trimIndent()
 
-    override suspend fun executeOnBackground(): ChannelStatusResponse {
-        val gqlRequest = GraphqlRequest(query, ChannelStatusResponse::class.java, params)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+    init {
+        setGraphqlQuery(query)
+        setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-
-        val error = gqlResponse.getError(ChannelStatusResponse::class.java)
-        if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(ChannelStatusResponse::class.java) as ChannelStatusResponse)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
+        setTypeClass(ChannelStatusResponse::class.java)
     }
 
     companion object {

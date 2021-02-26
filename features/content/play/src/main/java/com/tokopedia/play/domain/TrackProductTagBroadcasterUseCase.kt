@@ -25,7 +25,7 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(private val graphqlR
             success
           }
         }
-    """
+    """.trimIndent()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, ProductTracking.Response::class.java, params)
