@@ -89,7 +89,7 @@ object ChooseAddressQuery {
 
     val getDefaultChosenAddress = """
         query KeroAddrGetDefaultChosenAddress(${'$'}lat_long: String!,  ${'$'}source: String!){
-          keroAddrGetDefaultChosenAddress(input: {lat_long: ${'$'}lat_long, source: ${'$'}source) {
+          keroAddrGetDefaultChosenAddress(input: {lat_long: ${'$'}lat_long, source: ${'$'}source}) {
             data {
               addr_id
               receiver_name
