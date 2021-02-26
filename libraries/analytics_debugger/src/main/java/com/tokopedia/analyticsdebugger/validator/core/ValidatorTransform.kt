@@ -14,12 +14,6 @@ fun String.toJsonMap(): JsonMap {
     return Gson().fromJson(this, jsonType)
 }
 
-fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
-    return this["query"] as List<Map<String, Any>>
-}
-
-fun Map<String, Any>.getMode(): String = this["mode"] as String
-
 internal fun JsonMap.toJson(): String =
         GsonBuilder()
                 .setPrettyPrinting()

@@ -3,10 +3,10 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
-import com.tokopedia.analyticsdebugger.validator.core.*
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
+import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.validator.core.toCassavaQuery
+import com.tokopedia.analyticsdebugger.validator.core.toDefaultValidator
 import rx.Observable
 import rx.schedulers.Schedulers
 
@@ -28,40 +28,15 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): 
             .first()
 }
 
-fun hasAllSuccess(): Matcher<List<Validator>> {
-    return object : TypeSafeMatcher<List<Validator>>(ArrayList::class.java) {
-        override fun describeTo(description: Description) {
-            description.appendText("All analytic hits are successful")
-        }
-
-        override fun describeMismatchSafely(item: List<Validator>?, mismatchDescription: Description?) {
-            val indexWithFailure = item?.mapIndexed { index, validator ->
-                if (validator.status != Status.SUCCESS) index else -1
-            }?.filter { it >= 0 }?.joinToString()
-            mismatchDescription
-                    ?.appendText(" has mismatch status on query number ")
-                    ?.appendValue(indexWithFailure)
-        }
-
-        override fun matchesSafely(result: List<Validator>): Boolean {
-            return result.all { it.status == Status.SUCCESS }
-        }
-    }
-}
-
 private fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
-    val analyticValidatorJSON = Utils.getJsonDataFromAsset(context, queryFileName)
-                    ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
-    val query = analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
-    val mode = analyticValidatorJSON.toJsonMap().getMode()
-
-    return query to mode
+    val cassavaQueryStr = Utils.getJsonDataFromAsset(context, queryFileName)
+            ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
+    return queryFormat(cassavaQueryStr)
 }
 
 private fun queryFormat(queryString: String): Pair<List<Validator>, String> {
-    val query = queryString.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
-    val mode = queryString.toJsonMap().getMode()
-    return query to mode
+    val q = queryString.toCassavaQuery()
+    return q.query.map { it.toDefaultValidator() } to q.mode.value
 }
 
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {
