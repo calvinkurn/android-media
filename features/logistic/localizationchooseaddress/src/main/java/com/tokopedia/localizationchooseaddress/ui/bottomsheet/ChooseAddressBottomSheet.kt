@@ -444,7 +444,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
-        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", "address")
+        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source)
         setInitialViewState()
     }
 
