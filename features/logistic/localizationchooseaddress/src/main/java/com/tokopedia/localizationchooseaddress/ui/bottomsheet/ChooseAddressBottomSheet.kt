@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -70,6 +72,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var contentLayout: FrameLayout? = null
     private var bottomLayout: ConstraintLayout? = null
     private var errorLayout: ConstraintLayout? = null
+    private var imageError: ImageView? = null
     private var progressBar: LoaderUnify? = null
     private var source: String = ""
 
@@ -135,7 +138,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(INTENT_ADDRESS_SELECTED)
                 if (recipientAddress != null) {
                     viewModel.setStateChosenAddress(
-                            status = 2,
+                            status = recipientAddress.addressStatus,
                             addressId = recipientAddress.id.toString(),
                             receiverName = recipientAddress.recipientName,
                             addressName = recipientAddress.addressName,
@@ -178,6 +181,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         contentLayout = child.findViewById(R.id.frame_content_layout)
         bottomLayout = child.findViewById(R.id.bottom_layout)
         errorLayout = child.findViewById(R.id.error_state_layout)
+        imageError = child.findViewById(R.id.img_info_error)
         progressBar = child.findViewById(R.id.progress_bar)
 
         addressList?.adapter = adapter
@@ -332,6 +336,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         contentLayout?.gone()
         bottomLayout?.gone()
         errorLayout?.visible()
+        imageError?.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_service_error) })
         setTitle("")
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
