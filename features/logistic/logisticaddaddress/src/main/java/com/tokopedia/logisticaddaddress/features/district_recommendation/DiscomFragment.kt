@@ -123,6 +123,22 @@ PopularCityAdapter.ActionListener {
             searchInputView.setOnClickListener {
                 ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
             }
+
+            val cityList = resources.getStringArray(R.array.cityList)
+            val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                    .build()
+            rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            popularCityAdapter = PopularCityAdapter(context, this)
+            popularCityAdapter?.cityList = cityList.toMutableList()
+
+            rvChipsPopularCity?.apply {
+                val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+                layoutManager = chipsLayoutManager
+                adapter = popularCityAdapter
+                dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            }
         } else {
             rlCurrLocation?.visibility = View.GONE
             dividerCurrLocation?.visibility = View.GONE
@@ -208,6 +224,7 @@ PopularCityAdapter.ActionListener {
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
 
+        setSwipeRefreshSection(true)
         llDiscomPopularCity?.visibility = View.GONE
 
         if (currentPage == defaultInitialPage && hasNextPage) {
@@ -225,31 +242,15 @@ PopularCityAdapter.ActionListener {
 
     override fun showEmpty() {
         tvMessage!!.text = getString(R.string.message_search_address_no_result)
-        setSwipeRefreshSection(false, isLocalization == true)
+        setSwipeRefreshSection(false)
     }
 
     private fun showInitialLoadMessage() {
         setMessageSection(isLocalization != true)
-        setSwipeRefreshSection(true, isLocalization == true)
+        setSwipeRefreshSection(false)
 
         if (isLocalization == true) {
-            val cityList = resources.getStringArray(R.array.cityList)
-            val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
-
             llDiscomPopularCity?.visibility = View.VISIBLE
-            rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
-            popularCityAdapter = PopularCityAdapter(context, this)
-            popularCityAdapter?.cityList = cityList.toMutableList()
-
-            rvChipsPopularCity?.apply {
-                val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
-                layoutManager = chipsLayoutManager
-                adapter = popularCityAdapter
-                dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
-            }
         }
     }
 
@@ -257,12 +258,8 @@ PopularCityAdapter.ActionListener {
         tvMessage?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
-    private fun setSwipeRefreshSection(active: Boolean, isLocalization: Boolean) {
-        if (!isLocalization) {
-            swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
-        } else {
-            swipeRefreshLayout?.visibility = if (active) View.GONE else View.VISIBLE
-        }
+    private fun setSwipeRefreshSection(active: Boolean) {
+        swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
     fun requestLocation() {
