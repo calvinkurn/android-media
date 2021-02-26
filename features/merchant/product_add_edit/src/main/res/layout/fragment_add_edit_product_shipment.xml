@@ -16,14 +16,14 @@
             layout="@layout/add_edit_product_weight_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"/>
+            android:layout_marginTop="@dimen/spacing_lvl4"/>
 
         <include
             android:id="@+id/insurance_input_layout"
             layout="@layout/add_edit_product_insurance_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl7" />
+            android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_end"

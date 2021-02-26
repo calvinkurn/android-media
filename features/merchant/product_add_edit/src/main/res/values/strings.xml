@@ -193,6 +193,7 @@
     <string name="label_shipment_required">Kamu <b>mewajibkan</b> pembeli untuk mengaktifkan asuransi pengiriman</string>
     <string name="label_shipment_optional">Kamu <b>memberikan opsi</b> kepada pembeli untuk mengaktifkan asuransi pengiriman</string>
     <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'>Selengkapnya</font>.]]></string>
+    <string name="label_shipment_weight_ticker">Perhatikan dengan baik berat produk agar tidak terjadi selisih data dengan pihak kurir.</string>
     <string name="label_shipment_bottom_sheet">Jika terjadi kerusakan / kehilangan saat pengiriman, penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir, hanya kompensasi senilai <b>maks. 10x ongkir.</b></string>
     <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
