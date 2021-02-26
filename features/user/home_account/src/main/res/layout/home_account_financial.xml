@@ -2,31 +2,17 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:id="@+id/home_account_financial_layout_title"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_account_financial_layout_rv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl4"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyWeight="bold"
-        tools:text="Title" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginLeft="@dimen/card_view_padding_normalizer"
-            android:layout_marginStart="@dimen/card_view_padding_normalizer"
-            android:layout_marginTop="@dimen/home_account_dp_8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_account_financial_layout_title"
-            android:id="@+id/home_account_financial_layout_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

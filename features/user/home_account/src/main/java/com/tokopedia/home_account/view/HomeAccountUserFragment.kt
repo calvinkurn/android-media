@@ -870,8 +870,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         coachMarkItem.add(
                                 CoachMark2Item(
                                         itemView.findViewById(R.id.account_user_item_profile_email),
-                                        "Info tentang akunmu ada di sini",
-                                        "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
+                                        getString(R.string.coachmark_title_account_info),
+                                        getString(R.string.coachmark_desc_account_info),
                                         CoachMark2.POSITION_BOTTOM
                                 )
                         )
@@ -880,8 +880,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         coachMarkItem.add(
                                 CoachMark2Item(
                                         itemView.findViewById(R.id.home_account_expandable_layout_title),
-                                        "Ubah pengaturan dan cek info lainnya",
-                                        "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
+                                        getString(R.string.coachmark_title_setting),
+                                        getString(R.string.coachmark_desc_setting),
                                         CoachMark2.POSITION_TOP
                                 )
                         )

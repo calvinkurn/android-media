@@ -91,7 +91,6 @@ class ProfileViewHolder(
     }
 
     private fun setupFinancialAdapter(itemView: View) {
-        itemView.home_account_financial_layout_title?.text = getString(R.string.account_title_saldo_section)
         itemView.home_account_financial_layout_rv?.adapter = financialAdapter
         itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
     }
