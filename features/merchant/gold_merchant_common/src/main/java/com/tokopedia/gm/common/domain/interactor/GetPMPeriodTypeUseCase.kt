@@ -5,15 +5,17 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-class GetGoldGetPMSettingInfoUseCase @Inject constructor(
+class GetPMPeriodTypeUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<PMPeriodTypeResponse>(graphqlRepository) {
 
     companion object {
         const val SHOP_ID = "shopID"
+        const val SOURCE = "source"
+        private const val GOLD_MERCHANT_SOURCE = "goldmerchant"
         val PM_SETTING_INFO_QUERY = """
-            query goldGetPMSettingInfo(${'$'}shopID: Int!){
-              goldGetPMSettingInfo(shopID: ${'$'}shopID, source: "goldmerchant") {
+            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
+              goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {
                 data{
                   period_type
                 }
@@ -22,7 +24,7 @@ class GetGoldGetPMSettingInfoUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(shopID: Int): Map<String, Any> = mapOf(SHOP_ID to shopID)
+        fun createParams(shopID: Int): Map<String, Any> = mapOf(SHOP_ID to shopID, SOURCE to GOLD_MERCHANT_SOURCE)
     }
 
     init {
