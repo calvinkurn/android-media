@@ -41,7 +41,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
 
     private suspend fun getRatesEstimate(request: RatesEstimateRequest): RatesEstimationModel {
         return ratesUseCase.executeOnBackground(
-                GetRatesEstimateUseCase.createParams(request.getWeightRequest(), request.shopDomain, request.origin, request.productId, request.shopId, request.isFulfillment, request.destination),
+                GetRatesEstimateUseCase.createParams(request.getWeightRequest(), request.shopDomain, request.origin, request.productId, request.shopId, request.isFulfillment, request.destination, request.boType),
                 request.forceRefresh)
     }
 

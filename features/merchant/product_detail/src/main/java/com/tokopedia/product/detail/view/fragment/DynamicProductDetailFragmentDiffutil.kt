@@ -1205,7 +1205,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun observeShippingAddressChanged() {
         activity?.let { activity ->
             sharedViewModel?.isAddressChanged?.observe(activity, {
-                if (it) onSwipeRefresh()
+                if (it) {
+                    view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
+                    onSwipeRefresh()
+                }
             })
         }
     }
@@ -1881,17 +1884,19 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun openShipmentClickedBottomSheet() {
         viewModel.getDynamicProductInfoP1?.let {
+            val boData = viewModel.getBebasOngkirDataByProductId()
             sharedViewModel?.setRequestData(RatesEstimateRequest(
-                    it.basic.weight.toFloat(),
-                    viewModel.getShopInfo().shopCore.domain,
-                    if (viewModel.getMultiOriginByProductId().isFulfillment)
+                    productWeight = it.basic.weight.toFloat(),
+                    shopDomain = viewModel.getShopInfo().shopCore.domain,
+                    origin = if (viewModel.getMultiOriginByProductId().isFulfillment)
                         viewModel.getMultiOriginByProductId().getOrigin() else null,
-                    it.basic.shopID,
-                    it.basic.productID,
-                    it.basic.weightUnit,
-                    it.data.isFreeOngkir.isActive,
-                    viewModel.getMultiOriginByProductId().isFulfillment,
-                    generateUserLocationRequestRates(viewModel.userLocationCache),
+                    shopId = it.basic.shopID,
+                    productId = it.basic.productID,
+                    productWeightUnit = it.basic.weightUnit,
+                    isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
+                    destination = generateUserLocationRequestRates(viewModel.userLocationCache),
+                    boType = boData.boType,
+                    freeOngkirUrl = boData.imageURL,
                     shouldRefreshShippingBottomSheet
             ))
             shouldRefreshShippingBottomSheet = false

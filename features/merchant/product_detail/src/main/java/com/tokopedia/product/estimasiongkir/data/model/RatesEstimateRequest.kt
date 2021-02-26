@@ -13,11 +13,11 @@ data class RatesEstimateRequest(
         val shopId: String = "",
         val productId: String = "",
         val productWeightUnit: String = "",
-        val isFreeOngkir: Boolean = false,
         val isFulfillment: Boolean = false,
         val destination: String = "",
+        val boType: Int = 0,
+        val freeOngkirUrl:String = "",
         val forceRefresh: Boolean = false
-//TODO new free ongkir url
 ) {
     companion object {
         const val KG_TEXT = "kilo"

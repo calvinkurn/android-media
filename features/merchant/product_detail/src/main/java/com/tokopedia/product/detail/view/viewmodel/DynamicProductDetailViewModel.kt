@@ -34,6 +34,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -284,11 +285,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return result
     }
 
-    fun getBebasOngkirDataByProductId() : Pair<Int,String> {
+    fun getBebasOngkirDataByProductId() : BebasOngkirImage {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
         val boType = _p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
-        val image = _p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType }?.imageURL ?: ""
-        return boType to image
+        val image = _p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
+        return image
     }
 
     /**

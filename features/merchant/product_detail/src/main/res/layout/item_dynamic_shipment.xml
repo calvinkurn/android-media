@@ -21,15 +21,14 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_pdp_shipment_title"
             android:layout_width="18dp"
             android:layout_height="0dp"
-            tools:src="@tools:sample/avatars"
-            android:contentDescription="@null"
+            app:icon_name="COURIER"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_title"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_title"/>
+            app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_title" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_pdp_shipment_title"
@@ -155,20 +154,6 @@
                 app:typographyType="body_3"
                 tools:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/ic_pdp_shipment_bo"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginStart="4dp"
-                android:contentDescription="@null"
-                android:scaleType="centerInside"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
-                app:layout_constraintStart_toEndOf="@+id/txt_pdp_shipment_other_courier"
-                app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
-                tools:src="@drawable/ic_free_shipping"
-                tools:visibility="visible" />
-
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/label_pdp_shipment_instant"
                 android:layout_width="wrap_content"
@@ -178,7 +163,7 @@
                 android:visibility="gone"
                 app:labelType="general_light_grey"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_other_courier"
-                app:layout_constraintStart_toEndOf="@+id/ic_pdp_shipment_bo"
+                app:layout_constraintStart_toEndOf="@+id/txt_pdp_shipment_other_courier"
                 app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_other_courier"
                 tools:visibility="visible" />
 

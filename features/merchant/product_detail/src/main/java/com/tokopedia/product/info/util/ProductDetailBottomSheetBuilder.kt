@@ -2,6 +2,8 @@ package com.tokopedia.product.info.util
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -26,6 +28,26 @@ object ProductDetailBottomSheetBuilder {
 
             date.text = dateValue toDateId ("dd MMM yyyy, '${PDP_TIME_PUKUL}' HH:mm")
             desc.text = HtmlLinkHelper(context, descValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
+        }
+
+        return bottomSheetUnify
+    }
+
+    fun getUspBottomSheet(context: Context, freeOngkirUrl: String): BottomSheetUnify {
+        val bottomSheetUnify = BottomSheetUnify()
+        val view = View.inflate(context, R.layout.bs_product_usp, null)
+
+        bottomSheetUnify.apply {
+            isDragable = true
+            isHideable = true
+            isSkipCollapseState = true
+            setTitle(context.getString(R.string.pdp_usp_static_title))
+            setChild(view)
+            val imgFreeOngkir = view.findViewById<ImageView>(R.id.pdp_usp_static_free_ongkir)
+            val imgUsp = view.findViewById<ImageView>(R.id.usp_pdp_img)
+
+            imgUsp.loadImage("https://images.tokopedia.net/img/android/test/Group_1234042.png")
+            imgFreeOngkir.loadImage(freeOngkirUrl)
         }
 
         return bottomSheetUnify

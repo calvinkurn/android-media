@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -550,15 +551,16 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: Pair<Int, String>) {
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage) {
         //pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
             shipmentData?.isFullfillment = isFullfillment
             shipmentData?.isCod = isCod
             shipmentData?.shouldShowShipmentError = data == null
-            shipmentData?.freeOngkirType = freeOngkirData.first
-            shipmentData?.freeOngkirUrl = freeOngkirData.second
+            shipmentData?.freeOngkirType = freeOngkirData.boType
+            shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
+            shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
         }
     }
 

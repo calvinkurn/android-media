@@ -15,6 +15,7 @@ data class ProductShipmentDataModel(
         var isFullfillment: Boolean = false,
         var freeOngkirUrl: String = "",
         var freeOngkirType: Int = 0,
+        var tokoCabangIconUrl:String = "",
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false
 ) : DynamicPdpDataModel {
@@ -42,6 +43,7 @@ data class ProductShipmentDataModel(
                     && isCod == newData.isCod
                     && freeOngkirUrl == newData.freeOngkirUrl
                     && shouldShowShipmentError == newData.shouldShowShipmentError
+                    && freeOngkirType == newData.freeOngkirType
         } else {
             false
         }

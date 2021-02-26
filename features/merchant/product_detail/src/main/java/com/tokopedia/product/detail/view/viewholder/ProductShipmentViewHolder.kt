@@ -35,12 +35,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
 
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
-    private val shipmentTitleIcon: ImageView? = itemView.findViewById(R.id.ic_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
     private val shipmentFullfillmentImg: ImageView? = itemView.findViewById(R.id.img_ic_fullfillment)
     private val otherCourierTxt: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_other_courier)
-    private val shipmentFreeOngkir: ImageView? = itemView.findViewById(R.id.ic_pdp_shipment_bo)
     private val shipmentLabelCod: Label? = itemView.findViewById(R.id.label_pdp_shipment_cod)
     private val shipmentLabelInstant: Label? = itemView.findViewById(R.id.label_pdp_shipment_instant)
     private val shipmentArrow: IconUnify? = itemView.findViewById(R.id.ic_pdp_shipment_arrow_right)
@@ -59,72 +57,51 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
                 // still render from p1,rates is'nt hit yet
                 showShipmentLoading()
             }
+            data.p2RatesError.isNotEmpty() -> {
+                hideShipmentLoading()
+                renderShipmentError(data.title, data.subtitle)
+            }
             else -> {
                 // receive rates data
-                val isError = element.rates.p2RatesError.firstOrNull()?.errorCode ?: 0 != 0
                 itemView.addOnImpressionListener(impressHolder) {
                     listener.showCoachmark(shipmentTitle)
                 }
 
-                hideShipmentLoading()
-                renderText(data)
-                renderTokoCabang(element.isFullfillment)
-                renderOtherSection(data.isSupportInstantCourier, data.subtitle, element.isCod, element.getFreeOngkirImageUrl(), isError)
+                renderShipmentSuccess(element)
             }
         }
     }
 
-    private fun showLocalLoad() = with(itemView) {
-        shipmentLoadingContainer?.hide()
-        shipmentContentContainer?.hide()
-        shipmentLocalLoad?.show()
-        shipmentLocalLoad?.progressState = false
-        shipmentLocalLoad?.refreshBtn?.setOnClickListener {
-            if (!shipmentLocalLoad.progressState) {
-                shipmentLocalLoad.progressState = true
-                listener.refreshPage()
-            }
-        }
+    private fun renderShipmentError(title: String, subtitle: String) = with(itemView) {
+        adjustUiError()
+
+        shipmentTitle?.text = title
+        otherCourierTxt?.text = subtitle
+
+        hideLabelAndBo()
+        shipmentDestination?.hide()
+        shipmentEstimation?.hide()
+        shipmentTokoCabangGroup?.hide()
     }
 
-    private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean, freeOngkirUrl: String, isError: Boolean) = with(itemView) {
-        adjustIfError(isError)
+    private fun renderShipmentSuccess(element: ProductShipmentDataModel) = with(itemView) {
+        hideShipmentLoading()
+        renderText(element.rates)
+        renderTokoCabang(element.isFullfillment, element.tokoCabangIconUrl)
+        renderOtherSection(element.rates.isSupportInstantCourier, element.rates.subtitle, element.isCod)
+    }
 
-        if (!isInstant && freeOngkirUrl.isEmpty() && !isCod && !isError) {
+    private fun renderOtherSection(isInstant: Boolean, subtitle: String, isCod: Boolean) = with(itemView) {
+        adjustUiSuccess()
+        if (!isInstant && !isCod) {
             renderSubtitleGreen()
-            shipmentFreeOngkir?.hide()
-            shipmentLabelCod?.hide()
-            shipmentLabelInstant?.hide()
+            hideLabelAndBo()
             return@with
         }
 
         renderSubtitleNormal(subtitle)
-
-        shipmentFreeOngkir?.shouldShowWithAction(freeOngkirUrl.isNotEmpty() && !isError) {
-            shipmentFreeOngkir.loadImage(freeOngkirUrl)
-        }
-        shipmentLabelCod?.showWithCondition(isCod && !isError)
-        shipmentLabelInstant?.showWithCondition(isInstant && !isError)
-    }
-
-    private fun adjustIfError(isError: Boolean) = with(itemView) {
-        if (isError) {
-            otherCourierTxt?.setWeight(Typography.REGULAR)
-            otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            shipmentOtherContainer?.setOnClickListener(null)
-            shipmentArrow?.setOnClickListener(null)
-            shipmentArrow?.hide()
-            shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
-        } else {
-            shipmentOtherContainer?.setOnClickListener {
-                listener.openShipmentClickedBottomSheet()
-            }
-            shipmentArrow?.setOnClickListener {
-                listener.openShipmentClickedBottomSheet()
-            }
-            shipmentArrow?.show()
-            shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
-        }
+        shipmentLabelCod?.showWithCondition(isCod)
+        shipmentLabelInstant?.showWithCondition(isInstant)
     }
 
     private fun renderSubtitleGreen() = with(itemView) {
@@ -141,9 +118,8 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         otherCourierTxt?.show()
     }
 
-    private fun renderTokoCabang(isFullfillment: Boolean) = if (isFullfillment) {
-        //TODO
-        shipmentFullfillmentImg?.loadImage("https://images.tokopedia.net/img/android/test/pdp - tokocabang@3x.png")
+    private fun renderTokoCabang(isFullfillment: Boolean, tokoCabangIconUrl: String) = if (isFullfillment) {
+        shipmentFullfillmentImg?.loadImage(tokoCabangIconUrl)
         shipmentTokoCabangGroup?.show()
     } else {
         shipmentTokoCabangGroup?.gone()
@@ -151,13 +127,50 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun renderText(data: P2RatesEstimateData) = with(itemView) {
         shipmentTitle?.text = data.title
-        shipmentTitleIcon?.loadImage(data.icon)
         shipmentDestination?.shouldShowWithAction(data.destination.isNotEmpty()) {
             shipmentDestination.text = data.destination.renderHtmlBold(context)
         }
         shipmentEstimation?.shouldShowWithAction(data.etaText.isNotEmpty()) {
             shipmentEstimation.text = data.etaText
         }
+    }
+
+    private fun showLocalLoad() = with(itemView) {
+        shipmentLoadingContainer?.hide()
+        shipmentContentContainer?.hide()
+        shipmentLocalLoad?.show()
+        shipmentLocalLoad?.progressState = false
+        shipmentLocalLoad?.refreshBtn?.setOnClickListener {
+            if (!shipmentLocalLoad.progressState) {
+                shipmentLocalLoad.progressState = true
+                listener.refreshPage()
+            }
+        }
+    }
+
+    private fun adjustUiError() = with(itemView) {
+        otherCourierTxt?.setWeight(Typography.REGULAR)
+        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        shipmentOtherContainer?.setOnClickListener(null)
+        shipmentArrow?.setOnClickListener(null)
+        shipmentArrow?.hide()
+        shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
+    }
+
+    private fun adjustUiSuccess() = with(itemView) {
+        shipmentOtherContainer?.setOnClickListener {
+            listener.openShipmentClickedBottomSheet()
+        }
+        shipmentArrow?.setOnClickListener {
+            listener.openShipmentClickedBottomSheet()
+        }
+        shipmentArrow?.show()
+        shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
+    }
+
+    private fun hideLabelAndBo() = with(itemView) {
+        shipmentLabelCod?.hide()
+        shipmentLabelInstant?.hide()
     }
 
     private fun showShipmentLoading() = with(itemView) {
@@ -171,5 +184,4 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.show()
     }
-
 }

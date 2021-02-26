@@ -27,19 +27,21 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val PARAM_PRODUCT_ID = "product_id"
         private const val PARAM_IS_FULFILLMENT = "is_fulfillment"
         private const val PARAM_DESTINATION = "destination"
+        private const val PARAM_FREE_SHIPPING = "free_shipping_flag"
 
-        fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String, shopId: String, isFulfillment: Boolean, destination: String): Map<String, Any?> = mapOf(
+        fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String, shopId: String, isFulfillment: Boolean, destination: String, free_shipping_flag: Int): Map<String, Any?> = mapOf(
                 PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain,
                 PARAM_ORIGIN to origin,
                 PARAM_SHOP_ID to shopId,
                 PARAM_PRODUCT_ID to productId,
                 PARAM_IS_FULFILLMENT to isFulfillment,
-                PARAM_DESTINATION to destination)
+                PARAM_DESTINATION to destination,
+                PARAM_FREE_SHIPPING to free_shipping_flag)
 
         val QUERY = """
-            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean) {
-                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment }) {
+            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int) {
+                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment,free_shipping_flag: ${'$'}free_shipping_flag }) {
                       data{
                           tokocabang_from{
                                icon_url
@@ -236,7 +238,8 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
 
         val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(BottomSheetProductDetailInfoResponse::class.java)
-        val data = response.getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
+        val data = response.getSuccessData<RatesEstimationModel.Response>().data?.data
+                ?: throw NullPointerException()
 
         if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.firstOrNull()?.message ?: "")

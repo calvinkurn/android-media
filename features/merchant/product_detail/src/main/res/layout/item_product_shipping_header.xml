@@ -33,7 +33,7 @@
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/pdp_ic_location_from"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/pdp_ic_location_from"
@@ -51,6 +51,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/txt_shipping_header_from"
             app:layout_constraintTop_toBottomOf="@+id/txt_shipping_header_from"
+            android:layout_marginTop="4dp"
             app:typographyType="body_3"
             android:visibility="gone"
             tools:text="Lebih Cepat, Lebih Hemat. Barang dikirim dari penyimpanan Tokopedia terdekat. Pelajari" />
@@ -65,17 +66,18 @@
             app:layout_constraintStart_toStartOf="@+id/pdp_ic_location_from"
             app:layout_constraintTop_toBottomOf="@+id/pdp_ic_location_from" />
 
-
         <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
             android:id="@+id/txt_shipping_header_to"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginTop="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_shipping_tokocabang"
-            app:layout_goneMarginTop="12dp" />
+            app:layout_goneMarginTop="12dp"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

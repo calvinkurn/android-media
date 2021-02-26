@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data.model.shipping
 
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.NO_BEBAS_ONGKIR
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
@@ -11,7 +12,7 @@ data class ProductShippingHeaderDataModel(
         val shippingTo: String = "",
         val shippingFrom: String = "",
         val weight: String = "",
-        val isFreeOngkir: Boolean = false,
+        val boType: Int = 0,
         val freeOngkirEstimation: String = "",
         val freeOngkirPrice: String = "",
         val freeOngkirImageUrl: String = "",
@@ -21,6 +22,15 @@ data class ProductShippingHeaderDataModel(
         val tokoCabangTitle: String = "",
         val tokoCabangContent: String = ""
 ) : ProductShippingVisitable {
+
+    fun shouldShowFreeOngkir(): Boolean {
+        return if (boType == NO_BEBAS_ONGKIR) {
+            false
+        } else {
+            freeOngkirImageUrl.isNotEmpty()
+        }
+    }
+
     override fun uniqueId(): Long = id
 
     override fun isEqual(newData: ProductShippingVisitable): Boolean {

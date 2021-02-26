@@ -185,4 +185,9 @@ object ProductDetailConstant {
     const val LAYOUT_FLOATING = "floating"
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
+
+    //bo type
+    const val NO_BEBAS_ONGKIR = 0
+    const val BEBAS_ONGKIR_NORMAL = 1
+    const val BEBAS_ONGKIR_EXTRA = 2
 }

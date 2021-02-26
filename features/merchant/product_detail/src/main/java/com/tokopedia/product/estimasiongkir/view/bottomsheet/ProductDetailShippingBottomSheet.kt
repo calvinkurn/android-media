@@ -25,6 +25,7 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAd
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
+import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import javax.inject.Inject
 
 
@@ -32,6 +33,12 @@ import javax.inject.Inject
  * Created by Yehezkiel on 25/01/21
  */
 class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDetailShippingListener, ChooseAddressWidget.ChooseAddressWidgetListener {
+
+    companion object {
+        const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
+        const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
+        const val KEY_PRODUCT_DETAIL = "product detail"
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,7 +106,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
 
     fun show(childFragmentManager: FragmentManager) {
-        show(childFragmentManager, "shipping_bs")
+        show(childFragmentManager, TAG_SHIPPING_BOTTOM_SHEET)
     }
 
     private fun observeData() {
@@ -137,9 +144,12 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun onChooseAddressClicked() {
         shouldRefresh = true
         dismiss()
-//        showShimmerPage(rv?.height ?: 0)
-//        viewModel?.setRatesRequest(sharedViewModel.rateEstimateRequest.value?.copy(forceRefresh = true)
-//                ?: RatesEstimateRequest())
+    }
+
+    override fun openUspBottomSheet(freeOngkirUrl: String) {
+        context?.let {
+            ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+        }
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
@@ -158,7 +168,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
-    override fun getLocalizingAddressHostSourceData(): String = "product detail"
+    override fun getLocalizingAddressHostSourceData(): String = KEY_PRODUCT_DETAIL
 
     override fun onLocalizingAddressLoginSuccess() {
     }
