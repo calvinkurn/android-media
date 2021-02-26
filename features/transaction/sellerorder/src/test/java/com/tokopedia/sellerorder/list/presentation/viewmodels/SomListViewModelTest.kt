@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodels
 
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
@@ -55,6 +56,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     private lateinit var somGetOrderListJobField: Field
     private lateinit var somGetFiltersJobField: Field
     private lateinit var somRefreshOrderJobField: Field
+    private lateinit var somCanShowOrderDataField: Field
 
     private val dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -74,6 +76,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             isAccessible = true
         }
         somRefreshOrderJobField = viewModel::class.java.getDeclaredField("refreshOrderJobs").apply {
+            isAccessible = true
+        }
+        somCanShowOrderDataField = viewModel::class.java.getDeclaredField("_canShowOrderData").apply {
             isAccessible = true
         }
     }
@@ -565,17 +570,15 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetFilterListUseCase.executeOnBackground(any())
         } returns SomListFilterUiModel(fromCache = false)
 
-        viewModel::class.java.getDeclaredField("_canShowOrderData").apply {
-            isAccessible = true
-        }.set(viewModel, MutableLiveData<Boolean>().apply { value = false })
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
         viewModel.getFilters(false)
 
-        coVerify {
+        coVerify(exactly = 0) {
             somListGetFilterListUseCase.executeOnBackground(any())
         }
 
-        assertFalse(viewModel.filterResult.observeAwaitValue() is Success)
+        assertFalse(viewModel.filterResult.observeAwaitValue() is Fail)
     }
 
     @Test
@@ -615,13 +618,11 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetWaitingPaymentUseCase.executeOnBackground(any())
         } returns WaitingPaymentCounter()
 
-        viewModel::class.java.getDeclaredField("_canShowOrderData").apply {
-            isAccessible = true
-        }.set(viewModel, MutableLiveData<Boolean>().apply { value = false })
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
         viewModel.getWaitingPaymentCounter()
 
-        coVerify {
+        coVerify(exactly = 0) {
             somListGetWaitingPaymentUseCase.executeOnBackground(any())
         }
 
@@ -722,13 +723,11 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetOrderListUseCase.executeOnBackground(any())
         } returns ("0" to listOf())
 
-        viewModel::class.java.getDeclaredField("_canShowOrderData").apply {
-            isAccessible = true
-        }.set(viewModel, MutableLiveData<Boolean>().apply { value = false })
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
         viewModel.getOrderList()
 
-        coVerify {
+        coVerify(exactly = 0) {
             somListGetOrderListUseCase.executeOnBackground(any())
         }
 
@@ -866,6 +865,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     fun getAdminPermission_shouldSuccess() {
         coEvery {
             authorizeAccessUseCase.execute(any())
+        } returns true
+        coEvery {
+            authorizeMultiAcceptAccessUseCase.execute(any())
         } returns true
         coEvery {
             userSessionInterface.isShopOwner

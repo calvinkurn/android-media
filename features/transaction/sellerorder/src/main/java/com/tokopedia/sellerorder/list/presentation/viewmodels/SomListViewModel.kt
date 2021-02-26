@@ -250,7 +250,9 @@ class SomListViewModel @Inject constructor(
             }, onError = {})
         }
         launchCatchError(context = dispatcher.main, block = {
-            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+            if (_canShowOrderData.value == true) {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+            }
         }, onError = {
             _filterResult.value = Fail(it)
         })
