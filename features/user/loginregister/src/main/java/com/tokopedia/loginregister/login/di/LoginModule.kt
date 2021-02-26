@@ -46,7 +46,7 @@ open class LoginModule {
     @LoginScope
     @Provides
     @RequiresApi(Build.VERSION_CODES.M)
-    fun provideCryptographyUtils(): Cryptography? {
+    open fun provideCryptographyUtils(): Cryptography? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             CryptographyUtils()
         } else null
