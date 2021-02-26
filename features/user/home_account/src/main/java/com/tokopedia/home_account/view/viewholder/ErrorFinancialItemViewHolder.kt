@@ -1,9 +1,6 @@
 package com.tokopedia.home_account.view.viewholder
 
-import android.graphics.Typeface
-import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R

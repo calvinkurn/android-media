@@ -285,7 +285,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailedGetUserPageAssetConfig() {
-        viewModel.getOvoBalance()
         viewModel.getSaldoBalance()
     }
 
@@ -423,10 +422,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             status_bar_bg.visibility = View.INVISIBLE
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            status_bar_bg.visibility = View.VISIBLE
         } else {
-            status_bar_bg.visibility = View.GONE
+            status_bar_bg.visibility = View.VISIBLE
         }
         setStatusBarAlpha(0f)
     }
@@ -490,7 +487,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (isShowHomeAccountTokopoints) {
             viewModel.getUserPageAssetConfig()
         } else {
-            viewModel.getOvoBalance()
             viewModel.getSaldoBalance()
         }
         viewModel.getShortcutData()
@@ -528,17 +524,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun clearCache() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
-            if (activityManager is ActivityManager) {
-                activityManager.clearApplicationUserData()
-            }
-        } else {
-            try {
-                val runtime = Runtime.getRuntime()
-                runtime.exec("pm clear ${context?.packageName}")
-            } catch (e: Exception) {
-            }
+        val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
+        if (activityManager is ActivityManager) {
+            activityManager.clearApplicationUserData()
         }
     }
 

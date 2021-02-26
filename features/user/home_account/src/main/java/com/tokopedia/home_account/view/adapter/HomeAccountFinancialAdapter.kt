@@ -62,43 +62,41 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
         val indexErrorOvo = this.list.indexOfFirst { it.type == ErrorFinancialItemViewHolder.TYPE_ERROR_OVO }
         val indexErrorTokopoints = this.list.indexOfFirst { it.type == ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS }
         val indexErrorSaldo = this.list.indexOfFirst { it.type == ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO }
-        if (indexSaldo >= 0) {
-            when {
-                indexOvoTokopoints > indexSaldo -> {
-                    Collections.swap(this.list, indexOvoTokopoints, indexSaldo)
-                }
-                indexErrorTokopoints > indexSaldo -> {
-                    Collections.swap(this.list, indexErrorTokopoints, indexSaldo)
-                }
-                indexErrorOvo > indexSaldo -> {
-                    Collections.swap(this.list, indexErrorOvo, indexSaldo)
+        when {
+            indexSaldo >= 0 -> {
+                when {
+                    indexOvoTokopoints > indexSaldo -> {
+                        Collections.swap(this.list, indexOvoTokopoints, indexSaldo)
+                    }
+                    indexErrorTokopoints > indexSaldo -> {
+                        Collections.swap(this.list, indexErrorTokopoints, indexSaldo)
+                    }
+                    indexErrorOvo > indexSaldo -> {
+                        Collections.swap(this.list, indexErrorOvo, indexSaldo)
+                    }
                 }
             }
-        } else if (indexErrorSaldo >= 0) {
-            when {
-                indexOvoTokopoints > indexErrorSaldo -> {
-                    Collections.swap(this.list, indexOvoTokopoints, indexErrorSaldo)
-                }
-                indexErrorTokopoints > indexErrorSaldo -> {
-                    Collections.swap(this.list, indexErrorTokopoints, indexErrorSaldo)
-                }
-                indexErrorOvo > indexErrorSaldo -> {
-                    Collections.swap(this.list, indexErrorOvo, indexErrorSaldo)
+            indexErrorSaldo >= 0 -> {
+                when {
+                    indexOvoTokopoints > indexErrorSaldo -> {
+                        Collections.swap(this.list, indexOvoTokopoints, indexErrorSaldo)
+                    }
+                    indexErrorTokopoints > indexErrorSaldo -> {
+                        Collections.swap(this.list, indexErrorTokopoints, indexErrorSaldo)
+                    }
+                    indexErrorOvo > indexErrorSaldo -> {
+                        Collections.swap(this.list, indexErrorOvo, indexErrorSaldo)
+                    }
                 }
             }
         }
-
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         return when (viewType) {
-            ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS -> {
-                createErrorFinancialItemViewHolder(parent)
-            }
-            ErrorFinancialItemViewHolder.TYPE_ERROR_OVO -> {
-                createErrorFinancialItemViewHolder(parent)
-            }
+            ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS,
+            ErrorFinancialItemViewHolder.TYPE_ERROR_OVO,
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
                 createErrorFinancialItemViewHolder(parent)
             }

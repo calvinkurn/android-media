@@ -24,7 +24,7 @@
             android:layout_marginStart="@dimen/home_account_dp_5"
             android:layout_marginEnd="@dimen/home_account_dp_5">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/account_user_item_financial_icon"
                 android:layout_width="@dimen/home_account_dp_38"
                 android:layout_height="@dimen/home_account_dp_38"
