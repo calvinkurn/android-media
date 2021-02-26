@@ -199,7 +199,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         val recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             locationDataModel = LocationDataModel().apply {
-                addrId = 1
+                addrId = "1"
             }
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {

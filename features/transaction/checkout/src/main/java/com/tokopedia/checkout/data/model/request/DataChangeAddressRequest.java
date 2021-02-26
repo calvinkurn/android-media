@@ -19,7 +19,7 @@ public class DataChangeAddressRequest {
 
     @SerializedName("address_id")
     @Expose
-    private int addressId;
+    private String addressId;
 
     @SerializedName("note")
     @Expose
@@ -41,7 +41,7 @@ public class DataChangeAddressRequest {
         this.productId = productId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 

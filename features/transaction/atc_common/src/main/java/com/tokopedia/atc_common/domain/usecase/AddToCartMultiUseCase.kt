@@ -1,6 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
-import com.google.gson.JsonArray
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
@@ -8,19 +8,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import timber.log.Timber
 import javax.inject.Inject
 
-class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>) {
+class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>,
+                                                private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) {
 
     companion object {
         private const val PARAM = "param"
-
-        private const val PRODUCT_ID_KEY = "product_id"
-        private const val PRODUCT_NAME_KEY = "product_name"
-        private const val QUANTITY_KEY = "quantity"
-        private const val PRODUCT_PRICE_KEY = "product_price"
-        private const val CATEGORY_KEY = "category"
     }
 
     suspend fun execute(userId: String, query: String, listParam: ArrayList<AddToCartMultiParam>): Result<AtcMultiData> {
@@ -52,6 +46,9 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
     }
 
     private fun generateParam(arrayAtcMultiParam: ArrayList<AddToCartMultiParam>): Map<String, Any?> {
+        arrayAtcMultiParam.forEach {
+            it.chosenAddress = chosenAddressAddToCartRequestHelper.getChosenAddress()
+        }
         return mapOf(PARAM to arrayAtcMultiParam)
     }
 }

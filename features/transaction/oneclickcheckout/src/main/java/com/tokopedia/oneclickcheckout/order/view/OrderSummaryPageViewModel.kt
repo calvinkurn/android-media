@@ -72,6 +72,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     val orderTotal: OccMutableLiveData<OrderTotal> = OccMutableLiveData(OrderTotal())
     val globalEvent: OccMutableLiveData<OccGlobalEvent> = OccMutableLiveData(OccGlobalEvent.Normal)
 
+    val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
+
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
 
@@ -104,6 +106,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
+            addressState.value = result.addressState
             revampData = result.revampData
             orderCart = result.orderCart
             _orderPreference = result.orderPreference
@@ -529,7 +532,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun calculateTotal(forceButtonState: OccButtonState? = null) {
         launch(executorDispatchers.main) {
-            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value, forceButtonState, isNewFlow)
+            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference,
+                    _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value,
+                    forceButtonState, isNewFlow, orderPromo.value)
             _orderPayment = newOrderPayment
             orderPayment.value = _orderPayment
             orderTotal.value = newOrderTotal
