@@ -1,6 +1,7 @@
 package com.tokopedia.cassavatest
 
 import android.content.Context
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.Validator
@@ -9,6 +10,10 @@ import com.tokopedia.analyticsdebugger.validator.core.toCassavaQuery
 import com.tokopedia.analyticsdebugger.validator.core.toDefaultValidator
 import rx.Observable
 import rx.schedulers.Schedulers
+
+fun deleteCassavaDb(context: Context) =
+        TkpdAnalyticsDatabase.getInstance(context).gtmLogDao().deleteAll()
+
 
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
