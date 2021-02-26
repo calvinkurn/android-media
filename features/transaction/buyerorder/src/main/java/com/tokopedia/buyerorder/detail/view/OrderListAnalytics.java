@@ -316,7 +316,7 @@ public class OrderListAnalytics {
         for (Items item : items) {
             MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             HashMap<String, Object> product = new HashMap<>();
-            product.put(ID, String.valueOf(item.getId()));
+            product.put(ID, item.getId());
             product.put(NAME, metaDataInfo != null && metaDataInfo.getEntityProductName() != null
                     ? metaDataInfo.getEntityProductName() : item.getTitle());
             product.put(PRICE, item.getTotalPrice());
@@ -330,7 +330,7 @@ public class OrderListAnalytics {
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
             for (AtcMultiData.AtcMulti.BuyAgainData.AtcProduct atcProduct : responseBuyAgainList) {
-                if (atcProduct.getProductId() == item.getId()) {
+                if (item.getId().equalsIgnoreCase(String.valueOf(atcProduct.getProductId()))) {
                     cartId = String.valueOf(atcProduct.getCartId());
                     break;
                 }

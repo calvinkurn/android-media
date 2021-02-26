@@ -158,7 +158,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setOnClickListener(view -> {
                     if (!TextUtils.isEmpty(actionButton.getUri())) {
                         if (actionButton.getKey().equalsIgnoreCase(MarketPlaceDetailFragment.SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, String.valueOf(items.getId()));
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, items.getId());
                         }
                         RouteManager.route(context, actionButton.getUri());
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
