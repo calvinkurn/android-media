@@ -6,4 +6,7 @@
     <string name="coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="coachmark_desc">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu</string>
     <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
+    <string name="permission_title">Aplikasi membutuhkan izin</string>
+    <string name="permission_btn_ok">Ok</string>
+    <string name="permission_cancel">Batal</string>
 </resources>
