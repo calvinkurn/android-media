@@ -48,6 +48,6 @@ class CategoryRevampRepoProvider(private val appComponent: BaseAppComponent, val
     }
 
     override fun provideFilterRepository(): FilterRepository {
-        return DaggerCategoryRevampComponent.builder().build().getCategoryFullFilterRepository()
+        return DaggerCategoryRevampComponent.builder().baseAppComponent(appComponent).build().getCategoryFullFilterRepository()
     }
 }
