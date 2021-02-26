@@ -71,6 +71,9 @@
     <dimen name="product_card_text_view_shipping_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_shipping_height">18dp</dimen>
 
+    <dimen name="product_card_text_view_eta_margin_top">4dp</dimen>
+    <dimen name="product_card_text_view_eta_height">14dp</dimen>
+
     <dimen name="product_card_button_delete_product_margin_top">8dp</dimen>
     <dimen name="product_card_button_delete_product_height">40dp</dimen>
 

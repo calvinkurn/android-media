@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -193,6 +194,12 @@ public interface ProductListSectionContract {
         void switchSearchNavigationLayoutTypeToBigGridView(int position);
 
         void switchSearchNavigationLayoutTypeToSmallGridView(int position);
+
+        boolean isChooseAddressWidgetEnabled();
+
+        LocalCacheModel getChooseAddressData();
+
+        boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -248,5 +255,9 @@ public interface ProductListSectionContract {
         void handleVisitShopAction();
 
         void handleChangeView(int position, SearchConstant.ViewType currentLayoutType);
+
+        void onViewResumed();
+
+        void onLocalizingAddressSelected();
     }
 }

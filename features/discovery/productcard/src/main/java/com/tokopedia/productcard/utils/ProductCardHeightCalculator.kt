@@ -119,6 +119,7 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
     val salesRatingFloatHeight = getSalesRatingFloatHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
+    val etaHeight = getLabelETA(context)
     val stockBarHeight = getStockBarAndLabelSectionHeight(context)
 
     return gimmickSectionHeight +
@@ -131,6 +132,7 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
             salesRatingFloatHeight +
             shopRatingSectionHeight +
             shippingInfoSectionHeight +
+            etaHeight +
             stockBarHeight
 }
 
@@ -318,6 +320,18 @@ private fun ProductCardModel.getLabelShippingHeight(context: Context): Int {
         val labelShippingHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_shipping_height)
 
         labelShippingMarginTop + labelShippingHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getLabelETA(context: Context): Int {
+    val labelETA = getLabelETA()
+
+    return if (labelETA != null && labelETA.title.isNotEmpty()) {
+        val labelETAMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_margin_top)
+        val labelETAHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_height)
+
+        labelETAMarginTop + labelETAHeight
     }
     else 0
 }

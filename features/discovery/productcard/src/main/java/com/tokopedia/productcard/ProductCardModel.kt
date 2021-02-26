@@ -132,6 +132,10 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_BEST_SELLER)
     }
 
+    fun getLabelETA(): LabelGroup? {
+        return findLabelGroup(LABEL_ETA)
+    }
+
     fun getLabelFulfillment(): LabelGroup? {
         return findLabelGroup(LABEL_FULFILLMENT)
     }

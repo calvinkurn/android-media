@@ -16,6 +16,7 @@ import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -32,6 +33,7 @@ import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchV
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
@@ -181,6 +183,8 @@ final class ProductListPresenter
     @Nullable private List<CpmData> cpmDataList = null;
     private boolean isABTestNavigationRevamp = false;
     private boolean bottomSheetFilterEnabled = true;
+    private boolean isEnableChooseAddress = false;
+    @Nullable private LocalCacheModel chooseAddressData = null;
 
     @Inject
     ProductListPresenter(
@@ -220,6 +224,9 @@ final class ProductListPresenter
 
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
         isABTestNavigationRevamp = isABTestNavigationRevamp();
+        isEnableChooseAddress = view.isChooseAddressWidgetEnabled();
+        if (isEnableChooseAddress)
+            chooseAddressData = view.getChooseAddressData();
     }
 
     private boolean isABTestNavigationRevamp() {
@@ -345,9 +352,16 @@ final class ProductListPresenter
         RequestParams requestParams = RequestParams.create();
 
         putRequestParamsOtherParameters(requestParams, searchParameter);
+        putRequestParamsChooseAddress(requestParams);
         requestParams.putAll(searchParameter);
 
         return requestParams;
+    }
+
+    private void putRequestParamsChooseAddress(RequestParams requestParams) {
+        if (!isEnableChooseAddress || chooseAddressData == null) return;
+
+        requestParams.putAllString(SearchKotlinExtKt.toSearchParams(chooseAddressData));
     }
 
     private void putRequestParamsOtherParameters(RequestParams requestParams, Map<String, Object> searchParameter) {
@@ -1068,7 +1082,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        if (isABTestNavigationRevamp) {
+        if (isABTestNavigationRevamp && !isEnableChooseAddress) {
             list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 
@@ -1082,6 +1096,9 @@ final class ProductListPresenter
 
             isShowHeadlineAdsBasedOnGlobalNav = productViewModel.getGlobalNavViewModel().getIsShowTopAds();
         }
+
+        if (isEnableChooseAddress)
+            list.add(new ChooseAddressViewModel());
 
         if (!isTickerHasDismissed
                 && !textIsEmpty(productViewModel.getTickerModel().getText())) {
@@ -1997,6 +2014,9 @@ final class ProductListPresenter
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
+
+        putRequestParamsChooseAddress(requestParams);
+
         requestParams.putAll(searchParameter);
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
@@ -2214,6 +2234,23 @@ final class ProductListPresenter
                 getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_SMALL_GRID);
                 break;
         }
+    }
+
+    @Override
+    public void onLocalizingAddressSelected() {
+        if (getView() == null) return;
+
+        chooseAddressData = getView().getChooseAddressData();
+        dynamicFilterModel = null;
+        getView().reloadData();
+    }
+
+    @Override
+    public void onViewResumed() {
+        if (getView() == null) return;
+
+        if (getView().getIsLocalizingAddressHasUpdated(chooseAddressData))
+            onLocalizingAddressSelected();
     }
 
     @Override
