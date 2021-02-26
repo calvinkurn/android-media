@@ -1,9 +1,12 @@
 package com.tokopedia.recommendation_widget_common.domain
 
+import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
@@ -19,6 +22,7 @@ import javax.inject.Inject
 
 open class GetRecommendationUseCase @Inject
 constructor(
+            private val context: Context,
             private val recomRawString: String,
             private val graphqlUseCase: GraphqlUseCase,
             private val userSession: UserSessionInterface) : UseCase<List<RecommendationWidget>>() {
@@ -48,6 +52,7 @@ constructor(
                        queryParam: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
+        val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
 
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toInt())
@@ -62,7 +67,7 @@ constructor(
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PAGE_NAME, pageName)
         params.putString(PRODUCT_IDS, productIdsString)
-        params.putString(QUERY_PARAM, queryParam)
+        params.putString(QUERY_PARAM, newQueryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }

@@ -229,9 +229,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             if (it.status.isSuccess()) {
                 it.data?.let { data ->
                     sortFilterView?.show()
-                    if(data.filterAndSort.filterChip.getOption().isEmpty() && data.filterAndSort.sortChip.isEmpty()){
-                        sortFilterView?.sortFilterPrefix?.hide()
-                    }
                     setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
                 }
             } else if(it.status.isLoading()){
