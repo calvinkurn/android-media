@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -89,7 +91,8 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getBuyerViewContentData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            isShowNewShopHomeTab: Boolean
+            isShowNewShopHomeTab: Boolean,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -106,11 +109,11 @@ class ShopPageProductListViewModel @Inject constructor(
                 }
                 val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
-                    else getFeaturedProductData(shopId, userId)
+                    else getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
                 }
                 val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
-                    else getShopProductEtalaseHighlightData(shopId, etalaseList)
+                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData)
                 }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
@@ -133,7 +136,8 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getShopProductEtalaseHighlightData(
             shopId: String,
-            etalaseList: List<ShopEtalaseItemDataModel>
+            etalaseList: List<ShopEtalaseItemDataModel>,
+            widgetUserAddressLocalData: LocalCacheModel
     ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
@@ -149,7 +153,8 @@ class ShopPageProductListViewModel @Inject constructor(
                             ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
                             it.etalaseId,
                             "",
-                            getSort(it.etalaseId)
+                            getSort(it.etalaseId),
+                            widgetUserAddressLocalData
                     ).listShopProductUiModel
                 }
             }.awaitAll()
@@ -197,11 +202,21 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedUiModel? {
+    private suspend fun getFeaturedProductData(
+            shopId: String,
+            userId: String,
+            widgetUserAddressLocalData: LocalCacheModel
+    ): ShopProductFeaturedUiModel? {
         try {
             getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
-                    shopId.toIntOrZero(),
-                    userId.toIntOrZero()
+                    ShopFeaturedProductParams(
+                            shopId,
+                            userId,
+                            widgetUserAddressLocalData.district_id,
+                            widgetUserAddressLocalData.city_id,
+                            widgetUserAddressLocalData.lat,
+                            widgetUserAddressLocalData.long
+                    )
             )
             val featuredProductResponse = getShopFeaturedProductUseCase.executeOnBackground()
             return ShopProductFeaturedUiModel(
@@ -236,12 +251,24 @@ class ShopPageProductListViewModel @Inject constructor(
             etalaseId: String,
             keyword: String,
             sortId: Int,
+            widgetUserAddressLocalData: LocalCacheModel,
             rating: String = "",
             pmax: Int = 0,
             pmin: Int = 0
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
-                page, perPage, keyword, etalaseId, sortId, rating, pmax, pmin
+                page,
+                perPage,
+                keyword,
+                etalaseId,
+                sortId,
+                rating,
+                pmax,
+                pmin,
+                widgetUserAddressLocalData.district_id,
+                widgetUserAddressLocalData.city_id,
+                widgetUserAddressLocalData.lat,
+                widgetUserAddressLocalData.long
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
@@ -268,7 +295,8 @@ class ShopPageProductListViewModel @Inject constructor(
             shopId: String,
             page: Int,
             selectedEtalaseId: String,
-            shopProductFilterParameter: ShopProductFilterParameter
+            shopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(dispatcherProvider.io) {
@@ -280,6 +308,7 @@ class ShopPageProductListViewModel @Inject constructor(
                         selectedEtalaseId,
                         "",
                         shopProductFilterParameter.getSortId().toIntOrZero(),
+                        widgetUserAddressLocalData,
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
                         shopProductFilterParameter.getPmin()
@@ -402,10 +431,14 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
+    fun getFilterResultCount(
+            shopId: String,
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
+    ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter)
+                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -413,7 +446,8 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
-            tempShopProductFilterParameter: ShopProductFilterParameter
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 START_PAGE,
@@ -423,7 +457,11 @@ class ShopPageProductListViewModel @Inject constructor(
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
-                tempShopProductFilterParameter.getPmin()
+                tempShopProductFilterParameter.getPmin(),
+                widgetUserAddressLocalData.district_id,
+                widgetUserAddressLocalData.city_id,
+                widgetUserAddressLocalData.lat,
+                widgetUserAddressLocalData.long
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
