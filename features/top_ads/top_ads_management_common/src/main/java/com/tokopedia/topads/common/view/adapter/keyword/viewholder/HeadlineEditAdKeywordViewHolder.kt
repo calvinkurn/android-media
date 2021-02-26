@@ -41,7 +41,7 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         deleteKeyword.setOnClickListener {
             onItemClick?.onDeleteItemClick(keywordModel)
         }
-        if (keywordModel.minimumBid != 0 && keywordModel.maximumBid != 0) {
+        if (keywordModel.minimumBid != "0" && keywordModel.maximumBid != "0") {
             setBidInfo(keywordModel)
         }
     }
@@ -52,18 +52,18 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 when {
-                    result < keywordModel.minimumBid -> {
+                    result < keywordModel.minimumBid.toDouble() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_common_min_bid), keywordModel.minimumBid))
                         onItemClick?.onEditPriceBid(false, keywordModel)
                     }
-                    result > keywordModel.maximumBid -> {
+                    result > keywordModel.maximumBid.toDouble() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_common_max_bid), keywordModel.maximumBid))
                         onItemClick?.onEditPriceBid(false, keywordModel)
                     }
                     else -> {
-                        keywordModel.priceBid = result
+                        keywordModel.priceBid = result.toString()
                         advertisingCost.setError(false)
                         advertisingCost.setMessage("")
                         onItemClick?.onEditPriceBid(true, keywordModel)

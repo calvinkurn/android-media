@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -33,6 +34,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.sellerreview.common.SellerReviewUtils
@@ -46,7 +48,7 @@ import kotlinx.android.synthetic.main.setting_logout.view.*
 import kotlinx.android.synthetic.main.setting_tc.view.*
 import javax.inject.Inject
 
-class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener {
+class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener, MenuSettingAdapter.Listener {
 
     companion object {
         private const val REQUEST_CHANGE_PASSWORD = 123
@@ -61,14 +63,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private var MOBILE_DOMAIN = getInstance().MOBILEWEB
 
-        private const val DEVELOPER_OPTION_INDEX = 19
-
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
         private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
 
-        private const val SHIPPING_SERVICE_ALIAS = "shipping service"
-        private const val PASSWORD_ALIAS = "password"
         private const val LOGOUT_ALIAS = "logout"
 
         @JvmStatic
@@ -84,14 +82,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
 
-    private val trackingAliasHashMap by lazy {
-        mapOf<String, String?>(
-                resources.getString(R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
-                resources.getString(R.string.setting_menu_password) to PASSWORD_ALIAS,
-                LOGOUT_BUTTON_NAME to LOGOUT_ALIAS)
-    }
     private val logoutUiModel by lazy {
-        OtherSettingsUiModel(LOGOUT_BUTTON_NAME, trackingAliasHashMap[LOGOUT_BUTTON_NAME])
+        OtherSettingsUiModel(LOGOUT_BUTTON_NAME, LOGOUT_ALIAS)
     }
 
     private val termsAndConditionUiModel by lazy {
@@ -105,6 +97,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         ViewModelProvider(this, viewModelFactory).get(MenuSettingViewModel::class.java)
     }
 
+    private val menuSettingAdapter by lazy {
+        adapter as? MenuSettingAdapter
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu_setting, container, false)
     }
@@ -116,11 +112,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(menuSettingViewModel)
         setupView()
     }
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
+
+    override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
+        return MenuSettingAdapter(context, this, adapterTypeFactory)
+    }
 
     override fun onItemClicked(t: SettingUiModel?) {}
 
@@ -139,17 +138,35 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
     }
 
+    override fun onAddOrChangePassword() {
+        addOrChangePassword()
+    }
+
+    override fun onShareApplication() {
+        shareApplication()
+    }
+
+    override fun onReviewApplication() {
+        reviewApplication()
+    }
+
+    override fun onNoAccess() {
+        showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        menuSettingViewModel.shopSettingAccessLiveData.removeObservers(viewLifecycleOwner)
+    }
+
     private fun observeShopSettingAccess() {
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    result.data.let { isEligible ->
-                        if (!isEligible) {
-                            showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
-                        }
-                    }
+                    menuSettingAdapter?.showSuccessAccessMenus(result.data)
                 }
                 is Fail -> {
+                    menuSettingAdapter?.removeLoading()
                     showToasterError(result.throwable.message.orEmpty())
                 }
             }
@@ -158,76 +175,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
-        val settingList = mutableListOf(
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), IconUnify.SHOP_SETTING),
-                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_shop_profile)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_basic_info),
-                        clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_shop_notes),
-                        clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_shop_working_hours),
-                        clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_location_and_shipment)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_add_and_shop_location),
-                        clickApplink =  ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_set_shipment_method),
-                        clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                        trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
-                DividerUiModel(DividerType.THIN_INDENTED),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_set_activation_page_cod),
-                        clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
-                        settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
-                DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), IconUnify.USER),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_self_profile),
-                        clickApplink = ApplinkConst.SETTING_PROFILE,
-                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_bank_account),
-                        clickApplink = ApplinkConstInternalGlobal.SETTING_BANK,
-                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_password),
-                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
-                        trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_password)]) { addOrChangePassword() },
-                DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), IconUnify.PHONE_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_chat_and_notification),
-                        clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
-                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_notification_troubleshooter),
-                        clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
-                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_share_app),
-                        settingTypeInfix = SettingTrackingConstant.APP_SETTING) { shareApplication() },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review_app),
-                        settingTypeInfix = SettingTrackingConstant.APP_SETTING) { reviewApplication() },
-                DividerUiModel(DividerType.THIN_INDENTED)
-        )
-        if (GlobalConfig.isAllowDebuggingTools())
-            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(
-                    resources.getString(R.string.setting_menu_developer_options),
-                    settingTypeInfix = SettingTrackingConstant.APP_SETTING) {
-                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
-            })
-        renderList(settingList)
+        menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
+        if (!userSession.isShopOwner) {
+            menuSettingViewModel.checkShopSettingAccess()
+        }
 
         setupLogoutView()
         setupExtraSettingView()

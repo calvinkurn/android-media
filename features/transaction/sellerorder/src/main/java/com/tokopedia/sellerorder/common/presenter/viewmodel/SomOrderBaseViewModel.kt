@@ -3,9 +3,9 @@ package com.tokopedia.sellerorder.common.presenter.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -19,14 +19,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 
 abstract class SomOrderBaseViewModel(
-        dispatcher: SomDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         protected val userSession: UserSessionInterface,
         private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val somRejectOrderUseCase: SomRejectOrderUseCase,
         private val somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         private val firstAuthorizeAccessUseCase: AuthorizeAccessUseCase,
-        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher.io()) {
+        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher.io) {
 
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrderResponse.Data>>()
     val acceptOrderResult: LiveData<Result<SomAcceptOrderResponse.Data>>

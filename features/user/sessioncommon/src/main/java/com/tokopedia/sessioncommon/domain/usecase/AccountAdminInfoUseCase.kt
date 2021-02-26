@@ -35,6 +35,7 @@ class AccountAdminInfoUseCase @Inject constructor(private val refreshShopBasicDa
                       is_shop_owner            
                     }
                   }
+                  status
                 }
               }
             }

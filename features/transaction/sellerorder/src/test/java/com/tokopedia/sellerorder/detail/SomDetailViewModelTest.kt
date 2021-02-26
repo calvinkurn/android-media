@@ -1,21 +1,19 @@
 package com.tokopedia.sellerorder.detail
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.common.domain.model.*
-import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
-import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +26,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
@@ -50,9 +48,9 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     @Before
     override fun setUp() {
         super.setUp()
-        viewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
-                somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase, somRejectCancelOrderUseCase,
+        viewModel = SomDetailViewModel(somAcceptOrderUseCase, somRejectOrderUseCase, somEditRefNumUseCase,
+                somRejectCancelOrderUseCase, userSessionInterface, dispatcher,
+                somGetOrderDetailUseCase, somReasonRejectUseCase, somSetDeliveredUseCase,
                 authorizeSomDetailAccessUseCase, authorizeChatReplyAccessUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products("123")
@@ -281,7 +279,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) {
-        assert((viewModel.somDetailChatEligibility.value as? Success)?.equals(pairs) == true)
+        Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
     }
 }
 

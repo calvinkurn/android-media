@@ -15,6 +15,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig,
@@ -37,7 +38,7 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
             AdminFeature.REVIEW -> AccessId.REVIEW
             AdminFeature.DISCUSSION -> AccessId.DISCUSSION
             AdminFeature.COMPLAINT -> AccessId.COMPLAINT
-            AdminFeature.MANAGE_SHOP -> AccessId.SHOP_SETTING
+            AdminFeature.MANAGE_SHOP -> AccessId.SHOP_SETTING_INFO
             AdminFeature.STATISTIC -> AccessId.STATISTIC
             AdminFeature.ADS_AND_PROMOTION -> AccessId.ADS_AND_PROMO
             else -> 0

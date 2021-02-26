@@ -2,9 +2,9 @@ package com.tokopedia.sellerorder.detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -23,15 +23,15 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailViewModel @Inject constructor(
-        dispatcher: SomDispatcherProvider,
-        userSession: UserSessionInterface,
-        private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
         somAcceptOrderUseCase: SomAcceptOrderUseCase,
-        private val somReasonRejectUseCase: SomReasonRejectUseCase,
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
-        private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        userSession: UserSessionInterface,
+        dispatcher: CoroutineDispatchers,
+        private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
+        private val somReasonRejectUseCase: SomReasonRejectUseCase,
+        private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
         authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,

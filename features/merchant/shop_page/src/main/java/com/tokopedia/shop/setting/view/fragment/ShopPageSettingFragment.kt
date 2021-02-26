@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -41,6 +42,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ShopPageSettingFragment : BaseDaggerFragment(),
@@ -66,6 +68,9 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var shopPageSettingViewModel: ShopPageSettingViewModel
 
@@ -74,6 +79,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private lateinit var shopPageSettingView: RecyclerView
     private lateinit var retryMessageView: TextView
     private lateinit var retryButton: View
+    private lateinit var loadingView: View
     private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
@@ -89,6 +95,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private var shopDomain: String? = null
     private var shopInfo: ShopInfo? = null
     private var shopRef: String = ""
+    private var shopSettingAccess = ShopSettingAccess()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,7 +132,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 is Fail -> onErrorGetShopInfo(it.throwable)
             }
         })
-        observeRoleAccess()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -144,6 +150,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingView = view.findViewById(R.id.rv_shop_page_setting)
         retryMessageView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         retryButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        loadingView = view.findViewById(R.id.loader_shop_page_setting)
 
         // setup shop page setting recycler view
         val shopPageSettingView: RecyclerView = view.findViewById(R.id.rv_shop_page_setting)
@@ -163,6 +170,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingList.add(Support())
         shopPageSettingList.add(Shipping())
         shopPageSettingAdapter.setShopPageSettingList(shopPageSettingList)
+
+        observeRoleAccess()
 
         // get shop info
         getShopInfo()
@@ -193,25 +202,31 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
-        setViewState(VIEW_LOADING)
+        if (userSession.isShopOwner) {
+            setViewState(VIEW_CONTENT)
+        } else {
+            setViewState(VIEW_LOADING)
+        }
         shopPageSettingViewModel.getShop(shopId, shopDomain, isRefresh)
-        shopPageSettingViewModel.checkAccess()
     }
 
     private fun setViewState(viewState: Int) {
         when (viewState) {
             VIEW_LOADING -> {
                 errorView.hide()
+                loadingView.visible()
                 dashboardView.visible()
-                shopPageSettingView.visible()
+                shopPageSettingView.gone()
             }
             VIEW_ERROR -> {
                 errorView.visible()
+                loadingView.gone()
                 dashboardView.hide()
                 shopPageSettingView.hide()
             }
             else -> {
                 errorView.hide()
+                loadingView.gone()
                 dashboardView.visible()
                 shopPageSettingView.visible()
             }
@@ -230,17 +245,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private fun observeRoleAccess() {
         shopPageSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    result.data.let { isEligible ->
-                        if (!isEligible) {
-                            showErrorToaster(context?.getString(R.string.shop_page_setting_no_access_error).orEmpty())
-                        }
-                    }
-                }
-                is Fail -> {
-                    showErrorToaster(result.throwable.message.orEmpty())
-                }
+            if (result is Success) {
+                shopSettingAccess = result.data
             }
         }
     }
@@ -251,43 +257,61 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun whenRoleAuthorized(isAuthorized: Boolean, action: () -> Unit) {
+        if (isAuthorized) {
+            action()
+        } else {
+            showErrorToaster(context?.getString(R.string.shop_page_setting_no_access_error).orEmpty())
+        }
+    }
+
     // Ubah profil toko
     override fun onChangeProfileClicked() {
         shopPageSettingTracking?.clickChangeShopProfile(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+        whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+        }
     }
 
     // Ubah catatan toko
     override fun onChangeShopNoteClicked() {
         shopPageSettingTracking?.clickChangeShopNote(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
+        whenRoleAuthorized(shopSettingAccess.isNotesAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
+        }
     }
 
     // Atur jam buka toko
     override fun onEditShopScheduleClicked() {
         shopPageSettingTracking?.clickSetOpenShopTime(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        whenRoleAuthorized(shopSettingAccess.isInfoAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        }
     }
 
     // Lihat daftar produk
     override fun onDisplayProductsClicked() {
         shopPageSettingTracking?.clickSeeProduct(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConst.PRODUCT_MANAGE)
+        whenRoleAuthorized(shopSettingAccess.isProductManageAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConst.PRODUCT_MANAGE)
+        }
     }
 
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
         shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
-        context?.let {
-            val bundle = Bundle()
-            bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
-            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
-            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
-            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
+        whenRoleAuthorized(shopSettingAccess.isEtalaseAccessAuthorized) {
+            context?.let {
+                val bundle = Bundle()
+                bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
+                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+                bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
 
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(EXTRA_BUNDLE, bundle)
-            startActivityForResult(intent, REQUEST_CODE_ETALASE)
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                intent.putExtra(EXTRA_BUNDLE, bundle)
+                startActivityForResult(intent, REQUEST_CODE_ETALASE)
+            }
         }
     }
 
@@ -329,12 +353,16 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     // Tambah dan ubah lokasi toko
     override fun onEditLocationClicked() {
         shopPageSettingTracking?.clickAddAndEditShopLocation(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
+        whenRoleAuthorized(shopSettingAccess.isAddressAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
+        }
     }
 
     // Atur layanan pengiriman
     override fun onManageShippingServiceClicked() {
         shopPageSettingTracking?.clickSetShippingService(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConst.SELLER_SHIPPING_EDITOR)
+        whenRoleAuthorized(shopSettingAccess.isShipmentAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConst.SELLER_SHIPPING_EDITOR)
+        }
     }
 }

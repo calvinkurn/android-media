@@ -47,6 +47,7 @@ class ProductVariantStockViewHolder(
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
         setupStockHint(variant)
+        setupCampaignLabel(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -105,6 +106,10 @@ class ProductVariantStockViewHolder(
         itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
+    private fun setupCampaignLabel(variant: ProductVariant) {
+        itemView.labelCampaign.showWithCondition(variant.isCampaign)
+    }
+
     private fun setStockMinMaxValue() {
         itemView.quantityEditorStock.apply {
             val maxLength = LengthFilter(MAXIMUM_LENGTH)
@@ -154,7 +159,7 @@ class ProductVariantStockViewHolder(
             override fun afterTextChanged(s: Editable?) {
                 val input = s?.toString().orEmpty()
                 val stock = if (input.isNotEmpty()) {
-                    input.toInt()
+                    itemView.quantityEditorStock.getValue()
                 } else {
                     MINIMUM_STOCK
                 }
@@ -245,9 +250,10 @@ class ProductVariantStockViewHolder(
     }
 
     private fun getCurrentStockInput(): Int {
-        val input = itemView.quantityEditorStock.editText.text.toString()
+        val quantityEditorStock = itemView.quantityEditorStock
+        val input = quantityEditorStock.editText.text.toString()
         return if(input.isNotEmpty()) {
-            input.toIntOrZero()
+            quantityEditorStock.getValue()
         } else {
             MINIMUM_STOCK
         }

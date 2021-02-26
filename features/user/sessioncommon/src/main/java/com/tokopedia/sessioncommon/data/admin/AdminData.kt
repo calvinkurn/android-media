@@ -9,5 +9,16 @@ data class AdminData(
     val adminTypeText: String? = "",
     @Expose
     @SerializedName("detail_information")
-    val detail: AdminDetailInformation = AdminDetailInformation()
-)
+    val detail: AdminDetailInformation = AdminDetailInformation(),
+    @Expose
+    @SerializedName("status")
+    val status: Int? = 0
+) {
+
+    companion object {
+        private const val ACTIVE_STATUS = 1
+    }
+
+    fun isShopActive(): Boolean = status == ACTIVE_STATUS
+
+}

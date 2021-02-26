@@ -41,19 +41,23 @@ class ProductVariantAdapter(
     }
 
     fun showStockInfo() {
-        getVariantList().forEach {
-            val index = data.indexOf(it)
-            data[index] = it.copy(isAllStockEmpty = false)
+        if(getVariantList().firstOrNull()?.isAllStockEmpty != false) {
+            getVariantList().forEach {
+                val index = data.indexOf(it)
+                data[index] = it.copy(isAllStockEmpty = false)
+            }
+            notifyDataSetChanged()
         }
-        notifyDataSetChanged()
     }
 
     fun hideStockInfo() {
-        getVariantList().forEach {
-            val index = data.indexOf(it)
-            data[index] = it.copy(isAllStockEmpty = true)
+        if(getVariantList().firstOrNull()?.isAllStockEmpty != true) {
+            getVariantList().forEach {
+                val index = data.indexOf(it)
+                data[index] = it.copy(isAllStockEmpty = true)
+            }
+            notifyDataSetChanged()
         }
-        notifyDataSetChanged()
     }
 
     private fun getVariantList(): List<ProductVariant> {

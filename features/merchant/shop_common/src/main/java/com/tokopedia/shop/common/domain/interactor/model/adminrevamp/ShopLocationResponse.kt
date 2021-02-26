@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ShopLocationResponse(
     @Expose
     @SerializedName("location_id")
-    val locationId: Int,
+    val locationId: String,
     @Expose
     @SerializedName("location_type")
     val locationType: Int

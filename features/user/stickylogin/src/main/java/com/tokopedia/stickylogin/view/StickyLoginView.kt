@@ -166,6 +166,10 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
             stickyLoginAction.onClick()
         }
+
+        layoutContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            stickyLoginAction.onViewChange(isShowing())
+        }
     }
 
     private fun initInjector() {

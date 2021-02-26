@@ -302,7 +302,8 @@ class ProductManageViewModel @Inject constructor(
         showLoadingDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val requestParams = GetProductVariantUseCase.createRequestParams(productId, false)
+                val warehouseId = getWarehouseId(userSessionInterface.shopId)
+                val requestParams = GetProductVariantUseCase.createRequestParams(productId, false, warehouseId)
                 val response = getProductVariantUseCase.execute(requestParams)
 
                 val variant = response.getProductV3
@@ -668,6 +669,7 @@ class ProductManageViewModel @Inject constructor(
         status: ProductStatus?
     ): Result<EditStockResult> {
         return withContext(dispatchers.io) {
+            val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                 userSessionInterface.shopId, productId, warehouseId, stock.toString()
             )
@@ -701,6 +703,7 @@ class ProductManageViewModel @Inject constructor(
 
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
+            val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val productList = result.variants.map { ProductStock(it.id, it.stock.toString()) }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                 userSessionInterface.shopId, warehouseId, productList
