@@ -95,6 +95,7 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
+    const val SHIPMENT = "shipment"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -184,4 +185,9 @@ object ProductDetailConstant {
     const val LAYOUT_FLOATING = "floating"
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
+
+    //bo type
+    const val NO_BEBAS_ONGKIR = 0
+    const val BEBAS_ONGKIR_NORMAL = 1
+    const val BEBAS_ONGKIR_EXTRA = 2
 }

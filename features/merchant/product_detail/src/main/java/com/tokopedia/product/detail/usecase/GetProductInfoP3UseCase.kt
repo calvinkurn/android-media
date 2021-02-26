@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE_PDP
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.coroutines.UseCase

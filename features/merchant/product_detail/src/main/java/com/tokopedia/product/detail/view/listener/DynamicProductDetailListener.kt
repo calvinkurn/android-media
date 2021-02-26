@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
@@ -152,4 +153,11 @@ interface DynamicProductDetailListener {
      * ProductReportViewHolder
      */
     fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductShippingViewHolder
+     */
+    fun openShipmentClickedBottomSheet()
+    fun openShipmentBottomSheetWhenError() : Boolean
+    fun showCoachmark(view: Typography?)
 }
