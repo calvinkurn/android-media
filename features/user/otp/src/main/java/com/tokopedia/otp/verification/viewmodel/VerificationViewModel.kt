@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.DispatcherProvider
-import com.tokopedia.otp.common.idling_resource.EspressoIdlingResource
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -88,26 +88,26 @@ class VerificationViewModel @Inject constructor(
             email: String = ""
     ) {
         launchCatchError(block = {
-            EspressoIdlingResource.increment()
+            TkpdIdlingResource.increment()
             val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
             val data = getVerificationMethodUseCase.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)
-                    EspressoIdlingResource.decrement()
+                    TkpdIdlingResource.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
-                    EspressoIdlingResource.decrement()
+                    TkpdIdlingResource.decrement()
                 }
                 else -> {
                     _getVerificationMethodResult.value = Fail(Throwable())
-                    EspressoIdlingResource.decrement()
+                    TkpdIdlingResource.decrement()
                 }
             }
         }, onError = {
             _getVerificationMethodResult.value = Fail(it)
-            EspressoIdlingResource.decrement()
+            TkpdIdlingResource.decrement()
         })
     }
 
