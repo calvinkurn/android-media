@@ -21,10 +21,4 @@ class ChatSearchModuleTest {
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @ChatSearchScope
-    @Provides
-    fun provideGqlUseCase(): GraphqlUseCaseStub<GetChatSearchResponse> {
-        return GraphqlUseCaseStub()
-    }
-
 }

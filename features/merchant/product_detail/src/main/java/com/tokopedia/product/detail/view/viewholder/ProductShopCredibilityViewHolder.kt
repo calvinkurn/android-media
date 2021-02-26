@@ -155,7 +155,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
     private fun setupBadgeAndImage(avatar: String, isOs: Boolean, isPm: Boolean) = with(view) {
         val drawable = when {
             isOs -> {
-                MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
+                MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
             }
             isPm -> {
                 MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
