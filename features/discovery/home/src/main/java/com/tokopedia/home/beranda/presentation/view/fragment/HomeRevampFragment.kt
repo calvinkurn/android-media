@@ -680,16 +680,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
         //add balance widget
-        val balanceWidget = getBalanceWidgetView()
-        balanceWidget?.let {
-            this.add(
-                    CoachMark2Item(
-                            balanceWidget,
-                            getString(R.string.onboarding_coachmark_wallet_title),
-                            getString(R.string.onboarding_coachmark_wallet_description)
-                    )
-            )
-        }
+        //uncomment this to activate balance widget coachmark
+//        val balanceWidget = getBalanceWidgetView()
+//        balanceWidget?.let {
+//            this.add(
+//                    CoachMark2Item(
+//                            balanceWidget,
+//                            getString(R.string.onboarding_coachmark_wallet_title),
+//                            getString(R.string.onboarding_coachmark_wallet_description)
+//                    )
+//            )
+//        }
     }
 
     private fun showCoachMark() {
