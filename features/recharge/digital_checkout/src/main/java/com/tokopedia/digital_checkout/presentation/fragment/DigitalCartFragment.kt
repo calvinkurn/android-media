@@ -88,7 +88,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
 
-    override fun getScreenName(): String? = null
+    override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -207,6 +207,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 }
                 TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
+                else -> {
+                }
             }
         })
     }
@@ -230,23 +232,25 @@ class DigitalCartFragment : BaseDaggerFragment() {
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
-        renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
+        cartInfo.attributes.userInputPrice.run {
+            if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
+                renderInputPriceView(cartInfo.attributes.pricePlain.toLong().toString(), cartInfo.attributes.userInputPrice)
+            }
+        }
 
         if (cartInfo.showSubscriptionsView) renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
-        renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
+        renderFintechProductWidget(cartInfo.attributes.fintechProduct.getOrNull(0))
 
-        cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
-        productTitle.text = cartInfo.attributes?.categoryName
-        cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo ?: listOf())
+        cartInfo.attributes.icon.let { iconCheckout.loadImage(it) }
+        productTitle.text = cartInfo.attributes.categoryName
+        cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo)
 
-        if (cartInfo.attributes?.isEnableVoucher == true) {
+        if (cartInfo.attributes.isEnableVoucher) {
             digitalPromoBtnView.visibility = View.VISIBLE
         } else digitalPromoBtnView.visibility = View.GONE
 
-        cartInfo.attributes?.postPaidPopupAttribute?.let { postPaidPopupAttribute ->
-            if (!digitalSubscriptionParams.isSubscribed && cartInfo.attributes?.postPaidPopupAttribute != null) {
-                renderPostPaidPopup(postPaidPopupAttribute)
-            }
+        if (!digitalSubscriptionParams.isSubscribed) {
+            renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
     }
 
@@ -334,7 +338,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun showToastMessage(message: String) {
         build(requireView(), message, Snackbar.LENGTH_LONG, TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { v: View? -> }).show()
+                getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { /** do nothing **/ }).show()
     }
 
     private fun closeViewWithMessageAlert(message: String?) {
@@ -386,53 +390,48 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         val dialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(postPaidPopupAttribute.title.toString())
-        dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content ?: ""))
-        dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle ?: "")
+        dialog.setTitle(postPaidPopupAttribute.title)
+        dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
+        dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
         }
         dialog.show()
     }
 
-    private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig?) {
-        crossSellingConfig?.let { crossSellingConfig ->
-            if ((crossSellingConfig.bodyTitle ?: "").isNotEmpty()) {
-                subscriptionWidget.visibility = View.VISIBLE
+    private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {
+        if ((crossSellingConfig.bodyTitle).isNotEmpty()) {
+            subscriptionWidget.visibility = View.VISIBLE
 
-                btnCheckout.text = crossSellingConfig.checkoutButtonText
+            btnCheckout.text = crossSellingConfig.checkoutButtonText
 
-                //if user has subscribe, hide subscriptionWidget's checkbox
-                if (digitalSubscriptionParams.isSubscribed) {
-                    subscriptionWidget.disableCheckBox()
-                }
-                subscriptionWidget.setTitle(crossSellingConfig.bodyTitle ?: "")
+            //if user has subscribe, hide subscriptionWidget's checkbox
+            if (digitalSubscriptionParams.isSubscribed) {
+                subscriptionWidget.disableCheckBox()
+            }
+            subscriptionWidget.setTitle(crossSellingConfig.bodyTitle)
 
-                if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
-                        ?: "")
-                else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
-                subscriptionWidget.hasMoreInfo(false)
+            if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
+            else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
+            subscriptionWidget.hasMoreInfo(false)
 
-                if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
-                    subscriptionWidget.setChecked(true)
-                } else if (!subscriptionWidget.isChecked()) {
-                    subscriptionWidget.setChecked(crossSellingConfig.isChecked)
-                }
+            if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
+                subscriptionWidget.setChecked(true)
+            } else if (!subscriptionWidget.isChecked()) {
+                subscriptionWidget.setChecked(crossSellingConfig.isChecked)
+            }
 
-                viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
+            viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
 
-                subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {}
+            subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+                override fun onMoreInfoClicked() {}
 
-                    override fun onCheckChanged(isChecked: Boolean) {
-                        digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                        if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
-                                ?: "")
-                        else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore
-                                ?: "")
+                override fun onCheckChanged(isChecked: Boolean) {
+                    digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+                    if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
+                    else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
 
-                        viewModel.onSubscriptionChecked(isChecked)
-                    }
+                    viewModel.onSubscriptionChecked(isChecked)
                 }
             }
         }
@@ -552,10 +551,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun onClickUsePromo() {
         val attributes = getCartDigitalInfoData().attributes
-        attributes?.let { attr ->
+        attributes.let { attr ->
             digitalAnalytics.eventClickUseVoucher(getCategoryName())
-            digitalAnalytics.eventClickPromoButton(attr.categoryName ?: "",
-                    attributes.operatorName ?: "", userSession.userId)
+            digitalAnalytics.eventClickPromoButton(attr.categoryName, attributes.operatorName, userSession.userId)
         }
         navigateToPromoListPage()
     }
@@ -577,8 +575,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value
             ?: CartDigitalInfoData()
 
-    private fun getCategoryName(): String = getCartDigitalInfoData().attributes?.categoryName ?: ""
-    private fun getOperatorName(): String = getCartDigitalInfoData().attributes?.operatorName ?: ""
+    private fun getCategoryName(): String = getCartDigitalInfoData().attributes.categoryName
+    private fun getOperatorName(): String = getCartDigitalInfoData().attributes.operatorName
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
     private fun getPriceInput(): Double = inputPriceHolderView.getPriceInput().toDouble()
 

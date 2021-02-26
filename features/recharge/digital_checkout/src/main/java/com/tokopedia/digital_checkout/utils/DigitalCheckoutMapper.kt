@@ -28,11 +28,11 @@ object DigitalCheckoutMapper {
 
     fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
-        cartInfo.attributes?.autoApplyVoucher?.let {
-            if (it.isSuccess && !(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
-                promoData = PromoData(title = it.title ?: "",
-                        description = it.messageSuccess ?: "",
-                        promoCode = it.code ?: "",
+        cartInfo.attributes.autoApplyVoucher.let {
+            if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
+                promoData = PromoData(title = it.title,
+                        description = it.messageSuccess,
+                        promoCode = it.code,
                         typePromo = it.isCoupon,
                         amount = it.discountAmount.toInt(),
                         state = TickerCheckoutView.State.ACTIVE)
@@ -62,18 +62,18 @@ object DigitalCheckoutMapper {
 
             val attributesDigital = AttributesDigitalData()
             responseCartData.attributes?.let { attributes ->
-                attributesDigital.categoryName = attributes.categoryName
-                attributesDigital.operatorName = attributes.operatorName
-                attributesDigital.clientNumber = attributes.clientNumber
-                attributesDigital.icon = attributes.icon
+                attributesDigital.categoryName = attributes.categoryName ?: ""
+                attributesDigital.operatorName = attributes.operatorName ?: ""
+                attributesDigital.clientNumber = attributes.clientNumber ?: ""
+                attributesDigital.icon = attributes.icon ?: ""
                 attributesDigital.isInstantCheckout = attributes.isInstantCheckout
                 attributesDigital.isNeedOtp = attributes.isNeedOtp
-                attributesDigital.smsState = attributes.smsState
-                attributesDigital.price = attributes.price
+                attributesDigital.smsState = attributes.smsState ?: ""
+                attributesDigital.price = attributes.price ?: ""
                 attributesDigital.pricePlain = attributes.pricePlain
                 attributesDigital.isEnableVoucher = attributes.isEnableVoucher
                 attributesDigital.isCouponActive = attributes.isCouponActive
-                attributesDigital.voucherAutoCode = attributes.voucherAutoCode
+                attributesDigital.voucherAutoCode = attributes.voucherAutoCode ?: ""
 
                 if (attributes.userInputPrice != null) {
                     val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
@@ -89,13 +89,13 @@ object DigitalCheckoutMapper {
                 if (attributes.autoApply != null) {
                     val entity = attributes.autoApply
                     val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
-                    applyVoucher.code = entity!!.code
+                    applyVoucher.code = entity!!.code ?: ""
                     applyVoucher.isSuccess = entity.isSuccess
                     applyVoucher.discountAmount = entity.discountAmount
                     applyVoucher.isCoupon = entity.isCoupon
                     applyVoucher.promoId = entity.promoId
-                    applyVoucher.title = entity.title
-                    applyVoucher.messageSuccess = entity.messageSuccess
+                    applyVoucher.title = entity.title ?: ""
+                    applyVoucher.messageSuccess = entity.messageSuccess ?: ""
                     attributesDigital.autoApplyVoucher = applyVoucher
                 }
 
@@ -104,15 +104,16 @@ object DigitalCheckoutMapper {
                         attributes.postPaidPopUp!!.action!!.confirmAction != null) {
                     val postPaidPopup = responseCartData.attributes?.postPaidPopUp
                     val postPaidPopupAttribute = PostPaidPopupAttribute()
-                    postPaidPopupAttribute.title = postPaidPopup?.title
-                    postPaidPopupAttribute.content = postPaidPopup?.content
-                    postPaidPopupAttribute.imageUrl = postPaidPopup?.imageUrl
+                    postPaidPopupAttribute.title = postPaidPopup?.title ?: ""
+                    postPaidPopupAttribute.content = postPaidPopup?.content ?: ""
+                    postPaidPopupAttribute.imageUrl = postPaidPopup?.imageUrl ?: ""
                     postPaidPopupAttribute.confirmButtonTitle = postPaidPopup?.action?.confirmAction?.title
+                            ?: ""
                     attributesDigital.postPaidPopupAttribute = postPaidPopupAttribute
                 }
 
-                attributesDigital.defaultPromoTab = attributes.defaultPromoTab
-                attributesDigital.userId = attributes.userId
+                attributesDigital.defaultPromoTab = attributes.defaultPromoTab ?: ""
+                attributesDigital.userId = attributes.userId ?: ""
             }
 
             responseCartData.relationships?.let { relationship ->
@@ -145,24 +146,24 @@ object DigitalCheckoutMapper {
                         wording
                     }
                     crossSellingWording?.run {
-                        crossSellingConfig.headerTitle = headerTitle
-                        crossSellingConfig.bodyTitle = bodyTitle
-                        crossSellingConfig.bodyContentBefore = bodyContentBefore
-                        crossSellingConfig.bodyContentAfter = bodyContentAfter
-                        crossSellingConfig.checkoutButtonText = checkoutButtonText
+                        crossSellingConfig.headerTitle = headerTitle ?: ""
+                        crossSellingConfig.bodyTitle = bodyTitle ?: ""
+                        crossSellingConfig.bodyContentBefore = bodyContentBefore ?: ""
+                        crossSellingConfig.bodyContentAfter = bodyContentAfter ?: ""
+                        crossSellingConfig.checkoutButtonText = checkoutButtonText ?: ""
                         cartDigitalInfoData.crossSellingConfig = crossSellingConfig
                     }
                 }
-                attributesDigital.fintechProduct = fintechProduct
+                attributesDigital.fintechProduct = fintechProduct ?: listOf()
             }
 
             cartDigitalInfoData.attributes = attributesDigital
-            cartDigitalInfoData.id = responseCartData.id
+            cartDigitalInfoData.id = responseCartData.id ?: ""
             cartDigitalInfoData.isInstantCheckout = responseCartData.attributes!!.isInstantCheckout
             cartDigitalInfoData.isNeedOtp = responseCartData.attributes!!.isNeedOtp
-            cartDigitalInfoData.smsState = responseCartData.attributes!!.smsState
-            cartDigitalInfoData.title = responseCartData.attributes!!.title
-            cartDigitalInfoData.type = responseCartData.type
+            cartDigitalInfoData.smsState = responseCartData.attributes!!.smsState ?: ""
+            cartDigitalInfoData.title = responseCartData.attributes!!.title ?: ""
+            cartDigitalInfoData.type = responseCartData.type ?: ""
 
             return cartDigitalInfoData
 
@@ -184,7 +185,7 @@ object DigitalCheckoutMapper {
             responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
                 cartDigitalInfoData.additionalInfos = additionalInfos.map {
                     CartItemDigitalWithTitle(it.title,
-                            it.detail?.map { detail ->
+                            it.detail.map { detail ->
                                 CartItemDigital(detail.label, detail.value)
                             })
                 }
@@ -215,7 +216,6 @@ object DigitalCheckoutMapper {
                     attributesDigital.userInputPrice = userInputPriceDigital
                 }
 
-                if (attributes.autoApply != null) {
                     val entity = attributes.autoApply
                     val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
                     applyVoucher.code = entity.code
@@ -226,7 +226,6 @@ object DigitalCheckoutMapper {
                     applyVoucher.title = entity.titleDescription
                     applyVoucher.messageSuccess = entity.messageSuccess
                     attributesDigital.autoApplyVoucher = applyVoucher
-                }
 
                 if (responseRechargeGetCart.response.popUp.content.isNotEmpty() &&
                         responseRechargeGetCart.response.popUp.action.yesButtonTitle.isNotEmpty()) {
@@ -258,7 +257,7 @@ object DigitalCheckoutMapper {
                     } else {
                         wording
                     }
-                    crossSellingWording?.run {
+                    crossSellingWording.run {
                         crossSellingConfig.headerTitle = headerTitle
                         crossSellingConfig.bodyTitle = bodyTitle
                         crossSellingConfig.bodyContentBefore = bodyContentBefore
@@ -286,7 +285,7 @@ object DigitalCheckoutMapper {
 
     fun mapToPaymentPassData(responseCheckoutData: ResponseCheckout): PaymentPassData {
         val paymentPassData = PaymentPassData()
-        responseCheckoutData.attributes?.run {
+        responseCheckoutData.attributes.run {
             paymentPassData.callbackFailedUrl = callbackUrlFailed ?: ""
             paymentPassData.callbackSuccessUrl = callbackUrlSuccess ?: ""
             paymentPassData.redirectUrl = redirectUrl ?: ""
@@ -300,13 +299,12 @@ object DigitalCheckoutMapper {
                           requestCheckoutDataParameter: DigitalCheckoutDataParameter): DigitalCheckoutDataParameter {
         val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
         digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
-        digitalCheckoutDataParameter.accessToken = accessToken
+        digitalCheckoutDataParameter.accessToken = accessToken ?: ""
         digitalCheckoutDataParameter.walletRefreshToken = ""
         digitalCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
         digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
-        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain
-                ?: 0.0
+        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes.pricePlain
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
 
@@ -346,7 +344,7 @@ object DigitalCheckoutMapper {
                 attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
                         transactionType = transactionType,
                         tierId = tierId,
-                        userId = attributes.identifier?.userId?.toLongOrNull(),
+                        userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
                         fintechAmount = fintechAmount.toLong(),
                         fintechPartnerAmount = fintechPartnerAmount.toLong(),
                         productName = info.title

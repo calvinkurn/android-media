@@ -170,7 +170,7 @@ class DigitalCartViewModel @Inject constructor(
             val otpResponse = withContext(dispatcher) {
                 val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
                 val requestBodyOtpSuccess = RequestBodyOtpSuccess(DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_OTP_CART_TYPE,
-                        requestCheckoutParam.cartId ?: "", attributes)
+                        requestCheckoutParam.cartId, attributes)
                 digitalPatchOtpUseCase.setRequestParams(requestBodyOtpSuccess)
                 digitalPatchOtpUseCase.executeOnBackground()
             }
@@ -221,7 +221,7 @@ class DigitalCartViewModel @Inject constructor(
             _cartDigitalInfoData.postValue(mappedCartData)
             _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
 
-            val pricePlain = mappedCartData.attributes?.pricePlain ?: 0.0
+            val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
             requestCheckoutParam.transactionAmount = pricePlain
 
@@ -269,7 +269,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun onReceivedPromoCode() {
+    private fun onReceivedPromoCode() {
         resetAdditionalInfoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
@@ -311,7 +311,7 @@ class DigitalCartViewModel @Inject constructor(
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = if (inputPrice > 0) inputPrice else attributes.pricePlain
             if (isChecked) {
-                val fintechProductPrice = attributes.fintechProduct?.getOrNull(0)?.fintechAmount
+                val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
                         ?: 0.0
                 totalPrice += fintechProductPrice
             }
@@ -339,7 +339,7 @@ class DigitalCartViewModel @Inject constructor(
                     val checkoutDigitalData = withContext(dispatcher) {
                         digitalCheckoutUseCase.setRequestParams(
                                 getRequestBodyCheckout(requestCheckoutParam, digitalIdentifierParam,
-                                        it.attributes?.fintechProduct?.getOrNull(0)))
+                                        it.attributes.fintechProduct.getOrNull(0)))
 
                         digitalCheckoutUseCase.executeOnBackground()
                     }
@@ -363,15 +363,15 @@ class DigitalCartViewModel @Inject constructor(
 
     fun getPromoDigitalModel(cartPassData: DigitalCheckoutPassData?, userInputPriceAmount: Double): PromoDigitalModel {
         val cartInfoData = cartDigitalInfoData.value ?: CartDigitalInfoData()
-        var price: Double = cartInfoData.attributes?.pricePlain ?: 0.0
+        var price: Double = cartInfoData.attributes.pricePlain
 
         if (userInputPriceAmount > 0.0) {
             price = userInputPriceAmount
         }
 
         return PromoDigitalModel(cartPassData?.categoryId?.toIntOrNull() ?: 0,
-                cartInfoData.attributes?.categoryName ?: "",
-                cartInfoData.attributes?.operatorName ?: "",
+                cartInfoData.attributes.categoryName,
+                cartInfoData.attributes.operatorName,
                 cartPassData?.productId?.toIntOrNull() ?: 0,
                 cartPassData?.clientNumber ?: "",
                 price.toLong()

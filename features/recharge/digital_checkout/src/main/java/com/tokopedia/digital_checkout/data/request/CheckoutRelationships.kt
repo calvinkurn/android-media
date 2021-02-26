@@ -10,21 +10,21 @@ import com.google.gson.annotations.SerializedName
 data class CheckoutRelationships(
         @SerializedName("cart")
         @Expose
-        var cart: Cart?
+        var cart: Cart = Cart()
 ) {
     data class Cart(
             @SerializedName("data")
             @Expose
-            var data: Data) {
+            var data: Data = Data()) {
 
         data class Data(
                 @SerializedName("type")
                 @Expose
-                var type: String?,
+                var type: String = "",
 
                 @SerializedName("id")
                 @Expose
-                var id: String?
+                var id: String = ""
         )
     }
 }

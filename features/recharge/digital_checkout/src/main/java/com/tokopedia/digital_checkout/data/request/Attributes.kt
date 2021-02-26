@@ -17,7 +17,7 @@ data class Attributes(
 
         @SerializedName("order_id")
         @Expose
-        var orderId: Long? = null,
+        var orderId: Long = 0,
 
         @SerializedName("device_id")
         @Expose
@@ -29,11 +29,11 @@ data class Attributes(
 
         @SerializedName("ip_address")
         @Expose
-        var ipAddress: String? = null,
+        var ipAddress: String = "",
 
         @SerializedName("user_agent")
         @Expose
-        var userAgent: String? = null,
+        var userAgent: String = "",
 
         @SerializedName("fields")
         @Expose
@@ -41,7 +41,7 @@ data class Attributes(
 
         @SerializedName("identifier")
         @Expose
-        var identifier: RequestBodyIdentifier? = null,
+        var identifier: RequestBodyIdentifier = RequestBodyIdentifier(),
 
         @SerializedName("is_reseller")
         @Expose
@@ -53,11 +53,11 @@ data class Attributes(
 
         @SerializedName("show_subscribe_pop_up")
         @Expose
-        var showSubscribePopUp: Boolean? = null,
+        var showSubscribePopUp: Boolean = false,
 
         @SerializedName("auto_subscribe")
         @Expose
-        var autoSubscribe: Boolean? = null,
+        var autoSubscribe: Boolean = false,
 
         @SerializedName("is_thankyou_native")
         @Expose
@@ -70,10 +70,10 @@ data class Attributes(
     data class Field(
             @SerializedName("name")
             @Expose
-            var name: String? = null,
+            var name: String = "",
 
             @SerializedName("value")
             @Expose
-            var value: String? = null
+            var value: String = ""
     )
 }

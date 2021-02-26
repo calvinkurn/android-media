@@ -8,15 +8,15 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class DigitalCheckoutDataParameter(
-        var voucherCode: String? = null,
-        var cartId: String? = null,
+        var voucherCode: String = "",
+        var cartId: String = "",
         var transactionAmount: Double = 0.0,
-        var ipAddress: String? = null,
-        var userAgent: String? = null,
-        var accessToken: String? = null,
-        var walletRefreshToken: String? = null,
-        var relationType: String? = null,
-        var relationId: String? = null,
+        var ipAddress: String = "",
+        var userAgent: String = "",
+        var accessToken: String = "",
+        var walletRefreshToken: String = "",
+        var relationType: String = "",
+        var relationId: String = "",
         var isNeedOtp: Boolean = false,
 
         var isSubscriptionChecked: Boolean = false,

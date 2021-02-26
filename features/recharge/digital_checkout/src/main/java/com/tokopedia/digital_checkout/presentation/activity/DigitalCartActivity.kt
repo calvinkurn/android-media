@@ -26,8 +26,6 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
 import com.tokopedia.user.session.UserSession
-import java.lang.Boolean
-
 
 /**
  * @author by jessica on 07/01/21
@@ -85,10 +83,10 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         val showSubscribePopUpArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP)
         val autoSubscribeArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE)
         if (showSubscribePopUpArg != null) {
-            subParams.showSubscribePopUp = Boolean.parseBoolean(showSubscribePopUpArg)
+            subParams.showSubscribePopUp = showSubscribePopUpArg.toBoolean()
         }
         if (autoSubscribeArg != null) {
-            subParams.autoSubscribe = Boolean.parseBoolean(autoSubscribeArg)
+            subParams.autoSubscribe = autoSubscribeArg.toBoolean()
         }
         return subParams
     }

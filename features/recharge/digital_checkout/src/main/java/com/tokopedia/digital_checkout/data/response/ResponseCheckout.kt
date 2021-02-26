@@ -11,7 +11,7 @@ import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 data class ResponseCheckout(
         @SerializedName("type")
         @Expose
-        var type: String? = null,
+        var type: String = "",
 
         @SerializedName("id")
         @Expose
@@ -19,5 +19,5 @@ data class ResponseCheckout(
 
         @SerializedName("attributes")
         @Expose
-        var attributes: AttributesCheckout? = null
+        var attributes: AttributesCheckout = AttributesCheckout()
 )

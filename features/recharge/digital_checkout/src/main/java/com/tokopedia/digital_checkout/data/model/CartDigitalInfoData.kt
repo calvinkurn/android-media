@@ -5,29 +5,29 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CartDigitalInfoData(
-        var type: String? = null,
+        var type: String = "",
 
-        var id: String? = null,
+        var id: String = "",
 
-        var attributes: AttributesDigitalData? = null,
+        var attributes: AttributesDigitalData = AttributesDigitalData(),
 
-        var title: String? = null,
+        var title: String = "",
 
         var isInstantCheckout: Boolean = false,
 
         var isNeedOtp: Boolean = false,
 
-        var smsState: String? = null,
+        var smsState: String = "",
 
-        var mainInfo: List<CartItemDigital>? = null,
+        var mainInfo: List<CartItemDigital> = listOf(),
 
-        var additionalInfos: List<CartItemDigitalWithTitle>? = null,
+        var additionalInfos: List<CartItemDigitalWithTitle> = listOf(),
 
-        var relationProduct: RelationshipData? = null,
+        var relationProduct: RelationshipData = RelationshipData(),
 
-        var relationCategory: RelationshipData? = RelationshipData(),
+        var relationCategory: RelationshipData = RelationshipData(),
 
-        var relationOperator: RelationshipData? = null,
+        var relationOperator: RelationshipData = RelationshipData(),
 
         var isForceRenderCart: Boolean = false,
 
@@ -35,14 +35,14 @@ data class CartDigitalInfoData(
 
         var showSubscriptionsView: Boolean = false,
 
-        var crossSellingConfig: CrossSellingConfig? = null
+        var crossSellingConfig: CrossSellingConfig = CrossSellingConfig()
 ) : Parcelable {
 
     @Parcelize
     data class CartItemDigital(
-            val label: String,
+            val label: String = "",
 
-            val value: String,
+            val value: String = "",
     ) : Parcelable
 
     @Parcelize
@@ -58,15 +58,15 @@ data class CartDigitalInfoData(
 
             var isChecked: Boolean = false,
 
-            var headerTitle: String? = null,
+            var headerTitle: String = "",
 
-            var bodyTitle: String? = null,
+            var bodyTitle: String = "",
 
-            var bodyContentBefore: String? = null,
+            var bodyContentBefore: String = "",
 
-            var bodyContentAfter: String? = null,
+            var bodyContentAfter: String = "",
 
-            var checkoutButtonText: String? = null
+            var checkoutButtonText: String = ""
     ) : Parcelable
 
     @Parcelize

@@ -8,80 +8,80 @@ data class RequestBodyCheckout(
 
         @SerializedName("type")
         @Expose
-        var type: String? = null,
+        var type: String = "",
 
         @SerializedName("attributes")
         @Expose
-        var attributes: AttributesCheckout? = null,
+        var attributes: AttributesCheckout = AttributesCheckout(),
 
         @SerializedName("relationships")
         @Expose
-        var relationships: CheckoutRelationships? = null
+        var relationships: CheckoutRelationships = CheckoutRelationships()
 ) {
     class AttributesCheckout(
 
             @SerializedName("voucher_code")
             @Expose
-            var voucherCode: String? = null,
+            var voucherCode: String = "",
 
             @SerializedName("transaction_amount")
             @Expose
-            var transactionAmount: Long? = null,
+            var transactionAmount: Long = 0,
 
             @SerializedName("ip_address")
             @Expose
-            var ipAddress: String? = null,
+            var ipAddress: String = "",
 
             @SerializedName("user_agent")
             @Expose
-            var userAgent: String? = null,
+            var userAgent: String = "",
 
             @SerializedName("identifier")
             @Expose
-            var identifier: RequestBodyIdentifier? = null,
+            var identifier: RequestBodyIdentifier = RequestBodyIdentifier(),
 
             @SerializedName("appsflyer")
             @Expose
-            var appsFlyer: RequestBodyAppsFlyer? = null,
+            var appsFlyer: RequestBodyAppsFlyer = RequestBodyAppsFlyer(),
 
             @SerializedName("client_id")
             @Expose
-            var clientId: String? = null,
+            var clientId: String = "",
 
             @SerializedName("subscribe")
             @Expose
-            var subscribe: Boolean? = false,
+            var subscribe: Boolean = false,
 
             @SerializedName("deals_ids")
             @Expose
-            var dealsIds: List<Int>? = null,
+            var dealsIds: List<Int> = listOf(),
 
             @SerializedName("fintech_product")
             @Expose
-            var fintechProduct: List<FintechProductCheckout>? = null
+            var fintechProduct: List<FintechProductCheckout> = listOf()
     )
 
     data class RequestBodyAppsFlyer(
             @SerializedName("appsflyer_id")
             @Expose
-            var appsflyerId: String? = null,
+            var appsflyerId: String = "",
 
             @SerializedName("device_id")
             @Expose
-            var deviceId: String? = null
+            var deviceId: String = ""
     )
 
 
     data class FintechProductCheckout(
             @SerializedName("transaction_type")
             @Expose
-            var transactionType: String? = null,
+            var transactionType: String = "",
             @SerializedName("tier_id")
             @Expose
             var tierId: Int = 0,
             @SerializedName("user_id")
             @Expose
-            var userId: Long? = null,
+            var userId: Long = 0,
             @SerializedName("fintech_amount")
             @Expose
             var fintechAmount: Long = 0,
@@ -90,6 +90,6 @@ data class RequestBodyCheckout(
             var fintechPartnerAmount: Long = 0,
             @SerializedName("product_name")
             @Expose
-            var productName: String? = null
+            var productName: String = ""
     )
 }

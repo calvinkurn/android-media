@@ -6,17 +6,17 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class AttributesDigitalData(
-        var userId: String? = null,
+        var userId: String = "",
 
-        var clientNumber: String? = null,
+        var clientNumber: String = "",
 
-        var icon: String? = null,
+        var icon: String = "",
 
-        var price: String? = null,
+        var price: String = "",
 
-        var categoryName: String? = null,
+        var categoryName: String = "",
 
-        var operatorName: String? = null,
+        var operatorName: String = "",
 
         var pricePlain: Double = 0.0,
 
@@ -24,23 +24,23 @@ data class AttributesDigitalData(
 
         var isNeedOtp: Boolean = false,
 
-        var smsState: String? = null,
+        var smsState: String = "",
 
         var isEnableVoucher: Boolean = false,
 
-        var voucherAutoCode: String? = null,
+        var voucherAutoCode: String = "",
 
         var isCouponActive: Int = 0,
 
-        var userInputPrice: UserInputPriceDigital? = null,
+        var userInputPrice: UserInputPriceDigital = UserInputPriceDigital(),
 
-        var autoApplyVoucher: CartAutoApplyVoucher? = null,
+        var autoApplyVoucher: CartAutoApplyVoucher = CartAutoApplyVoucher(),
 
-        var defaultPromoTab: String? = null,
+        var defaultPromoTab: String = "",
 
-        var postPaidPopupAttribute: PostPaidPopupAttribute? = null,
+        var postPaidPopupAttribute: PostPaidPopupAttribute = PostPaidPopupAttribute(),
 
-        var fintechProduct: List<FintechProduct>? = null
+        var fintechProduct: List<FintechProduct> = listOf()
 ) : Parcelable {
 
     @Parcelize
@@ -58,27 +58,27 @@ data class AttributesDigitalData(
     class CartAutoApplyVoucher(
             var isSuccess: Boolean = false,
 
-            var code: String? = null,
+            var code: String = "",
 
             var isCoupon: Int = 0,
 
             var discountAmount: Double = 0.0,
 
-            var title: String? = null,
+            var title: String = "",
 
-            var messageSuccess: String? = null,
+            var messageSuccess: String = "",
 
             var promoId: Long = 0
     ) : Parcelable
 
     @Parcelize
     class PostPaidPopupAttribute(
-            var title: String? = null,
+            var title: String = "",
 
-            var content: String? = null,
+            var content: String = "",
 
-            var imageUrl: String? = null,
+            var imageUrl: String = "",
 
-            var confirmButtonTitle: String? = null
+            var confirmButtonTitle: String = ""
     ) : Parcelable
 }
