@@ -59,7 +59,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             }
             data.p2RatesError.isNotEmpty() -> {
                 hideShipmentLoading()
-                renderShipmentError(data.title, data.subtitle)
+                renderShipmentError(data.title, data.subtitle, data.p2RatesError.firstOrNull()?.errorCode ?: 0)
             }
             else -> {
                 // receive rates data
@@ -72,12 +72,18 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         }
     }
 
-    private fun renderShipmentError(title: String, subtitle: String) = with(itemView) {
+    private fun renderShipmentError(title: String, subtitle: String, errorCode: Int) = with(itemView) {
         adjustUiError()
 
         shipmentTitle?.text = title
         otherCourierTxt?.text = subtitle
 
+        shipmentOtherContainer?.setOnClickListener(null)
+        otherCourierTxt?.setOnClickListener {
+            listener.openShipmentBottomSheetWhenError()
+        }
+
+        otherCourierTxt?.show()
         hideLabelAndBo()
         shipmentDestination?.hide()
         shipmentEstimation?.hide()
@@ -151,13 +157,13 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private fun adjustUiError() = with(itemView) {
         otherCourierTxt?.setWeight(Typography.REGULAR)
         otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        shipmentOtherContainer?.setOnClickListener(null)
         shipmentArrow?.setOnClickListener(null)
         shipmentArrow?.hide()
         shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
     }
 
     private fun adjustUiSuccess() = with(itemView) {
+        otherCourierTxt?.setOnClickListener(null)
         shipmentOtherContainer?.setOnClickListener {
             listener.openShipmentClickedBottomSheet()
         }

@@ -20,7 +20,8 @@ data class ProductShippingHeaderDataModel(
         val isFulfillment: Boolean = false,
         val tokoCabangIcon: String = "",
         val tokoCabangTitle: String = "",
-        val tokoCabangContent: String = ""
+        val tokoCabangContent: String = "",
+        val uspTokoCabangImgUrl: String = ""
 ) : ProductShippingVisitable {
 
     fun shouldShowFreeOngkir(): Boolean {

@@ -36,7 +36,6 @@ class ProductShippingHeaderViewHolder(view: View,
     private val imgFreeOngkir: ImageView? = itemView.findViewById(R.id.img_pdp_shipping_bo)
     private val icShippingLine: View? = itemView.findViewById(R.id.pdp_shipping_header_separator)
 
-
     override fun bind(element: ProductShippingHeaderDataModel) {
         txtShippingTo?.bindChooseAddress(chooseAddressListener)
 
@@ -52,7 +51,7 @@ class ProductShippingHeaderViewHolder(view: View,
                 txtTokoCabang.text = HtmlLinkHelper(context, element.tokoCabangContent).spannedString
             }
             txtTokoCabang?.setOnClickListener {
-                listener.openUspBottomSheet(element.freeOngkirImageUrl)
+                listener.openUspBottomSheet(element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
             }
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
             icTokoCabang?.loadImage(element.tokoCabangIcon)

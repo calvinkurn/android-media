@@ -28,7 +28,8 @@ object RatesMapper {
                 isFulfillment = request.isFulfillment,
                 tokoCabangContent = ratesModel.tokoCabangData.content,
                 tokoCabangIcon = ratesModel.tokoCabangData.iconUrl,
-                tokoCabangTitle = ratesModel.tokoCabangData.title
+                tokoCabangTitle = ratesModel.tokoCabangData.title,
+                uspTokoCabangImgUrl = request.uspImageUrl
         )
         val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(ratesModel.rates)
         productServiceData.add(0, productShippingHeader)

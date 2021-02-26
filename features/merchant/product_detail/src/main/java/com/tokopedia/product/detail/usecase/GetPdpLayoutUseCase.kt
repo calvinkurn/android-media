@@ -150,6 +150,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       preorder {
                         duration
                         isActive
+                        preorderInDays
                       }
                       isTradeIn
                       isOS

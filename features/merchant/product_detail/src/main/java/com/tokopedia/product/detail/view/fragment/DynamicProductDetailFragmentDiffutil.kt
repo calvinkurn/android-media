@@ -119,6 +119,7 @@ import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
+import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
@@ -1897,12 +1898,27 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     destination = generateUserLocationRequestRates(viewModel.userLocationCache),
                     boType = boData.boType,
                     freeOngkirUrl = boData.imageURL,
+                    poTime = it.data.preOrder.preorderInDays,
+                    uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
                     shouldRefreshShippingBottomSheet
             ))
             shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()
             shippingBs.show(getProductFragmentManager())
         }
+    }
+
+    override fun openShipmentBottomSheetWhenError() : Boolean {
+        context?.let {
+            val rates = viewModel.getP2RatesEstimateByProductId()
+            val bottomSheetData = viewModel.getP2RatesBottomSheetData()
+            if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
+            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode
+                    ?: 0) {
+
+            }.show(childFragmentManager, "bs_shipping_error")
+            return true
+        } ?: return false
     }
 
     private fun onShipmentClicked() {
@@ -2603,6 +2619,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 }
                 return@let
             }
+
+            if (openShipmentBottomSheetWhenError()) return@let
 
             when (viewModel.buttonActionType) {
                 ProductDetailConstant.LEASING_BUTTON -> {

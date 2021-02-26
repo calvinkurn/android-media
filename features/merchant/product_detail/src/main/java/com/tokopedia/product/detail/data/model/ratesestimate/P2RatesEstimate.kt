@@ -19,6 +19,10 @@ data class P2RatesEstimate(
         @SerializedName("data")
         @Expose
         val p2RatesData: P2RatesEstimateData = P2RatesEstimateData(),
+
+        @SerializedName("bottomsheet")
+        @Expose
+        val errorBottomSheet: ErrorBottomSheet = ErrorBottomSheet()
 )
 
 data class P2RatesEstimateData(
@@ -67,4 +71,22 @@ data class P2RatesError(
         @SerializedName("DevMessage")
         @Expose
         val devMessage: String = ""
+)
+
+data class ErrorBottomSheet(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("iconURL")
+        @Expose
+        val iconURL: String = "",
+
+        @SerializedName("subtitle")
+        @Expose
+        val subtitle: String = "",
+
+        @SerializedName("buttonCopy")
+        @Expose
+        val buttonCopy: String = ""
 )

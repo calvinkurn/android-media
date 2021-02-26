@@ -343,6 +343,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            uniqueSellingPoint{
+              bebasOngkirExtra{
+                icon
+              }
+            }
             bebasOngkir{
                   products{
                     productID
@@ -357,6 +362,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             ratesEstimate{
               warehouseID
               products
+              bottomsheet {
+                title
+                iconURL
+                subtitle
+                buttonCopy
+              }
               data {
                 totalService
                 isSupportInstantCourier
@@ -435,6 +446,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.ratesEstimate = ratesEstimate
             p2UiData.restrictionInfo = restrictionInfo
             p2UiData.bebasOngkir = bebasOngkir
+            p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
         }
         return p2UiData
     }

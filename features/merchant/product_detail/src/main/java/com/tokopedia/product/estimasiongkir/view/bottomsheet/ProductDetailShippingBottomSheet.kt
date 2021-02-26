@@ -146,9 +146,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         dismiss()
     }
 
-    override fun openUspBottomSheet(freeOngkirUrl: String) {
+    override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
-            ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+            ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
         }
     }
 

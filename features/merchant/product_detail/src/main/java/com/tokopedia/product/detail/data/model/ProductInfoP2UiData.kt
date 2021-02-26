@@ -37,4 +37,5 @@ data class ProductInfoP2UiData(
         var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
         var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
         var ratesEstimate: List<P2RatesEstimate> = listOf(),
-        var bebasOngkir: BebasOngkir = BebasOngkir())
+        var bebasOngkir: BebasOngkir = BebasOngkir(),
+        var uspImageUrl: String = "")

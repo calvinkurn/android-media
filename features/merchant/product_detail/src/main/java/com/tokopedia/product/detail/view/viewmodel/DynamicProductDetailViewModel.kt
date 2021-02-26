@@ -33,6 +33,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -281,6 +282,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         var result: P2RatesEstimateData? = null
         p2Data.value?.ratesEstimate?.forEach {
             if (productId in it.listfProductId) result = it.p2RatesData
+        }
+        return result
+    }
+
+    fun getP2RatesBottomSheetData(): ErrorBottomSheet? {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        var result: ErrorBottomSheet? = null
+        p2Data.value?.ratesEstimate?.forEach {
+            if (productId in it.listfProductId) result = it.errorBottomSheet
         }
         return result
     }

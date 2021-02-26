@@ -15,18 +15,10 @@ data class ProductShipmentDataModel(
         var isFullfillment: Boolean = false,
         var freeOngkirUrl: String = "",
         var freeOngkirType: Int = 0,
-        var tokoCabangIconUrl:String = "",
+        var tokoCabangIconUrl: String = "",
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false
 ) : DynamicPdpDataModel {
-
-    fun getFreeOngkirImageUrl(): String {
-        return if (freeOngkirType == 0) {
-            ""
-        } else {
-            freeOngkirUrl
-        }
-    }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
@@ -44,6 +36,7 @@ data class ProductShipmentDataModel(
                     && freeOngkirUrl == newData.freeOngkirUrl
                     && shouldShowShipmentError == newData.shouldShowShipmentError
                     && freeOngkirType == newData.freeOngkirType
+                    && tokoCabangIconUrl == newData.tokoCabangIconUrl
         } else {
             false
         }

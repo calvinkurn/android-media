@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.data.model.restrictioninfo.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -107,7 +108,11 @@ data class ProductInfoP2Data(
 
         @SerializedName("bebasOngkir")
         @Expose
-        var bebasOngkir: BebasOngkir = BebasOngkir()
+        var bebasOngkir: BebasOngkir = BebasOngkir(),
+
+        @SerializedName("uniqueSellingPoint")
+        @Expose
+        var uspTokoCabangData: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

@@ -5,9 +5,11 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -33,7 +35,7 @@ object ProductDetailBottomSheetBuilder {
         return bottomSheetUnify
     }
 
-    fun getUspBottomSheet(context: Context, freeOngkirUrl: String): BottomSheetUnify {
+    fun getUspBottomSheet(context: Context, freeOngkirUrl: String, uspTokoCabangImgUrl: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bs_product_usp, null)
 
@@ -46,8 +48,32 @@ object ProductDetailBottomSheetBuilder {
             val imgFreeOngkir = view.findViewById<ImageView>(R.id.pdp_usp_static_free_ongkir)
             val imgUsp = view.findViewById<ImageView>(R.id.usp_pdp_img)
 
-            imgUsp.loadImage("https://images.tokopedia.net/img/android/test/Group_1234042.png")
+            imgUsp.loadImage(uspTokoCabangImgUrl)
             imgFreeOngkir.loadImage(freeOngkirUrl)
+        }
+
+        return bottomSheetUnify
+    }
+
+    fun getShippingErrorBottomSheet(context: Context, data: ErrorBottomSheet, errorCode: Int, onButtonClicked: () -> Unit): BottomSheetUnify {
+        val bottomSheetUnify = BottomSheetUnify()
+        val view = View.inflate(context, R.layout.bs_product_shipping_error, null)
+
+        bottomSheetUnify.apply {
+            setTitle(data.title)
+            setChild(view)
+            val btn_error = view.findViewById<UnifyButton>(R.id.shipping_error_btn)
+            val imgError = view.findViewById<ImageView>(R.id.shipping_error_img)
+            val txtError = view.findViewById<Typography>(R.id.shipping_error_desc)
+
+            imgError.loadImage(data.iconURL)
+            btn_error.text = data.buttonCopy
+            txtError.text = data.subtitle
+
+            btn_error.setOnClickListener {
+                dismiss()
+                onButtonClicked.invoke()
+            }
         }
 
         return bottomSheetUnify
