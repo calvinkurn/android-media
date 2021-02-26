@@ -24,7 +24,7 @@ object MainNavConst {
     object RecentViewAb{
         const val EXP_NAME = "review_counter_home"
         const val CONTROL = "control_grey_counter"
-        const val VARIANT = "Variant_red_counter"
+        const val VARIANT = "variant_red_counter"
     }
 
 }
