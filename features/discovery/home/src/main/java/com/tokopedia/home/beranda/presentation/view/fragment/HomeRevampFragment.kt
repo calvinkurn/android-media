@@ -83,6 +83,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -107,6 +108,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
@@ -164,6 +166,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.fragment_home_revamp.*
+import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -641,14 +644,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        val coachMark = CoachMark2(requireContext())
-
+    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
+        //add navigation
         val globalNavIcon = navToolbar?.getGlobalNavIconView()
         globalNavIcon?.let {
-            coachMarkItem.add(
+            this.add(
                     CoachMark2Item(
                             globalNavIcon,
                             getString(R.string.onboarding_coachmark_title),
@@ -656,12 +656,56 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     )
             )
         }
-        coachMark.container?.setOnClickListener {
-            val navigationBundle = Bundle()
-            navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
-            RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
-            coachMark.dismissCoachMark()
+
+        //inbox
+        val inboxIcon = navToolbar?.getInboxIconView()
+        inboxIcon?.let {
+            this.add(
+                    CoachMark2Item(
+                            inboxIcon,
+                            getString(R.string.onboarding_coachmark_inbox_title),
+                            getString(R.string.onboarding_coachmark_inbox_description)
+                    )
+            )
         }
+
+        //add location
+        val needShowLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext()) ?: false
+        if (needShowLocalization) {
+            val chooseLocationWidget = getLocationWidgetView()
+            chooseLocationWidget?.let {
+                this.add(
+                        ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                )
+            }
+        }
+        //add balance widget
+        //uncomment this to activate balance widget coachmark
+//        val balanceWidget = getBalanceWidgetView()
+//        balanceWidget?.let {
+//            this.add(
+//                    CoachMark2Item(
+//                            balanceWidget,
+//                            getString(R.string.onboarding_coachmark_wallet_title),
+//                            getString(R.string.onboarding_coachmark_wallet_description)
+//                    )
+//            )
+//        }
+    }
+
+    private fun showCoachMark() {
+        coachMarkIsShowing = true
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        val coachMark = CoachMark2(requireContext())
+
+        coachMarkItem.buildHomeCoachmark()
+        coachMark.setStepListener(object: CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true)) {
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(requireContext())
+                }
+            }
+        })
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
@@ -671,6 +715,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getLocationWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        if (view != null && view is HomeHeaderOvoViewHolder) {
+            val locationView = view.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+            if (locationView.isVisible)
+                return locationView
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        if (view != null && view is HomeHeaderOvoViewHolder) {
+            if (view.itemView.view_ovo.isVisible)
+                return view.itemView.view_ovo
+        }
+        return null
     }
 
     private fun isValidToShowCoachMark(): Boolean {
