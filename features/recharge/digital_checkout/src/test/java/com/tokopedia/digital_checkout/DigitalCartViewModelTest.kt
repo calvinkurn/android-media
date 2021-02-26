@@ -7,6 +7,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
@@ -611,6 +612,22 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onCheckout_needOtp() {
+        // given
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+
+        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(isNeedOtp = true)
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+
+        // then
+        assert(digitalCartViewModel.isNeedOtp.value != null)
+    }
+
+    @Test
     fun onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
         val promoData = PromoData()
@@ -620,6 +637,7 @@ class DigitalCartViewModelTest {
 
         // when
         addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
         // then
@@ -638,6 +656,7 @@ class DigitalCartViewModelTest {
 
         // when
         addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
         // then
@@ -713,6 +732,7 @@ class DigitalCartViewModelTest {
         // when
         addToCart_onSuccess()
         digitalCartViewModel.updateTotalPriceWithFintechProduct(false, userInputPrice)
+        digitalCartViewModel.onSubscriptionChecked(true)
 
         // then
         // if fintech product checked, update total price
@@ -726,7 +746,8 @@ class DigitalCartViewModelTest {
         val userInput = 100000.0
 
         // when
-        digitalCartViewModel.setTotalPrice(userInput)
+        addToCart_onSuccess()
+        digitalCartViewModel.setTotalPriceBasedOnUserInput(userInput, false)
 
         // then
         assert(digitalCartViewModel.totalPrice.value == userInput)
@@ -756,5 +777,46 @@ class DigitalCartViewModelTest {
             assert(it.isNeedOtp == cartInfoData.isNeedOtp)
         }
 
+    }
+
+    @Test
+    fun getPromoDigitalModel_withUserInputPrice_shouldReturnCorrectData() {
+        //given
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalCheckoutPassData.productId = "2"
+        digitalCheckoutPassData.clientNumber = "AAA123"
+
+        //when
+        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, 1000.0)
+
+        //then
+        assert(promoDigitalModel.categoryId.toString() == digitalCheckoutPassData.categoryId ?: "")
+        assert(promoDigitalModel.productId.toString() == digitalCheckoutPassData.productId ?: "")
+        assert(promoDigitalModel.clientNumber == digitalCheckoutPassData.clientNumber)
+        assert(promoDigitalModel.categoryName == "Angsuran Kredit")
+        assert(promoDigitalModel.operatorName == "JTrust Olympindo Multi Finance")
+        assert(promoDigitalModel.price == 1000L)
+    }
+
+    @Test
+    fun getPromoDigitalModel_withoutUserInputPrice_shouldReturnCorrectData() {
+        //given
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalCheckoutPassData.productId = "2"
+        digitalCheckoutPassData.clientNumber = "AAA123"
+
+        //when
+        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, 0.0)
+
+        assert(promoDigitalModel.categoryId.toString() == digitalCheckoutPassData.categoryId ?: "")
+        assert(promoDigitalModel.productId.toString() == digitalCheckoutPassData.productId ?: "")
+        assert(promoDigitalModel.clientNumber == digitalCheckoutPassData.clientNumber)
+        assert(promoDigitalModel.categoryName == "Angsuran Kredit")
+        assert(promoDigitalModel.operatorName == "JTrust Olympindo Multi Finance")
+        assert(promoDigitalModel.price == 12500L)
     }
 }

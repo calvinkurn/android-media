@@ -56,6 +56,8 @@ object DigitalCheckoutTrackingConst {
 
         const val INSTANT = "instant"
         const val NON_INSTANT = "non instant"
+
+        const val NONE = "none"
     }
 
     object Misc {
@@ -78,6 +80,9 @@ object DigitalCheckoutTrackingConst {
         const val KEY_QUANTITY = "quantity"
         const val KEY_CATEGORY_ID = "category_id"
         const val KEY_CART_ID = "cart_id"
+        const val KEY_SHOP_ID = "shop_id"
+        const val KEY_SHOP_NAME = "shop_name"
+        const val KEY_SHOP_TYPE = "shop_type"
     }
 
     object Screen {

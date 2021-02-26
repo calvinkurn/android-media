@@ -31,6 +31,7 @@ import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_C
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
@@ -43,6 +44,7 @@ import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrForm
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -96,6 +98,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         if (subParams != null) {
             digitalSubscriptionParams = subParams
         }
+
     }
 
     override fun initInjector() {
@@ -108,8 +111,24 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadData()
+
+        //if user activate don't keep activities
+        if (savedInstanceState != null) {
+            viewModel.setPromoData(savedInstanceState.getParcelable(EXTRA_STATE_PROMO_DATA)
+                    ?: PromoData())
+            viewModel.requestCheckoutParam = savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
+                    ?: DigitalCheckoutDataParameter()
+            cartPassData?.needGetCart = true
+        }
+
         initViews()
+        loadData()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(EXTRA_STATE_PROMO_DATA, viewModel.promoData.value)
+        outState.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, viewModel.requestCheckoutParam)
+        super.onSaveInstanceState(outState)
     }
 
     private fun loadData() {
@@ -135,12 +154,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                tvSeeDetailToggle.visibility = View.GONE
-            } else {
-                tvSeeDetailToggle.visibility = View.VISIBLE
-                cartDetailInfoAdapter.setAdditionalInfoItems(it)
-            }
+            cartDetailInfoAdapter.setAdditionalInfoItems(it)
+            containerSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -177,20 +192,28 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
+            viewModel.applyPromoData(it)
             digitalPromoBtnView.desc = getPromoData().description
             if (getPromoData().description.isEmpty()) {
-                digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
-                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+                renderDefaultEmptyPromoView()
             } else {
                 digitalPromoBtnView.title = getPromoData().title
             }
             digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
 
-            if (getPromoData().state == TickerCheckoutView.State.FAILED ||
-                    getPromoData().state == TickerCheckoutView.State.ACTIVE) {
-                cartDetailInfoAdapter.isExpanded = true
+            when (getPromoData().state) {
+                TickerCheckoutView.State.ACTIVE -> {
+                    cartDetailInfoAdapter.isExpanded = true
+                    digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                }
+                TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
             }
         })
+    }
+
+    private fun renderDefaultEmptyPromoView() {
+        digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
+        digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
     }
 
     private fun showContent() {
@@ -209,10 +232,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
 
-        if (cartInfo.showSubscriptionsView) {
-            renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
-            renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
-        }
+        if (cartInfo.showSubscriptionsView) renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
+        renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
 
         cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes?.categoryName
@@ -236,16 +257,20 @@ class DigitalCartFragment : BaseDaggerFragment() {
         cartDetailInfoAdapter = DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
             override fun expandAdditionalList() {
                 tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
+                ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
             }
 
             override fun collapseAdditionalList() {
                 tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
+                ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
             }
         })
         rvDetails.layoutManager = LinearLayoutManager(context)
         rvDetails.isNestedScrollingEnabled = false
         rvDetails.adapter = cartDetailInfoAdapter
-        tvSeeDetailToggle.setOnClickListener { cartDetailInfoAdapter.toggleIsExpanded() }
+        containerSeeDetailToggle.setOnClickListener {
+            cartDetailInfoAdapter.toggleIsExpanded()
+        }
 
         showPromoTicker()
 
@@ -272,7 +297,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc))
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
-                viewEmptyState.setImageDrawable(resources.getDrawable(R.drawable.ic_digital_checkout_failed_transaction))
+                viewEmptyState.setImageUrl(TRANSACTION_FAILED_IMG_URL)
                 viewEmptyState.setDescription(message)
             }
 
@@ -282,7 +307,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun showPromoTicker() {
-        digitalPromoBtnView.state = ButtonPromoCheckoutView.State.ACTIVE
+        renderDefaultEmptyPromoView()
+
         digitalPromoBtnView.setOnClickListener {
             onClickUsePromo()
         }
@@ -327,8 +353,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         if ((requestCode == REQUEST_CODE_PROMO_LIST || requestCode == REQUEST_CODE_PROMO_DETAIL) && resultCode == Activity.RESULT_OK) {
             if (data?.hasExtra(EXTRA_PROMO_DATA) == true) {
-                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
-                viewModel.applyPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
+                viewModel.setPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
             }
 
         } else if (requestCode == REQUEST_CODE_OTP) {
@@ -372,7 +397,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig?) {
         crossSellingConfig?.let { crossSellingConfig ->
-
             if ((crossSellingConfig.bodyTitle ?: "").isNotEmpty()) {
                 subscriptionWidget.visibility = View.VISIBLE
 
@@ -389,9 +413,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
                 subscriptionWidget.hasMoreInfo(false)
 
-                if (!subscriptionWidget.isChecked()) {
+                if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
+                    subscriptionWidget.setChecked(true)
+                } else if (!subscriptionWidget.isChecked()) {
                     subscriptionWidget.setChecked(crossSellingConfig.isChecked)
                 }
+
                 viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
 
                 subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -420,9 +447,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 fintechProductWidget.visibility = View.VISIBLE
 
                 if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
-                    if (!fintechProductWidget.isChecked()) {
+
+                    if (viewModel.requestCheckoutParam.isFintechProductChecked) {
+                        fintechProductWidget.setChecked(true)
+                    } else if (!fintechProductWidget.isChecked()) {
                         fintechProductWidget.setChecked(fintechProduct.optIn)
                     }
+
                     viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
                 }
 
@@ -467,14 +498,20 @@ class DigitalCartFragment : BaseDaggerFragment() {
         userInputPriceDigital?.let {
             inputPriceContainer.visibility = View.VISIBLE
 
-            inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment
-                    ?: "", userInputPriceDigital.maxPayment ?: "")
-            inputPriceHolderView.setMinMaxPayment(total
-                    ?: "", userInputPriceDigital.minPaymentPlain.toLong(),
-                    userInputPriceDigital.maxPaymentPlain.toLong())
+            if (!userInputPriceDigital.minPayment.isNullOrEmpty())
+                inputPriceHolderView.setMessageText(getString(R.string.digital_cart_error_input_price_less_than_min,
+                        userInputPriceDigital.minPayment))
+
+            inputPriceHolderView.setMinMaxPayment(
+                    total ?: "",
+                    userInputPriceDigital.minPaymentPlain.toLong(),
+                    userInputPriceDigital.maxPaymentPlain.toLong(),
+                    userInputPriceDigital.minPayment ?: "",
+                    userInputPriceDigital.maxPayment ?: "")
+
             inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
                 override fun onInputPriceByUserFilled(paymentAmount: Long) {
-                    viewModel.setTotalPrice(paymentAmount.toDouble())
+                    viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
                 }
 
                 override fun enableCheckoutButton() {
@@ -549,6 +586,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
         private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
+
+        private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
+        private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
+
+
+        private const val TRANSACTION_FAILED_IMG_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png"
 
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16

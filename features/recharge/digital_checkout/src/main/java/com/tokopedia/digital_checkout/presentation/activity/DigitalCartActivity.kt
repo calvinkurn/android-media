@@ -13,6 +13,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CLIENT_NUMBER
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_FIELD_LABEL_PREFIX
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_INSTANT_CHECKOUT
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_IS_PROMO
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_OPERATOR_ID
@@ -26,6 +27,7 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
 import com.tokopedia.user.session.UserSession
 import java.lang.Boolean
+
 
 /**
  * @author by jessica on 07/01/21
@@ -61,6 +63,20 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         val instantCheckoutParam = uriData.getQueryParameter(PARAM_INSTANT_CHECKOUT)
         passData.instantCheckout = instantCheckoutParam ?: "0"
         passData.idemPotencyKey = generateATokenRechargeCheckout(context)
+
+        val fields: HashMap<String, String> = HashMap()
+        val parameters = uriData.queryParameterNames
+        if (parameters.isNotEmpty()) {
+            for (param in parameters) {
+                if (param.startsWith(PARAM_FIELD_LABEL_PREFIX)) {
+                    val value = uriData.getQueryParameter(param) ?: ""
+                    val key = param.replaceFirst(PARAM_FIELD_LABEL_PREFIX.toRegex(), "")
+                    fields[key] = value
+                }
+            }
+        }
+        passData.fields = fields
+
         return passData
     }
 
@@ -90,7 +106,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): kotlin.Boolean {
-        if(currentFocus != null) {
+        if (currentFocus != null) {
             KeyboardHandler.hideSoftKeyboard(this)
             currentFocus?.clearFocus()
         }

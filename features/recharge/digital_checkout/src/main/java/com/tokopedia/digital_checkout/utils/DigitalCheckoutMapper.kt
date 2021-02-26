@@ -26,7 +26,7 @@ import com.tokopedia.track.TrackApp
 
 object DigitalCheckoutMapper {
 
-    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData {
+    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
         cartInfo.attributes?.autoApplyVoucher?.let {
             if (it.isSuccess && !(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
@@ -34,10 +34,11 @@ object DigitalCheckoutMapper {
                         description = it.messageSuccess ?: "",
                         promoCode = it.code ?: "",
                         typePromo = it.isCoupon,
+                        amount = it.discountAmount.toInt(),
                         state = TickerCheckoutView.State.ACTIVE)
             }
         }
-        return promoData ?: PromoData()
+        return promoData
     }
 
     fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
@@ -295,7 +296,8 @@ object DigitalCheckoutMapper {
         return paymentPassData
     }
 
-    fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?): DigitalCheckoutDataParameter {
+    fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
+                          requestCheckoutDataParameter: DigitalCheckoutDataParameter): DigitalCheckoutDataParameter {
         val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
         digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.accessToken = accessToken
@@ -307,6 +309,10 @@ object DigitalCheckoutMapper {
                 ?: 0.0
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
+
+        if (requestCheckoutDataParameter.isFintechProductChecked) digitalCheckoutDataParameter.isFintechProductChecked = true
+        if (requestCheckoutDataParameter.isSubscriptionChecked) digitalCheckoutDataParameter.isSubscriptionChecked = true
+
         return digitalCheckoutDataParameter
     }
 
