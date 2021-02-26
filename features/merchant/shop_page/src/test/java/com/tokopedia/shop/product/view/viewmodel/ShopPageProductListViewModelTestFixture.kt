@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -74,6 +75,7 @@ abstract class ShopPageProductListViewModelTestFixture {
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
+    protected val addressWidgetData: LocalCacheModel = LocalCacheModel()
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
