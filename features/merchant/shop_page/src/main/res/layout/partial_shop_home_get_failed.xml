@@ -38,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/dp_8"
+            android:contentDescription="@string/content_desc_shop_home_get_failed_reload_image"
             app:layout_constraintBottom_toBottomOf="@+id/textReload"
             app:layout_constraintEnd_toStartOf="@+id/textReload"
             app:layout_constraintTop_toTopOf="@+id/textReload"

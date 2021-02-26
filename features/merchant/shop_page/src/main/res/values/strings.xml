@@ -312,5 +312,6 @@
     <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
+    <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
 
 </resources>

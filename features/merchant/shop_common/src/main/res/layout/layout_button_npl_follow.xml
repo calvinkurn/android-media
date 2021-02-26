@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:contentDescription="@string/follow_button_npl_etalase"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
