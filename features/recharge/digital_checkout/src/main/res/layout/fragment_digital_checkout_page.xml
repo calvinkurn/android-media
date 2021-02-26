@@ -82,6 +82,7 @@
                         app:typographyWeight="bold" />
 
                     <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivSeeDetail"
                         android:layout_width="@dimen/layout_lvl2"
                         android:layout_height="@dimen/layout_lvl2"
                         android:layout_marginStart="@dimen/spacing_lvl1"
@@ -167,7 +168,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
             app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
@@ -181,7 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:minWidth="@dimen/digital_checkout_checkout_button_width"
+            android:minWidth="@dimen/digital_checkout_checkout_button_min_width"
             android:text="@string/digital_cart_checkout_pay_label"
             app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
             app:layout_constraintEnd_toEndOf="parent"

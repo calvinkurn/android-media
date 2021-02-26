@@ -44,6 +44,7 @@ import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrForm
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -256,16 +257,20 @@ class DigitalCartFragment : BaseDaggerFragment() {
         cartDetailInfoAdapter = DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
             override fun expandAdditionalList() {
                 tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
+                ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
             }
 
             override fun collapseAdditionalList() {
                 tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
+                ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
             }
         })
         rvDetails.layoutManager = LinearLayoutManager(context)
         rvDetails.isNestedScrollingEnabled = false
         rvDetails.adapter = cartDetailInfoAdapter
-        containerSeeDetailToggle.setOnClickListener { cartDetailInfoAdapter.toggleIsExpanded() }
+        containerSeeDetailToggle.setOnClickListener {
+            cartDetailInfoAdapter.toggleIsExpanded()
+        }
 
         showPromoTicker()
 

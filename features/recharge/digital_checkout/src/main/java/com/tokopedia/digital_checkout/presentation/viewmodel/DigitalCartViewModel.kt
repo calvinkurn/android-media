@@ -146,7 +146,6 @@ class DigitalCartViewModel @Inject constructor(
                 onSuccessAddToCart(data, digitalCheckoutPassData.source)
 
             }) {
-                it.printStackTrace()
                 _showLoading.postValue(false)
                 errorHandler(it)
             }
@@ -186,7 +185,6 @@ class DigitalCartViewModel @Inject constructor(
             }
 
         }) {
-            it.printStackTrace()
             _showLoading.postValue(false)
             errorHandler(it)
         }
@@ -204,7 +202,6 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
-            it.printStackTrace()
             _showLoading.postValue(false)
             errorHandler(it)
         }
@@ -357,7 +354,6 @@ class DigitalCartViewModel @Inject constructor(
                     _paymentPassData.postValue(checkoutData)
 
                 }) {
-                    it.printStackTrace()
                     _showLoading.postValue(false)
                     errorHandler(it)
                 }
