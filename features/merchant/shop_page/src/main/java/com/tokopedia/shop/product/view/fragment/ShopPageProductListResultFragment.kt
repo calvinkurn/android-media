@@ -264,10 +264,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun updateCurrentPageLocalCacheModelData() {
         localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
-        val chooseAddressPref = ChooseAddressSharePref(context)
-        val localData = ChooseAddressUtils.setLocalizingAddressData("asdad","adasd","adasd","asdasd","ad","asdasda","asdasd")
-        chooseAddressPref.setLocalCache(localData)
-
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
