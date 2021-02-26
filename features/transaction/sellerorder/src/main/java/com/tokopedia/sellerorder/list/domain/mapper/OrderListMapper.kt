@@ -12,6 +12,7 @@ class OrderListMapper @Inject constructor() {
                     cancelRequestNote = it.cancelRequestNote,
                     cancelRequestOriginNote = it.cancelRequestOriginNote,
                     cancelRequestTime = it.cancelRequestTime,
+                    cancelRequestStatus = it.cancelRequestStatus,
                     deadlineColor = it.deadlineColor,
                     deadlineText = it.deadlineText,
                     orderId = it.orderId,
