@@ -1,17 +1,12 @@
-package com.tokopedia.home_account.viewmodel
+package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.home_account.PermissionChecker
-import com.tokopedia.home_account.data.model.ShortcutResponse
-import com.tokopedia.home_account.data.model.UserAccountDataModel
-import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
-import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
-import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
-import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
+import com.tokopedia.home_account.FileUtil
+import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -25,39 +20,53 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertFalse
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 /**
  * Created by Yoris Prayogo on 14/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
+@ExperimentalCoroutinesApi
 class HomeAccountUserViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
-    val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
-    val homeAccountWalletBalanceUseCase = mockk<HomeAccountWalletBalanceUseCase>(relaxed = true)
+    private val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
+    private val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
+    private val homeAccountWalletBalanceUseCase = mockk<HomeAccountWalletBalanceUseCase>(relaxed = true)
     private val homeAccountSafeSettingProfileUseCase = mockk<SafeSettingProfileUseCase>(relaxed = true)
     private val homeAccountRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
+    private val userPageAssetConfigUseCase = mockk<GetUserPageAssetConfigUseCase>(relaxed = true)
+    private val homeAccountSaldoBalanceUseCase = mockk<HomeAccountSaldoBalanceUseCase>(relaxed = true)
+    private val homeAccountTokopointsUseCase = mockk<HomeAccountTokopointsUseCase>(relaxed = true)
 
-    val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val walletPref = mockk<WalletPref>(relaxed = true)
-    val accountPref = mockk<AccountPreference>(relaxed = true)
+    private val userPageAssetConfigObserver = mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
+    private val saldoBalanceObserver = mockk<Observer<Result<Balance>>>(relaxed = true)
+    private val tokopointsDrawerListObserver = mockk<Observer<Result<TokopointsDrawerList>>>(relaxed = true)
 
-    val permissionChecker = mockk<PermissionChecker>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
+    private val walletPref = mockk<WalletPref>(relaxed = true)
+    private val accountPref = mockk<AccountPreference>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: HomeAccountUserViewModel
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: HomeAccountUserViewModel
 
-    val throwable = Fail(Throwable(message = "Error"))
+    private val throwable = Fail(Throwable(message = "Error"))
     private var buyerAccountObserver = mockk<Observer<Result<UserAccountDataModel>>>(relaxed = true)
+
+    private val wallet = WalletModel().apply {
+        isLinked = true
+    }
+    private val shortcut = ShortcutResponse()
+    private val responseResult = UserAccountDataModel()
 
     @Before
     fun setUp() {
@@ -69,19 +78,15 @@ class HomeAccountUserViewModelTest {
                 homeAccountWalletBalanceUseCase,
                 homeAccountSafeSettingProfileUseCase,
                 homeAccountRecommendationUseCase,
+                userPageAssetConfigUseCase,
+                homeAccountSaldoBalanceUseCase,
+                homeAccountTokopointsUseCase,
                 walletPref,
                 dispatcher
         )
 
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
     }
-
-    val wallet = WalletModel().apply {
-        isLinked = true
-    }
-    val shortcut = ShortcutResponse()
-
-    val responseResult = UserAccountDataModel()
 
     @Test
     fun `Execute getBuyerData Success`() {
@@ -195,4 +200,103 @@ class HomeAccountUserViewModelTest {
         Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
     }
 
+    @Test
+    fun `Success get user page asset config`() {
+        viewModel.userPageAssetConfig.observeForever(userPageAssetConfigObserver)
+        coEvery { userPageAssetConfigUseCase.executeOnBackground() } returns successGetUserPageAssetConfigResponse
+
+        viewModel.getUserPageAssetConfig()
+
+        verify { userPageAssetConfigObserver.onChanged(any<Success<UserPageAssetConfig>>()) }
+        assert(viewModel.userPageAssetConfig.value is Success)
+
+        val result = viewModel.userPageAssetConfig.value as Success<UserPageAssetConfig>
+        assert(result.data == successGetUserPageAssetConfigResponse.data)
+    }
+
+    @Test
+    fun `Failed get user page asset config`() {
+        viewModel.userPageAssetConfig.observeForever(userPageAssetConfigObserver)
+        coEvery { userPageAssetConfigUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+
+        viewModel.getUserPageAssetConfig()
+
+        verify { userPageAssetConfigObserver.onChanged(any<Fail>()) }
+        assert(viewModel.userPageAssetConfig.value is Fail)
+
+        val result = viewModel.userPageAssetConfig.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get saldo balance`() {
+        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
+        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } returns successGetSaldoBalanceResponse
+
+        viewModel.getSaldoBalance()
+
+        verify { saldoBalanceObserver.onChanged(any<Success<Balance>>()) }
+        assert(viewModel.saldoBalance.value is Success)
+
+        val result = viewModel.saldoBalance.value as Success<Balance>
+        assert(result.data == successGetSaldoBalanceResponse.data)
+    }
+
+    @Test
+    fun `Failed get saldo balance`() {
+        viewModel.saldoBalance.observeForever(saldoBalanceObserver)
+        coEvery { homeAccountSaldoBalanceUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+
+        viewModel.getSaldoBalance()
+
+        verify { saldoBalanceObserver.onChanged(any<Fail>()) }
+        assert(viewModel.saldoBalance.value is Fail)
+
+        val result = viewModel.saldoBalance.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get tokopoints`() {
+        viewModel.tokopointsDrawerList.observeForever(tokopointsDrawerListObserver)
+        coEvery { homeAccountTokopointsUseCase.executeOnBackground() } returns successGetTokopointsResponse
+
+        viewModel.getTokopoints()
+
+        verify { tokopointsDrawerListObserver.onChanged(any<Success<TokopointsDrawerList>>()) }
+        assert(viewModel.tokopointsDrawerList.value is Success)
+
+        val result = viewModel.tokopointsDrawerList.value as Success<TokopointsDrawerList>
+        assert(result.data == successGetTokopointsResponse.data)
+    }
+
+    @Test
+    fun `Failed get tokopoints`() {
+        viewModel.tokopointsDrawerList.observeForever(tokopointsDrawerListObserver)
+        coEvery { homeAccountTokopointsUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+
+        viewModel.getTokopoints()
+
+        verify { tokopointsDrawerListObserver.onChanged(any<Fail>()) }
+        assert(viewModel.tokopointsDrawerList.value is Fail)
+
+        val result = viewModel.tokopointsDrawerList.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    companion object {
+        private val successGetUserPageAssetConfigResponse: UserPageAssetConfigDataModel = FileUtil.parse(
+                "/success_get_user_page_asset_config.json",
+                UserPageAssetConfigDataModel::class.java
+        )
+        private val successGetSaldoBalanceResponse: BalanceDataModel = FileUtil.parse(
+                "/success_get_saldo_balance.json",
+                BalanceDataModel::class.java
+        )
+        private val successGetTokopointsResponse: TokopointsDataModel = FileUtil.parse(
+                "/success_get_tokopoints.json",
+                TokopointsDataModel::class.java
+        )
+        private val throwableResponse = Throwable()
+    }
 }
