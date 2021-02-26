@@ -8,6 +8,8 @@ object ReviewConstants {
     const val RESULT_INTENT_DETAIL = 772
     const val RESULT_INTENT_REVIEW_REPLY = 896
 
+    const val APP_DATE_SHOP_SCORE = "android_sellerapp_shop_score_date"
+
     const val LAST_WEEK_KEY = "time=7d"
     const val LAST_MONTH_KEY = "time=30d"
     const val LAST_YEAR_KEY = "time=1y"

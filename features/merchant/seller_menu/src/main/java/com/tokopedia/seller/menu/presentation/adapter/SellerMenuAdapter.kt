@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -13,6 +14,11 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 class SellerMenuAdapter(
     factory: OtherMenuAdapterTypeFactory
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
+
+    fun showShopScoreTicker(tickerShopScoreUiModel: TickerShopScoreUiModel) {
+        visitables.add(0, tickerShopScoreUiModel)
+        notifyItemInserted(0)
+    }
 
     fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
         findShopInfoIndex()?.let { index ->

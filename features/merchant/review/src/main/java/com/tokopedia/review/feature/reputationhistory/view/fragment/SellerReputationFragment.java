@@ -48,6 +48,7 @@ import com.tokopedia.review.feature.reputationhistory.view.helper.GMStatHeaderVi
 import com.tokopedia.review.feature.reputationhistory.view.helper.RefreshHandler;
 import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationViewHelper;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.ShopScoreReputationUiModel;
 import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -67,7 +68,7 @@ import rx.schedulers.Schedulers;
  */
 public class SellerReputationFragment extends BaseDaggerFragment
         implements SellerReputationView, RetryDataBinder.OnRetryListener,
-        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
+        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult, SellerReputationAdapter.ShopScoreReputationListener {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -105,6 +106,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private CoordinatorLayout.LayoutParams orignalLp;
 
     private ArrayList<Parcelable> tempParcelables;
+    private ShopScoreReputationUiModel shopScoreReputationUiModel = new ShopScoreReputationUiModel();
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -382,9 +384,9 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     protected void initialVar() {
         if (tempParcelables != null) {
-            adapter = SellerReputationAdapter.createInstance(getActivity(), tempParcelables);
+            adapter = SellerReputationAdapter.createInstance(getActivity(), tempParcelables, this);
         } else {
-            adapter = SellerReputationAdapter.createInstance(getActivity());
+            adapter = SellerReputationAdapter.createInstance(getActivity(), this);
         }
         adapter.setFragment(this);
         RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
@@ -478,7 +480,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                 }
                 break;
         }
-        adapter.addAllWithoutNotify(datas);
+        adapter.addAllWithoutNotify(datas, shopScoreReputationUiModel);
         boolean isEmpty = adapter.getDataSize() <= 0;
         if (isEmpty) {
             if (!isEndOfFile) {
@@ -692,5 +694,10 @@ public class SellerReputationFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_SELLER_REP_HISTORY;
+    }
+
+    @Override
+    public void onClickShowBottomSheetShopScore() {
+
     }
 }

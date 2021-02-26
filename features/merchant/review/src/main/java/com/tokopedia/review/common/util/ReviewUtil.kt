@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -52,6 +53,14 @@ object ReviewUtil {
         val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
         bottomSheet?.dismiss()
         return RouteManager.route(context, webviewUrl)
+    }
+
+    fun getShopScoreDate(context: Context?): String {
+        return if(context == null) {
+            ""
+        } else {
+            FirebaseRemoteConfigImpl(context).getString(ReviewConstants.APP_DATE_SHOP_SCORE, "")
+        }
     }
 }
 

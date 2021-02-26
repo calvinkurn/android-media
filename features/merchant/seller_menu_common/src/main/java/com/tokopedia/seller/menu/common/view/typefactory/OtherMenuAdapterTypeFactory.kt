@@ -73,6 +73,10 @@ class OtherMenuAdapterTypeFactory(
         return SellerFeatureViewHolder.LAYOUT
     }
 
+    override fun type(tickerShopScoreUiModel: TickerShopScoreUiModel): Int {
+        return TickerShopScoreViewHolder.LAYOUT
+    }
+
     override fun type(dividerUiModel: DividerUiModel): Int {
         return DividerViewHolder.getDividerView(dividerUiModel.dividerType)
     }

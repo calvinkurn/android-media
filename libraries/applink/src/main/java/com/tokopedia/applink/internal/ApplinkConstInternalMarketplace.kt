@@ -253,6 +253,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
+    //ShopScorePerformanceActivity
+    @JvmField
+    val SHOP_SCORE_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop-score-performance"
+
+    //ShopPenaltyActivity
+    @JvmField
+    val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+
+
     // AttachInvoiceActivity
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"

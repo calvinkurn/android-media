@@ -190,7 +190,7 @@
     <string name="example_desc_faq_shop_score">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
     <string name="title_section_faq_shop_score">Hal yang sering ditanyakan</string>
     <string name="title_help_center_tokopedia">Butuh bantuan dari Tokopedia? Hubungi &lt;a href="#"&gt;Pusat Bantuan&lt;/a&gt;</string>
-    <string name="ticker_info_shop_score">Mulai [DD Month YYYY], ada penilaian dan target baru Performa Toko. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="ticker_info_shop_score">Mulai %s, ada penilaian dan target baru Performa Toko. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 
     <!-- FAQ Section -->
     <string name="title_parameter_shop_score_faq">Parameter</string>
@@ -229,6 +229,7 @@
     </string>
     <string name="score_parameter_shop_score_3">Max. -15</string>
 
+    <!-- this is only for Existing & New Sellers -->
     <string name="title_changes_shop_score_during_transition">Perubahan apa saja yang akan terjadi di toko saya pada masa transisi?</string>
     <string name="desc_changes_shop_score_during_transition">Pada periode 90 hari masa transisi, beberapa perubahan sudah berlaku efektif. Namun Tokopedia juga menerapkan waktu penyesuaian untuk memastikan bahwa Seller terbiasa dengan skema yang baru terlebih dahulu, sebagai contohnya:
         \n- Tidak adanya penurunan Power Merchant ke penonaktifan PM

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.common.view.uimodel.base
 
 enum class SettingUiType {
+    TICKER_SHOP_SCORE,
     DIVIDER,
     MENU_ITEM,
     SETTING_TITLE,

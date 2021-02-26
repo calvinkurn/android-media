@@ -53,10 +53,22 @@ class SellerMenuViewModel @Inject constructor(
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
+    val shopScorePeriodType: LiveData<Result<String>>
+        get() = _shopScorePeriodType
+
     private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
+    private val _shopScorePeriodType = MutableLiveData<Result<String>>()
+
+    fun getShopScorePeriodType() {
+        launchCatchError(block = {
+
+        }, onError = {
+
+        })
+    }
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
         if (isToasterRetry) {

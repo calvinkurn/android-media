@@ -30,6 +30,7 @@ import com.tokopedia.shop.score.detail.view.model.ShopType
 import com.tokopedia.shop.score.detail.view.recyclerview.ShopScoreDetailAdapter
 import com.tokopedia.shop.score.detail.view.util.formatShopScore
 import com.tokopedia.shop.score.detail.view.viewmodel.ShopScoreDetailViewModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_score_detail.*
@@ -60,6 +61,7 @@ class ShopScoreDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         showLoading()
 
+        setupTickerShopScore()
         setupRecyclerView()
         setDescriptionText()
         setupClickListeners()
@@ -72,6 +74,20 @@ class ShopScoreDetailFragment : Fragment() {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun setupTickerShopScore() {
+        ticker_info_shop_score?.apply {
+            setHtmlDescription(getString(R.string.ticker_info_shop_score, "21 April 2021"))
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    //TODO
+                }
+
+                override fun onDismiss() {}
+
+            })
+        }
     }
 
     private fun setupRecyclerView() {

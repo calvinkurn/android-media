@@ -24,6 +24,8 @@ import retrofit2.Retrofit
 import javax.inject.Named
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 
 /**
  * @author by milhamj on 12/06/19.
@@ -104,6 +106,9 @@ class GmCommonModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @Provides
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @Named(GMParamConstant.RAW_DEACTIVATION)

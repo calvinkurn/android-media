@@ -34,6 +34,8 @@ object SettingTrackingConstant {
     const val ON_TOPADS_CREDIT = "on topads credits"
     const val SHOP_STATISTIC = "shop statistic"
     const val SHOP_ADS_AND_PROMOTION = "shop ads and promotions"
+    //temporary
+    const val SHOP_PERFORMANCE = "shop performance"
     const val REVIEW = "review"
     const val DISCUSSION = "discussion"
     const val COMPLAINT = "complaint"
