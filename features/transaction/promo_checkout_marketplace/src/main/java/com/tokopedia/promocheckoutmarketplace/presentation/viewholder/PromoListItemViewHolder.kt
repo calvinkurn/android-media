@@ -168,7 +168,6 @@ class PromoListItemViewHolder(private val view: View,
                 )
             }
             constraintSet.applyTo(containerConstraintPromoCheckout)
-            containerConstraintPromoCheckout.requestLayout()
 
             labelPromoItemTitleInfo.show()
         } else {
