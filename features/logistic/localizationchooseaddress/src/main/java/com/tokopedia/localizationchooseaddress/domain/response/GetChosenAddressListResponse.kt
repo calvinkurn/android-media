@@ -30,7 +30,7 @@ data class ChosenAddressListResponse(
         @SerializedName("address_2")
         var address2: String = "",
         @SerializedName("postal_code")
-        var postalCode: Int = 0,
+        var postalCode: String = "",
         @SerializedName("province")
         var provinceId: Int = 0,
         @SerializedName("city")
