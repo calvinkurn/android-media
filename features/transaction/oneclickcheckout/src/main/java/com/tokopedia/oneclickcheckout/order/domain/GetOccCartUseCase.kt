@@ -193,6 +193,9 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             badge_url
           }
           booking_stock
+          product_preorder {
+            duration_day
+          }
         }
         cart_string
         payment_profile
@@ -262,6 +265,9 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
           }
         }
+        warehouse {
+          is_fulfillment
+        }
       }
       profile_index_wording
       profile_recommendation_wording
@@ -279,6 +285,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             link
           }
         }
+        profile_revamp_wording
+        is_recom
         profile_id
         status
         address {

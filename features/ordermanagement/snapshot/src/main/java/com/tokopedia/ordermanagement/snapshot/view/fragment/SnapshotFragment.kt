@@ -25,8 +25,8 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.analytics.SnapshotAnalytics
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.di.DaggerSnapshotComponent
 import com.tokopedia.ordermanagement.snapshot.di.SnapshotModule
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
@@ -52,7 +52,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private var orderId = ""
     private var orderDetailId = ""
     private var isSnapshotFromSOM = false
-    private var responseSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
+    private var responseSnapshot = GetOrderSnapshot()
     private var srlSnapshot: SwipeToRefresh? = null
     private var refreshHandler: RefreshHandler? = null
 
@@ -151,7 +151,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     }
 
     private fun observingData() {
-        println("++ observingData")
         snapshotAdapter.showLoader()
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -165,7 +164,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                         visible()
                         text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
-                            println("++ click lihat halaman produk")
                             RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
                             userSession.userId?.let { userId ->
                                 if (isSnapshotFromSOM) {
@@ -204,13 +202,12 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         }
     }
 
-    override fun onSnapshotShopClicked(shopId: Int) {
+    override fun onSnapshotShopClicked(shopId: String) {
         activity?.let {
-            println("++ click shop")
-            val applinkShop = ApplinkConst.SHOP.replace("{shop_id}", shopId.toString())
-            RouteManager.route(it, applinkShop)
+            RouteManager.route(it, ApplinkConst.SHOP, shopId)
         }
         userSession.userId?.let { userId ->
+            SnapshotAnalytics.clickShopPage(shopId, userId)
             if (isSnapshotFromSOM) {
                 SnapshotAnalytics.clickShopPageFromSOM(shopId.toString(), userId)
             } else {

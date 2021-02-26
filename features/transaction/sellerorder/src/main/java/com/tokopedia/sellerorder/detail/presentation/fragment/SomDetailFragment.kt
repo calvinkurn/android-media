@@ -165,6 +165,8 @@ class SomDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    var isDetailChanged: Boolean = false
+
     private var somToaster: Snackbar? = null
 
     private var orderId = ""
@@ -357,6 +359,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
+                    isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
                     renderDetail()

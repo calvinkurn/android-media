@@ -4,12 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
@@ -59,10 +62,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -105,14 +108,27 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
         progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
+            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+//                progressBarStock.setProgressIcon(ContextCompat.getDrawable(context, R.drawable.ic_fire_filled))
+                progressBarStock.setProgressIcon(
+                        icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
+                        offsetY = ProductCardModel.FIRE_OFFSET,
+                        width = context.resources.getDimension(R.dimen.dp_12).toInt(),
+                        height = context.resources.getDimension(R.dimen.dp_16).toInt())
+            }
+            progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
+            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
         }
     }
 
     private fun View.renderStockLabel(productCardModel: ProductCardModel) {
         textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             textViewStockLabel.text = productCardModel.stockBarLabel
-            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
+
+            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            } else if (productCardModel.stockBarLabelColor.isNotEmpty()) {
                 textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
             } else {
                 textViewStockLabel.setTextColor(MethodChecker.getColor(context,
@@ -134,4 +150,5 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
 }

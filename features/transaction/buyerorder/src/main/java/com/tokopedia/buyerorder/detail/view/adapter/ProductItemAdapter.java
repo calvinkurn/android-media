@@ -144,12 +144,12 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setText(actionButton.getLabel());
                 GradientDrawable shape = new GradientDrawable();
                 shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
                 if (!actionButton.getActionColor().getBackground().equals("")) {
                     shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
                 if (!actionButton.getActionColor().getBorder().equals("")) {
-                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 buyBtn.setBackground(shape);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {
@@ -158,7 +158,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setOnClickListener(view -> {
                     if (!TextUtils.isEmpty(actionButton.getUri())) {
                         if (actionButton.getKey().equalsIgnoreCase(MarketPlaceDetailFragment.SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, String.valueOf(items.getId()));
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, items.getId());
                         }
                         RouteManager.route(context, actionButton.getUri());
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
@@ -170,7 +170,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             itemView.setOnClickListener(view -> {
-                orderListAnalytics.hitClickProductName(status.status(), userId);
+                orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
 
                 String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ orderId +"/"+ items.getOrderDetailId();
                 RouteManager.route(context, applinkSnapshot);

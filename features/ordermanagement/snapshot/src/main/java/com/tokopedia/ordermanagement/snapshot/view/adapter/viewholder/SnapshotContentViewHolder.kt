@@ -13,13 +13,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
+import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BARU
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BEKAS
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotUtils
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageViewPagerAdapter
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -57,184 +58,199 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val dividerMinOrder = itemView.findViewById<View>(R.id.divider_min_order)
     val desc = itemView.findViewById<Typography>(R.id.snapshot_desc)
 
+    @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
-        if (item.dataObject is SnapshotResponse.Data.GetOrderSnapshot) {
-            // header
-            val productImages = item.dataObject.productImageSecondary
-            if (productImages.isNotEmpty()) {
-                if (productImages.size > 1) {
-                    ivHeader.gone()
-                    viewPager2.visible()
-                    indicator.apply {
-                        visible()
-                        setIndicator(productImages.size)
-                        activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                        inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
-                    }
-                    val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
+        if (item.dataObject is GetOrderSnapshot) {
+            renderHeader(item.dataObject)
+            renderInfo(item.dataObject)
+            renderShop(item.dataObject)
+            renderDesc(item.dataObject)
+        }
 
-                    val arrayListImg = arrayListOf<String>()
-                    productImages.forEach {
-                        val productImg = it
-                        arrayListImg.add(productImg.imageUrl)
-                    }
-                    imgViewPagerAdapter.listImg = arrayListImg
-                    actionListener?.let { imgViewPagerAdapter.setActionListener(it) }
-                    viewPager2.apply {
-                        adapter = imgViewPagerAdapter
-                        setOnClickListener {
-                            actionListener?.onSnapshotImgClicked(position)
-                        }
-                        registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
-                            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                                indicator.setCurrentIndicator(position)
-                            }
+    }
 
-                        })
-                    }
+    private fun renderHeader(dataObject: GetOrderSnapshot) {
+        val productImages = dataObject.productImageSecondary
+        if (productImages.isNotEmpty()) {
+            if (productImages.size > 1) {
+                ivHeader.gone()
+                viewPager2.visible()
+                indicator.apply {
+                    visible()
+                    setIndicator(productImages.size)
+                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
+                }
+                val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
-                } else {
-                    viewPager2.gone()
-                    indicator.gone()
-                    ivHeader.visible()
-                    ivHeader.setOnClickListener {
+                val arrayListImg = arrayListOf<String>()
+                productImages.forEach {
+                    val productImg = it
+                    arrayListImg.add(productImg.imageUrl)
+                }
+                imgViewPagerAdapter.listImg = arrayListImg
+                actionListener?.let { imgViewPagerAdapter.setActionListener(it) }
+                viewPager2.apply {
+                    adapter = imgViewPagerAdapter
+                    setOnClickListener {
                         actionListener?.onSnapshotImgClicked(position)
                     }
-                    productImages.firstOrNull()?.imageUrl?.let {
-                        ImageHandler.loadImageFromUriFitCenter(itemView.context, ivHeader, Uri.parse(it))
-                    }
+                    registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+                        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                            indicator.setCurrentIndicator(position)
+                        }
+
+                    })
                 }
-            }
-
-            // info
-            SnapshotUtils.parseDate(item.dataObject.orderDetail.createTime)?.let {
-                itemView.context.getString(R.string.snapshot_ticker_info).replace(CREATED_TIME, it) }?.let {
-                tickerInfo.setHtmlDescription(it) }
-
-            productPrice.text = item.dataObject.productAdditionalData.productPrice
-
-            val discPercentage = item.dataObject.campaignData.campaign.discountPercentageText
-            if (discPercentage.isEmpty()) {
-                discLabel.gone()
-            } else {
-                discLabel.visible()
-                discLabel.text = item.dataObject.campaignData.campaign.discountPercentageText
-            }
-
-            val originalPrice = item.dataObject.campaignData.campaign.originalPrice
-            if (originalPrice.isEmpty()) {
-                hargaCoret.gone()
-            } else {
-                hargaCoret.visible()
-                hargaCoret.text = item.dataObject.campaignData.campaign.originalPrice
-                hargaCoret.paintFlags = hargaCoret.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
-            }
-
-            productName.text = MethodChecker.fromHtmlPreserveLineBreak(item.dataObject.orderDetail.productName)
-
-            ImageHandler.loadImageCircle2(itemView.context, shopLogo, item.dataObject.shopImagePrimaryUrl)
-
-            val drawable = when {
-                item.dataObject.isOs -> {
-                    ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
-                }
-                item.dataObject.isPm -> {
-                    ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-                }
-                else -> {
-                    null
-                }
-            }
-
-            if (drawable == null) shopBadge.gone()
-            else {
-                shopBadge.setImageDrawable(drawable)
-                shopBadge.visible()
-            }
-
-            shopName.text = item.dataObject.shopSummary.shopName
-
-            val condition = when {
-                item.dataObject.orderDetail.condition == 1 -> {
-                    itemView.context.getString(R.string.snapshot_condition_baru)
-                }
-                item.dataObject.orderDetail.condition == 0 -> {
-                    itemView.context.getString(R.string.snapshot_condition_bekas)
-                }
-                else -> {
-                    null
-                }
-            }
-
-            clShop?.setOnClickListener {
-                actionListener?.onSnapshotShopClicked(item.dataObject.shopSummary.shopId)
-            }
-
-            if (condition == null) {
-                kondisiLabel.gone()
-                kondisiValue.gone()
-                dividerKondisi.gone()
 
             } else {
-                kondisiLabel.visible()
-                kondisiValue.visible()
-                kondisiValue.text = condition
-                dividerKondisi.visible()
-            }
-
-            val berat = item.dataObject.productTotalWeightFormatted
-            if (berat.isNotEmpty()) {
-                beratLabel.visible()
-                beratValue.visible()
-                dividerBerat.visible()
-                beratValue.text = berat
-
-            } else {
-                beratLabel.gone()
-                beratValue.gone()
-                dividerBerat.gone()
-            }
-
-            if (item.dataObject.preOrder) {
-                if (item.dataObject.preOrderDuration.isNotEmpty()) {
-                    labelPo.visible()
-                    valuePo.visible()
-                    valuePo.text = item.dataObject.preOrderDuration
-                    dividerPo.visible()
-
-                } else {
-                    labelPo.gone()
-                    valuePo.gone()
-                    dividerPo.gone()
+                viewPager2.gone()
+                indicator.gone()
+                ivHeader.visible()
+                ivHeader.setOnClickListener {
+                    actionListener?.onSnapshotImgClicked(position)
                 }
+                productImages.firstOrNull()?.imageUrl?.let {
+                    ImageHandler.loadImageFromUriFitCenter(itemView.context, ivHeader, Uri.parse(it))
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun renderInfo(dataObject: GetOrderSnapshot) {
+        SnapshotUtils.parseDate(dataObject.orderDetail.createTime)?.let {
+            itemView.context.getString(R.string.snapshot_ticker_info).replace(CREATED_TIME, it) }?.let {
+            tickerInfo.setHtmlDescription(it) }
+
+        productPrice.text = dataObject.productAdditionalData.productPrice
+
+        val discPercentage = dataObject.campaignData.campaign.discountPercentageText
+        if (discPercentage.isEmpty()) {
+            discLabel.gone()
+        } else {
+            discLabel.visible()
+            discLabel.text = dataObject.campaignData.campaign.discountPercentageText
+        }
+
+        val originalPrice = dataObject.campaignData.campaign.originalPrice
+        if (originalPrice.isEmpty()) {
+            hargaCoret.gone()
+        } else {
+            hargaCoret.visible()
+            hargaCoret.text = dataObject.campaignData.campaign.originalPrice
+            hargaCoret.paintFlags = hargaCoret.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+
+        productName.text = MethodChecker.fromHtmlPreserveLineBreak(dataObject.orderDetail.productName)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun renderShop(dataObject: GetOrderSnapshot) {
+        ImageHandler.loadImageCircle2(itemView.context, shopLogo, dataObject.shopImagePrimaryUrl)
+
+        val drawable = when {
+            dataObject.isOs -> {
+                ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
+            }
+            dataObject.isPm -> {
+                ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+            }
+            else -> {
+                null
+            }
+        }
+
+        if (drawable == null) shopBadge.gone()
+        else {
+            shopBadge.setImageDrawable(drawable)
+            shopBadge.visible()
+        }
+
+        shopName.text = dataObject.shopSummary.shopName
+
+        val condition = when {
+            dataObject.orderDetail.condition == KONDISI_BARU -> {
+                itemView.context.getString(R.string.snapshot_condition_baru)
+            }
+            dataObject.orderDetail.condition == KONDISI_BEKAS -> {
+                itemView.context.getString(R.string.snapshot_condition_bekas)
+            }
+            else -> {
+                null
+            }
+        }
+
+        clShop?.setOnClickListener {
+            actionListener?.onSnapshotShopClicked(dataObject.shopSummary.shopId)
+        }
+
+        if (condition == null) {
+            kondisiLabel.gone()
+            kondisiValue.gone()
+            dividerKondisi.gone()
+
+        } else {
+            kondisiLabel.visible()
+            kondisiValue.visible()
+            kondisiValue.text = condition
+            dividerKondisi.visible()
+        }
+
+        val berat = dataObject.productTotalWeightFormatted
+        if (berat.isNotEmpty()) {
+            beratLabel.visible()
+            beratValue.visible()
+            dividerBerat.visible()
+            beratValue.text = berat
+
+        } else {
+            beratLabel.gone()
+            beratValue.gone()
+            dividerBerat.gone()
+        }
+
+        if (dataObject.preOrder) {
+            if (dataObject.preOrderDuration.isNotEmpty()) {
+                labelPo.visible()
+                valuePo.visible()
+                valuePo.text = dataObject.preOrderDuration
+                dividerPo.visible()
+
             } else {
                 labelPo.gone()
                 valuePo.gone()
                 dividerPo.gone()
             }
+        } else {
+            labelPo.gone()
+            valuePo.gone()
+            dividerPo.gone()
+        }
 
-            val minOrder = item.dataObject.orderDetail.minOrder
+        val minOrder = dataObject.orderDetail.minOrder
 
-            if (minOrder > 0) {
-                minOrderLabel.visible()
-                minOrderValue.visible()
-                minOrderValue.text = "$minOrder pcs"
-                dividerMinOrder.visible()
+        if (minOrder.toInt() > 0) {
+            minOrderLabel.visible()
+            minOrderValue.visible()
+            minOrderValue.text = "$minOrder pcs"
+            dividerMinOrder.visible()
 
-            } else {
-                minOrderLabel.gone()
-                minOrderValue.gone()
-                dividerMinOrder.gone()
-            }
+        } else {
+            minOrderLabel.gone()
+            minOrderValue.gone()
+            dividerMinOrder.gone()
+        }
+    }
 
-            val productDesc = item.dataObject.orderDetail.productDesc
-            if (productDesc.isNotEmpty()) {
-                desc.visible()
-                desc.text = MethodChecker.fromHtmlPreserveLineBreak(productDesc)
-            } else {
-                desc.gone()
-            }
+    private fun renderDesc(dataObject: GetOrderSnapshot) {
+        val productDesc = dataObject.orderDetail.productDesc
+        if (productDesc.isNotEmpty()) {
+            desc.visible()
+            desc.text = MethodChecker.fromHtmlPreserveLineBreak(productDesc)
+        } else {
+            desc.gone()
         }
     }
 }
