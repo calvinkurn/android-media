@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.android.synthetic.main.search_result_product_card_big_grid.view.*
+import kotlinx.android.synthetic.main.search_result_product_card_big_grid.view.productCardView
 
 class BigGridProductItemViewHolder(
     itemView: View,
