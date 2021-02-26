@@ -1508,9 +1508,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun goToOneClickCheckout() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT).apply {
-            putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 

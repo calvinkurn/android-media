@@ -16,7 +16,7 @@ import java.util.List;
 public class DataCheckoutRequest implements Parcelable {
     @SerializedName("address_id")
     @Expose
-    public int addressId;
+    public String addressId;
     @SerializedName("shop_products")
     @Expose
     public List<ShopProductCheckoutRequest> shopProducts = new ArrayList<>();
@@ -30,13 +30,13 @@ public class DataCheckoutRequest implements Parcelable {
     }
 
     protected DataCheckoutRequest(Parcel in) {
-        addressId = in.readInt();
+        addressId = in.readString();
         shopProducts = in.createTypedArrayList(ShopProductCheckoutRequest.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeTypedList(shopProducts);
     }
 
@@ -58,13 +58,13 @@ public class DataCheckoutRequest implements Parcelable {
     };
 
     public static final class Builder {
-        private int addressId;
+        private String addressId;
         private List<ShopProductCheckoutRequest> shopProducts;
 
         public Builder() {
         }
 
-        public Builder addressId(int val) {
+        public Builder addressId(String val) {
             addressId = val;
             return this;
         }

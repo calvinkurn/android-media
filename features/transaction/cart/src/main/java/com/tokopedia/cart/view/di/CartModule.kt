@@ -25,6 +25,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -142,8 +143,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper, chosenAddressRequestHelper: ChosenAddressRequestHelper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers, chosenAddressRequestHelper)
 
     @Provides
     @CartScope

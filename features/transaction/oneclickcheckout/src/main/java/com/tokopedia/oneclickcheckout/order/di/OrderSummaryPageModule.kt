@@ -27,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -100,8 +101,10 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideValidateUsePromoRevampUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): ValidateUsePromoRevampUseCase {
-        return ValidateUsePromoRevampUseCase(context, graphqlUseCase)
+    fun provideValidateUsePromoRevampUseCase(context: Context,
+                                             graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
+                                             chosenAddressRequestHelper: ChosenAddressRequestHelper): ValidateUsePromoRevampUseCase {
+        return ValidateUsePromoRevampUseCase(context, graphqlUseCase, chosenAddressRequestHelper)
     }
 
     @OrderSummaryPageScope
@@ -124,4 +127,5 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     open fun provideOvoActivationLink(): String {
         return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
+
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.cart.view
 
-import android.os.Build
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -130,9 +129,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
+            val params = getCartListSimplifiedUseCase?.buildParams(cartId)
             val requestParams = RequestParams.create()
-            requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
-
+            requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, params)
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
                     ?.subscribe(GetCartListDataSubscriber(view, this, initialLoad))
             )
@@ -226,7 +225,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-                requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
+
+                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId)
+                requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, cartParams)
 
                 compositeSubscription.add(
                         updateAndReloadCartUseCase?.createObservable(requestParams)
@@ -892,10 +893,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPromoCode(cartItemData.originData?.promoCodes ?: "")
             setPromoDetails(cartItemData.originData?.promoDetails ?: "")
             setDimension83(
-                    if (cartItemData.originData?.isFreeShipping == true) {
-                        EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                    } else {
-                        EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                    when {
+                        cartItemData.originData?.isFreeShippingExtra == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
+                        cartItemData.originData?.isFreeShipping == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
+                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
             setCampaignId(cartItemData.originData?.campaignId?.toString() ?: "0")

@@ -26,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -77,6 +79,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -91,11 +94,10 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
+import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
-import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
@@ -131,6 +133,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -425,36 +428,29 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
-        if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
-            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
-            showToastMessageGreen(getString(R.string.message_payment_success))
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
-            showToastMessageRed(getString(R.string.default_request_error_unknown))
-            cartPageAnalytics.sendScreenName(activity, screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
+        when (resultCode) {
+            PaymentConstant.PAYMENT_CANCELLED -> {
+                showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
+                refreshCartWithProgressDialog()
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            cartPageAnalytics.sendScreenName(activity, screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
+            PaymentConstant.PAYMENT_SUCCESS -> {
+                showToastMessageGreen(getString(R.string.message_payment_success))
+                refreshCartWithProgressDialog()
             }
-        } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
-            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
-            showToastMessageRed(message ?: "")
+            PaymentConstant.PAYMENT_FAILED -> {
+                showToastMessageRed(getString(R.string.default_request_error_unknown))
+                refreshCartWithProgressDialog()
+            }
+            CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED -> {
+                refreshCartWithProgressDialog()
+            }
+            CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED -> {
+                val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+                showToastMessageRed(message ?: "")
+            }
+            else -> {
+                refreshCartWithProgressDialog()
+            }
         }
     }
 
@@ -750,10 +746,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun handleStickyCheckboxGlobalVisibility(recyclerView: RecyclerView) {
         val topItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
         if (topItemPosition == RecyclerView.NO_POSITION) return
+
         val adapterData = cartAdapter.getData()
         if (topItemPosition >= adapterData.size) return
-        val lastData = adapterData[topItemPosition]
-        if (lastData is CartShopHolderData || lastData is CartSelectAllHolderData) {
+
+        val firstItemData = adapterData[topItemPosition]
+        if (firstItemData is CartShopHolderData) {
             if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
         } else {
             if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
@@ -776,7 +774,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (hasLoadRecommendation) {
-                    dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
+                    loadRecommendation()
                 }
             }
         }
@@ -1117,8 +1115,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun refreshCart() {
-        resetRecentViewList()
-        refreshHandler?.startRefresh()
+        refreshCartWithSwipeToRefresh()
     }
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
@@ -1194,6 +1191,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog.dismiss()
         }
         dialog?.show()
+    }
+
+    override fun getFragment(): Fragment {
+        return this
+    }
+
+    override fun onNeedToGoneLocalizingAddressWidget() {
+        cartAdapter.removeChooseAddressWidget()
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        refreshCartWithProgressDialog()
     }
 
     override fun onClickShopNow() {
@@ -1623,7 +1632,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.setShopSelected(itemPosition, checked)
         onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 
         val params = generateParamValidateUsePromoRevamp(checked, -1, -1, false)
@@ -1672,7 +1681,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
 
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         cartAdapter.setItemSelected(position, parentPosition, checked)
         val params = generateParamValidateUsePromoRevamp(checked, parentPosition, position, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
@@ -1794,81 +1803,141 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 return@let
             }
 
-            cartPageAnalytics.sendScreenName(activity, screenName)
+            sendAnalyticsScreenNameCartPage()
+            updateStateAfterFinishGetCartList(it)
 
             renderAbTestButton(cartListData.abTestButton)
-
-            endlessRecyclerViewScrollListener.resetState()
-            refreshHandler?.finishRefresh()
-            this.cartListData = it
-            cartAdapter.resetData()
-
             renderTickerAnnouncement(it)
+            renderChooseAddressWidget(cartListData.localizationChooseAddressData)
 
-            if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
-                renderCartEmpty(it)
-            } else {
-                renderCartNotEmpty(it)
-            }
-
-            if (wishLists == null) {
-                dPresenter.processGetWishlistData()
-            } else {
-                renderWishlist(null, false)
-            }
-
-            if (recentViewList == null || shouldReloadRecentViewList) {
-                dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
-            } else {
-                renderRecentView(null)
-            }
-
-            if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
-            } else {
-                renderRecommendation(null)
-            }
-
-            if (dPresenter.isLastApplyValid()) {
-                // Render promo from last apply
-                cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
-                    // show toaster if any promo applied has been changed
-                    if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
-                        showToastMessageGreen(lastApplyData.additionalInfo.errorDetail.message)
-                        PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
-                    }
-                    renderPromoCheckout(lastApplyData)
-                }
-
-                // Render promo from last validate use from cart page (check / uncheck result) if any
-                dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-            } else {
-                // Render promo from last validate use from promo page
-                dPresenter.getValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-
-                // Render promo from last validate use from cart page (check / uncheck result) if any
-                dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
-                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
-                    renderPromoCheckout(lastApplyUiModel)
-                }
-            }
+            validateRenderCart(it)
+            validateShowPopUpMessage(cartListData)
+            validateRenderWishlist()
+            validateRenderRecentView()
+            loadRecommendation()
+            validateRenderPromo(cartListData)
 
             setInitialCheckboxGlobalState(cartListData)
             setGlobalDeleteVisibility()
             setTopLayoutVisibility(false)
 
-            cartAdapter.checkForShipmentForm()
+            validateGoToCheckout()
+        }
+    }
+
+    private fun updateStateAfterFinishGetCartList(it: CartListData) {
+        this.cartListData = it
+        endlessRecyclerViewScrollListener.resetState()
+        refreshHandler?.finishRefresh()
+        cartAdapter.resetData()
+    }
+
+    private fun sendAnalyticsScreenNameCartPage() {
+        cartPageAnalytics.sendScreenName(activity, screenName)
+    }
+
+    private fun loadRecommendation() {
+        dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
+    }
+
+    private fun validateRenderRecentView() {
+        if (recentViewList == null || shouldReloadRecentViewList) {
+            dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
+        } else {
+            renderRecentView(null)
+        }
+    }
+
+    private fun validateRenderWishlist() {
+        if (wishLists == null) {
+            dPresenter.processGetWishlistData()
+        } else {
+            renderWishlist(null, false)
+        }
+    }
+
+    private fun validateRenderCart(it: CartListData) {
+        if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
+            renderCartEmpty(it)
+        } else {
+            renderCartNotEmpty(it)
+        }
+    }
+
+    private fun validateRenderPromo(cartListData: CartListData) {
+        if (dPresenter.isLastApplyValid()) {
+            // Render promo from last apply
+            validateRenderPromoFromLastApply(cartListData)
+
+            // Render promo from last validate use from cart page (check / uncheck result) if any
+            validateRenderPromoFromValidateUseCartPage()
+        } else {
+            // Render promo from last validate use from promo page
+            validateRenderPromoFromValidateUsePromoPage()
+
+            // Render promo from last validate use from cart page (check / uncheck result) if any
+            validateRenderPromoFromValidateUseCartPage()
+        }
+    }
+
+    private fun validateRenderPromoFromValidateUsePromoPage() {
+        dPresenter.getValidateUseLastResponse()?.promoUiModel?.let {
+            val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
+            renderPromoCheckout(lastApplyUiModel)
+        }
+    }
+
+    private fun validateRenderPromoFromValidateUseCartPage() {
+        dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
+            val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
+            renderPromoCheckout(lastApplyUiModel)
+        }
+    }
+
+    private fun validateRenderPromoFromLastApply(cartListData: CartListData) {
+        cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
+            // show toaster if any promo applied has been changed
+            if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+                showToastMessageGreen(lastApplyData.additionalInfo.errorDetail.message)
+                PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
+            }
+            renderPromoCheckout(lastApplyData)
+        }
+    }
+
+    private fun validateShowPopUpMessage(cartListData: CartListData) {
+        if (cartListData.popUpMessage.isNotBlank()) {
+            showToastMessageGreen(cartListData.popUpMessage)
         }
     }
 
     private fun setInitialCheckboxGlobalState(cartListData: CartListData) {
         checkboxGlobal.isChecked = cartListData.isAllSelected
+    }
+
+    private fun renderChooseAddressWidget(localizationChooseAddressData: LocalizationChooseAddressData) {
+        activity?.let {
+            validateLocalCacheAddress(it, localizationChooseAddressData)
+
+            if (ChooseAddressUtils.isRollOutUser(it)) {
+                val cartChooseAddressHolderData = CartChooseAddressHolderData()
+                cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
+            }
+        }
+    }
+
+    private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddressData: LocalizationChooseAddressData) {
+        if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_ADDRESS_ID_NOT_MATCH) {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = activity,
+                    addressId = localizationChooseAddressData.addressId,
+                    cityId = localizationChooseAddressData.cityId,
+                    districtId = localizationChooseAddressData.districtId,
+                    lat = localizationChooseAddressData.latitude,
+                    long = localizationChooseAddressData.longitude,
+                    addressName = localizationChooseAddressData.addressName,
+                    postalCode = localizationChooseAddressData.postalCode)
+        }
     }
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
@@ -1917,8 +1986,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
 
-        cartAdapter.checkForShipmentForm()
-
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
@@ -1953,7 +2020,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderTickerAnnouncement(cartListData: CartListData) {
         val tickerData = cartListData.tickerData
         if (tickerData?.isValid(CART_PAGE) == true) {
-            cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id.toString(), tickerData.message))
+            cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id, tickerData.message))
         }
     }
 
@@ -2530,7 +2597,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
-        return if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
@@ -3004,11 +3071,27 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onRefresh(view: View?) {
+        refreshCartWithSwipeToRefresh()
+    }
+
+    private fun refreshCartWithSwipeToRefresh() {
+        refreshHandler?.isRefreshing = true
+        resetRecentViewList()
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
             dPresenter.processToUpdateAndReloadCartData(getCartId())
         } else {
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+        }
+    }
+
+    private fun refreshCartWithProgressDialog() {
+        resetRecentViewList()
+        if (dPresenter.dataHasChanged()) {
+            showMainContainer()
+            dPresenter.processToUpdateAndReloadCartData(getCartId())
+        } else {
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
         }
     }
 
@@ -3311,12 +3394,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
-        cartAdapter.checkForShipmentForm()
+        validateGoToCheckout()
         val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
         }
+    }
+
+    private fun validateGoToCheckout() {
+        cartAdapter.checkForShipmentForm()
     }
 
     override fun navigateToPromoRecommendation() {

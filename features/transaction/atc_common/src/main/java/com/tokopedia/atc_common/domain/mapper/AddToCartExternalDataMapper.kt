@@ -35,6 +35,7 @@ class AddToCartExternalDataMapper @Inject constructor() {
             trackerAttribution = dataResponse.trackerAttribution
             isMultiOrigin = dataResponse.isMultiOrigin
             isFreeOngkir = dataResponse.isFreeOngkir
+            isFreeOngkirExtra = dataResponse.isFreeOngkirExtra
         }
     }
 }
