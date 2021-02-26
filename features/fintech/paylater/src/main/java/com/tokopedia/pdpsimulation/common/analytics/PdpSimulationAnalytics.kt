@@ -129,8 +129,8 @@ class PdpSimulationAnalytics @Inject constructor(
 
     companion object {
         const val KEY_USER_ID = "userId"
-        const val BUSINESS_UNIT = "businessUnit"
-        const val CURRENT_SITE = "currentSite"
+        const val BUSINESS_UNIT = "Fintech"
+        const val CURRENT_SITE = "tokopediafintech"
         const val EVENT_NAME_FIN_TECH = "clickFintechMicrosite"
         const val IRIS_EVENT_NAME_FIN_TECH = "viewFintechMicrositeIris"
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"
