@@ -5,7 +5,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 class ChooseAddressConstant {
 
     companion object {
-        const val CHOOSE_ADDRESS_ROLLENCE_KEY = "ChooseAddressAndroid"
+        const val CHOOSE_ADDRESS_ROLLENCE_KEY = "hyperlocal_android"
         const val INTENT_ADDRESS_SELECTED = "selected_address"
 
         val defaultAddress = LocalCacheModel(

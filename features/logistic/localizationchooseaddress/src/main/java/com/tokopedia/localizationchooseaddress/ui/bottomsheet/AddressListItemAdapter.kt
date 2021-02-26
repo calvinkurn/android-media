@@ -7,6 +7,8 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressListVisitable
@@ -14,6 +16,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.OtherAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.BaseViewHolder<*>>() {
@@ -75,6 +78,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
         val addressDetail = itemView.findViewById<Typography>(R.id.address_detail)
         val addressDistrict = itemView.findViewById<Typography>(R.id.address_district)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.address_item_card)
+        var labelUtama = itemView.findViewById<Label>(R.id.lbl_main_address)
         val chooseAddressPref = ChooseAddressSharePref(itemView.context)
 
         override fun bind(item: ChosenAddressListVisitable, position: Int) {
@@ -84,6 +88,8 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
                 addressPhone.text = item.phone
                 addressDetail.text = item.address1
                 addressDistrict.text = item.districtName
+
+                if (item.status == 2) labelUtama.visible() else labelUtama.gone()
 
                 setSelectedData(item)
             }
