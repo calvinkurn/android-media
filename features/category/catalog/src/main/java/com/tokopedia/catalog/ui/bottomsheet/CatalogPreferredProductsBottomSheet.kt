@@ -18,7 +18,7 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
         showKnob = true
         showCloseIcon = false
         showHeader = false
-        customPeekHeight = 65
+        customPeekHeight = 0
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_COLLAPSED
     }
 

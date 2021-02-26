@@ -27,6 +27,7 @@ import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
+import com.tokopedia.catalog.model.util.slidinguppanel.SlidingUpPanelLayout
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
@@ -69,7 +70,7 @@ class CatalogDetailPageFragment : Fragment(),
     private val catalogDetailAdapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
                 .build()
-        CatalogDetailAdapter(asyncDifferConfig, catalogAdapterFactory
+        CatalogDetailAdapter(requireActivity(),this,asyncDifferConfig, catalogAdapterFactory
         )
     }
 
@@ -120,7 +121,10 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun openBottomSheetProductListing() {
-        CatalogPreferredProductsBottomSheet.newInstance(catalogId).show(childFragmentManager,"")
+        requireActivity().supportFragmentManager.beginTransaction().replace(
+                R.id.dragView,CatalogPreferredProductsBottomSheet.newInstance(catalogId)
+        ).commit()
+
     }
 
     private fun initViews() {
@@ -264,6 +268,14 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreSpecificationsClick() {
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+    }
+
+    override fun hideFloatingLayout() {
+        sliding_layout.panelState = SlidingUpPanelLayout.PanelState.HIDDEN
+    }
+
+    override fun showFloatingLayout() {
+        sliding_layout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
     }
 
     override fun onDescriptionClick() {

@@ -32,7 +32,7 @@ object CatalogDetailMapper {
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
-
+                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type))
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_FILTER -> {
@@ -199,6 +199,14 @@ object CatalogDetailMapper {
                 "catalog-spec-full-data",
                 false,
                 specifications
+        ))
+
+        componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
+                3,
+                "Product List",
+                "product-list-infinite-scroll",
+                false,
+                arrayListOf()
         ))
 
         val basicInfo  = CatalogResponseData.CatalogGetDetailModular.BasicInfo(

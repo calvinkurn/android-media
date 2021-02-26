@@ -28,13 +28,11 @@ interface CatalogDetailListener {
     fun onViewMoreSpecificationsClick()
 
     /**
-     * CatalogVideoViewHolder
+     * CatalogProductsContainerViewHolder
      */
 
+    fun hideFloatingLayout()
 
-    /**
-     * CatalogVideoContainerViewHolder
-     */
-
+    fun showFloatingLayout()
 
 }
