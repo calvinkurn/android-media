@@ -164,6 +164,8 @@ data class ShopLayoutWidget(
                     val stockSoldPercentage: Float = 0f,
                     @SerializedName("labelGroups")
                     val labelGroups: List<LabelGroup> = listOf(),
+                    @SerializedName("recommendationType")
+                    val recommendationType: String = "",
                     @SerializedName("isTopads")
                     val isTopAds: Boolean = false
             ){

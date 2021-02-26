@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -56,7 +57,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         val productAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
             override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
+                shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
                         adapterPosition,
                         carouselProductCardPosition,
                         element,
@@ -68,12 +69,29 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselProductItemClicked(
+                shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
                         adapterPosition,
                         carouselProductCardPosition,
                         element,
                         productItem
                 )
+            }
+        }
+
+        val productImpressionListener = object : CarouselProductCardListener.OnItemImpressedListener {
+            override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
+                shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
+                        adapterPosition,
+                        carouselProductCardPosition,
+                        element,
+                        productItem
+                )
+
+            }
+
+            override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                return element.productList.getOrNull(carouselProductCardPosition)
             }
         }
 
@@ -83,7 +101,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 recyclerView?.bindCarouselProductCardViewGrid(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener
+                        carouselProductCardOnItemClickListener = productClickListener,
+                        carouselProductCardOnItemImpressedListener = productImpressionListener
                 )
             }
 
@@ -91,7 +110,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener
+                        carouselProductCardOnItemClickListener = productClickListener,
+                        carouselProductCardOnItemImpressedListener = productImpressionListener
                 )
             }
 

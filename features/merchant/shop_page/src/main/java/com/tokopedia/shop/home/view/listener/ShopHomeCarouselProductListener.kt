@@ -11,7 +11,21 @@ interface ShopHomeCarouselProductListener {
             shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
+    fun onPersonalizationCarouselProductItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
     fun onCarouselProductItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductPersonalizationItemImpression(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
@@ -21,6 +35,13 @@ interface ShopHomeCarouselProductListener {
     fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
 
     fun onCarouselProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselPersonalizationProductItemClickAddToCart(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
