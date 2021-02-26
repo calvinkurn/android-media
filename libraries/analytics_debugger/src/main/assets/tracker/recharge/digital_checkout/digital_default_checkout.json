@@ -3,27 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "add_to_cart",
-      "eventCategory": "digital - native",
-      "eventAction": "click beli",
-      "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigital",
-      "sessionIris": "{{.*}}",
-      "items": [
-        {
-          "cart_id": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
-        }
-      ]
-    },
-    {
       "event": "begin_checkout",
       "eventCategory": "digital - checkout",
       "eventAction": "view checkout",

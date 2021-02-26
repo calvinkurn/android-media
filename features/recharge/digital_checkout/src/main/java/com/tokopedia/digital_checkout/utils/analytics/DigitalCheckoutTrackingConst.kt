@@ -7,7 +7,6 @@ package com.tokopedia.digital_checkout.utils.analytics
 object DigitalCheckoutTrackingConst {
     object Event {
         const val CLICK_COUPON = "clickCoupon"
-        const val ADD_TO_CART = "addToCart"
         const val CHECKOUT = "checkout"
         const val CLICK_CHECKOUT = "clickCheckout"
     }
@@ -15,13 +14,10 @@ object DigitalCheckoutTrackingConst {
     object Category {
         const val DIGITAL_CHECKOUT = "digital - checkout"
         const val DIGITAL_CHECKOUT_PAGE = "digital - checkout page"
-        const val DIGITAL_NATIVE = "digital - native"
-        const val HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget"
     }
 
     object Action {
         const val CLICK_CANCEL_APPLY_COUPON = "click x on ticker"
-        const val CLICK_BELI = "click beli"
         const val VIEW_CHECKOUT = "view checkout"
         const val CLICK_PROCEED_PAYMENT = "click proceed to payment"
         const val CLICK_PROMO = "click promo button"
@@ -42,7 +38,6 @@ object DigitalCheckoutTrackingConst {
         const val PRODUCTS = "products"
         const val CURRENTSITE = "currentSite"
         const val BUSINESS_UNIT = "businessUnit"
-        const val ADD = "add"
 
         const val USER_ID = "userId"
     }
@@ -53,9 +48,6 @@ object DigitalCheckoutTrackingConst {
 
         const val NO_PROMO = "no promo"
         const val PROMO = "no promo"
-
-        const val INSTANT = "instant"
-        const val NON_INSTANT = "non instant"
 
         const val NONE = "none"
     }

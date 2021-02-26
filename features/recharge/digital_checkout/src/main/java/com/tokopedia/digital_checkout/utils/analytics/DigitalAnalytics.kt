@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.utils.analytics
 
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_WIDGET
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -95,37 +94,6 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
-    }
-
-    fun eventAddToCart(cartDigitalInfoData: CartDigitalInfoData, extraComeFrom: Int) {
-
-        val productName: String = cartDigitalInfoData.attributes?.operatorName?.toLowerCase() + " " +
-                cartDigitalInfoData.attributes?.price?.toLowerCase()
-
-        val products: MutableList<Any> = ArrayList()
-
-        val eventCategory = if (extraComeFrom == PARAM_WIDGET) {
-            DigitalCheckoutTrackingConst.Category.HOMEPAGE_DIGITAL_WIDGET
-        } else DigitalCheckoutTrackingConst.Category.DIGITAL_NATIVE
-
-        val eventLabel = cartDigitalInfoData.attributes?.categoryName?.toLowerCase() + " - " +
-                if (cartDigitalInfoData.isInstantCheckout) DigitalCheckoutTrackingConst.Value.INSTANT
-                else DigitalCheckoutTrackingConst.Value.NON_INSTANT
-
-        products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName))
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.ADD_TO_CART,
-                        TrackAppUtils.EVENT_CATEGORY, eventCategory,
-                        TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_BELI,
-                        TrackAppUtils.EVENT_LABEL, eventLabel,
-                        BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
-                        DigitalCheckoutTrackingConst.CurrencyCode.KEY, DigitalCheckoutTrackingConst.CurrencyCode.IDR,
-                        DigitalCheckoutTrackingConst.Label.ADD,
-                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
-                )
-        )
     }
 
     fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData) {

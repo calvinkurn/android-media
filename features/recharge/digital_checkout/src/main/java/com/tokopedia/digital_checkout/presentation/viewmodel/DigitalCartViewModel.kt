@@ -115,7 +115,7 @@ class DigitalCartViewModel @Inject constructor(
             digitalCheckoutPassData.categoryId?.let { categoryId ->
                 digitalGetCartUseCase.execute(
                         DigitalGetCartUseCase.createParams(categoryId.toInt()),
-                        onSuccessGetCart(digitalCheckoutPassData.source),
+                        onSuccessGetCart(),
                         onErrorGetCart()
                 )
             }
@@ -143,7 +143,7 @@ class DigitalCartViewModel @Inject constructor(
                             ), digitalCheckoutPassData.idemPotencyKey)
                     digitalAddToCartUseCase.executeOnBackground()
                 }
-                onSuccessAddToCart(data, digitalCheckoutPassData.source)
+                onSuccessAddToCart(data)
 
             }) {
                 _showLoading.postValue(false)
@@ -152,7 +152,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessAddToCart(data: Map<Type, RestResponse?>, source: Int) {
+    private fun onSuccessAddToCart(data: Map<Type, RestResponse?>) {
 
         val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
         val restResponse = data[token]
@@ -160,7 +160,7 @@ class DigitalCartViewModel @Inject constructor(
         val responseCartData: ResponseCartData = lala.data as ResponseCartData
         val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
 
-        mapDataSuccessCart(source, mappedCartData)
+        mapDataSuccessCart(mappedCartData)
     }
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
@@ -190,13 +190,13 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetCart(source: Int): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
         return {
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
 
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            mapDataSuccessCart(source, mappedCartData)
+            mapDataSuccessCart(mappedCartData)
         }
     }
 
@@ -207,8 +207,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
-        analytics.eventAddToCart(mappedCartData, source)
+    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
         analytics.eventCheckout(mappedCartData)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
