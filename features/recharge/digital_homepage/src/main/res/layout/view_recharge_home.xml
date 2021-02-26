@@ -63,7 +63,8 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                app:srcCompat="@drawable/digital_common_ic_tagihan" />
+                app:srcCompat="@drawable/digital_common_ic_tagihan"
+                android:contentDescription="null" />
 
         </LinearLayout>
 
