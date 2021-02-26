@@ -135,21 +135,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun firstLoadCheckoutPageWithNoAddress_ShouldHideInitialLoadingAndRenderNoAddressPage() {
-        // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData())
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.renderCheckoutPageNoAddress(any())
-        }
-    }
-
-    @Test
     fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
         // Given
         val errorMessage = "error"
@@ -263,10 +248,16 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun `WHEN load checkout page get state district id not match THEN should navigate to address list page`() {
         // Given
-        val groupAddress = GroupAddress().apply {
-            userAddress = UserAddress(state = UserAddress.STATE_DISTRICT_ID_NOT_MATCH)
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = UserAddress(state = UserAddress.STATE_DISTRICT_ID_NOT_MATCH)
+                    }
+            )
         }
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
@@ -285,10 +276,16 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun `WHEN load checkout page get state no address THEN should navigate to add new address page`() {
         // Given
-        val groupAddress = GroupAddress().apply {
-            userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
+                    }
+            )
         }
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
