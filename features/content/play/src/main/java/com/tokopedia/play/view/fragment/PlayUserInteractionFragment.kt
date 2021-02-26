@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -493,8 +494,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun handleVideoHorizontalTopBounds() {
         scope.launch {
-            val toolbarMeasure = async { toolbarView.rootView.awaitMeasured() }
-            val statsInfoMeasure = async { statsInfoView.rootView.awaitMeasured() }
+            val toolbarMeasure = asyncCatchError(block = {
+                toolbarView.rootView.awaitMeasured()
+             }, onError = {})
+            val statsInfoMeasure = asyncCatchError(block = {
+                statsInfoView.rootView.awaitMeasured()
+            }, onError = {})
 
             awaitAll(toolbarMeasure, statsInfoMeasure)
             playFragment.onFirstTopBoundsCalculated()
