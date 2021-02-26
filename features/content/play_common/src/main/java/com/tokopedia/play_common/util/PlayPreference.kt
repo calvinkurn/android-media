@@ -15,7 +15,9 @@ class PlayPreference @Inject constructor(
         private const val PLAY_PREFERENCE = "play_preference"
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
-        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
+        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s_%s"
+
+        private const val KEY_SOURCE_TYPE = "source_type"
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
@@ -27,6 +29,12 @@ class PlayPreference @Inject constructor(
     fun isOnboardingShown(tag: String): Boolean {
         return isSwipeOnboardingShown(tag)
     }
+
+    fun setSourceType(sourceType: String) {
+        sharedPref.edit().putString(KEY_SOURCE_TYPE, sourceType).apply()
+    }
+
+    private fun getSourceType(): String = sharedPref.getString(KEY_SOURCE_TYPE, "").orEmpty()
 
     /**
      * Valid from Initial Play -> Swipe Room
@@ -46,13 +54,13 @@ class PlayPreference @Inject constructor(
      * Valid since Swipe Room
      */
     private fun setSwipeOnboardingShown(tag: String) {
-        sharedPref.edit().putBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), true).apply()
+        sharedPref.edit().putBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag, getSourceType()), true).apply()
     }
 
     /**
      * Valid since Swipe Room
      */
     private fun isSwipeOnboardingShown(tag: String): Boolean {
-        return sharedPref.getBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), false)
+        return sharedPref.getBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag, getSourceType()), false)
     }
 }

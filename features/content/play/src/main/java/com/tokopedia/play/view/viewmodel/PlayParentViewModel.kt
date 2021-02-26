@@ -14,6 +14,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -30,6 +31,7 @@ class PlayParentViewModel constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val pageMonitoring: PlayPltPerformanceCallback,
+        private val playPreference: PlayPreference,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
@@ -39,6 +41,7 @@ class PlayParentViewModel constructor(
             private val dispatchers: CoroutineDispatcherProvider,
             private val userSession: UserSessionInterface,
             private val pageMonitoring: PlayPltPerformanceCallback,
+            private val playPreference: PlayPreference,
     ) {
 
         fun create(handle: SavedStateHandle): PlayParentViewModel {
@@ -50,6 +53,7 @@ class PlayParentViewModel constructor(
                     dispatchers,
                     userSession,
                     pageMonitoring,
+                    playPreference
             )
         }
     }
@@ -86,6 +90,7 @@ class PlayParentViewModel constructor(
 
     init {
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
+        playPreference.setSourceType(sourceType)
         loadNextPage()
     }
 
