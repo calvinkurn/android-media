@@ -7,6 +7,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.tokopedia.keys.Keys
 import com.tokopedia.salam.umrah.R
 import kotlinx.android.synthetic.main.activity_umrah_youtube_player.*
 
@@ -30,7 +31,7 @@ YouTubePlayer.PlayerStateChangeListener{
         super.onCreate(p0)
         setContentView(R.layout.activity_umrah_youtube_player)
         videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_URL)
-        umrah_youtube_player.initialize(getString(R.string.UMRAH_GOOGLE_API_KEY), this)
+        umrah_youtube_player.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
     override fun onAdStarted() {

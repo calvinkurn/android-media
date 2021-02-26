@@ -8,13 +8,13 @@ import android.os.Parcelable;
  */
 
 public class ResultProduct implements Parcelable {
-    private Integer productId;
+    private String productId;
     private String productUrl;
     private String productImageThumbnail;
     private String price;
     private String name;
 
-    public ResultProduct(Integer productId, String productUrl, String productImageThumbnail, String price, String name) {
+    public ResultProduct(String productId, String productUrl, String productImageThumbnail, String price, String name) {
         this.productId = productId;
         this.productUrl = productUrl;
         this.productImageThumbnail = productImageThumbnail;
@@ -22,7 +22,7 @@ public class ResultProduct implements Parcelable {
         this.name = name;
     }
 
-    public Integer getProductId() {
+    public String getProductId() {
         return productId;
     }
 
@@ -49,7 +49,7 @@ public class ResultProduct implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.productId);
+        dest.writeString(this.productId);
         dest.writeString(this.productUrl);
         dest.writeString(this.productImageThumbnail);
         dest.writeString(this.price);
@@ -57,7 +57,7 @@ public class ResultProduct implements Parcelable {
     }
 
     protected ResultProduct(Parcel in) {
-        this.productId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productId = in.readString();
         this.productUrl = in.readString();
         this.productImageThumbnail = in.readString();
         this.price = in.readString();

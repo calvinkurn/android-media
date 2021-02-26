@@ -7,10 +7,12 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.detail.SpecificationInputModel as DraftSpecificationInputModel
 import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
@@ -52,7 +54,7 @@ object AddEditProductMapper {
 
     fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): ProductDraft {
         val productDraft = ProductDraft()
-        productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
+        productDraft.variantInputModel = mapObjectToJson(productInputModel.variantInputModel) ?: ""
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.currentProductName = productInputModel.detailInputModel.currentProductName
@@ -75,6 +77,9 @@ object AddEditProductMapper {
         }
         productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
             ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
+        }
+        productDraft.detailInputModel.specification = productInputModel.detailInputModel.specifications?.map {
+            DraftSpecificationInputModel(it.id, it.data)
         }
         productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
@@ -100,7 +105,7 @@ object AddEditProductMapper {
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         val productInputModel = ProductInputModel()
         if(productDraft.variantInputModel.isNotEmpty()) {
-            productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+            productInputModel.variantInputModel = mapJsonToObject(productDraft.variantInputModel, VariantInputModel::class.java)
         } else {
             productInputModel.variantInputModel = VariantInputModel()
         }
@@ -128,6 +133,9 @@ object AddEditProductMapper {
         }
         productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
             ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
+        }
+        productInputModel.detailInputModel.specifications = productDraft.detailInputModel.specification?.map { specification ->
+            SpecificationInputModel(specification.id, specification.data)
         }
         productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
@@ -160,12 +168,16 @@ object AddEditProductMapper {
         )
     }
 
-    private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {
-        return CacheUtil.convertModelToString(productVariantInputModel, object : TypeToken<VariantInputModel>() {}.type)
+    fun <T> mapObjectToJson(item: T?): String? {
+        return if (item != null) {
+            CacheUtil.convertModelToString(item, object : TypeToken<T>() {}.type)
+        } else {
+            null
+        }
     }
 
-    private fun mapJsonToProductInputModel(jsonData : String): VariantInputModel {
-        return CacheUtil.convertStringToModel(jsonData, VariantInputModel::class.java)
+    fun <T> mapJsonToObject(jsonData : String, itemClass: Class<T>): T {
+        return CacheUtil.convertStringToModel(jsonData, itemClass)
     }
 }
 

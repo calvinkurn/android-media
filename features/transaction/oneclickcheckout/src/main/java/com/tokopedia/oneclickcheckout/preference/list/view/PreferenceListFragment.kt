@@ -248,21 +248,23 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.left = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.right = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.top = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)?.toInt()
                         ?: 0
-                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.bottom = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)?.toInt()
                         ?: 0
             }
         })
     }
 
-    override fun onPreferenceSelected(preference: ProfilesItemModel) {
-        preferenceListAnalytics.eventClickJadikanPilihanUtama()
-        viewModel.changeDefaultPreference(preference)
+    override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
+        if (!isMainProfile) {
+            preferenceListAnalytics.eventClickJadikanPilihanUtama()
+            viewModel.changeDefaultPreference(preference)
+        }
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {

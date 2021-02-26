@@ -117,11 +117,6 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
-            android:label="@string/title_detail_feed"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -179,13 +174,6 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
-
-
-        <receiver android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.utils.delete" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name="com.tokopedia.tkpd.receiver.AppMediaButtonReceiver">
             <intent-filter>

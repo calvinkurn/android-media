@@ -5,7 +5,7 @@ object WishlistQuery {
     private const val page = "\$page"
     private const val count = "\$count"
     fun getQuery() = """
-        query wishlist( $query: String!, $page: Int, $count: Int){
+        query getWishlist($query: String!, $page: Int, $count: Int){
           wishlist(page: $page, count:$count, query:$query){
               has_next_page
               total_data

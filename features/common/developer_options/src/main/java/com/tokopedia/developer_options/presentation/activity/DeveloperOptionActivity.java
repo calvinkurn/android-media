@@ -34,6 +34,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
@@ -51,6 +52,7 @@ import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
+import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
@@ -120,6 +122,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleTopAdsNotif;
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
+    private CheckBox toggleSellerAppReview;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -223,6 +226,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
+        toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -269,6 +273,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
         Button alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
+
+        TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
+        TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
+        Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
         String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
         String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
@@ -327,6 +335,20 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (inputRollenceKey.getText().length() < 1) {
+                    Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
+                } else if (inputRollenceVariant.getText().length() <1) {
+                    Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
+                } else {
+                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
+                    Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -491,6 +513,12 @@ public class DeveloperOptionActivity extends BaseActivity {
                     FpmLogger.getInstance().enableAutoLogFile(false);
                 }
             }
+        });
+
+        toggleSellerAppReview.setVisibility(GlobalConfig.isSellerApp() ? View.VISIBLE : View.GONE);
+        toggleSellerAppReview.setChecked(SellerInAppReview.getSellerAppReviewDebuggingEnabled(getApplicationContext()));
+        toggleSellerAppReview.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SellerInAppReview.setSellerAppReviewDebuggingEnabled(getApplicationContext(), isChecked);
         });
 
         vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());

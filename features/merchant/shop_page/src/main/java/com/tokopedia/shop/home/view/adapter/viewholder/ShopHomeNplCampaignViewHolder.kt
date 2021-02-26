@@ -138,7 +138,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_145)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -154,7 +154,10 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            setImageUrl(bannerUrl, heightRatio = 1f)
+            try {
+                if(context.isValidGlideContext())
+                    setImageUrl(bannerUrl, heightRatio = 1f)
+            } catch (e: Throwable) { }
         }
     }
 

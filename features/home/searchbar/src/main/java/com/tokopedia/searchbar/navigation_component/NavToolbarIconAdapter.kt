@@ -206,6 +206,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             iconImage.notificationRef.visible()
         }
         iconImage.setNotifXY(1f, -0.8f)
+        iconImage.visibility = View.VISIBLE
     }
 
     private fun constructCounterTagById(id: Int) =
