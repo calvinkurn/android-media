@@ -2,11 +2,10 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.android.synthetic.main.search_result_product_card_big_grid.view.productCardView
+import kotlinx.android.synthetic.main.search_result_product_card_big_grid.view.*
 
 class BigGridProductItemViewHolder(
     itemView: View,
@@ -37,7 +36,7 @@ class BigGridProductItemViewHolder(
             productListener.onItemClicked(productItem, adapterPosition)
         }
 
-        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem, adapterPosition))
+        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
     }
 
     override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {
