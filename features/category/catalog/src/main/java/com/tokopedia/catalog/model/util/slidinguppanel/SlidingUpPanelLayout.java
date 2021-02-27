@@ -68,7 +68,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
     /**
      * Default Minimum velocity that will be detected as a fling
      */
-    private static final int DEFAULT_MIN_FLING_VELOCITY = 400; // dips per second
+    private static final int DEFAULT_MIN_FLING_VELOCITY = 100; // dips per second
     /**
      * Default is set to false because that is how it was written
      */
@@ -1266,7 +1266,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
 
         if (mDragHelper.smoothSlideViewTo(mSlideableView, mSlideableView.getLeft(), panelTop)) {
             setAllChildrenVisible();
-            //ViewCompat.postInvalidateOnAnimation(this);
+            ViewCompat.postInvalidateOnAnimation(this);
             return true;
         }
         return false;

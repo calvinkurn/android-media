@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -205,7 +206,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
-                        setHeaderCount(list.size)
                         loadMoreTriggerListener?.updateStateAfterGetData()
                         isPagingAllowed = true
                     } else {
@@ -231,7 +231,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         viewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
-                setTotalSearchResultCount(it)
+                setHeaderCount(it)
             }
         })
 
@@ -265,8 +265,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun setHeaderCount(totalProductsCount : Int){
-        headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount.toString())
+    private fun setHeaderCount(totalProductsCount : String){
+        headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount)
     }
 
     private fun reloadFilter(param: RequestParams) {
@@ -592,6 +592,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun initSearchQuickSortFilter(rootView: View) {
         searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
+        searchSortFilter?.filterIcon?.setColorFilter(ContextCompat.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_N75), android.graphics.PorterDuff.Mode.MULTIPLY);
         addDefaultSelectedSort()
     }
 
@@ -602,6 +603,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun processQuickFilter(quickFilterData: DataValue) {
+        // BG
         if (dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
         val sortFilterItems = arrayListOf<SortFilterItem>()
         quickFilterOptionList = arrayListOf()
@@ -610,6 +612,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             (quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
             convertToSortFilterItem(filter.title, options)?.let { sortFilterItems.addAll(it) }
         }
+        // Main
         if (sortFilterItems.size > 0) {
             hideQuickFilterShimmering()
             setQuickFilter(sortFilterItems)
