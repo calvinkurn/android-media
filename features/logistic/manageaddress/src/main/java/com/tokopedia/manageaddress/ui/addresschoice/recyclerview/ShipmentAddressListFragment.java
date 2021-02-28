@@ -210,7 +210,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 }
 
                 if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0) {
-                    mPresenter.loadMore(prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+                    mPresenter.loadMore(prevState, getChosenAddrId());
                 }
             }
         });
@@ -318,16 +318,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchReset() {
-        mPresenter.getAddress(prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+        mPresenter.getAddress(prevState, getChosenAddrId());
     }
 
     private void performSearch(String query, boolean resetPage) {
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (!query.isEmpty()) {
-            mPresenter.searchAddress(query, prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+            mPresenter.searchAddress(query, prevState, getChosenAddrId());
         } else {
-            mPresenter.getAddress(prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+            mPresenter.getAddress(prevState, getChosenAddrId());
         }
     }
 
@@ -382,7 +382,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress(prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+                        mPresenter.getAddress(prevState, getChosenAddrId());
                         mCurrentAddress = address;
                     } else
                         mActivityListener.finishAndSendResult(address);
@@ -403,7 +403,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newAddress.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress(prevState, Integer.parseInt(localChosenAddr.getAddress_id()));
+                        mPresenter.getAddress(prevState, getChosenAddrId());
                         mCurrentAddress = newAddress;
                     } else
                         mActivityListener.finishAndSendResult(newAddress);
@@ -448,6 +448,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mSvAddressSearchBox.setListener(this);
         mSvAddressSearchBox.setResetListener(this);
         mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
+    }
+
+    private int getChosenAddrId() {
+        int addrId = 0;
+        if (!localChosenAddr.getAddress_id().isEmpty()) {
+            addrId = Integer.parseInt(localChosenAddr.getAddress_id());
+        }
+        return addrId;
     }
 
     private View.OnTouchListener onSearchViewTouchListener() {
