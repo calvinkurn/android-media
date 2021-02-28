@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.domain.interactor
 
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
-import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class LikeDislikeReviewUseCase(
@@ -18,26 +18,23 @@ class LikeDislikeReviewUseCase(
         private const val ACTION_LIKE_DISLIKE_REVIEW = "event_like_dislike_review"
     }
 
-    lateinit var params: Params
+    private val params = RequestParams.create()
 
     override suspend fun executeOnBackground(): LikeDislikeDomain {
-        if (::params.isInitialized) {
-            return reputationRepository.likeDislikeReview(mapOf(
-                    PARAM_REVIEW_ID to params.reviewId,
-                    PARAM_LIKE_STATUS to params.likeStatus.toString(),
-                    PARAM_PRODUCT_ID to params.productId,
-                    PARAM_SHOP_ID to params.shopId,
-                    PARAM_ACTION to params.action
-            ))
-        } else throw ErrorMessageException("params not initialized")
+        return reputationRepository.likeDislikeReview(params)
     }
 
-    data class Params(
-            val reviewId: String,
-            val likeStatus: Int,
-            val productId: String,
-            val shopId: String,
-            val action: String = ACTION_LIKE_DISLIKE_REVIEW
-    )
-
+    fun setParams(
+            reviewId: String,
+            likeStatus: Int,
+            productId: String,
+            shopId: String,
+            action: String = ACTION_LIKE_DISLIKE_REVIEW
+    ) {
+        params.putString(PARAM_REVIEW_ID, reviewId)
+        params.putString(PARAM_LIKE_STATUS, likeStatus.toString())
+        params.putString(PARAM_PRODUCT_ID, productId)
+        params.putString(PARAM_SHOP_ID, shopId)
+        params.putString(PARAM_ACTION, action)
+    }
 }

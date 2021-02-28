@@ -15,8 +15,10 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGet
 import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetRatingUseCase
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewProductViewModel @Inject constructor(
@@ -30,11 +32,8 @@ class ReviewProductViewModel @Inject constructor(
         private val reviewProductGetRatingUseCase: ReviewProductGetRatingUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
-    private val reviewProductList = MutableLiveData<Pair<List<ReviewProductModel>, Boolean>>()
-    fun getReviewProductList(): LiveData<Pair<List<ReviewProductModel>, Boolean>> = reviewProductList
-
-    private val reviewProductListError = MutableLiveData<Throwable>()
-    fun getReviewProductListError(): LiveData<Throwable> = reviewProductListError
+    private val reviewProductList = MutableLiveData<Result<Pair<List<ReviewProductModel>, Boolean>>>()
+    fun getReviewProductList(): LiveData<Result<Pair<List<ReviewProductModel>, Boolean>>> = reviewProductList
 
     private val ratingReview = MutableLiveData<DataResponseReviewStarCount>()
     fun getRatingReview(): LiveData<DataResponseReviewStarCount> = ratingReview
@@ -45,11 +44,8 @@ class ReviewProductViewModel @Inject constructor(
     private val isShowProgressDialog = MutableLiveData<Boolean>()
     fun getShowProgressDialog(): LiveData<Boolean> = isShowProgressDialog
 
-    private val deleteReview = MutableLiveData<String>()
-    fun getDeleteReview(): LiveData<String> = deleteReview
-
-    private val deleteReviewError = MutableLiveData<Throwable>()
-    fun getDeleteReviewError(): LiveData<Throwable> = deleteReviewError
+    private val deleteReview = MutableLiveData<Result<String>>()
+    fun getDeleteReview(): LiveData<Result<String>> = deleteReview
 
     private val postLikeDislike = MutableLiveData<Pair<LikeDislikeDomain, String>>()
     fun getPostLikeDislike(): LiveData<Pair<LikeDislikeDomain, String>> = postLikeDislike
@@ -59,29 +55,27 @@ class ReviewProductViewModel @Inject constructor(
 
     fun getRatingReview(productId: String) {
         launchCatchError(block = {
-            reviewProductGetRatingUseCase.params = ReviewProductGetRatingUseCase.Params(
-                    productId = productId
-            )
+            reviewProductGetRatingUseCase.setParams(productId)
             val data = reviewProductGetRatingUseCase.executeOnBackground()
-            withContext(dispatcherProvider.main) { ratingReview.value = data }
+            ratingReview.postValue(data)
         }, onError = {})
     }
 
     fun getHelpfulReview(productId: String) {
         launchCatchError(block = {
-            reviewProductGetHelpfulUseCase.params = ReviewProductGetHelpfulUseCase.Params(
+            reviewProductGetHelpfulUseCase.setParams(
                     productId = productId,
                     userId = userSession.userId
             )
             val data = reviewProductGetHelpfulUseCase.executeOnBackground()
             val reviewProductList = reviewProductListMapper.map(data, userSession.userId, productId)
-            withContext(dispatcherProvider.main) { helpfulReviewList.value = reviewProductList }
+            helpfulReviewList.postValue(reviewProductList)
         }, onError = {})
     }
 
     fun getProductReview(productId: String, page: Int, rating: String, isWithImage: Boolean) {
         launchCatchError(block = {
-            reviewProductGetListUseCase.params = ReviewProductGetListUseCase.Params(
+            reviewProductGetListUseCase.setParams(
                     productId = productId,
                     page = page.toString(),
                     rating = rating,
@@ -90,64 +84,52 @@ class ReviewProductViewModel @Inject constructor(
             )
             val data = reviewProductGetListUseCase.executeOnBackground()
             val reviewProductList = reviewProductListMapper.map(data, userSession.userId)
-            val isHasNextPage = !TextUtils.isEmpty(data?.paging?.uriNext)
-            withContext(dispatcherProvider.main) {
-                this@ReviewProductViewModel.reviewProductList.value = reviewProductList to isHasNextPage
-            }
+            val isHasNextPage = !TextUtils.isEmpty(data.paging?.uriNext)
+            this@ReviewProductViewModel.reviewProductList.postValue(Success(reviewProductList to isHasNextPage))
         }, onError = {
-            withContext(dispatcherProvider.main) { reviewProductListError.value = it }
+            this@ReviewProductViewModel.reviewProductList.postValue(Fail(it))
         })
     }
 
-    fun deleteReview(reviewId: String?, reputationId: String?, productId: String) {
+    fun deleteReview(reviewId: String, reputationId: String, productId: String) {
         launchCatchError(block = {
-            withContext(dispatcherProvider.main) { isShowProgressDialog.value = true }
-
-            deleteReviewResponseUseCase.params = DeleteReviewResponseUseCase.Params(
-                    reviewId = reviewId ?: "",
+            isShowProgressDialog.postValue(true)
+            deleteReviewResponseUseCase.setParams(
+                    reviewId = reviewId,
                     productId = productId,
                     shopId = userSession.shopId,
-                    reputationId = reputationId ?: ""
+                    reputationId = reputationId
             )
             val data = deleteReviewResponseUseCase.executeOnBackground()
-            withContext(dispatcherProvider.main) {
-                isShowProgressDialog.value = false
-                if (data.isSuccess) {
-                    deleteReview.value = reviewId
-                } else deleteReviewError.value = RuntimeException()
-            }
-
+            isShowProgressDialog.postValue(false)
+            if (data.isSuccess) {
+                deleteReview.postValue(Success(reviewId))
+            } else deleteReview.postValue(Fail(RuntimeException()))
         }, onError = {
-            withContext(dispatcherProvider.main) {
-                isShowProgressDialog.value = false
-                deleteReviewError.value = it
-            }
+            isShowProgressDialog.postValue(false)
+            deleteReview.postValue(Fail(it))
         })
     }
 
     fun postLikeDislikeReview(reviewId: String, likeStatus: Int, productId: String?) {
         launchCatchError(block = {
-            withContext(dispatcherProvider.main) { isShowProgressDialog.value = true }
+            isShowProgressDialog.postValue(true)
             val shopId = userSession.shopId.let {
                 if (TextUtils.isEmpty(it)) "0"
                 else it
             }
-            likeDislikeReviewUseCase.params = LikeDislikeReviewUseCase.Params(
+            likeDislikeReviewUseCase.setParams(
                     reviewId = reviewId,
                     likeStatus = likeStatus,
                     productId = productId ?: "",
                     shopId = shopId
             )
             val data = likeDislikeReviewUseCase.executeOnBackground()
-            withContext(dispatcherProvider.main) {
-                isShowProgressDialog.value = false
-                postLikeDislike.value = data to reviewId
-            }
+            isShowProgressDialog.postValue(false)
+            postLikeDislike.postValue(data to reviewId)
         }, onError = {
-            withContext(dispatcherProvider.main) {
-                isShowProgressDialog.value = false
-                errorPostLikeDislike.value = Triple(it, reviewId, likeStatus)
-            }
+            isShowProgressDialog.postValue(false)
+            errorPostLikeDislike.postValue(Triple(it, reviewId, likeStatus))
         })
     }
 }

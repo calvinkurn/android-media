@@ -6,6 +6,7 @@ import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikePojo
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 
 class CloudLikeDislikeDataSource(
@@ -13,11 +14,11 @@ class CloudLikeDislikeDataSource(
         private val userSession: UserSessionInterface
 ) {
 
-    suspend fun getLikeDislikeReview(params: Map<String, String>): LikeDislikeDomain {
-        return reputationService.api!!.likeDislikeReview(AuthHelper.generateParamsNetwork(
+    suspend fun getLikeDislikeReview(params: RequestParams): LikeDislikeDomain {
+        return reputationService.api.likeDislikeReview(AuthHelper.generateParamsNetwork(
                 userSession.userId,
                 userSession.deviceId,
-                params.toMutableMap()
+                params.paramsAllValueInString
         )).let { response ->
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->

@@ -2,17 +2,15 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.data.source
 
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil
+import com.tokopedia.usecase.RequestParams
 
 class ReviewProductGetStarCountCloud(
         private val reviewProductService: ReviewProductService
 ) {
-
-    companion object {
-        const val PRODUCT_ID = "product_id"
-    }
-
-    suspend fun getReviewStarCount(productId: String): DataResponseReviewStarCount {
-        val params = mapOf(PRODUCT_ID to productId)
-        return reviewProductService.api!!.getReviewStarCount(params).body()!!.data
+    suspend fun getReviewStarCount(params: RequestParams): DataResponseReviewStarCount {
+        return reviewProductService.api.getReviewStarCount(
+                ReputationUtil.convertMapObjectToString(params.parameters)
+        ).body()!!.data
     }
 }

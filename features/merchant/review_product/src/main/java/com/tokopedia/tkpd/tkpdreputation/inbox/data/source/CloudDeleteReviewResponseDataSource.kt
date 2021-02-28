@@ -6,18 +6,19 @@ import com.tokopedia.tkpd.tkpdreputation.data.pojo.DeleteReviewResponsePojo
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 
 class CloudDeleteReviewResponseDataSource(
         private val reputationService: ReputationService,
         private val userSession: UserSessionInterface
 ) {
-    suspend fun deleteReviewResponse(params: Map<String, String>): DeleteReviewResponseDomain {
-        val response = reputationService.api!!.deleteReviewResponse(
+    suspend fun deleteReviewResponse(params: RequestParams): DeleteReviewResponseDomain {
+        val response = reputationService.api.deleteReviewResponse(
                 AuthHelper.generateParamsNetwork(
                         userSession.userId,
                         userSession.deviceId,
-                        params.toMutableMap()
+                        params.paramsAllValueInString
                 )
         )
         if (response.isSuccessful) {

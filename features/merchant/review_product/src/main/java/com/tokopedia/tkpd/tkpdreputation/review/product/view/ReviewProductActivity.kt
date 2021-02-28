@@ -15,9 +15,9 @@ class ReviewProductActivity : BaseSimpleActivity(), HasComponent<BaseAppComponen
         val uri = intent.data
         val productId = if (uri != null) {
             val segments = uri.pathSegments
-            segments[segments.size - 2]
+            segments.getOrNull(segments.size - 2) ?: "0"
         } else {
-            intent!!.extras!!.getString(ReviewProductFragment.EXTRA_PRODUCT_ID)!!
+            intent?.extras?.getString(ReviewProductFragment.EXTRA_PRODUCT_ID) ?: ""
         }
         return ReviewProductFragment.getInstance(productId)
     }

@@ -11,21 +11,16 @@ class ReputationService(
         private val userSession: UserSession
 ) : BaseReputationService() {
 
-    init {
-        initApiService()
-    }
+    val api = initApiService()
 
-    var api: ReputationApiV2? = null
-        private set
-
-    private fun initApiService() {
+    private fun initApiService(): ReputationApi {
         val retrofit = createRetrofit(
                 context,
                 ReputationBaseURL.URL_REPUTATION,
                 networkRouter,
                 userSession
         )
-        api = retrofit.create(ReputationApiV2::class.java)
+        return retrofit.create(ReputationApi::class.java)
     }
 
 }

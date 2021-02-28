@@ -5,7 +5,7 @@ import com.tokopedia.tkpd.tkpdreputation.constant.ReputationBaseURL
 import retrofit2.Response
 import retrofit2.http.*
 
-interface ReputationApiV2 {
+interface ReputationApi {
 
     @POST(ReputationBaseURL.PATH_DELETE_REVIEW_RESPONSE)
     @FormUrlEncoded

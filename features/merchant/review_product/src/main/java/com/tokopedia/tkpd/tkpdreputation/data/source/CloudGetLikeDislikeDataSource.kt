@@ -6,12 +6,13 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService
+import com.tokopedia.usecase.RequestParams
 
 class CloudGetLikeDislikeDataSource(
         private val reputationService: ReputationService
 ) {
-    suspend fun getLikeDislikeReview(params: Map<String, String>): GetLikeDislikeReviewDomain {
-        val response = reputationService.api!!.getLikeDislikeReview(params)
+    suspend fun getLikeDislikeReview(params: RequestParams): GetLikeDislikeReviewDomain {
+        val response = reputationService.api.getLikeDislikeReview(params.paramsAllValueInString)
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
                 if ((!responseBody.isNullData && responseBody.errorMessageJoined.isEmpty()) ||

@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.domain.interactor
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain
-import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class DeleteReviewResponseUseCase(
@@ -16,24 +16,16 @@ class DeleteReviewResponseUseCase(
         private const val PARAM_REPUTATION_ID = "reputation_id"
     }
 
-    lateinit var params: Params
+    private val params = RequestParams.create()
 
     override suspend fun executeOnBackground(): DeleteReviewResponseDomain {
-        if (::params.isInitialized) {
-            return reputationRepository.deleteReviewResponse(mapOf(
-                    PARAM_REVIEW_ID to params.reviewId,
-                    PARAM_PRODUCT_ID to params.productId,
-                    PARAM_SHOP_ID to params.shopId,
-                    PARAM_REPUTATION_ID to params.reputationId
-            ))
-        } else throw ErrorMessageException("params not initialized")
+        return reputationRepository.deleteReviewResponse(params)
     }
 
-    data class Params(
-            val reviewId: String,
-            val productId: String,
-            val shopId: String,
-            val reputationId: String
-    )
-
+    fun setParams(reviewId: String, productId: String, shopId: String, reputationId: String) {
+        params.putString(PARAM_REVIEW_ID, reviewId)
+        params.putString(PARAM_PRODUCT_ID, productId)
+        params.putString(PARAM_SHOP_ID, shopId)
+        params.putString(PARAM_REPUTATION_ID, reputationId)
+    }
 }

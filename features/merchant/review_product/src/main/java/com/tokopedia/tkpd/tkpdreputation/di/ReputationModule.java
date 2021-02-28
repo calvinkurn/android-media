@@ -40,20 +40,13 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-
-    GraphqlRepository provideGraphqlRepository() {
-        return GraphqlInteractor.getInstance().getGraphqlRepository();
-    }
-
-    @ReputationScope
-    @Provides
     PersistentCacheManager providePersistentCacheManager(@ApplicationContext Context context) {
         return new PersistentCacheManager(context);
     }
 
     @ReputationScope
     @Provides
-    ReputationRepository provideReputationRepositoryV2(ReputationFactory reputationFactory) {
+    ReputationRepository provideReputationRepository(ReputationFactory reputationFactory) {
         return new ReputationRepository(reputationFactory);
     }
 
@@ -77,7 +70,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationService provideReputationServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+    ReputationService provideReputationService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReputationService(
                 context,
                 networkRouter,
@@ -87,7 +80,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReviewProductService provideReviewProductServiceV2(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+    ReviewProductService provideReviewProductService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReviewProductService(
                 context,
                 networkRouter,
@@ -97,7 +90,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    LikeDislikeReviewUseCase provideLikeDislikeReviewUseCaseV2(ReputationRepository reputationRepository) {
+    LikeDislikeReviewUseCase provideLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
         return new LikeDislikeReviewUseCase(reputationRepository);
     }
 

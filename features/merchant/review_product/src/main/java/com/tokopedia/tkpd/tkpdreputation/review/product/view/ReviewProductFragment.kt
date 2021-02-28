@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
@@ -35,6 +36,9 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.*
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.viewmodel.ReviewProductViewModel
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ReviewProductItemFilterView
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
 
@@ -42,9 +46,18 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     companion object {
 
-        const val INITIAL_PAGE = 1
-        const val TOTAL_FILTER_ITEM = 5
+        private const val RATING_5 = 5
+        private const val RATING_4 = 4
+        private const val RATING_3 = 3
+        private const val RATING_2 = 2
+        private const val RATING_1 = 1
+
+        private const val INITIAL_PAGE = 1
+        private const val TOTAL_FILTER_ITEM = 5
         const val EXTRA_PRODUCT_ID = "product_id"
+        private const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
+        private const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
+        private const val EXTRA_PRODUCT_ID_IMAGE = "EXTRA_PRODUCT_ID"
 
         fun getInstance(productId: String): ReviewProductFragment {
             val reviewProductFragment = ReviewProductFragment()
@@ -67,16 +80,16 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     private var reviewHelpfulList: List<ReviewProductModel>? = null
 
-    private lateinit var ratingProduct: TextView
-    private lateinit var ratingProductStar: RatingBar
-    private lateinit var counterReview: TextView
-    private lateinit var fiveStarReview: RatingBarReview
-    private lateinit var fourStarReview: RatingBarReview
-    private lateinit var threeStarReview: RatingBarReview
-    private lateinit var twoStarReview: RatingBarReview
-    private lateinit var oneStarReview: RatingBarReview
-    private lateinit var customViewQuickFilterView: CustomViewQuickFilterView
-    private lateinit var progressDialog: ProgressDialog
+    private var ratingProduct: TextView? = null
+    private var ratingProductStar: RatingBar? = null
+    private var counterReview: TextView? = null
+    private var fiveStarReview: RatingBarReview? = null
+    private var fourStarReview: RatingBarReview? = null
+    private var threeStarReview: RatingBarReview? = null
+    private var twoStarReview: RatingBarReview? = null
+    private var oneStarReview: RatingBarReview? = null
+    private var customViewQuickFilterView: CustomViewQuickFilterView? = null
+    private var progressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +110,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         oneStarReview = view.findViewById(R.id.one_star)
         customViewQuickFilterView = view.findViewById(R.id.filter_review)
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+        progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         setupFilterView()
         return view
     }
@@ -131,11 +144,11 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun loadData(page: Int) {
         var isWithPhoto = false
-        if (page <= INITIAL_PAGE && customViewQuickFilterView.selectedFilter == getString(R.string.review_label_all)) {
+        if (page <= INITIAL_PAGE && customViewQuickFilterView?.selectedFilter == getString(R.string.review_label_all)) {
             viewModel.getRatingReview(productId)
             viewModel.getHelpfulReview(productId)
         }
-        var filter = customViewQuickFilterView.selectedFilter
+        var filter = customViewQuickFilterView?.selectedFilter ?: ""
         if (filter == getString(R.string.review_label_with_photo)) {
             filter = ""
             isWithPhoto = true
@@ -147,7 +160,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     override fun onDeleteReviewResponse(element: ReviewProductModelContent?, adapterPosition: Int) {
-        viewModel.deleteReview(element?.reviewId, element?.reputationId, productId)
+        viewModel.deleteReview(element?.reviewId ?: "", element?.reputationId ?: "", productId)
     }
 
     override fun onMenuClicked(adapterPosition: Int) {}
@@ -156,7 +169,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, toInt(shopId))
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         startActivity(intent)
     }
@@ -178,9 +191,9 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         val elementProductId = element?.productId
 
         val bundle = Bundle()
-        bundle.putStringArray("EXTRA_IMAGE_URL_LIST", listLocation.toTypedArray())
-        bundle.putInt("EXTRA_DEFAULT_POSITION", position)
-        bundle.putString("EXTRA_PRODUCT_ID", elementProductId)
+        bundle.putStringArray(EXTRA_IMAGE_URL_LIST, listLocation.toTypedArray())
+        bundle.putInt(EXTRA_DEFAULT_POSITION, position)
+        bundle.putString(EXTRA_PRODUCT_ID_IMAGE, elementProductId)
         RouteManager.route(
                 context,
                 bundle,
@@ -195,7 +208,8 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     override fun onGoToProfile(reviewerId: String?, adapterPosition: Int) {
-        startActivity(RouteManager.getIntent(activity, ApplinkConst.PROFILE, reviewerId))
+        RouteManager.route(context, ApplinkConst.PROFILE, reviewerId)
+//        startActivity(RouteManager.getIntent(activity, ApplinkConst.PROFILE, reviewerId))
     }
 
     override fun onGoToShopInfo(shopId: String?) {
@@ -218,33 +232,33 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     private fun observeViewModel() {
-        viewModel.getReviewProductList().observe(this, observerReviewProductList)
-        viewModel.getReviewProductListError().observe(this, observerReviewProductListError)
-        viewModel.getHelpfulReviewList().observe(this, observerReviewHelpfulList)
-        viewModel.getRatingReview().observe(this, observerRatingReview)
-        viewModel.getPostLikeDislike().observe(this, observerSuccessPostLikeDislike)
-        viewModel.getErrorPostLikeDislike().observe(this, observerErrorPostLikeDislike)
-        viewModel.getDeleteReview().observe(this, observerSuccessDeleteReview)
-        viewModel.getDeleteReviewError().observe(this, observerErrorDeleteReview)
-        viewModel.getShowProgressDialog().observe(this, observerProgressLoading)
+        viewModel.getReviewProductList().observe(viewLifecycleOwner, observerReviewProductList)
+        viewModel.getHelpfulReviewList().observe(viewLifecycleOwner, observerReviewHelpfulList)
+        viewModel.getRatingReview().observe(viewLifecycleOwner, observerRatingReview)
+        viewModel.getPostLikeDislike().observe(viewLifecycleOwner, observerSuccessPostLikeDislike)
+        viewModel.getErrorPostLikeDislike().observe(viewLifecycleOwner, observerErrorPostLikeDislike)
+        viewModel.getDeleteReview().observe(viewLifecycleOwner, observerSuccessDeleteReview)
+        viewModel.getShowProgressDialog().observe(viewLifecycleOwner, observerProgressLoading)
     }
 
-    private val observerReviewProductList = Observer { pairReviewProductListAndIsHasNextPage: Pair<List<ReviewProductModel>, Boolean> ->
-        val reviewProductList = pairReviewProductListAndIsHasNextPage.first.toMutableList()
-        val isHasNextPage = pairReviewProductListAndIsHasNextPage.second
-        if (isLoadingInitialData && customViewQuickFilterView.selectedFilter == getString(R.string.review_label_all)) {
-            reviewProductList.add(0, ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)))
-            reviewHelpfulList?.let {
-                for (i in it.indices) {
-                    reviewProductList.add(i, it[i])
+    private val observerReviewProductList = Observer { result: Result<Pair<List<ReviewProductModel>, Boolean>> ->
+        when (result) {
+            is Success -> {
+                val data = result.data
+                val reviewProductList = data.first.toMutableList()
+                val isHasNextPage = data.second
+                if (isLoadingInitialData && customViewQuickFilterView?.selectedFilter == getString(R.string.review_label_all)) {
+                    reviewProductList.add(0, ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)))
+                    reviewHelpfulList?.let {
+                        for (i in it.indices) {
+                            reviewProductList.add(i, it[i])
+                        }
+                    }
                 }
+                renderList(reviewProductList, isHasNextPage)
             }
+            is Fail -> showGetListError(result.throwable)
         }
-        renderList(reviewProductList, isHasNextPage)
-    }
-
-    private val observerReviewProductListError = Observer { e: Throwable ->
-        showGetListError(e)
     }
 
     private val observerReviewHelpfulList = Observer { reviewHelpfulList: List<ReviewProductModel> ->
@@ -254,31 +268,31 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     private val observerRatingReview = Observer { dataResponseReviewStarCount: DataResponseReviewStarCount ->
-        ratingProduct.text = dataResponseReviewStarCount.ratingScore
-        ratingProductStar.rating = dataResponseReviewStarCount.ratingScore.toFloat()
-        counterReview.text = getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview())
+        ratingProduct?.text = dataResponseReviewStarCount.ratingScore
+        ratingProductStar?.rating = dataResponseReviewStarCount.ratingScore.toFloat()
+        counterReview?.text = getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview())
         for (detailReviewStarCount in dataResponseReviewStarCount.detail) {
             val percentageFloatReview = detailReviewStarCount.percentage.replace("%", "").replace(",", ".").toFloat()
             when (detailReviewStarCount.rate) {
-                5 -> {
-                    fiveStarReview.percentageProgress = percentageFloatReview
-                    fiveStarReview.totalReview = detailReviewStarCount.totalReview
+                RATING_5 -> {
+                    fiveStarReview?.percentageProgress = percentageFloatReview
+                    fiveStarReview?.totalReview = detailReviewStarCount.totalReview
                 }
-                4 -> {
-                    fourStarReview.percentageProgress = percentageFloatReview
-                    fourStarReview.totalReview = detailReviewStarCount.totalReview
+                RATING_4 -> {
+                    fourStarReview?.percentageProgress = percentageFloatReview
+                    fourStarReview?.totalReview = detailReviewStarCount.totalReview
                 }
-                3 -> {
-                    threeStarReview.percentageProgress = percentageFloatReview
-                    threeStarReview.totalReview = detailReviewStarCount.totalReview
+                RATING_3 -> {
+                    threeStarReview?.percentageProgress = percentageFloatReview
+                    threeStarReview?.totalReview = detailReviewStarCount.totalReview
                 }
-                2 -> {
-                    twoStarReview.percentageProgress = percentageFloatReview
-                    twoStarReview.totalReview = detailReviewStarCount.totalReview
+                RATING_2 -> {
+                    twoStarReview?.percentageProgress = percentageFloatReview
+                    twoStarReview?.totalReview = detailReviewStarCount.totalReview
                 }
-                1 -> {
-                    oneStarReview.percentageProgress = percentageFloatReview
-                    oneStarReview.totalReview = detailReviewStarCount.totalReview
+                RATING_1 -> {
+                    oneStarReview?.percentageProgress = percentageFloatReview
+                    oneStarReview?.totalReview = detailReviewStarCount.totalReview
                 }
             }
         }
@@ -302,17 +316,19 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(context, e))
     }
 
-    private val observerSuccessDeleteReview = Observer { reviewId: String ->
-        (adapter as ReviewProductAdapter).updateDeleteReview(reviewId)
-    }
-
-    private val observerErrorDeleteReview = Observer { e: Throwable ->
-        NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(context, e))
+    private val observerSuccessDeleteReview = Observer { result: Result<String> ->
+        when (result) {
+            is Success -> (adapter as ReviewProductAdapter).updateDeleteReview(result.data)
+            is Fail -> NetworkErrorHelper.showCloseSnackbar(
+                    activity,
+                    ErrorHandler.getErrorMessage(context, result.throwable)
+            )
+        }
     }
 
     private val observerProgressLoading = Observer { isShowProgressLoading: Boolean ->
-        if (isShowProgressLoading) progressDialog.show()
-        else progressDialog.dismiss()
+        if (isShowProgressLoading) progressDialog?.show()
+        else progressDialog?.dismiss()
     }
 
     private fun setupFilterView() {
@@ -361,8 +377,8 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
             quickFilterItemList.add(quickFilterItem)
         }
-        customViewQuickFilterView.renderFilter(quickFilterItemList)
-        customViewQuickFilterView.setListener { typeFilter ->
+        customViewQuickFilterView?.renderFilter(quickFilterItemList)
+        customViewQuickFilterView?.setListener { typeFilter ->
             reputationTracking.eventClickFilterReview(
                     addSuffixIfNeeded(typeFilter),
                     productId

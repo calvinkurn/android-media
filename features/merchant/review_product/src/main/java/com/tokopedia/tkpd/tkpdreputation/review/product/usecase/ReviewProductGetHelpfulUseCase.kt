@@ -4,9 +4,9 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
-import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -17,23 +17,31 @@ class ReviewProductGetHelpfulUseCase @Inject constructor(
         private val getLikeDislikeReviewUseCase: GetLikeDislikeReviewUseCase
 ) : UseCase<DataResponseReviewHelpful>() {
 
-    lateinit var params: Params
+    companion object {
+        private const val PARAM_PRODUCT_ID = "product_id"
+        private const val PARAM_USER_ID = "user_id"
+        private const val PARAM_SHOP_ID = "shop_id"
+    }
+
+    private val params = RequestParams.create()
 
     override suspend fun executeOnBackground(): DataResponseReviewHelpful {
-        return reputationRepository.getReviewHelpful(
-                userSession.shopId,
-                params.productId
-        ).let { dataResponseReviewHelpful ->
-            if (::params.isInitialized) {
-                val reviewList = dataResponseReviewHelpful.list
-                if (reviewList != null && reviewList.isNotEmpty()) {
-                    getLikeDislikeReviewUseCase.params = GetLikeDislikeReviewUseCase.Params(
-                            reviewIds = createReviewIds(reviewList),
-                            userId = params.userId
-                    )
-                    mapLikeModelToReviewModel(getLikeDislikeReviewUseCase.executeOnBackground(), dataResponseReviewHelpful)
-                } else dataResponseReviewHelpful
-            } else throw ErrorMessageException("params not initialized")
+        val reviewHelpfulParams = RequestParams.create().apply {
+            putString(PARAM_PRODUCT_ID, params.getString(PARAM_PRODUCT_ID, ""))
+            putString(PARAM_SHOP_ID, userSession.shopId)
+        }
+        return reputationRepository.getReviewHelpful(reviewHelpfulParams).let { dataResponseReviewHelpful ->
+            val reviewList = dataResponseReviewHelpful.list
+            if (reviewList != null && reviewList.isNotEmpty()) {
+                getLikeDislikeReviewUseCase.setParams(
+                        createReviewIds(reviewList),
+                        params.getString(PARAM_USER_ID, "")
+                )
+                mapLikeModelToReviewModel(
+                        getLikeDislikeReviewUseCase.executeOnBackground(),
+                        dataResponseReviewHelpful
+                )
+            } else dataResponseReviewHelpful
         }
     }
 
@@ -55,8 +63,8 @@ class ReviewProductGetHelpfulUseCase @Inject constructor(
         return dataResponseReviewHelpful
     }
 
-    data class Params(
-            val productId: String,
-            val userId: String
-    )
+    fun setParams(productId: String, userId: String) {
+        params.putString(PARAM_PRODUCT_ID, productId)
+        params.putString(PARAM_USER_ID, userId)
+    }
 }

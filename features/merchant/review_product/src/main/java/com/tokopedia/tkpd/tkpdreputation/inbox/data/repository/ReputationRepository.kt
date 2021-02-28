@@ -7,45 +7,40 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteRe
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class ReputationRepository @Inject constructor(
         private val reputationFactory: ReputationFactory
 ) {
 
-    suspend fun getReviewStarCount(productId: String): DataResponseReviewStarCount {
+    suspend fun getReviewStarCount(params: RequestParams): DataResponseReviewStarCount {
         return reputationFactory
                 .createCloudGetReviewStarCount()
-                .getReviewStarCount(productId)
+                .getReviewStarCount(params)
     }
 
-    suspend fun getReviewHelpful(shopId: String, productId: String): DataResponseReviewHelpful {
+    suspend fun getReviewHelpful(params: RequestParams): DataResponseReviewHelpful {
         return reputationFactory.createCloudGetReviewHelpful()
-                .getReviewHelpfulList(shopId, productId)
+                .getReviewHelpfulList(params)
     }
 
-    suspend fun getLikeDislikeReview(params: Map<String, String>): GetLikeDislikeReviewDomain {
+    suspend fun getLikeDislikeReview(params: RequestParams): GetLikeDislikeReviewDomain {
         return reputationFactory.createCloudGetLikeDislikeDataSource().getLikeDislikeReview(params)
     }
 
-    suspend fun getReviewProductList(
-            productId: String,
-            page: String,
-            perPage: String,
-            rating: String,
-            withAttachment: String
-    ): DataResponseReviewProduct {
+    suspend fun getReviewProductList(params: RequestParams): DataResponseReviewProduct {
         return reputationFactory
                 .createCloudGetReviewProductList()
-                .getReviewProductList(productId, page, perPage, rating, withAttachment)
+                .getReviewProductList(params)
     }
 
-    suspend fun deleteReviewResponse(params: Map<String, String>): DeleteReviewResponseDomain {
+    suspend fun deleteReviewResponse(params: RequestParams): DeleteReviewResponseDomain {
         return reputationFactory.createCloudDeleteReviewResponseDataSource().deleteReviewResponse(params)
 
     }
 
-    suspend fun likeDislikeReview(params: Map<String, String>): LikeDislikeDomain {
+    suspend fun likeDislikeReview(params: RequestParams): LikeDislikeDomain {
         return reputationFactory.createCloudLikeDislikeDataSource().getLikeDislikeReview(params)
     }
 
