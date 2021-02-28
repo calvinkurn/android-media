@@ -28,13 +28,15 @@ query keroAddressCorner($input: KeroGetAddressInput){
       partner_name
       type
       is_corner
-      state
-      state_detail
       is_state_chosen_address
     }
     token {
       district_recommendation
       ut
+    }
+    page_info {
+      ticker
+      button_label
     }
   }
 }

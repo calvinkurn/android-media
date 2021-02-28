@@ -33,10 +33,10 @@ class ManageAddressViewModel @Inject constructor(
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String) {
+    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.execute(query)
+                getPeopleAddressUseCase.execute(query, prevState = prevState, localChosenAddrId = localChosenAddrId)
                         .subscribe(object: rx.Observer<AddressListModel> {
                             override fun onError(it: Throwable?) {
                                 _addressList.value = ManageAddressState.Fail(it, "")
@@ -57,10 +57,10 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun loadMore() {
+    fun loadMore(prevState: Int, localChosenAddrId: Int) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.loadMore(savedQuery, page + 1)
+                getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId)
                         .subscribe(object: rx.Observer<AddressListModel> {
                             override fun onError(it: Throwable?) {
                                 _addressList.value = ManageAddressState.Fail(it, "")
@@ -80,23 +80,23 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String) {
+    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Int) {
         _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
-            searchAddress("")
+            searchAddress("", prevState, localChosenAddrId)
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })
     }
 
-    fun setDefaultPeopleAddress(id: String) {
+    fun setDefaultPeopleAddress(id: String, prevState: Int, localChosenAddrId: Int) {
         _result.value = ManageAddressState.Loading
         setDefaultPeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
-            searchAddress("")
+            searchAddress("", prevState, localChosenAddrId)
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })
