@@ -88,6 +88,7 @@ public class BranchWrapper implements WrapperInterface {
                                 .reInit();
                     }
                     else {
+                        isBranchInitialized = true;
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
                                 withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable()).init();
                     }
@@ -105,7 +106,6 @@ public class BranchWrapper implements WrapperInterface {
         return new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
-                isBranchInitialized = true;
                 if (error == null) {
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
