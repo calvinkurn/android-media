@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view_old.constant.PowerMerchantUrl
@@ -16,8 +15,6 @@ import com.tokopedia.power_merchant.subscribe.view_old.fragment.PowerMerchantSub
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
 
 class PowerMerchantStatusView : ConstraintLayout {
-
-    private var tracker: PowerMerchantTracking? = null
 
     constructor (context: Context) : super(context)
 
@@ -31,22 +28,16 @@ class PowerMerchantStatusView : ConstraintLayout {
 
     fun show(
             powerMerchantStatus: PowerMerchantStatus,
-            tracker: PowerMerchantTracking,
             onClickUpgradeBtn: () -> Unit
     ) {
         val shopScore = powerMerchantStatus.shopScore.data.value
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
-        setTracker(tracker)
         showShopStatus(shopScore)
         showShopScore(shopScore)
         showShopScoreDescription(shopScore)
         showPerformanceTipsBtn(shopScore)
         showLayout()
-    }
-
-    private fun setTracker(tracker: PowerMerchantTracking) {
-        this.tracker = tracker
     }
 
     private fun showShopStatus(shopScore: Int) {
@@ -78,13 +69,8 @@ class PowerMerchantStatusView : ConstraintLayout {
         val shouldShow = shopScore < MINIMUM_SCORE_ACTIVATE_IDLE
         btnPerformanceTips.showWithCondition(shouldShow)
         btnPerformanceTips.setOnClickListener {
-            trackClickPerformanceTipsBtn()
             goToWebViewPage(PowerMerchantUrl.URL_SHOP_PERFORMANCE_TIPS)
         }
-    }
-
-    private fun trackClickPerformanceTipsBtn() {
-        tracker?.eventClickPerformanceTipsBtn()
     }
 
     private fun goToWebViewPage(url: String) {

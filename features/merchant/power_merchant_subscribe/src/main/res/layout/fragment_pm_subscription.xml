@@ -9,12 +9,22 @@
         android:id="@+id/scrollViewPmSubscription"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/viewContainerPmUnsubscribe"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/bgPmBottomGradient"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="@dimen/layout_lvl8"
+                android:background="@drawable/bg_pm_gradient_green"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tickerPmCommunicationPeriod"
@@ -70,12 +80,16 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl3"
                 android:gravity="center"
                 android:text="@string/power_merchant_learn_more"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvPmFeatures"
+                app:layout_constraintVertical_bias="0.0"
                 app:unifyButtonVariant="ghost" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

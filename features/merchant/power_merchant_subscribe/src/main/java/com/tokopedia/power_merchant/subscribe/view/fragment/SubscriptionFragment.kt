@@ -5,13 +5,14 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gm.common.constant.GMParamTracker
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.Constant
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMFeatureAdapter
-import kotlinx.android.synthetic.main.fragment_pm_communication_period.view.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import kotlinx.android.synthetic.main.fragment_pm_subscription.view.*
 import javax.inject.Inject
 
 /**
@@ -31,7 +32,7 @@ class SubscriptionFragment : BaseFragment() {
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
-    override fun getResLayout(): Int = R.layout.fragment_pm_communication_period
+    override fun getResLayout(): Int = R.layout.fragment_pm_subscription
 
     override fun initInjector() {
         activity?.let {
@@ -47,6 +48,8 @@ class SubscriptionFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        observePmStatusInfo()
+        observeTickers()
     }
 
     private fun setupView() = view?.run {
@@ -71,5 +74,21 @@ class SubscriptionFragment : BaseFragment() {
 
     private fun showUnsubscribeBottomSheet() {
 
+    }
+
+    private fun observeTickers() {
+        view?.tickerPmCommunicationPeriod?.tickerTitle = "Ada perubahan pada Power Merchant"
+        view?.tickerPmCommunicationPeriod?.setHtmlDescription("Perubahan Power Merchant mulai berlaku pada\n" +
+                "1 Jan 2021. <a href=\"${Constant.Url.URL_FREE_SHIPPING_TERMS_AND_CONDITION}\">Pelajari Perubahan</a>")
+        view?.tickerPmCommunicationPeriod?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+    }
+
+    private fun observePmStatusInfo() {
+        val pmStatusInfo = PowerMerchantStatus(
+
+        )
+        view?.viewPmStatus?.show(pmStatusInfo) {
+
+        }
     }
 }
