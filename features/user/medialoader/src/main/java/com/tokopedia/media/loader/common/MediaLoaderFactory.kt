@@ -28,11 +28,6 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
-            // built-in CircleCrop transformation
-            if (isCircular) {
-                _transform.add(CircleCrop())
-            }
-
             // built-in RoundedCorners transformation
             if (roundedRadius > 0f) {
                 _transform.add(RoundedCorners(roundedRadius.toInt()))
@@ -53,6 +48,14 @@ abstract class MediaLoaderFactory<T> {
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
             transformation(properties)
+
+            /*
+            * regarding the circleCrop() didn't work in transformation above,
+            * we need to transform manually in here
+            * */
+            if (properties.isCircular) {
+                circleCrop()
+            }
 
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
@@ -78,7 +81,7 @@ abstract class MediaLoaderFactory<T> {
         }
     }
 
-    protected fun loader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
+    protected fun thumbnailFrom(context: Context, resource: Any?): RequestBuilder<Bitmap> {
         return GlideApp.with(context)
                 .asBitmap()
                 .load(resource)

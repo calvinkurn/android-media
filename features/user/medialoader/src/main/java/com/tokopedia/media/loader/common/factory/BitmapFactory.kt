@@ -45,7 +45,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
 
         with(properties) {
             if (thumbnailUrl.isNotEmpty()) {
-                thumbnail(loader(context, thumbnailUrl))
+                thumbnail(thumbnailFrom(context, thumbnailUrl))
             }
 
             listener(callbackListener(
