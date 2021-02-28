@@ -310,13 +310,13 @@ class SomListOrderViewHolder(
             checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (element.cancelRequest == 0) {
+                    if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+                        listener.onCheckBoxClickedWhenDisabled()
+                        true
+                    } else {
                         element.isChecked = !checkBoxSomListMultiSelect.isChecked
                         listener.onCheckChanged()
                         false
-                    } else {
-                        listener.onCheckBoxClickedWhenDisabled()
-                        true
                     }
                 } else {
                     false

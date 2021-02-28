@@ -210,7 +210,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
                     val order = adapter.data.getOrNull(it)
                     if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                            order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && order.cancelRequest == 0) {
+                            order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && !isOrderWithCancellationRequest(order)) {
                         layoutManager.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
                             it.isVisible
                         }?.let { quickActionButton ->
@@ -1325,7 +1325,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun checkAllOrder() {
-        adapter.data.onEach { if (it is SomListOrderUiModel && it.cancelRequest == 0) it.isChecked = true }
+        adapter.data.onEach { if (it is SomListOrderUiModel && !isOrderWithCancellationRequest(it)) it.isChecked = true }
         adapter.notifyDataSetChanged()
     }
 
@@ -1344,7 +1344,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun updateBulkActionCheckboxStatus() {
         val groupedOrders = adapter.data
-                .filter { it is SomListOrderUiModel && it.cancelRequest == 0 }
+                .filter { it is SomListOrderUiModel && !isOrderWithCancellationRequest(it) }
                 .groupBy { (it as SomListOrderUiModel).isChecked }
         val newIndeterminateStatus = groupedOrders[true]?.size.orZero() > 0 && groupedOrders[false]?.size.orZero() > 0
         val newCheckedStatus = groupedOrders[true]?.size.orZero() > 0
@@ -1499,7 +1499,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun getFirstNewOrder(orders: List<SomListOrderUiModel>): Int {
         return orders.indexOfFirst {
-            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && (it.cancelRequest == 0 || (it.cancelRequest == 1 && it.cancelRequestStatus == 0))
+            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && !isOrderWithCancellationRequest(it)
         }
     }
 
@@ -2038,4 +2038,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             KeyboardHandler.DropKeyboard(context, view)
         }
     }
+
+    private fun isOrderWithCancellationRequest(order: SomListOrderUiModel) = order.cancelRequest == 1 && order.cancelRequestStatus != 0
 }
