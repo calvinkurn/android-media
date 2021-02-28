@@ -27,6 +27,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
@@ -163,12 +164,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun performSearch(query: String) {
         clearData()
         maxItemPosition = 0
-
-        var chosenAddrId = 0
-        localChosenAddr?.address_id?.toInt()?.let {
-            chosenAddrId = it
-        }
-        viewModel.searchAddress(query, prevState, chosenAddrId)
+        viewModel.searchAddress(query, prevState, getChosenAddrId())
     }
 
     private fun initHeader() {
@@ -186,7 +182,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
-        chooseAddressButton = view?.findViewById(R.id.text_choose_address)
         tickerInfo = view?.findViewById(R.id.ticker_info)
 
         chooseAddressPref = ChooseAddressSharePref(context)
@@ -242,7 +237,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        viewModel.searchAddress("")
+                        viewModel.searchAddress("", prevState, getChosenAddrId())
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -291,7 +286,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
-                    prevState?.let { localChosenAddr?.address_id?.toInt()?.let { it1 -> viewModel.loadMore(it, it1) } }
+                    viewModel.loadMore(prevState, getChosenAddrId())
                 }
             }
         })
@@ -419,7 +414,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                prevState?.let { it1 -> localChosenAddr?.address_id?.toInt()?.let { it2 -> viewModel.setDefaultPeopleAddress(data.id, it1, it2) } }
+                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId())
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -427,7 +422,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 bottomSheetLainnya?.dismiss()
             }
             btn_alamat_utama_choose?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id)
+                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId())
                 _selectedAddressItem = data
             }
         }
@@ -478,11 +473,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun showGlobalError(type: Int) {
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
-            var chosenAddrId = 0
-            localChosenAddr?.address_id?.toInt()?.let {
-                chosenAddrId = it
-            }
-            viewModel.searchAddress("", prevState, chosenAddrId)
+            viewModel.searchAddress("", prevState, getChosenAddrId())
         }
         searchAddress?.gone()
         addressList?.gone()
@@ -556,5 +547,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         }
         activity?.finish()
+    }
+
+    private fun getChosenAddrId(): Int {
+        var chosenAddrId = 0
+        localChosenAddr?.address_id?.let { localAddrId ->
+            if (localAddrId.isNotEmpty()) {
+                localChosenAddr?.address_id?.toInt()?.let { id ->
+                    chosenAddrId = id
+                }
+            }
+        }
+        return chosenAddrId
     }
 }
