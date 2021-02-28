@@ -1,21 +1,34 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 
+@ExperimentalCoroutinesApi
 class ManageAddressViewModelTest {
 
     @get:Rule
@@ -28,12 +41,15 @@ class ManageAddressViewModelTest {
     private val setDetaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase = mockk(relaxed = true)
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
+    private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(TestCoroutineDispatcher())
         manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase, chooseAddressRepo, chooseAddressMapper)
+        manageAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
     }
 
     @Test
@@ -85,7 +101,6 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers  {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.setDefault.value)
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
@@ -100,7 +115,6 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.setDefault.value)
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
@@ -137,4 +151,21 @@ class ManageAddressViewModelTest {
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
+
+    @Test
+    fun `Get Chosen Address Success`() {
+        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } returns GetStateChosenAddressQglResponse()
+        manageAddressViewModel.getStateChosenAddress("address")
+        verify { getChosenAddressObserver.onChanged(match { it is Success }) }
+    }
+
+
+    @Test
+    fun `Get Chosen Address Fail`() {
+        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } throws Throwable("test error")
+        manageAddressViewModel.getStateChosenAddress("address")
+        verify { getChosenAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+
 }
