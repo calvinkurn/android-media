@@ -27,7 +27,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -54,6 +54,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
 import kotlinx.android.synthetic.main.empty_manage_address.*
@@ -89,7 +91,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
-    private var chooseAddressButton: Typography? = null
 
     private var llButtonChooseAddress: LinearLayout? = null
     private var buttonChooseAddress: UnifyButton? = null
@@ -193,14 +194,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         llButtonChooseAddress = view?.findViewById(R.id.ll_btn)
         buttonChooseAddress = view?.findViewById(R.id.btn_choose_address)
         buttonChooseAddress?.setOnClickListener {
-            setChoosenAddress()
+            setChosenAddress()
         }
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
-        chooseAddressButton?.setOnClickListener {
-            startActivity(context?.let { it -> ChooseAddressActivity.newInstance(it) })
-        }
 
         initScrollListener()
 
@@ -233,6 +231,48 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     swipeRefreshLayout?.isRefreshing = true
                     isLoading = true
                 }
+            }
+        })
+
+        viewModel.setDefault.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is ManageAddressState.Success ->
+                    if (isLocalization == true || isFromCheckout ==  true) {
+                        bottomSheetLainnya?.dismiss()
+                        setChosenAddress()
+                    } else {
+                        bottomSheetLainnya?.dismiss()
+                        viewModel.searchAddress("")
+                        viewModel.getStateChosenAddress("address")
+                    }
+
+                is ManageAddressState.Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, it.throwable?.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+
+                else -> {
+                    //no-op
+                }
+            }
+        })
+
+        viewModel.getChosenAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val data = it.data
+                    context?.let {
+                        context ->
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(), data.districtId.toString(),
+                            data.latitude, data.longitude, data.addressName, data.postalCode)
+                    }
+                }
+
+                is Fail -> {
+                }
+
             }
         })
     }
@@ -387,9 +427,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 bottomSheetLainnya?.dismiss()
             }
             btn_alamat_utama_choose?.setOnClickListener {
-                //TODO: hit jadikan & pilih sekaligus
-                //TODO: dismiss bottomSheet
-                //TODO: finish activity & set result back if source is from checkout
+                viewModel.setDefaultPeopleAddress(data.id)
+                _selectedAddressItem = data
             }
         }
 
@@ -477,7 +516,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
 
-    private fun setChoosenAddress() {
+    private fun setChosenAddress() {
         if (isLocalization == true) {
             ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
             val resultIntent = Intent().apply {

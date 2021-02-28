@@ -1,6 +1,8 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
+import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
@@ -24,12 +26,14 @@ class ManageAddressViewModelTest {
     private val getPeopleAddressUseCase: GetAddressCornerUseCase = mockk(relaxed = true)
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
     private val setDetaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase = mockk(relaxed = true)
+    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
+    private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
-        manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase)
+        manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase, chooseAddressRepo, chooseAddressMapper)
     }
 
     @Test
@@ -81,13 +85,13 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers  {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.setDefault.value)
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", -1, -1)
 
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.setDefault.value)
     }
 
     @Test
@@ -96,13 +100,13 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.setDefault.value)
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", 0, 0)
 
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.setDefault.value)
     }
 
     @Test
