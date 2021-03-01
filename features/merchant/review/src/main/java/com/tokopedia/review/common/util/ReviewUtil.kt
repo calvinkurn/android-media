@@ -8,6 +8,7 @@ import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.APP_DATE_SHOP_SCORE
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -59,7 +60,7 @@ object ReviewUtil {
         return if(context == null) {
             ""
         } else {
-            FirebaseRemoteConfigImpl(context).getString(ReviewConstants.APP_DATE_SHOP_SCORE, "")
+            FirebaseRemoteConfigImpl(context).getString(APP_DATE_SHOP_SCORE, "")
         }
     }
 }

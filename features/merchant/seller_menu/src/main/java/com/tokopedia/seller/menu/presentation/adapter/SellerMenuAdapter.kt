@@ -16,8 +16,10 @@ class SellerMenuAdapter(
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
 
     fun showShopScoreTicker(tickerShopScoreUiModel: TickerShopScoreUiModel) {
-        visitables.add(0, tickerShopScoreUiModel)
-        notifyItemInserted(0)
+        if (visitables.getOrNull(firstIndex) !is TickerShopScoreUiModel) {
+            visitables.add(0, tickerShopScoreUiModel)
+            notifyItemInserted(0)
+        }
     }
 
     fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {

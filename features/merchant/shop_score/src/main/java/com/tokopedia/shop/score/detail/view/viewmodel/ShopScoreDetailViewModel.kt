@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.shop.score.detail.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailData
@@ -17,11 +17,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopScoreDetailViewModel @Inject constructor(
-    private val getShopScoreUseCase: GetShopScoreUseCase,
-    private val getShopInfoUseCase: GetShopInfoUseCase,
-    val userSession: UserSessionInterface,
-    private val mapper: ShopScoreDetailMapper,
-    private val dispatchers: CoroutineDispatchers
+        private val getShopScoreUseCase: GetShopScoreUseCase,
+        private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
+        val userSession: UserSessionInterface,
+        private val mapper: ShopScoreDetailMapper,
+        private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main){
 
     val shopScoreData: LiveData<Result<ShopScoreDetailData>>
@@ -50,8 +50,8 @@ class ShopScoreDetailViewModel @Inject constructor(
     fun getShopInfoPeriod(shopId: Int) {
         launchCatchError(block = {
             val data = with(dispatchers.io) {
-                getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
-                mapper.mapToIsShowTickerShopInfo(getShopInfoUseCase.executeOnBackground())
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(shopId)
+                mapper.mapToIsShowTickerShopInfo(getShopInfoPeriodUseCase.executeOnBackground())
             }
             _tickerShopInfoPeriod.postValue(Success(data))
         }) {

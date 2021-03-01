@@ -21,9 +21,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
+import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.getShopScoreDate
 import com.tokopedia.shop.score.detail.di.component.DaggerShopScoreComponent
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailItem
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailSummary

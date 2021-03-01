@@ -1,7 +1,7 @@
 package com.tokopedia.shop.score.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
@@ -29,7 +29,7 @@ class ShopScoreDetailViewModelTest {
     lateinit var getShopScoreUseCase: GetShopScoreUseCase
 
     @RelaxedMockK
-    lateinit var getShopInfoUseCase: GetShopInfoUseCase
+    lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -45,7 +45,7 @@ class ShopScoreDetailViewModelTest {
 
         viewModel = ShopScoreDetailViewModel(
                 getShopScoreUseCase,
-                getShopInfoUseCase,
+                getShopInfoPeriodUseCase,
                 userSession,
                 mapper,
                 CoroutineTestDispatchersProvider
@@ -79,15 +79,15 @@ class ShopScoreDetailViewModelTest {
     fun `when get shop info period success should set live data success`() {
         val shopId = 1
 
-        getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
-        coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfoPeriodUiModel()
+        getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(shopId)
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns ShopInfoPeriodUiModel()
 
         viewModel.getShopInfoPeriod(shopId)
 
         val expectedResult = Success(mapper.mapToIsShowTickerShopInfo(ShopInfoPeriodUiModel()))
         val actualResult = viewModel.tickerShopInfoPeriod.value
 
-        coVerify { getShopInfoUseCase.executeOnBackground() }
+        coVerify { getShopInfoPeriodUseCase.executeOnBackground() }
 
         assertEquals(expectedResult, actualResult)
     }
@@ -117,8 +117,8 @@ class ShopScoreDetailViewModelTest {
         val shopId = 1
         val error = MessageErrorException()
 
-        getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
-        coEvery { getShopInfoUseCase.executeOnBackground() } throws error
+        getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(shopId)
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws error
 
         viewModel.getShopInfoPeriod(shopId)
 
@@ -127,7 +127,7 @@ class ShopScoreDetailViewModelTest {
             it.throwable::class.java
         }
 
-        coVerify { getShopInfoUseCase.executeOnBackground() }
+        coVerify { getShopInfoPeriodUseCase.executeOnBackground() }
 
         assertEquals(expectedError, actualError)
     }

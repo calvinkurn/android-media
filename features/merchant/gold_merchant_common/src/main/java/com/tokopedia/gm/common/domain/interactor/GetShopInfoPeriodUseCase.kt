@@ -11,7 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetShopInfoUseCase @Inject constructor(
+class GetShopInfoPeriodUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopInfoPeriodUiModel>(graphqlRepository) {
 

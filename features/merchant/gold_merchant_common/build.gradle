@@ -19,6 +19,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

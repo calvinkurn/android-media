@@ -6,7 +6,6 @@ object ShopScoreConstant {
     const val SHOP_SCORE_LEVEL_THREE = 3
     const val SHOP_SCORE_LEVEL_FOUR = 4
 
-    const val APP_DATE_SHOP_SCORE = "android_sellerapp_shop_score_date"
     const val REGULAR_MERCHANT_TYPE = "regular_merchant_type"
     const val POWER_MERCHANT_TYPE = "power_merchant_type"
     const val OFFICIAL_STORE_TYPE = "official_store_type"
