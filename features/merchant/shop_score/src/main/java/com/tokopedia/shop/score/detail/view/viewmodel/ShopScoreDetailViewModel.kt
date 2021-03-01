@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoUseCase
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.shop.score.detail.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailData

@@ -1,6 +1,8 @@
 package com.tokopedia.shop.score.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.detail.domain.model.ShopScoreResponse
@@ -11,10 +13,8 @@ import com.tokopedia.shop.score.detail.view.model.ShopType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -25,23 +25,30 @@ class ShopScoreDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var getShopScoreUseCase: GetShopScoreUseCase
-    private lateinit var userSession: UserSessionInterface
+    @RelaxedMockK
+    lateinit var getShopScoreUseCase: GetShopScoreUseCase
+
+    @RelaxedMockK
+    lateinit var getShopInfoUseCase: GetShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     private lateinit var mapper: ShopScoreDetailMapper
     private lateinit var viewModel: ShopScoreDetailViewModel
 
     @Before
     fun setUp() {
-        getShopScoreUseCase = mockk()
-        userSession = mockk()
+        MockKAnnotations.init(this)
 
         mapper = ShopScoreDetailMapper(userSession)
 
         viewModel = ShopScoreDetailViewModel(
-            getShopScoreUseCase,
-            userSession,
-            mapper,
-            CoroutineTestDispatchersProvider
+                getShopScoreUseCase,
+                getShopInfoUseCase,
+                userSession,
+                mapper,
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -69,6 +76,23 @@ class ShopScoreDetailViewModelTest {
     }
 
     @Test
+    fun `when get shop info period success should set live data success`() {
+        val shopId = 1
+
+        getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
+        coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfoPeriodUiModel()
+
+        viewModel.getShopInfoPeriod(shopId)
+
+        val expectedResult = Success(mapper.mapToIsShowTickerShopInfo(ShopInfoPeriodUiModel()))
+        val actualResult = viewModel.tickerShopInfoPeriod.value
+
+        coVerify { getShopInfoUseCase.executeOnBackground() }
+
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
     fun `when get shop score detail error should set live data fail`() {
         val shopId = "1"
         val error = MessageErrorException()
@@ -84,6 +108,26 @@ class ShopScoreDetailViewModelTest {
         }
 
         coVerify { getShopScoreUseCase.execute(shopId) }
+
+        assertEquals(expectedError, actualError)
+    }
+
+    @Test
+    fun `when get shop info period error should set live data fail`() {
+        val shopId = 1
+        val error = MessageErrorException()
+
+        getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
+        coEvery { getShopInfoUseCase.executeOnBackground() } throws error
+
+        viewModel.getShopInfoPeriod(shopId)
+
+        val expectedError = MessageErrorException::class.java
+        val actualError = (viewModel.tickerShopInfoPeriod.value as? Fail)?.let {
+            it.throwable::class.java
+        }
+
+        coVerify { getShopInfoUseCase.executeOnBackground() }
 
         assertEquals(expectedError, actualError)
     }

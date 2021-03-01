@@ -71,9 +71,9 @@ class GetShopInfoUseCase @Inject constructor(
         val requests = mutableListOf(officialStoreRequest, shopInfoRequest, periodTypeRequest)
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests)
-            if (!gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty() &&
-                    !gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty() &&
-                    !gqlResponse.getError(GetIsOfficialResponse::class.java).isNullOrEmpty()) {
+            if (!gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()
+                    && !gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()
+                    && !gqlResponse.getError(GetIsOfficialResponse::class.java).isNullOrEmpty()) {
                 val shopInfoData = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
                 val periodTypeData = gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo.data
                 val officialStoreData = gqlResponse.getData<GetIsOfficialResponse>(GetIsOfficialResponse::class.java).getIsOfficial.data
