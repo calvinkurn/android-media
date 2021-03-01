@@ -20,7 +20,6 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
-import com.tokopedia.flight.searchV4.presentfation.fragment.FlightSearchFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigKey

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV4.presentfation.fragment
+package com.tokopedia.flight.searchV4.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
