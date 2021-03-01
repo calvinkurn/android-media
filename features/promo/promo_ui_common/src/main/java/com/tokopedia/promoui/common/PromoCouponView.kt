@@ -1,14 +1,14 @@
 package com.tokopedia.promoui.common
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 
-class CouponView @JvmOverloads constructor(
+class PromoCouponView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
@@ -28,6 +28,7 @@ class CouponView @JvmOverloads constructor(
     var commonOffset = 0f
     var cornerRadius = 0f
     var defaultPadding = 0
+    var topPadding = 0
     var bottomPadding = 0
     private val blurMaskFilter: BlurMaskFilter
 
@@ -35,7 +36,12 @@ class CouponView @JvmOverloads constructor(
     val bottomRectF = RectF()
     val bottomPaint = Paint()
 
+    val VIEW_TYPE_NORMAL = 0
+    val VIEW_TYPE_MVC = 1
+    var viewType = VIEW_TYPE_NORMAL
+
     init {
+
         cornerRadius = dpToPx(8)
         shadowRadius = dpToPx(0)
 
@@ -52,19 +58,48 @@ class CouponView @JvmOverloads constructor(
 
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.OUTER)
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        setPadding(defaultPadding, 0, defaultPadding, defaultPadding)
 
         bottomPaint.style = Paint.Style.FILL
         bottomPaint.color = Color.WHITE
         bottomPaint.isAntiAlias = true
 
         shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
+        readDataFromAttrs(attrs)
+        configure()
+
+        setPadding(defaultPadding, topPadding, defaultPadding, defaultPadding)
+    }
+
+    private fun configure() {
+        when (viewType) {
+            VIEW_TYPE_MVC -> {
+                shadowStartY = 0f
+                cornerRadius = 0f
+                topPadding = defaultPadding
+                shadowTopOffset += dpToPx(4)
+                shadowStrokeWidth = dpToPx(3)
+                shadowColor = ContextCompat.getColor(context, R.color.promo_ui_mvc_shadow_color)
+            }
+        }
+    }
+
+    private fun readDataFromAttrs(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PromoCouponView, 0, 0)
+            try {
+                viewType = typedArray.getInt(R.styleable.PromoCouponView_promo_coupon_view_type, VIEW_TYPE_NORMAL)
+            } finally {
+                typedArray.recycle();
+            }
+        }
     }
 
 
     override fun dispatchDraw(canvas: Canvas) {
         drawShadow(canvas)
-        drawBottomRoundBg(canvas)
+        if (viewType == VIEW_TYPE_NORMAL) {
+            drawBottomRoundBg(canvas)
+        }
         super.dispatchDraw(canvas)
     }
 
@@ -79,10 +114,11 @@ class CouponView @JvmOverloads constructor(
                     break
                 }
             }
+            val subtractForMvcType = if (viewType == VIEW_TYPE_MVC) dpToPx(10) else 0f
             bottomRoundPath.reset()
-            bottomRectF.top = bottomOfBigImage
-            bottomRectF.left = bottomPadding.toFloat()
-            bottomRectF.right = width - bottomPadding.toFloat()
+            bottomRectF.top = bottomOfBigImage + topPadding
+            bottomRectF.left = bottomPadding.toFloat() + subtractForMvcType
+            bottomRectF.right = width - bottomPadding.toFloat() - subtractForMvcType
             bottomRectF.bottom = height - bottomPadding.toFloat()
             val radii = floatArrayOf(0f, 0f, 0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius)
             bottomRoundPath.addRoundRect(bottomRectF, radii, Path.Direction.CW)
@@ -118,17 +154,8 @@ class CouponView @JvmOverloads constructor(
         val rectF = RectF(left.toFloat(), top, right, bottom.toFloat())
         shadowPath.addRoundRect(rectF, shadowRadius, shadowRadius, Path.Direction.CW)
     }
-
-    fun rectShadowPath() {
-        shadowPath.reset()
-        shadowPath.moveTo((width + (shadowEndOffset)), shadowStartY + shadowTopOffset)              //Top Right
-        shadowPath.lineTo((shadowStartOffset), shadowStartY + shadowTopOffset)                      // TR -> TL
-        shadowPath.lineTo((shadowStartOffset), (height + shadowBottomOffset))                         // TL -> BL
-        shadowPath.lineTo((width + shadowEndOffset), (height + shadowBottomOffset))                   // BL -> BR
-        shadowPath.lineTo((width + shadowEndOffset), shadowStartY + shadowTopOffset)               // BR -> TR
-    }
 }
 
-fun View.dpToPx(dp: Int): Float {
-    return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
+fun dpToPx(dp: Int): Float {
+    return (dp * Resources.getSystem().displayMetrics.density)
 }

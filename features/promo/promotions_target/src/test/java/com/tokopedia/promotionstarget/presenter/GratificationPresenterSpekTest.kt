@@ -149,7 +149,7 @@ class GratificationPresenterSpekTest : Spek({
         every {
             gratificationPresenter.dialogCreator.createGratifDialog(any(),
                     notificationResponse.response!!, couponResponse,
-                    notificationEntryType, gratifCallback, screenName, closeCurrentActivity)
+                    notificationEntryType, gratifCallback, screenName, closeCurrentActivity,any())
         } returns bottomSheetDialog
 
         every { bottomSheetDialog.setOnDismissListener(any()) } just runs
@@ -277,7 +277,7 @@ class GratificationPresenterSpekTest : Spek({
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
                 gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any())
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
                 gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
@@ -298,7 +298,7 @@ class GratificationPresenterSpekTest : Spek({
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
                 gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any())
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
                 gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
@@ -357,7 +357,7 @@ class GratificationPresenterSpekTest : Spek({
                 gratificationPresenter.notificationUseCase.getResponse(any())
                 gratificationPresenter.tpCouponDetailUseCase.getQueryParams(any())
                 gratificationPresenter.tpCouponDetailUseCase.getResponse(any())
-                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any())
+                gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
                 gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
                 bottomSheetDialog.setOnCancelListener(any())
