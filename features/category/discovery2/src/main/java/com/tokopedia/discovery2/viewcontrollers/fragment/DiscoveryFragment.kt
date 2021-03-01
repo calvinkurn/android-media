@@ -26,7 +26,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
@@ -183,6 +182,11 @@ class DiscoveryFragment :
     private fun initChooseAddressWidget(view: View) {
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
         chooseAddressWidget?.bindChooseAddress(this)
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it)) {
+                fetchUserLatestAddressData()
+            }
+        }
     }
 
     private fun initToolbar(view: View) {
@@ -362,9 +366,9 @@ class DiscoveryFragment :
                 val coachMark = CoachMark2(requireContext())
                 coachMarkItem.add(
                         CoachMark2Item(
-                                chooseAddressWidget!!,
-                                "Bisa pilih alamat pengirimanmu dulu",
-                                "Biar pengalaman belanjamu lebih asyik dan mudah."
+                                it,
+                                getString(R.string.choose_address_title),
+                                getString(R.string.choose_address_description)
                         )
                 )
                 coachMark.showCoachMark(coachMarkItem)
@@ -718,7 +722,11 @@ class DiscoveryFragment :
                 }
             }
         })
-        checkAddressUpdate()
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+                checkAddressUpdate()
+            }
+        }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -780,7 +788,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
-        fetchUserLatestAddressData()
+        checkAddressUpdate()
     }
 
     override fun onLocalizingAddressServerDown() {
@@ -804,7 +812,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressLoginSuccess() {
-
+        checkAddressUpdate()
     }
 
     override fun onLocalizingAddressUpdatedFromBackground() {
