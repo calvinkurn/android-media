@@ -1,11 +1,14 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
@@ -34,6 +37,8 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.util.Event
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -43,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
@@ -65,27 +71,36 @@ class ShopHomeViewModelTest {
         CoroutineTestDispatchersProvider
     }
 
-    private val getShopProductUseCase: GqlGetShopProductUseCase = mockk(relaxed = true)
+    @RelaxedMockK
+    lateinit var getShopProductUseCase: GqlGetShopProductUseCase
     @RelaxedMockK
     lateinit var getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>
     @RelaxedMockK
     lateinit var checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>
-    private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase = mockk(relaxed = true)
-    private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
-    private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
-    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase = mockk(relaxed = true)
-    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase = mockk(relaxed = true)
-    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase = mockk(relaxed = true)
-    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase = mockk(relaxed = true)
-    private val shopProductSortMapper: ShopProductSortMapper = mockk(relaxed = true)
-    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase = mockk(relaxed = true)
-    private val playWidgetTools: PlayWidgetTools = mockk(relaxed = true)
-
+    @RelaxedMockK
+    lateinit var getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase
+    @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+    @RelaxedMockK
+    lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
+    @RelaxedMockK
+    lateinit var getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase
+    @RelaxedMockK
+    lateinit var getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase
+    @RelaxedMockK
+    lateinit var gqlGetShopSortUseCase: GqlGetShopSortUseCase
+    @RelaxedMockK
+    lateinit var mvcSummaryUseCase: MVCSummaryUseCase
     @RelaxedMockK
     lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
+    @RelaxedMockK
+    lateinit var playWidgetTools: PlayWidgetTools
+    @RelaxedMockK
+    lateinit var shopProductSortMapper: ShopProductSortMapper
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var viewModel: ShopHomeViewModel
-    private lateinit var viewModelSpykData: ShopHomeViewModel
 
     private val mockShopId = "1234"
     private val mockCampaignId = "123"
@@ -121,6 +136,7 @@ class ShopHomeViewModelTest {
             listOf()
     )
 
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -138,12 +154,10 @@ class ShopHomeViewModelTest {
                 getShopFilterProductCountUseCase,
                 gqlGetShopSortUseCase,
                 shopProductSortMapper,
-                getMerchantVoucherListUseCase,
+                mvcSummaryUseCase,
                 playWidgetTools
         )
-        viewModelSpykData = spyk(viewModel, recordPrivateCalls = true)
     }
-
     @Test
     fun `check whether home layout and product list response is success if initial product list data is null`() {
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget()
@@ -243,60 +257,62 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether get merchant voucher is success`() {
-        val numVoucher = 10
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
                 listWidget = listOf(
-                        ShopHomeVoucherUiModel(),
-                        ShopHomeDisplayWidgetUiModel()
+                        ShopLayoutWidget.Widget(
+                                name = WidgetName.VOUCHER_STATIC
+                        )
                 )
-        ))
+        )
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+
         coEvery {
-            getMerchantVoucherListUseCase.createObservable(any())
-        } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                voucherId = 10,
-                voucherName = "voucherName",
-                voucherCode = "1010002",
-                validThru = "1020021",
-                merchantVoucherOwner = MerchantVoucherOwner()
-        )))
-        viewModelSpykData.getMerchantVoucherList(mockShopId, numVoucher)
-        coVerify { getMerchantVoucherListUseCase.createObservable(any()) }
+            mvcSummaryUseCase.getResponse(any())
+        } returns TokopointsCatalogMVCSummaryResponse(null)
+        viewModel.getMerchantVoucherCoupon(mockShopId)
+        coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
 
     @Test
     fun `check whether get merchant voucher is fail`() {
-        val numVoucher = 10
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
                 listWidget = listOf(
-                        ShopHomeVoucherUiModel()
+                        ShopLayoutWidget.Widget(
+                                name = WidgetName.VOUCHER_STATIC
+                        )
                 )
-        ))
+        )
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+
         coEvery {
-            getMerchantVoucherListUseCase.createObservable(any())
+            mvcSummaryUseCase.getResponse(any())
         } throws Throwable()
-        viewModelSpykData.getMerchantVoucherList(mockShopId, numVoucher)
-        coVerify { getMerchantVoucherListUseCase.createObservable(any()) }
+        viewModel.getMerchantVoucherCoupon(mockShopId)
+        coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
 
     @Test
-    fun `check whether get merchant voucher is null when shopHomeLayoutData is null`() {
-        val numVoucher = 10
-        every { viewModelSpykData.shopHomeLayoutData.value } returns null
+    fun `get merchant voucher and if it fails getting shopHomeLayoutData`() {
         coEvery {
-            getMerchantVoucherListUseCase.createObservable(any())
-        } throws Throwable()
-        viewModelSpykData.getMerchantVoucherList(mockShopId, numVoucher)
-        assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value == null)
+            mvcSummaryUseCase.getResponse(any())
+        } returns TokopointsCatalogMVCSummaryResponse(null)
+        viewModel.getMerchantVoucherCoupon(mockShopId)
     }
 
     @Test
-    fun `check whether shopHomeMerchantVoucherLayoutData value should be null if voucher layout not exists`() {
-        val numVoucher = 10
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel())
-        viewModelSpykData.getMerchantVoucherList(mockShopId, numVoucher)
-        assert(viewModel.shopHomeMerchantVoucherLayoutData.value == null)
+    fun `get merchant voucher and it has no voucher static widget`() {
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+                listWidget = listOf(
+                        ShopLayoutWidget.Widget(
+                                name = WidgetName.PRODUCT
+                        )
+                )
+        )
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        viewModel.getMerchantVoucherCoupon(mockShopId)
+        assertTrue(viewModel.shopHomeLayoutData.value is Success)
     }
 
     @Test
@@ -577,7 +593,7 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether isCampaignFollower return true if matched campaign found and dynamicRuleDescription is not empty`() {
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+        (viewModel.shopHomeLayoutData as MutableLiveData<Result<ShopPageHomeLayoutUiModel>>).value = Success(ShopPageHomeLayoutUiModel(
                 listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(
                         data = listOf(ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
                                 campaignId = mockCampaignId,
@@ -587,12 +603,12 @@ class ShopHomeViewModelTest {
                         ))
                 ))
         ))
-        assert(viewModelSpykData.isCampaignFollower(mockCampaignId))
+        assert(viewModel.isCampaignFollower(mockCampaignId))
     }
 
     @Test
     fun `check whether isCampaignFollower return false if matched campaign found but dynamicRuleDescription is empty`() {
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+        (viewModel.shopHomeLayoutData as MutableLiveData<Result<ShopPageHomeLayoutUiModel>>).value = Success(ShopPageHomeLayoutUiModel(
                 listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(
                         data = listOf(ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
                                 campaignId = mockCampaignId,
@@ -602,21 +618,21 @@ class ShopHomeViewModelTest {
                         ))
                 ))
         ))
-        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+        assert(!viewModel.isCampaignFollower(mockCampaignId))
     }
 
     @Test
     fun `check whether isCampaignFollower return false if home layout data is fail`() {
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Fail(Exception())
-        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+        (viewModel.shopHomeLayoutData as MutableLiveData<Result<ShopPageHomeLayoutUiModel>>).value = Fail(Exception())
+        assert(!viewModel.isCampaignFollower(mockCampaignId))
     }
 
     @Test
     fun `check whether isCampaignFollower return false if ui model data value is null`() {
-        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+        (viewModel.shopHomeLayoutData as MutableLiveData<Result<ShopPageHomeLayoutUiModel>>).value = Success(ShopPageHomeLayoutUiModel(
                 listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(data = null)))
         )
-        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+        assert(!viewModel.isCampaignFollower(mockCampaignId))
     }
 
     @Test

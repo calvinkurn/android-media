@@ -138,9 +138,11 @@ class PlayVideoManager private constructor(
                     val currentWindow = timeline.getWindow(0, Timeline.Window())
                     val prepareState = currentPrepareState
                     if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is PlayVideoPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
-                        currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
                         val lastPosition = prepareState.positionHandle.lastPosition
-                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) videoPlayer.seekTo(lastPosition)
+                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) {
+                            videoPlayer.seekTo(lastPosition)
+                            currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
+                        }
                     }
                 }
             } catch (e: Exception) {}
@@ -169,7 +171,7 @@ class PlayVideoManager private constructor(
     fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
         val listener = object : Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
-                offer(state)
+                try { offer(state) } catch (e: Throwable) {}
             }
         }
 
@@ -186,7 +188,7 @@ class PlayVideoManager private constructor(
         listeners.remove(listener)
     }
 
-    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
+    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl, startPosition: Long? = null) {
         if (uri.toString().isEmpty()) {
             release()
             return
@@ -195,7 +197,9 @@ class PlayVideoManager private constructor(
         val prepareState = currentPrepareState
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
-            val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
+
+            val lastPosition = startPosition ?: if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
+
             val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
             currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)

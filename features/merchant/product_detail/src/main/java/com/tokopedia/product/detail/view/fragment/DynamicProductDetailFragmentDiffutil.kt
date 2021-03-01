@@ -430,7 +430,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
-            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+            activity?.let { AdultManager.handleActivityResult(it, requestCode, resultCode, data) }
         }
         when (requestCode) {
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
@@ -1723,6 +1723,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
         }
 
+        if(!it.merchantVoucherSummary.isShown) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
+        }
+
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
@@ -2349,7 +2353,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 .putExtra(ProductDetailConstant.WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(ProductDetailConstant.WISHLIST_STATUS_UPDATED_POSITION, -1))
         resultIntent.putExtra(ProductDetailConstant.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
+        activity?.let { it.setResult(Activity.RESULT_CANCELED, resultIntent) }
     }
 
     private fun gotoEditProduct() {
@@ -2863,7 +2867,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     }
                 }
 
-                varToolbar?.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
+                varToolbar?.overflowIcon = activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_product_more_dark) }
             }
         }
     }
