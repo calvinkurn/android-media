@@ -9,3 +9,9 @@ const val GM_BADGE_TITLE = "Power Badge"
 const val GM_TITLE = "Power Merchant"
 const val PATTERN_DATE_SHOP_INFO = "yyyy-MM-dd"
 const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
+const val NEW_SELLER_DAYS = 90
+const val END_OF_TENURE_SEVEN_DAYS = 7
+const val TRANSITION_PERIOD = "transition_period"
+const val COMMUNICATION_PERIOD = "communication_period"
+const val END_PERIOD = "final"
+

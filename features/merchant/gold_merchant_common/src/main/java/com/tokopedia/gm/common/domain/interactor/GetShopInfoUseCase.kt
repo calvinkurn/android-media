@@ -3,7 +3,7 @@ package com.tokopedia.gm.common.domain.interactor
 import com.tokopedia.gm.common.data.source.cloud.model.PMPeriodTypeResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
 import com.tokopedia.gm.common.domain.mapper.ShopScoreMapper
-import com.tokopedia.gm.common.presentation.ShopInfoTransitionUiModel
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetShopInfoUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<ShopInfoTransitionUiModel>(graphqlRepository) {
+) : GraphqlUseCase<ShopInfoPeriodUiModel>(graphqlRepository) {
 
     companion object {
         const val SHOP_ID = "shopID"
@@ -41,8 +41,8 @@ class GetShopInfoUseCase @Inject constructor(
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): ShopInfoTransitionUiModel {
-        var shopInfoTransition = ShopInfoTransitionUiModel()
+    override suspend fun executeOnBackground(): ShopInfoPeriodUiModel {
+        var shopInfoTransition = ShopInfoPeriodUiModel()
         val shopId = requestParams.getInt(SHOP_ID, 0)
 
         val shopInfoParam = mapOf(SHOP_ID to shopId, SOURCE to SELLER_APP_SOURCE)

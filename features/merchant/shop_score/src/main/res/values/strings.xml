@@ -242,6 +242,9 @@
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
     <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan hanya melakukan KYC.</string>
+    <string name="title_shop_performance_become_existing_seller">Performa Tokomu akan efektif berlaku setelah 90 hari bergabung, di <![CDATA[<b>%s</b>]]></string>
 
+    <string name="shop_performance_learn">Pelajari Performa Toko</string>
+    <string name="title_tv_watch">Tonton Video</string>
 
 </resources>
