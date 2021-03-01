@@ -462,7 +462,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             hasAskedPermission = true
             permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
-                    //no op
+                    ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
                 }
 
                 override fun onNeverAskAgain(permissionText: String) {
@@ -470,6 +470,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
 
                 override fun onPermissionGranted() {
+                    ChooseAddressTracking.onClickAllowLocation(userSession.userId)
                     getLocation()
                 }
             })
