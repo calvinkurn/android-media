@@ -1,0 +1,34 @@
+package com.tokopedia.play.view.uimodel.mapper
+
+import com.tokopedia.play.data.Voucher
+import com.tokopedia.play.view.type.MerchantVoucherType
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import javax.inject.Inject
+
+/**
+ * Created by jegul on 01/02/21
+ */
+class PlayMerchantVoucherUiMapper @Inject constructor() {
+
+    fun mapMerchantVoucher(input: Voucher): MerchantVoucherUiModel {
+        return MerchantVoucherUiModel(
+                title = input.title,
+                description = input.subtitle,
+                type = when(input.voucherType) {
+                    /**
+                     * 1 -> Free Ongkir
+                     * 2 -> **Not Used**
+                     * 3 -> Cashback
+                     */
+                    /**
+                     * 1 -> Free Ongkir
+                     * 2 -> **Not Used**
+                     * 3 -> Cashback
+                     */
+                    1 -> MerchantVoucherType.Shipping
+                    2,3 -> MerchantVoucherType.Discount
+                    else -> MerchantVoucherType.Unknown
+                }
+        )
+    }
+}

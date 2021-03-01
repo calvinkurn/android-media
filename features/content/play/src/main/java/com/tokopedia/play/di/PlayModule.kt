@@ -8,7 +8,10 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
@@ -104,6 +107,24 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun provideRemoteConfig(): RemoteConfig {
         return FirebaseRemoteConfigImpl(mContext)
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayChannelStateStorage(): PlayChannelStateStorage {
+        return PlayChannelStateStorage()
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayVideoWrapperBuilder(@ApplicationContext context: Context): PlayVideoWrapper.Builder {
+        return PlayVideoWrapper.Builder(context)
+    }
+
+    @Provides
+    @PlayScope
+    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
+        return PlayAnalytic(userSession, trackingQueue)
     }
 
     @PlayScope
