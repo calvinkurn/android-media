@@ -43,6 +43,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.extensions.decodeBase64
+import com.tokopedia.sessioncommon.util.RSAUtils
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -54,7 +57,7 @@ import javax.inject.Named
 
 class RegisterInitialViewModel @Inject constructor(
         private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
-        private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
+        private val registerRequestUseCase: GraphqlUseCase<RegisterRequestV2>,
         private val activateUserUseCase: ActivateUserUseCase,
         private val discoverUseCase: DiscoverUseCase,
         private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
@@ -63,6 +66,7 @@ class RegisterInitialViewModel @Inject constructor(
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
@@ -276,25 +280,30 @@ class RegisterInitialViewModel @Inject constructor(
             fullname: String,
             validateToken: String
     ) {
-        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
-            val params = mapOf(
-                    RegisterInitialQueryConstant.PARAM_EMAIL to email,
-                    RegisterInitialQueryConstant.PARAM_PASSWORD to password,
-                    RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
-                    RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
-                    RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
-                    RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
-            )
-
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-            registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
-            registerRequestUseCase.setRequestParams(params)
-            registerRequestUseCase.setGraphqlQuery(query)
-            registerRequestUseCase.execute(
-                    onSuccessRegisterRequest(),
-                    onFailedRegisterRequest()
-            )
-        }
+        launchCatchError(coroutineContext, {
+            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(keyData.key.isNotEmpty()) {
+                rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
+                    val encryptedPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), true)
+                    val params = mapOf(
+                        RegisterInitialQueryConstant.PARAM_EMAIL to email,
+                        RegisterInitialQueryConstant.PARAM_PASSWORD to encryptedPassword,
+                        RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
+                        RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
+                        RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
+                        RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
+                        RegisterInitialQueryConstant.PARAM_HASH to keyData.hash
+                    )
+                    userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                    registerRequestUseCase.setTypeClass(RegisterRequestV2::class.java)
+                    registerRequestUseCase.setRequestParams(params)
+                    registerRequestUseCase.setGraphqlQuery(query)
+                    val result = registerRequestUseCase.executeOnBackground()
+                    onSuccessRegisterRequest(result)
+                }
+            }}, {
+                onFailedRegisterRequest(it)
+            })
     }
 
     fun activateUser(
@@ -504,25 +513,22 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessRegisterRequest(): (RegisterRequestPojo) -> Unit {
-        return {
-            userSession.clearToken()
-            if (it.data.accessToken.isNotEmpty() &&
-                    it.data.refreshToken.isNotEmpty() &&
-                    it.data.tokenType.isNotEmpty()) {
-                mutableRegisterRequestResponse.value = Success(it.data)
-            } else if (it.data.errors.isNotEmpty() && it.data.errors[0].message.isNotEmpty()) {
-                mutableRegisterRequestResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0].message))
-            } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
-        }
+    private fun onSuccessRegisterRequest(result: RegisterRequestV2) {
+        userSession.clearToken()
+        if (result.data.accessToken.isNotEmpty() &&
+                result.data.refreshToken.isNotEmpty() &&
+                result.data.tokenType.isNotEmpty()) {
+            mutableRegisterRequestResponse.value = Success(result.data)
+        } else if (result.data.errors.isNotEmpty() && result.data.errors[0].message.isNotEmpty()) {
+            mutableRegisterRequestResponse.value =
+                    Fail(com.tokopedia.network.exception.MessageErrorException(result.data.errors[0].message))
+        } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+
     }
 
-    private fun onFailedRegisterRequest(): (Throwable) -> Unit {
-        return {
-            userSession.clearToken()
-            mutableRegisterRequestResponse.value = Fail(it)
-        }
+    private fun onFailedRegisterRequest (throwable: Throwable){
+        userSession.clearToken()
+        mutableRegisterRequestResponse.value = Fail(throwable)
     }
 
     private fun onSuccessActivateUser(): (ActivateUserData) -> Unit {

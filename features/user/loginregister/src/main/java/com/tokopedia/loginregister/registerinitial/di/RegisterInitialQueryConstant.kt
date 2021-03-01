@@ -13,4 +13,5 @@ object RegisterInitialQueryConstant {
     const val PARAM_FULLNAME = "fullname"
     const val PARAM_PASSWORD = "password"
     const val PARAM_OS_TYPE = "osType"
+    const val PARAM_HASH = "h"
 }
