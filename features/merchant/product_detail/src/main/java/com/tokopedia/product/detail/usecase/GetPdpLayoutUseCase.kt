@@ -143,10 +143,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       isCashback {
                         percentage
                       }
-                      isFreeOngkir {
-                        isActive
-                        imageURL
-                      }
                       preorder {
                         duration
                         isActive

@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.view.adapter.viewholder
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -48,10 +49,12 @@ class ProductShippingHeaderViewHolder(view: View,
         if (element.isFulfillment) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             txtTokoCabang?.shouldShowWithAction(element.tokoCabangContent.isNotEmpty()) {
-                txtTokoCabang.text = HtmlLinkHelper(context, element.tokoCabangContent).spannedString
-            }
-            txtTokoCabang?.setOnClickListener {
-                listener.openUspBottomSheet(element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
+                val linkHelper = HtmlLinkHelper(context, element.tokoCabangContent)
+                txtTokoCabang.text = linkHelper.spannedString
+                txtTokoCabang.movementMethod = LinkMovementMethod.getInstance()
+                linkHelper.urlList.getOrNull(0)?.onClick = {
+                    listener.openUspBottomSheet(element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
+                }
             }
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
             icTokoCabang?.loadImage(element.tokoCabangIcon)

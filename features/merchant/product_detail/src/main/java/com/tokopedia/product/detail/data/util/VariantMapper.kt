@@ -22,7 +22,8 @@ object VariantMapper {
             intent: Intent?,
             productId: String?,
             productInfo: DynamicProductInfoP1?,
-            variantResp: ProductVariantCommon?
+            variantResp: ProductVariantCommon?,
+            freeOngkirImgUrl: String
     ) {
         if (intent == null || productId == null) return
         val variants = variantResp?.mapSelectedProductVariants(productId)
@@ -38,8 +39,7 @@ object VariantMapper {
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val isActive = productInfo?.basic?.isActive() ?: true
-        val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
-        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
+        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
         val productColorVariant = variants?.get("colour")?.get("value") ?: ""
         val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
@@ -57,7 +57,7 @@ object VariantMapper {
                 productSizeVariant,
                 productUrl,
                 productFsIsActive,
-                productFsImageUrl,
+                freeOngkirImgUrl,
                 priceBefore,
                 priceBeforeInt,
                 dropPercentage,

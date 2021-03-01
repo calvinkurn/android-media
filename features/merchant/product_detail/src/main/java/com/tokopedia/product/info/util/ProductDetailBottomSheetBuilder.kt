@@ -3,7 +3,9 @@ package com.tokopedia.product.info.util
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.view.util.toDateId
@@ -17,6 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 object ProductDetailBottomSheetBuilder {
     private const val PDP_TIME_PUKUL = "pukul"
+    private const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
 
     fun getShopNotesBottomSheet(context: Context, dateValue: String, descValue: String, titleValue: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
@@ -55,7 +58,7 @@ object ProductDetailBottomSheetBuilder {
         return bottomSheetUnify
     }
 
-    fun getShippingErrorBottomSheet(context: Context, data: ErrorBottomSheet, errorCode: Int, onButtonClicked: () -> Unit): BottomSheetUnify {
+    fun getShippingErrorBottomSheet(context: Context, data: ErrorBottomSheet, errorCode: Int, onButtonClicked: (Int) -> Unit): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bs_product_shipping_error, null)
 
@@ -72,10 +75,16 @@ object ProductDetailBottomSheetBuilder {
 
             btn_error.setOnClickListener {
                 dismiss()
-                onButtonClicked.invoke()
+                onButtonClicked.invoke(errorCode)
             }
         }
 
         return bottomSheetUnify
+    }
+
+    fun openChooseAddressBottomSheet(listener: ChooseAddressBottomSheet.ChooseAddressBottomSheetListener, childFragmentManager: FragmentManager) {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(listener)
+        chooseAddressBottomSheet.show(childFragmentManager, SHIPPING_CHOOSE_ADDRESS_TAG)
     }
 }
