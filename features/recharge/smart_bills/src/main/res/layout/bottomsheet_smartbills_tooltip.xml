@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_sbm_tooltip"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_title"
+
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_desc_1"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_desc_2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_tooltip_sbm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_button"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        />
+
+</LinearLayout>
