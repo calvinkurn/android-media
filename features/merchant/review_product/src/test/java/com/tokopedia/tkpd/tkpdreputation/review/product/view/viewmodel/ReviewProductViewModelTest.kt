@@ -1,78 +1,22 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.view.viewmodel
 
-import android.text.TextUtils
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase
-import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetHelpfulUseCase
-import com.tokopedia.tkpd.tkpdreputation.review.product.usecase.ReviewProductGetRatingUseCase
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import java.lang.RuntimeException
 
-class ReviewProductViewModelTest {
-
-    @RelaxedMockK
-    lateinit var userSession: UserSession
-
-    @RelaxedMockK
-    lateinit var reviewProductListMapper: ReviewProductListMapper
-
-    @RelaxedMockK
-    lateinit var reviewProductGetHelpfulUseCase: ReviewProductGetHelpfulUseCase
-
-    @RelaxedMockK
-    lateinit var reviewProductGetListUseCase: ReviewProductGetListUseCase
-
-    @RelaxedMockK
-    lateinit var deleteReviewResponseUseCase: DeleteReviewResponseUseCase
-
-    @RelaxedMockK
-    lateinit var likeDislikeReviewUseCase: LikeDislikeReviewUseCase
-
-    @RelaxedMockK
-    lateinit var reviewProductGetRatingUseCase: ReviewProductGetRatingUseCase
-
-    lateinit var viewModel: ReviewProductViewModel
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-        viewModel = ReviewProductViewModel(
-                CoroutineTestDispatchersProvider,
-                userSession,
-                reviewProductListMapper,
-                reviewProductGetHelpfulUseCase,
-                reviewProductGetListUseCase,
-                deleteReviewResponseUseCase,
-                likeDislikeReviewUseCase,
-                reviewProductGetRatingUseCase
-        )
-    }
+class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
 
     @Test
     fun `when getRatingReview success should execute expected usecase`() {
@@ -109,7 +53,7 @@ class ReviewProductViewModelTest {
         coEvery { userSession.userId } returns userId
         coEvery { reviewProductListMapper.map(expectedNetworkResponse, userId) } returns reviewProductList
         viewModel.getProductReview(productId, page, rating, isWithImage)
-        coVerify { reviewProductGetListUseCase.executeOnBackground() }
+        verifyReviewProductGetListCalled()
         viewModel.getReviewProductList().verifySuccessEquals(Success(reviewProductList to true))
     }
 
@@ -122,7 +66,7 @@ class ReviewProductViewModelTest {
         val expectedError = Throwable()
         coEvery { reviewProductGetListUseCase.executeOnBackground() } throws expectedError
         viewModel.getProductReview(productId, page, rating, isWithImage)
-        coVerify { reviewProductGetListUseCase.executeOnBackground() }
+        verifyReviewProductGetListCalled()
         viewModel.getReviewProductList().verifyErrorEquals(Fail(expectedError))
     }
 
@@ -133,9 +77,9 @@ class ReviewProductViewModelTest {
         val productId = anyString()
         // 1 to assign isSuccess
         val expectedNetworkResponse = DeleteReviewResponseDomain(1)
-        coEvery { deleteReviewResponseUseCase.executeOnBackground() } returns expectedNetworkResponse
+        onDeleteReview_thenReturn(expectedNetworkResponse)
         viewModel.deleteReview(reviewId, reputationId, productId)
-        coEvery { deleteReviewResponseUseCase.executeOnBackground() }
+        verifyDeleteReviewResponseCalled()
         viewModel.getDeleteReview().verifySuccessEquals(Success(reviewId))
     }
 
@@ -146,9 +90,9 @@ class ReviewProductViewModelTest {
         val productId = anyString()
         // 0 to assign isSuccess false
         val expectedNetworkResponse = DeleteReviewResponseDomain(0)
-        coEvery { deleteReviewResponseUseCase.executeOnBackground() } returns expectedNetworkResponse
+        onDeleteReview_thenReturn(expectedNetworkResponse)
         viewModel.deleteReview(reviewId, reputationId, productId)
-        coEvery { deleteReviewResponseUseCase.executeOnBackground() }
+        verifyDeleteReviewResponseCalled()
         viewModel.getDeleteReview().verifyErrorEquals(Fail(RuntimeException()))
     }
 
@@ -160,7 +104,7 @@ class ReviewProductViewModelTest {
         val expectedNetworkResponse = Throwable()
         coEvery { deleteReviewResponseUseCase.executeOnBackground() } throws expectedNetworkResponse
         viewModel.deleteReview(reviewId, reputationId, productId)
-        coEvery { deleteReviewResponseUseCase.executeOnBackground() }
+        verifyDeleteReviewResponseCalled()
         viewModel.getDeleteReview().verifyErrorEquals(Fail(expectedNetworkResponse))
     }
 
@@ -174,7 +118,7 @@ class ReviewProductViewModelTest {
         )
         coEvery { likeDislikeReviewUseCase.executeOnBackground() } returns expectedNetworkResponse
         viewModel.postLikeDislikeReview(reviewId, likeStatus, productId)
-        coVerify { likeDislikeReviewUseCase.executeOnBackground() }
+        verifyLikeDislikeReviewCalled()
         viewModel.getPostLikeDislike().verifyValueEquals(expectedNetworkResponse to reviewId)
     }
 
@@ -186,9 +130,24 @@ class ReviewProductViewModelTest {
         val expectedNetworkResponse = Throwable()
         coEvery { likeDislikeReviewUseCase.executeOnBackground() } throws expectedNetworkResponse
         viewModel.postLikeDislikeReview(reviewId, likeStatus, productId)
-        coVerify { likeDislikeReviewUseCase.executeOnBackground() }
+        verifyLikeDislikeReviewCalled()
         viewModel.getErrorPostLikeDislike().verifyValueEquals(Triple(expectedNetworkResponse, reviewId, likeStatus))
     }
 
+    private fun onDeleteReview_thenReturn(deleteResponse: DeleteReviewResponseDomain) {
+        coEvery { deleteReviewResponseUseCase.executeOnBackground() } returns deleteResponse
+    }
+
+    private fun verifyReviewProductGetListCalled() {
+        coVerify { reviewProductGetListUseCase.executeOnBackground() }
+    }
+
+    private fun verifyDeleteReviewResponseCalled() {
+        coVerify { deleteReviewResponseUseCase.executeOnBackground() }
+    }
+
+    private fun verifyLikeDislikeReviewCalled() {
+        coVerify { likeDislikeReviewUseCase.executeOnBackground() }
+    }
 }
 
