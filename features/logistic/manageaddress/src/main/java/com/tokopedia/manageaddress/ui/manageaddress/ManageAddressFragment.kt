@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -38,7 +37,6 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.ui.chooseaddress.ChooseAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -54,7 +52,6 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -148,7 +145,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
-                performSearch("")
+                setChosenAddressANA(addressDataModel)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
@@ -260,8 +257,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     val data = it.data
                     context?.let {
                         context ->
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(), data.districtId.toString(),
-                            data.latitude, data.longitude, data.addressName, data.postalCode)
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
+                                data.districtId.toString(), data.latitude, data.longitude, data.addressName, data.postalCode)
                     }
                 }
 
@@ -511,7 +508,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (isLocalization == true) {
             ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
             val resultIntent = Intent().apply {
-                putExtra(ChooseAddressConstant.INTENT_ADDRESS_SELECTED, _selectedAddressItem)
+                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
             }
             activity?.setResult(Activity.RESULT_OK, resultIntent)
         }
@@ -547,6 +544,25 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         }
         activity?.finish()
+    }
+
+    private fun setChosenAddressANA(addressDataModel: SaveAddressDataModel) {
+        context?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
+                    addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
+                    addressDataModel.latitude, addressDataModel.longitude, addressDataModel.addressName, addressDataModel.postalCode)
+        }
+
+        if (isLocalization == true) {
+            val resultIntent = Intent().apply {
+                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
+            }
+            activity?.setResult(Activity.RESULT_OK, resultIntent)
+            activity?.finish()
+        } else {
+            performSearch("")
+        }
     }
 
     private fun getChosenAddrId(): Int {

@@ -118,7 +118,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun checkRollence(){
-        val value = ChooseAddressUtils.isRollOutUser()
+        val value = ChooseAddressUtils.isRollOutUser(context)
         value.let { chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(it) }
     }
 
@@ -216,6 +216,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * We need Object Host Fragment to get viewmodel
          */
         fun getLocalizingAddressHostFragment(): Fragment
+
 
         /**
          * String Source of Host Page

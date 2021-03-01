@@ -22,7 +22,7 @@ import com.tokopedia.user.session.UserSessionInterface
 object ChooseAddressUtils {
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        return if (isRollOutUser()) {
+        return if (isRollOutUser(context)) {
             if (hasLocalizingAddressOnCache(context)) {
                 val chooseAddressPref = ChooseAddressSharePref(context)
                 chooseAddressPref.getLocalCacheData()
@@ -50,9 +50,9 @@ object ChooseAddressUtils {
     }
 
     /**
-     * temporary use return true
+     * Rollence key
      */
-    fun isRollOutUser(): Boolean {
+    fun isRollOutUser(context: Context): Boolean {
         val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
         return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
