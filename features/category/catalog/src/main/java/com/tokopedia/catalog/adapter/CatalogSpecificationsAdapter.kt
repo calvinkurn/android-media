@@ -23,7 +23,10 @@ class CatalogSpecificationsAdapter (val list : ArrayList<TopSpecificationsCompon
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(model: TopSpecificationsComponentData) {
-            itemView.specification_iv.loadImage(model.icon ?: "")
+            if(model.icon.isNullOrBlank())
+                itemView.specification_iv.loadImage("https://image.flaticon.com/icons/png/128/3524/3524636.png")
+            else
+                itemView.specification_iv.loadImage(model.icon)
             itemView.specification_name.text = model.key
             itemView.specification_description.text = model.value
             itemView.setOnClickListener {
