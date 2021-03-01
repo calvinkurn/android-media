@@ -93,7 +93,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 viewPager2.apply {
                     adapter = imgViewPagerAdapter
                     setOnClickListener {
-                        actionListener?.onSnapshotImgClicked(position)
+                        actionListener?.onSnapshotImgClicked(adapterPosition)
                     }
                     registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
                         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -109,7 +109,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 indicator.gone()
                 ivHeader.visible()
                 ivHeader.setOnClickListener {
-                    actionListener?.onSnapshotImgClicked(position)
+                    actionListener?.onSnapshotImgClicked(adapterPosition)
                 }
                 productImages.firstOrNull()?.imageUrl?.let {
                     ImageHandler.loadImageFromUriFitCenter(itemView.context, ivHeader, Uri.parse(it))
@@ -140,7 +140,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
         } else {
             hargaCoret.visible()
             hargaCoret.text = dataObject.campaignData.campaign.originalPrice
-            hargaCoret.paintFlags = hargaCoret.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+            hargaCoret.paintFlags = hargaCoret.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         productName.text = MethodChecker.fromHtmlPreserveLineBreak(dataObject.orderDetail.productName)

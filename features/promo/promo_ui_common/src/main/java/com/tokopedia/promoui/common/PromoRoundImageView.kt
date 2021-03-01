@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.giftbox.presentation.views
+package com.tokopedia.promoui.common
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,10 +6,8 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 
-class GamificationRoundImageView @JvmOverloads constructor(
+class PromoRoundImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     var radius = 0f
@@ -19,8 +17,8 @@ class GamificationRoundImageView @JvmOverloads constructor(
     init {
         attrs?.let { attributes ->
             val typedArray =
-                    context.theme.obtainStyledAttributes(attributes, com.tokopedia.gamification.R.styleable.GamificationRoundImageView, 0, 0)
-            radius = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GamificationRoundImageView_gfRoundImageRadius, dpToPx(8))
+                    context.theme.obtainStyledAttributes(attributes, R.styleable.PromoRoundImageView, 0, 0)
+            radius = typedArray.getDimension(R.styleable.PromoRoundImageView_promo_round_radius, dpToPx(8))
         }
     }
 
