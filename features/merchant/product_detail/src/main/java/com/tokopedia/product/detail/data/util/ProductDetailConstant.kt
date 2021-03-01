@@ -195,4 +195,6 @@ object ProductDetailConstant {
 
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
+
+    const val ELIGIBLE_TRADE_IN = 1
 }

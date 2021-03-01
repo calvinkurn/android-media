@@ -36,7 +36,7 @@ data class P2RatesEstimateData(
 
         @SerializedName("cheapestShippingPrice")
         @Expose
-        val cheapestShippingPrice: Long = 0L,
+        val cheapestShippingPrice: Double = 0.0,
 
         @SerializedName("destination")
         @Expose
