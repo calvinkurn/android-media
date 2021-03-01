@@ -152,7 +152,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(com.tokopedia.common.topupbills.utils.GqlQuery.catalogMenuDetail,
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
