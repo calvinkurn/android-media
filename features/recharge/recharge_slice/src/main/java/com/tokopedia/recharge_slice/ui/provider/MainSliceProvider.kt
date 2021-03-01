@@ -31,6 +31,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.recharge_slice.util.GqlQuery
 import com.tokopedia.recharge_slice.util.SliceTracking
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -241,7 +242,7 @@ class MainSliceProvider : SliceProvider() {
 
 
     private fun getData(sliceUri: Uri) {
-        val gqlQuery = GraphqlHelper.loadRawString(contextNonNull.resources, R.raw.recharge_slice_gql)
+        val gqlQuery = GqlQuery.rechargeFavoriteRecommendationList
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)

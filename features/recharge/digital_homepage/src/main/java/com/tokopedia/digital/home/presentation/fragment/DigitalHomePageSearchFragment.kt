@@ -27,6 +27,7 @@ import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.digital.home.util.GqlQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -159,7 +160,7 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
     }
 
     open fun searchCategory(searchQuery: String) {
-        viewModel.searchCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), searchQuery)
+        viewModel.searchCategoryList(GqlQuery.digitalHomeCategory, searchQuery)
     }
 
     companion object {

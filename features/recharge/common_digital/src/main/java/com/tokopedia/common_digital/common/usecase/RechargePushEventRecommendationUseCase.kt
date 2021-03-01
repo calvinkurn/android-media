@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.R
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
+import com.tokopedia.common_digital.common.util.GqlMutation
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -17,7 +18,7 @@ import rx.Subscriber
 class RechargePushEventRecommendationUseCase(private val graphqlUseCase: GraphqlUseCase, @ApplicationContext private val context: Context) {
 
     fun execute(requestParams: RequestParams, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.gql_recharge_push_event_recommendation),
+        val graphqlRequest = GraphqlRequest(GqlMutation.rechargePushEventRecommendation,
                 RechargePushEventRecommendationResponseEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

@@ -59,6 +59,7 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewM
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
+import com.tokopedia.rechargegeneral.util.GqlQuery
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
@@ -786,7 +787,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
-                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                GqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )
@@ -794,7 +795,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
-                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                com.tokopedia.common.topupbills.utils.GqlQuery.rechargeCatalogProductInput,
                 viewModel.createProductListParams(menuId, operator),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )

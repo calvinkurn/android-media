@@ -18,6 +18,7 @@ import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.utils.GqlQuery
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -314,8 +315,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
 
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_enquiry_digital), mapParam)
+            enquiryViewModel.getEnquiry(GqlQuery.enquiryDigital, mapParam)
 
             enquiryViewModel.enquiryResult.observe(this, Observer {
                 when (it) {

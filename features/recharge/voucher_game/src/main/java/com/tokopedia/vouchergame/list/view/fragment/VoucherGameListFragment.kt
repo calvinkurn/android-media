@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.GqlQuery
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
@@ -420,7 +421,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+            voucherGameViewModel.getVoucherGameOperators(GqlQuery.voucherGameProductList,
                     voucherGameViewModel.createParams(it), query, loadFromCloud)
         }
     }

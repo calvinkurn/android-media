@@ -22,6 +22,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.utils.GqlMutation
+import com.tokopedia.common.topupbills.utils.GqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
@@ -342,26 +344,26 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getEnquiry(operatorId: String, productId: String, inputData: Map<String, String>) {
-        topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_inquiry),
+        topupBillsViewModel.getEnquiry(GqlQuery.rechargeInquiry,
                 topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
 
     fun getMenuDetail(menuId: Int) {
         onLoadingMenuDetail(true)
-        topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+        topupBillsViewModel.getMenuDetail(GqlQuery.catalogMenuDetail,
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
     fun getCatalogPluginData(operatorId: Int, categoryId: Int) {
         if (operatorId > 0 && categoryId > 0) {
-            topupBillsViewModel.getCatalogPluginData(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_catalog_plugin),
+            topupBillsViewModel.getCatalogPluginData(GqlQuery.rechargeCatalogPlugin,
                     topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId))
         }
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
         topupBillsViewModel.getFavoriteNumbers(
-                GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
+                GqlMutation.favoriteNumber,
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
@@ -379,7 +381,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
+                    GqlMutation.rechargeExpressCheckout,
                     topupBillsViewModel.createExpressCheckoutParams(
                             productId,
                             inputFields,

@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
+import com.tokopedia.common_digital.common.util.GqlQuery
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
@@ -229,10 +230,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         showLoading()
 
         val queryList = mapOf(
-                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+                QUERY_BANNER to com.tokopedia.digital.home.util.GqlQuery.digitalHomeBanner,
+                QUERY_CATEGORY to com.tokopedia.digital.home.util.GqlQuery.digitalHomeCategory,
+                QUERY_SECTIONS to com.tokopedia.digital.home.util.GqlQuery.digitalHomeSection,
+                QUERY_RECOMMENDATION to GqlQuery.rechargeFavoriteRecommendationList
         )
         viewModel.initialize(queryList)
         viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
