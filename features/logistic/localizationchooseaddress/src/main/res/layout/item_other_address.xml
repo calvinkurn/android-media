@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/dp_10"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            android:text="Cek Alamat Lainnya"
+            android:text="@string/cek_alamat_lainnya"
             android:textColor="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

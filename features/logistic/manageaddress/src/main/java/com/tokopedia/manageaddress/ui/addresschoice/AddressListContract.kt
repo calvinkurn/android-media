@@ -35,9 +35,9 @@ interface AddressListContract {
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
-        fun getAddress()
-        fun searchAddress(query: String)
-        fun loadMore()
+        fun getAddress(prevState: Int, localChosenAddrId: Int)
+        fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int)
+        fun loadMore(prevState: Int, localChosenAddrId: Int)
     }
 
 }
