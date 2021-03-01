@@ -10,7 +10,7 @@ object MockChannelBanner {
                 "1",
                 "Title Mock Channel Banner",
                 "Description Mock Channel Banner",
-                "#9beb34",
+                "",
                 "https://www.tokopedia.com/",
                 "tokopedia://home",
                 "",
