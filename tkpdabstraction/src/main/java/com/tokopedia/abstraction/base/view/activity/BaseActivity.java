@@ -112,11 +112,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
             String osVersions = config.optString("android_os_versions");
             String message = config.optString("message");
 
-            if (!isEligibleForGeneralInfo(pages, className)) return
-            if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return
-            if (!isEligibleForGeneralInfo(manufacturers, Build.MANUFACTURER)) return
-            if (!isEligibleForGeneralInfo(models, Build.MODEL)) return
-            if (!isEligibleForGeneralInfo(osVersions, Build.VERSION.SDK_INT)) return
+            if (!isEligibleForGeneralInfo(pages, className)) return;
+            if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return;
+            if (!isEligibleForGeneralInfo(manufacturers, Build.MANUFACTURER)) return;
+            if (!isEligibleForGeneralInfo(models, Build.MODEL)) return;
+            if (!isEligibleForGeneralInfo(osVersions, Build.VERSION.SDK_INT)) return;
 
             if (!"all".equals(environment) && GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment))
                 return;
