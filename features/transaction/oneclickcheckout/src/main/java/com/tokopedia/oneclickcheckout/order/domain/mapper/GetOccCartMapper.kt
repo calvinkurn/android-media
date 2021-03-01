@@ -284,11 +284,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode,
-//                201,
-//                "206")
-                address.state,
-                address.stateDetail)
+                address.latitude, address.postalCode, address.state, address.stateDetail)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {

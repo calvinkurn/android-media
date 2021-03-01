@@ -32,6 +32,7 @@ data class LocalizationChooseAddressData(
 ) : Parcelable {
 
     companion object {
+        const val STATE_EMPTY = 0
         const val STATE_CHOSEN_ADDRESS_MATCH = 101
         const val STATE_ADDRESS_ID_NOT_MATCH = 102
         const val STATE_DISTRICT_ID_NOT_MATCH = 103

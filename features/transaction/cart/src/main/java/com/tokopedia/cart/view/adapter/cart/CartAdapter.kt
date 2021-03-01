@@ -693,7 +693,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return CartWishlistHolderData()
     }
 
-    fun removeChooseAddressWidget() {
+    fun removeChooseAddressWidget(): Int {
         var index = -1
         cartDataList.forEachIndexed { i, data ->
             if (data is CartChooseAddressHolderData) {
@@ -703,8 +703,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
         if (index != -1) {
             cartDataList.removeAt(index)
-            notifyItemRemoved(index)
         }
+
+        return index
     }
 
     fun removeCartEmptyData() {

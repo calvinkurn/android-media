@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -35,12 +36,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, addressState: Int?) {
+    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String) {
         // Todo : add addressState param to GetAddressCornerUseCase
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, null, null)
+                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero())
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
@@ -63,12 +64,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         )
     }
 
-    fun loadMore() {
+    fun loadMore(addressState: Int, localCacheAddressId: String) {
         if (_addressList.value !is OccState.Loading && !isLoadingMore) {
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, null, null)
+                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero())
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     _addressList.value = OccState.Failed(Failure(e))

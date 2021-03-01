@@ -61,6 +61,7 @@ data class CartShipmentAddressFormData(
         }
 
     companion object {
+        const val NO_ERROR = 0
         const val ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS = 3
         const val ERROR_CODE_TO_OPEN_ADDRESS_LIST = 4
     }

@@ -238,9 +238,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
+            view.updateLocalCacheAddressData(any())
             view.renderCheckoutPage(any(), any(), any())
             view.showToastNormal(any())
-            view.updateLocalCacheAddressData(any())
             view.stopTrace()
         }
     }
