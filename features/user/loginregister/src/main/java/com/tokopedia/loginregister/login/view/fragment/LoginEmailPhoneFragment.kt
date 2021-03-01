@@ -912,7 +912,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     fun isEnableEncryptRollout(): Boolean {
-        val variant = getAbTestPlatform().getString(LoginConstant.ROLLOUT_LOGIN_ENCRYPTION)
+        val rolloutKey = if(GlobalConfig.isSellerApp()) {
+            LoginConstant.ROLLOUT_LOGIN_ENCRYPTION_SELLER
+        } else {
+            LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+        }
+
+        val variant = getAbTestPlatform().getString(rolloutKey)
         return variant == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
     }
 
