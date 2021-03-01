@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.di.shoplocation.DaggerShopLocationComponent
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
-import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
 
 /**
  * Deeplink: SHOP_SETTINGS_ADDRESS

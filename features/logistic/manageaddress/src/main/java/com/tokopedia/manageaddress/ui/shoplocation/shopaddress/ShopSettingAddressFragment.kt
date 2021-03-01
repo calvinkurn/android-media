@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.address.view
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.app.Activity
 import android.content.Context
@@ -18,7 +18,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
-import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressAddEditActivity
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
@@ -172,7 +171,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
-                setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+                setBtnCancel(getString(R.string.action_cancel))
                 setOnOkClickListener { oldPresenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()

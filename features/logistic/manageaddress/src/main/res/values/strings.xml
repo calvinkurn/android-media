@@ -83,6 +83,7 @@
     <string name="title_dialog_delete_shop_address">Hapus Lokasi</string>
     <string name="desc_dialog_delete_shop_address">Hapus lokasi “%1$s”?</string>
     <string name="action_delete">Hapus</string>
+    <string name="action_cancel">Batal</string>
     <string name="success_add_address">Berhasil menambahkan Lokasi</string>
     <string name="success_edit_address">Lokasi berhasil diperbaharui</string>
     <string name="shop_address_name_required">Label Lokasi harus diisi</string>

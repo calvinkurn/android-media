@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.manageaddress.ui.shoplocation.ShopLocationActivity
 import com.tokopedia.manageaddress.ui.shoplocation.ShopLocationFragment
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
-import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressFragment
 import dagger.Component
 
 @ShopLocationScope
