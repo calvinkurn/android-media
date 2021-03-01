@@ -11,6 +11,7 @@
         android:id="@+id/img_banned_product"
         android:layout_width="0dp"
         android:layout_height="250dp"
+        app:remoteFileName="cat_ic_banned_item.png"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="@dimen/dp_24"
@@ -20,8 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txt_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:remoteFileName="cat_ic_banned_item.png" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_header"

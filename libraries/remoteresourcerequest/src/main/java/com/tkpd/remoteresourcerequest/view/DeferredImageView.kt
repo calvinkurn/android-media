@@ -20,6 +20,7 @@ import com.tkpd.remoteresourcerequest.type.RequestedResourceType
 class DeferredImageView : AppCompatImageView {
     var mRemoteFileName: String = ""
     var dpiSupportType = ImageDensityType.SUPPORT_MULTIPLE_DPI
+    var completeUrl = ""
 
     private var task: DeferredResourceTask? = null
 
@@ -59,11 +60,12 @@ class DeferredImageView : AppCompatImageView {
         val typedArray = context.obtainStyledAttributes(
                 attrs, R.styleable.DeferredImageView, defStyle, 0
         )
-        mRemoteFileName = typedArray.getString(
-                R.styleable.DeferredImageView_remoteFileName
+        mRemoteFileName = typedArray.getString(R.styleable.DeferredImageView_remoteFileName
         ) ?: mRemoteFileName
         dpiSupportType =
                 typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, dpiSupportType)
+        completeUrl =
+                typedArray.getString(R.styleable.DeferredImageView_completeUrl) ?: completeUrl
         typedArray.recycle()
         downloadAndSetResource()
     }

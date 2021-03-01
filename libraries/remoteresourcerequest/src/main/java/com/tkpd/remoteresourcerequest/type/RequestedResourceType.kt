@@ -15,16 +15,11 @@ sealed class RequestedResourceType {
     internal var isRequestedFromWorker: Boolean = false
     internal abstract val relativeFilePath: String
     internal abstract var isUsedAnywhere: Boolean
+    internal abstract var remoteFileCompleteUrl: String
 
     abstract var remoteFileName: String
     abstract var imageView: DeferredImageView?
     abstract var resourceVersion: String
-
-    fun checkFileName() {
-        require(remoteFileName.isNotEmpty()) {
-            "Please provide file name in remoteFileName parameter!"
-        }
-    }
 }
 
 sealed class ImageType : RequestedResourceType() {
@@ -38,7 +33,8 @@ sealed class ImageType : RequestedResourceType() {
  */
 data class MultiDPIImageType(
         override var imageView: DeferredImageView?,
-        override var remoteFileName: String
+        override var remoteFileName: String,
+        override var remoteFileCompleteUrl: String = ""
 ) : ImageType() {
 
     init {
@@ -59,7 +55,8 @@ data class MultiDPIImageType(
 
 data class SingleDPIImageType(
         override var imageView: DeferredImageView?,
-        override var remoteFileName: String
+        override var remoteFileName: String,
+        override var remoteFileCompleteUrl: String = ""
 ) : ImageType() {
 
     override val relativeFilePath =
@@ -70,18 +67,18 @@ data class SingleDPIImageType(
 
 data class NoDPIImageType(
         override var imageView: DeferredImageView?,
-        override var remoteFileName: String
+        override var remoteFileName: String,
+        override var remoteFileCompleteUrl: String = ""
 ) : ImageType() {
     override val relativeFilePath =
             commonPath.format(NO_DPI_ARRAY, remoteFileName)
     override var densityType = 0
 }
 
-data class AudioType(override var remoteFileName: String) : RequestedResourceType() {
-
-    init {
-        checkFileName()
-    }
+data class AudioType(
+        override var remoteFileName: String,
+        override var remoteFileCompleteUrl: String = ""
+) : RequestedResourceType() {
 
     override var isUsedAnywhere = true
     override val relativeFilePath: String = commonPath.format("raw", remoteFileName)
@@ -89,7 +86,10 @@ data class AudioType(override var remoteFileName: String) : RequestedResourceTyp
     override var resourceVersion = ""
 }
 
-data class PendingType(override var remoteFileName: String) : RequestedResourceType() {
+data class PendingType(
+        override var remoteFileName: String,
+        override var remoteFileCompleteUrl: String = ""
+) : RequestedResourceType() {
     override var isUsedAnywhere = true
     override val relativeFilePath: String = remoteFileName
     override var imageView: DeferredImageView? = null
@@ -98,10 +98,20 @@ data class PendingType(override var remoteFileName: String) : RequestedResourceT
 
 object ImageTypeMapper {
     fun getImageType(deferredImageView: DeferredImageView): RequestedResourceType {
+        val fileName =
+                if (deferredImageView.completeUrl.isNotEmpty()) {
+                    val index = deferredImageView.completeUrl.lastIndexOf("/")
+                    if (index != -1)
+                        deferredImageView.completeUrl.substring(
+                                deferredImageView.completeUrl.lastIndexOf("/") + 1)
+                    else
+                        deferredImageView.mRemoteFileName
+                } else
+                    deferredImageView.mRemoteFileName
         return when (deferredImageView.dpiSupportType) {
-            1 -> SingleDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
-            2 -> NoDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
-            else -> MultiDPIImageType(deferredImageView, deferredImageView.mRemoteFileName)
+            1 -> SingleDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
+            2 -> NoDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
+            else -> MultiDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
         }
     }
 

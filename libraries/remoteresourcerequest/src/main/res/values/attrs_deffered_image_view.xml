@@ -1,6 +1,7 @@
 <resources>
     <declare-styleable name="DeferredImageView">
         <attr name="remoteFileName" format="string" />
+        <attr name="completeUrl" format="string" />
         <attr name="imageDpiSupportType" format="integer">
             <enum name="multiDpi" value="0" />
             <enum name="singleDpi" value="1" />
