@@ -91,14 +91,14 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
-import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
-import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
+import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
@@ -122,7 +122,7 @@ import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
 import javax.inject.Inject
 
-class ShopPageFragment :
+class NewShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
         ShopPageFragmentViewHolderListener,
@@ -165,14 +165,14 @@ class ShopPageFragment :
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
 
         @JvmStatic
-        fun createInstance() = ShopPageFragment()
+        fun createInstance() = NewShopPageFragment()
     }
 
     private var initialFloatingChatButtonMarginBottom: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    var shopViewModel: ShopPageViewModel? = null
+    var shopViewModel: NewShopPageViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -186,7 +186,7 @@ class ShopPageFragment :
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
     private var stickyLoginView: StickyLoginView? = null
-    private var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder? = null
+    private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
     private var errorButton: View? = null
@@ -272,7 +272,7 @@ class ShopPageFragment :
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
+    ): View? = inflater.inflate(R.layout.new_shop_page_main, container, false)
 
 
     override fun onDestroy() {
@@ -300,7 +300,7 @@ class ShopPageFragment :
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
+        shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -436,7 +436,7 @@ class ShopPageFragment :
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
                 shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
-                    init(this@ShopPageFragment)
+                    init(this@NewShopPageFragment)
                 }
                 shopShareBottomSheet?.show(fragmentManager)
             }
@@ -526,7 +526,7 @@ class ShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
-        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
+        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         context?.let {
@@ -594,8 +594,8 @@ class ShopPageFragment :
 
     private fun observeShopPageFollowingStatusSharedViewModel() {
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
-            shopPageFragmentHeaderViewHolder?.setFavoriteValue(it)
-            shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
+//            shopPageFragmentHeaderViewHolder?.setFavoriteValue(it)
+//            shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
         })
     }
 
@@ -807,7 +807,7 @@ class ShopPageFragment :
 
     private fun initAdapter() {
         activity?.run {
-            viewPagerAdapter = ShopPageFragmentPagerAdapter(this, this@ShopPageFragment)
+            viewPagerAdapter = ShopPageFragmentPagerAdapter(this, this@NewShopPageFragment)
         }
     }
 
@@ -947,15 +947,14 @@ class ShopPageFragment :
         })
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {
+    private fun onSuccessGetShopPageTabData(shopPageP1Data: NewShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
-            shopId = this@ShopPageFragment.shopId
+            shopId = this@NewShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
             isGoldMerchant = shopPageP1Data.isGoldMerchant
             shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab } ?: ShopHomeType.NONE
-            topContentUrl = shopPageP1Data.topContentUrl
             shopName = shopPageP1Data.shopName
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
@@ -988,11 +987,12 @@ class ShopPageFragment :
         setupTabs()
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
-        shopPageHeaderDataModel?.let {
-            remoteConfig?.let { nonNullableRemoteConfig ->
-                shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
-            }
-        }
+        shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
+//        shopPageHeaderDataModel?.let {
+//            remoteConfig?.let { nonNullableRemoteConfig ->
+//                shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
+//            }
+//        }
 
         stickyLoginView?.loadContent()
     }
@@ -1018,18 +1018,18 @@ class ShopPageFragment :
             }
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
             remoteConfig?.let { nonNullableRemoteConfig ->
-                shopPageFragmentHeaderViewHolder?.bind(shopPageHeaderDataModel, isMyShop, nonNullableRemoteConfig)
+//                shopPageFragmentHeaderViewHolder?.bind(shopPageHeaderDataModel, isMyShop, nonNullableRemoteConfig)
             }
-            shopPageFragmentHeaderViewHolder?.updateFavoriteData(shopPageHeaderContentData.favoriteData)
-            shopPageFragmentHeaderViewHolder?.setupFollowButton(isMyShop)
+//            shopPageFragmentHeaderViewHolder?.updateFavoriteData(shopPageHeaderContentData.favoriteData)
+//            shopPageFragmentHeaderViewHolder?.setupFollowButton(isMyShop)
             if (!shopPageHeaderDataModel.isOfficial) {
-                shopPageFragmentHeaderViewHolder?.showShopReputationBadges(shopPageHeaderContentData.shopBadge)
+//                shopPageFragmentHeaderViewHolder?.showShopReputationBadges(shopPageHeaderContentData.shopBadge)
             }
-            shopPageFragmentHeaderViewHolder?.updateShopTicker(
-                    shopPageHeaderDataModel,
-                    shopPageHeaderContentData.shopOperationalHourStatus,
-                    isMyShop
-            )
+//            shopPageFragmentHeaderViewHolder?.updateShopTicker(
+//                    shopPageHeaderDataModel,
+//                    shopPageHeaderContentData.shopOperationalHourStatus,
+//                    isMyShop
+//            )
             setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
@@ -1196,30 +1196,19 @@ class ShopPageFragment :
         return (shopPageHeaderDataModel?.shopHomeType.orEmpty() != ShopHomeType.NONE)
     }
 
-    private fun isShowNewHomeTab(): Boolean {
-        return (shopPageHeaderDataModel?.shopHomeType.orEmpty() == ShopHomeType.NATIVE)
-    }
-
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                ShopPageHomeFragment.createInstance(
-                        shopId,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        shopPageHeaderDataModel?.shopName.orEmpty(),
-                        shopAttribution ?: "",
-                        shopRef
-                ).apply{
-                    shopViewModel?.productListData?.let{
-                        setInitialProductListData(it)
-                    }
+            ShopPageHomeFragment.createInstance(
+                    shopId,
+                    shopPageHeaderDataModel?.isOfficial ?: false,
+                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                    shopPageHeaderDataModel?.shopName.orEmpty(),
+                    shopAttribution ?: "",
+                    shopRef
+            ).apply {
+                shopViewModel?.productListData?.let {
+                    setInitialProductListData(it)
                 }
-            } else {
-                HomeProductFragment.createInstance(
-                        shopId,
-                        shopPageHeaderDataModel?.topContentUrl.orEmpty()
-                )
             }
         } else {
             null
@@ -1242,10 +1231,10 @@ class ShopPageFragment :
 
     private fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
-            shopPageFragmentHeaderViewHolder?.toggleFavourite()
-            updateFavouriteResult(shopPageFragmentHeaderViewHolder?.isShopFavourited() ?: false)
+//            shopPageFragmentHeaderViewHolder?.toggleFavourite()
+//            updateFavouriteResult(shopPageFragmentHeaderViewHolder?.isShopFavourited() ?: false)
         }
-        shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
+//        shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
     }
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
@@ -1259,7 +1248,7 @@ class ShopPageFragment :
     }
 
     private fun onErrorToggleFavourite(e: Throwable) {
-        shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
+//        shopPageFragmentHeaderViewHolder?.updateFavoriteButton()
         context?.let {
             if (e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
@@ -1581,7 +1570,7 @@ class ShopPageFragment :
     private fun setShopName() {
         if(isMyShop) {
             shopPageHeaderDataModel?.shopName = shopViewModel?.ownerShopName.orEmpty()
-            shopPageFragmentHeaderViewHolder?.setShopName(shopViewModel?.ownerShopName.orEmpty())
+//            shopPageFragmentHeaderViewHolder?.setShopName(shopViewModel?.ownerShopName.orEmpty())
         }
     }
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:minWidth="@dimen/dp_30"
+    android:minHeight="@dimen/dp_30">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:minWidth="@dimen/dp_30"
+        android:minHeight="@dimen/dp_30"
+        tools:visibility="visible" />
+</FrameLayout>

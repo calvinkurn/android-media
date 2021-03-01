@@ -336,18 +336,4 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         isShopFavorite = !isShopFavorite
     }
 
-    interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun toggleFavorite(isFavourite: Boolean)
-        fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
-        fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
-        fun openShopInfo()
-        fun onStartLiveStreamingClicked()
-        fun onSendRequestOpenModerate(optionValue : String)
-        fun onCompleteSendRequestOpenModerate()
-        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
-        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
-    }
-
-
 }

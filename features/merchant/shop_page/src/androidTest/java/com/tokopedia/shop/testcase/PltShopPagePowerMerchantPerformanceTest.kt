@@ -16,7 +16,7 @@ import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment.Companion.FORCE_NOT_SHOWING_HOME_TAB
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor

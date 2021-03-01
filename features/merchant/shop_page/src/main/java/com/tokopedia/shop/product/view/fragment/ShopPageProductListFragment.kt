@@ -67,6 +67,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewM
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -532,7 +533,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 loadMembership()
             }
             REQUEST_CODE_USER_LOGIN -> {
-                (parentFragment as? ShopPageFragment)?.refreshData()
+                (parentFragment as? InterfaceShopPageHeader)?.refreshData()
             }
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -937,7 +938,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun isShopProductTabSelected(): Boolean {
-        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
+        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java) ?: false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

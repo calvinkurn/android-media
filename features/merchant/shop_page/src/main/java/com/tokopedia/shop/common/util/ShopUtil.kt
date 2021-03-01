@@ -34,4 +34,9 @@ object ShopUtil {
         )
         return (navType == AbTestPlatform.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
     }
+
+    fun isUsingNewShopPageHeader(): Boolean {
+        //todo need to add ab  test  implementation later
+        return true
+    }
 }

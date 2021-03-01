@@ -103,6 +103,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -272,7 +273,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun isShopHomeTabSelected(): Boolean {
-        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
+        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java) ?: false
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -878,7 +879,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK)
-                    (parentFragment as? ShopPageFragment)?.refreshData()
+                    (parentFragment as? InterfaceShopPageHeader)?.refreshData()
             }
             else -> {
             }
@@ -1735,7 +1736,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
 
                 val parent = parentFragment
-                if (parent is ShopPageFragment) {
+                if (parent is InterfaceShopPageHeader) {
                     val recyclerView = getRecyclerView(view)
 
                     if (parent.isNewlyBroadcastSaved() == true) {
