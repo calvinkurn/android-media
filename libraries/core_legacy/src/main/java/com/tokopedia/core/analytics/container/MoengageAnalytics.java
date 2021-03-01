@@ -47,14 +47,19 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     private void executeInstallTrackingAsync() {
-        WeaveInterface installTrackingWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return sendExistingUserAndInstallTrackingEvent();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
+        try {
+            //added the try catch for this issue https://github.com/Kotlin/kotlinx.coroutines/issues/490
+            WeaveInterface installTrackingWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    return sendExistingUserAndInstallTrackingEvent();
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
+        } catch(Exception ex){
+            Timber.w("P2#INIT_MOENGAGE#error;name='%s'", ex.getMessage());
+        }
     }
 
     @Override
