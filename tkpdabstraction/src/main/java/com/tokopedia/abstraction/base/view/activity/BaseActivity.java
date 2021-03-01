@@ -116,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return;
             if (!isEligibleForGeneralInfo(manufacturers, Build.MANUFACTURER)) return;
             if (!isEligibleForGeneralInfo(models, Build.MODEL)) return;
-            if (!isEligibleForGeneralInfo(osVersions, Build.VERSION.SDK_INT)) return;
+            if (!isEligibleForGeneralInfo(osVersions, String.valueOf(Build.VERSION.SDK_INT))) return;
 
             if (!"all".equals(environment) && GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment))
                 return;
