@@ -10,6 +10,8 @@ import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.extensions.decodeBase64
+import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +54,8 @@ class AddPasswordViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val key = generatePublicKeyUseCase.executeOnBackground().keyData
             if(key.hash.isNotEmpty()) {
-                usecase.params = createRequestParams(password, confirmationPassword, key.hash)
+                val encryptedPassword = RSAUtils().encrypt(password, key.key.decodeBase64(), true)
+                usecase.params = createRequestParams(encryptedPassword, encryptedPassword, key.hash)
                 usecase.submit(onSuccess = {
                     if (it.addPassword.isSuccess) {
                         _response.postValue(Success(it))

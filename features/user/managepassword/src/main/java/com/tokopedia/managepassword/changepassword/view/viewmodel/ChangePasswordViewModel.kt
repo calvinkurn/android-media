@@ -10,6 +10,8 @@ import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePassword
 import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.extensions.decodeBase64
+import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
@@ -51,7 +53,8 @@ class ChangePasswordViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val result = generatePublicKeyUseCase.executeOnBackground()
             if(result.keyData.hash.isNotEmpty()) {
-                usecase.params = createRequestParams(ChangePasswordRequestModel(encode, new, confirmation, validationToken, hash = result.keyData.hash))
+                val encryptedPassword = RSAUtils().encrypt(new, result.keyData.key.decodeBase64(), true)
+                usecase.params = createRequestParams(ChangePasswordRequestModel(encode, encryptedPassword, encryptedPassword, validationToken, hash = result.keyData.hash))
                 val changePassResponse = usecase.executeOnBackground()
                 _response.postValue(Success(changePassResponse))
             }else {

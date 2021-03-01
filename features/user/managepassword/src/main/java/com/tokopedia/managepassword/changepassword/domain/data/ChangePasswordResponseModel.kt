@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChangePasswordResponseModel(
         @Expose
-        @SerializedName("SubmitResetPassword")
+        @SerializedName("submitResetPasswordV2")
         val changePassword: ChangePassword = ChangePassword()
 ) {
     data class ChangePassword(
