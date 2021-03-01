@@ -20,35 +20,48 @@
         android:layout_height="match_parent"
         android:gravity="bottom">
 
-        <FrameLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/main"
             >
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/catalog_detail_rv"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?android:attr/actionBarSize"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical"
+                >
 
-            <com.tokopedia.searchbar.navigation_component.NavToolbar
-                android:id="@+id/catalog_navtoolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:minHeight="?android:attr/actionBarSize"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:toolbarAlwaysShowShadow="false"
-                app:toolbarBackButton="back"
-                app:toolbarContentType="typeSearchbar"
-                app:toolbarInitialTheme="light" />
+                <com.tokopedia.searchbar.navigation_component.NavToolbar
+                    android:id="@+id/catalog_navtoolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:minHeight="?android:attr/actionBarSize"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:toolbarAlwaysShowShadow="false"
+                    app:toolbarBackButton="back"
+                    app:toolbarContentType="typeSearchbar"
+                    app:toolbarInitialTheme="light" />
 
-        </FrameLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/catalog_detail_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/catalog_products_container_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <FrameLayout
             android:id="@+id/dragView"

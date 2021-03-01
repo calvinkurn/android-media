@@ -113,11 +113,19 @@ class CatalogDetailPageFragment : Fragment(),
         setupRecyclerView(view)
         setObservers()
         openBottomSheetProductListing()
+        addCatalogProductsFragment()
     }
 
     fun setCatalogId(catalogId: String){
         this.catalogId = catalogId
         requireArguments().putString(ARG_EXTRA_CATALOG_ID,catalogId)
+    }
+
+    private fun addCatalogProductsFragment(){
+        requireActivity().supportFragmentManager.beginTransaction().replace(
+                R.id.catalog_products_container_view,
+                CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
+        ).commit()
     }
 
     private fun openBottomSheetProductListing() {
