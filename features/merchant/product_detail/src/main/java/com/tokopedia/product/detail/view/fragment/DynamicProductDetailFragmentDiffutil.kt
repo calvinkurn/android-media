@@ -53,6 +53,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -63,6 +64,7 @@ import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -127,7 +129,6 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -257,7 +258,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
     //Prevent several method at onResume to being called when first open page.
-    private var firstOpenPage:Boolean = true
+    private var firstOpenPage: Boolean? = null
 
     //View
     private var varToolbar: Toolbar? = null
@@ -369,6 +370,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
         }
         sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
+        firstOpenPage = true
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
@@ -557,9 +559,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun reloadUserLocationChanged() {
-        if (viewModel.getDynamicProductInfoP1 == null || context == null || firstOpenPage) return
+        if (viewModel.getDynamicProductInfoP1 == null || context == null || (firstOpenPage == null || firstOpenPage == true)) return
         val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.userLocationCache)
-        if (isUserLocationChanged) refreshPage()
+        if (isUserLocationChanged) {
+            assignUserLocationData()
+            refreshPage()
+        }
     }
 
     private fun setNavToolBarCartCounter() {
@@ -1209,6 +1214,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             sharedViewModel?.isAddressChanged?.observe(activity, {
                 if (it) {
                     view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
+                    assignUserLocationData()
                     onSwipeRefresh()
                 }
             })
