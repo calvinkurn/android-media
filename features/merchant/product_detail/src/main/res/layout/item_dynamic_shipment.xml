@@ -89,7 +89,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipment_estimation"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
             tools:visibility="visible" />
 
         <ImageView
@@ -115,6 +114,7 @@
             android:text="@string/pdp_tokocabang_label"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
+            app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipment_khusus"
             app:layout_constraintStart_toEndOf="@+id/img_ic_fullfillment"
             app:layout_constraintTop_toTopOf="@+id/txt_pdp_shipment_khusus"
@@ -132,7 +132,7 @@
             android:id="@+id/container_pdp_shipment_other"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@+id/ic_pdp_shipment_arrow_right"
             app:layout_constraintStart_toStartOf="parent"

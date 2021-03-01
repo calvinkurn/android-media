@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.toPx
@@ -76,7 +77,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         adjustUiError()
 
         shipmentTitle?.text = title
-        otherCourierTxt?.text = subtitle
+        otherCourierTxt?.text = HtmlLinkHelper(context, subtitle).spannedString
 
         shipmentOtherContainer?.setOnClickListener(null)
         otherCourierTxt?.setOnClickListener {
@@ -158,10 +159,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun adjustUiError() = with(itemView) {
         otherCourierTxt?.setWeight(Typography.REGULAR)
-        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         shipmentArrow?.setOnClickListener(null)
         shipmentArrow?.hide()
-        shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
+        shipmentOtherContainer?.setMargin(0, 5.toPx(), 0, 0)
+        shipmentOtherContainer?.setPadding(0, 0, 20.toPx(), 0)
     }
 
     private fun adjustUiSuccess() = with(itemView) {
@@ -172,8 +174,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentArrow?.setOnClickListener {
             listener.openShipmentClickedBottomSheet()
         }
+        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         shipmentArrow?.show()
         shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
+        shipmentOtherContainer?.setPadding(0, 0, 0, 0)
     }
 
     private fun hideLabelAndBo() = with(itemView) {
