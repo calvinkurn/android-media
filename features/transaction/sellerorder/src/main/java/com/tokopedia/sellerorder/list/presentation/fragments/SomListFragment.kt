@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.fragments
 import android.animation.Animator
 import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -1834,6 +1835,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         })
     }
 
+    @SuppressLint("RestrictedApi")
     private fun createCoachMarkItems(firstNewOrderView: View): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
             add(CoachMark2Item(firstNewOrderView, getString(R.string.som_list_coachmark_new_order_card_title), getString(R.string.som_list_coachmark_new_order_card_description)))
