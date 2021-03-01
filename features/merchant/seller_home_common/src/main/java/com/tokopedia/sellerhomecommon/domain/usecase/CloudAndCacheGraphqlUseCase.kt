@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,9 +12,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BaseResponseMapper
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,7 +29,7 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
 
     private var mFingerprintManager: FingerprintManager? = null
     private var mCacheManager: GraphqlCacheManager? = null
-    private var results: MutableStateFlow<U?> = MutableStateFlow(null)
+    private var results: MutableSharedFlow<U> = MutableSharedFlow(replay = 1)
     var collectingResult: Boolean = false
 
     private fun initCacheManager() {
@@ -71,12 +72,14 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
 
     private fun getCloudCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
                 .setSessionIncluded(sessionIncluded)
                 .build()
     }
 
     private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
                 .setSessionIncluded(sessionIncluded)
                 .build()
     }
@@ -110,5 +113,5 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
         }
     }
 
-    fun getResultFlow(): StateFlow<U?> = results.asStateFlow()
+    fun getResultFlow(): SharedFlow<U> = results.asSharedFlow()
 }

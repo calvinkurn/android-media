@@ -109,7 +109,7 @@ class SellerHomeViewModel @Inject constructor(
         if (!collectingResult) {
             collectingResult = true
             launchCatchError(block = {
-                getResultFlow().filterNotNull().collect {
+                getResultFlow().collect {
                     withContext(dispatcher.main) {
                         liveData.value = Success(it)
                     }
