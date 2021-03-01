@@ -34,7 +34,7 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData)
+            header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData, element.freeOngkirImageUrl())
         }
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
@@ -50,7 +50,14 @@ class ProductContentViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductDetailConstant.PAYLOAD_TRADEIN -> header?.renderTradein(element.showTradeIn())
+            ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE -> {
+                header?.renderTradein(element.showTradeIn())
+
+                if (element.enableBoe) {
+                    //only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
+                    header?.renderFreeOngkir(element.boeImageUrl)
+                }
+            }
         }
     }
 

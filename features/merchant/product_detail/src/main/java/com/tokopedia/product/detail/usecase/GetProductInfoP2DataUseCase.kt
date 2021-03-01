@@ -371,6 +371,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               data {
                 totalService
                 courierLabel
+                cheapestShippingPrice
                 destination
                 icon
                 title

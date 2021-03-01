@@ -19,6 +19,7 @@ interface DynamicProductDetailListener {
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
+    fun isNewShipment(): Boolean
 
     /**
      * ProductMediaViewHolder

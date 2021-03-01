@@ -21,6 +21,10 @@ data class ProductContentDataModel(
         //Ribbon Data
         var shouldShowTradein: Boolean = false,
 
+        //BOE
+        var boeImageUrl: String = "",
+        var enableBoe: Boolean = false, //if false, show freeongkir from p1 otherwise show freeongkir from p2
+
         //Upcoming Data
         var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
@@ -30,6 +34,15 @@ data class ProductContentDataModel(
     override fun name(): String = name
 
     override fun type(): String = type
+
+    fun freeOngkirImageUrl(): String {
+        return when {
+            enableBoe -> boeImageUrl
+            data?.freeOngkir?.isActive == true -> data?.freeOngkir?.imageURL
+                    ?: ""
+            else -> ""
+        }
+    }
 
     fun isUpcomingNplType(): Boolean {
         return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
@@ -49,6 +62,8 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
+                    && boeImageUrl == newData.boeImageUrl
+                    && enableBoe == newData.enableBoe
         } else {
             false
         }
@@ -67,8 +82,8 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN)
+            if (shouldShowTradein != newData.shouldShowTradein || boeImageUrl != newData.boeImageUrl) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
                 return bundle
             }
 

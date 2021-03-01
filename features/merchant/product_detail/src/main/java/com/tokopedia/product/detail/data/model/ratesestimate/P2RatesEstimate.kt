@@ -34,6 +34,10 @@ data class P2RatesEstimateData(
         @Expose
         val instanLabel: String = "",
 
+        @SerializedName("cheapestShippingPrice")
+        @Expose
+        val cheapestShippingPrice: Long = 0L,
+
         @SerializedName("destination")
         @Expose
         val destination: String = "",

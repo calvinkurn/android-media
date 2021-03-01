@@ -348,7 +348,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
             (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld(), isNewShipment())
         }
     }
 
@@ -1296,10 +1296,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
+        val boeData = viewModel.getBebasOngkirDataByProductId()
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
-        pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
+        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo(), isNewShipment())
+        pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
@@ -1308,7 +1309,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                viewModel.getBebasOngkirDataByProductId()
+                boeData
         )
 
         /*
@@ -1419,7 +1420,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             trackProductView(viewModel.tradeInParams.isEligible == 1)
-
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
@@ -1661,7 +1661,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             renderVariant(viewModel.variantData)
             val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
-            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
+            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), isNewShipment(), true)
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
@@ -1708,6 +1708,13 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
+        val boeData = viewModel.getBebasOngkirDataByProductId()
+        val ratesData = viewModel.getP2RatesEstimateByProductId()
+
+        val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice?.toInt() ?: 0
+        if (minimumShippingPriceP2 != 0) {
+            viewModel.shippingMinimumPrice = minimumShippingPriceP2
+        }
         updateNplButtonFollowers(it.restrictionInfo)
         updateButtonState()
 
@@ -1722,10 +1729,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
 
         pdpUiUpdater?.updateShipmentData(
-                viewModel.getP2RatesEstimateByProductId(),
+                ratesData,
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                viewModel.getBebasOngkirDataByProductId()
+                boeData
         )
 
         if (it.upcomingCampaigns.values.isEmpty()) {
@@ -1760,7 +1767,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
                 ?: "", viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
-                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
+                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0, boeData.imageURL)
 
         updateUi()
     }
@@ -3309,6 +3316,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             e.printStackTrace()
             true
         }
+    }
+
+    override fun isNewShipment(): Boolean {
+        if (context == null) return false
+        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
