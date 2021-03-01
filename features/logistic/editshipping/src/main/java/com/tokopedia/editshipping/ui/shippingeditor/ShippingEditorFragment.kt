@@ -669,8 +669,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, getString(R.string.txt_error_no_access)
-                            ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
+                        Toaster.build(it, getString(R.string.txt_error_no_access), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    } else {
+                        Toaster.build(it, throwable.message
+                                ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
                 }
             }
         }
@@ -713,6 +717,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         private const val BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE = 2
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE = 3
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE = 4
+
+        private const val ERROR_CODE_NO_ACCESS = "555"
     }
 
 }

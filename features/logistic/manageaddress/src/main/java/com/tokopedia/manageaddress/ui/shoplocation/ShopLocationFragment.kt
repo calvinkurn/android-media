@@ -27,6 +27,7 @@ import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddre
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.manageaddress.util.ShopLocationConstant.EDIT_WAREHOUSE_REQUEST_CODE
+import com.tokopedia.manageaddress.util.ShopLocationConstant.ERROR_CODE_NO_ACCESS
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -300,9 +301,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             }
             else -> {
                 view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable.message
-                            ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
+                        Toaster.build(it, getString(R.string.txt_error_no_access), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    } else {
+                        Toaster.build(it, throwable.message
+                                ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
                 }
             }
         }
