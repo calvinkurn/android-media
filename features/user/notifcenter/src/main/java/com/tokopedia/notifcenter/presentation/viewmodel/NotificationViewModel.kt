@@ -59,6 +59,7 @@ class NotificationViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val userSessionInterface: UserSessionInterface,
         private var addToCartUseCase: AddToCartUseCase,
+        private var notifOrderListUseCase: NotifOrderListUseCase,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), INotificationViewModel {
 

@@ -1,0 +1,19 @@
+query notifcenter_notifOrderList(
+    $type_of_user: Int
+) {
+  notifcenter_notifOrderList(
+    type_of_user: $type_of_user
+  ) {
+    list {
+      icon
+      text
+      counter
+      link {
+        desktop_link
+        mobile_link
+        android_link
+        ios_link
+      }
+    }
+  }
+}

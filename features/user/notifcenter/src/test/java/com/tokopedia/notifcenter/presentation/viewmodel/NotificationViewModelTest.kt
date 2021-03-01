@@ -64,6 +64,7 @@ class NotificationViewModelTest {
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
+    private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
 
     private val dispatcher = TestDispatcherProvider()
 
@@ -89,6 +90,7 @@ class NotificationViewModelTest {
             removeWishListUseCase,
             userSessionInterface,
             addToCartUseCase,
+            notifOrderListUseCase,
             dispatcher
     )
 
