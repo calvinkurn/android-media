@@ -13,6 +13,8 @@ import com.tokopedia.managepassword.forgotpassword.domain.data.ForgotPasswordRes
 import com.tokopedia.managepassword.forgotpassword.domain.usecase.ForgotPasswordUseCase
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -41,5 +43,11 @@ class ManagePasswordUseCaseModule {
     @Provides
     fun provideAddPasswordUseCase(@ManagePasswordContext context: Context,useCase: GraphqlUseCase<AddPasswordResponseModel>): AddPasswordUseCase {
         return AddPasswordUseCase(context, useCase)
+    }
+
+    @Provides
+    fun provideGeneratePublicKeyUseCase(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
+        val useCase = GraphqlUseCase<GenerateKeyPojo>(graphqlRepository)
+        return GeneratePublicKeyUseCase(useCase)
     }
 }
