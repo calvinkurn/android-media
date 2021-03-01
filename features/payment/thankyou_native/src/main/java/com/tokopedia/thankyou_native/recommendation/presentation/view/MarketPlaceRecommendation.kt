@@ -210,7 +210,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
                 findViewById<RecyclerView>(R.id.recyclerView).post {
                     adapter.notifyDataSetChanged()
                     showToastSuccess(fragment
-                            .getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+                            .getString(R.string.thanks_msg_success_remove_wishlist))
                 }
             }
         }
@@ -223,7 +223,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
                 findViewById<RecyclerView>(R.id.recyclerView).post {
                     adapter.notifyDataSetChanged()
                     showToastSuccess(fragment
-                            .getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+                            .getString(R.string.thanks_msg_success_add_wishlist))
                 }
             }
         }

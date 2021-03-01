@@ -4,7 +4,7 @@
     <gradient
         android:type="radial"
         android:startColor="@color/Unify_G300"
-        android:endColor="@color/Unify_N0"
+        android:endColor="@android:color/transparent"
         android:gradientRadius="250"
         android:angle="270"
         android:centerX="0"
