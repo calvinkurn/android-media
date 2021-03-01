@@ -71,7 +71,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
-            val disabledColor = ContextCompat.getColor(context, R.color.Neutral_N700_32)
+            val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
@@ -82,9 +82,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
-            bankName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
-            bankAccountNumber.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
-            bankAdminFee.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog(bankAccount) }
         }

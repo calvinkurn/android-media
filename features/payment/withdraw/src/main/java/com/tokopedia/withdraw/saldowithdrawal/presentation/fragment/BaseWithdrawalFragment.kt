@@ -240,7 +240,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, R.color.Green_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -317,7 +317,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                     getString(R.string.swd_join_premium_account_icon_title),
                     getString(R.string.swd_join_premium_account_icon_description),
                     CoachMarkContentPosition.TOP, ContextCompat.getColor(context!!,
-                    R.color.Neutral_N700_68)))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68)))
             val coachMark = CoachMarkBuilder()
                     .build()
             coachMark.show(activity, KEY_CAN_SHOW_RP_COACH_MARK, coachMarks, 0)
