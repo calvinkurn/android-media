@@ -1924,7 +1924,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 validateLocalCacheAddress(it, localizationChooseAddressData)
 
-                if (ChooseAddressUtils.isRollOutUser()) {
+                if (ChooseAddressUtils.isRollOutUser(it)) {
                     val cartChooseAddressHolderData = CartChooseAddressHolderData()
                     cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
                 }
