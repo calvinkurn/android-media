@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -105,20 +106,21 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
             String pages = config.optString("pages");
             String environment = config.optString("environment");
-            String versions = config.optString("versions");
+            String appVersions = config.optString("app_versions");
+            String manufacturers = config.optString("device_manufacturers");
+            String models = config.optString("device_models");
+            String osVersions = config.optString("android_os_versions");
             String message = config.optString("message");
 
-            List<String> pageList = Arrays.asList(pages.trim().split("\\s*,\\s*"));
-            if (!"all".equals(pageList.get(0)) && !pageList.contains(className))
-                return;
+            if (!isEligibleForGeneralInfo(pages, className)) return
+            if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return
+            if (!isEligibleForGeneralInfo(manufacturers, Build.MANUFACTURER)) return
+            if (!isEligibleForGeneralInfo(models, Build.MODEL)) return
+            if (!isEligibleForGeneralInfo(osVersions, Build.VERSION.SDK_INT)) return
 
             if (!"all".equals(environment) && GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment))
                 return;
             if (!"all".equals(environment) && !GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment))
-                return;
-
-            List<String> versionList = Arrays.asList(versions.trim().split("\\s*,\\s*"));
-            if (!"all".equals(versionList.get(0)) && !versionList.contains(GlobalConfig.VERSION_NAME))
                 return;
 
             Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
@@ -128,6 +130,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
             showPopUp(message);
         } catch (Exception e) {}
+    }
+
+    private boolean isEligibleForGeneralInfo(String requirements, String value) {
+        List<String> requirementList = Arrays.asList(requirements.trim().split("\\s*,\\s*"));
+        if (!"all".equals(requirementList.get(0)) && !requirementList.contains(value)) return false;
+        return true;
     }
 
     private void showPopUp(String message) {
