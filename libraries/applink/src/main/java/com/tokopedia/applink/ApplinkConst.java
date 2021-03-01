@@ -111,8 +111,28 @@ public interface ApplinkConst {
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
+    /**
+     * Go to chat room and chat with seller use one of the pattern below:
+     * - {@value TOPCHAT_ROOM_ASKSELLER} - use shopId only
+     * - {@value TOPCHAT_ROOM_ASKSELLER_WITH_MSG} - use shopId and provide initial msg in editText
+     * - {@value TOPCHAT_ASKSELLER} - use shopId and several parameters
+     *
+     */
+    String TOPCHAT_ROOM_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}";
+    String TOPCHAT_ROOM_ASKSELLER_WITH_MSG = "tokopedia://topchat/askseller/{toShopId}" +
+            "?customMessage={customMessage}";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Go to chat room and chat with buyer use one of the pattern below:
+     * - {@value TOPCHAT_ROOM_ASKBUYER} - use userId only
+     * - {@value TOPCHAT_ROOM_ASKBUYER_WITH_MSG} - use userId and provide initial msg in editText
+     * - {@value TOPCHAT_ASKBUYER} - use userId and several parameters
+     *
+     */
+    String TOPCHAT_ROOM_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}";
+    String TOPCHAT_ROOM_ASKBUYER_WITH_MSG = "tokopedia://topchat/askbuyer/{toUserId}" +
+            "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
@@ -141,6 +161,7 @@ public interface ApplinkConst {
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
 
     String EVENTS = "tokopedia://events";
+    String EVENTS_CATEGORY = "tokopedia://events/category";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
@@ -166,6 +187,7 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
     String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
+    String SNAPSHOT_ORDER = "tokopedia://snapshot/order";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";

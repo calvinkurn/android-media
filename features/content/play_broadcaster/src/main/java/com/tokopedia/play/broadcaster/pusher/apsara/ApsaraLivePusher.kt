@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import java.io.File
 import java.util.regex.Pattern
 
 
@@ -43,11 +44,12 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         // configure mirroring
         setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
-        // the custom mode in which the stream ingest SDK sets the bitrate based on the custom bitrate settings
-        qualityMode = AlivcQualityModeEnum.QM_CUSTOM
-        setTargetVideoBitrate(1200) // Set the target bitrate to 1200 Kbit/s.
-        setMinVideoBitrate(400) // Set the minimum bitrate to 400 Kbit/s.
-        setInitialVideoBitrate(900) // Set the initial bitrate to 900 Kbit/s.
+        //  the resolution-first mode in which the stream ingest SDK sets the bitrate to prioritize the resolution of video streams.
+        qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
+        isEnableBitrateControl = true
+        isEnableAutoResolution = true
+        pausePushImage = mContext.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
+        networkPoorPushImage = mContext.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
     }
 
     var mApsaraLivePusherInfoListener: ApsaraLivePusherInfoListener? = null
@@ -108,7 +110,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         if (ingestUrl.isNotEmpty()) {
             this.mIngestUrl = ingestUrl
         }
-        if (this.mIngestUrl.isEmpty()) {
+        if (mIngestUrl.isEmpty() || mIngestUrl.isBlank()) {
             throw IllegalArgumentException("ingestUrl must not be empty")
         }
 //        if (!validUrl(ingestUrl)) {
