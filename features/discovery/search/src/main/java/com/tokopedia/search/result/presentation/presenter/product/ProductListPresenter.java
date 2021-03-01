@@ -488,7 +488,7 @@ final class ProductListPresenter
 
             ProductViewModelMapper mapper = new ProductViewModelMapper();
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -824,7 +824,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1024,7 +1024,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1859,13 +1859,19 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword());
+        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword(), getDimension90());
     }
 
     public String getSuggestedRelatedKeyword() {
         if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
 
         return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
+    }
+
+    private String getDimension90() {
+        if (isLocalSearch() && !textIsEmpty(pageTitle)) return pageTitle + "." + navSource + ".local_search." + pageId;
+
+        return (getView() != null) ? getView().getSearchRef() : "";
     }
 
     @Override
@@ -1904,7 +1910,7 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword());
+        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword(), getDimension90());
     }
 
     @Override

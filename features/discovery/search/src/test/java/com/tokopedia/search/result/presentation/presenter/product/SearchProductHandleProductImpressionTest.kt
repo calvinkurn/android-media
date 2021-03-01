@@ -100,7 +100,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot), any())
+            productListView.searchRef
         }
 
         confirmVerified(productListView)
@@ -146,7 +147,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot), any())
+            productListView.searchRef
         }
 
         confirmVerified(productListView)

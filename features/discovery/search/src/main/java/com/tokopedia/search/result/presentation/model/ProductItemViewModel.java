@@ -396,22 +396,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.pageTitle = pageTitle;
     }
 
-    public String getPageId() {
-        return pageId;
-    }
-
-    public void setPageId(String pageId) {
-        this.pageId = pageId;
-    }
-
-    public String getNavSource() {
-        return navSource;
-    }
-
-    public void setNavSource(String navSource) {
-        this.navSource = navSource;
-    }
-
     public ProductItemViewModel() {
     }
 
@@ -420,7 +404,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String searchRef) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String dimension90) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -436,7 +420,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", getDimension90(searchRef),
+                "dimension90", dimension90,
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()
@@ -451,16 +435,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         String organicStatus = isOrganicAds() ? ORGANIC_ADS : ORGANIC;
 
         return String.format(ACTION_FIELD, organicStatus);
-    }
-
-    private String getDimension90(String searchRef) {
-        if (isLocalSearch()) return getPageTitle()+"."+getNavSource()+".local_search."+getPageId();
-
-        return TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle();
-    }
-
-    private boolean isLocalSearch() {
-        return !TextUtils.isEmpty(navSource) && !TextUtils.isEmpty(pageId) && !TextUtils.isEmpty(pageTitle);
     }
 
     public Object getProductAsATCObjectDataLayer(String cartId) {
