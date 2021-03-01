@@ -161,6 +161,7 @@ public interface ApplinkConst {
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
 
     String EVENTS = "tokopedia://events";
+    String EVENTS_CATEGORY = "tokopedia://events/category";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
@@ -186,6 +187,7 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
     String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
+    String SNAPSHOT_ORDER = "tokopedia://snapshot/order";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
