@@ -1,27 +1,4 @@
-package com.tokopedia.payment.setting.util
-
-const val GQL_CHECK_UPDATE_WHITE_LIST = """mutation checkWhiteListStatus(${'$'}updateStatus : Boolean!, ${'$'}authValue : Int!, ${'$'}token : String) {
-   checkWhiteListStatus(updateStatus: ${'$'}updateStatus, authValue: ${'$'}authValue, token : ${'$'}token) {
-      status_code
-      message
-      data {
-          user_email
-          user_id
-          state
-          Token
-      }
-   }
-}"""
-
-const val GQL_DELETE_CREDIT_CARD_LIST = """mutation removeCreditCard(${'$'}token_id : String!) {
-  removeCreditCard(token_id: ${'$'}token_id){
-      success
-      message
-  }
-}"""
-
-
-const val GQL_GET_CREDIT_CARD_LIST = """{
+{
 PaymentQuery{
     paymentSignature {
       merchantCode
@@ -62,4 +39,4 @@ PaymentQuery{
         }
     }
    }
-}"""
+}
