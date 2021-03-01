@@ -35,7 +35,7 @@ class AddressListViewModelTest {
         val token = Token()
         val response = AddressListModel(token = token)
         val searchQuery = "search"
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response).doOnSubscribe {
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(OccState.Loading, addressListViewModel.addressList.value)
         }
 
@@ -63,7 +63,7 @@ class AddressListViewModelTest {
                     longitude = "2"
                     postalCode = "2"
                 }))
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
 
         addressListViewModel.selectedId = "2"
         addressListViewModel.searchAddress("")
@@ -94,7 +94,7 @@ class AddressListViewModelTest {
                     longitude = "2"
                     postalCode = "2"
                 }))
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
 
         addressListViewModel.searchAddress("")
         addressListViewModel.setSelectedAddress("2")
@@ -136,7 +136,7 @@ class AddressListViewModelTest {
                     longitude = "2"
                     postalCode = "2"
                 }))
-        every { getAddressCornerUseCase.execute("") } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute("", null, null) } returns Observable.just(response)
         addressListViewModel.searchAddress("")
 
         addressListViewModel.searchAddress("search")
@@ -152,7 +152,7 @@ class AddressListViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.error(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.error(response)
 
         addressListViewModel.searchAddress("")
 
@@ -169,12 +169,12 @@ class AddressListViewModelTest {
             })
         }
         val response = AddressListModel(token = token, listAddress = listAddress)
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
         addressListViewModel.searchAddress("")
         val additionalAddress = RecipientAddressModel().apply {
             id = "11"
         }
-        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listOf(additionalAddress)))
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listOf(additionalAddress)))
 
         addressListViewModel.loadMore()
 
@@ -191,9 +191,9 @@ class AddressListViewModelTest {
             })
         }
         val response = AddressListModel(token = token, listAddress = listAddress)
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
         addressListViewModel.searchAddress("")
-        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
 
         addressListViewModel.loadMore()
 
@@ -209,10 +209,10 @@ class AddressListViewModelTest {
                 id = i.toString()
             })
         }
-        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
         addressListViewModel.searchAddress("")
         val response = Throwable()
-        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.error(response)
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.error(response)
 
         addressListViewModel.loadMore()
 
