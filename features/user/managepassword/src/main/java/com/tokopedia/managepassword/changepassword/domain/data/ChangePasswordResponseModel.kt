@@ -11,7 +11,7 @@ data class ChangePasswordResponseModel(
     data class ChangePassword(
             @Expose
             @SerializedName("user_id")
-            val userId: Int = 0,
+            val userId: String = "0",
             @Expose
             @SerializedName("updated")
             val isUpdated: Boolean = false,

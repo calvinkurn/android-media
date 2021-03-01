@@ -14,6 +14,16 @@ class ChangePasswordUseCase @Inject constructor(
 ) {
     lateinit var params: Map<String, Any>
 
+    suspend fun executeOnBackground(): ChangePasswordResponseModel {
+        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_change_password)
+        graphqlUseCase.apply {
+            setTypeClass(ChangePasswordResponseModel::class.java)
+            setGraphqlQuery(rawQuery)
+            setRequestParams(params)
+            return executeOnBackground()
+        }
+    }
+
     fun submit(onSuccess: (ChangePasswordResponseModel) -> Unit, onError: (Throwable) -> Unit) {
         val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_change_password)
         graphqlUseCase.apply {

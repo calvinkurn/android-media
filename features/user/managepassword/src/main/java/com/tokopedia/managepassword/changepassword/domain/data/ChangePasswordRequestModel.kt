@@ -15,5 +15,8 @@ data class ChangePasswordRequestModel(
         val repeatPassword: String = "",
         @Expose
         @SerializedName("validatetoken")
-        val validateToken: String = ""
+        val validateToken: String = "",
+        @Expose
+        @SerializedName("h")
+        val hash: String = ""
 )

@@ -3,10 +3,13 @@ package com.tokopedia.managepassword.changepassword.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordRequestModel
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordResponseModel
 import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePasswordUseCase
 import com.tokopedia.managepassword.common.ManagePasswordConstant
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
@@ -15,6 +18,7 @@ import javax.inject.Inject
 
 class ChangePasswordViewModel @Inject constructor(
         private val usecase: ChangePasswordUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -44,10 +48,16 @@ class ChangePasswordViewModel @Inject constructor(
     }
 
     fun submitChangePassword(encode: String, new: String, confirmation: String, validationToken: String) {
-        usecase.params = createRequestParams(ChangePasswordRequestModel(encode, new, confirmation, validationToken))
-        usecase.submit(onSuccess = {
-            _response.postValue(Success(it))
-        }, onError = {
+        launchCatchError(coroutineContext, {
+            val result = generatePublicKeyUseCase.executeOnBackground()
+            if(result.keyData.hash.isNotEmpty()) {
+                usecase.params = createRequestParams(ChangePasswordRequestModel(encode, new, confirmation, validationToken, hash = result.keyData.hash))
+                val changePassResponse = usecase.executeOnBackground()
+                _response.postValue(Success(changePassResponse))
+            }else {
+                _response.postValue(Fail(Throwable("")))
+            }
+        }, {
             _response.postValue(Fail(it))
         })
     }
