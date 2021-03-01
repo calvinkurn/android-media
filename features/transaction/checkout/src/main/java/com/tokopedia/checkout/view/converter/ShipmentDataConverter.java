@@ -176,9 +176,9 @@ public class ShipmentDataConverter {
             if (groupShopList.size() > 1) {
                 orderIndex = groupShopList.indexOf(groupShop) + 1;
             }
+            setCartItemModelFulfillment(shipmentCartItemModel, groupShop);
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                     String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
-            setCartItemModelFulfillment(shipmentCartItemModel, groupShop);
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModels.add(shipmentCartItemModel);
