@@ -176,24 +176,20 @@ public class ShipmentDataConverter {
             if (groupShopList.size() > 1) {
                 orderIndex = groupShopList.indexOf(groupShop) + 1;
             }
-            setCartItemModelFulfillment(shipmentCartItemModel, groupShop);
+            shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+            shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+            shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                     String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
+            if (groupShop.isFulfillment()) {
+                shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
+            }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
         return shipmentCartItemModels;
-    }
-
-    private void setCartItemModelFulfillment(ShipmentCartItemModel shipmentCartItemModel, GroupShop groupShop) {
-        shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-        shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-        shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
-        if (groupShop.isFulfillment()) {
-            shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
-        }
     }
 
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
