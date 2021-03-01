@@ -14,10 +14,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="heading_3"
         tools:text="Lihat 99 produk pilihan"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="heading_4"
         />
 
     <com.tokopedia.sortfilter.SortFilter
@@ -56,4 +56,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
         tools:visibility="visible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,12 +2,15 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,6 +28,10 @@ class CatalogDetailProductListingViewModel
     var mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
+    var quickFilterOptionList: List<Option> = ArrayList()
+    var dynamicFilterModel : DynamicFilterModel? = null
+    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
+
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
@@ -32,8 +39,8 @@ class CatalogDetailProductListingViewModel
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products.let { productList ->
                             mProductList.value = Success((productList) as List<ProductsItem>)
-                            mProductCount.value = if(productList.size == 0) "" else productList.size.toString()
                         }
+                        mProductCount.value = searchProduct.totalData.toString()
                     }
                 }
 

@@ -24,12 +24,10 @@ abstract class CatalogProductCardViewHolder(itemView: View,
                     CategoryNavConstants.RecyclerView.GridType.GRID_3 -> imageURL700
                 },
                 productName = name,
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
                 formattedPrice = price,
                 priceRange = priceRange,
                 shopBadgeList = badges.toProductCardModelShopBadges(),
-                shopLocation = shop.location,
+                shopLocation = shop.name,
                 ratingCount = rating.toRatingCount(isTopAds),
                 reviewCount = countReview,
                 freeOngkir = freeOngkir?.toProductCardModelFreeOngkir()

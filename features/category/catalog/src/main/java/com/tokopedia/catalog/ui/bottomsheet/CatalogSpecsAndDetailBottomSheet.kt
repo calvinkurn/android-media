@@ -143,7 +143,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_spesification)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             }
             tabLayout.getTabAt(0)?.customView = tabOne
             tabLayout.getTabAt(1)?.customView = tabTwo

@@ -25,6 +25,7 @@ class CatalogGetProductListUseCase @Inject constructor(private val categoryProdu
                 categoryProductUseCase.createObservable(paramProductListing).subscribeOn(Schedulers.io()),
                 topAdsProductsUseCase.createObservable(paramTopAd).subscribeOn(Schedulers.io())
         ) { aceSearchProductResponse, topAdsResponse ->
+            aceSearchProductResponse?.aceSearchProduct?.searchData?.totalData = aceSearchProductResponse?.aceSearchProduct?.header?.totalData
             ProductListMapper().transform(ProductListResponse(aceSearchProductResponse.aceSearchProduct?.searchData), topAdsResponse)
         }
 

@@ -95,9 +95,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private var isPagingAllowed: Boolean = true
     private var pagingRowCount = 20
 
-    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
-    private var dynamicFilterModel : DynamicFilterModel? = null
-
     private lateinit var productTypeFactory: ProductTypeFactory
 
     private lateinit var userSession: UserSession
@@ -165,7 +162,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun setUpAdapter() {
         productTypeFactory = CatalogTypeFactoryImpl(this)
-        productNavListAdapter = CatalogProductNavListAdapter(productTypeFactory, list, this)
+        productNavListAdapter = CatalogProductNavListAdapter(productTypeFactory, viewModel.list, this)
         productNavListAdapter?.changeListView()
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getLinearLayoutManager()
@@ -203,13 +200,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
+                        viewModel.list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         loadMoreTriggerListener?.updateStateAfterGetData()
                         isPagingAllowed = true
                     } else {
-                        if (list.isEmpty()) {
+                        if (viewModel.list.isEmpty()) {
                             showNoDataScreen(true)
                         }
                     }
@@ -220,7 +217,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    if (list.isEmpty()) {
+                    if (viewModel.list.isEmpty()) {
                         showNoDataScreen(true)
                     }
                     isPagingAllowed = true
@@ -239,15 +236,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    dynamicFilterModel = it.data
-                    setDynamicFilter(it.data)
+                    viewModel.dynamicFilterModel = it.data
+                    setDynamicFilter(viewModel.dynamicFilterModel!!)
                 }
 
                 is Fail -> {
                 }
             }
         })
-
 
         viewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
 
@@ -596,20 +592,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         addDefaultSelectedSort()
     }
 
-    private var quickFilterOptionList: List<Option> = ArrayList()
-
     private fun startFilter(quickFilterData : DataValue){
         processQuickFilter(quickFilterData)
     }
 
     private fun processQuickFilter(quickFilterData: DataValue) {
         // BG
-        if (dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
+        if (viewModel.dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
         val sortFilterItems = arrayListOf<SortFilterItem>()
-        quickFilterOptionList = arrayListOf()
+        viewModel.quickFilterOptionList = arrayListOf()
         for (filter in quickFilterData.filter) {
             val options = filter.options
-            (quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
+            (viewModel.quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
             convertToSortFilterItem(filter.title, options)?.let { sortFilterItems.addAll(it) }
         }
         // Main
@@ -649,7 +643,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
-        val quickFilterOptionList: List<Option> = quickFilterOptionList
+        val quickFilterOptionList: List<Option> = viewModel.quickFilterOptionList
         for (i in items.indices) {
             if (i >= quickFilterOptionList.size) break
             val item = items[i]
@@ -694,12 +688,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     /*******************************  Bottom Sheet Filter **************************/
 
     private fun openBottomSheetFilterRevamp(){
-        if(dynamicFilterModel != null){
+        if(viewModel.dynamicFilterModel != null){
             sortFilterBottomSheet = SortFilterBottomSheet()
             sortFilterBottomSheet?.show(
                     requireFragmentManager(),
                     searchParameter.getSearchParameterHashMap(),
-                    dynamicFilterModel,
+                    viewModel.dynamicFilterModel,
                     this
             )
             sortFilterBottomSheet!!.setOnDismissListener {
