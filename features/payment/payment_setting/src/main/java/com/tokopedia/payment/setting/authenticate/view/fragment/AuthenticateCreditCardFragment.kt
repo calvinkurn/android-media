@@ -8,9 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -18,35 +15,26 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
-import com.tokopedia.payment.setting.authenticate.model.AuthException
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardComponent
+import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
-import com.tokopedia.payment.setting.authenticate.view.viewmodel.AuthenticateCCViewModel
-import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCContract
+import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
 
 class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCard,
-        AuthenticateCCAdapterFactory>() {
+        AuthenticateCCAdapterFactory>(), AuthenticateCCContract.View {
 
     @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-
-    private val viewModel: AuthenticateCCViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
-        viewModelProvider.get(AuthenticateCCViewModel::class.java)
-    }
+    lateinit var authenticateCCPresenter: AuthenticateCCPresenter
 
     private val progressDialog: ProgressDialog by lazy { ProgressDialog(context) }
 
-    override fun initInjector() {
-        getComponent(SettingPaymentComponent::class.java).inject(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
@@ -55,8 +43,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonUse.setOnClickListener {
-            showProgressLoading()
-            viewModel.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(),
+            authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(),
                     true, null)
         }
         context?.let {
@@ -68,43 +55,6 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         }
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         updateVisibilityButtonUse()
-        observeViewModel()
-    }
-
-
-    private fun observeViewModel() {
-        viewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
-                when (it) {
-                    is Success -> onCheckWhiteListSuccess(it.data)
-                    is Fail -> onUpdateWhiteListError(it.throwable)
-                }
-
-        })
-        viewModel.whiteListStatusResultLiveData.observe(viewLifecycleOwner, Observer{
-            when (it) {
-                is Success -> onUpdateWhiteListSuccess(it.data)
-                is Fail -> onUpdateWhiteListError(it.throwable)
-            }
-        })
-
-    }
-
-    private fun onCheckWhiteListSuccess(data: List<TypeAuthenticateCreditCard>) {
-        hideProgressLoading()
-        renderList(ArrayList(data))
-    }
-
-    private fun onUpdateWhiteListSuccess(data: CheckWhiteListStatus) {
-        hideProgressLoading()
-        onResultUpdateWhiteList(data)
-    }
-
-    private fun onUpdateWhiteListError(throwable: Throwable) {
-        hideProgressLoading()
-        when (throwable) {
-            is AuthException.CheckOtpException -> goToOtpPage(throwable.phoneNumber)
-            else -> onErrorUpdateWhiteList(throwable)
-        }
     }
 
     override fun getAdapterTypeFactory(): AuthenticateCCAdapterFactory {
@@ -126,7 +76,12 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         return ""
     }
 
-    private fun onErrorUpdateWhiteList(e: Throwable) {
+    override fun initInjector() {
+        getComponent(AuthenticateCreditCardComponent::class.java).inject(this)
+        authenticateCCPresenter.attachView(this)
+    }
+
+    override fun onErrorUpdateWhiteList(e: Throwable) {
         context?.let {
             showSnackbarError(ErrorHandler.getErrorMessage(context, e))
         }
@@ -140,7 +95,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         }
     }
 
-    private fun onResultUpdateWhiteList(checkWhiteListStatus: CheckWhiteListStatus?) {
+    override fun onResultUpdateWhiteList(checkWhiteListStatus: CheckWhiteListStatus?) {
         if (checkWhiteListStatus?.statusCode == 200) {
             activity?.setResult(Activity.RESULT_OK)
             checkWhiteListStatus.message?.let { message ->
@@ -171,15 +126,15 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         updateVisibilityButtonUse()
     }
 
-    private fun showProgressLoading() {
+    override fun showProgressLoading() {
         progressDialog.show()
     }
 
-    private fun hideProgressLoading() {
+    override fun hideProgressLoading() {
         progressDialog.hide()
     }
 
-    private fun goToOtpPage(phoneNumber: String) {
+    override fun goToOtpPage(phoneNumber: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
@@ -198,8 +153,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
             data?.let {
                 if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID)) {
                     val uuid = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
-                    showProgressLoading()
-                    viewModel.updateWhiteList(AuthenticateCCViewModel.SINGLE_AUTH_VALUE,
+                    authenticateCCPresenter.updateWhiteList(AuthenticateCCPresenter.SINGLE_AUTH_VALUE,
                             false, uuid)
                 }
             }
@@ -207,21 +161,17 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onDestroy() {
+        authenticateCCPresenter.detachView()
+        super.onDestroy()
+    }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
     }
 
     override fun loadData(page: Int) {
-        context?.let { context ->
-            showProgressLoading()
-            viewModel.checkWhiteList(
-                    context.getString(R.string.payment_authentication_title_1),
-                    context.getString(R.string.payment_authentication_description_1),
-                    context.getString(R.string.payment_authentication_title_2),
-                    context.getString(R.string.payment_authentication_description_2)
-            )
-        }
+        authenticateCCPresenter.checkWhiteList()
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view

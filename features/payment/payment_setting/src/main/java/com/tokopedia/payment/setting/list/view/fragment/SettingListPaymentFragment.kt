@@ -8,9 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
@@ -21,38 +18,27 @@ import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
-import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
 import com.tokopedia.payment.setting.list.model.PaymentSignature
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
-import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
+import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 import javax.inject.Inject
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
-        SettingListEmptyViewHolder.ListenerEmptyViewHolder {
+        SettingListPaymentContract.View, SettingListEmptyViewHolder.ListenerEmptyViewHolder {
 
     private var paymentSignature: PaymentSignature? = null
 
     @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-
-    private val settingsListViewModel: SettingsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
-        viewModelProvider.get(SettingsListViewModel::class.java)
-    }
-
+    lateinit var settingListPaymentPresenter: SettingListPaymentPresenter
     private val progressDialog: ProgressDialog by lazy { ProgressDialog(context) }
-
-    override fun initInjector() {
-        getComponent(SettingPaymentComponent::class.java).inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         activity?.run {
@@ -75,38 +61,14 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         }
         view.authenticateCreditCard.setOnClickListener {
             activity?.run {
-                showLoadingDialog()
-                settingsListViewModel.checkVerificationPhone()
+                settingListPaymentPresenter.checkVerificationPhone()
             }
         }
         updateViewCounter(adapter.dataSize)
-        observeViewModel()
-    }
-
-
-    private fun observeViewModel() {
-        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer{
-            when (it) {
-                is Success -> {
-                    onPaymentSignature(it.data.paymentSignature)
-                    renderList(ArrayList(it.data.creditCard.cards ?: arrayListOf()))
-                }
-                is Fail -> showGetListError(it.throwable)
-            }
-        })
-        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer{
-            if (it) {
-                hideLoadingDialog()
-                onSuccessVerifPhone()
-            } else {
-                hideLoadingDialog()
-                onNeedVerifPhone()
-            }
-        })
     }
 
     private fun updateViewCounter(size: Int) {
-        view?.counterCreditCard?.text = getString(R.string.payment_label_saved_card, size)
+        view?.counterCreditCard?.setText(getString(R.string.payment_label_saved_card, size))
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
@@ -160,21 +122,26 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         showAuthPaymentView()
     }
 
-    private fun showLoadingDialog() {
+    override fun initInjector() {
+        getComponent(DaggerSettingListPaymentComponent::class.java).inject(this)
+        settingListPaymentPresenter.attachView(this)
+    }
+
+    override fun showLoadingDialog() {
         progressDialog.show()
     }
 
-    private fun hideLoadingDialog() {
+    override fun hideLoadingDialog() {
         progressDialog.hide()
     }
 
-    private fun onSuccessVerifPhone() {
+    override fun onSuccessVerifPhone() {
         activity?.run {
             this@SettingListPaymentFragment.startActivityForResult(AuthenticateCreditCardActivity.createIntent(this), REQUEST_CODE_AUTH_CREDIT_CARD)
         }
     }
 
-    private fun onNeedVerifPhone() {
+    override fun onNeedVerifPhone() {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
         dialog.setDesc(getString(R.string.payment_label_desc_dialog_verif))
@@ -193,12 +160,17 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         dialog.show()
     }
 
-    private fun onPaymentSignature(paymentSignature: PaymentSignature?) {
+    override fun onPaymentSignature(paymentSignature: PaymentSignature?) {
         this.paymentSignature = paymentSignature
     }
 
+    override fun onDestroy() {
+        settingListPaymentPresenter.detachView()
+        super.onDestroy()
+    }
+
     override fun loadData(page: Int) {
-        settingsListViewModel.getCreditCardList()
+        settingListPaymentPresenter.getCreditCardList(resources)
         hideAuthPaymentView()
     }
 

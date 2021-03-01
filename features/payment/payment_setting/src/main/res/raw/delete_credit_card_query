@@ -1,0 +1,6 @@
+mutation removeCreditCard($token_id : String!) {
+  removeCreditCard(token_id: $token_id){
+      success
+      message
+  }
+}
