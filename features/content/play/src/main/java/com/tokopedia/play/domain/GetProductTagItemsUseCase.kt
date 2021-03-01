@@ -26,7 +26,7 @@ class GetProductTagItemsUseCase @Inject constructor(
 
         private val query = """
             query(${'$'}channelId: String){
-              playGetTagsItem(req: {channelID:(${'$'}channelId}){
+              playGetTagsItem(req: {channelID:${'$'}channelId}){
                  products{
                   id: ID
                   name: Name
@@ -67,7 +67,7 @@ class GetProductTagItemsUseCase @Inject constructor(
          * TODO: uncomment
         private val query = """
             query(${'$'}channelId: String){
-              playGetTagsItem(req: {channelID:(${'$'}channelId}){
+              playGetTagsItem(req: {channelID:${'$'}channelId}){
                  products{
                   id: ID
                   name: Name
