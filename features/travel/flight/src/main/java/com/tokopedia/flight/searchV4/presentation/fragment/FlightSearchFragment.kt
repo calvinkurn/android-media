@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV4.presentation.fragment
+package com.tokopedia.flight.searchV4.presentfation.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -297,7 +297,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
-        flight_promo_chips_view.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
+        setItemPromoChipsActive()
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
@@ -742,6 +742,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         }
         return emptyResultViewModel
+    }
+
+    fun setItemPromoChipsActive(){
+        flight_promo_chips_view.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
     }
 
     fun initPromoChips(){

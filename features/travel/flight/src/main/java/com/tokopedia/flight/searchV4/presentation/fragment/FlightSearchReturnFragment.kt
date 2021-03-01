@@ -130,7 +130,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         }
 
         if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
-            flight_promo_chips_view.hide()
+            hidePromoChips()
             showSeeAllResultView()
         }
 
@@ -217,7 +217,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             clearAllData()
             fetchSortAndFilterData()
             resetDepartureLabelPrice()
-            flight_promo_chips_view.show()
+            showPromoChips()
             dialog.dismiss()
         }
         dialog.setSecondaryCTAText(getString(R.string.flight_search_return_dialog_abort))
@@ -274,6 +274,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         }
     }
 
+    private fun hidePromoChips(){
+        flight_promo_chips_view.hide()
+    }
+
+    private fun showPromoChips() {
+        flight_promo_chips_view.show()
+    }
     companion object {
         fun newInstance(passDataModel: FlightSearchPassDataModel,
                         selectedDepartureId: String,
