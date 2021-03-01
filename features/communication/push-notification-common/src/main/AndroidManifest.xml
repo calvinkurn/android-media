@@ -5,7 +5,13 @@
     <application>
         <service
             android:name=".service.PushNotificationService"
-            android:exported="true" />
+            android:exported="true"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd"/>
+                <action android:name="com.tokopedia.sellerapp"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
