@@ -163,6 +163,7 @@ final class ProductListPresenter
     private String navSource = "";
     private String pageId = "";
     private String pageTitle = "";
+    private String searchRef = "";
     private String autoCompleteApplink = "";
     private boolean isGlobalNavWidgetAvailable = false;
     private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
@@ -656,6 +657,7 @@ final class ProductListPresenter
         setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
         setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
         setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
+        setSearchRef(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SEARCH_REF));
         resetAdditionalParams();
 
         if (searchParameter == null) return;
@@ -683,6 +685,10 @@ final class ProductListPresenter
 
     private void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    private void setSearchRef(String searchRef) {
+        this.searchRef = searchRef;
     }
 
     private void resetAdditionalParams() {
@@ -1869,9 +1875,9 @@ final class ProductListPresenter
     }
 
     private String getDimension90() {
-        if (isLocalSearch() && !textIsEmpty(pageTitle)) return pageTitle + "." + navSource + ".local_search." + pageId;
+        if (isLocalSearch()) return pageTitle + "." + navSource + ".local_search." + pageId;
 
-        return (getView() != null) ? getView().getSearchRef() : "";
+        return searchRef;
     }
 
     @Override

@@ -61,8 +61,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopPowerMerchant = false;
     private String productUrl = "";
     private String pageTitle;
-    private String pageId;
-    private String navSource;
 
     public boolean isTopAds() {
         return isTopAds;

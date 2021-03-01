@@ -42,8 +42,6 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        String getSearchRef();
-
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);

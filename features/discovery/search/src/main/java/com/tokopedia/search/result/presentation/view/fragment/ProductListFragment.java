@@ -565,8 +565,7 @@ public class ProductListFragment
         }
     }
 
-    @Override
-    public String getSearchRef() {
+    private String getSearchRef() {
         return searchParameter.get(SearchApiConst.SEARCH_REF);
     }
 

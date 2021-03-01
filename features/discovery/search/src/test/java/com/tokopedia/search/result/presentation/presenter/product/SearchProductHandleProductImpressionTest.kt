@@ -101,7 +101,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
     private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
             productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot), any())
-            productListView.searchRef
         }
 
         confirmVerified(productListView)
@@ -148,7 +147,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             )
 
             productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot), any())
-            productListView.searchRef
         }
 
         confirmVerified(productListView)
