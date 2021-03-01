@@ -212,7 +212,10 @@ class ProductStockHandlerDialog(
         if (product.stock < SINGLE_PRODUCT_STOCK) {
             viewModel.setProductReminder(product.productId, element.notificationId)
         } else {
-            listener.addProductToCheckout(element.userInfo, element)
+            viewModel.addProductToCart(
+                    userSession.userId,
+                    product
+            )
         }
     }
 
