@@ -488,7 +488,7 @@ final class ProductListPresenter
 
             ProductViewModelMapper mapper = new ProductViewModelMapper();
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -824,7 +824,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1024,7 +1024,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, pageId, navSource);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 

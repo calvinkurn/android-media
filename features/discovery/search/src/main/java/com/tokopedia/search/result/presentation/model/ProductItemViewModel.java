@@ -61,6 +61,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopPowerMerchant = false;
     private String productUrl = "";
     private String pageTitle;
+    private String pageId;
+    private String navSource;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -394,6 +396,22 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.pageTitle = pageTitle;
     }
 
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    public String getNavSource() {
+        return navSource;
+    }
+
+    public void setNavSource(String navSource) {
+        this.navSource = navSource;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -418,7 +436,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
+                "dimension90", getDimension90(searchRef),
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()
@@ -433,6 +451,16 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         String organicStatus = isOrganicAds() ? ORGANIC_ADS : ORGANIC;
 
         return String.format(ACTION_FIELD, organicStatus);
+    }
+
+    private String getDimension90(String searchRef) {
+        if (isLocalSearch()) return getPageTitle()+"."+getNavSource()+".local_search."+getPageId();
+
+        return TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle();
+    }
+
+    private boolean isLocalSearch() {
+        return !TextUtils.isEmpty(navSource) && !TextUtils.isEmpty(pageId) && !TextUtils.isEmpty(pageTitle);
     }
 
     public Object getProductAsATCObjectDataLayer(String cartId) {

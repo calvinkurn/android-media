@@ -27,7 +27,9 @@ public class ProductViewModelMapper {
     public ProductViewModel convertToProductViewModel(
             int lastProductItemPositionFromCache,
             SearchProductModel searchProductModel,
-            String pageTitle
+            String pageTitle,
+            String pageId,
+            String navSource
     ) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
         SearchProductModel.SearchProductHeader searchProductHeader = aceSearchProduct.getHeader();
@@ -41,7 +43,7 @@ public class ProductViewModelMapper {
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
         productViewModel.setProductList(convertToProductItemViewModelList(
-                lastProductItemPositionFromCache, searchProductData.getProductList(), pageTitle
+                lastProductItemPositionFromCache, searchProductData.getProductList(), pageTitle, pageId, navSource
         ));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setTickerModel(createTickerModel(searchProductData));
@@ -193,7 +195,9 @@ public class ProductViewModelMapper {
     private List<ProductItemViewModel> convertToProductItemViewModelList(
             int lastProductItemPositionFromCache,
             List<SearchProductModel.Product> productModels,
-            String pageTitle
+            String pageTitle,
+            String pageId,
+            String navSource
     ) {
         List<ProductItemViewModel> productItemList = new ArrayList<>();
 
@@ -201,7 +205,7 @@ public class ProductViewModelMapper {
 
         for (SearchProductModel.Product productModel : productModels) {
             position++;
-            productItemList.add(convertToProductItem(productModel, position, pageTitle));
+            productItemList.add(convertToProductItem(productModel, position, pageTitle, pageId, navSource));
         }
 
         return productItemList;
@@ -210,7 +214,9 @@ public class ProductViewModelMapper {
     private ProductItemViewModel convertToProductItem(
             SearchProductModel.Product productModel,
             int position,
-            String pageTitle
+            String pageTitle,
+            String pageId,
+            String navSource
     ) {
         ProductItemViewModel productItem = new ProductItemViewModel();
         productItem.setProductID(productModel.getId());
@@ -249,6 +255,8 @@ public class ProductViewModelMapper {
         productItem.setMinOrder(productModel.getMinOrder());
         productItem.setProductUrl(productModel.getUrl());
         productItem.setPageTitle(pageTitle);
+        productItem.setPageId(pageId);
+        productItem.setNavSource(navSource);
 
         return productItem;
     }
