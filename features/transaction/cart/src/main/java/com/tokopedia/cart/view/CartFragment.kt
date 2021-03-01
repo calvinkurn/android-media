@@ -1198,7 +1198,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onNeedToGoneLocalizingAddressWidget() {
-        cartAdapter.removeChooseAddressWidget()
+        val chooseAddressWidgetPosition = cartAdapter.removeChooseAddressWidget()
+        onNeedToRemoveViewItem(chooseAddressWidgetPosition)
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
@@ -1918,7 +1919,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderChooseAddressWidget(localizationChooseAddressData: LocalizationChooseAddressData) {
         activity?.let {
             if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_EMPTY) {
-                cartAdapter.removeChooseAddressWidget()
+                val chooseAddressWidgetPosition = cartAdapter.removeChooseAddressWidget()
+                onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, localizationChooseAddressData)
 
