@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.getShopScoreDate
 import com.tokopedia.shop.score.detail.di.component.DaggerShopScoreComponent
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailItem
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailSummary
@@ -79,7 +80,7 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setupTickerShopScore() {
         ticker_info_shop_score?.apply {
-            setHtmlDescription(getString(R.string.ticker_info_shop_score, "21 April 2021"))
+            setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(requireContext())))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     //TODO
