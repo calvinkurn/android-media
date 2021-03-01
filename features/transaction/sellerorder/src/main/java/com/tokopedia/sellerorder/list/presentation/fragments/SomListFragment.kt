@@ -854,7 +854,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun observeAcceptOrder() {
         viewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> onAcceptOrderSuccess(result.data.acceptOrder)
+                is Success -> onAcceptOrderSuccess(result.data.acceptOrder, false)
                 is Fail -> showToasterError(view, getString(R.string.som_list_failed_accept_order), canRetry = false)
             }
         })
@@ -1146,9 +1146,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getAdminPermission()
     }
 
-    private fun onAcceptOrderSuccess(acceptOrderResponse: SomAcceptOrderResponse.Data.AcceptOrder) {
+    private fun onAcceptOrderSuccess(acceptOrderResponse: SomAcceptOrderResponse.Data.AcceptOrder, refreshOrder: Boolean) {
         if (acceptOrderResponse.success == 1) {
-            onActionCompleted(false)
+            onActionCompleted(refreshOrder)
             showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
         } else {
             showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty(), canRetry = false)
@@ -1261,7 +1261,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 data.hasExtra(RESULT_CONFIRM_SHIPPING) -> handleConfirmShippingResult(data.getStringExtra(RESULT_CONFIRM_SHIPPING))
                 data.hasExtra(SomConsts.RESULT_ACCEPT_ORDER) -> {
                     data.getParcelableExtra<SomAcceptOrderResponse.Data.AcceptOrder>(SomConsts.RESULT_ACCEPT_ORDER)?.let { resultAcceptOrder ->
-                        onAcceptOrderSuccess(resultAcceptOrder)
+                        onAcceptOrderSuccess(resultAcceptOrder, true)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
