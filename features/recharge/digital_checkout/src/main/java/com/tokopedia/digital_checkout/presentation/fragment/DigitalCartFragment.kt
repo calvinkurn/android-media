@@ -500,16 +500,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
             inputPriceContainer.visibility = View.VISIBLE
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
-                inputPriceHolderView.setMessageText(getString(R.string.digital_cart_error_input_price_less_than_min,
-                        userInputPriceDigital.minPayment))
-
-            inputPriceHolderView.setMinMaxPayment(
-                    total ?: "",
-                    userInputPriceDigital.minPaymentPlain.toLong(),
-                    userInputPriceDigital.maxPaymentPlain.toLong(),
-                    userInputPriceDigital.minPayment ?: "",
-                    userInputPriceDigital.maxPayment ?: "")
-
             inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
                 override fun onInputPriceByUserFilled(paymentAmount: Long) {
                     viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
@@ -523,6 +513,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     btnCheckout.isEnabled = false
                 }
             }
+
+            inputPriceHolderView.setMinMaxPayment(
+                    total ?: "",
+                    userInputPriceDigital.minPaymentPlain.toLong(),
+                    userInputPriceDigital.maxPaymentPlain.toLong(),
+                    userInputPriceDigital.minPayment ?: "",
+                    userInputPriceDigital.maxPayment ?: "")
         }
     }
 
