@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -157,7 +158,6 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import timber.log.Timber
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -168,7 +168,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
+class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
         DynamicProductDetailListener,
         ProductVariantListener,
         ProductAccessRequestDialogFragment.Listener,
@@ -187,7 +187,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         trackerListName: String? = null,
                         affiliateString: String? = null,
                         deeplinkUrl: String? = null,
-                        layoutId: String? = null) = DynamicProductDetailFragmentDiffutil().also {
+                        layoutId: String? = null) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
                 warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
@@ -218,7 +218,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         base_btn_follow?.run {
-            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragmentDiffutil)
+            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
         }
     }
 
@@ -242,7 +242,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var warehouseId: String? = null
     private var doActivityResult = true
     private var shouldFireVariantTracker = true
-    private var pdpUiUpdater: PdpUiUpdaterDiffutil? = PdpUiUpdaterDiffutil(mutableMapOf())
+    private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
@@ -1338,7 +1338,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
-                pdpUiUpdater = PdpUiUpdaterDiffutil(DynamicProductDetailMapper.hashMapLayout(it.data))
+                pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
             }, {
                 Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
@@ -3016,7 +3016,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     this.dismiss()
                     DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
-                    viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragmentDiffutil::onErrorSubmitHelpTicket, this@DynamicProductDetailFragmentDiffutil::onSuccessSubmitHelpTicket)
+                    viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragment::onErrorSubmitHelpTicket, this@DynamicProductDetailFragment::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
@@ -3109,7 +3109,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         activity?.run {
             CheckImeiBottomSheet.showPermissionDialog(this) {
                 DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragmentDiffutil)
+                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
             }
         }
     }
@@ -3195,10 +3195,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun setupRemoteConfig() {
-        viewModel.enableCaching = remoteConfig()?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
-                ?: true
-        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
-                ?: false
+        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {

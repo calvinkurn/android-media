@@ -30,7 +30,7 @@ import kotlin.math.roundToLong
  * This class hold all of the ViewHolder data. They have same instance.
  * If you changes one of this variable , data inside ViewHolder also updated (don't forget to notify)
  */
-class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
+class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     private val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel

@@ -178,7 +178,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionType: Int = 0
@@ -834,7 +833,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
         getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
         getPdpLayoutUseCase.get().forceRefresh = forceRefresh
-        getPdpLayoutUseCase.get().enableCaching = enableCaching
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 }
