@@ -962,14 +962,16 @@ class PlayViewModel @Inject constructor(
         )
 
         val productTagsResponse = withContext(dispatchers.io) {
-            getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
+            getProductTagItemsUseCase.setRequestParams(GetProductTagItemsUseCase.createParam(channelId))
             getProductTagItemsUseCase.executeOnBackground()
         }
-        val productTags = playUiModelMapper.mapProductTags(productTagsResponse.listOfProducts)
-        val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.listOfVouchers)
+        val productTags = playUiModelMapper.mapProductTags(productTagsResponse.playGetTagsItem.listOfProducts)
+        val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.playGetTagsItem.listOfVouchers)
 
         val newProductSheet = PlayProductTagsUiModel.Complete(
-                basicInfo = productTagsBasicInfo,
+                basicInfo = productTagsBasicInfo.copy(
+                        maxFeaturedProducts = productTagsResponse.playGetTagsItem.config.peekProductCount
+                ),
                 productList = productTags,
                 voucherList = merchantVouchers
         )
@@ -995,7 +997,7 @@ class PlayViewModel @Inject constructor(
     private fun trackVisitChannel(channelId: String) {
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                trackVisitChannelBroadcasterUseCase.params = TrackVisitChannelBroadcasterUseCase.createParams(channelId)
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }
         }) {

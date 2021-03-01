@@ -30,8 +30,8 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
                     else -> MerchantVoucherType.Unknown
                 },
                 code = input.code,
-                copyable = true, // TODO("check API Contract")
-                highlighted = true // TODO("check API Contract")
+                copyable = input.isCopyable,
+                highlighted = input.isHighlighted
         )
     }
 }

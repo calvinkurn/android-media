@@ -32,6 +32,10 @@ class Voucher (
         @SerializedName("is_quota_available")
         val isAvailable: Int = 0,
         @SerializedName("tnc")
-        val termAndCondition: String = ""
+        val termAndCondition: String = "",
+        @SerializedName("is_copyable")
+        val isCopyable: Boolean = false,
+        @SerializedName("is_highlighted")
+        val isHighlighted: Boolean = false
 
 )

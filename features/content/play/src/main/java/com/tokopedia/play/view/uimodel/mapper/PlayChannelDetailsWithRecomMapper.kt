@@ -101,7 +101,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = configResponse.pinnedProductConfig.bottomSheetTitle,
                     partnerId = partnerResponse.id.toLongOrZero(),
-                    maxFeaturedProducts = 5
+                    maxFeaturedProducts = DEFAULT_MAX_FEATURED_PRODUCT
             )
     )
 
@@ -198,6 +198,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     companion object {
         private const val MS_PER_SECOND = 1000
+        private const val DEFAULT_MAX_FEATURED_PRODUCT = 5
     }
 
     data class ExtraParams(

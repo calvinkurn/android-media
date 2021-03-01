@@ -390,6 +390,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * Pinned Voucher View Component Listener
      */
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
+        if (voucher.code.isBlank() || voucher.code.isEmpty()) return
+
         copyToClipboard(content = voucher.code)
         doShowToaster(message = getString(R.string.play_voucher_code_copied))
     }
