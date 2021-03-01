@@ -82,14 +82,14 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
                 view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress.state)
             }
-            else -> {
+            CartShipmentAddressFormData.NO_ERROR -> {
+                view.updateLocalCacheAddressData(userAddress)
                 if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
                     if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
                         view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                     }
-                    view.updateLocalCacheAddressData(userAddress)
                 } else {
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
