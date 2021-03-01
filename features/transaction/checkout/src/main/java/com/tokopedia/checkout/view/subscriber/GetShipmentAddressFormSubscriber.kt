@@ -63,28 +63,24 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                 if (cartShipmentAddressFormData.errorCode == 0 && (groupAddressList.isEmpty() || groupAddressList[0] == null || groupAddressList[0]?.userAddress == null)) {
                     view.onShipmentAddressFormEmpty()
                 } else {
-                    val userAddress = groupAddressList[0]?.userAddress
-                    if (userAddress == null) {
-                        view.onShipmentAddressFormEmpty()
-                    } else {
-                        validateRenderCheckoutPage(cartShipmentAddressFormData, userAddress)
-                    }
+                    val userAddress = groupAddressList.firstOrNull()?.userAddress
+                    validateRenderCheckoutPage(cartShipmentAddressFormData, userAddress)
                 }
             }
         }
     }
 
-    private fun validateRenderCheckoutPage(cartShipmentAddressFormData: CartShipmentAddressFormData, userAddress: UserAddress) {
+    private fun validateRenderCheckoutPage(cartShipmentAddressFormData: CartShipmentAddressFormData, userAddress: UserAddress?) {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
                 view.renderCheckoutPageNoAddress(cartShipmentAddressFormData)
             }
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
-                view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress.state)
+                view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress?.state ?: 0)
             }
             CartShipmentAddressFormData.NO_ERROR -> {
                 view.updateLocalCacheAddressData(userAddress)
-                if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
+                if (userAddress?.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
                     if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
