@@ -303,6 +303,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setInitialOrderListParams()
+        observeLoadingStatus()
         observeUserRoles()
         observeTopAdsCategory()
         observeTickers()
@@ -750,6 +751,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupSearchBar() {
         val searchParam = arguments?.getString(QUERY_PARAM_SEARCH).orEmpty()
         searchBarSomList.searchBarTextField.setText(searchParam)
+    }
+
+    private fun observeLoadingStatus() {
+        viewModel.isLoadingOrder.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (!isLoading) hideLoading()
+        })
     }
 
     private fun observeUserRoles() {
@@ -1427,7 +1434,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
         skipSearch = false
-        hideLoading()
         if (rvSomList?.visibility != View.VISIBLE) rvSomList?.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
@@ -1477,7 +1483,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun onRefreshOrderSuccess(result: OptionalOrderData) {
-        hideLoading()
         val order = result.order
         if (order == null) {
             (adapter as SomListOrderAdapter).removeOrder(result.orderId)
@@ -1493,7 +1498,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun onRefreshOrderFailed() {
-        hideLoading()
         showToasterError(view, getString(R.string.som_list_failed_refresh_order))
     }
 

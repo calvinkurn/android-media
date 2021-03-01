@@ -86,6 +86,10 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
+    private val _isLoadingOrder = MutableLiveData<Boolean>()
+    val isLoadingOrder: LiveData<Boolean>
+        get() = _isLoadingOrder
+
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
@@ -185,6 +189,14 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
+    private fun updateLoadOrderStatus(job: Job?) {
+        job?.invokeOnCompletion {
+            launch(context = dispatcher.main) {
+                _isLoadingOrder.value = isRefreshingOrder()
+            }
+        }
+    }
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
@@ -251,16 +263,11 @@ class SomListViewModel @Inject constructor(
             val result = somListGetOrderListUseCase.executeOnBackground(params)
             getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first.toLongOrZero()
-            withContext(dispatcher.main) {
-                getOrderListJob = null
-                _orderListResult.value = Success(result.second)
-            }
+            _orderListResult.postValue(Success(result.second))
         }, onError = {
-            withContext(dispatcher.main) {
-                getOrderListJob = null
-                _orderListResult.value = Fail(it)
-            }
+            _orderListResult.postValue(Fail(it))
         })
+        updateLoadOrderStatus(getOrderListJob)
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -285,6 +292,7 @@ class SomListViewModel @Inject constructor(
                     containsFailedRefreshOrder = true
                 }
             })
+            updateLoadOrderStatus(job)
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }
