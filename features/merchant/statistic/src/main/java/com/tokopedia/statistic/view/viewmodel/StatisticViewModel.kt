@@ -175,11 +175,11 @@ class StatisticViewModel @Inject constructor(
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
-                getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
-            })
-            _multiLineGraphWidgetData.value = result
+            val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getMultiLineGraphUseCase.get().run {
+                startCollectingResult(_multiLineGraphWidgetData)
+                executeOnBackground(params, firstLoad)
+            }
         }, onError = {
             _multiLineGraphWidgetData.value = Fail(it)
         })
