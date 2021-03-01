@@ -4,16 +4,15 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
-import com.tokopedia.media.loader.wrapper.MediaDataSource
-import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.media.loader.transform.CenterCrop
-import com.tokopedia.media.loader.transform.FitCenter
-import com.tokopedia.media.loader.transform.RoundedCorners
+import com.tokopedia.media.loader.transform.centerCrop
+import com.tokopedia.media.loader.transform.fitCenter
+import com.tokopedia.media.loader.transform.roundedOf
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -45,7 +44,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        transform(FitCenter())
+        transform(fitCenter)
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         }, {
@@ -58,7 +57,7 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadIcon(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        transform(FitCenter())
+        transform(fitCenter)
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         }, {
@@ -70,7 +69,7 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
+        transforms(listOf(roundedOf(roundedRadius), centerCrop))
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         })
@@ -81,7 +80,7 @@ fun ImageView.loadImageRoundedWithoutBlurHash(url: String, roundedRadius: Int, f
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         useBlurHash(false)
-        transforms(listOf(RoundedCorners(roundedRadius), CenterCrop()))
+        transforms(listOf(roundedOf(roundedRadius), centerCrop))
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         })
@@ -112,13 +111,13 @@ fun ImageView.loadMiniImage(
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        transforms(listOf(RoundedCorners(15), CenterCrop()))
+        transforms(listOf(roundedOf(15), centerCrop))
     }
 }
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
-        transform(CenterCrop())
+        transform(centerCrop)
         setPlaceHolder(placeholder)
     }
 }

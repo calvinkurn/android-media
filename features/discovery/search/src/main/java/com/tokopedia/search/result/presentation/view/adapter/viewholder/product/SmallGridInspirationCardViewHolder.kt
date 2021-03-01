@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.transform.FitCenter
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
@@ -71,9 +70,7 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) {
-                transform(FitCenter())
-            }
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImageFitCenter(element.img)
         }
     }
 

@@ -10,8 +10,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.transform.FitCenter
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
@@ -75,7 +74,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) { transform(FitCenter()) }
+            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImageFitCenter(element.img)
         }
     }
 

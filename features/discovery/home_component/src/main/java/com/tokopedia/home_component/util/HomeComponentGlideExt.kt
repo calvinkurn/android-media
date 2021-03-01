@@ -3,14 +3,14 @@ package com.tokopedia.home_component.util
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
-import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.media.loader.transform.CenterCrop
-import com.tokopedia.media.loader.transform.FitCenter
-import com.tokopedia.media.loader.transform.RoundedCorners
+import com.tokopedia.media.loader.transform.centerCrop
+import com.tokopedia.media.loader.transform.fitCenter
+import com.tokopedia.media.loader.transform.roundedOf
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -40,7 +40,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageH
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        transform(FitCenter())
+        transform(fitCenter)
         setPlaceHolder(R.drawable.placeholder_grey)
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
@@ -53,7 +53,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        transforms(listOf(CenterCrop(), RoundedCorners(roundedRadius)))
+        transforms(listOf(centerCrop, roundedOf(roundedRadius)))
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
         })
@@ -65,7 +65,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     this.loadImage(url) {
         overrideSize(Resize(width, height))
         setPlaceHolder(R.drawable.placeholder_grey)
-        transform(FitCenter())
+        transform(fitCenter)
         listener({ _, mediaDataSource ->
             listener?.successLoad()
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
@@ -78,7 +78,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
-        transforms(listOf(CenterCrop(), RoundedCorners(15)))
+        transforms(listOf(centerCrop, roundedOf(15)))
     }
 }
 
@@ -102,13 +102,13 @@ fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = ""
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
         setPlaceHolder(placeholder)
-        transform(CenterCrop())
+        transform(centerCrop)
     }
 }
 
 fun ImageView.loadGif(url: String){
     this.loadAsGif(url) {
-        transform(RoundedCorners(10))
+        transform(roundedOf(10))
     }
 }
 
