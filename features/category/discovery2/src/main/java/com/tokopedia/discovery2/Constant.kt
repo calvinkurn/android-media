@@ -57,12 +57,12 @@ object Constant {
     }
 
     object ChooseAddressQueryParams{
-        const val RPC_USER_ADDRESS_ID = "rpc_UserAddressId"
-        const val RPC_USER_CITY_ID = "rpc_UserCityId"
-        const val RPC_USER_DISTRICT_ID = "rpc_UserDistrictId"
-        const val RPC_USER_LAT = "rpc_UserLat"
-        const val RPC_USER_LONG = "rpc_UserLong"
-        const val RPC_USER_POST_CODE = "rpc_UserPostCode"
+        const val RPC_USER_ADDRESS_ID = "rpc_user_addressId"
+        const val RPC_USER_CITY_ID = "rpc_user_cityId"
+        const val RPC_USER_DISTRICT_ID = "rpc_user_districtId"
+        const val RPC_USER_LAT = "rpc_user_lat"
+        const val RPC_USER_LONG = "rpc_user_long"
+        const val RPC_USER_POST_CODE = "rpc_user_postCode"
     }
 
     object ChooseAddressGTMSSource{

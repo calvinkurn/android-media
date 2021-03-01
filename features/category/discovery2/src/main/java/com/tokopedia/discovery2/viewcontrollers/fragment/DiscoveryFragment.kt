@@ -812,7 +812,6 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressLoginSuccess() {
-        checkAddressUpdate()
     }
 
     override fun onLocalizingAddressUpdatedFromBackground() {
