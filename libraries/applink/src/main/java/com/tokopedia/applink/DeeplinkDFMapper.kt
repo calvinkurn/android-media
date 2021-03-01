@@ -90,7 +90,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -466,7 +465,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(PREFERENCE_EDIT)
             }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
-            add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
 
             // buyerorder
             add(DFP({

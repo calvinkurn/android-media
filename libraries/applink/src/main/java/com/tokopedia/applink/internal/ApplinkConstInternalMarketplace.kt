@@ -40,9 +40,6 @@ object ApplinkConstInternalMarketplace {
     // ShipmentActivity
     @JvmField
     val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
-    // NormalCheckoutActivity
-    @JvmField
-    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
