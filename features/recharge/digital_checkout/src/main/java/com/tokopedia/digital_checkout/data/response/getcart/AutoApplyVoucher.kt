@@ -46,11 +46,11 @@ data class AutoApplyVoucher(
 
         @SerializedName("promo_code_id")
         @Expose
-        val promoCodeId: Int = 0,
+        val promoCodeId: String = "0",
 
         @SerializedName("promo_id")
         @Expose
-        val promoId: Int = 0,
+        val promoId: String = "",
 
         @SerializedName("message_success")
         @Expose

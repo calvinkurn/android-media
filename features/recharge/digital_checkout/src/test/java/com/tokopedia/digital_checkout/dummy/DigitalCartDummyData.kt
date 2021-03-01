@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.dummy
 
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.atc.AttributesCart
 import com.tokopedia.digital_checkout.data.response.atc.RelationshipsCart
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
@@ -55,7 +54,7 @@ object DigitalCartDummyData {
 
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
-                tierId = 1,
+                tierId = "1",
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
@@ -70,7 +69,7 @@ object DigitalCartDummyData {
 
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
-                userId = 8964392,
+                userId = "8964392",
                 clientNumber = "191111410111",
                 title = "Detail Pembayaran",
                 categoryName = "Angsuran Kredit",
@@ -136,7 +135,7 @@ object DigitalCartDummyData {
 
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
-                tierId = 1,
+                tierId = "1",
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
@@ -151,7 +150,7 @@ object DigitalCartDummyData {
 
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
-                userId = 8964392,
+                userId = "8964392",
                 clientNumber = "191111410111",
                 title = "Detail Pembayaran",
                 categoryName = "Angsuran Kredit",
@@ -217,7 +216,7 @@ object DigitalCartDummyData {
 
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
-                tierId = 1,
+                tierId = "1",
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
@@ -232,7 +231,7 @@ object DigitalCartDummyData {
 
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
-                userId = 8964392,
+                userId = "8964392",
                 clientNumber = "191111410111",
                 title = "Detail Pembayaran",
                 categoryName = "Angsuran Kredit",
@@ -290,7 +289,7 @@ object DigitalCartDummyData {
 
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
-                tierId = 1,
+                tierId = "1",
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,

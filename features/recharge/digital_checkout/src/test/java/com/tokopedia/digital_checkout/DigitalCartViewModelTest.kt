@@ -565,7 +565,7 @@ class DigitalCartViewModelTest {
         // given
         val dummyResponse = ResponseCheckout(
                 type = "null",
-                id = 123,
+                id = "123",
                 attributes = getAttributesCheckout()
         )
         val dataResponse = DataResponse<ResponseCheckout>()

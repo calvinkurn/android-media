@@ -15,7 +15,7 @@ data class ResponseCheckout(
 
         @SerializedName("id")
         @Expose
-        var id: Int = 0,
+        var id: String = "",
 
         @SerializedName("attributes")
         @Expose

@@ -16,6 +16,8 @@ import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.track.TrackApp
@@ -93,7 +95,7 @@ object DigitalCheckoutMapper {
                     applyVoucher.isSuccess = entity.isSuccess
                     applyVoucher.discountAmount = entity.discountAmount
                     applyVoucher.isCoupon = entity.isCoupon
-                    applyVoucher.promoId = entity.promoId
+                    applyVoucher.promoId = entity.promoId.toLongOrNull() ?: 0
                     applyVoucher.title = entity.title ?: ""
                     applyVoucher.messageSuccess = entity.messageSuccess ?: ""
                     attributesDigital.autoApplyVoucher = applyVoucher
@@ -221,9 +223,9 @@ object DigitalCheckoutMapper {
                     applyVoucher.code = entity.code
                     applyVoucher.isSuccess = entity.success
                     applyVoucher.discountAmount = entity.discountAmount
-                    applyVoucher.isCoupon = entity.isCoupon
-                    applyVoucher.promoId = entity.promoId.toLong()
-                    applyVoucher.title = entity.titleDescription
+                applyVoucher.isCoupon = entity.isCoupon
+                applyVoucher.promoId = entity.promoId.toLongOrZero()
+                applyVoucher.title = entity.titleDescription
                     applyVoucher.messageSuccess = entity.messageSuccess
                     attributesDigital.autoApplyVoucher = applyVoucher
 
@@ -239,7 +241,7 @@ object DigitalCheckoutMapper {
                 }
 
                 attributesDigital.defaultPromoTab = attributes.defaultPromo
-                attributesDigital.userId = attributes.userId.toString()
+                attributesDigital.userId = attributes.userId
             }
 
             responseRechargeGetCart.response.run {
@@ -343,7 +345,7 @@ object DigitalCheckoutMapper {
             fintechProduct?.run {
                 attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
                         transactionType = transactionType,
-                        tierId = tierId,
+                        tierId = tierId.toIntOrZero(),
                         userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
                         fintechAmount = fintechAmount.toLong(),
                         fintechPartnerAmount = fintechPartnerAmount.toLong(),

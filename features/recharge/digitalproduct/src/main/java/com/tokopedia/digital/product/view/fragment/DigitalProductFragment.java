@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -68,14 +69,14 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -360,6 +361,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         rechargeParamFromSlice = arguments.getString(ARG_PARAM_EXTRA_RECHARGE_SLICE);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     protected void initView(View view) {
         pbMainLoading = view.findViewById(com.tokopedia.digital.R.id.pb_main_loading);
         holderProductDetail = view.findViewById(com.tokopedia.digital.R.id.digital_holder_product_detail);

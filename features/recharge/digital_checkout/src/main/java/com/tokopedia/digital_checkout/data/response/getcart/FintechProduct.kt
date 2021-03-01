@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class FintechProduct(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("transaction_type")
         @Expose
@@ -17,7 +17,7 @@ data class FintechProduct(
 
         @SerializedName("tier_id")
         @Expose
-        var tierId: Int = 0,
+        var tierId: String = "",
 
         @SerializedName("opt_in")
         @Expose
