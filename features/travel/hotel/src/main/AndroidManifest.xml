@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
+        <activity android:name=".search_map.presentation.activity.HotelSearchMapActivity"></activity>
         <activity
             android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_app_name"
@@ -113,7 +114,7 @@
             android:name=".booking.presentation.activity.HotelBookingActivity"
             android:label="@string/hotel_booking_activity_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter android:autoVerify="true">
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -139,8 +140,8 @@
             android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
-
-        <activity android:name=".cancellation.presentation.activity.HotelCancellationActivity"
+        <activity
+            android:name=".cancellation.presentation.activity.HotelCancellationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustResize">
@@ -156,10 +157,10 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".cancellation.presentation.activity.HotelCancellationConfirmationActivity"
+        <activity
+            android:name=".cancellation.presentation.activity.HotelCancellationConfirmationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"/>
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>
