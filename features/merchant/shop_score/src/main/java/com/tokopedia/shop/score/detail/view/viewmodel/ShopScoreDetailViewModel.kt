@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.shop.score.detail.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailData
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 class ShopScoreDetailViewModel @Inject constructor(
     private val getShopScoreUseCase: GetShopScoreUseCase,
-    private val userSession: UserSessionInterface,
+    private val getShopInfoUseCase: GetShopInfoUseCase,
+    val userSession: UserSessionInterface,
     private val mapper: ShopScoreDetailMapper,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main){
@@ -26,6 +29,11 @@ class ShopScoreDetailViewModel @Inject constructor(
         get() = _shopScoreData
 
     private val _shopScoreData = MutableLiveData<Result<ShopScoreDetailData>>()
+
+    val tickerShopInfoPeriod: LiveData<Result<Boolean>>
+        get() = _tickerShopInfoPeriod
+
+    private val _tickerShopInfoPeriod = MutableLiveData<Result<Boolean>>()
 
     fun getShopScoreDetail() {
         launchCatchError(block = {
@@ -37,6 +45,18 @@ class ShopScoreDetailViewModel @Inject constructor(
             _shopScoreData.value = Success(data)
         }) {
             _shopScoreData.value = Fail(it)
+        }
+    }
+
+    fun getShopInfoPeriod(shopId: Int) {
+        launchCatchError(block = {
+            val data = with(dispatchers.io) {
+                getShopInfoUseCase.requestParams = GetShopInfoUseCase.createParams(shopId)
+                mapper.mapToIsShowTickerShopInfo(getShopInfoUseCase.executeOnBackground())
+            }
+            _tickerShopInfoPeriod.postValue(Success(data))
+        }) {
+            _tickerShopInfoPeriod.postValue(Fail(it))
         }
     }
 }

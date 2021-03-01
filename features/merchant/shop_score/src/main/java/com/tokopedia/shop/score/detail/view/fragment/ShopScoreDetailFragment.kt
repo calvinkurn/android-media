@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.detail.di.component.DaggerShopScoreComponent
 import com.tokopedia.shop.score.detail.view.model.ShopScoreDetailItem
@@ -66,6 +66,7 @@ class ShopScoreDetailFragment : Fragment() {
         setDescriptionText()
         setupClickListeners()
 
+        observeShopScorePeriod()
         observeShopScoreDetail()
     }
 
@@ -220,6 +221,18 @@ class ShopScoreDetailFragment : Fragment() {
             }
         }
         viewModel.getShopScoreDetail()
+    }
+
+    private fun observeShopScorePeriod() {
+        observe(viewModel.tickerShopInfoPeriod) {
+            when (it) {
+                is Success -> {
+                    ticker_info_shop_score.showWithCondition(it.data)
+                }
+                is Fail -> ticker_info_shop_score.hide()
+            }
+        }
+        viewModel.getShopInfoPeriod(viewModel.userSession.shopId.toIntOrZero())
     }
 
     private fun goToSellerCenter() {

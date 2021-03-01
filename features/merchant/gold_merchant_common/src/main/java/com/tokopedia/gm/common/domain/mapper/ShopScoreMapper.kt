@@ -7,7 +7,6 @@ import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
 import com.tokopedia.gm.common.data.source.cloud.model.GetIsOfficialResponse
 import com.tokopedia.gm.common.data.source.cloud.model.PMPeriodTypeResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
-import com.tokopedia.gm.common.presentation.model.OfficialStorePeriodUiModel
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.text.SimpleDateFormat
@@ -17,9 +16,10 @@ import kotlin.math.abs
 
 object ShopScoreMapper {
 
-    fun mapToGetShopInfo(shopInfoByID: ShopInfoByIDResponse.ShopInfoByID,
+    fun mapToGetShopInfo(officialStore: GetIsOfficialResponse.GetIsOfficial.Data, shopInfoByID: ShopInfoByIDResponse.ShopInfoByID,
                          goldPMSettingInfoData: PMPeriodTypeResponse.GoldGetPMSettingInfo.Data): ShopInfoPeriodUiModel {
         return ShopInfoPeriodUiModel(
+                isOfficialStore = officialStore.isOfficial,
                 joinDate = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         joinDateFormatted (PATTERN_DATE_PARAM),
                 periodType = goldPMSettingInfoData.periodType,
@@ -28,13 +28,6 @@ object ShopScoreMapper {
                 isEndTenureNewSeller = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isEndOfTenureNewSeller (END_OF_TENURE_SEVEN_DAYS)
         )
-    }
-
-    fun mapToGetIsOfficialStorePeriod(getIsOfficialStoreData: GetIsOfficialResponse.GetIsOfficial.Data,
-                                      goldPMSettingInfoData: PMPeriodTypeResponse.GoldGetPMSettingInfo.Data): OfficialStorePeriodUiModel {
-        return OfficialStorePeriodUiModel(
-                isOfficialStore = getIsOfficialStoreData.isOfficial,
-                periodType = goldPMSettingInfoData.periodType)
     }
 
     infix fun String.joinDateFormatted(pattern: String): String {

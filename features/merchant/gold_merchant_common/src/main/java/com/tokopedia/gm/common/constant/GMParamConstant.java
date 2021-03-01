@@ -14,9 +14,5 @@ public class GMParamConstant {
     public static final String RAW_ACTIVATION = "raw_activation";
     public static final String RAW_GM_STATUS = "raw_gm_status";
     public static final String RAW_GM_QUESTIONNAIRE_QUESTION = "raw_gm_questionnaire_question";
-
-    public static final String COMMUNICATION_PERIOD = "communication_period";
-    public static final String TRANSITION_PERIOD = "transition_period";
-    public static final String FINAL_PERIOD = "final";
 }
 
