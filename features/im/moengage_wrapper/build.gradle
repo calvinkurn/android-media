@@ -41,4 +41,4 @@ project.ext {
     artifactName = "moengage_wrapper-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'

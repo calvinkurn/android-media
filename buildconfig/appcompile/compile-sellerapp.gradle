@@ -124,6 +124,7 @@ include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 
 include "features:communication:push-notification-common"
+include "features:im:moengage_wrapper"
 
 include "features:user:attachproduct"
 include "features:user:attachcommon"
