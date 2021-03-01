@@ -124,7 +124,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession?.shopId.toInt())
+        viewModel.getWhitelistData(userSession.shopId.toInt())
     }
 
     private fun initViews() {
@@ -669,7 +669,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable.message
+                    Toaster.build(it, getString(R.string.txt_error_no_access)
                             ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                 }
             }

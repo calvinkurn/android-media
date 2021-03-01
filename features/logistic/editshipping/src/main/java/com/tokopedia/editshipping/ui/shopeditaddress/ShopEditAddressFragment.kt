@@ -263,7 +263,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             when (it) {
                 is ShopEditAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
+                    view?.let { view -> Toaster.build(view, getString(R.string.save_edit_shop_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
                     if (!uncoveredCourierFlag) {
                         activity?.setResult(Activity.RESULT_OK)
 
@@ -376,7 +376,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
                 if(validate) {
-                    viewModel.checkCouriersAvailability(userSession?.shopId.toInt(), it.districtId)
+                    viewModel.checkCouriersAvailability(userSession.shopId.toInt(), it.districtId)
                 }
             }
         }
@@ -395,7 +395,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         etKotaKecamatan?.apply {
-            addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
             setOnClickListener {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
                 startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE)
@@ -403,7 +402,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         etZipCode?.apply {
-            setOnTouchListener(View.OnTouchListener { v, event ->
+            setOnTouchListener(View.OnTouchListener { _, _ ->
                 if (etZipCode?.isPopupShowing == false) {
                     etZipCode?.showDropDown()
                 }
@@ -424,7 +423,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val strLength = s.toString().length
-                var info = "$strLength/25"
+                val info = "$strLength/25"
                 txtShopLocationWatcher?.text = info
             }
 
@@ -447,7 +446,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     when {
                         strLength < 20 -> {
                             validate = false
-                            helperShopDetail?.text = "Min. 20 Karakter. Harap tulis alamatmu lebih lengkap."
+                            helperShopDetail?.text = getString(R.string.helper_shop_detail)
                         }
                         else -> {
                             checkValidateAddressDetail(s.toString(), detailAddressHelper)
@@ -459,37 +458,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             override fun afterTextChanged(s: Editable?) {
                 //no-op
             }
-        }
-    }
-
-    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                //no-op
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
-            }
-
-            override fun afterTextChanged(text: Editable) {
-                if (text.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
-            }
-        }
-    }
-
-    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
-        if (s.isNullOrBlank()) {
-            wrapper.error = s
-            wrapper.isErrorEnabled = false
-        } else {
-            wrapper.isErrorEnabled = true
-            wrapper.hint = ""
-            wrapper.error = s
         }
     }
 
@@ -532,15 +500,15 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun validatorAddress(addr1: String, addr2: String): Boolean {
-        var matchWord = levenshteinDistance(addr1, addr2)
-        var minWordLen = minLenSentence(addr1, addr2)
-        var verboseTest = matchWord.toDouble()/minWordLen.toDouble()
+        val matchWord = levenshteinDistance(addr1, addr2)
+        val minWordLen = minLenSentence(addr1, addr2)
+        val verboseTest = matchWord.toDouble()/minWordLen.toDouble()
         return verboseTest <= 0.4
     }
 
     private fun levenshteinDistance(addr1: String, addr2: String): Int {
-        var _addr1 = addr1.split(' ')
-        var _addr2 = addr2.split(' ')
+        val _addr1 = addr1.split(' ')
+        val _addr2 = addr2.split(' ')
 
         val lhsLength = _addr1.size
         val rhsLength = _addr2.size
@@ -570,8 +538,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun minLenSentence(addr1: String, addr2: String): Int {
-        var _addr1 = addr1.split(' ')
-        var _addr2 = addr2.split(' ')
+        val _addr1 = addr1.split(' ')
+        val _addr2 = addr2.split(' ')
 
         return if (_addr1.size <= _addr2.size) {
             _addr1.size
