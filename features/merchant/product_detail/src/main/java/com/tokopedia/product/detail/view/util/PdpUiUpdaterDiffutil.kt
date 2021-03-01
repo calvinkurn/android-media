@@ -13,13 +13,15 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -104,6 +106,12 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
+    val shipmentData: ProductShipmentDataModel?
+        get() = mapOfData[ProductDetailConstant.SHIPMENT] as? ProductShipmentDataModel
+
+    val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
+        get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -183,7 +191,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
             updateData(ProductDetailConstant.PRODUCT_WHOLESALE_INFO, loadInitialData) {
                 productWholesaleInfoMap?.run {
-                    val minPrice = it.data.wholesale?.minBy { it.price.value }?.price?.value
+                    val minPrice = it.data.wholesale?.minByOrNull { it.price.value }?.price?.value
                             ?: return@run
                     subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
                             ?: ""
@@ -337,6 +345,16 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 }
             }
 
+            updateData(ProductDetailConstant.MVC) {
+                mvcSummaryData?.run {
+                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
+                    subTitle = it.merchantVoucherSummary.subTitle
+                    imageURL = it.merchantVoucherSummary.imageURL
+                    isShown = it.merchantVoucherSummary.isShown
+                    shopId = it.shopInfo.shopCore.shopID
+                }
+            }
+
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
             updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
@@ -449,7 +467,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         updateData(data.pageName) {
             (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                 recomWidgetData = data
-                cardModel = mapToCardModel(data)
+                cardModel = data.recommendationItemList.toProductCardModels()
                 filterData = mapToAnnotateChip(data)
             }
         }
@@ -460,7 +478,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
-                cardModel = mapToCardModel(data.recomWidgetData)
+                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels() ?: listOf()
             }
         }
     }
@@ -546,44 +564,22 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun removeComponent(key: String) {
-        if (key.isNotEmpty()) {
-            mapOfData.remove(key)
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage) {
+        //pair.first boType, pair.second boImage
+        updateData(ProductDetailConstant.SHIPMENT) {
+            shipmentData?.rates = data ?: P2RatesEstimateData()
+            shipmentData?.isFullfillment = isFullfillment
+            shipmentData?.isCod = isCod
+            shipmentData?.shouldShowShipmentError = data == null
+            shipmentData?.freeOngkirType = freeOngkirData.boType
+            shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
+            shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
         }
     }
 
-    private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
-        if (data == null) return listOf()
-        return data.recommendationItemList.map {
-            ProductCardModel(
-                    slashedPrice = it.slashedPrice,
-                    productName = it.name,
-                    formattedPrice = it.price,
-                    productImageUrl = it.imageUrl,
-                    isTopAds = it.isTopAds,
-                    discountPercentage = it.discountPercentage,
-                    reviewCount = it.countReview,
-                    ratingCount = it.rating,
-                    countSoldRating = it.ratingAverage,
-                    shopLocation = it.location,
-                    isWishlistVisible = false,
-                    isWishlisted = it.isWishlist,
-                    shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it
-                                ?: "")
-                    },
-                    freeOngkir = ProductCardModel.FreeOngkir(
-                            isActive = it.isFreeOngkirActive,
-                            imageUrl = it.freeOngkirImageUrl
-                    ),
-                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
-                        ProductCardModel.LabelGroup(
-                                position = recommendationLabel.position,
-                                title = recommendationLabel.title,
-                                type = recommendationLabel.type
-                        )
-                    }
-            )
+    fun removeComponent(key: String) {
+        if (key.isNotEmpty()) {
+            mapOfData.remove(key)
         }
     }
 

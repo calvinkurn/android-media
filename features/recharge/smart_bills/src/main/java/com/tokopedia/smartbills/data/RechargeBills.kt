@@ -7,6 +7,9 @@ import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 data class RechargeBills(
+        @SerializedName("Flag")
+        @Expose
+        val flag: Boolean = false,
         @SerializedName("index")
         @Expose
         val index: Int = -1,
