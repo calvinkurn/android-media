@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 class PostListWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val subtitle: String,
@@ -30,7 +31,7 @@ class PostListWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<PostListDataUiModel> {
-        return PostListWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, postFilter)
+        return PostListWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, postFilter)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<PostListDataUiModel>): Boolean {

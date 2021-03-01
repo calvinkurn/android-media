@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 class WhiteSpaceUiModel(
+        override val id: String = "",
         override val widgetType: String = "",
         override val title: String = "",
         override val subtitle: String = "",
@@ -29,7 +30,7 @@ class WhiteSpaceUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
-        return WhiteSpaceUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return WhiteSpaceUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {
