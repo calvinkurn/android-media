@@ -102,38 +102,4 @@ public class DiscomActivity extends BaseSimpleActivity
     public void gtmOnClearTextDistrictRecommendationInput() {
         analytics.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        boolean isAllowed = false;
-        for (int i=0; i<permissions.length; i++) {
-            if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                isAllowed = true;
-                break;
-            }
-        }
-        if (isAllowed) {
-            fusedLocationClient = new FusedLocationProviderClient(this);
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this::returnResult);
-        }
-
-    }
-
-    private void returnResult(Location location) {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, "");
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, "");
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, "");
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, "");
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, "");
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "");
-        resultIntent.putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, new ArrayList<>());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, location.getLatitude());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, location.getLongitude());
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
-    }
 }
