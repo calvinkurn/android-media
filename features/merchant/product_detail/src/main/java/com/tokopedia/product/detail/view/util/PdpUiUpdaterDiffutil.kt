@@ -109,14 +109,13 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     val shipmentData: ProductShipmentDataModel?
         get() = mapOfData[ProductDetailConstant.SHIPMENT] as? ProductShipmentDataModel
 
-    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, enableBoe:Boolean , loadInitialData: Boolean = false) {
+    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
                             campaign = it.data.campaign,
-                            freeOngkir = it.data.isFreeOngkir,
                             cashbackPercentage = it.data.isCashback.percentage,
                             price = it.data.price,
                             stockWording = it.data.stock.stockWording,
@@ -124,7 +123,6 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                             productName = it.data.name,
                             isProductActive = it.basic.isActive()
                     )
-                    this.enableBoe = enableBoe
                     data?.campaign?.originalPriceFmt = it.data.campaign.originalPrice.getCurrencyFormatted()
                     data?.campaign?.discountedPriceFmt = it.data.campaign.discountedPrice.getCurrencyFormatted()
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
@@ -340,7 +338,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
             }
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
-            updateNotifyMeAndContent(productId, it.upcomingCampaigns, boeImageUrl, it.validateTradeIn.isEligible)
+            updateNotifyMeAndContent(productId, it.upcomingCampaigns, it.validateTradeIn.isEligible, boeImageUrl)
             updateDataTradein(context, it.validateTradeIn)
         }
     }
@@ -373,15 +371,15 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    private fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, boeImageUrl:String, eligibleTradein:Boolean) {
+    private fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
                         ?: "", selectedUpcoming?.ribbonCopy ?: "",
                         selectedUpcoming?.startDate ?: "")
-                this.boeImageUrl = boeImageUrl
                 shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
+                this.freeOngkirImgUrl = freeOngkirImgUrl
             }
         }
 
@@ -403,14 +401,14 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     /**
      * Use this only when update variant, because no need to update tradein when variant changed
      */
-    fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, boeImageUrl:String) {
+    fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, freeOngkirImgUrl: String) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
                         ?: "", selectedUpcoming?.ribbonCopy ?: "",
                         selectedUpcoming?.startDate ?: "")
-                this.boeImageUrl = boeImageUrl
+                this.freeOngkirImgUrl = freeOngkirImgUrl
             }
         }
 

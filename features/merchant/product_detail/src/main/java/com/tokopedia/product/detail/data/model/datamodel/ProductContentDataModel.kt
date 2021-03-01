@@ -17,13 +17,10 @@ data class ProductContentDataModel(
         val name: String = "",
         var data: ProductContentMainData? = null,
         var isWishlisted: Boolean = false,
+        var freeOngkirImgUrl: String = "",
 
         //Ribbon Data
         var shouldShowTradein: Boolean = false,
-
-        //BOE
-        var boeImageUrl: String = "",
-        var enableBoe: Boolean = false, //if false, show freeongkir from p1 otherwise show freeongkir from p2
 
         //Upcoming Data
         var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
@@ -34,15 +31,6 @@ data class ProductContentDataModel(
     override fun name(): String = name
 
     override fun type(): String = type
-
-    fun freeOngkirImageUrl(): String {
-        return when {
-            enableBoe -> boeImageUrl
-            data?.freeOngkir?.isActive == true -> data?.freeOngkir?.imageURL
-                    ?: ""
-            else -> ""
-        }
-    }
 
     fun isUpcomingNplType(): Boolean {
         return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
@@ -62,8 +50,6 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
-                    && boeImageUrl == newData.boeImageUrl
-                    && enableBoe == newData.enableBoe
         } else {
             false
         }
@@ -82,7 +68,7 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein || boeImageUrl != newData.boeImageUrl) {
+            if (shouldShowTradein != newData.shouldShowTradein || freeOngkirImgUrl != newData.freeOngkirImgUrl) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
                 return bundle
             }
@@ -100,7 +86,6 @@ data class ProductContentDataModel(
 
 data class ProductContentMainData(
         var campaign: CampaignModular = CampaignModular(),
-        var freeOngkir: IsFreeOngkir = IsFreeOngkir(),
         var cashbackPercentage: Int = 0,
         var price: Price = Price(),
         var stockWording: String = "",

@@ -95,6 +95,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
@@ -1299,7 +1301,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         val boeData = viewModel.getBebasOngkirDataByProductId()
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo(), isNewShipment())
+        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
@@ -1419,7 +1421,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
-            trackProductView(viewModel.tradeInParams.isEligible == 1)
+            val boeData = viewModel.getBebasOngkirDataByProductId()
+            val ratesData = viewModel.getP2RatesEstimateByProductId()
+
+            trackProductView(viewModel.tradeInParams.isEligible == 1, boeData.imageURL.isNotEmpty())
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
@@ -1431,7 +1436,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         p1.basic.productID)
             }
 
-            onSuccessGetDataP2(it)
+            onSuccessGetDataP2(it, boeData, ratesData)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
         }
     }
@@ -1594,6 +1599,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun sendTrackingATC(cartId: String) {
+        val boData = viewModel.getBebasOngkirDataByProductId()
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
@@ -1602,7 +1608,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
-                viewModel.getDynamicProductInfoP1)
+                viewModel.getDynamicProductInfoP1, boData.imageURL.isNotEmpty())
     }
 
     private fun validateOvo(result: AddToCartDataModel) {
@@ -1661,7 +1667,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             renderVariant(viewModel.variantData)
             val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
-            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), isNewShipment(), true)
+            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
@@ -1707,10 +1713,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         actionButtonView.visibility = !isAffiliate
     }
 
-    private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
-        val boeData = viewModel.getBebasOngkirDataByProductId()
-        val ratesData = viewModel.getP2RatesEstimateByProductId()
-
+    private fun onSuccessGetDataP2(it: ProductInfoP2UiData, boeData: BebasOngkirImage, ratesData: P2RatesEstimateData?) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice?.toInt() ?: 0
         if (minimumShippingPriceP2 != 0) {
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
@@ -2197,7 +2200,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                             productInfo.basic.weightUnit,
                             if (viewModel.getMultiOriginByProductId().isFulfillment)
                                 viewModel.getMultiOriginByProductId().getOrigin() else null,
-                            productInfo.data.isFreeOngkir.isActive,
+                            viewModel.getBebasOngkirDataByProductId().imageURL.isNotEmpty(),
                             shopInfo.shopCore.shopID,
                             productInfo.basic.productID
                     ))
@@ -2299,7 +2302,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    private fun trackProductView(isElligible: Boolean) {
+    private fun trackProductView(isElligible: Boolean, isFreeOngkir: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
                 val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
@@ -2312,7 +2315,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         viewModel.tradeInParams.usedPrice > 0,
                         viewModel.getMultiOriginByProductId().isFulfillment,
                         deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0"
+                        viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
+                        isFreeOngkir
                 )
                 return
             }
@@ -2873,11 +2877,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             doActionOrLogin({
                 val shop = viewModel.getShopInfo()
                 activity?.let {
+                    val boData = viewModel.getBebasOngkirDataByProductId()
                     val intent = RouteManager.getIntent(it,
                             ApplinkConst.TOPCHAT_ASKSELLER,
                             product.basic.shopID, "",
                             "product", shop.shopCore.name, shop.shopAssets.avatar)
-                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
+                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData, boData.imageURL)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TOP_CHAT)
                 }
             })
