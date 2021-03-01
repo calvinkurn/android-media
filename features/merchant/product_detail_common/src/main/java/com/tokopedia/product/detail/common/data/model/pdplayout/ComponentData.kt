@@ -55,6 +55,8 @@ data class ComponentData(
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
         //endregion
         //region Variant data
         @SerializedName("parentID")
@@ -68,7 +70,7 @@ data class ComponentData(
         @SerializedName("variants")
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children: List<ProductP1VariantChild> = listOf()
         //endregion
 )  {
     companion object{

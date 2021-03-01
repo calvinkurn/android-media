@@ -314,6 +314,9 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
 
+    <!--Snapshot-->
+    <string name="title_snapshot">Riwayat Detail Produk</string>
+
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
     <string name="kol_title_post_detail">Post Detail</string>

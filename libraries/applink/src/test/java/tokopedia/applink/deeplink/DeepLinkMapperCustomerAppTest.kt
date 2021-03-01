@@ -1496,4 +1496,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://money_in/device_validation"
         assertEqualsDeepLinkMapper(ApplinkConst.MONEYIN, expectedDeepLink)
     }
+
+    @Test
+    fun `check snapshot order appLink then should return tokopedia internal snapshot order in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://snapshot/order?order_id=1234&order_detail_id=7890"
+        val appLink = UriUtil.buildUri(ApplinkConst.SNAPSHOT_ORDER+"/1234/7890")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
 }
