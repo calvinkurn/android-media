@@ -73,6 +73,21 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_lvl1"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:background="@drawable/bg_line_separator" />
+
+                <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBillsView
+                    android:id="@+id/egold_mybill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/layout_lvl1"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/layout_lvl2"
+                    tools:visibility="visible" />
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
