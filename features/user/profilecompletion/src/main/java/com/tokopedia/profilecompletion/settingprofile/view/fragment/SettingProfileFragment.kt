@@ -191,7 +191,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun initSettingProfileData() {
         showLoading()
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -260,7 +260,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun refreshProfile() {
         showLoading(true)
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     private fun onSuccessAddGender(data: Intent?) {
@@ -315,7 +315,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(context!!, savedLocalImageUrl)
+                    profileInfoViewModel.uploadProfilePicture(requireContext(), savedLocalImageUrl)
                 }
 
             } else {
