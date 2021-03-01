@@ -71,6 +71,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -1219,12 +1220,16 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         activity?.let { activity ->
             sharedViewModel?.isAddressChanged?.observe(activity, {
                 if (it) {
-                    view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
-                    assignUserLocationData()
-                    onSwipeRefresh()
+                    onSuccessUpdateAddress()
                 }
             })
         }
+    }
+
+    private fun onSuccessUpdateAddress() {
+        view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
+        assignUserLocationData()
+        onSwipeRefresh()
     }
 
     private fun observeTopAdsImageData() {
@@ -1949,17 +1954,36 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun openShipmentBottomSheetWhenError() : Boolean {
+    override fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
             val rates = viewModel.getP2RatesEstimateByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
             ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode
-                    ?: 0) {
-
-            }.show(childFragmentManager, "bs_shipping_error")
+                    ?: 0, ::goToShipmentErrorAddressOrChat).show(childFragmentManager, "bs_shipping_error")
             return true
         } ?: return false
+    }
+
+    override fun goToShipmentErrorAddressOrChat(errorCode: Int) {
+        if (errorCode == ProductDetailConstant.SHIPPING_ERROR_WEIGHT) {
+            onShopChatClicked()
+        } else {
+            ProductDetailBottomSheetBuilder.openChooseAddressBottomSheet(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+                override fun onLocalizingAddressServerDown() {
+                }
+
+                override fun onAddressDataChanged() {
+                    onSuccessUpdateAddress()
+                }
+
+                override fun getLocalizingAddressHostSourceBottomSheet(): String = ProductDetailConstant.KEY_PRODUCT_DETAIL
+
+                override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                }
+
+            }, childFragmentManager)
+        }
     }
 
     private fun onShipmentClicked() {

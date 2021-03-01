@@ -160,5 +160,6 @@ interface DynamicProductDetailListener {
      */
     fun openShipmentClickedBottomSheet()
     fun openShipmentBottomSheetWhenError() : Boolean
+    fun goToShipmentErrorAddressOrChat(errorCode: Int)
     fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }

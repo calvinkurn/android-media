@@ -79,6 +79,9 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         otherCourierTxt?.text = subtitle
 
         shipmentOtherContainer?.setOnClickListener(null)
+        otherCourierTxt?.setOnClickListener {
+            listener.goToShipmentErrorAddressOrChat(errorCode)
+        }
 
         otherCourierTxt?.show()
         hideLabelAndBo()
@@ -162,6 +165,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun adjustUiSuccess() = with(itemView) {
+        otherCourierTxt?.setOnClickListener(null)
         shipmentOtherContainer?.setOnClickListener {
             listener.openShipmentClickedBottomSheet()
         }
