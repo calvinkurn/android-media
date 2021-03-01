@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -89,11 +88,19 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var hasBottomSheetShown: Boolean = false
     // flag variable to differentiate login and GPS flow
     private var isLoginFlow: Boolean = false
+    // flag variable to prevent multiple times asking permission
+    private var hasAskedPermission: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
         permissionCheckerHelper = PermissionCheckerHelper()
+        hasAskedPermission = savedInstanceState?.getBoolean(HAS_ASKED_PERMISSION_KEY) ?: false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(HAS_ASKED_PERMISSION_KEY, hasAskedPermission)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -415,6 +422,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+
+        private const val HAS_ASKED_PERMISSION_KEY = "has_asked_permission"
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
@@ -449,7 +458,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showGpsPopUp() {
-        if (shouldShowGpsPopUp && hasBottomSheetShown) {
+        if (shouldShowGpsPopUp && hasBottomSheetShown && !hasAskedPermission) {
+            hasAskedPermission = true
             permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
                     //no op
