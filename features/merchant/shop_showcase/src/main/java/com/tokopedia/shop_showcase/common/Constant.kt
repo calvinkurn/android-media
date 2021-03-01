@@ -39,12 +39,6 @@ object ShopShowcaseEditParam {
     const val EXTRA_IS_ACTION_EDIT = "IS_ACTION_EDIT"
 }
 
-object ShowcaseType {
-    const val GENERATED: Int = -1
-    const val CAMPAIGN: Int = -2
-    const val CUSTOM: Int = 1
-}
-
 object TextConstant {
     const val TEXT_TITLE_DIALOG_DELETE = "Yakin hapus etalase ini?"
     const val TEXT_DESCRIPTION_DIALOG_DELETE = "Dengan menghapus etalase, produk \nakan tersimpan di Semua Produk"

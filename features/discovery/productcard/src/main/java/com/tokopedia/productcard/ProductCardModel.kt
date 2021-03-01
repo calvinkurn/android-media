@@ -231,4 +231,10 @@ data class ProductCardModel (
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
     }
+
+    companion object {
+        const val WORDING_SEGERA_HABIS = "Segera Habis"
+        val FIRE_WIDTH = R.dimen.dp_12
+        val FIRE_HEIGHT = R.dimen.dp_13
+    }
 }
