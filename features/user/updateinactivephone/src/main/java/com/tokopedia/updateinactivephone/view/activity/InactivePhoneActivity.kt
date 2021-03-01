@@ -14,11 +14,17 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.replaceFragment
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.fragment.InactivePhoneOnboardingFragment
+import com.tokopedia.updateinactivephone.view.fragment.InactivePhoneOnboardingIdCardFragment
+import com.tokopedia.updateinactivephone.view.fragment.InactivePhoneOnboardingSelfieFragment
 
 class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface {
 
+    lateinit var tracker: InactivePhoneTracker
+
     private lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    private var currentFragment = Fragment()
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -43,11 +49,13 @@ class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+        tracker = InactivePhoneTracker()
 
         versionChecker()
     }
 
     override fun onBackPressed() {
+        sendTrackerOnBackPress()
         if (supportFragmentManager.backStackEntryCount < 1) {
             super.onBackPressed()
         } else {
@@ -55,8 +63,17 @@ class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface
         }
     }
 
+    private fun sendTrackerOnBackPress() {
+        when(currentFragment) {
+            is InactivePhoneOnboardingFragment -> { tracker.clickOnBackButtonOnbaording() }
+            is InactivePhoneOnboardingIdCardFragment -> { tracker.clickOnBackButtonIdCardOnboarding() }
+            is InactivePhoneOnboardingSelfieFragment -> { tracker.clickOnBackButtonSelfiewOnboarding() }
+        }
+    }
+
     override fun replace(fragment: Fragment) {
         replaceFragment(parentViewResourceID, fragment)
+        currentFragment = fragment
     }
 
     private fun versionChecker() {

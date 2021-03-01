@@ -59,7 +59,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
         if (isAllowBell()) {
-            builder.setSound(getRingtoneUri());
+            builder.setSound(getRingtoneUri(context));
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 

@@ -155,6 +155,8 @@ include "features:operational:contact_us"
 include "features:operational:csat_rating"
 include "features:ovop2p"
 
+include "features:ordermanagement:snapshot"
+
 include "features:payment:common_payment"
 include "features:payment:payment"
 include "features:payment:thankyou_native"
@@ -191,6 +193,8 @@ include "features:transaction:promo_checkout_marketplace"
 include "features:transaction:sellerorder"
 include "features:transaction:oneclickcheckout"
 
+include "features:communication:push-notification-common"
+
 include "features:user:attachproduct"
 include "features:user:attachinvoice"
 include "features:user:attachvoucher"
@@ -226,6 +230,8 @@ include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
 include "features:user:home_account"
 include "features:user:seamless_login_common"
+include "features:user:inbox"
+include "features:user:inbox_common"
 
 include "features:user:vote"
 

@@ -317,6 +317,9 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
 
+    <!--Snapshot-->
+    <string name="title_snapshot">Riwayat Detail Produk</string>
+
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
     <string name="kol_title_post_detail">Post Detail</string>
@@ -329,6 +332,9 @@
     <string name="cp_title_image_picker">Tambah Foto</string>
     <string name="cp_title_image_video">Tambah Video</string>
     <string name="cp_title_image_editor">Edit</string>
+    <string name="title_detail_feed">Product Lainnya</string>
+    <string name="recommendation_for_you">Rekomendasi Untukmu</string>
+    <string name="title_feed_onboarding">Topik Favorit</string>
 
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>

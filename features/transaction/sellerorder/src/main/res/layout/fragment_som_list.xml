@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/shimmerViews"
@@ -39,7 +38,7 @@
         android:layout_marginTop="17dp"
         android:layout_marginRight="15dp"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-        app:search_bar_placeholder="@string/hint_search_product"
+        app:search_bar_placeholder="@string/som_list_hint_search_product"
         app:search_bar_show_icon="false" />
 
     <com.tokopedia.sortfilter.SortFilter
@@ -73,6 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
