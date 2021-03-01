@@ -157,6 +157,7 @@
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
+/features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev

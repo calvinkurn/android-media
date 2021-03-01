@@ -14,7 +14,7 @@ import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterSt
 import com.tokopedia.websocket.WebSocketResponse
 import org.junit.Test
 
-class TopchatRoomBuyerUxTest : TopchatRoomTest() {
+class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
 
     private var wsResponseText: WebSocketResponse = AndroidFileUtil.parse(
             "ws_response_text.json",
@@ -31,9 +31,9 @@ class TopchatRoomBuyerUxTest : TopchatRoomTest() {
         changeResponseStartTime(
                 wsResponseText, TopChatRoomPresenterStub.exStartTime
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         onView(withId(R.id.new_comment))
                 .perform(click())
                 .perform(typeText(myMsg))
