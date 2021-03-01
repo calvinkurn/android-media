@@ -9,10 +9,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -247,40 +245,26 @@ class OrderSummaryPageActivityRevampTest {
     }
 
     @Test
-    fun happyFlow_ChangeDurationAndCourier() {
-//        logisticInterceptor.customRatesResponsePath = RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH
-//
-//        activityRule.launchActivity(null)
-//        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-//
-//        orderSummaryPage {
-//            assertShipment(
-//                    shippingName = "Pengiriman Reguler",
-//                    shippingDuration = "Durasi 2-4 hari",
-//                    shippingPrice = null,
-//                    hasPromo = false
-//            )
-//
-//            assertShipmentError(OrderSummaryPageViewModel.NO_DURATION_AVAILABLE)
-//
-//            clickUbahDuration {
-//                chooseDurationWithText("Ekonomi (3-4 hari)")
-//            }
-//
-//            assertShipmentWithCustomDuration(
-//                    shippingNameAndDuration = "Ekonomi (3-4 hari)",
-//                    shippingCourierAndPrice = "JNE OKE - Rp13.000",
-//                    hasPromo = false
-//            )
-//
-//            assertPayment("Rp114.000", "Bayar")
-//        } pay {
-//            assertGoToPayment(
-//                    redirectUrl = "https://www.tokopedia.com/payment",
-//                    queryString = "transaction_id=123",
-//                    method = "POST"
-//            )
-//        }
+    fun happyFlow_UseRecommendationSpId() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_RECOMMENDATION_SPID_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "AnterAja",
+                    shippingPrice = "Rp16.000",
+                    shippingEta = null
+            )
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
     }
 
     @Test
