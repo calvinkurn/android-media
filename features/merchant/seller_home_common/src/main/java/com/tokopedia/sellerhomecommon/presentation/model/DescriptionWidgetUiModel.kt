@@ -31,4 +31,8 @@ data class DescriptionWidgetUiModel (
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
         return DescriptionWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

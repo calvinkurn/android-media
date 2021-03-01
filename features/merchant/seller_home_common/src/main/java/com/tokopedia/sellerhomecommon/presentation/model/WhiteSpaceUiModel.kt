@@ -31,4 +31,8 @@ class WhiteSpaceUiModel(
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
         return WhiteSpaceUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

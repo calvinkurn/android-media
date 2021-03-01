@@ -31,4 +31,8 @@ data class TableWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<TableDataUiModel> {
         return TableWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<TableDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

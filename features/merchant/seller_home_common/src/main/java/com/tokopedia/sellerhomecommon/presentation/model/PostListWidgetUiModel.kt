@@ -32,4 +32,8 @@ class PostListWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<PostListDataUiModel> {
         return PostListWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, postFilter)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<PostListDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }
