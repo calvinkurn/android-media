@@ -37,6 +37,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
@@ -151,7 +152,6 @@ class MainNavViewModel @Inject constructor(
     private fun getLoginState(): Int {
         return when {
             userSession.get().isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
-            haveLogoutData?:false -> AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
             else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
         }
     }
@@ -346,10 +346,8 @@ class MainNavViewModel @Inject constructor(
             val transactionShimmering = _mainNavListVisitable.withIndex().find {
                 it.value is InitialShimmerTransactionDataModel
             }
-            if (transactionShimmering != null) {
-                transactionShimmering.let {
-                    updateWidget(ErrorStateOngoingTransactionModel(), it.index)
-                }
+            transactionShimmering?.let {
+                updateWidget(ErrorStateOngoingTransactionModel(), it.index)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
@@ -533,6 +531,16 @@ class MainNavViewModel @Inject constructor(
         }
         return if (findExistingMenu is HomeNavMenuDataModel) findExistingMenu
         else null
+    }
+
+    private inline fun <reified T:Visitable<*>> findMenu(): Int?{
+        val menu = _mainNavListVisitable.findLast{
+            it::class == T::class
+        } as? Visitable<*>
+        menu?.let {
+            return _mainNavListVisitable.indexOf(it)+1
+        }
+        return null
     }
 
     private fun HomeNavMenuDataModel.updateBadgeCounter(counter: String) {
