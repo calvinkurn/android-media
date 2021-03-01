@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
@@ -18,6 +19,7 @@ import javax.inject.Inject
  */
 class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase,
+        private val searchByDynamicIconUseCase: DigitalHomepageSearchByDynamicIconUseCase,
         private val dispatcher: RechargeHomepageDispatchersProvider
 ): BaseViewModel(dispatcher.Main) {
 
@@ -29,6 +31,19 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher.IO) {
                 searchCategoryHomePageUseCase.searchCategoryList(rawQuery, isLoadFromCloud, searchQuery)
+            }
+            mutableSearchCategoryList.postValue(Success(data))
+        }) {
+            mutableSearchCategoryList.postValue(Fail(it))
+        }
+    }
+
+    fun searchByDynamicIconsCategory(query: String, platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.IO) {
+                searchByDynamicIconUseCase.searchCategoryList(
+                        DigitalHomepageSearchByDynamicIconUseCase.createRechargeHomepageSectionsParams(platformId,
+                                sectionIDs, enablePersonalize), query)
             }
             mutableSearchCategoryList.postValue(Success(data))
         }) {
