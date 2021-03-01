@@ -6,16 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
-import com.tokopedia.shop_showcase.common.ShowcaseType
-import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcaseListAdapter (
@@ -59,13 +56,13 @@ class ShopShowcaseListAdapter (
         fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ShowcaseType.CUSTOM && isMyShop) {
+            if (dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CUSTOM && isMyShop) {
                 buttonMenuMore?.visibility = View.VISIBLE
             } else {
                 buttonMenuMore?.visibility = View.INVISIBLE
             }
 
-            if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){
+            if(dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CAMPAIGN){
                 campaignLabel?.show()
             }else{
                 campaignLabel?.hide()
