@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapterTypeFactory
@@ -34,6 +35,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun renderPromoList(airlineList: List<AirlinePrice>) {
+        hideLoading()
         listPromo = airlineList
         recyclerView.visibility = View.VISIBLE
         val dataCollection = mutableListOf<Visitable<*>>()
@@ -51,6 +53,16 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.renderList(dataCollection)
     }
 
+    fun hideLoading(){
+        adapter.hideLoading()
+    }
+
+    fun showLoading(){
+        adapter.removeErrorNetwork()
+        adapter.setLoadingModel(getLoadingModel())
+        adapter.showLoading()
+    }
+
     fun hidePromoList(){
         recyclerView.visibility = View.GONE
         adapter.clearList()
@@ -62,6 +74,10 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
                 adapter.setSelectedProduct(index)
             }
         }
+    }
+
+    private fun getLoadingModel(): LoadingModel {
+        return LoadingModel()
     }
 
     interface PromoChipsListener{

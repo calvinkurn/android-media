@@ -3,7 +3,10 @@ package com.tokopedia.flight.promo_chips.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
+import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.model.AirlinePrice
 
@@ -15,9 +18,11 @@ class FlightPromoChipsAdapterTypeFactory(private val onFlightPromoChipsListener:
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             FlightPromoChipsViewHolder.LAYOUT -> FlightPromoChipsViewHolder(parent, onFlightPromoChipsListener)
+            R.layout.item_flight_promo_chips_shimmering -> LoadingViewholder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
 
+    override fun type(loadingModel: LoadingModel): Int = R.layout.item_flight_promo_chips_shimmering
     fun type(lowestPrice: AirlinePrice): Int = FlightPromoChipsViewHolder.LAYOUT
 }
