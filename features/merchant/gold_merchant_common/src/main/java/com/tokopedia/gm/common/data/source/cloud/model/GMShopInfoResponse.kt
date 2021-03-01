@@ -38,9 +38,5 @@ data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_eligible_pm")
         val isEligiblePm: Boolean? = false,
         @SerializedName("shop_level")
-        val shopLevel: Int? = 0,
-        @SerializedName("pm_grade")
-        val pmGrade: String? = "",
-        @SerializedName("pm_status")
-        val pmStatus: String? = ""
+        val shopLevel: Int? = 0
 )

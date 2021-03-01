@@ -8,11 +8,20 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view_old.constant.PowerMerchantUrl
 import com.tokopedia.power_merchant.subscribe.view_old.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.btnPerformanceTips
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.imageMembership
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.textShopScore
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.textShopScoreDescription
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.textShopScoreHint
+import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.textStatus
+import kotlinx.android.synthetic.main.view_pm_power_merchant_status.view.*
 
 class PowerMerchantStatusView : ConstraintLayout {
 
@@ -30,11 +39,12 @@ class PowerMerchantStatusView : ConstraintLayout {
             powerMerchantStatus: PowerMerchantStatus,
             onClickUpgradeBtn: () -> Unit
     ) {
+        imageMembership.loadImageDrawable(R.drawable.ic_pm_membership)
         val shopScore = powerMerchantStatus.shopScore.data.value
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         showShopStatus(shopScore)
-        showShopScore(shopScore)
+        showShopScore(shopScore, 75)
         showShopScoreDescription(shopScore)
         showPerformanceTipsBtn(shopScore)
         showLayout()
@@ -52,9 +62,9 @@ class PowerMerchantStatusView : ConstraintLayout {
         }
     }
 
-    private fun showShopScore(shopScore: Int) {
+    private fun showShopScore(shopScore: Int, threshold: Int) {
         textShopScore.text = shopScore.toString()
-        textShopScoreHint.text = context.getString(R.string.power_merchant_shop_score_member_hint)
+        textShopScoreHint.text = context.getString(R.string.pm_shop_score_member_hint, threshold).parseAsHtml()
     }
 
     private fun showShopScoreDescription(shopScore: Int) {

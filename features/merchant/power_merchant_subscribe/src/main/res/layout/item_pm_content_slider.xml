@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmItemContentSliderImage"
+        android:layout_width="@dimen/pm_spacing_180dp"
+        android:layout_height="@dimen/unify_space_128"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmItemContentSliderTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgPmItemContentSliderImage"
+        app:typographyType="heading_3"
+        tools:text="Syarat Baru Power Merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmItemContentSliderDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmItemContentSliderTitle"
+        app:typographyType="body_2"
+        tools:text="Mulai 1 Jan 2021, ada perhitungan skor baru yang didasarkan pada level &amp; skor tokomu. Pertahankan skor toko min. 60 poin untuk tetap jadi Power Merchant, ya." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

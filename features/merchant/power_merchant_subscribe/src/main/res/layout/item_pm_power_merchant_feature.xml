@@ -14,14 +14,13 @@
         <ImageView
             android:id="@+id/imgPmFeatureItem"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl4"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmFeatureItemTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
             android:textColor="@color/Unify_N700"
             android:textStyle="bold"
             app:typographyType="heading_5"

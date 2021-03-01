@@ -136,4 +136,9 @@
     <string name="pm_power_merchant_exclusive_features">Fitur Eksklusif Power Merchant</string>
     <string name="pm_bebas_ongkir_description">Proses pengiriman pesanan dengan layanan SiCepat dan Anteraja. S&amp;K berlaku.</string>
     <string name="pm_free_shipping_clickable_text">S&amp;K berlaku.</string>
+    <string name="pm_shop_score_member_hint"><![CDATA[Pertahankan skor performa toko <b>minimum %1$d poin</b> untuk tetap menjadi Power Merchant.]]></string>
+    <string name="pm_label_next">Selanjutnya</string>
+    <string name="pm_power_merchant_slider_title">Perubahan Power Merchant</string>
+    <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, di sini</string>
+    <string name="pm_content_slider_last_slide_button">Oke, Saya Mengerti</string>
 </resources>
