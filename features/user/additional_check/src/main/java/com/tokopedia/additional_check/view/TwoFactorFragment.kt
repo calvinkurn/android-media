@@ -18,6 +18,7 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TY
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.internal.TwoFactorTracker
+import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import kotlinx.android.synthetic.main.fragment_two_factor.view.*
@@ -27,10 +28,9 @@ import kotlinx.android.synthetic.main.fragment_two_factor.view.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class TwoFactorFragment constructor(
-        private val activePageListener: ActivePageListener
-): BaseDaggerFragment() {
+class TwoFactorFragment: BaseDaggerFragment() {
 
+    private var activePageListener: ActivePageListener? = null
     private val ADD_PHONE_REQ_CODE = 1
     private val ADD_PIN_REQ_CODE = 2
 
@@ -41,6 +41,10 @@ class TwoFactorFragment constructor(
     override fun getScreenName(): String = "twoFactorFragment"
     override fun initInjector() {}
 
+    fun setActiveListener(mActivePageListener: ActivePageListener){
+        this.activePageListener = mActivePageListener
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = arguments?.getParcelable(RESULT_POJO_KEY)
@@ -48,8 +52,17 @@ class TwoFactorFragment constructor(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mView = inflater.inflate(R.layout.fragment_two_factor, container, false)
+        notifyActivity()
         renderViewByType(mView)
         return mView
+    }
+
+    private fun notifyActivity(){
+        activity?.run {
+            if(this is TwoFactorActivity){
+                onFragmentCreated()
+            }
+        }
     }
 
     private fun renderViewByType(mView: View?){
@@ -61,7 +74,7 @@ class TwoFactorFragment constructor(
 
     private fun renderPinView(mView: View?){
         context?.run {
-            activePageListener.currentPage(ADD_PIN_PAGE)
+            activePageListener?.currentPage(ADD_PIN_PAGE)
             twoFactorTracker.viewPageOnboardingAddPin()
 
             mView?.title_two_factor?.text = getString(R.string.add_pin_heading)
@@ -79,7 +92,7 @@ class TwoFactorFragment constructor(
 
     private fun renderPhoneView(mView: View?){
         context?.run {
-            activePageListener.currentPage(ADD_PHONE_NUMBER_PAGE)
+            activePageListener?.currentPage(ADD_PHONE_NUMBER_PAGE)
 
             mView?.title_two_factor?.text = getString(R.string.add_phone_heading)
             mView?.body_two_factor?.text = getString(R.string.add_phone_body)
@@ -149,8 +162,8 @@ class TwoFactorFragment constructor(
         private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
         private const val PIN_SUCCESS_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_success_two_factor.png"
 
-        fun newInstance(bundle: Bundle?, activePageListener: ActivePageListener): Fragment{
-            return TwoFactorFragment(activePageListener).apply {
+        fun newInstance(bundle: Bundle?): Fragment{
+            return TwoFactorFragment().apply {
                 arguments = bundle
             }
         }

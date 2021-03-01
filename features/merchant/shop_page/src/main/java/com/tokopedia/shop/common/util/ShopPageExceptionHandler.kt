@@ -6,6 +6,7 @@ import com.tokopedia.shop.common.exception.ShopPageException
 
 object ShopPageExceptionHandler {
     const val ERROR_WHEN_GET_YOUTUBE_DATA = "Error when get YouTube data."
+    const val ERROR_RECYCLER_VIEW = "Error recycler view."
 
     fun logExceptionToCrashlytics(message: String, throwable: Throwable) {
         try {
