@@ -196,7 +196,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private suspend fun checkChatAdminEligiblity(): Boolean {
-        return AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_LIST).let { requestParams ->
+        return AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT_LIST).let { requestParams ->
             authorizeAccessUseCase.execute(requestParams)
         }
     }

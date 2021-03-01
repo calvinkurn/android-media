@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -43,7 +44,7 @@ class MenuSettingViewModel @Inject constructor(
                     if (userSession.isShopOwner) {
                         mShopSettingAccessLiveData.value = Success(MenuSettingAccess())
                     } else {
-                        userSession.shopId.toIntOrZero().let { shopId ->
+                        userSession.shopId.toLongOrZero().let { shopId ->
                             val adminAccessEligibilityMap = adminAccessList.associateBy(
                                     { it },
                                     { accessId ->
@@ -81,7 +82,7 @@ class MenuSettingViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getSettingAccess(shopId: Int, @AccessId accessId: Int, useCase: AuthorizeAccessUseCase): Boolean {
+    private suspend fun getSettingAccess(shopId: Long, @AccessId accessId: Int, useCase: AuthorizeAccessUseCase): Boolean {
         val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
         return useCase.execute(requestParams)
     }
