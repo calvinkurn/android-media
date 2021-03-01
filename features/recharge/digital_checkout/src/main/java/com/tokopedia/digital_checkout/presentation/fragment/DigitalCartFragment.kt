@@ -234,7 +234,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         cartInfo.attributes.userInputPrice.run {
             if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
-                renderInputPriceView(cartInfo.attributes.pricePlain.toLong().toString(), cartInfo.attributes.userInputPrice)
+                renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
             }
         }
 
@@ -495,17 +495,17 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
+    private fun renderInputPriceView(total: Long, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
         userInputPriceDigital?.let {
             inputPriceContainer.visibility = View.VISIBLE
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
-            inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                override fun onInputPriceByUserFilled(paymentAmount: Long) {
-                    viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
-                }
+                inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
+                    override fun onInputPriceByUserFilled(paymentAmount: Long) {
+                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
+                    }
 
-                override fun enableCheckoutButton() {
+                    override fun enableCheckoutButton() {
                     btnCheckout.isEnabled = true
                 }
 
@@ -515,7 +515,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
             }
 
             inputPriceHolderView.setMinMaxPayment(
-                    total ?: "",
+                    total,
                     userInputPriceDigital.minPaymentPlain.toLong(),
                     userInputPriceDigital.maxPaymentPlain.toLong(),
                     userInputPriceDigital.minPayment ?: "",

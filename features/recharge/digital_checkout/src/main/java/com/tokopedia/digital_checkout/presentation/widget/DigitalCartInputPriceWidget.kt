@@ -27,29 +27,31 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
     fun getPriceInput(): Long = priceInput
 
-    fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long,
+    fun setMinMaxPayment(totalPayment: Long, minPayment: Long, maxPayment: Long,
                          minPaymentString: String, maxPaymentString: String) {
-        etDigitalCheckoutInputPrice.textFieldInput.setText(totalPayment)
+
+        setPriceInput(totalPayment)
+        etDigitalCheckoutInputPrice.textFieldInput.setText(getFormattedPriceString(totalPayment))
+        etDigitalCheckoutInputPrice.textFieldInput.setSelection(getFormattedPriceString(totalPayment).length)
+
         validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
+
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                val beforePrice = priceInput
                 val price: Long? = s.toString().replace(".", "").toLongOrNull()
-                val stringFormatted = String.format("%,d", price).replace(",", ".")
+                val stringFormatted = getFormattedPriceString(price ?: 0)
 
-                priceInput = if (price != null) {
-                    price
-                } else {
-                    etDigitalCheckoutInputPrice.setError(true)
-                    actionListener?.disableCheckoutButton()
-                    return
-                }
+                setPriceInput(price)
 
                 actionListener?.onInputPriceByUserFilled(priceInput)
                 validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
 
+                val selectionPosition = etDigitalCheckoutInputPrice.textFieldInput.selectionStart
+
                 etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(this)
                 etDigitalCheckoutInputPrice.textFieldInput.setText(stringFormatted)
-                etDigitalCheckoutInputPrice.textFieldInput.setSelection(stringFormatted.length)
+                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getSelectionPosition(beforePrice, stringFormatted, selectionPosition))
                 etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(this)
             }
 
@@ -91,6 +93,38 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
     private fun isUserInputValid(priceInput: Long, minPayment: Long, maxPayment: Long): Boolean {
         return priceInput in minPayment..maxPayment
+    }
+
+    private fun getFormattedPriceString(price: Long): String {
+        return String.format("%,d", price).replace(",", ".")
+    }
+
+    private fun setPriceInput(price: Long?) {
+        priceInput = if (price != null) {
+            price
+        } else {
+            etDigitalCheckoutInputPrice.setError(true)
+            actionListener?.disableCheckoutButton()
+            return
+        }
+    }
+
+    private fun getSelectionPosition(beforePrice: Long, formattedPrice: String, selectionPosition: Int): Int {
+        getFormattedPriceString(beforePrice).let { beforePriceFormatted ->
+            return when (beforePriceFormatted.length) {
+                formattedPrice.length - 2 -> {
+                    // e.g. when before price 100, after user input: 1.000
+                    // selection position must be +1 due to the addition of . (dot)
+                    return selectionPosition + 1
+                }
+                formattedPrice.length + 2 -> {
+                    // e.g. when before price 1.000, after user input: 100
+                    // selection position must be -1 due to the removal of . (dot)
+                    return selectionPosition - 1
+                }
+                else -> selectionPosition
+            }
+        }
     }
 
     interface ActionListener {
