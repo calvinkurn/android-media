@@ -123,7 +123,7 @@
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.Green.Bold"
                         android:layout_marginEnd="@dimen/dp_5"
-                        android:background="@drawable/label_seller"
+                        android:background="@drawable/label_seller_review_product"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
                         android:paddingLeft="@dimen/dp_10"
