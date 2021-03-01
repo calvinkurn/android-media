@@ -3,13 +3,8 @@ package com.tokopedia.loginregister.registerinitial.domain.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by Ade Fulki on 2019-10-21.
- * ade.hadian@tokopedia.com
- */
-
-data class RegisterRequestPojo(
-        @SerializedName("register")
+data class RegisterRequestV2 (
+        @SerializedName("register_v2")
         @Expose
         var data: RegisterRequestData = RegisterRequestData()
 )
@@ -17,7 +12,7 @@ data class RegisterRequestPojo(
 data class RegisterRequestData(
         @SerializedName("user_id")
         @Expose
-        var userId: Int = 0,
+        var userId: String = "0",
         @SerializedName("sid")
         @Expose
         var sid: String = "",
@@ -30,6 +25,9 @@ data class RegisterRequestData(
         @SerializedName("token_type")
         @Expose
         var tokenType: String = "",
+        @SerializedName("h")
+        @Expose
+        var hash: String = "",
         @SerializedName("is_active")
         @Expose
         var isActive: Int = 0,
