@@ -13,6 +13,8 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,7 +29,7 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
 
     private var mFingerprintManager: FingerprintManager? = null
     private var mCacheManager: GraphqlCacheManager? = null
-    var resultFlow: BroadcastChannel<U> = BroadcastChannel(Channel.BUFFERED)
+    private var resultFlow: Channel<U> = Channel(Channel.BUFFERED)
     var collectingResult: Boolean = false
 
     private fun initCacheManager() {
@@ -108,4 +110,6 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
             e.printStackTrace()
         }
     }
+
+    fun getResultFlow(): Flow<U> = resultFlow.consumeAsFlow()
 }
