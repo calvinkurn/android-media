@@ -8,6 +8,8 @@ import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCas
 import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class AddPasswordViewModel @Inject constructor(
         private val usecase: AddPasswordUseCase,
         private val getProfileCompletionUseCase: GetProfileCompletionUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -47,16 +50,21 @@ class AddPasswordViewModel @Inject constructor(
 
     fun createPassword(password: String, confirmationPassword: String) {
         launchCatchError(coroutineContext, {
-            usecase.params = createRequestParams(password, confirmationPassword)
-            usecase.submit(onSuccess = {
-                if (it.addPassword.isSuccess) {
-                    _response.postValue(Success(it))
-                } else {
-                    _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
-                }
-            }, onError = {
-                _response.postValue(Fail(it))
-            })
+            val key = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(key.hash.isNotEmpty()) {
+                usecase.params = createRequestParams(password, confirmationPassword, key.hash)
+                usecase.submit(onSuccess = {
+                    if (it.addPassword.isSuccess) {
+                        _response.postValue(Success(it))
+                    } else {
+                        _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
+                    }
+                }, onError = {
+                    _response.postValue(Fail(it))
+                })
+            } else {
+                _response.postValue(Fail(Throwable("")))
+            }
         }, {
             _response.postValue(Fail(it))
         })
@@ -108,10 +116,11 @@ class AddPasswordViewModel @Inject constructor(
         private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"
         private const val ERROR_MAX_CHAR = "Maksimum $MAX_COUNT karakter"
 
-        fun createRequestParams(password: String, confirmationPassword: String): Map<String, Any> {
+        fun createRequestParams(password: String, confirmationPassword: String, hash: String): Map<String, Any> {
             return mapOf(
                     ManagePasswordConstant.PARAM_PASSWORD to password,
-                    ManagePasswordConstant.PARAM_PASSWORD_CONFIRMATION to confirmationPassword
+                    ManagePasswordConstant.PARAM_PASSWORD_CONFIRMATION to confirmationPassword,
+                    ManagePasswordConstant.PARAM_HASH to hash
             )
         }
     }
