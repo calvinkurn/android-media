@@ -189,8 +189,8 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
-    private fun updateLoadOrderStatus(job: Job?) {
-        job?.invokeOnCompletion {
+    private fun updateLoadOrderStatus(job: Job) {
+        job.invokeOnCompletion {
             launch(context = dispatcher.main) {
                 _isLoadingOrder.value = isRefreshingOrder()
             }
@@ -266,8 +266,7 @@ class SomListViewModel @Inject constructor(
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
-        })
-        updateLoadOrderStatus(getOrderListJob)
+        }).apply { updateLoadOrderStatus(this) }
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -291,8 +290,7 @@ class SomListViewModel @Inject constructor(
                     _refreshOrderResult.value = Fail(it)
                     containsFailedRefreshOrder = true
                 }
-            })
-            updateLoadOrderStatus(job)
+            }).apply { updateLoadOrderStatus(this) }
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }
