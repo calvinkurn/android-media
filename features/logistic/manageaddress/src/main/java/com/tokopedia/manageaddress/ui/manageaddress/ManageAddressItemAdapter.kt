@@ -29,6 +29,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     var addressList = mutableListOf<RecipientAddressModel>()
     var token: Token? = null
     private var selectedPos = RecyclerView.NO_POSITION
+    private var isItemClicked = false
 
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
@@ -92,7 +93,13 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
-                val cardSelected = selectedPos == layoutPosition
+                val cardSelected: Boolean
+                if (data.isStateChosenAddress && !isItemClicked) {
+                    cardSelected = true
+                    selectedPos = layoutPosition
+                } else {
+                    cardSelected = selectedPos == layoutPosition
+                }
                 cardAddress.hasCheckIcon = cardSelected
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
@@ -136,6 +143,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 listener.onManageAddressLainnyaClicked(peopleAddress)
             }
             cardAddress.setOnClickListener {
+                isItemClicked = true
                 notifyItemChanged(selectedPos)
                 selectedPos = layoutPosition
                 notifyItemChanged(layoutPosition)
