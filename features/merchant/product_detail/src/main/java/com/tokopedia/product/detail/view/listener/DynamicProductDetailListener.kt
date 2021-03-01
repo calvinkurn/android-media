@@ -19,6 +19,7 @@ interface DynamicProductDetailListener {
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
+    fun isNewShipment(): Boolean
 
     /**
      * ProductMediaViewHolder
@@ -159,5 +160,6 @@ interface DynamicProductDetailListener {
      */
     fun openShipmentClickedBottomSheet()
     fun openShipmentBottomSheetWhenError() : Boolean
-    fun showCoachmark(view: Typography?)
+    fun goToShipmentErrorAddressOrChat(errorCode: Int)
+    fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }
