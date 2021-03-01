@@ -828,7 +828,10 @@ class DiscoveryFragment :
     private fun checkAddressUpdate() {
         context?.let {
             if(userAddressData != null){
-                if(ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) showLoadingWithRefresh()
+                if(ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+                    userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+                    showLoadingWithRefresh()
+                }
             }
         }
     }
