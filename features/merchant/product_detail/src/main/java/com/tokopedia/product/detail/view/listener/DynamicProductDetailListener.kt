@@ -159,5 +159,5 @@ interface DynamicProductDetailListener {
      */
     fun openShipmentClickedBottomSheet()
     fun openShipmentBottomSheetWhenError() : Boolean
-    fun showCoachmark(view: Typography?)
+    fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }

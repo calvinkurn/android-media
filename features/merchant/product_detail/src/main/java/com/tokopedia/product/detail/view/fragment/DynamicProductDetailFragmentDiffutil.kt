@@ -267,6 +267,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
                 .build()
@@ -1425,14 +1426,36 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun showCoachmark(view: Typography?) {
+    override fun showCoachmark(view: Typography?, isBoeType: Boolean) {
         context?.let {
             if (view != null) {
-                val localizationCoachmark = ChooseAddressUtils.coachMark2Item(it, view)
-                localizationCoachmark.position = 1
-                val coachMarkItem = arrayListOf(localizationCoachmark, localizationCoachmark)
-                val coachmark = CoachMark2(it)
-                coachmark.showCoachMark(coachMarkItem, null, 0)
+                val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
+                        ?: false
+                val showBoe = coachMarkBoePref.shouldShowBoeCoachmark() && isBoeType
+
+                if (showLocalization || showBoe) {
+                    val coachMarkList = arrayListOf<CoachMark2Item>()
+                    if (showBoe) {
+                        coachMarkList.add(CoachMark2Item(view,
+                                it.getString(R.string.pdp_boe_coachmark_title),
+                                it.getString(R.string.pdp_boe_coachmark_desc)
+                        ).also {
+                            it.position = 1
+                        })
+                    }
+
+                    if (showLocalization) {
+                        coachMarkList.add(ChooseAddressUtils.coachMark2Item(it, view).also {
+                            it.position = 1
+                        })
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+                    }
+
+                    if (coachMarkList.isNotEmpty()) {
+                        val coachmark = CoachMark2(it)
+                        coachmark.showCoachMark(coachMarkList, null, 0)
+                    }
+                }
             }
         }
     }
