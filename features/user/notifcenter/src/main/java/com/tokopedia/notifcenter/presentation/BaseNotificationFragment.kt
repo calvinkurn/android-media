@@ -110,27 +110,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun addProductToCheckout(userInfo: UserInfo, element: NotificationItemViewBean) {
-        try {
-            val atcAndBuyAction = ATC_AND_BUY
-            val needToRefresh = true
-            val minimumOrder = "1"
-            startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.getAtcProduct()?.shop?.id.toString())
-                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, element.getAtcProduct()?.shop?.name)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.getAtcProduct()?.productId)
-                putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, minimumOrder)
-                putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.getAtcProduct()?.productId)
-                putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-                putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needToRefresh)
-                putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.NOTIFICATION)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.getAtcProduct()?.name)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.getAtcProduct()?.price?.toFloat())
-                putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-                putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-                putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
-            })
-        } catch (e: Exception) {
-        }
+        //no op
     }
 
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {

@@ -1638,28 +1638,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun getAtcPageIntent(element: ProductAttachmentViewModel): Intent {
-        val quantity = element.minOrder
-        val atcOnly = ATC_ONLY
-        val needRefresh = true
-        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, opponentName)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
-            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
-        }
-    }
-
     private fun initProductPreview(savedInstanceState: Bundle?) {
         val stringProductPreviews = getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
         if (stringProductPreviews.isEmpty()) return
