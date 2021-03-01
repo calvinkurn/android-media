@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -17,9 +18,12 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
@@ -53,6 +57,8 @@ PopularCityAdapter.ActionListener {
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var dividerCurrLocation: View? = null
     private var isLocalization: Boolean? = null
+    private val REQUEST_LOCATION: Int = 288
+    private var hasRequestedLocation: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -114,9 +120,7 @@ PopularCityAdapter.ActionListener {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
-                    if (AddNewAddressUtils.isGpsEnabled(it.context)) {
-                        requestLocation()
-                    }
+                    requestPermissionLocation()
                 }
             }
             dividerCurrLocation?.visibility = View.VISIBLE
@@ -264,7 +268,7 @@ PopularCityAdapter.ActionListener {
         swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
-    fun requestLocation() {
+    fun requestPermissionLocation() {
             permissionCheckerHelper?.checkPermissions(this, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
@@ -278,15 +282,34 @@ PopularCityAdapter.ActionListener {
 
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
-                            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                                if (data != null) {
-                                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                                    presenter.autoFill(data.latitude, data.longitude)
+                            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                                    if (data != null) {
+                                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                                        presenter.autoFill(data.latitude, data.longitude)
+                                    } else {
+                                        fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                                        createLocationCallback(), null)
+                                    }
                                 }
+                            } else {
+                                hasRequestedLocation = false
+                                showDialogAskGps()
                             }
                         }
 
                     }, getString(R.string.rationale_need_location))
+    }
+
+    fun createLocationCallback(): LocationCallback {
+        return object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                if (!hasRequestedLocation) {
+                    presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                    hasRequestedLocation = true
+                }
+            }
+        }
     }
 
     private fun getPermissions(): Array<String> {
@@ -373,12 +396,36 @@ PopularCityAdapter.ActionListener {
             }
         }
         if (isAllowed) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                if (data != null) {
-                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                    presenter.autoFill(data.latitude, data.longitude)
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                    if (data != null) {
+                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                        presenter.autoFill(data.latitude, data.longitude)
+                    }
                 }
+            } else {
+                hasRequestedLocation = false
+                showDialogAskGps()
             }
+        }
+    }
+
+    private fun showDialogAskGps() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.undetected_location))
+            dialog.setDescription(getString(R.string.undetected_location_desc_2))
+            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
+            dialog.setSecondaryCTAText(getString(R.string.btn_lain_kali))
+            dialog.setCancelable(true)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
     }
 }

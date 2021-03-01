@@ -104,6 +104,9 @@
     <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
     <string name="undetected_location">Lokasi tidak terdeteksi</string>
     <string name="undetected_location_desc">Kami tidak dapat mengakses lokasi Anda. Untuk menggunakan fitur ini silakan aktifkan layanan lokasi Anda.</string>
+    <string name="undetected_location_desc_2">Untuk menggunakan fitur ini silakan aktifkan layanan lokasi perangkat Anda</string>
+    <string name="btn_ok">Ok</string>
+    <string name="btn_lain_kali">Lain Kali</string>
     <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
     <string name="validate_label_alamat">Label Alamat harus diisi</string>
     <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
