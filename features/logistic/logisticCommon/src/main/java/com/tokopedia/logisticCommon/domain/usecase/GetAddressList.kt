@@ -24,7 +24,7 @@ const val PARAM_ADDRESS_USECASE: String = "input"
 class GetAddressCornerUseCase
 @Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase, val mapper: AddressCornerMapper) {
 
-    fun execute(query: String, prevState: Int, localChosenAddrId: Int): Observable<AddressListModel> =
+    fun execute(query: String, prevState: Int?, localChosenAddrId: Int?): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10,
                     prevState = prevState, localChosenAddrId = localChosenAddrId)
 
@@ -32,12 +32,12 @@ class GetAddressCornerUseCase
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 0,
                     prevState = prevState, localChosenAddrId = localChosenAddrId)
 
-    fun loadMore(query: String, page: Int, prevState: Int, localChosenAddrId: Int): Observable<AddressListModel> =
+    fun loadMore(query: String, page: Int, prevState: Int?, localChosenAddrId: Int?): Observable<AddressListModel> =
             this.getObservable(query = query, page = page, isAddress = true, isCorner = false, limit = 10,
                     prevState = prevState, localChosenAddrId = localChosenAddrId)
 
     private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean, limit: Int,
-                              prevState: Int, localChosenAddrId: Int):
+                              prevState: Int?, localChosenAddrId: Int?):
             Observable<AddressListModel> {
         val request = AddressRequest(searchKey = query, page = page, showAddress = isAddress,
                 showCorner = isCorner, limit = limit, whitelistChosenAddress = true, previousState = prevState,

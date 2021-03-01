@@ -19,7 +19,7 @@ data class AddressRequest(
     @SerializedName("whitelist_chosen_address")
     val whitelistChosenAddress: Boolean = true,
     @SerializedName("previous_state")
-    val previousState: Int,
+    val previousState: Int? = null,
     @SerializedName("local_state_chosen_address_id")
-    val localStateChosenAddressId: Int
+    val localStateChosenAddressId: Int? = null
 )

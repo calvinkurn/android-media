@@ -33,7 +33,7 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.INTENT_ADDRESS_SELECTED
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -174,8 +174,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_ADDRESS_LIST -> {
-                val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(INTENT_ADDRESS_SELECTED)
-                if (recipientAddress != null) {
+                val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(EXTRA_SELECTED_ADDRESS_DATA)
+                val isFromANA = data?.getBooleanExtra(EXTRA_SELECTED_ADDRESS_DATA, false)
+                if (recipientAddress != null && isFromANA == false) {
                     viewModel.setStateChosenAddress(
                             status = recipientAddress.addressStatus,
                             addressId = recipientAddress.id.toString(),
@@ -186,6 +187,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = recipientAddress.destinationDistrictId.toString(),
                             postalCode = recipientAddress.postalCode
                     )
+                } else {
+                    listener?.onAddressDataChanged()
+                    this.dismiss()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
