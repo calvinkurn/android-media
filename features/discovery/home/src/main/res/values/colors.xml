@@ -37,4 +37,6 @@
 
     <color name="home_hpb_indicator_active">@color/Unify_N0</color>
     <color name="home_hpb_indicator_inactive">@color/Unify_N0</color>
+
+    <color name="home_dms_gradient_action_play">#00000000</color>
 </resources>

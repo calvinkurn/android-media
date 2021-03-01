@@ -131,4 +131,6 @@
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>
     <string name="sprint_product_item">Sprint Product Item</string>
+
+    <string name="color_string_banner_label">#31353b</string>
 </resources>
