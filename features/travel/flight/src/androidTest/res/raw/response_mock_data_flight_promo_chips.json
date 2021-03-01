@@ -1,0 +1,61 @@
+{
+    "data": {
+    "flightLowestPrice": {
+    "data": [
+    {
+        "date": "20210204",
+        "airlinePrices": [
+        {
+            "airlineID": "KD",
+            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_eb67de59-0115-4f58-a060-a029c2c941b7.png",
+            "shortName": "Kalstar Aviation",
+            "price": "Rp 563.000",
+            "priceNumeric": 563000
+        },
+        {
+            "airlineID": "JS",
+            "logo": null,
+            "shortName": "Air Koryo",
+            "price": "Rp 424.000",
+            "priceNumeric": 424000
+        },
+        {
+            "airlineID": "3K",
+            "logo": "https://ecs7.tokopedia.net/img/attachment/2018/6/25/5253715/5253715_ba0e41e5-0a19-4e7d-93d5-57841f40cfb4.png",
+            "shortName": "Jetstar Asia Airways",
+            "price": "Rp 120.000",
+            "priceNumeric": 120000
+        },
+        {
+            "airlineID": "SQ",
+            "logo": "https://ecs7.tokopedia.net/img/attachment/2018/11/5/7000409/7000409_741bafb4-23c7-45be-8e2d-fb639a5ae2c5.png",
+            "shortName": "Singapore Airlines",
+            "price": "Rp 999.000",
+            "priceNumeric": 999000
+        }
+        ]
+    },
+    {
+        "date": "20210205",
+        "airlinePrices": [
+        {
+            "airlineID": "KD",
+            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_eb67de59-0115-4f58-a060-a029c2c941b7.png",
+            "shortName": "Kalstar Aviation",
+            "price": "Rp 563.000",
+            "priceNumeric": 563000
+        },
+        {
+            "airlineID": "JS",
+            "logo": null,
+            "shortName": "Air Koryo",
+            "price": "Rp 424.000",
+            "priceNumeric": 424000
+        }
+        ]
+    }
+    ],
+    "errors": []
+}
+}
+}

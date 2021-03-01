@@ -167,6 +167,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         setupSwipeRefresh()
         setupQuickFilter()
         showLoading()
+        showPromoChipsLoading()
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -746,6 +747,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     fun setItemPromoChipsActive(){
         flight_promo_chips_view.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
+    }
+
+    fun showPromoChipsLoading(){
+        flight_promo_chips_view.showLoading()
     }
 
     fun initPromoChips(){

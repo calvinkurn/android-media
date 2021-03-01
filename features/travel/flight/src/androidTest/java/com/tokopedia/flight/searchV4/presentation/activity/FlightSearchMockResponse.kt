@@ -16,6 +16,11 @@ class FlightSearchMockResponse : MockModelConfig() {
                 getRawString(context, R.raw.response_mock_data_flight_search_list),
                 FIND_BY_CONTAINS
         )
+        addMockResponse(
+                KEY_CONTAINS_SEARCH_LIST,
+                getRawString(context, R.raw.response_mock_data_flight_promo_chips),
+                FIND_BY_CONTAINS
+        )
 
         return this
     }
