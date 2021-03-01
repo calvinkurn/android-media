@@ -23,6 +23,7 @@ mutation add_to_cart_occ_external($param: OneClickCheckoutATCParam) {
                 tracker_attribution
                 is_multi_origin
                 is_free_ongkir
+                is_free_ongkir_extra
             }
         }
     }

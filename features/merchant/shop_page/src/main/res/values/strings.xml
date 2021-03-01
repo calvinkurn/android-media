@@ -214,6 +214,9 @@
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>
+    <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+
 
     <!-- shop new info -->
     <string name="shop_page_setting_title">Toko Kamu</string>
@@ -304,5 +307,4 @@
     <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
-
 </resources>

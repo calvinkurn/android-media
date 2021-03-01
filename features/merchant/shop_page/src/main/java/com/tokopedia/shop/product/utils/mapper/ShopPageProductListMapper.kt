@@ -92,7 +92,8 @@ object ShopPageProductListMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
@@ -176,8 +177,7 @@ object ShopPageProductListMapper {
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 formattedPrice = shopProductUiModel.displayedPrice ?: "",
-                ratingCount = shopProductUiModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = shopProductUiModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
@@ -193,7 +193,8 @@ object ShopPageProductListMapper {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 }

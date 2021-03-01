@@ -53,6 +53,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -119,6 +120,12 @@ internal class GetRecommendationUseCaseRequest {
                           labels {
                               title
                               color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
                           }
                           badges {
                               title

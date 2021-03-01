@@ -33,6 +33,8 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -59,6 +61,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
@@ -66,6 +69,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
+import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
@@ -258,7 +262,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopId,
                 START_PAGE,
                 selectedEtalaseId,
-                shopProductFilterParameter ?: ShopProductFilterParameter()
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 
@@ -355,7 +360,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1,
@@ -374,7 +381,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
@@ -393,7 +402,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 isGoldMerchant,
                                 shopProductUiModel.id,
                                 attribution,
-                                shopRef
+                                shopRef,
+                                shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                                shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
                         productPosition + 1,
@@ -425,7 +436,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1,
@@ -444,7 +457,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
@@ -463,7 +478,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             isGoldMerchant,
                             shopProductUiModel.id,
                             attribution,
-                            shopRef
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
                     productPosition + 1,
@@ -837,7 +854,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopId,
                 page,
                 selectedEtalaseId,
-                shopProductFilterParameter?: ShopProductFilterParameter()
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 
@@ -889,7 +907,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -1279,14 +1297,20 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             updateEtalaseTitleSection()
         }
         if (!viewModel.isMyShop(shopId)) {
-            viewModel.getBuyerViewContentData(shopId, data, isShowNewShopHomeTab())
+            viewModel.getBuyerViewContentData(
+                    shopId,
+                    data,
+                    isShowNewShopHomeTab(),
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            )
         }
         if (initialProductListData == null){
             viewModel.getProductListData(
                     shopId,
                     START_PAGE,
                     etalaseItemDataModel.etalaseId,
-                    shopProductFilterParameter ?: ShopProductFilterParameter()
+                    shopProductFilterParameter ?: ShopProductFilterParameter(),
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
             )
         }
     }
@@ -1453,7 +1477,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId,
-                tempShopProductFilterParameter
+                tempShopProductFilterParameter,
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 

@@ -132,7 +132,8 @@ object VariantMapper {
                 price = newPrice,
                 name = newData?.name ?: "",
                 media = newMedia,
-                stock = newStock
+                stock = newStock,
+                isCod = newData?.isCod ?: false
         )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)

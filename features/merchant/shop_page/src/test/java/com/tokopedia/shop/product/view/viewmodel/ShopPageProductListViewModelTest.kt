@@ -78,7 +78,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyString(),
                     anyInt(),
                     anyString(),
-                    ShopProductFilterParameter()
+                    ShopProductFilterParameter(),
+                    addressWidgetData
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -101,7 +102,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyString(),
                     anyInt(),
                     anyString(),
-                    ShopProductFilterParameter()
+                    ShopProductFilterParameter(),
+                    addressWidgetData
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -117,7 +119,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter())
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -251,7 +253,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -360,7 +363,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             viewModelShopPageProductListViewModel.getFilterResultCount(
                     shopId = "123",
-                    tempShopProductFilterParameter = ShopProductFilterParameter()
+                    tempShopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetShopFilterProductCountUseCaseCalled()
@@ -419,7 +423,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -482,7 +487,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -545,7 +551,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -606,7 +613,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = false,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -669,7 +677,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -732,7 +741,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -795,7 +805,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetMemberShipUseCaseCalled()

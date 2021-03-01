@@ -119,6 +119,8 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

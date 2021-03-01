@@ -7,15 +7,20 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -34,7 +39,8 @@ import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-                                       private val context: Context) {
+                                       private val context: Context,
+                                       private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener) {
     private var isShopFavorite = false
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
@@ -52,9 +58,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    private val coachMark = CoachMark2(view.context)
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
+    }
+
+    fun updateChooseAddressWidget(){
+        view.choose_address_widget?.updateWidget()
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
@@ -111,6 +122,42 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_name.setOnClickListener (null)
             view.shop_page_chevron_shop_info.hide()
         }
+    }
+
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+        view.choose_address_widget?.apply {
+            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                    true
+            )
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+                show()
+                val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+                if(isCoachMarkAlreadyShown == false) {
+                    setupChooseAddressWidgetCoachMark(this)
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                }
+                bindChooseAddress(chooseAddressWidgetListener)
+                view.choosee_address_widget_bottom_shadow?.show()
+            } else {
+                view.choosee_address_widget_bottom_shadow?.hide()
+                hide()
+            }
+        }
+    }
+
+    private fun setupChooseAddressWidgetCoachMark(viewChooseAddressWidget: ChooseAddressWidget){
+        val coachMarkList = arrayListOf<CoachMark2Item>()
+        coachMarkList.add(
+                CoachMark2Item(
+                        viewChooseAddressWidget,
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                )
+        )
+        coachMark.isOutsideTouchable = true
+        coachMark.showCoachMark(coachMarkList)
     }
 
     fun setupFollowButton(isMyShop: Boolean){

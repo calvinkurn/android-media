@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.util.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
@@ -18,6 +17,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -74,13 +74,13 @@ object ShopPageHomeMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
 
     fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
-        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -97,14 +97,14 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage,
                 slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = shopHomeProductViewModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
-                hasAddToCartButton = isHasAddToCartButton
+                hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN
         )
     }
 
@@ -125,13 +125,14 @@ object ShopPageHomeMapper {
                 discountPercentage = discountPercentage.takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 slashedPrice = shopHomeProductViewModel.originalPrice.orEmpty().takeIf { !shopHomeProductViewModel.hideGimmick } ?: "",
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                ratingCount = shopHomeProductViewModel.rating.toInt(),
+                countSoldRating = shopHomeProductViewModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN,
                 stockBarLabel = shopHomeProductViewModel.stockLabel,
                 stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
         )
@@ -148,7 +149,8 @@ object ShopPageHomeMapper {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 
@@ -402,6 +404,7 @@ object ShopPageHomeMapper {
                 isShowWishList = !isMyOwnProduct
                 isShowFreeOngkir = response.isShowFreeOngkir
                 freeOngkirPromoIcon = response.freeOngkirPromoIcon
+                labelGroupList = response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {

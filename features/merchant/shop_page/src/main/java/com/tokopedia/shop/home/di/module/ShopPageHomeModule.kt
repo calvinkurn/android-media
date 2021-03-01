@@ -49,8 +49,8 @@ class ShopPageHomeModule {
     @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
     fun getShopPageHomeLayoutQuery(@ShopPageContext context: Context): String {
         return """
-            query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String){
-              shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId){
+            query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String,${'$'}districtId:String,${'$'}cityId:String,${'$'}latitude:String,${'$'}longitude:String){
+              shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId,districtID:${'$'}districtId,cityID:${'$'}cityId,latitude:${'$'}latitude,longitude:${'$'}longitude){
                 layoutID
                 masterLayoutID
                 merchantTierID
@@ -92,6 +92,12 @@ class ShopPageHomeModule {
                       totalReview
                       isPO
                       cashback
+                      labelGroups {
+                        position
+                        type
+                        title
+                        url
+                      }
                     }
                     ... on CampaignWidget {
                       campaignID
@@ -138,6 +144,7 @@ class ShopPageHomeModule {
                           position
                           type
                           title
+                          url
                         }
                       }
                     }

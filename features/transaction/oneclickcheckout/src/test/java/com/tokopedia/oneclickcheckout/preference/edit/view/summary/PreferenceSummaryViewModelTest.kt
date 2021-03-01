@@ -11,6 +11,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.create.FakeCreatePr
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.FakeDeletePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -30,12 +32,13 @@ class PreferenceSummaryViewModelTest {
     private val createPreferenceUseCase = FakeCreatePreferenceUseCase()
     private val deletePreferenceUseCase = FakeDeletePreferenceUseCase()
     private val updatePreferenceUseCase: UpdatePreferenceUseCase = mockk()
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk()
 
     private lateinit var preferenceSummaryViewModel: PreferenceSummaryViewModel
 
     @Before
     fun setUp() {
-        preferenceSummaryViewModel = PreferenceSummaryViewModel(getPreferenceByIdUseCase, createPreferenceUseCase, deletePreferenceUseCase, updatePreferenceUseCase)
+        preferenceSummaryViewModel = PreferenceSummaryViewModel(getPreferenceByIdUseCase, createPreferenceUseCase, deletePreferenceUseCase, updatePreferenceUseCase, chosenAddressRequestHelper)
     }
 
     @Test
@@ -116,6 +119,8 @@ class PreferenceSummaryViewModelTest {
 
     @Test
     fun `Create Preference Success`() {
+        every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
+
         preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
@@ -128,6 +133,8 @@ class PreferenceSummaryViewModelTest {
     @Test
     fun `Create Preference Failed`() {
         val response = Throwable()
+
+        every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
         preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
 

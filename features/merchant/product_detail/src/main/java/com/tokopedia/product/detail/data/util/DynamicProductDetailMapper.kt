@@ -4,9 +4,11 @@ import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
@@ -90,6 +92,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.REPORT -> {
                     listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.SHIPMENT -> {
+                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -164,7 +169,7 @@ object DynamicProductDetailMapper {
 
             VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign)
+                    campaign = campaign, isCod = it.isCod)
         }
 
         return ProductVariantCommon(
@@ -291,5 +296,19 @@ object DynamicProductDetailMapper {
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
                 ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
                 ?: listOf(), productInfoContent, forceRefresh)
+    }
+
+    fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
+        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        return UserLocationRequest(
+                localData.district_id,
+                localData.address_id,
+                localData.postal_code,
+                latlong)
+    }
+
+    fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
+        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        return "${localData.district_id}|${localData.postal_code}|${latlong}"
     }
 }

@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.Map;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BRAND;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
@@ -53,6 +57,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLO
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_SECTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_X;
@@ -73,6 +78,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MEMBERSHIP_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
@@ -84,6 +90,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_ON_TOKOPEDIA;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT;
@@ -101,6 +108,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
@@ -126,8 +135,18 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String shopTypeDef,
             String loginNonLoginString,
             String shopId,
-            String shopRef
+            String shopRef,
+            Boolean isFulfillmentExist,
+            Boolean isFreeOngkirActive
     ) {
+        String boe;
+        if (isFulfillmentExist && isFreeOngkirActive) {
+            boe = BOE;
+        } else if (!isFulfillmentExist && isFreeOngkirActive) {
+            boe = BO_PRODUCT;
+        } else {
+            boe = NON_BO_PRODUCT;
+        }
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductUiModelList.size(); i++) {
             ShopProductUiModel viewModel = shopProductUiModelList.get(i);
@@ -142,7 +161,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     POSITION, productPosition,
                     DIMENSION_81, shopTypeDef,
                     DIMENSION_79, shopId,
-                    SHOP_REF, shopRef
+                    SHOP_REF, shopRef,
+                    DIMENSION_83, boe
             ));
             list.add(event);
         }
@@ -202,7 +222,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
                         shopId,
-                        customDimensionShopPage.shopRef
+                        customDimensionShopPage.shopRef,
+                        customDimensionShopPage.isFulfillmentExist,
+                        customDimensionShopPage.isFreeOngkirActive
                 )));
         return eventMap;
     }
@@ -255,7 +277,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                 customDimensionShopPage.shopType,
                                 loginNonLoginString,
                                 shopId,
-                                customDimensionShopPage.shopRef
+                                customDimensionShopPage.shopRef,
+                                customDimensionShopPage.isFulfillmentExist,
+                                customDimensionShopPage.isFreeOngkirActive
                         ))
         ));
         return eventMap;
@@ -878,6 +902,38 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_PAGE_BUYER,
                 CLICK_FILTER_RATING + rating,
                 productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchResultTracker(
+            Boolean isOwner,
+            String keyword,
+            Boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String actionEvent = isProductResultListEmpty? SEARCH_NO_RESULT: SEARCH;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                actionEvent,
+                keyword,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchClickEtalaseProductResultTracker(
+            boolean isMyShop,
+            String keyword,
+            boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventActionFormat = isProductResultListEmpty ? SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY : SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                String.format(eventActionFormat, keyword),
+                keyword,
                 customDimensionShopPage
         );
     }

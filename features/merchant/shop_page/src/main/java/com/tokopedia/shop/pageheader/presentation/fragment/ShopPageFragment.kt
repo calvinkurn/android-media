@@ -23,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -45,6 +46,9 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -75,6 +79,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -125,7 +130,8 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
-        ShopShareBottomsheetListener {
+        ShopShareBottomsheetListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -188,6 +194,7 @@ class ShopPageFragment :
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
     private var errorButton: View? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
     private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
         get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
@@ -254,6 +261,7 @@ class ShopPageFragment :
     var selectedPosition = -1
     val isMyShop: Boolean
         get() =shopViewModel?.isMyShop(shopId) == true
+    var localCacheModel: LocalCacheModel? = null
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -297,15 +305,16 @@ class ShopPageFragment :
         }
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
         setupBottomSheetSellerMigration(view)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context, this)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            swipeToRefresh.isEnabled = (verticalOffset == 0)
+            swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
         initViewPager()
-        swipeToRefresh.setOnRefreshListener {
+        swipeToRefresh?.setOnRefreshListener {
             refreshData()
         }
         mainLayout.requestFocus()
@@ -577,8 +586,10 @@ class ShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            if (!swipeToRefresh.isRefreshing) {
-                setViewState(VIEW_LOADING)
+            swipeToRefresh?.apply {
+                if (!isRefreshing) {
+                    setViewState(VIEW_LOADING)
+                }
             }
             initViews(view)
         }
@@ -662,6 +673,7 @@ class ShopPageFragment :
     }
 
     private fun getInitialData() {
+        updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
         if (shopId.isEmpty()) {
@@ -673,16 +685,19 @@ class ShopPageFragment :
 
     private  fun getShopPageP1Data(){
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        shopViewModel?.getShopPageTabData(
-                shopId.toIntOrZero(),
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh
-        )
+        context?.let{
+            shopViewModel?.getShopPageTabData(
+                    shopId.toIntOrZero(),
+                    shopDomain.orEmpty(),
+                    START_PAGE,
+                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    initialProductFilterParameter ?: ShopProductFilterParameter(),
+                    "",
+                    "",
+                    isRefresh,
+                    localCacheModel ?: LocalCacheModel()
+            )
+        }
     }
 
     private fun initToolbar() {
@@ -777,6 +792,20 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
+        checkIfChooseAddressWidgetDataUpdated()
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        context?.let{context ->
+            localCacheModel?.let{
+                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                        context,
+                        it
+                )
+                if(isUpdated)
+                    refreshData()
+            }
+        }
     }
 
     private fun setViewState(viewState: Int) {
@@ -966,7 +995,7 @@ class ShopPageFragment :
             setupSearchbar(
                     hints =  listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProduct()
+                        clickSearch()
                     }
             )
         }
@@ -985,9 +1014,10 @@ class ShopPageFragment :
         getShopPageHeaderContentData()
         setupTabs()
         setViewState(VIEW_CONTENT)
-        swipeToRefresh.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         shopPageHeaderDataModel?.let {
             remoteConfig?.let { nonNullableRemoteConfig ->
+                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig)
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
@@ -1231,10 +1261,12 @@ class ShopPageFragment :
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
-                if (!swipeToRefresh.isRefreshing)
-                    setViewState(VIEW_LOADING)
+                swipeToRefresh?.apply {
+                    if (!isRefreshing)
+                        setViewState(VIEW_LOADING)
+                }
             }
-            swipeToRefresh.isRefreshing = false
+            swipeToRefresh?.isRefreshing = false
         }
     }
 
@@ -1309,9 +1341,11 @@ class ShopPageFragment :
         }
         isRefresh = true
         getInitialData()
-        if (!swipeToRefresh.isRefreshing)
-            setViewState(VIEW_LOADING)
-        swipeToRefresh.isRefreshing = true
+        swipeToRefresh?.apply {
+            if (!isRefreshing)
+                setViewState(VIEW_LOADING)
+            isRefreshing = true
+        }
 
         stickyLoginView?.loadContent()
     }
@@ -1646,6 +1680,37 @@ class ShopPageFragment :
         } else {
             false
         }
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        localCacheModel = getShopPageWidgetUserAddressLocalData(context)
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        context?.let {
+            shopPageFragmentHeaderViewHolder?.updateChooseAddressWidget()
+            refreshData()
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+    }
+
+    override fun onLocalizingAddressServerDown() {
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return "shop"
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+        refreshData()
     }
 
 }

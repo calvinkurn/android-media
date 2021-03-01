@@ -44,6 +44,16 @@ internal class SearchFilterUtilsTest {
                         SearchApiConst.SRP_PAGE_ID to "1234"
                 )
         ) shouldBe 1
+
+        getSortFilterCount(
+                mapOf(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.OFFICIAL to true,
+                        SearchApiConst.USER_LAT to "123.123",
+                        SearchApiConst.USER_LONG to "123.123",
+                        SearchApiConst.USER_ADDRESS_ID to "123444",
+                )
+        ) shouldBe 1
     }
 
     @Test
@@ -87,6 +97,16 @@ internal class SearchFilterUtilsTest {
                         SearchApiConst.OFFICIAL to true,
                         SearchApiConst.SRP_PAGE_TITLE to "Waktu Indonesia Belanja",
                         SearchApiConst.SRP_PAGE_ID to "1234"
+                )
+        ) shouldBe "${SearchApiConst.OFFICIAL}=true"
+
+        getSortFilterParamsString(
+                mapOf(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.OFFICIAL to true,
+                        SearchApiConst.USER_LAT to "123.123",
+                        SearchApiConst.USER_LONG to "123.123",
+                        SearchApiConst.USER_ADDRESS_ID to "123444",
                 )
         ) shouldBe "${SearchApiConst.OFFICIAL}=true"
     }
@@ -133,6 +153,16 @@ internal class SearchFilterUtilsTest {
                         SearchApiConst.OFFICIAL to true.toString(),
                         SearchApiConst.SRP_PAGE_TITLE to "Waktu Indonesia Belanja",
                         SearchApiConst.SRP_PAGE_ID to "1234"
+                )
+        ) shouldBe mapOf(SearchApiConst.OFFICIAL to true.toString())
+
+        getFilterParams(
+                mapOf(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.OFFICIAL to true.toString(),
+                        SearchApiConst.USER_LAT to "123.123",
+                        SearchApiConst.USER_LONG to "123.123",
+                        SearchApiConst.USER_ADDRESS_ID to "123444",
                 )
         ) shouldBe mapOf(SearchApiConst.OFFICIAL to true.toString())
     }
