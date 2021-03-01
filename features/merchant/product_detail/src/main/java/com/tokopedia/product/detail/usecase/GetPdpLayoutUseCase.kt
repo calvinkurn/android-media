@@ -277,7 +277,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     var requestParams = RequestParams.EMPTY
-    var forceRefresh = false
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()

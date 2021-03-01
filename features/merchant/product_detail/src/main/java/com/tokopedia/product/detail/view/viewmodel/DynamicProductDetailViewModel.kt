@@ -832,7 +832,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
         getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
-        getPdpLayoutUseCase.get().forceRefresh = forceRefresh
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 }
