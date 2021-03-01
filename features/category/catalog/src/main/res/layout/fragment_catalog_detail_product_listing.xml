@@ -48,13 +48,18 @@
         android:nestedScrollingEnabled="true"
         app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"/>
 
-    <com.tokopedia.common_category.customview.NoDataView
+    <include
         android:id="@+id/layout_no_data"
+        layout="@layout/products_no_data_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        android:layout_marginTop="@dimen/unify_space_96"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

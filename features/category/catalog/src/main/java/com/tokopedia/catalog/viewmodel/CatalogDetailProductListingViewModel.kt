@@ -11,6 +11,7 @@ import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,8 +29,13 @@ class CatalogDetailProductListingViewModel
     var mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
+    var sortFilterItems = MutableLiveData<List<SortFilterItem>>()
+    var selectedSortIndicatorCount = MutableLiveData<Int>()
+    var searchParametersMap = MutableLiveData<HashMap<String, String>>()
+
     var quickFilterOptionList: List<Option> = ArrayList()
-    var dynamicFilterModel : DynamicFilterModel? = null
+    var dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
+
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {

@@ -146,6 +146,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         setUpNavigation()
         setUpVisibleFragmentListener()
         initSearchQuickSortFilter(view)
+        sortFilterBottomSheet = SortFilterBottomSheet()
     }
 
     private fun initView() {
@@ -190,6 +191,24 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeData() {
+
+        viewModel.sortFilterItems.observe(viewLifecycleOwner, Observer {
+            if (it.size > 0) {
+                hideQuickFilterShimmering()
+                setQuickFilter(it)
+            }
+        })
+
+        viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner, Observer {
+            searchSortFilter!!.indicatorCounter = it
+        })
+
+        viewModel.dynamicFilterModel.observe(viewLifecycleOwner, Observer {
+            it?.let { dm ->
+                setDynamicFilter(dm)
+            }
+        })
+
         viewModel.mProductList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
@@ -210,6 +229,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                             showNoDataScreen(true)
                         }
                     }
+                    sortFilterBottomSheet = SortFilterBottomSheet()
                     hideRefreshLayout()
                     reloadFilter(getDynamicFilterParams())
                 }
@@ -236,8 +256,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    viewModel.dynamicFilterModel = it.data
-                    setDynamicFilter(viewModel.dynamicFilterModel!!)
+                    viewModel.dynamicFilterModel.value = it.data
                 }
 
                 is Fail -> {
@@ -262,7 +281,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setHeaderCount(totalProductsCount : String){
-        headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount)
+        if("0".equals(totalProductsCount)) {
+            headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
+            showNoDataScreen(true)
+        }
+        else
+            headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount)
     }
 
     private fun reloadFilter(param: RequestParams) {
@@ -295,6 +319,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         viewModel.fetchQuickFilters(getQuickFilterParams())
         setSortFilterIndicatorCounter()
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }
 
     override fun getDepartMentId(): String {
@@ -588,7 +613,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun initSearchQuickSortFilter(rootView: View) {
         searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
-        searchSortFilter?.filterIcon?.setColorFilter(ContextCompat.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_N75), android.graphics.PorterDuff.Mode.MULTIPLY);
+        searchSortFilter?.filterIcon?.setColorFilter(ContextCompat.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Blue_B100), android.graphics.PorterDuff.Mode.MULTIPLY);
         addDefaultSelectedSort()
     }
 
@@ -597,19 +622,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun processQuickFilter(quickFilterData: DataValue) {
-        // BG
         if (viewModel.dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
         val sortFilterItems = arrayListOf<SortFilterItem>()
         viewModel.quickFilterOptionList = arrayListOf()
         for (filter in quickFilterData.filter) {
             val options = filter.options
             (viewModel.quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
-            convertToSortFilterItem(filter.title, options)?.let { sortFilterItems.addAll(it) }
-        }
-        // Main
-        if (sortFilterItems.size > 0) {
-            hideQuickFilterShimmering()
-            setQuickFilter(sortFilterItems)
+            convertToSortFilterItem(filter.title, options)?.let {
+                sortFilterItems.addAll(it)
+                viewModel.sortFilterItems.value = sortFilterItems
+            }
         }
     }
 
@@ -618,7 +640,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setSortFilterIndicatorCounter() {
-        searchSortFilter!!.indicatorCounter = CatalogUtil.getSortFilterCount(searchParameter.getSearchParameterMap())
+        viewModel.selectedSortIndicatorCount.value = CatalogUtil.getSortFilterCount(searchParameter.getSearchParameterMap())
     }
 
     private fun addDefaultSelectedSort() {
@@ -688,18 +710,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     /*******************************  Bottom Sheet Filter **************************/
 
     private fun openBottomSheetFilterRevamp(){
-        if(viewModel.dynamicFilterModel != null){
-            sortFilterBottomSheet = SortFilterBottomSheet()
-            sortFilterBottomSheet?.show(
-                    requireFragmentManager(),
-                    searchParameter.getSearchParameterHashMap(),
-                    viewModel.dynamicFilterModel,
-                    this
-            )
-            sortFilterBottomSheet!!.setOnDismissListener {
-                sortFilterBottomSheet = null
-            }
-        }
+        sortFilterBottomSheet?.show(
+                requireFragmentManager(),
+                viewModel.searchParametersMap.value,
+                viewModel.dynamicFilterModel.value,
+                this
+        )
     }
 
     private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
@@ -714,10 +730,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        sortFilterBottomSheet = null
         filterController!!.refreshMapParameter(applySortFilterModel.mapParameter)
         searchParameter.getSearchParameterHashMap().clear()
         searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
         reloadData()
     }
 
