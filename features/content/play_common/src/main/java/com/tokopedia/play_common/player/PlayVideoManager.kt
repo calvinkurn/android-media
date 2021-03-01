@@ -171,7 +171,7 @@ class PlayVideoManager private constructor(
     fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
         val listener = object : Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
-                offer(state)
+                try { offer(state) } catch (e: Throwable) {}
             }
         }
 

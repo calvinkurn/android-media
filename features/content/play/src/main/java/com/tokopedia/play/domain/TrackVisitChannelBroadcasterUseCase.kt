@@ -1,19 +1,21 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.VisitChannelTracking
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 05/02/21.
  */
-class TrackVisitChannelBroadcasterUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<Boolean>() {
+class TrackVisitChannelBroadcasterUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<Boolean>(graphqlRepository) {
 
     var params: Map<String, Any> = emptyMap()
 
@@ -23,7 +25,7 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(private val graphq
             success
           }
         }
-    """
+    """.trimIndent()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, VisitChannelTracking.Response::class.java, params)

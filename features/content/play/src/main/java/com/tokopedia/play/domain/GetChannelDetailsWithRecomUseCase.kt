@@ -1,21 +1,19 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.view.type.PlaySource
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * Created by jegul on 20/01/21
  */
 class GetChannelDetailsWithRecomUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlRepository
-): UseCase<ChannelDetailsWithRecomResponse>() {
+        gqlRepository: GraphqlRepository
+): GraphqlUseCase<ChannelDetailsWithRecomResponse>(gqlRepository) {
 
     private val query = """
           query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String, ${'$'}$PARAM_SOURCE_TYPE: String, ${'$'}$PARAM_SOURCE_ID: String){
@@ -112,21 +110,13 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 }
               }
             }
-        """
+        """.trimIndent()
 
-    var params: Map<String, Any> = emptyMap()
-
-    override suspend fun executeOnBackground(): ChannelDetailsWithRecomResponse {
-        val gqlRequest = GraphqlRequest(query, ChannelDetailsWithRecomResponse::class.java, params)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+    init {
+        setGraphqlQuery(query)
+        setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-
-        val error = gqlResponse.getError(ChannelDetailsWithRecomResponse::class.java)
-        if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(ChannelDetailsWithRecomResponse::class.java) as ChannelDetailsWithRecomResponse)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
+        setTypeClass(ChannelDetailsWithRecomResponse::class.java)
     }
 
     sealed class ChannelDetailNextKey {

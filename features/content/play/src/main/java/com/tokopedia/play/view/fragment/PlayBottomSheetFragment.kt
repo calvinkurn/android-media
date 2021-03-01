@@ -287,7 +287,7 @@ class PlayBottomSheetFragment @Inject constructor(
             analytic.clickProduct(product, position)
             openPageByApplink(product.applink)
 
-            playViewModel.openPiPBrowsingPage()
+            playViewModel.requestPiPBrowsingPage()
         }
     }
 

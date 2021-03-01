@@ -58,9 +58,6 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 
 /**
@@ -77,9 +74,6 @@ class PlayFragment @Inject constructor(
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
-
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(dispatchers.main + job)
 
     private lateinit var ivClose: ImageView
     private val fragmentVideoView by viewComponent {
@@ -114,8 +108,6 @@ class PlayFragment @Inject constructor(
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     private var isFirstTopBoundsCalculated = false
-
-//    private var hasFetchedChannelInfo: Boolean = false
 
     override fun getScreenName(): String = "Play"
 
@@ -160,7 +152,6 @@ class PlayFragment @Inject constructor(
         )
         onPageDefocused()
         super.onPause()
-        job.cancelChildren()
     }
 
     override fun onDestroyView() {
@@ -169,7 +160,6 @@ class PlayFragment @Inject constructor(
 
         destroyInsets(requireView())
         super.onDestroyView()
-        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -190,11 +180,11 @@ class PlayFragment @Inject constructor(
         return isIntercepted || !videoOrientation.isHorizontal
     }
 
-    override fun onEnterPiPMode(pipMode: PiPMode) {
+    override fun onEnterPiPState(pipState: PiPState) {
         if (playViewModel.isPiPAllowed) {
             childFragmentManager.fragments
                     .forEach {
-                        if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
+                        if (it is PlayFragmentContract) it.onEnterPiPState(pipState)
                     }
         }
     }
@@ -287,7 +277,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.pipMode.isInPiP && activity?.isFinishing == true))
+        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.pipState.isInPiP && activity?.isFinishing == true))
     }
 
     private fun invalidateVideoTopBounds(
@@ -356,7 +346,6 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -370,27 +359,6 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeGetChannelInfo() {
-//        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
-//            when (result) {
-//                NetworkResult.Loading -> {
-//                    if (!hasFetchedChannelInfo) loaderPage.show()
-//                    else loaderPage.hide()
-//
-//                    fragmentErrorViewOnStateChanged(shouldShow = false)
-//                }
-//                is NetworkResult.Success -> {
-//                    hasFetchedChannelInfo = true
-//                    loaderPage.hide()
-//                    fragmentErrorViewOnStateChanged(shouldShow = false)
-//                }
-//                is NetworkResult.Fail -> {
-//                    loaderPage.hide()
-//                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
-//                }
-//            }
-//        })
-    }
 
     private fun observeSocketInfo() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
@@ -454,10 +422,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
-            if (it != PiPMode.StopPip) {
-                onEnterPiPMode(it)
-            }
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
+            if (it is PiPState.Requesting) onEnterPiPState(it)
         })
     }
     //endregion
@@ -610,7 +576,5 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        private const val DELAY_FREEZE_AUTO_SWIPE = 2500L
     }
 }

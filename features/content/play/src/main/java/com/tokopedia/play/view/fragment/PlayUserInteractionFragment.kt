@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -326,7 +327,7 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickPinnedMessage(message, applink)
         openPageByApplink(applink)
 
-        playViewModel.openPiPBrowsingPage()
+        playViewModel.requestPiPBrowsingPage()
     }
 
     override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
@@ -366,7 +367,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
-        playViewModel.watchInPiP()
+        playViewModel.requestWatchInPiP()
         pipAnalytic.clickPiPIcon(
                 channelId = channelId,
                 shopId = playViewModel.partnerId,
@@ -494,13 +495,11 @@ class PlayUserInteractionFragment @Inject constructor(
         observeQuickReply()
         observeToolbarInfo()
         observeLikeStatus()
-        observeTotalLikes()
         observeTotalViews()
         observeNewChat()
         observeChatList()
         observePinned()
         observeCartInfo()
-        observeLikeContent()
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
@@ -520,8 +519,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun handleVideoHorizontalTopBounds() {
         scope.launch {
-            val toolbarMeasure = async { toolbarView.rootView.awaitMeasured() }
-            val statsInfoMeasure = async { statsInfoView.rootView.awaitMeasured() }
+            val toolbarMeasure = asyncCatchError(block = {
+                toolbarView.rootView.awaitMeasured()
+             }, onError = {})
+            val statsInfoMeasure = asyncCatchError(block = {
+                statsInfoView.rootView.awaitMeasured()
+            }, onError = {})
 
             awaitAll(toolbarMeasure, statsInfoMeasure)
             playFragment.onFirstTopBoundsCalculated()
@@ -601,12 +604,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeTotalLikes() {
-//        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
-//            likeView.setTotalLikes(it)
-//        })
-    }
-
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
@@ -637,21 +634,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
-    }
-
-    private fun observeLikeContent() {
-//        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
-//            private var isFirstTime = true
-//            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
-//                likeView.setEnabled(true)
-//
-//                if (result is NetworkResult.Success) {
-//                    val likeModel = result.data
-//                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
-//                    isFirstTime = false
-//                }
-//            }
-//        })
     }
 
     private fun observeBottomInsetsState() {
@@ -788,16 +770,12 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.isFreezeOrBanned || isBroadcasterLoading() -> {
                 container.alpha = VISIBLE_ALPHA
                 playFullscreenManager.onExitFullscreen()
-//                systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) playFullscreenManager.onEnterFullscreen()
                 else playFullscreenManager.onExitFullscreen()
-//                systemUiVisibility =
-//                        if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
-//                        else PlayFullScreenHelper.getShowSystemUiVisibility()
                 triggerFullImmersive(shouldImmersive, false)
             }
         }
@@ -856,7 +834,7 @@ class PlayUserInteractionFragment @Inject constructor(
             analytic.clickProduct(product, position)
             openPageByApplink(product.applink)
 
-            playViewModel.openPiPBrowsingPage()
+            playViewModel.requestPiPBrowsingPage()
         }
     }
 
@@ -883,7 +861,7 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickShop(partnerId.toString())
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
 
-        playViewModel.openPiPBrowsingPage()
+        playViewModel.requestPiPBrowsingPage()
     }
 
     private fun openProfilePage(partnerId: Long) {

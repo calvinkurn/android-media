@@ -20,7 +20,7 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -193,8 +193,8 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == PiPMode.StopPip) removePiP()
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPState.Stop) removePiP()
         })
     }
 

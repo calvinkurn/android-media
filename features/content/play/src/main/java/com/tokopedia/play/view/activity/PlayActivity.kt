@@ -29,6 +29,7 @@ import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
 
@@ -58,6 +59,9 @@ class PlayActivity : BaseActivity(),
 
     @Inject
     lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
+
+    @Inject
+    lateinit var playPreference: PlayPreference
 
     private lateinit var orientationManager: PlaySensorOrientationManager
 
@@ -111,7 +115,6 @@ class PlayActivity : BaseActivity(),
         setupViewModel()
         setupPage()
         setupObserve()
-//        setupView(channelId)
     }
 
     override fun onResume() {
@@ -137,13 +140,6 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onNewChannel(channelId: String?) {
-//        supportFragmentManager.beginTransaction()
-//                .replace(R.id.fl_fragment, getFragment(channelId.orEmpty()), PLAY_FRAGMENT_TAG)
-//                .commit()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     override fun onEnterPiPMode() {
@@ -186,6 +182,7 @@ class PlayActivity : BaseActivity(),
 
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
+        playPreference.setOnboardingShown(viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -203,10 +200,6 @@ class PlayActivity : BaseActivity(),
                 .build()
                 .inject(this)
     }
-
-//    private fun getFragment(channelId: String?): Fragment {
-//        return getPlayFragment(channelId)
-//    }
 
     private fun setupViewModel() {
         val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {

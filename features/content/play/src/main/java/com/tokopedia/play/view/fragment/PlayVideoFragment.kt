@@ -28,6 +28,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
@@ -87,7 +88,7 @@ class PlayVideoFragment @Inject constructor(
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
         override fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
-            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
                 DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                         .apply {
                             setTitle(getString(R.string.play_pip_permission_rationale_title))
@@ -112,12 +113,14 @@ class PlayVideoFragment @Inject constructor(
         }
 
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
+            playViewModel.goPiP()
+
             isEnterPiPAfterPermission = true
 
             val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
-            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
                 playPiPCoordinator.onEnterPiPMode()
                 pipAnalytic.enterPiP(
                         channelId = channelId,
@@ -209,7 +212,7 @@ class PlayVideoFragment @Inject constructor(
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onEnterPiPMode(pipMode: PiPMode) {
+    override fun onEnterPiPState(pipState: PiPState) {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
@@ -223,7 +226,7 @@ class PlayVideoFragment @Inject constructor(
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoOrientation = playViewModel.videoOrientation,
-                        stopOnClose = pipMode == PiPMode.WatchInPip
+                        stopOnClose = pipState.mode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
@@ -235,7 +238,7 @@ class PlayVideoFragment @Inject constructor(
      * Video View Component DataSource
      */
     override fun isInPiPMode(): Boolean {
-        return playViewModel.pipMode.isInPiP
+        return playViewModel.pipState.isInPiP
     }
 
     private fun initAnalytic() {
@@ -314,8 +317,8 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == PiPMode.StopPip) removePiP()
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPState.Stop) removePiP()
         })
     }
     //endregion
@@ -337,6 +340,7 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
+            pipState: PiPState = playViewModel.pipState,
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
@@ -345,7 +349,9 @@ class PlayVideoFragment @Inject constructor(
             videoView.setPlayer(null)
             videoView.hide()
             return
-        } else if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+        }
+
+        if (pipState is PiPState.InPiP) return
 
         when (videoPlayer) {
             is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()

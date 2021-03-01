@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -23,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
@@ -31,16 +30,17 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -88,7 +88,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
         private const val NOTIFICATION_BADGE_DELAY = 2000L
-        private const val WIDGET_UPDATE_DELAY = 100L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
@@ -121,16 +120,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var isErrorToastShown = false
 
     private var performanceMonitoringSellerHomePltCompleted = false
-    private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeLineGraph: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeTable: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeMultiLineGraph: PerformanceMonitoring? = null
-    private var performanceMonitoringAnnouncement: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
@@ -149,6 +138,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
+        startHomeLayoutCustomMetric()
         sellerHomeViewModel.getWidgetLayout()
     }
 
@@ -336,21 +326,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeCard = PerformanceMonitoring.start(SELLER_HOME_CARD_TRACE)
+        startCustomMetric(SELLER_HOME_CARD_TRACE)
         sellerHomeViewModel.getCardWidgetData(dataKeys)
     }
 
     private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeLineGraph = PerformanceMonitoring.start(SELLER_HOME_LINE_GRAPH_TRACE)
+        startCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE)
         sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeProgress = PerformanceMonitoring.start(SELLER_HOME_PROGRESS_TRACE)
+        startCustomMetric(SELLER_HOME_PROGRESS_TRACE)
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
     }
 
@@ -360,49 +350,49 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
             return@map Pair(it.dataKey, postFilter)
         }
-        performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
+        startCustomMetric(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
     private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeCarousel = PerformanceMonitoring.start(SELLER_HOME_CAROUSEL_TRACE)
+        startCustomMetric(SELLER_HOME_CAROUSEL_TRACE)
         sellerHomeViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeTable = PerformanceMonitoring.start(SELLER_HOME_TABLE_TRACE)
+        startCustomMetric(SELLER_HOME_TABLE_TRACE)
         sellerHomeViewModel.getTableWidgetData(dataKeys)
     }
 
     private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomePieChart = PerformanceMonitoring.start(SELLER_HOME_PIE_CHART_TRACE)
+        startCustomMetric(SELLER_HOME_PIE_CHART_TRACE)
         sellerHomeViewModel.getPieChartWidgetData(dataKeys)
     }
 
     private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeBarChart = PerformanceMonitoring.start(SELLER_HOME_BAR_CHART_TRACE)
+        startCustomMetric(SELLER_HOME_BAR_CHART_TRACE)
         sellerHomeViewModel.getBarChartWidgetData(dataKeys)
     }
 
     private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeMultiLineGraph = PerformanceMonitoring.start(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+        startCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
         sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
     }
 
     private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
-        performanceMonitoringAnnouncement = PerformanceMonitoring.start(SELLER_HOME_ANNOUNCEMENT_TRACE)
+        startCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE)
         sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
@@ -581,17 +571,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeWidgetLayoutLiveData() {
-        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
             recyclerView.post {
                 when (result) {
-                    is Success -> setOnSuccessGetLayout(result.data)
-                    is Fail -> setOnErrorGetLayout(result.throwable)
+                    is Success -> {
+                        stopLayoutCustomMetric(result.data)
+                        setOnSuccessGetLayout(result.data)
+                    }
+                    is Fail -> {
+                        stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, true)
+                        setOnErrorGetLayout(result.throwable)
+                    }
                 }
             }
         })
 
         view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
+    }
+
+    private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
+        val isFromCache = widgets.firstOrNull()?.isFromCache == true
+        stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, isFromCache)
+    }
+
+    private fun startHomeLayoutCustomMetric() {
+        startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE)
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
@@ -766,33 +771,44 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 when (result) {
                     is Success -> result.data.setOnSuccessWidgetState(type)
                     is Fail -> {
+                        stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
+                        stopPltMonitoringIfNotCompleted(fromCache = false)
                         logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
-                stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
             }
         })
     }
 
-    private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String) {
+    private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String, isFromCache: Boolean) {
         when (type) {
-            WidgetType.CARD -> performanceMonitoringSellerHomeCard?.stopTrace()
-            WidgetType.LINE_GRAPH -> performanceMonitoringSellerHomeLineGraph?.stopTrace()
-            WidgetType.PROGRESS -> performanceMonitoringSellerHomeProgress?.stopTrace()
-            WidgetType.POST_LIST -> performanceMonitoringSellerHomePostList?.stopTrace()
-            WidgetType.CAROUSEL -> performanceMonitoringSellerHomeCarousel?.stopTrace()
-            WidgetType.TABLE -> performanceMonitoringSellerHomeTable?.stopTrace()
-            WidgetType.PIE_CHART -> performanceMonitoringSellerHomePieChart?.stopTrace()
-            WidgetType.BAR_CHART -> performanceMonitoringSellerHomeBarChart?.stopTrace()
-            WidgetType.MULTI_LINE_GRAPH -> performanceMonitoringSellerHomeMultiLineGraph?.stopTrace()
-            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncement?.stopTrace()
+            WidgetType.CARD -> stopCustomMetric(SELLER_HOME_CARD_TRACE, isFromCache)
+            WidgetType.LINE_GRAPH -> stopCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE, isFromCache)
+            WidgetType.PROGRESS -> stopCustomMetric(SELLER_HOME_PROGRESS_TRACE, isFromCache)
+            WidgetType.POST_LIST -> stopCustomMetric(SELLER_HOME_POST_LIST_TRACE, isFromCache)
+            WidgetType.CAROUSEL -> stopCustomMetric(SELLER_HOME_CAROUSEL_TRACE, isFromCache)
+            WidgetType.TABLE -> stopCustomMetric(SELLER_HOME_TABLE_TRACE, isFromCache)
+            WidgetType.PIE_CHART -> stopCustomMetric(SELLER_HOME_PIE_CHART_TRACE, isFromCache)
+            WidgetType.BAR_CHART -> stopCustomMetric(SELLER_HOME_BAR_CHART_TRACE, isFromCache)
+            WidgetType.MULTI_LINE_GRAPH -> stopCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE, isFromCache)
+            WidgetType.ANNOUNCEMENT -> stopCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE, isFromCache)
         }
+    }
+
+    private fun startCustomMetric(tag: String) {
+        performanceMonitoringSellerHomePlt?.startCustomMetric(tag)
+    }
+
+    private fun stopCustomMetric(tag: String, isFromCache: Boolean) {
+        performanceMonitoringSellerHomePlt?.addDataSourceAttribution(isFromCache)
+        performanceMonitoringSellerHomePlt?.stopCustomMetric(tag)
     }
 
     @Suppress("UNCHECKED_CAST")
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         val isFromCache = firstOrNull()?.isFromCache == true
+        stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
         val newWidgetList = adapter.data.toMutableList()
         forEach { widgetData ->
