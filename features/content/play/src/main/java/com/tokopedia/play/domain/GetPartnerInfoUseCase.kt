@@ -16,13 +16,13 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository): UseCase<ShopInfo>() {
+class GetPartnerInfoUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(query, ShopInfo.Response::class.java, params.parameters)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(ShopInfo.Response::class.java)

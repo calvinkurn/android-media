@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 
 class GetSocketCredentialUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository
 ) : UseCase<SocketCredential>() {
 
     private val query = """
@@ -30,7 +30,7 @@ class GetSocketCredentialUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): SocketCredential {
         val gqlRequest = GraphqlRequest(query, SocketCredential.Response::class.java, emptyMap())
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(SocketCredential.Response::class.java)

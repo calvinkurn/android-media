@@ -12,14 +12,14 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<Boolean>() {
+class GetIsLikeUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<Boolean>() {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, IsLikedContent.Response::class.java, params)
 
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val error = gqlResponse.getError(IsLikedContent.Response::class.java)
         if (error != null) return false

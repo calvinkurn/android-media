@@ -11,13 +11,13 @@ import javax.inject.Inject
 /**
  * Created by jegul on 28/01/21
  */
-class GetReportSummariesUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<ReportSummaries>() {
+class GetReportSummariesUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ReportSummaries>() {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): ReportSummaries {
         val gqlRequest = GraphqlRequest(query, ReportSummaries.Response::class.java, params)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         return gqlResponse.getData<ReportSummaries.Response>(ReportSummaries.Response::class.java).reportSummaries

@@ -14,13 +14,13 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<TotalLike>() {
+class GetTotalLikeUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<TotalLike>() {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): TotalLike {
         val gqlRequest = GraphqlRequest(query, TotalLikeContent.Response::class.java, params)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<TotalLikeContent.Response>(TotalLikeContent.Response::class.java)
 
