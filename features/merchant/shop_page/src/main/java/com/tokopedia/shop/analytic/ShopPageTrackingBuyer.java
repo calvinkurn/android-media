@@ -907,4 +907,36 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage
         );
     }
+
+    public void sendShopPageProductSearchResultTracker(
+            Boolean isOwner,
+            String keyword,
+            Boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String actionEvent = isProductResultListEmpty? SEARCH_NO_RESULT: SEARCH;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                actionEvent,
+                keyword,
+                customDimensionShopPage
+        );
+    }
+
+    public void sendShopPageProductSearchClickEtalaseProductResultTracker(
+            boolean isMyShop,
+            String keyword,
+            boolean isProductResultListEmpty,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventActionFormat = isProductResultListEmpty ? SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY : SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                String.format(eventActionFormat, keyword),
+                keyword,
+                customDimensionShopPage
+        );
+    }
 }

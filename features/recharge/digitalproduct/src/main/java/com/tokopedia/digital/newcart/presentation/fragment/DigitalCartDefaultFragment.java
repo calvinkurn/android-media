@@ -90,6 +90,9 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         checkoutHolderView = view.findViewById(R.id.view_checkout_holder);
         inputPriceContainer = view.findViewById(R.id.input_price_container);
         inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
+        mybillEgold = view.findViewById(R.id.egold_mybill);
+
+        mybillEgold.setOnMoreInfoClickedListener(this);
     }
 
     @Override
