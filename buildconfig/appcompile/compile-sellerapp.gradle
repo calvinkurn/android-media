@@ -122,6 +122,7 @@ include "features:top_ads:top_ads_headline"
 include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
+include "features:ordermanagement:snapshot"
 
 include "features:communication:push-notification-common"
 
