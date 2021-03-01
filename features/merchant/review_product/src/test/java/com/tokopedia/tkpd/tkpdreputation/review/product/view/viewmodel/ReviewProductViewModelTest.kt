@@ -29,6 +29,15 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
     }
 
     @Test
+    fun `when getRatingReview fail should not update value`() {
+        val productId = anyString()
+        coEvery { reviewProductGetRatingUseCase.executeOnBackground() } throws Throwable()
+        viewModel.getRatingReview(productId)
+        coVerify { reviewProductGetRatingUseCase.executeOnBackground() }
+        viewModel.getRatingReview().verifyValueEquals(null)
+    }
+
+    @Test
     fun `when getHelpfulReview success should execute expected usecase`() {
         val productId = anyString()
         val expectedNetworkResponse = DataResponseReviewHelpful()
@@ -38,6 +47,14 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
         viewModel.getHelpfulReview(productId)
         coVerify { reviewProductGetHelpfulUseCase.executeOnBackground() }
         viewModel.getHelpfulReviewList().verifyValueEquals(expectedResult)
+    }
+
+    @Test
+    fun `when getHelpfulReview fail should not update value`() {
+        coEvery { reviewProductGetHelpfulUseCase.executeOnBackground() } throws Throwable()
+        viewModel.getHelpfulReview(anyString())
+        coVerify { reviewProductGetHelpfulUseCase.executeOnBackground() }
+        viewModel.getHelpfulReviewList().verifyValueEquals(null)
     }
 
     @Test
@@ -94,6 +111,7 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
         viewModel.deleteReview(reviewId, reputationId, productId)
         verifyDeleteReviewResponseCalled()
         viewModel.getDeleteReview().verifyErrorEquals(Fail(RuntimeException()))
+        viewModel.getShowProgressDialog().verifyValueEquals(false)
     }
 
     @Test
@@ -106,6 +124,7 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
         viewModel.deleteReview(reviewId, reputationId, productId)
         verifyDeleteReviewResponseCalled()
         viewModel.getDeleteReview().verifyErrorEquals(Fail(expectedNetworkResponse))
+        viewModel.getShowProgressDialog().verifyValueEquals(false)
     }
 
     @Test
@@ -120,6 +139,7 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
         viewModel.postLikeDislikeReview(reviewId, likeStatus, productId)
         verifyLikeDislikeReviewCalled()
         viewModel.getPostLikeDislike().verifyValueEquals(expectedNetworkResponse to reviewId)
+        viewModel.getShowProgressDialog().verifyValueEquals(false)
     }
 
     @Test
@@ -132,6 +152,7 @@ class ReviewProductViewModelTest : ReviewProductViewModelTestFixture() {
         viewModel.postLikeDislikeReview(reviewId, likeStatus, productId)
         verifyLikeDislikeReviewCalled()
         viewModel.getErrorPostLikeDislike().verifyValueEquals(Triple(expectedNetworkResponse, reviewId, likeStatus))
+        viewModel.getShowProgressDialog().verifyValueEquals(false)
     }
 
     private fun onDeleteReview_thenReturn(deleteResponse: DeleteReviewResponseDomain) {
