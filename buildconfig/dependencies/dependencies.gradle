@@ -316,7 +316,6 @@ ext {
             platformEngine        : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting       : "androidx.arch.core:core-testing:$archCoreVersion",
-            couroutinesTest       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
             json                  : "org.json:json:20140107",
             benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
             testCore              : "androidx.test:core:$testCore",
