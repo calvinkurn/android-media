@@ -50,10 +50,10 @@ object ChooseAddressUtils {
     }
 
     /**
-     * temporary use return true
+     * Rollence key
      */
     fun isRollOutUser(): Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY)
+        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
         return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
 
