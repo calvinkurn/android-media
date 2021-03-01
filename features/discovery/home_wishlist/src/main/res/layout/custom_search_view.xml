@@ -74,7 +74,7 @@
         android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/label_manage"
-        android:textColor="@color/GeneralLightGreenText"
+        android:textColor="@color/light_G500"
         app:typographyType="heading_6" />
 
 </LinearLayout>

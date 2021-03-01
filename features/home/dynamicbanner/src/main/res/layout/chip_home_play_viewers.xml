@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:textColor="#f531353b"
+        android:textColor="@color/dynamicbanner_dms_text_total_viewers"
         android:textSize="@dimen/sp_11"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"

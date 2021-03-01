@@ -18,7 +18,7 @@
         android:elevation="15dp"
         android:orientation="vertical"
         app:buttonColor="@color/navigation_dms_button_nav_color_test"
-        app:buttonContainerBackgroundColor="@android:color/white"
+        app:buttonContainerBackgroundColor="@color/Unify_Static_White"
         app:buttonsHeight="56dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +27,6 @@
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
         app:navbarElevation="15dp"
-        app:viewPagerBackground="@android:color/white" />
+        app:viewPagerBackground="@color/Unify_Static_White" />
 
 </LinearLayout>
