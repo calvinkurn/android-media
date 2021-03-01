@@ -11,10 +11,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BaseResponseMapper
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,7 +28,7 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
 
     private var mFingerprintManager: FingerprintManager? = null
     private var mCacheManager: GraphqlCacheManager? = null
-    private var resultFlow: Channel<U> = Channel(Channel.BUFFERED)
+    private var results: MutableStateFlow<U?> = MutableStateFlow(null)
     var collectingResult: Boolean = false
 
     private fun initCacheManager() {
@@ -90,12 +89,12 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
         if (includeCache) {
             launch {
                 getCachedResponse(request)?.let {
-                    resultFlow.offer(it)
+                    results.emit(it)
                 }
             }
         }
         launch {
-            resultFlow.offer(getCloudResponse(request))
+            results.emit(getCloudResponse(request))
         }
         Unit
     }
@@ -111,5 +110,5 @@ open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
         }
     }
 
-    fun getResultFlow(): Flow<U> = resultFlow.consumeAsFlow()
+    fun getResultFlow(): StateFlow<U?> = results.asStateFlow()
 }

@@ -17,8 +17,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -109,7 +109,7 @@ class SellerHomeViewModel @Inject constructor(
         if (!collectingResult) {
             collectingResult = true
             launchCatchError(block = {
-                getResultFlow().collect {
+                getResultFlow().filterNotNull().collect {
                     withContext(dispatcher.main) {
                         liveData.value = Success(it)
                     }
