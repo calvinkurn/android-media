@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -7,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.FollowShop
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -15,7 +15,9 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class PostFollowPartnerUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<Boolean>() {
+class PostFollowPartnerUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<Boolean>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()
 

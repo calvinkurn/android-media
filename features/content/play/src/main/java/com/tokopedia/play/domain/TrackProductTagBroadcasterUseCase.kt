@@ -1,19 +1,21 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ProductTracking
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 07/01/21.
  */
-class TrackProductTagBroadcasterUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<Boolean>() {
+class TrackProductTagBroadcasterUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<Boolean>(graphqlRepository) {
 
     var params: Map<String, Any> = emptyMap()
 
