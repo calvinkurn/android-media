@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.search_map.di
 
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 import dagger.Component
 
 /**
@@ -10,4 +11,5 @@ import dagger.Component
         dependencies = [HotelComponent::class])
 @HotelSearchMapScope
 interface HotelSearchMapComponent {
+    fun inject(hotelSearchMapFragment: HotelSearchMapFragment)
 }

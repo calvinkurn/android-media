@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
-        <activity android:name=".search_map.presentation.activity.HotelSearchMapActivity"></activity>
         <activity
             android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_app_name"
@@ -34,6 +33,11 @@
             android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".search.presentation.activity.HotelSearchResultActivity"
+            android:label="@string/hotel_app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".search_map.presentation.activity.HotelSearchMapActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">

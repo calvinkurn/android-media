@@ -47,7 +47,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCiti
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -577,7 +577,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
         }
@@ -704,18 +704,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
         promo?.let {
-            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
-            when {
-                RouteManager.isSupportApplink(context, it.attribute.appUrl) -> {
-                    RouteManager.route(context, it.attribute.appUrl)
-                }
-                getRegisteredNavigation(context!!, it.attribute.appUrl).isNotEmpty() -> {
-                    RouteManager.route(context, getRegisteredNavigation(context!!, it.attribute.appUrl))
-                }
-                it.attribute.webUrl.isNotEmpty() -> {
-                    RouteManager.route(context, it.attribute.webUrl)
-                }
-                else -> {
+            context?.let {contextNotNull ->
+                trackingHotelUtil.hotelClickBanner(contextNotNull, it, position, HOMEPAGE_SCREEN_NAME)
+                when {
+                    RouteManager.isSupportApplink(contextNotNull, it.attribute.appUrl) -> {
+                        RouteManager.route(contextNotNull, it.attribute.appUrl)
+                    }
+                    getRegisteredNavigation(contextNotNull, it.attribute.appUrl).isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, getRegisteredNavigation(contextNotNull, it.attribute.appUrl))
+                    }
+                    it.attribute.webUrl.isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, it.attribute.webUrl)
+                    }
+                    else -> {
+                    }
                 }
             }
         }
