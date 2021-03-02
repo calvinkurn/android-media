@@ -13,11 +13,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static void onNewIntent(Context context, Intent intent) {
         if (intent != null &&
@@ -51,9 +53,34 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityResumed(Activity activity) {
         if (nfcAdapter != null) {
+            permissionCheckerHelper = new PermissionChecker();
             pendingIntent = PendingIntent.getActivity(activity, 0,
                     activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-            nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
+            permissionCheckerHelper.checkPermission(activity,
+                    PermissionCheckerHelper.PERMISSION_NFC,
+                    new PermissionCheckerHelper.PermissionCheckListener {
+                @Override
+                public void onPermissionDenied(permissionText: String) {
+                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                }
+
+                @Override
+                public void onNeverAskAgain(permissionText: String) {
+                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    try {
+                        nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
+                    } catch(SecurityException e){
+
+                    }
+                }
+            },
+            "Aplikasi ini membutuhkan izin untuk mengakses NFC"
+            );
+
         }
     }
 
