@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.view.Window.ID_ANDROID_CONTENT
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.R
@@ -24,7 +26,9 @@ import kotlin.math.abs
 /**
  * @author by furqan on 01/03/2021
  */
-class HotelSearchMapFragment : BaseDaggerFragment() {
+class HotelSearchMapFragment : BaseDaggerFragment(), OnMapReadyCallback {
+
+    private lateinit var googleMap: GoogleMap
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -37,6 +41,8 @@ class HotelSearchMapFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initLocationMap()
 
         setupContentPeekSize()
     }
@@ -88,6 +94,34 @@ class HotelSearchMapFragment : BaseDaggerFragment() {
             }
         }
         return 0
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        this.googleMap = map
+        setGoogleMap()
+    }
+
+    private fun setGoogleMap() {
+        if (::googleMap.isInitialized) {
+            googleMap.uiSettings.isMapToolbarEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isZoomGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = true
+            googleMap.uiSettings.isScrollGesturesEnabled = true
+
+            googleMap.setOnMapClickListener {
+                // do nothing
+            }
+        }
+    }
+
+    private fun initLocationMap() {
+        if (map_view != null) {
+            map_view.onCreate(null)
+            map_view.onResume()
+            map_view.getMapAsync(this)
+        }
+        setGoogleMap()
     }
 
     companion object {
