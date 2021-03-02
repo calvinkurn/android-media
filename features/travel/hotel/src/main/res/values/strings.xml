@@ -283,4 +283,11 @@
     <string name="hotel_cancellation_hyperlink_close_tag">&lt;&#47;hyperlink&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
+
+    <string name="hotel_search_map_coach_mark_map_title">Sekarang bisa cari pakai peta, lho!</string>
+    <string name="hotel_search_map_coach_mark_map_desc">Klik atau geser ke bawah di sini untuk lihat  hasil pencarian kamu dalam bentuk peta.</string>
+    <string name="hotel_search_map_coach_mark_list_title">Mau balik ke tampilan sebelumnya?</string>
+    <string name="hotel_search_map_coach_mark_list_desc">Gampang, tinggal geser ke atas dan tampilan peta bakal otomatis tertutup.</string>
+    <string name="hotel_search_map_coach_mark_filter_title">Mau sesuaikan pencarianmu?</string>
+    <string name="hotel_search_map_coach_mark_filter_desc">Urutkan dan pilih penginapan berdasarkan harga, bintang, atau kategori lainnya di sini.</string>
 </resources>
