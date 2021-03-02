@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
@@ -77,7 +78,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                             try {
                                 nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
                             } catch(SecurityException e){
-
+                                FirebaseCrashlytics.getInstance().recordException(e);
                             }
                         }
                     })
