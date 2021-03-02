@@ -82,7 +82,6 @@ object ShopPageHomeMapper {
             isHasOCCButton: Boolean,
             occButtonText: String = "",
     ) : ProductCardModel {
-        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -114,8 +113,7 @@ object ShopPageHomeMapper {
                     discountPercentage = discountPercentage,
                     slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                     formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                    ratingCount = shopHomeProductViewModel.rating.toInt(),
-                    reviewCount = totalReview,
+                    countSoldRating = shopHomeProductViewModel.rating.toString(),
                     freeOngkir = freeOngkirObject,
                     labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                         mapToProductCardLabelGroup(it)
@@ -248,7 +246,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
-            productList = mapToWidgetProductListItemViewModel(widgetResponse.data, isMyProduct)
+            productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -400,6 +398,32 @@ object ShopPageHomeMapper {
                 header.ratio,
                 header.isAtc
         )
+    }
+
+    private fun mapToWidgetProductListPersonalization(
+            data: List<ShopLayoutWidget.Widget.Data>,
+            isMyOwnProduct: Boolean
+    ) : List<ShopHomeProductUiModel> {
+        return data.map {
+            ShopHomeProductUiModel().apply {
+                id = it.productID
+                name = it.name
+                displayedPrice = it.displayPrice
+                originalPrice = it.originalPrice
+                discountPercentage = it.discountPercentage
+                imageUrl = it.imageUrl
+                rating = it.rating
+                isPo = it.isPO
+                isWishList = false
+                productUrl = it.productUrl
+                isSoldOut = it.isSoldOut
+                isShowWishList = !isMyOwnProduct
+                isShowFreeOngkir = it.isShowFreeOngkir
+                freeOngkirPromoIcon = it.freeOngkirPromoIcon
+                recommendationType = it.recommendationType
+                labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
+            }
+        }
     }
 
     private fun mapToWidgetProductListItemViewModel(

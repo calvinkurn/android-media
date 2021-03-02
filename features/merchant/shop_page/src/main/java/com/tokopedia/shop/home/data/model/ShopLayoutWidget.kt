@@ -116,7 +116,11 @@ data class ShopLayoutWidget(
                 @SerializedName("cashback")
                 val cashback: Int = -1,
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf(),
+                @SerializedName("recommendationType")
+                val recommendationType: String = ""
         ) {
             data class Banner(
                     @SerializedName("imageID")
@@ -163,11 +167,7 @@ data class ShopLayoutWidget(
                     @SerializedName("stockSoldPercentage")
                     val stockSoldPercentage: Float = 0f,
                     @SerializedName("labelGroups")
-                    val labelGroups: List<LabelGroup> = listOf(),
-                    @SerializedName("recommendationType")
-                    val recommendationType: String = "",
-                    @SerializedName("isTopads")
-                    val isTopAds: Boolean = false
+                    val labelGroups: List<LabelGroup> = listOf()
             ){
                 data class StockWording(
                         @SerializedName("title")
