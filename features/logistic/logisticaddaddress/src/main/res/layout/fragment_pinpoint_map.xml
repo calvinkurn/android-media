@@ -44,7 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <include layout="@layout/bottomsheet_getdistrict" />
+            <include
+                android:id="@+id/bottom_sheet_get_district"
+                layout="@layout/bottomsheet_getdistrict" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
