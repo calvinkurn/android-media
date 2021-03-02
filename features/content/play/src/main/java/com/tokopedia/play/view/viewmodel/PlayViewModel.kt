@@ -808,8 +808,9 @@ class PlayViewModel @Inject constructor(
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
         _observablePinnedMessage.value = pinnedInfo.pinnedMessage
         _observablePinnedProduct.value = pinnedInfo.pinnedProduct
-        if (pinnedInfo.pinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
-            _observableProductSheetContent.value = PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
+        _observableProductSheetContent.value = when (pinnedInfo.pinnedProduct.productTags) {
+            is PlayProductTagsUiModel.Incomplete -> PlayResult.Loading(showPlaceholder = true)
+            is PlayProductTagsUiModel.Complete -> PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
         }
     }
 
