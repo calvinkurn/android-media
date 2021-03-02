@@ -3,12 +3,13 @@ package com.tokopedia.catalog.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
+import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.factory.ProductTypeFactory
-import com.tokopedia.common_category.model.productModel.ProductListResponse
-import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.sortfilter.SortFilterItem
@@ -24,7 +25,7 @@ class CatalogDetailProductListingViewModel
                     var dynamicFilterUseCase: CatalogDynamicFilterUseCase,
                     var getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
-    val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
+    val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
     val mProductCount = MutableLiveData<String>()
     var mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
@@ -36,17 +37,17 @@ class CatalogDetailProductListingViewModel
     var quickFilterOptionList: List<Option> = ArrayList()
     var dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
 
-    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
+    var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.products.let { productList ->
-                            mProductList.value = Success((productList) as List<ProductsItem>)
+                        searchProduct.data.catalogProductItemList.let { productList ->
+                            mProductList.value = Success((productList) as List<CatalogProductItem>)
                         }
-                        mProductCount.value = searchProduct.totalData.toString()
+                        mProductCount.value = searchProduct.data.totalData.toString()
                     }
                 }
 

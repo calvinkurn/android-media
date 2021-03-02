@@ -5,35 +5,28 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
+import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.viewholder.products.CatalogListShimmerModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
-import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactory
-import com.tokopedia.common_category.factory.ProductTypeFactory
-import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.common_category.model.shimmer.BigListShimmerModel
-import com.tokopedia.common_category.model.shimmer.GridListShimmerModel
-import com.tokopedia.common_category.model.shimmer.ListShimmerModel
 import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 
-class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFactory,
-                                   private val visitables: ArrayList<Visitable<ProductTypeFactory>>,
+class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFactory,
+                                   private val visitables: ArrayList<Visitable<CatalogTypeFactory>>,
                                    private val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
-    private val listShimmerModel: ListShimmerModel by lazy { ListShimmerModel() }
-
-    private val gridShimmerModelGrid: GridListShimmerModel by lazy { GridListShimmerModel() }
-
-    private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
+    private val listShimmerModel: CatalogListShimmerModel by lazy { CatalogListShimmerModel() }
 
     private var currentDimension: String = ""
 
     private val defaultSortFilterMostAppropriate = "ob=23"
 
     val viewMap = HashMap<Int, Boolean>()
-    var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
-    var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
+    var viewedProductList = ArrayList<Visitable<CatalogTypeFactory>>()
+    var viewedTopAdsList = ArrayList<Visitable<CatalogTypeFactory>>()
     var isShimmer: Boolean = false
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
@@ -66,25 +59,14 @@ class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFa
         isShimmer = true
         val item = getShimmerItem()
         for (i in 0..5) {
-            this.visitables.add(item as Visitable<ProductTypeFactory>)
+            this.visitables.add(item as Visitable<CatalogTypeFactory>)
             notifyItemInserted(i)
         }
 
     }
 
-    private fun getShimmerItem(): Visitable<ProductTypeFactory> {
-        return when (getCurrentLayoutType()) {
-            CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
-                listShimmerModel
-            }
-
-            CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
-                gridShimmerModelGrid
-            }
-            CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
-                bigListShimmerModel
-            }
-        }
+    private fun getShimmerItem(): Visitable<CatalogTypeFactory> {
+        return listShimmerModel
     }
 
     fun isShimmerRunning(): Boolean {
@@ -105,15 +87,15 @@ class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFa
 
     fun addLoading() {
         val loadingModelPosition = this.visitables.size
-        this.visitables.add(loadingMoreModel as Visitable<ProductTypeFactory>)
+        this.visitables.add(loadingMoreModel as Visitable<CatalogTypeFactory>)
         notifyItemInserted(loadingModelPosition)
     }
 
     fun removeLoading() {
-        val loadingModelPosition = this.visitables.indexOf(loadingMoreModel as Visitable<ProductTypeFactory>)
+        val loadingModelPosition = this.visitables.indexOf(loadingMoreModel as Visitable<CatalogTypeFactory>)
 
         if (loadingModelPosition != -1) {
-            this.visitables.remove(loadingMoreModel as Visitable<ProductTypeFactory>)
+            this.visitables.remove(loadingMoreModel as Visitable<CatalogTypeFactory>)
             notifyItemRemoved(loadingModelPosition)
             notifyItemRangeChanged(loadingModelPosition, 1)
         }
@@ -127,8 +109,8 @@ class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFa
 
     fun updateWishlistStatus(productId: Int, isWishlisted: Boolean) {
         for (i in visitables.indices) {
-            if (visitables[i] is ProductsItem) {
-                val model = visitables[i] as ProductsItem
+            if (visitables[i] is CatalogProductItem) {
+                val model = visitables[i] as CatalogProductItem
                 if (productId == model.id) {
                     model.wishlist = isWishlisted
                     notifyItemChanged(i)
@@ -140,8 +122,8 @@ class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFa
 
     fun setWishlistButtonEnabled(productId: Int, isEnabled: Boolean) {
         for (i in visitables.indices) {
-            if (visitables[i] is ProductsItem) {
-                val model = visitables[i] as ProductsItem
+            if (visitables[i] is CatalogProductItem) {
+                val model = visitables[i] as CatalogProductItem
                 if (productId == model.id) {
                     model.isWishListEnabled = isEnabled
                     notifyItemChanged(i)
@@ -157,12 +139,12 @@ class CatalogProductNavListAdapter(private val productTypeFactory: ProductTypeFa
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
-                val item = visitables[position] as ProductsItem
+                val item = visitables[position] as CatalogProductItem
                 item.dimension = if (currentDimension.isNotEmpty()) currentDimension else defaultSortFilterMostAppropriate
                 item.adapter_position = position
 
                 if (item.isTopAds) {
-                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl, item.id?.toString() ?: "", item.name, item.imageURL)
+                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl, item.id.toString() ?: "", item.name, item.imageUrl)
                     viewedTopAdsList.add(item)
                 } else {
                     viewedProductList.add(item)

@@ -22,16 +22,19 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.listener.CatalogProductCardListener
+import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.ProductTypeFactory
-import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
@@ -46,7 +49,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
@@ -66,7 +68,7 @@ import javax.inject.Inject
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
-        ProductCardListener,
+        CatalogProductCardListener,
         WishListActionListener,
         SortFilterBottomSheet.Callback{
 
@@ -95,7 +97,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private var isPagingAllowed: Boolean = true
     private var pagingRowCount = 20
 
-    private lateinit var productTypeFactory: ProductTypeFactory
+    private lateinit var catalogTypeFactory: CatalogTypeFactory
 
     private lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
@@ -162,8 +164,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setUpAdapter() {
-        productTypeFactory = CatalogTypeFactoryImpl(this)
-        productNavListAdapter = CatalogProductNavListAdapter(productTypeFactory, viewModel.list, this)
+        catalogTypeFactory = CatalogTypeFactoryImpl(this)
+        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this)
         productNavListAdapter?.changeListView()
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getLinearLayoutManager()
@@ -219,7 +221,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        viewModel.list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
+                        viewModel.list.addAll(it.data as ArrayList<Visitable<CatalogTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         loadMoreTriggerListener?.updateStateAfterGetData()
@@ -441,7 +443,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
+    override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
 
         if (intent != null) {
@@ -459,13 +461,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 item.isTopAds)
     }
 
-    override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
+    override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {
 
     }
 
     /*********************************   WishList  ******************************/
 
-    override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
+    override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
         if (userSession.isLoggedIn) {
             disableWishListButton(productItem.id.toString())
             if (productItem.wishlist) {
@@ -478,7 +480,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    override fun onThreeDotsClicked(productItem: ProductsItem, position: Int) {
+    override fun onThreeDotsClicked(productItem: CatalogProductItem, position: Int) {
         onWishlistButtonClicked(productItem,position)
     }
 
@@ -506,7 +508,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {}
+    override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {}
 
     override fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
