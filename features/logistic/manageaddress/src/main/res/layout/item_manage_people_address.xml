@@ -69,7 +69,8 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/address_name"
             app:layout_constraintTop_toTopOf="@id/address_name"
-            app:layout_constraintBottom_toBottomOf="@+id/address_name"/>
+            app:layout_constraintBottom_toBottomOf="@+id/address_name"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/receiver_name"

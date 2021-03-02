@@ -384,7 +384,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
-          }
+            merchantVoucherSummary{
+                title{
+                    text
+                }
+                subtitle
+                imageURL
+                isShown
+            }
+        }
     }""".trimIndent()
     }
 
@@ -448,6 +456,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.restrictionInfo = restrictionInfo
             p2UiData.bebasOngkir = bebasOngkir
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
+            p2UiData.merchantVoucherSummary = merchantVoucherSummary
         }
         return p2UiData
     }

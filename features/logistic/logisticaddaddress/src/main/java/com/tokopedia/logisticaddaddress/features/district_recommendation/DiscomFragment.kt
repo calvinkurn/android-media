@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -16,21 +18,25 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
-import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
-import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -51,6 +57,8 @@ PopularCityAdapter.ActionListener {
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var dividerCurrLocation: View? = null
     private var isLocalization: Boolean? = null
+    private val REQUEST_LOCATION: Int = 288
+    private var hasRequestedLocation: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -112,9 +120,7 @@ PopularCityAdapter.ActionListener {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
-                    if (AddNewAddressUtils.isGpsEnabled(it.context)) {
-                        requestLocation()
-                    }
+                    requestPermissionLocation()
                 }
             }
             dividerCurrLocation?.visibility = View.VISIBLE
@@ -183,13 +189,13 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun onItemClicked(address: Address) {
-        setBackAddressResult(address, "", "")
+        setBackAddressResult(address)
         if (isLocalization == true) {
             ChooseAddressTracking.onClickSuggestionKotaKecamatan(userSession.userId)
         }
     }
 
-    private fun setBackAddressResult(address: Address, latitude: String, longitude: String) {
+    private fun setBackAddressResult(address: Address) {
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
@@ -201,8 +207,8 @@ PopularCityAdapter.ActionListener {
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, address.provinceId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.provinceName)
                 putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, address.zipCodes)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, latitude)
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, longitude)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, "")
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, "")
             }
             it.setResult(Activity.RESULT_OK, resultIntent)
             it.finish()
@@ -262,30 +268,47 @@ PopularCityAdapter.ActionListener {
         swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
-    fun requestLocation() {
-        activity?.let {
-            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+    fun requestPermissionLocation() {
+            permissionCheckerHelper?.checkPermissions(this, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
-                            permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                            context?.let { permissionCheckerHelper?.onPermissionDenied(it, permissionText) }
                         }
 
                         override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                            context?.let { permissionCheckerHelper?.onNeverAskAgain(it, permissionText) }
                         }
 
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
-                            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                                if (data != null) {
-                                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                                    setBackAddressResult(Address(), data.latitude.toString(), data.longitude.toString())
+                            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                                    if (data != null) {
+                                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                                        presenter.autoFill(data.latitude, data.longitude)
+                                    } else {
+                                        fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                                        createLocationCallback(), null)
+                                    }
                                 }
+                            } else {
+                                hasRequestedLocation = false
+                                showDialogAskGps()
                             }
                         }
 
-                    }, it.getString(R.string.rationale_need_location))
+                    }, getString(R.string.rationale_need_location))
+    }
+
+    fun createLocationCallback(): LocationCallback {
+        return object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                if (!hasRequestedLocation) {
+                    presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                    hasRequestedLocation = true
+                }
+            }
         }
     }
 
@@ -337,5 +360,72 @@ PopularCityAdapter.ActionListener {
     override fun onCityChipClicked(city: String) {
         ChooseAddressTracking.onClickChipsKotaPopuler(userSession.userId)
         searchInputView.searchText = city
+    }
+
+    override fun setResultDistrict(data: Data, lat: Double, long: Double) {
+        val arrayListZipCodes = arrayListOf<String>()
+        arrayListZipCodes.add(data.postalCode)
+        analytics?.gtmOnDistrictDropdownSelectionItemClicked(data.districtName)
+        activity?.let {
+            val resultIntent = Intent().apply {
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAutofillResponse(data))
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, data.districtId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, data.districtName)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, data.cityId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, "")
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, data.provinceId)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
+                putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, arrayListZipCodes)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, lat)
+                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, long)
+            }
+            it.setResult(Activity.RESULT_OK, resultIntent)
+            it.finish()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        var isAllowed = false
+        for (i in permissions.indices) {
+            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                isAllowed = true
+                break
+            }
+        }
+        if (isAllowed) {
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                    if (data != null) {
+                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                        presenter.autoFill(data.latitude, data.longitude)
+                    }
+                }
+            } else {
+                hasRequestedLocation = false
+                showDialogAskGps()
+            }
+        }
+    }
+
+    private fun showDialogAskGps() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.undetected_location))
+            dialog.setDescription(getString(R.string.undetected_location_desc_2))
+            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
+            dialog.setSecondaryCTAText(getString(R.string.btn_lain_kali))
+            dialog.setCancelable(true)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 }

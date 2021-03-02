@@ -107,6 +107,8 @@ include "features:promo:loyalty_common"
 include "features:promo:merchant_voucher"
 include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
+include "features:promo:promo_ui_common"
+include "features:promo:mvc_widget"
 
 include "features:top_ads:top_ads_dashboard"
 include "features:top_ads:top_ads_management"
@@ -123,6 +125,7 @@ include "features:top_ads:top_ads_headline"
 include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
+include "features:ordermanagement:snapshot"
 
 include "features:communication:push-notification-common"
 

@@ -18,7 +18,6 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -105,7 +104,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 lat = data.latitude,
                                 long = data.longitude,
                                 label = data.addressName,
-                                postalCode = data.postalCode.toString()
+                                postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -217,6 +216,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * We need Object Host Fragment to get viewmodel
          */
         fun getLocalizingAddressHostFragment(): Fragment
+
 
         /**
          * String Source of Host Page

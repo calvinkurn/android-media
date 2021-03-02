@@ -1,8 +1,9 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
+import com.tokopedia.mvcwidget.ResultStatus
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
@@ -164,14 +165,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), null, true, null, null, null))
 
             viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
 
@@ -182,11 +177,31 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check getNewMerchantVoucher is null and throw an exception`() {
+    fun `check getNewMerchantVoucher is null`() {
         runBlocking {
 
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "123", listOf("not success"), null, null), null, false, null, null, null))
+
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value == null)
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(null)
+
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value == null)
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
             } throws Exception()
 
             viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
@@ -216,14 +231,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
 
             // shop featured product use case
             coEvery {
@@ -268,7 +278,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             getShopEtalaseByShopUseCase.clearCache()
             getShopFeaturedProductUseCase.clearCache()
             getShopProductUseCase.clearCache()
-            getMerchantVoucherListUseCase.clearCache()
             deleteShopInfoUseCase.executeSync()
         }
     }
@@ -386,14 +395,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -450,14 +453,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
 
             // shop featured product use case
             coEvery {
@@ -514,14 +512,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -578,14 +570,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -640,14 +626,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -704,14 +684,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
 
             // shop featured product use case
             coEvery {
@@ -768,14 +743,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             // merchant voucher use case
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -964,6 +933,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     private fun verifyGetMerchantVoucerUseCaseCalled() {
-        coVerify { getMerchantVoucherListUseCase.createObservable(any()) }
+        coVerify { mvcSummaryUseCase.getResponse(any())}
     }
 }

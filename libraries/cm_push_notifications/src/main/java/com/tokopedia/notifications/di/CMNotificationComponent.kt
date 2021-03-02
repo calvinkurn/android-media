@@ -10,7 +10,7 @@ import dagger.Component
 @CMNotificationScope
 @Component(modules = [
     GraphQueryModule::class,
-    NotificationModule::class,
+    NotificationModule::class
 ], dependencies = [BaseAppComponent::class])
 interface CMNotificationComponent {
     fun inject(broadcast: CMBroadcastReceiver)
