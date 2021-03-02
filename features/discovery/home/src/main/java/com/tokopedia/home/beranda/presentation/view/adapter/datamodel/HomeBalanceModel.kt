@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel
 
+import android.os.Bundle
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
@@ -14,9 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDra
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
-import android.os.Bundle
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
 data class HomeBalanceModel (
         val balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
