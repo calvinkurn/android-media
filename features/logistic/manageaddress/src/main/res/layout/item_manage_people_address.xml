@@ -165,7 +165,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_secondary"
-            android:layout_width="@dimen/dp_40"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_10"
             app:layout_constraintStart_toEndOf="@id/btn_primary"

@@ -282,10 +282,10 @@ PopularCityAdapter.ActionListener {
 
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
+                            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                             if (AddNewAddressUtils.isGpsEnabled(context)) {
                                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                                     if (data != null) {
-                                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                                         presenter.autoFill(data.latitude, data.longitude)
                                     } else {
                                         fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
@@ -396,10 +396,10 @@ PopularCityAdapter.ActionListener {
             }
         }
         if (isAllowed) {
+            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
             if (AddNewAddressUtils.isGpsEnabled(context)) {
                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                     if (data != null) {
-                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                         presenter.autoFill(data.latitude, data.longitude)
                     }
                 }
@@ -407,6 +407,8 @@ PopularCityAdapter.ActionListener {
                 hasRequestedLocation = false
                 showDialogAskGps()
             }
+        } else {
+            ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
         }
     }
 
