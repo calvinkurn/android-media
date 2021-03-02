@@ -20,7 +20,8 @@ import com.tokopedia.usecase.RequestParams
 class GetLineGraphDataUseCase(
         gqlRepository: GraphqlRepository,
         lineGraphMapper: LineGraphMapper
-) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(gqlRepository, lineGraphMapper, true, GetLineGraphDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
+        gqlRepository, lineGraphMapper, GetLineGraphDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

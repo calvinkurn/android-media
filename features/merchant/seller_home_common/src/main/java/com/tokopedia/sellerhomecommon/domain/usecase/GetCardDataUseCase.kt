@@ -20,7 +20,8 @@ import com.tokopedia.usecase.RequestParams
 class GetCardDataUseCase(
         gqlRepository: GraphqlRepository,
         cardMapper: CardMapper
-) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(gqlRepository, cardMapper, true, GetCardDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(
+        gqlRepository, cardMapper, GetCardDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -15,7 +15,8 @@ import com.tokopedia.usecase.RequestParams
 class GetTickerUseCase(
         gqlRepository: GraphqlRepository,
         mapper: TickerMapper
-) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(gqlRepository, mapper, true, GetTickerResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(
+        gqlRepository, mapper, GetTickerResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

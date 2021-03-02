@@ -17,7 +17,8 @@ import com.tokopedia.usecase.RequestParams
 class GetTableDataUseCase(
         graphqlRepository: GraphqlRepository,
         mapper: TableMapper
-) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(graphqlRepository, mapper, true, GetTableDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(
+        graphqlRepository, mapper, GetTableDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

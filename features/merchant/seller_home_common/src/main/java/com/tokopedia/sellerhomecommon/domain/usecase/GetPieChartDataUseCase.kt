@@ -7,7 +7,6 @@ import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -18,7 +17,8 @@ import com.tokopedia.usecase.RequestParams
 class GetPieChartDataUseCase(
         gqlRepository: GraphqlRepository,
         mapper: PieChartMapper
-) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(gqlRepository, mapper, true, GetPieChartDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(
+        gqlRepository, mapper, GetPieChartDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

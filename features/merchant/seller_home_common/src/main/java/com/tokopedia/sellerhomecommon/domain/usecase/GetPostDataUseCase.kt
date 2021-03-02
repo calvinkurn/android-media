@@ -20,7 +20,8 @@ import com.tokopedia.usecase.RequestParams
 class GetPostDataUseCase(
         gqlRepository: GraphqlRepository,
         postMapper: PostMapper
-) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(gqlRepository, postMapper, true, GetPostDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(
+        gqlRepository, postMapper, GetPostDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

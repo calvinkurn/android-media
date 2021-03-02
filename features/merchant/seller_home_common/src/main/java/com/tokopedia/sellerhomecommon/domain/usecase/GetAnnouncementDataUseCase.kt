@@ -16,7 +16,8 @@ import com.tokopedia.usecase.RequestParams
 class GetAnnouncementDataUseCase(
         gqlRepository: GraphqlRepository,
         mapper: AnnouncementMapper
-) : CloudAndCacheGraphqlUseCase<GetAnnouncementDataResponse, List<AnnouncementDataUiModel>>(gqlRepository, mapper, true, GetAnnouncementDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetAnnouncementDataResponse, List<AnnouncementDataUiModel>>(
+        gqlRepository, mapper, GetAnnouncementDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -18,7 +18,8 @@ import com.tokopedia.usecase.RequestParams
 class GetProgressDataUseCase constructor(
         graphqlRepository: GraphqlRepository,
         progressMapper: ProgressMapper
-) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(graphqlRepository, progressMapper, true, GetProgressDataResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(
+        graphqlRepository, progressMapper, GetProgressDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

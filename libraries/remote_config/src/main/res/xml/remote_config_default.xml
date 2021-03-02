@@ -514,6 +514,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>seller_home_dashboard_enable_new_cache</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>app_enable_video_pdp</key>
         <value>true</value>
     </entry>

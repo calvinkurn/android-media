@@ -9,7 +9,6 @@ import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
-import com.tokopedia.sellerhomecommon.domain.model.MultiTrendlineWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -20,7 +19,8 @@ import com.tokopedia.usecase.RequestParams
 class GetMultiLineGraphUseCase (
         gqlRepository: GraphqlRepository,
         mapper: MultiLineGraphMapper
-): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(gqlRepository, mapper, true, GetMultiLineGraphResponse::class.java, QUERY, false) {
+): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(
+        gqlRepository, mapper, GetMultiLineGraphResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -20,7 +19,8 @@ import com.tokopedia.usecase.RequestParams
 class GetLayoutUseCase(
         gqlRepository: GraphqlRepository,
         mapper: LayoutMapper
-) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(gqlRepository, mapper, true, GetLayoutResponse::class.java, QUERY, false) {
+) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
+        gqlRepository, mapper, GetLayoutResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

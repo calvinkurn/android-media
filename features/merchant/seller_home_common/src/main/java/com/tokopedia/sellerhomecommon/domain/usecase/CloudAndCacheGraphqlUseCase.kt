@@ -1,13 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.FingerprintManager
-import com.tokopedia.graphql.GraphqlCacheManager
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BaseResponseMapper
 import com.tokopedia.usecase.RequestParams
@@ -17,9 +11,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
+abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
         protected val graphqlRepository: GraphqlRepository,
         protected val mapper: BaseResponseMapper<R, U>,
         private val classType: Class<R>,
