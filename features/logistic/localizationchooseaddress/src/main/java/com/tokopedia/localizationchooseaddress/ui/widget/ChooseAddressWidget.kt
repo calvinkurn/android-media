@@ -118,14 +118,14 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun checkRollence(){
-        val value = ChooseAddressUtils.isRollOutUser()
+        val value = ChooseAddressUtils.isRollOutUser(context)
         value.let { chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(it) }
     }
 
     fun updateWidget(){
          val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
-            textChosenAddress?.text = context.getString(R.string.txt_label_default)
+            textChosenAddress?.text = data.label
         } else {
             val label = context.getString(R.string.txt_send_to, data?.label)
             textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
@@ -142,7 +142,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         localData?.let { chooseAddressPref?.setLocalCache(it) }
         updateWidget()
-        if (localData?.city_id?.isEmpty() == true) {
+        if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
         }
     }
