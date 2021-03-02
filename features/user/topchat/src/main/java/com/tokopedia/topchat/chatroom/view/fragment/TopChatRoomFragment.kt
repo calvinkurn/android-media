@@ -920,7 +920,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
-            startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
+            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
 
