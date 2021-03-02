@@ -316,6 +316,12 @@ class ShopPageFragment :
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageHeaderContentConstraintLayout = view.findViewById(R.id.shop_page_header_content)
+        swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
+        swipeToRefresh?.apply {
+            if (!isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+        }
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
@@ -638,12 +644,6 @@ class ShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
-            swipeToRefresh?.apply {
-                if (!isRefreshing) {
-                    setViewState(VIEW_LOADING)
-                }
-            }
             initViews(view)
         }
     }
