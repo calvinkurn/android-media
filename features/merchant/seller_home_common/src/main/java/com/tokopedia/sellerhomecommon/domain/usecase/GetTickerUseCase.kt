@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,9 +15,10 @@ import com.tokopedia.usecase.RequestParams
 
 class GetTickerUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: TickerMapper
+        mapper: TickerMapper,
+        dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(
-        gqlRepository, mapper, GetTickerResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetTickerResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -17,9 +18,10 @@ import com.tokopedia.usecase.RequestParams
 
 class GetBarChartDataUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: BarChartMapper
+        mapper: BarChartMapper,
+        dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetBarChartDataResponse, List<BarChartDataUiModel>>(
-        gqlRepository, mapper, GetBarChartDataResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetBarChartDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

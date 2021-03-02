@@ -146,7 +146,7 @@ class SellerHomeViewModel @Inject constructor(
                     executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
                 }
             } else {
-                getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+                getTickerUseCase.get().params = params
                 getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
             }
         }, onError = {

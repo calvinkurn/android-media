@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -19,9 +20,10 @@ import com.tokopedia.usecase.RequestParams
 
 class GetLineGraphDataUseCase(
         gqlRepository: GraphqlRepository,
-        lineGraphMapper: LineGraphMapper
+        lineGraphMapper: LineGraphMapper,
+        dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
-        gqlRepository, lineGraphMapper, GetLineGraphDataResponse::class.java, QUERY, false) {
+        gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

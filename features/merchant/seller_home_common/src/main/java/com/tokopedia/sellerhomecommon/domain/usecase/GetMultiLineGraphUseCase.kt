@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -18,9 +19,10 @@ import com.tokopedia.usecase.RequestParams
 
 class GetMultiLineGraphUseCase (
         gqlRepository: GraphqlRepository,
-        mapper: MultiLineGraphMapper
+        mapper: MultiLineGraphMapper,
+        dispatchers: CoroutineDispatchers
 ): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(
-        gqlRepository, mapper, GetMultiLineGraphResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetMultiLineGraphResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

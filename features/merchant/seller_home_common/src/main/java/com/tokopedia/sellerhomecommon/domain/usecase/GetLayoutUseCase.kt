@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -18,9 +19,10 @@ import com.tokopedia.usecase.RequestParams
 
 class GetLayoutUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: LayoutMapper
+        mapper: LayoutMapper,
+        dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
-        gqlRepository, mapper, GetLayoutResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
