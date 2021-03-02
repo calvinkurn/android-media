@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,6 +20,6 @@ abstract class HotelSearchMapViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(HotelSearchResultViewModel::class)
+    @ViewModelKey(HotelSearchMapViewModel::class)
     internal abstract fun hotelSearchMapResultViewModel(viewModel: HotelSearchMapViewModel): ViewModel
 }
