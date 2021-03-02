@@ -1,21 +1,31 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.ID_ANDROID_CONTENT
 import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -56,6 +66,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     var searchDestinationName = ""
     var searchDestinationType = ""
 
+    var allMarker: List<Marker> = listOf()
+
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
@@ -66,8 +78,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         getComponent(HotelSearchMapComponent::class.java).inject(this)
     }
 
-    private fun initRecyclerViewMap(){
-        recyclerViewCardList = view!!.findViewById(R.id.recycler_view_map)
+    private fun initRecyclerViewMap(view: View){
+        recyclerViewCardList = view.findViewById(R.id.recycler_view_map)
+        adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
+
+        recyclerViewCardList.adapter = adapterCardList
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewCardList.layoutManager = linearLayoutManager
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +104,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner,  {
+        hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
             }
@@ -99,7 +116,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerViewMap()
+
+        initRecyclerViewMap(view)
+
+        showLoadingCardListMap()
 
         initLocationMap()
 
@@ -160,7 +180,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-
     override fun onItemClicked(property: Property, position: Int) {
         with(hotelSearchMapViewModel.searchParam) {
             context?.run {
@@ -208,9 +227,51 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
+    private fun addMarker(latitude: Double, longitude: Double) {
+        val latLng = LatLng(latitude, longitude)
+
+        context?.run {
+            googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(this, getPin(HOTEL_PRICE_INACTIVE_PIN)))
+                    .draggable(false))
+        }
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable?.run {
+                drawable = DrawableCompat.wrap(this).mutate()
+            }
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 0,
+                drawable?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable?.setBounds(0, 0, canvas.width, canvas.height)
+        drawable?.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    private fun getPin(markerType: String): Int{
+        return when(markerType){
+            MY_LOCATION_PIN -> R.drawable.ic_get_location
+            HOTEL_PRICE_ACTIVE_PIN -> R.drawable.ic_hotel_price_active
+            HOTEL_PRICE_INACTIVE_PIN -> R.drawable.ic_hotel_price_inactive
+            else -> R.drawable.ic_get_location
+        }
+    }
+
     private fun onSuccessGetResult(data: PropertySearch) {
         val searchProperties = data.properties
         renderCardListMap(searchProperties)
+        renderList(searchProperties)
+
+        searchProperties.forEach {
+            addMarker(it.location.latitude.toDouble(),it.location.longitude.toDouble())
+            Log.d("Sukses",it.location.latitude.toString() + it.location.longitude.toString())
+        }
         /** add marker*/
     }
 
@@ -229,17 +290,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         val dataCollection = mutableListOf<Visitable<*>>()
         dataCollection.addAll(listProperty)
-
-        adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
-
-        recyclerViewCardList.adapter = adapter
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewCardList.layoutManager = linearLayoutManager
         adapterCardList.renderList(dataCollection)
     }
 
     companion object {
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
+
+        private const val MY_LOCATION_PIN = "MY LOCATION"
+        private const val HOTEL_PRICE_ACTIVE_PIN = "HOTEL PRICE ACTIVE"
+        private const val HOTEL_PRICE_INACTIVE_PIN = "HOTEL PRICE INACTIVE"
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
