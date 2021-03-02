@@ -1,4 +1,4 @@
-package com.tokopedia.logger.model
+package com.tokopedia.logger.model.scalyr
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

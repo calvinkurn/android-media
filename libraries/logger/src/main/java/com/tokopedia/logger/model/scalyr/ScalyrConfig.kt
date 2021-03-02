@@ -1,4 +1,4 @@
-package com.tokopedia.logger.model
+package com.tokopedia.logger.model.scalyr
 
 data class ScalyrConfig(
         val token: String = "",

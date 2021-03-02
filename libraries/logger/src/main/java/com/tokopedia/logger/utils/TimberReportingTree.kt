@@ -3,6 +3,7 @@ package com.tokopedia.logger.utils
 import android.os.Build
 import android.util.Log
 import com.tokopedia.logger.LogManager
+import com.tokopedia.logger.common.LoggerException
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,23 +38,31 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
         globalScopeLaunch({
             val timeStamp = System.currentTimeMillis()
+
+            val loggerExceptionData = (t as? LoggerException)
+            val priority = loggerExceptionData?.priority
+            val tagKey = loggerExceptionData?.tag.orEmpty()
+            val data = loggerExceptionData?.dataException
+
             if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
                 return@globalScopeLaunch
             }
-            if (!message.startsWith(PREFIX) || tags.isEmpty()) {
+            if (priority?.startsWith(PREFIX) == false || tags.isEmpty()) {
                 return@globalScopeLaunch
             }
-            val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
-            if (messageSplit.size < SIZE_MESSAGE) {
+//            val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
+            if ((data?.size ?: 0) < SIZE_MESSAGE) {
                 return@globalScopeLaunch
             }
-            val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
-            val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
-            tagMaps[messageKey]?.let {
+//            val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
+//            val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
+            tagMaps[tagKey]?.let {
                 val priority = it.postPriority
                 val classLine = tag ?: ""
-                val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
-                LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
+//                val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
+//                val processedMessage = getMessage(tagKey, timeStamp, classLine, replaceNewline(messageToBeSend))
+
+//                LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
             }
         })
     }

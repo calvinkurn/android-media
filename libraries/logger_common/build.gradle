@@ -17,25 +17,19 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
 
-    implementation project(rootProject.ext.libraries.encryption)
-    implementation project(rootProject.ext.libraries.logger_common)
+    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.workManager
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    implementation rootProject.ext.dbDependencies.dbRoomKtx
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
-    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito
 }
 
 project.ext {
-    artifactId = 'logger'
+    artifactId = 'logger-common'
     groupId = 'com.tokopedia.library'
     versionName = "0.0.2"
-    artifactName = "logger-release"
+    artifactName = "logger_common-release"
 }
 
 apply from: '../../publish_local.gradle'

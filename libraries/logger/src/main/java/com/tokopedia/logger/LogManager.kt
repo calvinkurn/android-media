@@ -5,7 +5,7 @@ import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
-import com.tokopedia.logger.model.ScalyrConfig
+import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
 import com.tokopedia.logger.utils.Constants

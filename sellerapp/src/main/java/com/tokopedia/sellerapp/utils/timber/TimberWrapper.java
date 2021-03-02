@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
-import com.tokopedia.logger.model.ScalyrConfig;
+import com.tokopedia.logger.model.scalyr.ScalyrConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
 import com.tokopedia.logger.utils.LoggerUtils;
 import com.tokopedia.logger.utils.TimberReportingTree;

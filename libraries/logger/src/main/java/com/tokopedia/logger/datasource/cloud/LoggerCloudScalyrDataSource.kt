@@ -1,10 +1,10 @@
 package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
-import com.tokopedia.logger.model.ScalyrBody
-import com.tokopedia.logger.model.ScalyrConfig
-import com.tokopedia.logger.model.ScalyrEvent
-import com.tokopedia.logger.model.ScalyrSessionInfo
+import com.tokopedia.logger.model.scalyr.ScalyrBody
+import com.tokopedia.logger.model.scalyr.ScalyrConfig
+import com.tokopedia.logger.model.scalyr.ScalyrEvent
+import com.tokopedia.logger.model.scalyr.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

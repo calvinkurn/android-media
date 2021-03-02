@@ -39,6 +39,7 @@ include "libraries:kotlin_extensions"
 include "libraries:liveness_lib"
 include 'libraries:locationmanager'
 include "libraries:logger"
+include "libraries:logger_common"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
