@@ -9,10 +9,7 @@ query notifcenter_notifOrderList(
       text
       counter
       link {
-        desktop_link
-        mobile_link
         android_link
-        ios_link
       }
     }
   }

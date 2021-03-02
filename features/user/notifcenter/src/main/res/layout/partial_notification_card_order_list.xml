@@ -11,13 +11,16 @@
     tools:parentTag="android.widget.LinearLayout">
 
     <ImageView
+        android:id="@+id/iv_order_icon"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/unify_space_4"
+        android:scaleType="fitCenter"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_order_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -29,6 +32,7 @@
         tools:text="Transaksi berlangsung" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
