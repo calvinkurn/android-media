@@ -80,7 +80,7 @@ class SellerHomeNavigator(
                     transaction
                             .remove(currentFragment)
                             .add(R.id.sahContainer, selectedPage, currentTag)
-                            .commit()
+                            .commitNowAllowingStateLoss()
                 }
 
                 setSelectedPage(type)
@@ -169,7 +169,7 @@ class SellerHomeNavigator(
 
         showOnlySelectedFragment(transaction, fragmentByTag)
 
-        transaction.commit()
+        transaction.commitNowAllowingStateLoss()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
