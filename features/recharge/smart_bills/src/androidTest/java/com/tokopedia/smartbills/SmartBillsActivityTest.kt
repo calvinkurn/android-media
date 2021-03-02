@@ -70,6 +70,7 @@ class SmartBillsActivityTest {
     fun validateSmartBills() {
         Thread.sleep(3000)
         validate_onboarding()
+        validate_tooltip()
         validate_bill_selection()
         validate_bill_detail()
 
@@ -87,6 +88,15 @@ class SmartBillsActivityTest {
             onView(ViewMatchers.withText(R.string.smart_bills_onboarding_title_3)).check(ViewAssertions.matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
         }
+    }
+
+    private fun validate_tooltip(){
+        Thread.sleep(2000)
+        onView(withId(R.id.action_menu_tooltip)).check(ViewAssertions.matches(isDisplayed()))
+                .perform(click())
+        onView(withId(R.id.btn_tooltip_sbm)).check(ViewAssertions.matches(isDisplayed()))
+                .perform(click())
+        onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
     private fun validate_bill_selection() {
