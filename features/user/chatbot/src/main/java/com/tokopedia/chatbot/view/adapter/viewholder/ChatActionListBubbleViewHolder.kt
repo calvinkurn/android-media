@@ -1,6 +1,9 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +14,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
+import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -23,7 +27,21 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     private val adapter: ChatActionBubbleAdapter
     private var model: ChatActionSelectionBubbleViewModel? = null
     private var chatActionListSelection: RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
+    private var chatActionListSelectionContainer: LinearLayout = itemView.findViewById<LinearLayout>(R.id.chat_action_bubble_selection_container)
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
+
+    private val bg = ViewUtil.generateBackgroundWithShadow(
+            chatActionListSelectionContainer,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+    )
 
     init {
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
@@ -37,9 +55,14 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
         super.bind(viewModel)
+        bindBackgroundrv()
         ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
         model = viewModel
         adapter.setDataList(viewModel.chatActionList)
+    }
+
+    private fun bindBackgroundrv() {
+        chatActionListSelectionContainer.setMybg(bg)
     }
 
     override fun onChatActionSelected(selected: ChatActionBubbleViewModel) {
@@ -59,4 +82,13 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
         @LayoutRes
         val LAYOUT = R.layout.item_chat_action_bubble_selection_list
     }
+}
+
+private fun View.setMybg(bg: Drawable?) {
+    val pl = paddingLeft
+    val pt = paddingTop
+    val pr = paddingRight
+    val pb = paddingBottom
+    setBackground(bg)
+    setPadding(pl, pt, pr, pb)
 }

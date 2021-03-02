@@ -271,8 +271,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
-                adapter
+                adapter,
+                onChatMenuButtonClicked
         )
+    }
+
+    val onChatMenuButtonClicked: () -> Unit = {
+        activity?.let {
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
+            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+        }
     }
 
     private fun showTicker() {
@@ -337,15 +347,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
-    }
-
-    private fun onAttachImageClicked() {
-        activity?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
-            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
-        }
     }
 
     override fun loadInitialData() {
@@ -761,10 +762,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return listOf(
                 ImageMenu()
         )
-    }
-
-    override fun onClickAttachImage(menu: AttachmentMenu) {
-        onAttachImageClicked()
     }
 
     override fun showErrorToast(it: Throwable) {

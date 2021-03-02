@@ -111,19 +111,6 @@
             tools:visibility="visible">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_template"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_16"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:orientation="horizontal"
-                tools:scrollbars="horizontal" />
-
-            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_quick_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -133,14 +120,12 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:visibility="gone" />
 
-            <include layout="@layout/layout_product_preview" />
-
             <RelativeLayout
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16">
 
@@ -153,7 +138,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_chat_common_send_grey" />
+                    app:srcCompat="@drawable/ic_chatbot_send" />
 
                 <EditText
                     android:id="@+id/new_comment"
@@ -193,7 +178,7 @@
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
                         android:padding="@dimen/dp_8"
-                        app:srcCompat="@drawable/ic_add_grey_chat_common" />
+                        app:srcCompat="@drawable/ic_add_attachment_chatbot" />
                 </FrameLayout>
             </RelativeLayout>
 

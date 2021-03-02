@@ -61,7 +61,6 @@ object ChatbotMessageViewHolderBinder {
             checkMark.show()
             val imageResource = when {
                 element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey
-                !element.isRead -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_sent_rounded_grey
                 else -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_read_rounded_green
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)

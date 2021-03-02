@@ -16,12 +16,15 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_6"
         android:paddingBottom="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
         android:gravity="center"
         android:background="@drawable/chat_bot_chat_divider_background"
         tools:text="Kamu bisa tutup halaman ini  cek balasan Tim CS dalam [SLA] lewat Pesan Bantuan di Inbox. [Timestamp]"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

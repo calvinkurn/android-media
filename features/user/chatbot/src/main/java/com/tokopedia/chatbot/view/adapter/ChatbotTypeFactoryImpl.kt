@@ -6,11 +6,9 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.TypingChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
@@ -120,8 +118,13 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(typingViewModel: TypingChatModel): Int {
+        return ChatBotTypingChatViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
             ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)

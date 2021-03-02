@@ -50,7 +50,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            typingListener: TypingListener,
                            attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
-                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
+                           private val onChatMenuButtonClicked: () -> Unit
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -309,6 +310,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         } else {
             action.hide()
             notifier.hide()
+        }
+    }
+
+    override fun setupChatMenu() {
+        chatMenuButton.setOnClickListener {
+            onChatMenuButtonClicked.invoke()
         }
     }
 

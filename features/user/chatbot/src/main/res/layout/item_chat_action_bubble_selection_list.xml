@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <LinearLayout
         android:id="@+id/chat_action_bubble_selection_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             tools:itemCount="2"
             tools:listitem="@layout/item_chat_helpfull" />
-    </com.tokopedia.unifycomponents.CardUnify>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

@@ -3,14 +3,18 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 
 class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
     : ImageUploadViewHolder(itemView, listener) {
@@ -21,21 +25,8 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun getProgressBarSendImageId() = R.id.progress_bar
     override fun getLeftActionId() = R.id.left_action
     override fun getChatBalloonId() = R.id.fl_image_container
+    override fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
 
-    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            getStrokeWidthSenderDimenRes()
-    )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
@@ -51,7 +42,7 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             getStrokeWidthSenderDimenRes()
     )
 
-    private val attachmentUnify get() = attachment as? ImageUnify
+//    private val attachmentUnify get() = attachment as? ImageUnify
 
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
@@ -59,16 +50,12 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun bind(element: ImageUploadViewModel?) {
         if (element == null) return
         super.bind(element)
-        bindChatReadStatus(element)
-        bindBackground(element)
+        chatStatus?.let { bindChatReadStatus(element, it) }
+        bindBackground()
     }
 
-    private fun bindBackground(element: ImageUploadViewModel) {
-        if (element.isSender) {
+    private fun bindBackground() {
             chatBalloon?.background = bgSender
-        } else {
-            chatBalloon?.background = bgOpposite
-        }
     }
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
@@ -80,12 +67,38 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let {
-            ImageHandler.LoadImage(attachmentUnify, it)
+            attachment?.let { it1 -> LoadImage(it1, it) }
         }
     }
 
     fun getStrokeWidthSenderDimenRes(): Int {
         return R.dimen.dp_topchat_3
+    }
+
+    fun LoadImage(imageview: ImageView, url: String?) {
+        if (imageview.context != null) {
+            Glide.with(imageview.context)
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(R.drawable.chatbot_image_placeloader)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                    .into(imageview)
+        }
+    }
+
+    private fun bindChatReadStatus(element: ImageUploadViewModel, checkMark: ImageView) {
+        if (element.isShowTime && element.isSender) {
+            checkMark.show()
+            val imageResource = when {
+                element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey
+                else -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_read_rounded_green
+            }
+            val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
+            checkMark.setImageDrawable(drawable)
+        } else {
+            checkMark.gone()
+        }
     }
 
     companion object {
