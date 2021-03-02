@@ -154,6 +154,9 @@ class AccountHeaderViewHolder(itemView: View,
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
                 tvOvo.text = element.saldo
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+            } else if(element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty()){
+                tvOvo.text = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
+                usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
             } else {
                 tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
                 if (element.ovoSaldo.isNotEmpty()) {

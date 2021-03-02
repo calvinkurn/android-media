@@ -7,6 +7,7 @@ import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,7 @@ class AccountHeaderMapper (
 
     fun mapToHeaderModel(userPojo: UserPojo?,
                          walletBalanceModel: WalletBalanceModel?,
+                         tokopointsStatusFilteredPojo: TokopointsStatusFilteredPojo?,
                          saldoPojo: SaldoPojo?,
                          userMembershipPojo: MembershipPojo?,
                          shopInfoPojo: ShopInfoPojo?,
@@ -38,6 +40,12 @@ class AccountHeaderMapper (
                     data.setWalletData(
                             ovo = it.cashBalance,
                             point = it.pointBalance)
+                }
+                tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
+                    data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
+                    data.setUserBadge(
+                            badge = it.statusFilteredData.tier.imageURL
+                    )
                 }
                 saldoPojo?.let {
                     data.setSaldoData(
