@@ -32,9 +32,6 @@ class PushController(val context: Context) : CoroutineScope {
     fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {
             val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
-            if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
-                IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
-            }
             handleNotificationBundle(baseNotificationModel, isAmplification)
         } catch (e: Exception) {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
