@@ -20,7 +20,7 @@ class GetPieChartDataUseCase(
         mapper: PieChartMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetPieChartDataResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetPieChartDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

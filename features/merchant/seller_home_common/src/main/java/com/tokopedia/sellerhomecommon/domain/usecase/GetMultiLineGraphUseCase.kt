@@ -22,7 +22,7 @@ class GetMultiLineGraphUseCase (
         mapper: MultiLineGraphMapper,
         dispatchers: CoroutineDispatchers
 ): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetMultiLineGraphResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetMultiLineGraphResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

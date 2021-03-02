@@ -21,7 +21,7 @@ class GetBarChartDataUseCase(
         mapper: BarChartMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetBarChartDataResponse, List<BarChartDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetBarChartDataResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetBarChartDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

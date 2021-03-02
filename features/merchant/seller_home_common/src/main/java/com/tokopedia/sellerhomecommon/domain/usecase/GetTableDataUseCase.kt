@@ -20,7 +20,7 @@ class GetTableDataUseCase(
         mapper: TableMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(
-        graphqlRepository, mapper, dispatchers, GetTableDataResponse::class.java, QUERY, false) {
+        graphqlRepository, mapper, dispatchers, GetTableDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -23,7 +23,7 @@ class GetCarouselDataUseCase(
         mapper: CarouselMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCarouselDataResponse, List<CarouselDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetCarouselDataResponse::class.java, QUERY, false) {
+        gqlRepository, mapper, dispatchers, GetCarouselDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

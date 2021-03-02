@@ -23,7 +23,7 @@ class GetLineGraphDataUseCase(
         lineGraphMapper: LineGraphMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
-        gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataResponse::class.java, QUERY, false) {
+        gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -23,7 +23,7 @@ class GetCardDataUseCase(
         cardMapper: CardMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(
-        gqlRepository, cardMapper, dispatchers, GetCardDataResponse::class.java, QUERY, false) {
+        gqlRepository, cardMapper, dispatchers, GetCardDataResponse::class.java, QUERY, true) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
