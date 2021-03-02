@@ -15,6 +15,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.KEY_PRODUCT_DETAIL
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -37,7 +38,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
         const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
-        const val KEY_PRODUCT_DETAIL = "product detail"
     }
 
     @Inject

@@ -1,7 +1,15 @@
 package com.tokopedia.localizationchooseaddress.util
 
+import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Context
+import android.location.LocationManager
+import android.os.Build
+import android.provider.Settings
 import android.view.View
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
@@ -42,20 +50,11 @@ object ChooseAddressUtils {
     }
 
     /**
-     * temporary use return true
+     * Rollence key
      */
     fun isRollOutUser(context: Context): Boolean {
-        /*val chooseAddressPref = ChooseAddressSharePref(context)
         val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        return if (rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY) {
-            chooseAddressPref.setRollenceValue(true)
-            true
-        } else {
-            chooseAddressPref.setRollenceValue(false)
-            false
-        }*/
-
-        return true
+        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
 
     /**
@@ -129,4 +128,46 @@ object ChooseAddressUtils {
         )
     }
 
+    @JvmStatic
+    fun isGpsEnabled(context: Context?): Boolean {
+        var isGpsOn = false
+        context?.let {
+            val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val mSettingsClient = LocationServices.getSettingsClient(it)
+
+            val locationRequest = LocationRequest.create()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.interval = 10 * 1000
+            locationRequest.fastestInterval = 2 * 1000
+            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+            val mLocationSettingsRequest = builder.build()
+            builder.setAlwaysShow(true)
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                isGpsOn = true
+            } else {
+                mSettingsClient
+                        .checkLocationSettings(mLocationSettingsRequest)
+                        .addOnSuccessListener(context as Activity) {
+                            isGpsOn = true
+                        }
+            }
+
+            isGpsOn = isLocationEnabled(it) && isGpsOn
+        }
+        return isGpsOn
+    }
+
+    @JvmStatic
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    fun isLocationEnabled(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            lm.isLocationEnabled
+        } else {
+            val mode = Settings.Secure.getInt(context.contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF)
+            mode != Settings.Secure.LOCATION_MODE_OFF
+
+        }
+    }
 }

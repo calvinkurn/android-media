@@ -33,6 +33,7 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -282,8 +283,6 @@ open class HomeRevampViewModel @Inject constructor(
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
             _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
         }
-        getTokocashBalance()
-        getTokopoint()
         getSearchHint(isFirstInstall)
     }
 
@@ -432,13 +431,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
-                                      tokopointsBBODrawer: TokopointsDrawer? = null,
-                                      homeHeaderWalletAction: HomeHeaderWalletAction? = null,
-                                      cashBackData: CashBackData? = null,
-                                      isPendingTokocashChecked: Boolean? = null,
-                                      isWalletDataError: Boolean? = null,
-                                      isTokoPointDataError: Boolean? = null) {
+    private fun updateHeaderViewModel(homeBalanceModel: HomeBalanceModel) {
         val homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
         homeHeaderOvoDataModel?.let {
             val currentPosition = -1
@@ -447,34 +440,79 @@ open class HomeRevampViewModel @Inject constructor(
                 headerDataModel = homeHeaderOvoDataModel.headerDataModel
             }
 
-            headerDataModel?.let {
-                tokopointsDrawer?.let {
-                    headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
-                }
-                tokopointsBBODrawer?.let {
-                    headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
-                }
-                homeHeaderWalletAction?.let {
-                    headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
-                }
-                cashBackData?.let {
-                    headerDataModel = headerDataModel?.copy(cashBackData = it)
-                }
-                isPendingTokocashChecked?.let {
-                    headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
-                }
-                isWalletDataError?.let {
-                    headerDataModel = headerDataModel?.copy(isWalletDataError = it)
-                }
-                isTokoPointDataError?.let {
-                    headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
-                }
-                headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-                homeHeaderOvoDataModel.headerDataModel = headerDataModel
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
-            }
+//            headerDataModel?.let {
+//                tokopointsDrawer?.let {
+//                    headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
+//                }
+//                tokopointsBBODrawer?.let {
+//                    headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
+//                }
+//                homeHeaderWalletAction?.let {
+//                    headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
+//                }
+//                cashBackData?.let {
+//                    headerDataModel = headerDataModel?.copy(cashBackData = it)
+//                }
+//                isPendingTokocashChecked?.let {
+//                    headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
+//                }
+//                isWalletDataError?.let {
+//                    headerDataModel = headerDataModel?.copy(isWalletDataError = it)
+//                }
+//                isTokoPointDataError?.let {
+//                    headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
+//                }
+//                headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
+//                homeHeaderOvoDataModel.headerDataModel = headerDataModel
+//                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
+//            }
         }
     }
+
+    //Old implementation, deleted soon, only for reference
+//    private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
+//                                      tokopointsBBODrawer: TokopointsDrawer? = null,
+//                                      homeHeaderWalletAction: HomeHeaderWalletAction? = null,
+//                                      cashBackData: CashBackData? = null,
+//                                      isPendingTokocashChecked: Boolean? = null,
+//                                      isWalletDataError: Boolean? = null,
+//                                      isTokoPointDataError: Boolean? = null) {
+//        val homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
+//        homeHeaderOvoDataModel?.let {
+//            val currentPosition = -1
+//            if(headerDataModel == null){
+//                homeVisitableListData.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
+//                headerDataModel = homeHeaderOvoDataModel.headerDataModel
+//            }
+//
+//            headerDataModel?.let {
+//                tokopointsDrawer?.let {
+//                    headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
+//                }
+//                tokopointsBBODrawer?.let {
+//                    headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
+//                }
+//                homeHeaderWalletAction?.let {
+//                    headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
+//                }
+//                cashBackData?.let {
+//                    headerDataModel = headerDataModel?.copy(cashBackData = it)
+//                }
+//                isPendingTokocashChecked?.let {
+//                    headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
+//                }
+//                isWalletDataError?.let {
+//                    headerDataModel = headerDataModel?.copy(isWalletDataError = it)
+//                }
+//                isTokoPointDataError?.let {
+//                    headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
+//                }
+//                headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
+//                homeHeaderOvoDataModel.headerDataModel = headerDataModel
+//                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
+//            }
+//        }
+//    }
 
     private fun getReviewData() {
         if (isNeedShowGeoLocation) {
@@ -699,24 +737,24 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun onRefreshTokoPoint() {
-        if (!userSession.get().isLoggedIn) return
-        updateHeaderViewModel(
-                tokopointsDrawer = null,
-                tokopointsBBODrawer = null,
-                isTokoPointDataError = false
-        )
-        getTokopoint()
-    }
-
-    fun onRefreshTokoCash() {
-        if (!userSession.get().isLoggedIn) return
-        updateHeaderViewModel(
-                homeHeaderWalletAction = null,
-                isWalletDataError = false
-        )
-        getTokocashBalance()
-    }
+//    fun onRefreshTokoPoint() {
+//        if (!userSession.get().isLoggedIn) return
+//        updateHeaderViewModel(
+//                tokopointsDrawer = null,
+//                tokopointsBBODrawer = null,
+//                isTokoPointDataError = false
+//        )
+//        getTokopoint()
+//    }
+//
+//    fun onRefreshTokoCash() {
+//        if (!userSession.get().isLoggedIn) return
+//        updateHeaderViewModel(
+//                homeHeaderWalletAction = null,
+//                isWalletDataError = false
+//        )
+//        getTokocashBalance()
+//    }
 
     fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
@@ -1408,35 +1446,45 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private fun getBalanceContent() {
+        launchCatchError(coroutineContext, block = {
+
+        }) {
+
+        }
+    }
+
+    //TODO 1 : delete getTokoCashBalance
     private fun getTokocashBalance() {
         if(getTokocashJob?.isActive == true) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-            updateHeaderViewModel(
-                    homeHeaderWalletAction = homeHeaderWalletAction,
-                    isWalletDataError = false
-            )
+//            updateHeaderViewModel(
+//                    homeHeaderWalletAction = homeHeaderWalletAction,
+//                    isWalletDataError = false
+//            )
             if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
-            updateHeaderViewModel(
-                    homeHeaderWalletAction = null,
-                    isWalletDataError = true
-            )
+//            updateHeaderViewModel(
+//                    homeHeaderWalletAction = null,
+//                    isWalletDataError = true
+//            )
         }
     }
 
+    //TODO 2 : delete getTokocashPendingBalance
     fun getTokocashPendingBalance(){
         if(getPendingCashBalanceJob?.isActive != true){
             getPendingCashBalanceJob = launchCatchError(coroutineContext, block={
                 val data = getPendingCashbackUseCase.get().executeOnBackground()
                 val cashBackData = CashBackData(data.amount, data.amountText)
-                updateHeaderViewModel(
-                        cashBackData = cashBackData,
-                        isPendingTokocashChecked = true,
-                        isWalletDataError = false
-                )
+//                updateHeaderViewModel(
+//                        cashBackData = cashBackData,
+//                        isPendingTokocashChecked = true,
+//                        isWalletDataError = false
+//                )
             }){
                 // do nothing if fail
             }
@@ -1445,35 +1493,35 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-        getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
-            launchCatchError(coroutineContext, block = {
-                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
-                        isTokoPointDataError = false
-                )
-            }){
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        }
+//        getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
+//            launchCatchError(coroutineContext, block = {
+//                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
+//                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
+//                        isTokoPointDataError = false
+//                )
+//            }){
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = null,
+//                        isTokoPointDataError = true
+//                )
+//            }
+//        } else {
+//            launchCatchError(coroutineContext, block = {
+//                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
+//                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = data.tokopointsDrawer,
+//                        isTokoPointDataError = false
+//                )
+//            }) {
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = null,
+//                        isTokoPointDataError = true
+//                )
+//            }
+//        }
     }
 
     private fun addInitialShimmering() {

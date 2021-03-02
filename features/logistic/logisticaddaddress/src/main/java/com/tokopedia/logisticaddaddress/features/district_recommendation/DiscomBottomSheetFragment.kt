@@ -13,6 +13,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
@@ -190,6 +191,10 @@ class DiscomBottomSheetFragment : BottomSheets(),
         mMessage.setText(R.string.hint_search_address_no_result)
         llPopularCity.visibility = View.VISIBLE
         llListDistrict.visibility = View.GONE
+    }
+
+    override fun setResultDistrict(data: Data, lat: Double, long: Double) {
+        // no op
     }
 
     override fun onCityChipClicked(city: String) {

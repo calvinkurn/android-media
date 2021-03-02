@@ -320,7 +320,7 @@ object DynamicProductDetailTracking {
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
                               cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
-                              productInfo: DynamicProductInfoP1?) {
+                              productInfo: DynamicProductInfoP1?, isFreeOngkir:Boolean) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
@@ -329,7 +329,6 @@ object DynamicProductDetailTracking {
             val shopName = productInfo?.basic?.shopName ?: ""
 
             val quantity = productInfo?.basic?.minOrder ?: 0
-            val isFreeOngkir = productInfo?.data?.isFreeOngkir?.isActive ?: false
             val generateButtonActionString = when (actionButton) {
                 ProductDetailConstant.OCS_BUTTON -> "$buttonText ocs"
                 ProductDetailConstant.OCC_BUTTON -> "$buttonText occ"
@@ -1442,7 +1441,7 @@ object DynamicProductDetailTracking {
                                 trackerAttribution: String?,
                                 isTradeIn: Boolean, isDiagnosed: Boolean,
                                 multiOrigin: Boolean, deeplinkUrl: String,
-                                isStockAvailable: String ->
+                                isStockAvailable: String, isFreeOngkir: Boolean ->
 
             val dimension55 = if (isTradeIn && isDiagnosed)
                 "true diagnostic"
@@ -1451,12 +1450,10 @@ object DynamicProductDetailTracking {
             else
                 "false"
 
-            val dimension83 = productInfo?.data?.isFreeOngkir?.let {
-                if (it.isActive)
+            val dimension83 = if (isFreeOngkir)
                     ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
                 else
                     ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
-            }
 
             arrayListOf(Product(
                     productInfo?.getProductName ?: "",
@@ -1488,7 +1485,7 @@ object DynamicProductDetailTracking {
         val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                           shopInfo: ShopInfo?, trackerAttribution: String?,
                                           isTradeIn: Boolean, isDiagnosed: Boolean,
-                                          multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String ->
+                                          multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String, isFreeOngkir: Boolean ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1508,7 +1505,7 @@ object DynamicProductDetailTracking {
             }?.firstOrNull()?.uRLOriginal ?: ""
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
+                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable, isFreeOngkir)
 
             val label = "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
 
@@ -1568,12 +1565,13 @@ object DynamicProductDetailTracking {
                                                isDiagnosed: Boolean,
                                                multiOrigin: Boolean,
                                                deeplinkUrl: String,
-                                               isStockAvailable: String): Bundle {
+                                               isStockAvailable: String,
+                                               isFreeOngkir: Boolean): Bundle {
 
             val sentBundle = generateProductViewBundle(
                     irisSessionId, trackerListName, productInfo, shopInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                    isStockAvailable
+                    isStockAvailable,isFreeOngkir
             )
             sendTrackingBundle(
                     ProductDetailViewsBundler.KEY,

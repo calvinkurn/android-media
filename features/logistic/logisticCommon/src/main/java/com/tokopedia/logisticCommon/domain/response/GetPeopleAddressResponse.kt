@@ -19,7 +19,9 @@ data class KeroAddressCorner(
         @SerializedName("has_next")
         var hasNext: Boolean = false,
         @SerializedName("token")
-        var token: Token = Token()
+        var token: Token = Token(),
+        @SerializedName("page_info")
+        var pageInfo: PageInfo = PageInfo()
 )
 
 data class ManageAddressData(
@@ -71,10 +73,6 @@ data class ManageAddressData(
         var status: Int = 0,
         @SerializedName("type")
         var type: Int = 0,
-        @SerializedName("state")
-        var state: Int = 0,
-        @SerializedName("state_detail")
-        var stateDetail: String = "",
         @SerializedName("is_state_chosen_address")
         var isStateChosenAddress: Boolean = false
 )
@@ -84,4 +82,11 @@ data class Token(
         var ut: Int = 0,
         @SerializedName("district_recommendation")
         var districtReccomendation: String = ""
+)
+
+data class PageInfo(
+        @SerializedName("ticker")
+        var ticker: String = "",
+        @SerializedName("button_label")
+        var buttonLabel: String = ""
 )

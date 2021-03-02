@@ -117,6 +117,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.features.promoMvcWidget)
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore

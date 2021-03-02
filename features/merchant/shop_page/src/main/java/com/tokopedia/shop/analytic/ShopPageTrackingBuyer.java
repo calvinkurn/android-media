@@ -12,113 +12,12 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BRAND;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_ETALASE_BUTTON;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_BOTTOMSHEET_DISMISS_BUTTON;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CHAT_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SEARCH_SUGGESTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PROFILE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH_PAGE_NO_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_DETAIL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PROFILE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_SETTING;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_FOLLOW_NPL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_SECTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_X;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_SEARCH_SUGGESTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IS_OFFICIAL_STORE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LIST;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MEMBERSHIP_SHOP_PAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCTS;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_NO_RESULT_SUGGESTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_ON_TOKOPEDIA;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT_NO_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_PRODUCT_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECTED_ETALASE_CHIP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SETTING_PAGE_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_LOCATION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.URL_SLUG;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.*;
 
 public class ShopPageTrackingBuyer extends ShopPageTracking {
 
@@ -320,14 +219,132 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 etalaseName;
     }
 
-    public void clickFollowUnfollowShop(boolean isFollow,
-                                        CustomDimensionShopPage customDimensionShopPage) {
+    public void impressionVoucherFollowUnfollowShop(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                VIEW_FOLLOW_VOUCHER_ICON,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void impressionCoachMarkFollowUnfollowShop(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                VIEW_COACHMARK_FOLLOW,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void impressionCoachMarkDissapearFollowUnfollowShop(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                VIEW_COACHMARK_FOLLOW,
+                SHOP_PAGE_LABEL + shopId + COACHMARK_DISAPPEAR,
+                userId
+        );
+    }
+
+    public void clickFollowUnfollowShop(
+            Boolean isFollowing,
+            String shopId,
+            String userId
+    ) {
+        String action;
+        if (isFollowing) {
+            action = CLICK_FOLLOW;
+        } else {
+            action = CLICK_UNFOLLOW;
+        }
+        followUnfollowShop(
+                CLICK_SHOP_PAGE,
+                action,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void clickFollowUnfollowShopWithoutShopFollower(
+            boolean isFollow,
+            CustomDimensionShopPage customDimensionShopPage) {
         String followUnfollow = isFollow ? FOLLOW : UNFOLLOW;
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
                 joinSpace(CLICK, followUnfollow),
                 "",
                 customDimensionShopPage);
+    }
+
+    public void impressionToasterFollow(
+            Boolean isSuccess,
+            String shopId,
+            String userId
+    ) {
+        String action;
+        if (isSuccess) {
+            action = VIEW_TOASTER_FOLLOW_SUCCESS;
+        } else {
+            action = VIEW_TOASTER_FOLLOW_ERROR;
+        }
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                action,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void impressionToasterUnfollow(
+            Boolean isSuccess,
+            String shopId,
+            String userId
+    ) {
+        String action;
+        if (isSuccess) {
+            action = VIEW_TOASTER_UNFOLLOW_SUCCESS;
+        } else {
+            action = VIEW_TOASTER_UNFOLLOW_ERROR;
+        }
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                action,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void clickCekToasterSuccess(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                CLICK_SHOP_PAGE,
+                CLICK_CEK_TOASTER_SUCCESS,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
+    }
+
+    public void impressionSeeEntryPointMerchantVoucherCoupon(
+            String shopId,
+            String userId
+    ) {
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                SEE_ENTRY_POINT,
+                SHOP_PAGE_LABEL + shopId,
+                userId
+        );
     }
 
     public void clickFollowShowcaseNplButton(

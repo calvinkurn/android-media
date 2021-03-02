@@ -109,6 +109,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     val shipmentData: ProductShipmentDataModel?
         get() = mapOfData[ProductDetailConstant.SHIPMENT] as? ProductShipmentDataModel
 
+    val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
+        get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -116,7 +119,6 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 basicContentMap?.run {
                     data = ProductContentMainData(
                             campaign = it.data.campaign,
-                            freeOngkir = it.data.isFreeOngkir,
                             cashbackPercentage = it.data.isCashback.percentage,
                             price = it.data.price,
                             stockWording = it.data.stock.stockWording,
@@ -215,10 +217,6 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     private fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         updateData(ProductDetailConstant.TRADE_IN) {
             productTradeinMap?.run {
-                updateData(ProductDetailConstant.PRODUCT_CONTENT) {
-                    basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
-                }
-
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(com.tokopedia.common_tradein.R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
                             ?: ""
@@ -281,7 +279,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.SHOP_INFO) {
                 shopInfoMap?.run {
@@ -342,9 +340,19 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 }
             }
 
+            updateData(ProductDetailConstant.MVC) {
+                mvcSummaryData?.run {
+                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
+                    subTitle = it.merchantVoucherSummary.subTitle
+                    imageURL = it.merchantVoucherSummary.imageURL
+                    isShown = it.merchantVoucherSummary.isShown
+                    shopId = it.shopInfo.shopCore.shopID
+                }
+            }
+
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
+            updateNotifyMeAndContent(productId, it.upcomingCampaigns, it.validateTradeIn.isEligible, boeImageUrl)
             updateDataTradein(context, it.validateTradeIn)
-            updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
         }
     }
 
@@ -376,13 +384,44 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateNotifyMeUpcoming(productId: String, upcomingData: Map<String, ProductUpcomingData>?) {
+    private fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
                         ?: "", selectedUpcoming?.ribbonCopy ?: "",
                         selectedUpcoming?.startDate ?: "")
+                shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
+                this.freeOngkirImgUrl = freeOngkirImgUrl
+            }
+        }
+
+        updateData(ProductDetailConstant.UPCOMING_DEALS) {
+            notifyMeMap?.run {
+                val selectedUpcoming = upcomingData?.get(productId)
+                campaignID = selectedUpcoming?.campaignId ?: ""
+                campaignType = selectedUpcoming?.campaignType ?: ""
+                campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
+                startDate = selectedUpcoming?.startDate ?: ""
+                notifyMe = selectedUpcoming?.notifyMe ?: false
+                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
+                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        selectedUpcoming?.startDate ?: "")
+            }
+        }
+    }
+
+    /**
+     * Use this only when update variant, because no need to update tradein when variant changed
+     */
+    fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, freeOngkirImgUrl: String) {
+        updateData(ProductDetailConstant.PRODUCT_CONTENT) {
+            basicContentMap?.run {
+                val selectedUpcoming = upcomingData?.get(productId)
+                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
+                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        selectedUpcoming?.startDate ?: "")
+                this.freeOngkirImgUrl = freeOngkirImgUrl
             }
         }
 

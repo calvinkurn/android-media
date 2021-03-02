@@ -95,6 +95,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT -> {
                     listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.MVC -> {
+                    listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
