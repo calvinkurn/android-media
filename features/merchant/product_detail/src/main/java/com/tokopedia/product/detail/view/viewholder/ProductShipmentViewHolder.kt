@@ -103,6 +103,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         if (instantLabel.isEmpty() && !isCod) {
             renderSubtitleGreen()
             hideLabelAndBo()
+            shipmentArrow?.hide()
             return@with
         }
 
