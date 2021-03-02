@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.fragments
 import android.animation.Animator
 import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -12,7 +11,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -1835,13 +1833,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         })
     }
 
-    @SuppressLint("RestrictedApi")
     private fun createCoachMarkItems(firstNewOrderView: View): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
             add(CoachMark2Item(firstNewOrderView, getString(R.string.som_list_coachmark_new_order_card_title), getString(R.string.som_list_coachmark_new_order_card_description)))
             add(CoachMark2Item(sortFilterSomList, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
-            (menu as MenuBuilder).visibleItems.firstOrNull()?.let { visibleMenu ->
-                activity?.findViewById<View>(visibleMenu.itemId)?.let {
+            if (menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
+                activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
                 }
             }
