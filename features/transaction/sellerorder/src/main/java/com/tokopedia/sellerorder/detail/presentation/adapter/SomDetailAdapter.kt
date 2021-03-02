@@ -34,7 +34,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
         fun onSeeInvoice(invoiceUrl: String, invoice: String)
         fun onCopiedInvoice(invoice: String, str: String)
-        fun onClickProduct(productId: Long)
+        fun onClickProduct(orderDetailId: Int)
         fun onCopiedAddress(address: String, str: String)
     }
 

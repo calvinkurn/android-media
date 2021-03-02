@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -68,7 +69,7 @@ class ShopPageSettingViewModel @Inject constructor(
                             asyncCatchError(
                                     dispatcherProvider.io,
                                     block = {
-                                        getSettingAccess(id, accessId, authorizeAccessUseCase.get())
+                                        getSettingAccess(shopId.toLongOrZero(), accessId, authorizeAccessUseCase.get())
                                     },
                                     onError = {
                                         mShopSettingAccessLiveData.postValue(Fail(it))
@@ -109,7 +110,7 @@ class ShopPageSettingViewModel @Inject constructor(
         return getShopInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getSettingAccess(shopId: Int, @AccessId accessId: Int, useCase: AuthorizeAccessUseCase): Boolean {
+    private suspend fun getSettingAccess(shopId: Long, @AccessId accessId: Int, useCase: AuthorizeAccessUseCase): Boolean {
         val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
         return useCase.execute(requestParams)
     }

@@ -46,6 +46,7 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       invoiceUrl
     }
     items {
+      detail_id
       categoryID
       categoryL1
       categoryL2

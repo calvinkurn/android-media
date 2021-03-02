@@ -480,7 +480,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                                             isEditing.value == true -> AccessId.PRODUCT_EDIT
                                             else -> AccessId.PRODUCT_ADD
                                         }
-                                userSession.shopId.toIntOrZero().let { shopId ->
+                                userSession.shopId.toLongOrZero().let { shopId ->
                                     val canManageProduct = async {
                                         val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
                                         authorizeAccessUseCase.execute(requestParams)
