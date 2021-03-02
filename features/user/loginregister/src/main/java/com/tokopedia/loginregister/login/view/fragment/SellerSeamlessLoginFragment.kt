@@ -228,11 +228,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver(){
-        seamlessViewModel.goToSecurityQuestion.observe(this, Observer {
+        seamlessViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if(it) goToSecurityQuestion()
         })
 
-        seamlessViewModel.loginTokenResponse.observe(this, Observer {
+        seamlessViewModel.loginTokenResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessLoginToken()
                 is Fail -> onErrorLoginToken(it.throwable)

@@ -70,7 +70,7 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver(){
-        viewModel.updateNameLiveData.observe(this, Observer {
+        viewModel.updateNameLiveData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessAddName()
                 is Fail -> onErrorRegister(it.throwable)
