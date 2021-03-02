@@ -25,7 +25,6 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.PiPMode
@@ -83,9 +82,6 @@ class PlayVideoFragment @Inject constructor(
 
     private val playPiPCoordinator: PlayPiPCoordinator
         get() = requireActivity() as PlayPiPCoordinator
-
-    private val playNavigation: PlayNavigation
-        get() = requireActivity() as PlayNavigation
 
     private var isEnterPiPAfterPermission: Boolean = false
 
@@ -299,8 +295,6 @@ class PlayVideoFragment @Inject constructor(
             videoLoadingViewOnStateChanged(state = it.state)
             videoViewOnStateChanged(state = it.state)
             overlayVideoViewOnStateChanged(state = it.state)
-
-            if (it.state == PlayViewerVideoState.End) doAutoSwipe()
         })
     }
 
@@ -342,10 +336,6 @@ class PlayVideoFragment @Inject constructor(
                 videoView.hideThumbnail()
             }
         }
-    }
-
-    private fun doAutoSwipe() {
-        playNavigation.navigateToNextPage()
     }
 
     //region OnStateChanged
