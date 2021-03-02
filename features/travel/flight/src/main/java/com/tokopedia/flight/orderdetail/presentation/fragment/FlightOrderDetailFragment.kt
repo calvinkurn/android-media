@@ -62,6 +62,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     private var isRequestCancel: Boolean = false
     private var isOpenTrackSent: Boolean = false
 
+    private var isTravelInsurance: Boolean = false
+    private var isZeroCancellation: Boolean = false
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -285,20 +288,28 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 override fun onBottomButtonClicked() {}
 
             }
+
+            data.insurances.forEach{
+                when(it.id){
+                    CODE_TRAVEL_INSURANCE -> isTravelInsurance = true
+                    CODE_ZERO_CANCELLATION_INSURANCE -> isZeroCancellation = true
+                }
+            }
+
             flightOrderDetailInsurance.setData(
                     getString(R.string.flight_order_detail_insurance_title_label),
                     FlightOrderDetailButtonModel(
                             MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
                             getString(R.string.flight_order_detail_insurance_trip_label),
                             getString(R.string.flight_order_detail_insurance_trip_description),
-                            true,
+                            isTravelInsurance,
                             false
                     ),
                     FlightOrderDetailButtonModel(
                             MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
                             getString(R.string.flight_order_detail_insurance_cancel_label),
                             getString(R.string.flight_order_detail_insurance_trip_description),
-                            true,
+                            isZeroCancellation,
                             false
                     )
             )
@@ -464,6 +475,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
         private const val REQUEST_CODE_SEND_E_TICKET = 1111
         private const val REQUEST_CODE_CANCELLATION = 1112
+
+        private const val CODE_TRAVEL_INSURANCE = "1"
+        private const val CODE_ZERO_CANCELLATION_INSURANCE = "2"
 
         fun createInstance(invoiceId: String,
                            isCancellation: Boolean,
