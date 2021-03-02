@@ -18,10 +18,10 @@ class SellerHomeRemoteConfig @Inject constructor(
     }
 
     fun isSellerHomeDashboardCachingEnabled(): Boolean {
-        return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_ENABLE_CACHE, false)
+        return false
     }
 
     fun isSellerHomeDashboardNewCachingEnabled(): Boolean {
-        return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_ENABLE_NEW_CACHE, false)
+        return true
     }
 }
