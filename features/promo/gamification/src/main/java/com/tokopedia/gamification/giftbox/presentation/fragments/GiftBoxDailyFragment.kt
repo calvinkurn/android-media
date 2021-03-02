@@ -24,10 +24,12 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
@@ -47,6 +49,7 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpErrorListener
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
+import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
@@ -78,6 +81,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
     var infoUrl: String? = null
+    var backButton: BackButton? = null
 
     private val HTTP_STATUS_OK = "200"
 
@@ -191,7 +195,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
             tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
-//            tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         }
 
     }
@@ -215,19 +218,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
 
                         when (rewardState) {
-                            RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-                                performRewardAnimation(startDelay, stageLightAnim)
-                            }
-                            RewardContainer.RewardState.POINTS_ONLY -> {
+                            RewardContainer.RewardState.COUPON_ONLY-> {
                                 performRewardAnimation(startDelay, stageLightAnim)
                             }
 
-                            RewardContainer.RewardState.COUPON_ONLY -> {
-                                performRewardAnimation(startDelay, stageLightAnim)
+                            RewardContainer.RewardState.RP_0_ONLY -> {
+                                performRp0Animation(startDelay)
                             }
                         }
                     })
-
                 }
             }
 
@@ -475,18 +474,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
                     var shopId = 0L
-                    if(!recommendation.shopId.isNullOrEmpty()){
+                    if (!recommendation.shopId.isNullOrEmpty()) {
                         shopId = recommendation.shopId.toLong()
                     }
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName?:"", shopId, recommendation.shopId.isNullOrEmpty())
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName ?: "", shopId, recommendation.shopId.isNullOrEmpty())
                 }, 1000L)
 
             }
         }
     }
 
-    fun canShowRecomPage(recommendation: Recommendation?) :Boolean{
-        if(recommendation!=null){
+    fun canShowRecomPage(recommendation: Recommendation?): Boolean {
+        if (recommendation != null) {
             return recommendation.isShow == true && !recommendation.pageName.isNullOrEmpty()
         }
         return false
@@ -499,6 +498,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(rewardAnim, stageLightAnim)
         animatorSet.startDelay = startDelay
         animatorSet.start()
+    }
+
+    fun performRp0Animation(startDelay: Long) {
+        val rewardAnim = rewardContainer.showSingleLargeRewardAnimation()
+        rewardAnim.startDelay = startDelay
+        rewardAnim.start()
     }
 
     private fun handleInfoIcon(statusCode: String?, infoUrl: String?) {
@@ -525,7 +530,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val list = giftBoxRewardEntity?.gamiCrack?.benefits
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
-                        if (item.isAutoApply) {
+                        if (item.isAutoApply && item.benefitType == BenefitType.COUPON) {
                             isAutoApply = true
                             autoApplyMessage = item.autoApplyMsg
                             dummyCode = item.dummyCode
@@ -583,7 +588,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getRewards, context!!)
+                showNoInterNetDialog(viewModel::getRewards, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getRewards)
             }
@@ -594,7 +599,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::setReminder, context!!)
+                showNoInterNetDialog(viewModel::setReminder, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, viewModel::setReminder)
             }
@@ -807,7 +812,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (context != null) {
             var internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, context!!)
+                showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, requireContext())
             } else {
                 handleButtonAction()
             }
@@ -818,7 +823,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getGiftBox, context!!)
+                showNoInterNetDialog(viewModel::getGiftBox, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBox)
             }
@@ -839,6 +844,43 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     override fun getMenu() = if (infoUrl.isNullOrEmpty()) R.menu.gami_menu_share else R.menu.gami_menu_daily
+
+    private fun showBackDialog(backButton: BackButton) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
+            dialog.setTitle(backButton.title)
+            dialog.setDescription(backButton.text)
+            dialog.setPrimaryCTAText(backButton.yesText)
+            dialog.setPrimaryCTAClickListener {
+                GtmGiftTapTap.clickContinueButton(userSession?.userId)
+                dialog.dismiss()
+                activity?.finish()
+            }
+            dialog.setSecondaryCTAText(backButton.cancelText)
+            dialog.setSecondaryCTAClickListener {
+                GtmGiftTapTap.clickExitButton(userSession?.userId)
+                dialog.dismiss()
+            }
+            if (isTablet) {
+                val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
+                layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
+            }
+            dialog.show()
+        }
+    }
+
+    fun onBackPressed(): Boolean {
+        backButton = BackButton("cancel",null,true,"Are you sure you want to exit?","Hadiahmu tinggal dikirim, lho! Jika kamu ingin mengirimnya nanti, kamu bisa ke halaman Riwayat Hadiah Game hingga 30 hari ke depan.","Go to Game Rewards History")
+        if (!hasWonRp0Reward() && backButton != null) {
+            showBackDialog(backButton!!)
+            return false
+        }
+        return true
+    }
+
+    fun hasWonRp0Reward(): Boolean {
+        return true
+    }
 }
 
 @Retention(AnnotationRetention.SOURCE)

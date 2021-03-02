@@ -38,7 +38,9 @@ import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON_RP_0
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.REWARD_POINT
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.CLOSE
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.OPEN
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
@@ -144,8 +146,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
         downloadAudios()
-        colorDim = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_dim)
-        colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
+        colorDim = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_dim)
+        colorBlackTransParent = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_black_transparent)
         viewModel.getGiftBoxHome()
         return v
     }
@@ -720,7 +722,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(::handleGiftBoxTap, context!!)
+                showNoInterNetDialog(::handleGiftBoxTap, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
@@ -731,7 +733,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
+                showNoInterNetDialog(viewModel::getGiftBoxHome, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
@@ -1080,11 +1082,13 @@ annotation class MinuteTimerState {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(COUPON, OVO)
+@StringDef(COUPON, OVO, REWARD_POINT, COUPON_RP_0)
 annotation class BenefitType {
     companion object {
         const val COUPON = "coupon"
         const val OVO = "ovo_points"
+        const val REWARD_POINT = "reward_point"
+        const val COUPON_RP_0 = "coupon_rp0"
     }
 }
 

@@ -13,5 +13,6 @@ data class GetCouponDetail(
 
 data class CouponTapTap(val imageUrl: String?) : CouponType
 data class OvoListItem(val imageUrl: String?, val text:String) : CouponType
+data class RewardPoint(val imageUrl: String?, val text:String) : CouponType
 
 interface CouponType

@@ -164,10 +164,10 @@ class PdpGamificationView : LinearLayout {
                             }
                             val oldSize = dataList.size
                             val delay = if (oldSize == 0) 600L else 0L
-                            val handler = Handler()
-                            handler.postDelayed({
+//                            val handler = Handler()
+//                            handler.postDelayed({
                                 updateList(oldSize, it.data)
-                            }, delay)
+//                            }, delay)
                         }else{
                             val oldSize = dataList.size
                             if(oldSize == 0 && it.data?.isNullOrEmpty()){
