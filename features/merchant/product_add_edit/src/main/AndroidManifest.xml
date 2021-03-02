@@ -9,6 +9,7 @@
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
             android:label="@string/label_title_add_product"
             android:screenOrientation="portrait"
+            android:configChanges="orientation"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

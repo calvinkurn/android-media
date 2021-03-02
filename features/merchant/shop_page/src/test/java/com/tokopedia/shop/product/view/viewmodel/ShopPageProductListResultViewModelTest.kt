@@ -130,7 +130,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             )
 
             shopPageProductListResultViewModel.getShopRestrictionInfo(
-                    input = RestrictionEngineRequestParams()
+                    input = RestrictionEngineRequestParams(),
+                    shopId = "12131"
             )
 
             verifyGetShopRestrictionInfoUseCaseCalled()
@@ -149,7 +150,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             } throws Exception()
 
             shopPageProductListResultViewModel.getShopRestrictionInfo(
-                    input = RestrictionEngineRequestParams()
+                    input = RestrictionEngineRequestParams(),
+                    shopId = "123121"
             )
 
             verifyGetShopRestrictionInfoUseCaseCalled()

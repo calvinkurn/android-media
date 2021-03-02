@@ -1,5 +1,7 @@
 package com.tokopedia.applink.order
 
+import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -29,6 +31,9 @@ object DeeplinkMapperOrder {
     private const val FILTER_RETUR = "13"
     private const val FILTER_COMPLAINT = "15"
     const val FILTER_CANCELLATION_REQUEST = 10
+    private const val PATH_ORDER = "order"
+    const val PATH_ORDER_ID = "order_id"
+    const val PATH_ORDER_DETAIL_ID = "order_detail_id"
 
     fun getRegisteredNavigationOrder(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)
@@ -113,5 +118,39 @@ object DeeplinkMapperOrder {
     fun getRegisteredNavigationMainAppSellerComplaint(): String {
         val param = mapOf(QUERY_TAB_ACTIVE to "", FILTER_STATUS_ID to FILTER_COMPLAINT)
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.COMPLAINT, param)
+    }
+
+    /**
+     * @param deepLink tokopedia://snapshot/order/166497971/20370225
+     * @return tokopedia-android-internal://snapshot/order?order_id=166497971&order_detail_id=20370225
+     * or will return empty string if given invalid deep link
+     * */
+    fun getSnapshotOrderInternalAppLink(context: Context, deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        return when {
+            uri.pathSegments.size == 3 && uri.pathSegments[0] == PATH_ORDER -> {
+                val orderId: String = if (!uri.pathSegments[1].isNullOrBlank()) {
+                    uri.pathSegments[1]
+                } else {
+                    "0"
+                }
+
+                val orderDetailId: String = if (!uri.pathSegments[2].isNullOrBlank()) {
+                    uri.pathSegments[2]
+                } else {
+                    "0"
+                }
+
+                val internalApplink = ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
+
+                Uri.parse(internalApplink)
+                        .buildUpon()
+                        .appendQueryParameter(PATH_ORDER_ID, orderId)
+                        .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
+                        .build()
+                        .toString()
+            }
+            else -> ""
+        }
     }
 }
