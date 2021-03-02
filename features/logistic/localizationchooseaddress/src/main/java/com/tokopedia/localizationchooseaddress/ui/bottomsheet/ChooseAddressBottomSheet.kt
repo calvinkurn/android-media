@@ -194,7 +194,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     isSnippetAddressFlow = false
                 } else {
                     listener?.onAddressDataChanged()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
@@ -213,7 +213,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
-        setCloseClickListener { this.dismiss() }
+        setCloseClickListener { dismissBottomSheet() }
+        setOnDismissListener { dismissBottomSheet() }
         setShowListener {
             onBottomSheetShown()
         }
@@ -289,13 +290,13 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
                     chooseAddressPref?.setLocalCache(localData)
                     listener?.onAddressDataChanged()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
                 is Fail -> {
                     ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_NOT_SUCCESS)
                     listener?.onLocalizingAddressServerDown()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
             }
@@ -318,12 +319,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     if (isLoginFlow) {
                         listener?.onLocalizingAddressLoginSuccessBottomSheet()
                     }
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
                 is Fail -> {
                     listener?.onLocalizingAddressServerDown()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
             }
         })
@@ -376,7 +377,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setTitle("Mau kirim belanjaan ke mana")
         renderButton()
         setCloseClickListener {
-            this.dismiss()
+            dismissBottomSheet()
         }
     }
 
@@ -413,7 +414,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
             listener?.onLocalizingAddressServerDown()
-            this.dismiss()
+            dismissBottomSheet()
         }
     }
 
@@ -499,6 +500,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         }
     }
 
+    private fun dismissBottomSheet() {
+        listener?.onDismissChooseAddressBottomSheet()
+        this.dismiss()
+    }
+
     // This is a workaround to make sure Permissions Dialog is shown after the bottom sheet is shown
     private fun onBottomSheetShown() {
         hasBottomSheetShown = true
@@ -526,5 +532,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          * this listen is use to notify host/fragment if login is success from bottomshet
          */
         fun onLocalizingAddressLoginSuccessBottomSheet()
+
+        fun onDismissChooseAddressBottomSheet()
     }
 }
