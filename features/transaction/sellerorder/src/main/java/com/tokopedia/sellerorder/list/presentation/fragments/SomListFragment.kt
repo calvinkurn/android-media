@@ -1415,7 +1415,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 .onEach { it.type = Ticker.TYPE_ANNOUNCEMENT }
         var tickerPagerAdapter = tickerPagerAdapter
         if (tickerPagerAdapter == null) {
-            tickerPagerAdapter = TickerPagerAdapter(context, activeTickers)
+            tickerPagerAdapter = TickerPagerAdapter(requireContext().applicationContext, activeTickers)
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
