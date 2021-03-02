@@ -74,7 +74,7 @@
         android:id="@+id/parentDataGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="paylaterTabLayout, payLaterViewPager, modeSwitcher" />
+        app:constraint_referenced_ids="paylaterTabLayout, payLaterViewPager" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/payLaterParentGlobalError"

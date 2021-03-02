@@ -66,6 +66,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         arguments?.getInt(PRODUCT_PRICE) ?: 0
     }
 
+    private val isCreditCardModeAvailable: Boolean = true
     private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
@@ -94,6 +95,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getSimulationProductInfo()
+        setUpModeSwitcher()
         renderTabAndViewPager()
         initListeners()
     }
@@ -129,8 +131,15 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 paymentMode == PayLater)
     }
 
+
+    private fun setUpModeSwitcher() {
+        if (isCreditCardModeAvailable) {
+            modeSwitcher.visible()
+            modeSwitcher.setOnCheckedChangeListener(this)
+        } else modeSwitcher.gone()
+    }
+
     private fun initListeners() {
-        modeSwitcher.setOnCheckedChangeListener(this)
         paylaterDaftarWidget.setOnClickListener {
             onRegisterWidgetClicked()
         }
@@ -216,6 +225,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun showNoNetworkView() {
         parentDataGroup.gone()
+        modeSwitcher.gone()
         daftarGroup.gone()
         payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
         payLaterParentGlobalError.show()
@@ -234,7 +244,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun switchPaymentMode() {
-        modeSwitcher.isChecked = !modeSwitcher.isChecked
+        if (isCreditCardModeAvailable)
+            modeSwitcher.isChecked = !modeSwitcher.isChecked
     }
 
     companion object {
