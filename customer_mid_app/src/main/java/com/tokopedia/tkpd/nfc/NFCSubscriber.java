@@ -13,7 +13,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
-import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
@@ -53,32 +55,32 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityResumed(Activity activity) {
         if (nfcAdapter != null) {
-            permissionCheckerHelper = new PermissionChecker();
+            permissionCheckerHelper = new PermissionCheckerHelper();
             pendingIntent = PendingIntent.getActivity(activity, 0,
                     activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
             permissionCheckerHelper.checkPermission(activity,
-                    PermissionCheckerHelper.PERMISSION_NFC,
-                    new PermissionCheckerHelper.PermissionCheckListener {
-                @Override
-                public void onPermissionDenied(permissionText: String) {
-                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                }
+                    PermissionCheckerHelper.Companion.PERMISSION_NFC,
+                    (new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(@NotNull String permissionText) {
+                            permissionCheckerHelper.onPermissionDenied(activity.getApplicationContext(), permissionText);
+                        }
 
-                @Override
-                public void onNeverAskAgain(permissionText: String) {
-                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                }
+                        @Override
+                        public void onNeverAskAgain(@NotNull String permissionText) {
+                            permissionCheckerHelper.onNeverAskAgain(activity.getApplicationContext(), permissionText);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    try {
-                        nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
-                    } catch(SecurityException e){
+                        @Override
+                        public void onPermissionGranted() {
+                            try {
+                                nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
+                            } catch(SecurityException e){
 
-                    }
-                }
-            },
-            "Aplikasi ini membutuhkan izin untuk mengakses NFC"
+                            }
+                        }
+                    })
+                    , "Aplikasi ini membutuhkan izin untuk mengakses NFC"
             );
 
         }
