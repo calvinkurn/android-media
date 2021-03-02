@@ -1986,6 +1986,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 override fun onLocalizingAddressLoginSuccessBottomSheet() {
                 }
 
+                override fun onDismissChooseAddressBottomSheet() {
+                }
+
             }, childFragmentManager)
         }
     }
