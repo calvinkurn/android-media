@@ -856,6 +856,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
                 til_passport_no.setError(true)
                 false
+            } else if (isNeedPassport && getPassportNumber().length < 6) {
+                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_min_length))
+                til_passport_no.setError(true)
+                false
             } else {
                 true
             }
