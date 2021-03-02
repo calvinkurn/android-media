@@ -22,24 +22,12 @@ import javax.inject.Inject
 abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
         protected val graphqlRepository: GraphqlRepository,
         protected val mapper: BaseResponseMapper<R, U>,
-        private val sessionIncluded: Boolean,
         private val classType: Class<R>,
         private val graphqlQuery: String,
         private val doQueryHash: Boolean): BaseGqlUseCase<U>() {
 
-    private var mFingerprintManager: FingerprintManager? = null
-    private var mCacheManager: GraphqlCacheManager? = null
     private var results: MutableSharedFlow<U> = MutableSharedFlow(replay = 1)
     var collectingResult: Boolean = false
-
-    private fun initCacheManager() {
-        if (mCacheManager == null) {
-            mCacheManager = GraphqlCacheManager()
-        }
-        if (mFingerprintManager == null) {
-            mFingerprintManager = GraphqlClient.getFingerPrintManager()
-        }
-    }
 
     private suspend fun getCachedResponse(request: GraphqlRequest): U? {
         try {
@@ -58,7 +46,7 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor
     }
 
     private suspend fun getCloudResponse(request: GraphqlRequest): U {
-        val response = graphqlRepository.getReseponse(listOf(request), getCloudCacheStrategy())
+        val response = graphqlRepository.getReseponse(listOf(request), getAlwaysCloudCacheStrategy())
 
         val error = response.getError(classType)
 
@@ -68,20 +56,6 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
-    }
-
-    private fun getCloudCacheStrategy(): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .setSessionIncluded(sessionIncluded)
-                .build()
-    }
-
-    private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .setSessionIncluded(sessionIncluded)
-                .build()
     }
 
     open suspend fun executeOnBackground(requestParams: RequestParams = RequestParams.EMPTY, includeCache: Boolean = true): Unit = withContext(Dispatchers.IO) {
@@ -100,17 +74,6 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor
             results.emit(getCloudResponse(request))
         }
         Unit
-    }
-
-
-    fun clearCache(requestParams: RequestParams = RequestParams.EMPTY) {
-        try {
-            initCacheManager()
-            val request = GraphqlRequest(doQueryHash, graphqlQuery, classType, requestParams.parameters)
-            mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(request.toString(), sessionIncluded))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun getResultFlow(): SharedFlow<U> = results.asSharedFlow()

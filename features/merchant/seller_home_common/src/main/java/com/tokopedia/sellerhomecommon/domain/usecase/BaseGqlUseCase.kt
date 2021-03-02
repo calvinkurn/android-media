@@ -21,15 +21,17 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
         return this.getData(T::class.java)
     }
 
-    private fun getAlwaysCloudCacheStrategy(): GraphqlCacheStrategy {
+    protected fun getAlwaysCloudCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .setSessionIncluded(true)
                 .build()
     }
 
-    private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
+    protected fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .setSessionIncluded(true)
                 .build()
     }
 
