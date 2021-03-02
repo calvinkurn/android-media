@@ -19,7 +19,7 @@ import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER
+import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -50,8 +50,8 @@ class ShopHomeAdapterTypeFactory(
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
+            VOUCHER_STATIC -> return ShopHomeVoucherViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
-            VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
         }
@@ -130,8 +130,7 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeCarousellProductViewHolder(parent, shopHomeCarouselProductListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent, adapter?.isOwner
-                        ?: false, onMerchantVoucherListWidgetListener)
+                ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)

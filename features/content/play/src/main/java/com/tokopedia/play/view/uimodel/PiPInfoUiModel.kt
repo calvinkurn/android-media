@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.type.VideoOrientation
 
 /**
@@ -8,7 +9,9 @@ import com.tokopedia.play.view.type.VideoOrientation
  */
 data class PiPInfoUiModel(
         val channelId: String,
+        val source: PlaySource,
         val partnerId: Long?,
         val channelType: PlayChannelType,
-        val videoOrientation: VideoOrientation
+        val videoOrientation: VideoOrientation,
+        val stopOnClose: Boolean
 )

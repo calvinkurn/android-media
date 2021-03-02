@@ -15,7 +15,6 @@ object GqlQueryConstant {
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "promo"
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
@@ -32,6 +31,6 @@ object WidgetName {
     const val PRODUCT = "product"
     const val RECENT_ACTIVITY = "recent_activity"
     const val BUY_AGAIN = "buy_again"
-    const val VOUCHER = "voucher"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
+    const val VOUCHER_STATIC = "voucher_static"
 }
