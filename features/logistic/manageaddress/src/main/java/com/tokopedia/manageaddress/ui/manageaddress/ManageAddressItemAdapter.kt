@@ -20,6 +20,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -29,6 +30,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     var addressList = mutableListOf<RecipientAddressModel>()
     var token: Token? = null
     private var selectedPos = RecyclerView.NO_POSITION
+    private var isItemClicked = false
 
     interface ManageAddressItemAdapterListener {
         fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel)
@@ -89,10 +91,16 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     address_detail.text = data.street + ", " + data.postalCode
                 }
                 val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
-                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
+                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 80.toDp(), 80.toDp(), true))
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
-                val cardSelected = selectedPos == layoutPosition
+                val cardSelected: Boolean
+                if (data.isStateChosenAddress && !isItemClicked) {
+                    cardSelected = true
+                    selectedPos = layoutPosition
+                } else {
+                    cardSelected = selectedPos == layoutPosition
+                }
                 cardAddress.hasCheckIcon = cardSelected
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
@@ -136,6 +144,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 listener.onManageAddressLainnyaClicked(peopleAddress)
             }
             cardAddress.setOnClickListener {
+                isItemClicked = true
                 notifyItemChanged(selectedPos)
                 selectedPos = layoutPosition
                 notifyItemChanged(layoutPosition)

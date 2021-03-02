@@ -229,9 +229,20 @@ class HowToPayFragment : BaseDaggerFragment() {
         tvPaymentAccountNumber.text = accountNumber
         tvTotalPaymentAmount.text = amountStr
 
-        appLinkPaymentInfo.gateway_logo?.let {
-            ivGateWayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            ivGateWayImage.setImageUrl(it, ivGateWayImage.heightRatio)
+        ivGateWayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+        val bankLogo = appLinkPaymentInfo.bank_logo ?: ""
+        val gatewayLogo = appLinkPaymentInfo.gateway_logo ?: ""
+        when {
+            bankLogo.isNotBlank() -> {
+                ivGateWayImage.setImageUrl(bankLogo, ivGateWayImage.heightRatio)
+            }
+            gatewayLogo.isNotBlank() -> {
+                ivGateWayImage.setImageUrl(gatewayLogo, ivGateWayImage.heightRatio)
+            }
+            else -> {
+                ivGateWayImage.gone()
+            }
         }
 
         actionIcon?.let {

@@ -116,7 +116,9 @@ data class ShopLayoutWidget(
                 @SerializedName("cashback")
                 val cashback: Int = -1,
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf()
         ) {
             data class Banner(
                     @SerializedName("imageID")

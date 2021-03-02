@@ -175,7 +175,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+                    tvShippingCourier?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
@@ -211,8 +211,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 } else if (shipping.shippingEta != null) {
                     tvShippingCourier?.text = "${shipping.shipperName} (${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                                ?: 0, false).removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                            ?: 0, false).removeDecimalSuffix()
                     })"
                     if (shipping.shippingEta.isNotEmpty()) {
                         tvShippingCourierEta?.text = shipping.shippingEta
@@ -566,7 +566,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase) {
+    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
         AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
             override fun onSelect(addressId: String) {
                 listener.onAddressChange(addressId)
@@ -575,7 +575,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             override fun onAddAddress(token: Token?) {
                 listener.onAddAddress(token)
             }
-        }).show(fragment, preference.preference.address.addressId.toString())
+        }).show(fragment, preference.preference.address.addressId.toString(), addressState)
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {

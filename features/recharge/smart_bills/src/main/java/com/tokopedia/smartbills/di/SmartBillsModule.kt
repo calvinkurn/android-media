@@ -3,6 +3,7 @@ package com.tokopedia.smartbills.di
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
@@ -63,12 +64,14 @@ class SmartBillsModule {
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      digitalInterceptor: DigitalInterceptor,
+                                     chuckerInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
         return builder
                 .addInterceptor(digitalInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(chuckerInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
@@ -111,5 +114,11 @@ class SmartBillsModule {
     @Provides
     fun provideAnalytics(): SmartBillsAnalytics {
         return SmartBillsAnalytics()
+    }
+
+    @Provides
+    @SmartBillsScope
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 }

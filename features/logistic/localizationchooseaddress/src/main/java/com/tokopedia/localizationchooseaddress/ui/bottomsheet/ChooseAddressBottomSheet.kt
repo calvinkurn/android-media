@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -32,9 +31,10 @@ import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.INTENT_ADDRESS_SELECTED
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -89,11 +89,21 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var hasBottomSheetShown: Boolean = false
     // flag variable to differentiate login and GPS flow
     private var isLoginFlow: Boolean = false
+    // flag variable to prevent multiple times asking permission
+    private var hasAskedPermission: Boolean = false
+    //flag variable to differentiate setState from snippet or not
+    private var isSnippetAddressFlow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
         permissionCheckerHelper = PermissionCheckerHelper()
+        hasAskedPermission = savedInstanceState?.getBoolean(HAS_ASKED_PERMISSION_KEY) ?: false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(HAS_ASKED_PERMISSION_KEY, hasAskedPermission)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -146,6 +156,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = saveAddressDataModel.districtId.toString(),
                             postalCode = saveAddressDataModel.postalCode
                     )
+                    isSnippetAddressFlow = false
                 }
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
@@ -162,13 +173,14 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             latitude = latitude,
                             longitude = longitude,
                             postalCode = ""
-
                     )
+                    isSnippetAddressFlow = true
                 }
             }
             REQUEST_CODE_ADDRESS_LIST -> {
-                val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(INTENT_ADDRESS_SELECTED)
-                if (recipientAddress != null) {
+                val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(EXTRA_SELECTED_ADDRESS_DATA)
+                val isFromANA = data?.getBooleanExtra(EXTRA_SELECTED_ADDRESS_DATA, false)
+                if (recipientAddress != null && isFromANA == false) {
                     viewModel.setStateChosenAddress(
                             status = recipientAddress.addressStatus,
                             addressId = recipientAddress.id.toString(),
@@ -179,6 +191,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = recipientAddress.destinationDistrictId.toString(),
                             postalCode = recipientAddress.postalCode
                     )
+                    isSnippetAddressFlow = false
+                } else {
+                    listener?.onAddressDataChanged()
+                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
@@ -197,7 +213,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
-        setCloseClickListener { this.dismiss() }
+        setCloseClickListener { dismissBottomSheet() }
+        setOnDismissListener { dismissBottomSheet() }
         setShowListener {
             onBottomSheetShown()
         }
@@ -248,24 +265,38 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 is Success -> {
                     ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_SUCCESS)
                     val data = it.data
-                    val localData = ChooseAddressUtils.setLocalizingAddressData(
-                            addressId = data.addressId.toString(),
-                            cityId = data.cityId.toString(),
-                            districtId = data.districtId.toString(),
-                            lat = data.latitude,
-                            long = data.longitude,
-                            label = data.addressName,
-                            postalCode = data.postalCode
-                    )
+                    var localData = LocalCacheModel()
+                    if (isSnippetAddressFlow) {
+                        localData = ChooseAddressUtils.setLocalizingAddressData(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = "${data.districtName}, ${data.cityName}",
+                                postalCode = data.postalCode
+                        )
+                    } else {
+                        localData = ChooseAddressUtils.setLocalizingAddressData(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = data.addressName,
+                                postalCode = data.postalCode
+                        )
+                    }
+
                     chooseAddressPref?.setLocalCache(localData)
                     listener?.onAddressDataChanged()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
                 is Fail -> {
                     ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_NOT_SUCCESS)
                     listener?.onLocalizingAddressServerDown()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
             }
@@ -288,12 +319,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     if (isLoginFlow) {
                         listener?.onLocalizingAddressLoginSuccessBottomSheet()
                     }
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
 
                 is Fail -> {
                     listener?.onLocalizingAddressServerDown()
-                    this.dismiss()
+                    dismissBottomSheet()
                 }
             }
         })
@@ -346,7 +377,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setTitle("Mau kirim belanjaan ke mana")
         renderButton()
         setCloseClickListener {
-            this.dismiss()
+            dismissBottomSheet()
         }
     }
 
@@ -383,7 +414,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
             listener?.onLocalizingAddressServerDown()
-            this.dismiss()
+            dismissBottomSheet()
         }
     }
 
@@ -415,6 +446,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+
+        private const val HAS_ASKED_PERMISSION_KEY = "has_asked_permission"
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
@@ -449,10 +482,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showGpsPopUp() {
-        if (shouldShowGpsPopUp && hasBottomSheetShown) {
+        if (shouldShowGpsPopUp && hasBottomSheetShown && !hasAskedPermission) {
+            hasAskedPermission = true
             permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
-                    //no op
+                    ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
                 }
 
                 override fun onNeverAskAgain(permissionText: String) {
@@ -460,10 +494,16 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
 
                 override fun onPermissionGranted() {
+                    ChooseAddressTracking.onClickAllowLocation(userSession.userId)
                     getLocation()
                 }
             })
         }
+    }
+
+    private fun dismissBottomSheet() {
+        listener?.onDismissChooseAddressBottomSheet()
+        this.dismiss()
     }
 
     // This is a workaround to make sure Permissions Dialog is shown after the bottom sheet is shown
@@ -493,5 +533,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          * this listen is use to notify host/fragment if login is success from bottomshet
          */
         fun onLocalizingAddressLoginSuccessBottomSheet()
+
+        fun onDismissChooseAddressBottomSheet()
     }
 }

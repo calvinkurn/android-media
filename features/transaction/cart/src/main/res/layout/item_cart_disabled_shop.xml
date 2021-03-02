@@ -48,14 +48,6 @@
             app:typographyWeight="bold"
             tools:text="Makmur  adalah aaaaaa bbbbb" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_fulfillment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:text="@string/label_fulfilment_wording"
-            app:labelType="general_light_green" />
-
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

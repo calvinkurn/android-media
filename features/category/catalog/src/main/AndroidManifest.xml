@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:label="@string/title_activity_catalog"
+            android:label="asd"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="com.tokopedia.internal.VIEW" />

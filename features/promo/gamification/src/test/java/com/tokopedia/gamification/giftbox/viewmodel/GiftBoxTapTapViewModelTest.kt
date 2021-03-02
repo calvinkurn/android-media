@@ -72,21 +72,21 @@ class GiftBoxTapTapViewModelTest {
         assertEquals(viewModel.giftHomeLiveData.value?.status, LiveDataResult.STATUS.ERROR)
     }
 
-    @Test
-    fun crackGiftBoxSuccess() {
-        prepareRelaxedViewModel()
-        val responseCrackResultEntity: ResponseCrackResultEntity = mockk()
-
-        coEvery { crackUseCase.getResponse(crackUseCase.getQueryParams(any(), any())) } returns responseCrackResultEntity
-
-        val couponDetailResponse: CouponDetailResponse = mockk(relaxed = true)
-        coEvery { viewModel.composeApi(responseCrackResultEntity) } returns couponDetailResponse
-
-
-        viewModel.giftCrackLiveData.observeForever { }
-        viewModel.crackGiftBox()
-        assertEquals(viewModel.giftCrackLiveData.value?.status, LiveDataResult.STATUS.SUCCESS)
-    }
+//    @Test
+//    fun crackGiftBoxSuccess() {
+//        prepareRelaxedViewModel()
+//        val responseCrackResultEntity: ResponseCrackResultEntity = mockk()
+//
+//        coEvery { crackUseCase.getResponse(crackUseCase.getQueryParams(any(), any())) } returns responseCrackResultEntity
+//
+//        val couponDetailResponse: CouponDetailResponse = mockk(relaxed = true)
+//        coEvery { viewModel.composeApi(responseCrackResultEntity) } returns couponDetailResponse
+//
+//
+//        viewModel.giftCrackLiveData.observeForever { }
+//        viewModel.crackGiftBox()
+//        assertEquals(viewModel.giftCrackLiveData.value?.status, LiveDataResult.STATUS.SUCCESS)
+//    }
 
     @Test
     fun getRewardsFail() {

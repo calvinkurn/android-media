@@ -110,7 +110,7 @@ class SmartBillsViewModelTest {
     fun getStatementBills_Success() {
         val statementBillsResponse = RechargeStatementBills.Response(RechargeStatementBills(
             month = 4, monthText = "April", isOngoing = true, bills = listOf(
-                RechargeBills(0, 1, "test", checkoutFields = listOf(checkoutField))
+                RechargeBills(false, 0, 1, "test", checkoutFields = listOf(checkoutField))
             )
         ))
         val result = HashMap<Type, Any>()
@@ -267,7 +267,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun createMultiCheckoutParams_Success() {
-        val bills = listOf(RechargeBills(0, 1, checkoutFields = listOf(checkoutField)))
+        val bills = listOf(RechargeBills(false, 0, 1, checkoutFields = listOf(checkoutField)))
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNotNull(actual)
         actual?.run {

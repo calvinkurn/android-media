@@ -13,12 +13,14 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import javax.inject.Inject
 
 class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceByIdUseCase: GetPreferenceByIdUseCase,
                                                      private val createPreferenceUseCase: CreatePreferenceUseCase,
                                                      private val deletePreferenceUseCase: DeletePreferenceUseCase,
-                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase) : ViewModel() {
+                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase,
+                                                     private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : ViewModel() {
 
     private val _preference: MutableLiveData<OccState<ProfilesItemModel>> = MutableLiveData()
     val preference: LiveData<OccState<ProfilesItemModel>>
@@ -95,7 +97,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
-        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
+        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddressRequestHelper.getChosenAddress()),
                 { message: String ->
                     _editResult.value = OccState.Success(message)
                     OccIdlingResource.decrement()

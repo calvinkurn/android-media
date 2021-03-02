@@ -22,10 +22,13 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import rx.Observable
 import javax.inject.Inject
@@ -200,7 +203,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                             val job = async {
                                 try {
                                     val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
-                                    dynamicIcon?.let {
+                                    dynamicIcon.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }

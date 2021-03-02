@@ -8,6 +8,7 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
     it.add(createCarouselProductCardGridWithLabelBestSeller())
+    it.add(createCarouselProductCardGridLabelETA())
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
     it.add(createCarouselProductCardGrid())
@@ -151,6 +152,17 @@ private fun createCarouselProductCardGridWithLabelBestSeller(): List<ProductCard
     )
 }
 
+private fun createCarouselProductCardGridLabelETA(): List<ProductCardModel> {
+    return listOf(
+            createProductCardLabelETA(),
+            createProductCardOneLineProductName(),
+            createProductCardOneLineProductName(),
+            createProductCardOneLineProductName(),
+            createProductCardOneLineProductName(),
+            createProductCardOneLineProductName(),
+    )
+}
+
 private fun createProductCardMaxInfoAndLabelATC(): ProductCardModel {
     productCardNameSuffix += 1
 
@@ -245,5 +257,24 @@ private fun createProductCardBestSellerLabel(): ProductCardModel {
             shopLocation = "DKI Jakarta",
             countSoldRating = "4.8",
             labelGroupList = listOf(labelBestSeller, labelGroupIntegrity)
+    )
+}
+
+private fun createProductCardLabelETA(): ProductCardModel {
+    productCardNameSuffix += 1
+
+    return ProductCardModel(
+            productName = "$productCardNameSuffix Label ETA Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            },
+            shopLocation = "DKI Jakarta",
+            countSoldRating = "4.5",
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            labelGroupList = listOf(
+                    ProductCardModel.LabelGroup(position = "eta", title = "Tiba 28 Feb - 1 Mar", type = "textDarkGrey")
+            ),
     )
 }

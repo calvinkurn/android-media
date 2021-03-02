@@ -2,10 +2,10 @@ package com.tokopedia.topchat.idling
 
 import androidx.fragment.app.FragmentManager
 import androidx.test.espresso.IdlingResource
-import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 
 class FragmentTransactionIdle(
-        private val supportFragmentManager: FragmentManager, tag: String
+        private val supportFragmentManager: FragmentManager,
+        private val tag: String
 ) : IdlingResource {
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -15,7 +15,7 @@ class FragmentTransactionIdle(
     }
 
     override fun isIdleNow(): Boolean {
-        val fragment = supportFragmentManager.findFragmentByTag(TopChatRoomActivityStub.TAG)
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
         val isIdle = fragment != null && fragment.isResumed
         if (isIdle) {
             resourceCallback?.onTransitionToIdle()
