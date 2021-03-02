@@ -15,7 +15,10 @@
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_4"
         android:scaleType="fitCenter"
         tools:src="@tools:sample/avatars" />
 
@@ -47,6 +50,9 @@
         android:layout_height="@dimen/unify_space_16"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_4"
         app:icon_name="CHEVRON_RIGHT"
         tools:src="@drawable/ic_arrow_right_grey" />
 </merge>

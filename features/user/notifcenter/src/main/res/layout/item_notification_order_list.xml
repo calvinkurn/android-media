@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/light_N50"
-    android:paddingHorizontal="@dimen/unify_space_16"
-    android:paddingVertical="@dimen/unify_space_12">
+    android:paddingHorizontal="@dimen/notif_dp_10"
+    android:paddingVertical="@dimen/notif_dp_6">
 
     <com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
         android:id="@+id/ll_first_card"
