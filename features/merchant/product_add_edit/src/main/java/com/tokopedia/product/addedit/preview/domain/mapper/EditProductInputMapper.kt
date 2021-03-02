@@ -131,13 +131,6 @@ class EditProductInputMapper @Inject constructor() {
         val picID = it.pictures.firstOrNull()?.picID ?: ""
         var productPicture = it.pictures
 
-        val productStock =
-                if (shouldPutStockOnParam) {
-                    it.stock
-                } else {
-                    null
-                }
-
         if (filePath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
             productPicture = getExistingPictureFromProductVariants(filePath, picID, products)
         }
@@ -146,7 +139,7 @@ class EditProductInputMapper @Inject constructor() {
                 it.price,
                 it.sku,
                 it.status,
-                productStock,
+                it.stock,
                 it.isPrimary,
                 mapPictureVariant(productPicture)
         )
