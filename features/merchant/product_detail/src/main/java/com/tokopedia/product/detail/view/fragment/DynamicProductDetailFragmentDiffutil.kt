@@ -1933,8 +1933,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun openShipmentClickedBottomSheet() {
+    override fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean,
+                                                componentTrackDataModel:ComponentTrackDataModel?) {
         viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
             val boData = viewModel.getBebasOngkirDataByProductId()
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
@@ -1950,7 +1952,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     freeOngkirUrl = boData.imageURL,
                     poTime = it.data.preOrder.preorderInDays,
                     uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
-                    shouldRefreshShippingBottomSheet
+                    userId = viewModel.userId,
+                    forceRefresh = shouldRefreshShippingBottomSheet
             ))
             shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()

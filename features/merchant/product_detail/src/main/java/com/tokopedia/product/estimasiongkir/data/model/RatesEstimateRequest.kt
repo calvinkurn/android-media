@@ -19,6 +19,7 @@ data class RatesEstimateRequest(
         val freeOngkirUrl: String = "",
         val poTime: Long = 0L,
         val uspImageUrl: String = "",
+        val userId: String = "",
         val forceRefresh: Boolean = false
 ) {
     companion object {

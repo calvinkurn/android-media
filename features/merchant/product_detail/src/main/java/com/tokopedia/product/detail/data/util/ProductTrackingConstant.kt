@@ -186,6 +186,8 @@ object ProductTrackingConstant {
         const val CLICK_MUTE_VIDEO = "click - mute on video"
 
         const val CLICK_CHECK_CART = "click - cek keranjang"
+        const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
+        const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
     }
 
 
@@ -215,6 +217,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
+        const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
     object Affiliate {
