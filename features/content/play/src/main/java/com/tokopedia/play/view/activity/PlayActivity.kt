@@ -182,6 +182,9 @@ class PlayActivity : BaseActivity(),
 
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
+    }
+
+    override fun onSwipeNextPage() {
         playPreference.setOnboardingShown(viewModel.userId)
     }
 
