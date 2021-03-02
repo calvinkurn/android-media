@@ -1352,7 +1352,7 @@ class AddEditProductPreviewFragment :
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
             }
-            val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id)
+            val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id, viewModel.isProductSingleLocation)
             startActivityForResult(intent, REQUEST_CODE_VARIANT_DIALOG_EDIT)
         }
     }

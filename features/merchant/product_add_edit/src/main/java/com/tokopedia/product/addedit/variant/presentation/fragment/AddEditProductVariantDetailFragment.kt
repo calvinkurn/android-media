@@ -60,10 +60,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 {
 
     companion object {
-        fun createInstance(cacheManagerId: String): Fragment {
+        fun createInstance(cacheManagerId: String, isProductSingleLocation: Boolean): Fragment {
             return AddEditProductVariantDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    putBoolean(AddEditProductConstants.EXTRA_IS_PRODUCT_SINGLE_LOCATION, isProductSingleLocation)
                 }
             }
         }
@@ -120,7 +121,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        viewModel.setupMultiLocationValue()
+        val isProductSingleLocation = arguments?.getBoolean(AddEditProductConstants.EXTRA_IS_PRODUCT_SINGLE_LOCATION) ?: true
+        viewModel.setupMultiLocationValue(isProductSingleLocation)
 
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
         multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)

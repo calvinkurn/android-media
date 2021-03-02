@@ -35,6 +35,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_IS_PRODUCT_SINGLE_LOCATION
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
@@ -100,13 +101,18 @@ class AddEditProductVariantFragment :
         private const val TAG_VARIANT_UNIT_VALUE_PICKER = "VARIANT_UNIT_VALUE_PICKER"
         private const val TAG_CUSTOM_VARIANT_UNIT_VALUE_INPUT_FORM = "VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM"
 
-        fun createInstance(cacheManagerId: String?): Fragment {
+        fun createInstance(cacheManagerId: String?, isProductSingleLocation: Boolean): Fragment {
             return AddEditProductVariantFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    putBoolean(EXTRA_IS_PRODUCT_SINGLE_LOCATION, isProductSingleLocation)
                 }
             }
         }
+    }
+
+    private val isProductSingleLocation by lazy {
+        arguments?.getBoolean(EXTRA_IS_PRODUCT_SINGLE_LOCATION, true) ?: true
     }
 
     @Inject
@@ -1154,7 +1160,7 @@ class AddEditProductVariantFragment :
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
             }
-            val intent = AddEditProductVariantDetailActivity.createInstance(context, cacheManager.id)
+            val intent = AddEditProductVariantDetailActivity.createInstance(context, cacheManager.id, isProductSingleLocation)
             startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL)
         }
     }

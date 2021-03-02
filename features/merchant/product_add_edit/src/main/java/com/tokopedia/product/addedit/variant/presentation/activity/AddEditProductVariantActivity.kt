@@ -16,9 +16,10 @@ import com.tokopedia.product.addedit.variant.presentation.fragment.AddEditProduc
 class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditProductVariantComponent> {
 
     companion object {
-        fun createInstance(context: Context?, cacheManagerId: String?): Intent =
+        fun createInstance(context: Context?, cacheManagerId: String?, isProductSingleLocation: Boolean = true): Intent =
                 Intent(context, AddEditProductVariantActivity::class.java)
                         .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                        .putExtra(AddEditProductConstants.EXTRA_IS_PRODUCT_SINGLE_LOCATION, isProductSingleLocation)
     }
 
     override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_variant
@@ -27,7 +28,8 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
 
     override fun getNewFragment(): Fragment {
         val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
-        return AddEditProductVariantFragment.createInstance(cacheManagerId)
+        val isProductSingleLocation = intent?.getBooleanExtra(AddEditProductConstants.EXTRA_IS_PRODUCT_SINGLE_LOCATION, true) ?: true
+        return AddEditProductVariantFragment.createInstance(cacheManagerId, isProductSingleLocation)
     }
 
     override fun getComponent(): AddEditProductVariantComponent {
