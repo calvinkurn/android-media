@@ -6,13 +6,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
@@ -96,19 +91,6 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    GetLikeDislikeMapper provideGetLikeDislikeMapper() {
-        return new GetLikeDislikeMapper();
-    }
-
-
-    @ReputationScope
-    @Provides
-    LikeDislikeMapper provideLikeDislikeMapper() {
-        return new LikeDislikeMapper();
-    }
-
-    @ReputationScope
-    @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
@@ -117,12 +99,6 @@ public class ReputationModule {
     @Provides
     DeleteReviewResponseUseCase provideDeleteReviewResponseUseCaseV2(ReputationRepository reputationRepository) {
         return new DeleteReviewResponseUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
-        return new DeleteReviewResponseMapper();
     }
 
     @ReputationScope
