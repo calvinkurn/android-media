@@ -116,10 +116,10 @@ class HotelSearchMapFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initLocationMap() {
-        if (map_view != null) {
-            map_view.onCreate(null)
-            map_view.onResume()
-            map_view.getMapAsync(this)
+        if (mapHotelSearchMap != null) {
+            mapHotelSearchMap.onCreate(null)
+            mapHotelSearchMap.onResume()
+            mapHotelSearchMap.getMapAsync(this)
         }
         setGoogleMap()
     }

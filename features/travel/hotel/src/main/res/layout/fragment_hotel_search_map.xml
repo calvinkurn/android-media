@@ -26,24 +26,24 @@
                 app:layout_collapseParallaxMultiplier="0.6">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_map"
+                    android:id="@+id/rvHorizontalPropertiesHotelSearchMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_15"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/iv_get_location"
+                    app:layout_constraintTop_toBottomOf="@+id/ivGetLocationHotelSearchMap"
                     app:layout_constraintVertical_bias="0.50" />
 
                 <com.google.android.gms.maps.MapView
-                    android:id="@+id/map_view"
+                    android:id="@+id/mapHotelSearchMap"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:cameraZoom="20"
                     app:mapType="normal" />
 
                 <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-                    android:id="@+id/button_get_radius"
+                    android:id="@+id/btnGetRadiusHotelSearchMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:fbType="group"
@@ -52,7 +52,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_get_location"
+                    android:id="@+id/ivGetLocationHotelSearchMap"
                     android:layout_width="@dimen/spacing_lvl8"
                     android:layout_height="@dimen/spacing_lvl8"
                     android:layout_margin="@dimen/spacing_lvl4"
