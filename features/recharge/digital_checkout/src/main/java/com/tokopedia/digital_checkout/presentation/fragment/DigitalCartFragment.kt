@@ -501,18 +501,19 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
                 inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                    override fun onInputPriceByUserFilled(paymentAmount: Long) {
-                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
+                    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
+                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
+                                fintechProductWidget.isChecked())
                     }
 
                     override fun enableCheckoutButton() {
-                    btnCheckout.isEnabled = true
-                }
+                        btnCheckout.isEnabled = true
+                    }
 
-                override fun disableCheckoutButton() {
-                    btnCheckout.isEnabled = false
+                    override fun disableCheckoutButton() {
+                        btnCheckout.isEnabled = false
+                    }
                 }
-            }
 
             inputPriceHolderView.setMinMaxPayment(
                     total,
@@ -577,7 +578,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes.categoryName
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes.operatorName
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
-    private fun getPriceInput(): Double = inputPriceHolderView.getPriceInput().toDouble()
+    private fun getPriceInput(): Double? {
+        return if (inputPriceHolderView.getPriceInput() == null) return null
+        else inputPriceHolderView.getPriceInput()?.toDouble()
+    }
 
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"

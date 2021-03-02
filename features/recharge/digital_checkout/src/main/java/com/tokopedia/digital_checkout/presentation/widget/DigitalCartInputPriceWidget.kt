@@ -19,14 +19,14 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
                                                             attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var priceInput: Long = 0
+    private var priceInput: Long? = null
     var actionListener: ActionListener? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_input_price_view, this, true)
     }
 
-    fun getPriceInput(): Long = priceInput
+    fun getPriceInput(): Long? = priceInput
 
     fun setMinMaxPayment(totalPayment: Long, minPayment: Long, maxPayment: Long,
                          minPaymentString: String, maxPaymentString: String) {
@@ -52,7 +52,8 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
                 etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(this)
                 etDigitalCheckoutInputPrice.textFieldInput.setText(stringFormatted)
-                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getSelectionPosition(beforePrice, stringFormatted, selectionPosition))
+                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getSelectionPosition(beforePrice
+                        ?: 0, stringFormatted, selectionPosition))
                 etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(this)
             }
 
@@ -62,8 +63,9 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         })
     }
 
-    private fun validateUserInput(priceInput: Long, minPayment: Long, maxPayment: Long,
+    private fun validateUserInput(priceInput: Long?, minPayment: Long, maxPayment: Long,
                                   minPaymentString: String, maxPaymentString: String) {
+        if (priceInput == null) return
         when {
             isUserInputValid(priceInput, minPayment, maxPayment) -> {
                 if (minPayment > 0L && maxPayment > 0L) {
@@ -104,6 +106,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         priceInput = if (price != null) {
             price
         } else {
+            priceInput = 0
             etDigitalCheckoutInputPrice.setError(true)
             actionListener?.disableCheckoutButton()
             return
@@ -129,7 +132,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     interface ActionListener {
-        fun onInputPriceByUserFilled(paymentAmount: Long)
+        fun onInputPriceByUserFilled(paymentAmount: Long?)
         fun enableCheckoutButton()
         fun disableCheckoutButton()
     }
