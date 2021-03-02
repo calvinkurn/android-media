@@ -32,7 +32,7 @@ data class PageInfo(
         val searchTitle: String = "Cari di Tokopedia",
 
         @SerializedName("show_choose_address")
-        var showChooseAddress: Boolean = false,
+        val showChooseAddress: Boolean = false,
 
         var additionalInfo: AdditionalInfo? = null,
 
