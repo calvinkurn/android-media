@@ -48,6 +48,7 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
@@ -142,6 +143,8 @@ import javax.inject.Inject
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
+
+    private var binding: FragmentCartBinding? = null
 
     lateinit var toolbar: CartToolbar
     lateinit var basicToolbar: Toolbar
@@ -289,7 +292,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        binding = FragmentCartBinding.inflate(inflater, container, false)
+        val view = binding?.root
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
             val displayMetrics = DisplayMetrics()
@@ -299,13 +303,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
                 if (heightDiffInDp > 100) {
                     if (!isKeyboardOpened) {
-                        bottomLayout.gone()
-                        llPromoCheckout.gone()
+                        binding?.bottomLayout?.gone()
+                        binding?.llPromoCheckout?.gone()
                     }
                     isKeyboardOpened = true
                 } else if (isKeyboardOpened) {
-                    bottomLayout.show()
-                    llPromoCheckout.show()
+                    binding?.bottomLayout?.show()
+                    binding?.llPromoCheckout?.show()
                     isKeyboardOpened = false
                 }
             }
@@ -338,7 +342,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onStart() {
         super.onStart()
         // Check if currently not refreshing, not ATC external flow and not on error state
-        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && layoutGlobalError.visibility != View.VISIBLE) {
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
@@ -389,6 +393,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
         super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -508,32 +517,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun initView(view: View) {
-        basicToolbar = view.findViewById(R.id.toolbar)
-        navToolbar = view.findViewById(R.id.nav_toolbar)
-        appBarLayout = view.findViewById(R.id.app_bar_layout)
-        cartRecyclerView = view.findViewById(R.id.rv_cart)
-        btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
-        vDisabledBtnToShipment = view.findViewById(R.id.v_disabled_go_to_courier_page_button)
-        tvTotalPrice = view.findViewById(R.id.tv_total_prices)
-        rlContent = view.findViewById(R.id.rl_content)
-        layoutGlobalError = view.findViewById(R.id.layout_global_error)
-        bottomLayout = view.findViewById(R.id.bottom_layout)
-        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow)
-        llCartContainer = view.findViewById(R.id.ll_cart_container)
-        llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
-        promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
-        imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
-        textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
-        tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
-        topLayout = view.findViewById(R.id.top_layout)
-        topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
-        checkboxGlobal = view.findViewById(R.id.checkbox_global)
-        textActionDelete = view.findViewById(R.id.text_action_delete)
+//        basicToolbar = view.findViewById(R.id.toolbar)
+//        navToolbar = view.findViewById(R.id.nav_toolbar)
+//        appBarLayout = view.findViewById(R.id.app_bar_layout)
+//        cartRecyclerView = view.findViewById(R.id.rv_cart)
+//        btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
+//        vDisabledBtnToShipment = view.findViewById(R.id.v_disabled_go_to_courier_page_button)
+//        tvTotalPrice = view.findViewById(R.id.tv_total_prices)
+//        rlContent = view.findViewById(R.id.rl_content)
+//        layoutGlobalError = view.findViewById(R.id.layout_global_error)
+//        bottomLayout = view.findViewById(R.id.bottom_layout)
+//        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow)
+//        llCartContainer = view.findViewById(R.id.ll_cart_container)
+//        llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
+//        promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
+//        imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
+//        textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
+//        tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
+//        topLayout = view.findViewById(R.id.top_layout)
+//        topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
+//        checkboxGlobal = view.findViewById(R.id.checkbox_global)
+//        textActionDelete = view.findViewById(R.id.text_action_delete)
 
         initToolbar(view)
 
         activity?.let {
-            refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
+            binding?.swipeRefreshLayout?.let { swipeRefreshLayout ->
+                refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
+            }
             progressDialog = AlertDialog.Builder(it)
                     .setView(R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
@@ -546,15 +557,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initViewListener() {
-        btnToShipment.setOnClickListener { checkGoToShipment("") }
-        imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
-        textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
-        tvTotalPrice.setOnClickListener { onClickChevronSummaryTransaction() }
+        binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
+        binding?.imgChevronSummary?.setOnClickListener { onClickChevronSummaryTransaction() }
+        binding?.textTotalPaymentLabel?.setOnClickListener { onClickChevronSummaryTransaction() }
+        binding?.tvTotalPrices?.setOnClickListener { onClickChevronSummaryTransaction() }
     }
 
     private fun initRecyclerView() {
         val gridLayoutManager = GridLayoutManager(context, 2)
-        cartRecyclerView.apply {
+        binding?.rvCart?.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -675,22 +686,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setToolbarShadowVisibility(show: Boolean) {
-        if (topLayout.visibility == View.VISIBLE) {
+        if (binding?.topLayout?.root?.visibility == View.VISIBLE) {
             if (show) {
-                topLayoutShadow.show()
+                binding?.topLayoutShadow?.show()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    appBarLayout.elevation = NO_ELEVATION.toFloat()
+                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
                 }
             } else {
-                topLayoutShadow.gone()
+                binding?.topLayoutShadow?.gone()
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (show) {
-                    appBarLayout.elevation = HAS_ELEVATION.toFloat()
-                    topLayoutShadow.gone()
+                    binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
+                    binding?.topLayoutShadow?.gone()
                 } else {
-                    appBarLayout.elevation = NO_ELEVATION.toFloat()
+                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
                 }
             }
         }
@@ -720,8 +731,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun addRecyclerViewScrollListener(cartRecyclerView: RecyclerView) {
         cartRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (bottomLayout.visibility == View.GONE) {
-                    llPromoCheckout.gone()
+                if (binding?.bottomLayout?.visibility == View.GONE) {
+                    binding?.llPromoCheckout?.gone()
                     return
                 }
 
@@ -729,8 +740,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (bottomLayout.visibility == View.GONE) {
-                    llPromoCheckout.gone()
+                if (binding?.bottomLayout?.visibility == View.GONE) {
+                    binding?.llPromoCheckout?.gone()
                 }
 
                 if (recyclerView.canScrollVertically(-1)) {
@@ -754,9 +765,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (topItemPosition >= adapterData.size) return
         val lastData = adapterData[topItemPosition]
         if (lastData is CartShopHolderData || lastData is CartSelectAllHolderData) {
-            if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+            if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
         } else {
-            if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
+            if (binding?.topLayout?.root?.visibility == View.VISIBLE) setTopLayoutVisibility(false)
         }
     }
 
@@ -789,28 +800,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             delayShowPromoButtonJob?.cancel()
             delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
                 delay(750L)
-                llPromoCheckout.animate()
-                        .y(initialPromoButtonPosition)
-                        .setDuration(500L)
-                        .start()
+                binding?.llPromoCheckout?.animate()
+                        ?.y(initialPromoButtonPosition)
+                        ?.setDuration(500L)
+                        ?.start()
             }
         }
     }
 
     private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
-        val valueY = llPromoCheckout.y + dy
+        val valueY = (binding?.llPromoCheckout?.y ?: 0f) + dy
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
             if (initialPromoButtonPosition == 0f && TRANSLATION_LENGTH - dy == 0f) {
                 // Initial position of View if previous initialization attempt failed
-                initialPromoButtonPosition = llPromoCheckout.y
+                initialPromoButtonPosition = binding?.llPromoCheckout?.y ?: 0f
             }
 
             if (TRANSLATION_LENGTH != 0f) {
                 if (dy < 0 && valueY < initialPromoButtonPosition) {
                     // Prevent scroll up move button exceed initial view position
                     animatePromoButtonToStartingPosition()
-                } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
+                } else if (valueY <= (binding?.llPromoCheckout?.height ?: 0) + initialPromoButtonPosition) {
                     // Prevent scroll down move button too far
                     animatePromoButtonToHiddenPosition(valueY)
                 }
@@ -822,35 +833,35 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animatePromoButtonToStartingPosition() {
-        llPromoCheckout.animate()
-                .y(initialPromoButtonPosition)
-                .setDuration(0)
-                .start()
+        binding?.llPromoCheckout?.animate()
+                ?.y(initialPromoButtonPosition)
+                ?.setDuration(0)
+                ?.start()
     }
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
-        llPromoCheckout.animate()
-                .y(valueY)
-                .setDuration(0)
-                .start()
+        binding?.llPromoCheckout?.animate()
+                ?.y(valueY)
+                ?.setDuration(0)
+                ?.start()
     }
 
     private fun initToolbar(view: View) {
         if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
             initNavigationToolbar(view)
-            basicToolbar.gone()
-            navToolbar.show()
+            binding?.toolbar?.gone()
+            binding?.navToolbar?.show()
         } else {
             initBasicToolbar(view)
-            navToolbar.gone()
-            basicToolbar.show()
+            binding?.navToolbar?.gone()
+            binding?.toolbar?.show()
         }
         setToolbarShadowVisibility(false)
     }
 
     private fun initNavigationToolbar(view: View) {
         activity?.let {
-            val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
+            val statusBarBackground = binding?.statusBarBg
 
             val args = arguments?.getString(CartFragment::class.java.simpleName)
             if (args?.isNotEmpty() == true) {
@@ -858,22 +869,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             if (isToolbarWithBackButton) {
-                statusBarBackground.hide()
+                statusBarBackground?.hide()
             } else {
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground.visibility = View.INVISIBLE
+                        statusBarBackground?.visibility = View.INVISIBLE
                     }
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                        statusBarBackground.show()
+                        statusBarBackground?.show()
                     }
                     else -> {
-                        statusBarBackground.hide()
+                        statusBarBackground?.hide()
                     }
                 }
             }
 
-            navToolbar.apply {
+            binding?.navToolbar?.apply {
                 setOnBackButtonClickListener(
                         disableDefaultGtmTracker = true,
                         backButtonClickListener = ::onBackPressed
@@ -917,29 +928,29 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 isToolbarWithBackButton = false
             }
 
-            val appbar = view.findViewById<Toolbar>(R.id.toolbar)
-            val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
-            statusBarBackground.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            val appbar = binding?.toolbar
+            val statusBarBackground = binding?.statusBarBg
+            statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
 
             if (isToolbarWithBackButton) {
                 toolbar = toolbarRemoveWithBackView() as CartToolbar
-                statusBarBackground.hide()
+                statusBarBackground?.hide()
             } else {
                 toolbar = toolbarRemoveView() as CartToolbar
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground.visibility = View.INVISIBLE
+                        statusBarBackground?.visibility = View.INVISIBLE
                     }
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                        statusBarBackground.show()
+                        statusBarBackground?.show()
                     }
                     else -> {
-                        statusBarBackground.hide()
+                        statusBarBackground?.hide()
                     }
                 }
             }
             toolbar.let {
-                appbar.addView(toolbar as View)
+                appbar?.addView(toolbar as View)
                 (activity as AppCompatActivity).setSupportActionBar(appbar)
             }
         }
@@ -966,46 +977,48 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initTopLayout() {
-        compositeSubscription.add(
-                rxCompoundButtonCheckDebounce(checkboxGlobal, 500L).subscribe(object : Subscriber<Boolean>() {
-                    override fun onNext(isChecked: Boolean) {
-                        handleCheckboxGlobalChangeEvent()
-                    }
+        binding?.topLayout?.checkboxGlobal?.let {
+            compositeSubscription.add(
+                    rxCompoundButtonCheckDebounce(it, 500L).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            handleCheckboxGlobalChangeEvent()
+                        }
 
-                    override fun onCompleted() {
-                    }
+                        override fun onCompleted() {
+                        }
 
-                    override fun onError(e: Throwable?) {
-                    }
-                })
-        )
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
+        }
 
-        textActionDelete.setOnClickListener {
+        binding?.topLayout?.textActionDelete?.setOnClickListener {
             onGlobalDeleteClicked()
         }
 
-        val dp16 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
-        val dp14 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
-        topLayout.setPadding(dp16, 0, 0, dp14)
-        textActionDelete.setPadding(dp16, 0, dp16, 0)
+        val dp16 = binding?.topLayout?.root?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16) ?: 0
+        val dp14 = binding?.topLayout?.root?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14) ?: 0
+        binding?.topLayout?.root?.setPadding(dp16, 0, 0, dp14)
+        binding?.topLayout?.textActionDelete?.setPadding(dp16, 0, dp16, 0)
     }
 
     private fun handleCheckboxGlobalChangeEvent() {
         if (isCheckUncheckDirectAction) {
-            cartAdapter.setAllAvailableItemCheck(checkboxGlobal.isChecked)
+            cartAdapter.setAllAvailableItemCheck(binding?.topLayout?.checkboxGlobal?.isChecked ?: false)
             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
             dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
             setGlobalDeleteVisibility()
-            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(checkboxGlobal.isChecked)
+            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(binding?.topLayout?.checkboxGlobal?.isChecked ?: false)
 
             reloadAppliedPromoFromGlobalCheck()
         }
-        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
+        cartAdapter.setCheckboxGlobalItemState(binding?.topLayout?.checkboxGlobal?.isChecked ?: false, isCheckUncheckDirectAction)
         isCheckUncheckDirectAction = true
     }
 
     private fun reloadAppliedPromoFromGlobalCheck() {
-        val params = generateParamValidateUsePromoRevamp(checkboxGlobal.isChecked, -1, -1, false)
+        val params = generateParamValidateUsePromoRevamp(binding?.topLayout?.checkboxGlobal?.isChecked ?: false, -1, -1, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
@@ -1167,7 +1180,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean) {
         this.isCheckUncheckDirectAction = isCheckUncheckDirectAction
-        checkboxGlobal.isChecked = isChecked
+        binding?.topLayout?.checkboxGlobal?.isChecked = isChecked
     }
 
     override fun onGlobalDeleteClicked() {
@@ -1430,7 +1443,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecentViewProductImpression(element: CartRecentViewItemHolderData) {
         recentViewList?.let {
             if (element.isTopAds) {
-                TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context?.applicationContext).hitImpressionUrl(
                         this::class.java.simpleName,
                         element.trackerImageUrl,
                         element.id,
@@ -1445,7 +1458,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
                 if (recentView.isTopAds) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    TopAdsUrlHitter(context?.applicationContext).hitClickUrl(
                             this::class.java.simpleName,
                             recentView.clickUrl,
                             recentView.id,
@@ -1588,8 +1601,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onSeeErrorProductsClicked() {
-        cartRecyclerView.layoutManager?.let {
-            val linearSmoothScroller = object : LinearSmoothScroller(cartRecyclerView.context) {
+        binding?.rvCart?.layoutManager?.let {
+            val linearSmoothScroller = object : LinearSmoothScroller(binding?.rvCart?.context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_START
                 }
@@ -1640,17 +1653,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartDataEnableToCheckout() {
         if (isAdded) {
-            vDisabledBtnToShipment.gone()
-            btnToShipment.isEnabled = true
-            btnToShipment.setOnClickListener { checkGoToShipment("") }
+            binding?.vDisabledGoToCourierPageButton?.gone()
+            binding?.goToCourierPageButton?.isEnabled = true
+            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
     }
 
     override fun onCartDataDisableToCheckout() {
         if (isAdded) {
-            btnToShipment.isEnabled = false
-            vDisabledBtnToShipment.show()
-            vDisabledBtnToShipment.setOnClickListener {
+            binding?.goToCourierPageButton?.isEnabled = false
+            binding?.vDisabledGoToCourierPageButton?.show()
+            binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                 if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
                     showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                 }
@@ -1687,19 +1700,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setCheckboxGlobalState() {
         isCheckUncheckDirectAction = false
         val isAllAvailableItemCheked = cartAdapter.isAllAvailableItemCheked()
-        if (checkboxGlobal.isChecked == isAllAvailableItemCheked) {
+        if (binding?.topLayout?.checkboxGlobal?.isChecked == isAllAvailableItemCheked) {
             isCheckUncheckDirectAction = true
             cartAdapter.resetGlobalItemLock()
         }
-        checkboxGlobal.isChecked = isAllAvailableItemCheked
+        binding?.topLayout?.checkboxGlobal?.isChecked = isAllAvailableItemCheked
     }
 
     private fun setGlobalDeleteVisibility() {
         if (cartAdapter.hasSelectedCartItem()) {
-            textActionDelete.show()
+            binding?.topLayout?.textActionDelete?.show()
             cartAdapter.setGlobalDeleteVisibility(true)
         } else {
-            textActionDelete.invisible()
+            binding?.topLayout?.textActionDelete?.invisible()
             cartAdapter.setGlobalDeleteVisibility(false)
         }
     }
@@ -1727,7 +1740,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val xCoordinate = location[0]
         val yCoordinate = location[1]
 
-        tmpAnimatedImage.apply {
+        binding?.tmpAnimatedImage?.apply {
             imageSource?.let {
                 setImageBitmap(imageSource)
             }
@@ -1775,7 +1788,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setActivityBackgroundColor() {
         activity?.let {
             if (activity !is CartActivity) {
-                llCartContainer.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+                binding?.llCartContainer?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
             }
 
             it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
@@ -1783,7 +1796,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderAbTestButton(button: ABTestButton) {
-        btnToShipment.buttonType = button.getUnifyButtonType()
+        binding?.goToCourierPageButton?.buttonType = button.getUnifyButtonType()
     }
 
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
@@ -1868,16 +1881,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setInitialCheckboxGlobalState(cartListData: CartListData) {
-        checkboxGlobal.isChecked = cartListData.isAllSelected
+        binding?.topLayout?.checkboxGlobal?.isChecked = cartListData.isAllSelected
     }
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
         when (outOfServiceData.id) {
             ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
-                layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+                binding?.layoutGlobalError?.setType(GlobalError.SERVER_ERROR)
                 outOfServiceData.buttons.firstOrNull()?.let { buttonData ->
-                    layoutGlobalError.errorAction.text = buttonData.message
-                    layoutGlobalError.setActionClickListener {
+                    binding?.layoutGlobalError?.errorAction?.text = buttonData.message
+                    binding?.layoutGlobalError?.setActionClickListener {
                         when (buttonData.id) {
                             ID_START_SHOPPING, ID_HOMEPAGE -> {
                                 goToHome()
@@ -1892,13 +1905,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         if (outOfServiceData.title.isNotBlank()) {
-            layoutGlobalError.errorTitle.text = outOfServiceData.title
+            binding?.layoutGlobalError?.errorTitle?.text = outOfServiceData.title
         }
         if (outOfServiceData.description.isNotBlank()) {
-            layoutGlobalError.errorDescription.text = outOfServiceData.description
+            binding?.layoutGlobalError?.errorDescription?.text = outOfServiceData.description
         }
         if (outOfServiceData.image.isNotBlank()) {
-            layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+            binding?.layoutGlobalError?.errorIllustration?.setImage(outOfServiceData.image, 0f)
         }
 
         showErrorContainer()
@@ -1962,11 +1975,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
-        promoCheckoutBtn.desc = ""
-        promoCheckoutBtn.setOnClickListener {
+        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
+        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+        binding?.promoCheckoutBtnCart?.title = getString(R.string.promo_funnel_label)
+        binding?.promoCheckoutBtnCart?.desc = ""
+        binding?.promoCheckoutBtnCart?.setOnClickListener {
             dPresenter.doUpdateCartForPromo()
             // analytics
             PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
@@ -1974,11 +1987,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
-        promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
-        promoCheckoutBtn.setOnClickListener {
+        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
+        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+        binding?.promoCheckoutBtnCart?.title = getString(R.string.promo_funnel_label)
+        binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_desc_no_selected_item)
+        binding?.promoCheckoutBtnCart?.setOnClickListener {
             showToastMessageGreen(getString(R.string.promo_choose_item_cart))
             PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
         }
@@ -1987,8 +2000,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
         val isApplied: Boolean
 
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
+        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
         val title: String = when {
             lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
@@ -2004,19 +2017,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
             isApplied = true
-            promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
+            binding?.promoCheckoutBtnCart?.desc = lastApplyData.additionalInfo.messageInfo.detail
         } else {
             isApplied = false
 
             if (cartAdapter.selectedCartItemData.isEmpty()) {
-                promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
+                binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_desc_no_selected_item)
             } else {
-                promoCheckoutBtn.desc = ""
+                binding?.promoCheckoutBtnCart?.desc = ""
             }
         }
 
-        promoCheckoutBtn.title = title
-        promoCheckoutBtn.setOnClickListener {
+        binding?.promoCheckoutBtnCart?.title = title
+        binding?.promoCheckoutBtnCart?.setOnClickListener {
             if (cartAdapter.selectedCartItemData.isEmpty()) {
                 showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                 PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -2049,9 +2062,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderPromoCheckoutLoading() {
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        promoCheckoutBtn.setOnClickListener { }
+        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.LOADING
+        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+        binding?.promoCheckoutBtnCart?.setOnClickListener { }
     }
 
     private fun isNeedHitUpdateCartAndValidateUse(params: ValidateUsePromoRequest): Boolean {
@@ -2506,24 +2519,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showErrorContainer()
             setToolbarShadowVisibility(true)
             val errorType = getGlobalErrorType(throwable)
-            layoutGlobalError.setType(errorType)
+            binding?.layoutGlobalError?.setType(errorType)
             if (errorType == GlobalError.SERVER_ERROR) {
-                layoutGlobalError.errorAction.text = WORDING_GO_TO_HOMEPAGE
-                layoutGlobalError.setActionClickListener {
+                binding?.layoutGlobalError?.errorAction?.text = WORDING_GO_TO_HOMEPAGE
+                binding?.layoutGlobalError?.setActionClickListener {
                     goToHome()
                 }
             } else {
-                layoutGlobalError.setActionClickListener {
+                binding?.layoutGlobalError?.setActionClickListener {
                     refreshErrorPage()
                 }
             }
-            layoutGlobalError.show()
+            binding?.layoutGlobalError?.show()
         }
     }
 
     private fun refreshErrorPage() {
-        layoutGlobalError.gone()
-        rlContent.show()
+        binding?.layoutGlobalError?.gone()
+        binding?.rlContent?.show()
         refreshHandler?.isRefreshing = true
         cartAdapter.resetData()
         dPresenter.processInitialGetCartData(getCartId(), true, false)
@@ -2538,39 +2551,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showMainContainerLoadingInitData() {
-        layoutGlobalError.gone()
-        rlContent.show()
-        bottomLayout.gone()
-        bottomLayoutShadow.gone()
-        llPromoCheckout.gone()
+        binding?.layoutGlobalError?.gone()
+        binding?.rlContent?.show()
+        binding?.bottomLayout?.gone()
+        binding?.bottomLayoutShadow?.gone()
+        binding?.llPromoCheckout?.gone()
     }
 
     private fun showMainContainer() {
-        layoutGlobalError.gone()
-        rlContent.show()
-        bottomLayout.show()
-        bottomLayoutShadow.show()
-        llPromoCheckout.show()
-        llPromoCheckout.post {
+        binding?.layoutGlobalError?.gone()
+        binding?.rlContent?.show()
+        binding?.bottomLayout?.show()
+        binding?.bottomLayoutShadow?.show()
+        binding?.llPromoCheckout?.show()
+        binding?.llPromoCheckout?.post {
             if (initialPromoButtonPosition == 0f) {
-                initialPromoButtonPosition = llPromoCheckout.y
+                initialPromoButtonPosition = binding?.llPromoCheckout?.y ?: 0f
             }
         }
     }
 
     private fun showErrorContainer() {
-        rlContent.gone()
-        layoutGlobalError.show()
-        bottomLayout.gone()
-        bottomLayoutShadow.gone()
-        llPromoCheckout.gone()
+        binding?.rlContent?.gone()
+        binding?.layoutGlobalError?.show()
+        binding?.bottomLayout?.gone()
+        binding?.bottomLayoutShadow?.gone()
+        binding?.llPromoCheckout?.gone()
     }
 
     private fun showEmptyCartContainer() {
-        layoutGlobalError.gone()
-        bottomLayout.gone()
-        bottomLayoutShadow.gone()
-        llPromoCheckout.gone()
+        binding?.layoutGlobalError?.gone()
+        binding?.bottomLayout?.gone()
+        binding?.bottomLayoutShadow?.gone()
+        binding?.llPromoCheckout?.gone()
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
@@ -2599,8 +2612,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun clearRecyclerView() {
         cartAdapter.clearCompositeSubscription()
-        cartRecyclerView.removeAllViews()
-        cartRecyclerView.recycledViewPool.clear()
+        binding?.rvCart?.removeAllViews()
+        binding?.rvCart?.recycledViewPool?.clear()
     }
 
     override fun renderErrorToShipmentForm(message: String, ctaText: String) {
@@ -2676,10 +2689,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                           unselectAllItem: Boolean,
                                           noAvailableItems: Boolean) {
         if (noAvailableItems) {
-            llPromoCheckout.gone()
+            binding?.llPromoCheckout?.gone()
         } else {
-            if (bottomLayout.visibility == View.VISIBLE) {
-                llPromoCheckout.show()
+            if (binding?.bottomLayout?.visibility == View.VISIBLE) {
+                binding?.llPromoCheckout?.show()
             }
         }
 
@@ -2693,13 +2706,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
         }
 
-        tvTotalPrice.text = totalPriceString
-        btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
+        binding?.tvTotalPrices?.text = totalPriceString
+        binding?.goToCourierPageButton?.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
         if (totalPriceString == "-") {
-            imgChevronSummary.gone()
+            binding?.imgChevronSummary?.gone()
             onCartDataDisableToCheckout()
         } else {
-            imgChevronSummary.show()
+            binding?.imgChevronSummary?.show()
             onCartDataEnableToCheckout()
         }
     }
@@ -2828,34 +2841,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setTopLayoutVisibility() {
-        var isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
+        var isShowToolbarShadow = binding?.topLayoutShadow?.visibility == View.VISIBLE
 
         if (cartAdapter.hasAvailableItemLeft()) {
-            topLayout.show()
+            binding?.topLayout?.root?.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (appBarLayout.elevation == HAS_ELEVATION.toFloat()) {
+                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
                     isShowToolbarShadow = true
                 }
             }
         } else {
-            topLayout.gone()
+            binding?.topLayout?.root?.gone()
         }
 
         setToolbarShadowVisibility(isShowToolbarShadow)
     }
 
     private fun setTopLayoutVisibility(isShow: Boolean) {
-        var isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
+        var isShowToolbarShadow = binding?.topLayoutShadow?.visibility == View.VISIBLE
 
         if (isShow) {
-            topLayout.show()
+            binding?.topLayout?.root?.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (appBarLayout.elevation == HAS_ELEVATION.toFloat()) {
+                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
                     isShowToolbarShadow = true
                 }
             }
         } else {
-            topLayout.gone()
+            binding?.topLayout?.root?.gone()
         }
 
         setToolbarShadowVisibility(isShowToolbarShadow)
@@ -2897,7 +2910,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setLastItemAlwaysSelected() {
         val tmpIsLastItem = cartAdapter.setLastItemAlwaysSelected()
         if (tmpIsLastItem) {
-            checkboxGlobal.isChecked = true
+            binding?.topLayout?.checkboxGlobal?.isChecked = true
         }
     }
 
@@ -2911,19 +2924,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             target = toolbar.getWishlistIconPosition()
         }
 
-        tmpAnimatedImage.show()
+        binding?.tmpAnimatedImage?.show()
 
         val targetX = target.first
         val targetY = target.second
 
-        val deltaX = targetX - (tmpAnimatedImage.width / 2)
-        val deltaY = targetY - (tmpAnimatedImage.height / 2)
+        val deltaX = targetX - ((binding?.tmpAnimatedImage?.width ?: 0) / 2)
+        val deltaY = targetY - ((binding?.tmpAnimatedImage?.height ?: 0) / 2)
 
-        val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
-        val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
-        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", 1.0f, 0.0f)
-        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", 1.0f, 0.5f)
-        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", 1.0f, 0.5f)
+        val animY = ObjectAnimator.ofFloat(binding?.tmpAnimatedImage, "y", deltaY.toFloat())
+        val animX = ObjectAnimator.ofFloat(binding?.tmpAnimatedImage, "x", deltaX.toFloat())
+        val animAlpha = ObjectAnimator.ofFloat(binding?.tmpAnimatedImage, "alpha", 1.0f, 0.0f)
+        val animScaleX = ObjectAnimator.ofFloat(binding?.tmpAnimatedImage, "scaleX", 1.0f, 0.5f)
+        val animScaleY = ObjectAnimator.ofFloat(binding?.tmpAnimatedImage, "scaleY", 1.0f, 0.5f)
 
         AnimatorSet().let {
             it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
@@ -2932,10 +2945,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             it.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {}
                 override fun onAnimationEnd(animation: Animator) {
-                    tmpAnimatedImage.gone()
+                    binding?.tmpAnimatedImage?.gone()
 
                     if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
-                        navToolbar.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
+                        binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
                     } else {
                         toolbar.animateWishlistIcon()
                     }
@@ -2978,8 +2991,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onNeedToRemoveViewItem(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
-        if (cartRecyclerView.isComputingLayout) {
-            cartRecyclerView.post { cartAdapter.notifyItemRemoved(position) }
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRemoved(position) }
         } else {
             cartAdapter.notifyItemRemoved(position)
         }
@@ -2987,8 +3000,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onNeedToUpdateViewItem(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
-        if (cartRecyclerView.isComputingLayout) {
-            cartRecyclerView.post { cartAdapter.notifyItemChanged(position) }
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemChanged(position) }
         } else {
             cartAdapter.notifyItemChanged(position)
         }
@@ -2996,8 +3009,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onNeedToUpdateMultipleViewItem(positionStart: Int, count: Int) {
         if (positionStart == RecyclerView.NO_POSITION) return
-        if (cartRecyclerView.isComputingLayout) {
-            cartRecyclerView.post { cartAdapter.notifyItemRangeChanged(positionStart, count) }
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRangeChanged(positionStart, count) }
         } else {
             cartAdapter.notifyItemRangeChanged(positionStart, count)
         }
@@ -3269,11 +3282,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showPromoCheckoutStickyButtonInactive() {
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.INACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        promoCheckoutBtn.title = getString(R.string.promo_checkout_inactive_label)
-        promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
-        promoCheckoutBtn.setOnClickListener {
+        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.INACTIVE
+        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+        binding?.promoCheckoutBtnCart?.title = getString(R.string.promo_checkout_inactive_label)
+        binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_checkout_inactive_desc)
+        binding?.promoCheckoutBtnCart?.setOnClickListener {
             renderPromoCheckoutLoading()
             dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
         }

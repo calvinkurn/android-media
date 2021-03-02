@@ -29,10 +29,10 @@ abstract class BaseCheckoutFragment : TkpdBaseV4Fragment() {
 
     protected abstract fun initInjector()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(getFragmentLayout(), container, false)
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+//                              savedInstanceState: Bundle?): View? {
+//        return inflater.inflate(getFragmentLayout(), container, false)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

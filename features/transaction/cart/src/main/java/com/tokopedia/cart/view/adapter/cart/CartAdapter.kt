@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemEmptyCartBinding
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
@@ -284,9 +285,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return ShipmentSellerCashbackViewHolder(view, sellerCashbackListener)
             }
             CartEmptyViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartEmptyViewHolder.LAYOUT, parent, false)
-                return CartEmptyViewHolder(view, actionListener)
+                val binding = ItemEmptyCartBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartEmptyViewHolder(binding, actionListener)
             }
             CartRecentViewViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
