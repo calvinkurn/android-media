@@ -11,7 +11,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.BalanceWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 
 /**
@@ -41,22 +41,22 @@ class BalanceWidgetView: FrameLayout {
         this.itemContext = view.context
     }
 
-    fun bind(element: BalanceWidgetDataModel, listener: HomeCategoryListener?) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?) {
         this.listener = listener
         renderWidget(element)
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         BenchmarkHelper.endSystraceSection()
     }
 
-    private fun renderWidget(element: BalanceWidgetDataModel) {
+    private fun renderWidget(element: HomeBalanceModel) {
         layoutManager = getLayoutManager(element)
         balanceAdapter = BalanceAdapter(listener)
-        balanceAdapter?.setItemMap(element.drawerMap)
+        balanceAdapter?.setItemMap(element)
     }
 
-    private fun getLayoutManager(element: BalanceWidgetDataModel): GridLayoutManager {
-        val spanCount = when(element.itemCount) {
-            4 -> LAYOUT_SPAN_2
+    private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
+        val spanCount = when(element.balanceType) {
+            HomeBalanceModel.TYPE_STATE_2 -> LAYOUT_SPAN_2
             else -> LAYOUT_SPAN_3
         }
         return GridLayoutManager(itemView.context, spanCount)
