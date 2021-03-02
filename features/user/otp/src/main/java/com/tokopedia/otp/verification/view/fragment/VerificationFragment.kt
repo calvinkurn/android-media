@@ -26,6 +26,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -98,6 +99,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private val delayAnimateText: Long = 350
 
     private val handler: Handler = Handler()
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     private val characterAdder: Runnable = object : Runnable {
         override fun run() {
@@ -169,6 +171,8 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         }
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
+        } else {
+            crashlytics.recordException(Throwable("PhoneCallBroadcastReceiver not registered"))
         }
     }
 
