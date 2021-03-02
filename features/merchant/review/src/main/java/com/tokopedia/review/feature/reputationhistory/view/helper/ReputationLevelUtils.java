@@ -18,6 +18,7 @@ import com.tokopedia.review.R;
  */
 public class ReputationLevelUtils {
 
+    public static final String SPEECH_BUBBLE_IMAGE = "https://images.tokopedia.net/img/android/review/review_speechbubble_r90.png";
     private static final int MEDAL_NONE = com.tokopedia.design.R.drawable.ic_icon_repsis_medal;
     private static final int MEDAL_BRONZE = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_bronze;
     private static final int MEDAL_SILVER = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_silver;
@@ -103,6 +104,7 @@ public class ReputationLevelUtils {
             @Override
             public void onClick(final View v) {
                 View popup = View.inflate(context, R.layout.popup_reputation, null);
+
                 TextView point = (TextView)popup.findViewById(R.id.point);
                 point.setText(reputationPoint + " Poin");
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);

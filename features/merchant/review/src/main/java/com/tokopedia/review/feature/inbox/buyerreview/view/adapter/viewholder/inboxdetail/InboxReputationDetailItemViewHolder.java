@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.TimeConverter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter;
@@ -42,6 +43,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
+    public static final String CHEVRON_DOWN_IMAGE = "https://images.tokopedia.net/img/android/review/review_chevron_down.png";
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     private static final String BY = "Oleh";
@@ -246,6 +248,8 @@ public class InboxReputationDetailItemViewHolder extends
 
                 }
             });
+
+            setChevronDownImage();
 
             if (canShowOverflow(element)) {
                 reviewOverflow.setVisibility(View.VISIBLE);
@@ -474,5 +478,9 @@ public class InboxReputationDetailItemViewHolder extends
 
             }
         };
+    }
+
+    private void setChevronDownImage() {
+        ImageViewExtKt.loadImage(replyArrow, CHEVRON_DOWN_IMAGE, 0);
     }
 }
