@@ -43,6 +43,7 @@ data class HomeFlag(
     }
 }
 
+//TODO: add integer value -> BE not ready yet
 data class Flags(
     @SerializedName("name")
     var name: String = "",

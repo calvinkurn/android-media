@@ -855,6 +855,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
         )
 
+        getHomeViewModel().setRollanceBalanceWidgetType(
+                AbTestPlatform.BALANCE_VARIANT_NEW
+        )
+
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
 
