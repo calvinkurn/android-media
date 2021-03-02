@@ -9,6 +9,7 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.item_digital_checkout_input_price_view.view.*
 import org.jetbrains.annotations.NotNull
+import kotlin.math.min
 
 
 /**
@@ -122,7 +123,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
                     // selection position must be -1 due to the removal of . (dot)
                     return selectionPosition - 1
                 }
-                else -> selectionPosition
+                else -> min(selectionPosition, formattedPrice.length)
             }
         }
     }
