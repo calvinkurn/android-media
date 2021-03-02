@@ -137,6 +137,6 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_5, R.drawable.topads_create_ic_checklist))
         }
         val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
-        tipsListSheet?.show(parentFragmentManager, "")
+        tipsListSheet?.show(childFragmentManager, "")
     }
 }
