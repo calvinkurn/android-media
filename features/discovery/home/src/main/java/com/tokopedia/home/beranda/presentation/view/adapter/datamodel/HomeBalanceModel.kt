@@ -18,8 +18,8 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 
 
 data class HomeBalanceModel (
-        val balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
-        val balanceType: Int = TYPE_STATE_1
+        var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
+        var balanceType: Int = TYPE_STATE_1
 ): HomeVisitable {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
