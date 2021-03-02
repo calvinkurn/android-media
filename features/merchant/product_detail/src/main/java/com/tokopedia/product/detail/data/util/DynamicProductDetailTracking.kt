@@ -63,7 +63,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SEE_OTHER_COURIER,
-                    "title:$title;labelShipping: $labelShipping;cod:$isCod")
+                    String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT, title, labelShipping, isCod))
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
