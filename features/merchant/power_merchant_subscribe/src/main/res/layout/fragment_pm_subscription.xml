@@ -13,15 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/bgPmBottomGradient"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl8"
-            android:background="@drawable/bg_pm_gradient_green"
-            app:layout_constraintBottom_toTopOf="@+id/tvPmUnsubscribe"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerPmCommunicationPeriod"
             android:layout_width="@dimen/layout_lvl0"
@@ -41,6 +32,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tickerPmCommunicationPeriod"
             tools:maxHeight="@dimen/layout_lvl9" />
+
+        <View
+            android:id="@+id/bgPmBottomGradient"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl8"
+            android:background="@drawable/bg_pm_gradient_green"
+            app:layout_constraintBottom_toTopOf="@+id/tvPmUnsubscribe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmLabelFeatures"

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmPotentialItem"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmPotentialItemDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700"
+        tools:text="Lebih sering dikunjungi pembeli hingga 4,3 kali lipat" />
+</LinearLayout>

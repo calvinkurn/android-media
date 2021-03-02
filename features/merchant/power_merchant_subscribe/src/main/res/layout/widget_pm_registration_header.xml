@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Neutral_N0">
+
+    <LinearLayout
+        android:id="@+id/viewPmHeaderBackground"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pm_spacing_88dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/bg_pm_registration_header">
+
+        <ImageView
+            android:id="@+id/imgPmHeaderImage"
+            android:layout_width="@dimen/pm_spacing_140dp"
+            android:layout_height="@dimen/pm_spacing_140dp"
+            tools:src="@drawable/img_pm_registration_header" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmHeaderTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:gravity="center"
+            android:text="@string/power_merchant_register_title"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmHeaderDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:gravity="center"
+            android:text="@string/pm_registration_header_description"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPmHeaderTitle"
+            app:typographyType="body_2" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/barrierPmHeader1"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/pm_spacing_88dp"
+        app:layout_constraintBottom_toBottomOf="@+id/viewPmHeaderBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardPmHeaderTerms"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrierPmHeader1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/unify_space_12">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmHeaderTerms"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:text="@string/pm_registration_terms"
+                android:textAllCaps="true"
+                android:textColor="@color/Neutral_N700"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icPmHeaderTerms1"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmHeaderTerms" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmTermTitle1"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icPmHeaderTerms1"
+                app:layout_constraintTop_toTopOf="@+id/icPmHeaderTerms1"
+                tools:text="Skor Toko : 85" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmTermDesc1"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icPmHeaderTerms1"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmTermTitle1"
+                app:typographyType="body_3"
+                tools:text="Skormu sudah mencapai batas min. skor 60 untuk daftar Power Merchant. Skor akan di-update setiap Senin, ya." />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icPmHeaderTerms2"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmTermDesc1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmTermTitle2"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icPmHeaderTerms2"
+                app:layout_constraintTop_toTopOf="@+id/icPmHeaderTerms2"
+                tools:text="Skor Toko : 85" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmTermDesc2"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icPmHeaderTerms2"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmTermTitle2"
+                app:typographyType="body_3"
+                tools:text="Skormu sudah mencapai batas min. skor 60 untuk daftar Power Merchant. Skor akan di-update setiap Senin, ya." />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
