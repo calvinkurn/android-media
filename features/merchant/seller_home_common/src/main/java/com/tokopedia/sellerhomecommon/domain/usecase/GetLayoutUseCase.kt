@@ -1,9 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -16,10 +22,21 @@ class GetLayoutUseCase(
         mapper: LayoutMapper
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(gqlRepository, mapper, true, GetLayoutResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+        val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetLayoutResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

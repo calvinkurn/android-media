@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -15,10 +17,21 @@ class GetTickerUseCase(
         mapper: TickerMapper
 ) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(gqlRepository, mapper, true, GetTickerResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<TickerItemUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetTickerResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(GetTickerResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetTickerResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw RuntimeException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

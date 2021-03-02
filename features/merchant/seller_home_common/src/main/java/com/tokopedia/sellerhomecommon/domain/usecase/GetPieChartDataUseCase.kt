@@ -1,10 +1,13 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -17,10 +20,21 @@ class GetPieChartDataUseCase(
         mapper: PieChartMapper
 ) : CloudAndCacheGraphqlUseCase<GetPieChartDataResponse, List<PieChartDataUiModel>>(gqlRepository, mapper, true, GetPieChartDataResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<PieChartDataUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetPieChartDataResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(GetPieChartDataResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetPieChartDataResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw RuntimeException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

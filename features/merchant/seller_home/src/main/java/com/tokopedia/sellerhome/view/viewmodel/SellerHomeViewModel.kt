@@ -18,7 +18,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -105,6 +104,24 @@ class SellerHomeViewModel @Inject constructor(
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
 
+    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
+        executeOnBackground()
+    }
+
+    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
+        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+            useCase.isFirstLoad = false
+            try {
+                useCase.setUseCache(true)
+                liveData.value = Success(useCase.executeUseCase())
+            } catch (_: Exception) {
+                // ignore exception from cache
+            }
+        }
+        useCase.setUseCache(false)
+        liveData.value = Success(useCase.executeUseCase())
+    }
+
     private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>) {
         if (!collectingResult) {
             collectingResult = true
@@ -123,9 +140,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             val params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
-            getTickerUseCase.get().run {
-                startCollectingResult(_homeTicker)
-                executeOnBackground(params, firstLoad)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getTickerUseCase.get().run {
+                    startCollectingResult(_homeTicker)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+                getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
             }
         }, onError = {
             _homeTicker.value = Fail(it)
@@ -135,9 +157,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getWidgetLayout() {
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
-            getLayoutUseCase.get().run {
-                startCollectingResult(_widgetLayout)
-                executeOnBackground(params, firstLoad)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getLayoutUseCase.get().run {
+                    startCollectingResult(_widgetLayout)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getLayoutUseCase.get().params = params
+                getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
             }
         }, onError = {
             _widgetLayout.value = Fail(it)
@@ -147,9 +174,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getCardDataUseCase.get().run {
-                startCollectingResult(_cardWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getCardDataUseCase.get().run {
+                    startCollectingResult(_cardWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getCardDataUseCase.get().params = params
+                getDataFromUseCase(getCardDataUseCase.get(), _cardWidgetData)
             }
         }, onError = {
             _cardWidgetData.value = Fail(it)
@@ -159,9 +191,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getLineGraphDataUseCase.get().run {
-                startCollectingResult(_lineGraphWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getLineGraphDataUseCase.get().run {
+                    startCollectingResult(_lineGraphWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getLineGraphDataUseCase.get().params = params
+                getDataFromUseCase(getLineGraphDataUseCase.get(), _lineGraphWidgetData)
             }
         }, onError = {
             _lineGraphWidgetData.value = Fail(it)
@@ -172,9 +209,14 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
             val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
-            getProgressDataUseCase.get().run {
-                startCollectingResult(_progressWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getProgressDataUseCase.get().run {
+                    startCollectingResult(_progressWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getProgressDataUseCase.get().params = params
+                getDataFromUseCase(getProgressDataUseCase.get(), _progressWidgetData)
             }
         }, onError = {
             _progressWidgetData.value = Fail(it)
@@ -184,9 +226,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getPostDataUseCase.get().run {
-                startCollectingResult(_postListWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getPostDataUseCase.get().run {
+                    startCollectingResult(_postListWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getPostDataUseCase.get().params = params
+                getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
             }
         }, onError = {
             _postListWidgetData.value = Fail(it)
@@ -196,9 +243,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-            getCarouselDataUseCase.get().run {
-                startCollectingResult(_carouselWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getCarouselDataUseCase.get().run {
+                    startCollectingResult(_carouselWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getCarouselDataUseCase.get().params = params
+                getDataFromUseCase(getCarouselDataUseCase.get(), _carouselWidgetData)
             }
         }, onError = {
             _carouselWidgetData.value = Fail(it)
@@ -208,9 +260,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getTableWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getTableDataUseCase.get().run {
-                startCollectingResult(_tableWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getTableDataUseCase.get().run {
+                    startCollectingResult(_tableWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getTableDataUseCase.get().params = params
+                getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData)
             }
         }, onError = {
             _tableWidgetData.value = Fail(it)
@@ -220,9 +277,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getPieChartDataUseCase.get().run {
-                startCollectingResult(_pieChartWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getPieChartDataUseCase.get().run {
+                    startCollectingResult(_pieChartWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getPieChartDataUseCase.get().params = params
+                getDataFromUseCase(getPieChartDataUseCase.get(), _pieChartWidgetData)
             }
         }, onError = {
             _pieChartWidgetData.value = Fail(it)
@@ -232,9 +294,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getBarChartDataUseCase.get().run {
-                startCollectingResult(_barChartWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getBarChartDataUseCase.get().run {
+                    startCollectingResult(_barChartWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                getBarChartDataUseCase.get().params = params
+                getDataFromUseCase(getBarChartDataUseCase.get(), _barChartWidgetData)
             }
         }, onError = {
             _barChartWidgetData.value = Fail(it)
@@ -244,9 +311,17 @@ class SellerHomeViewModel @Inject constructor(
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getMultiLineGraphUseCase.get().run {
-                startCollectingResult(_multiLineGraphWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getMultiLineGraphUseCase.get().run {
+                    startCollectingResult(_multiLineGraphWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
+                    getMultiLineGraphUseCase.get().params = params
+                    return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
+                })
+                _multiLineGraphWidgetData.value = result
             }
         }, onError = {
             _multiLineGraphWidgetData.value = Fail(it)
@@ -256,9 +331,17 @@ class SellerHomeViewModel @Inject constructor(
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
-            getAnnouncementUseCase.get().run {
-                startCollectingResult(_announcementWidgetData)
-                executeOnBackground(params)
+            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+                getAnnouncementUseCase.get().run {
+                    startCollectingResult(_announcementWidgetData)
+                    executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
+                }
+            } else {
+                val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
+                    getAnnouncementUseCase.get().params = params
+                    return@withContext getAnnouncementUseCase.get().executeOnBackground()
+                })
+                _announcementWidgetData.value = result
             }
         }, onError = {
             _announcementWidgetData.value = Fail(it)

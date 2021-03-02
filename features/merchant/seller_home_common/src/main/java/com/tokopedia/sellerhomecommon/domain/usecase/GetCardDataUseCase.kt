@@ -1,6 +1,11 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -17,10 +22,21 @@ class GetCardDataUseCase(
         cardMapper: CardMapper
 ) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(gqlRepository, cardMapper, true, GetCardDataResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<CardDataUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetCardDataResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors: List<GraphqlError>? = gqlResponse.getError(GetCardDataResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetCardDataResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

@@ -1,10 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
+import com.tokopedia.sellerhomecommon.domain.model.MultiTrendlineWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -17,10 +22,21 @@ class GetMultiLineGraphUseCase (
         mapper: MultiLineGraphMapper
 ): CloudAndCacheGraphqlUseCase<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>>(gqlRepository, mapper, true, GetMultiLineGraphResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<MultiLineGraphDataUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetMultiLineGraphResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+
+        val errors: List<GraphqlError>? = gqlResponse.getError(GetMultiLineGraphResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetMultiLineGraphResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw RuntimeException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

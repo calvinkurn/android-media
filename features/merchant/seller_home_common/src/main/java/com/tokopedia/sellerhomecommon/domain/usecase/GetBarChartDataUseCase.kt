@@ -1,7 +1,11 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
+import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
@@ -17,10 +21,21 @@ class GetBarChartDataUseCase(
         mapper: BarChartMapper
 ) : CloudAndCacheGraphqlUseCase<GetBarChartDataResponse, List<BarChartDataUiModel>>(gqlRepository, mapper, true, GetBarChartDataResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<BarChartDataUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetBarChartDataResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(GetBarChartDataResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<GetBarChartDataResponse>()
+            return mapper.mapRemoteDataToUiData(response, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

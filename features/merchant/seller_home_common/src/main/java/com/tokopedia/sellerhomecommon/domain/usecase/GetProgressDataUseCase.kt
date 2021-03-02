@@ -1,6 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -17,10 +20,21 @@ class GetProgressDataUseCase constructor(
         progressMapper: ProgressMapper
 ) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(graphqlRepository, progressMapper, true, GetProgressDataResponse::class.java, QUERY, false) {
 
-    var firstLoad: Boolean = true
-
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { firstLoad = false }
+        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
+        val gqlRequest = GraphqlRequest(QUERY, GetProgressDataResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(GetProgressDataResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetProgressDataResponse>()
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
     }
 
     companion object {

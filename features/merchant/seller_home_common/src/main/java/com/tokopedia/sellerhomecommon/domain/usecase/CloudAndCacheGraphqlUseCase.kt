@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-open class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val mapper: BaseResponseMapper<R, U>,
+abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> @Inject constructor(
+        protected val graphqlRepository: GraphqlRepository,
+        protected val mapper: BaseResponseMapper<R, U>,
         private val sessionIncluded: Boolean,
         private val classType: Class<R>,
         private val graphqlQuery: String,
-        private val doQueryHash: Boolean) {
+        private val doQueryHash: Boolean): BaseGqlUseCase<U>() {
 
     private var mFingerprintManager: FingerprintManager? = null
     private var mCacheManager: GraphqlCacheManager? = null
