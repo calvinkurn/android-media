@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class NotifOrderListResponse(
     @SerializedName("notifcenter_notifOrderList")
-    val notifcenterNotifOrderList: NotifcenterNotifOrderList = NotifcenterNotifOrderList()
+    val notifcenterNotifOrderList: NotifOrderListUiModel = NotifOrderListUiModel()
 )

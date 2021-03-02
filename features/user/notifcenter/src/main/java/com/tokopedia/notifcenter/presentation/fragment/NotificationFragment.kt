@@ -36,6 +36,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
@@ -70,7 +71,8 @@ import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
-        NotificationEndlessRecyclerViewScrollListener.Listener {
+        NotificationEndlessRecyclerViewScrollListener.Listener,
+        NotificationAdapter.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +118,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun loadData(page: Int) {
         if (page == 1) {
+            viewModel.loadNotifOrderList(containerListener?.role)
             viewModel.loadFirstPageNotification(
                     containerListener?.role
             )
@@ -189,7 +192,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
-        rvAdapter = NotificationAdapter(adapterTypeFactory)
+        rvAdapter = NotificationAdapter(adapterTypeFactory, this)
         return rvAdapter as NotificationAdapter
     }
 
@@ -265,6 +268,25 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                     isBumpReminder = false
             )
         })
+
+        viewModel.orderList.observe(viewLifecycleOwner, Observer {
+            updateOrRenderOrderListState(it)
+        })
+    }
+
+    private fun updateOrRenderOrderListState(resource: Resource<NotifOrderListResponse>) {
+        when (resource.status) {
+            Status.SUCCESS -> {
+                rvAdapter?.updateOrRenderOrderListState(resource.data) {
+                    val visibleItems = rvLm.findFirstVisibleItemPositions(null)
+                    if (visibleItems.isNotEmpty() && visibleItems.first() == 0) {
+                        moveToTop()
+                    }
+                }
+            }
+            else -> {
+            }
+        }
     }
 
     private fun updateReminderState(
@@ -424,6 +446,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         if (isResumed) {
             viewModel.loadNotificationFilter(role)
             triggerMarkAsSeenTracker(previousRole)
+            rvAdapter?.removeAllItems()
             loadInitialData()
         }
     }
@@ -441,6 +464,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onPageClickedAgain() {
+        moveToTop()
+    }
+
+    private fun moveToTop() {
         rv?.scrollToPosition(0)
     }
 
@@ -578,6 +605,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun trackExpandTimelineHistory(element: NotificationUiModel) {
         analytic.trackExpandTimelineHistory(element, containerListener?.role)
+    }
+
+    override fun hasFilter(): Boolean {
+        return viewModel.hasFilter()
     }
 
     private fun createViewHolderState(

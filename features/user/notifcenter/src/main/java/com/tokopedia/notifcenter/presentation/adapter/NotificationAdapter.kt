@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
@@ -21,9 +23,11 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 
 class NotificationAdapter constructor(
-        private val typeFactory: NotificationTypeFactory
+        private val typeFactory: NotificationTypeFactory,
+        private val listener: Listener
 ) : BaseListAdapter<Visitable<*>, NotificationTypeFactory>(
         typeFactory
 ), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener {
@@ -31,6 +35,10 @@ class NotificationAdapter constructor(
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
+
+    interface Listener {
+        fun hasFilter(): Boolean
+    }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
@@ -166,6 +174,49 @@ class NotificationAdapter constructor(
         val currentItemSize = visitables.size
         if (visitables.addAll(recommendations)) {
             notifyItemRangeInserted(currentItemSize, recommendations.size)
+        }
+    }
+
+    override fun isShowLoadingMore(): Boolean {
+        return visitables.size > 0 && !hasNotifOrderList()
+    }
+
+    override fun clearAllElements() {
+        if (!listener.hasFilter() && hasNotifOrderList()) {
+            clearElementExceptOrderList()
+        } else {
+            super.clearAllElements()
+        }
+    }
+
+    fun removeAllItems() {
+        visitables.clear()
+        notifyDataSetChanged()
+    }
+
+    fun hasNotifOrderList(): Boolean {
+        return visitables.getOrNull(0) is NotifOrderListUiModel
+    }
+
+    fun clearElementExceptOrderList() {
+        val orderListUiModel = visitables.getOrNull(0)
+        visitables.clear()
+        visitables.add(orderListUiModel)
+        notifyDataSetChanged()
+    }
+
+    fun updateOrRenderOrderListState(
+            response: NotifOrderListResponse?,
+            inserted: () -> Unit = {}
+    ) {
+        if (response == null) return
+        if (hasNotifOrderList()) {
+            val payload = PayloadOrderList(response.notifcenterNotifOrderList)
+            notifyItemChanged(0, payload)
+        } else {
+            visitables.add(0, response.notifcenterNotifOrderList)
+            notifyItemInserted(0)
+            inserted()
         }
     }
 

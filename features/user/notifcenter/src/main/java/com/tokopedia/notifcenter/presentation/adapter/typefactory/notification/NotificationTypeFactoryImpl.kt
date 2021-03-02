@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
@@ -56,6 +57,10 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun type(emptyNotificationUiModel: EmptyNotificationUiModel): Int {
         return EmptyNotificationViewHolder.LAYOUT
+    }
+
+    override fun type(notifOrderListUiModel: NotifOrderListUiModel): Int {
+        return NotificationOrderListViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingModel?): Int {
@@ -122,6 +127,7 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            NotificationOrderListViewHolder.LAYOUT -> NotificationOrderListViewHolder(view)
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
                     view, notificationListener
             )

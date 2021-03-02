@@ -14,6 +14,7 @@ import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderRespon
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
@@ -97,6 +98,10 @@ class NotificationViewModel @Inject constructor(
     val deleteReminder: LiveData<Resource<DeleteReminderResponse>>
         get() = _deleteReminder
 
+    private val _orderList = MutableLiveData<Resource<NotifOrderListResponse>>()
+    val orderList: LiveData<Resource<NotifOrderListResponse>>
+        get() = _orderList
+
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
     }
@@ -104,6 +109,24 @@ class NotificationViewModel @Inject constructor(
     fun cancelAllUseCase() {
         notifcenterDetailUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
+    }
+
+    fun loadNotifOrderList(
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        // TODO: Adjust role and param
+        launchCatchError(dispatcher.io(),
+                {
+                    notifOrderListUseCase.getOrderList(role).collect {
+                        _orderList.postValue(it)
+                    }
+                },
+                {
+                    _filterList.postValue(Resource.error(it, null))
+                }
+        )
     }
 
     /**
