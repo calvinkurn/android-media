@@ -83,7 +83,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, shouldPutStockOnParam),
+                mapVariantParam(variantInputModel),
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }
@@ -93,7 +93,7 @@ class EditProductInputMapper @Inject constructor() {
                 ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
             }
 
-    private fun mapVariantParam(variantInputModel: VariantInputModel, shouldPutStockOnParam: Boolean): Variant? {
+    private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
             // if there is no variant input then return null
             if (variantInputModel.isRemoteDataHasVariant) {
@@ -104,7 +104,7 @@ class EditProductInputMapper @Inject constructor() {
         } else {
             Variant(
                     mapVariantSelections(variantInputModel.selections),
-                    mapVariantProducts(variantInputModel.products, shouldPutStockOnParam),
+                    mapVariantProducts(variantInputModel.products),
                     mapSizeChart(variantInputModel.sizecharts)
             )
         }
@@ -126,7 +126,7 @@ class EditProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapVariantProducts(products: List<ProductVariantInputModel>, shouldPutStockOnParam: Boolean) = products.map {
+    private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
         val filePath = it.pictures.firstOrNull()?.filePath ?: ""
         val picID = it.pictures.firstOrNull()?.picID ?: ""
         var productPicture = it.pictures
