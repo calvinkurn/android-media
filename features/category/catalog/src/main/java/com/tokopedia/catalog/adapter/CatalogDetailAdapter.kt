@@ -1,13 +1,11 @@
 package com.tokopedia.catalog.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.catalog.R
@@ -15,9 +13,7 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.catalog.viewholder.CatalogInfoViewHolder
 import com.tokopedia.catalog.viewholder.CatalogProductsContainerViewHolder
-import kotlinx.android.synthetic.main.item_catalog_products_container.view.*
 
 class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
