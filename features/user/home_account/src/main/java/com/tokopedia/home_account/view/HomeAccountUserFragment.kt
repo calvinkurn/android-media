@@ -45,7 +45,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
-import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -290,7 +289,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
         context?.let {
-            val mappedData = mapper.mapTokopoints(context, tokopointsDrawerList)
+            val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
             financialAdapter?.addSingleItem(mappedData)
             adapter?.notifyDataSetChanged()
         }

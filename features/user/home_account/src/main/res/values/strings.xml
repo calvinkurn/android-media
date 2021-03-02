@@ -79,7 +79,10 @@
     <string name="new_home_account_finance_try_again">Coba Lagi</string>
 
     <string name="coachmark_title_account_info">Info tentang akunmu ada di sini</string>
-    <string name="coachmark_desc_account_info">Ubah data diri, lihat Tokopoints dan saldo lainnya, atau cek keuntungan dari promo Tokopedia di sini!</string>
+    <string name="coachmark_desc_account_info">Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!</string>
     <string name="coachmark_title_setting">Ubah pengaturan dan cek info lainnya</string>
     <string name="coachmark_desc_setting">Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!</string>
+
+    <string name="new_home_account_finance_failed_config_title">Gagal memuat transaksi</string>
+    <string name="new_home_account_finance_failed_config_desc">Klik untuk coba lagi.</string>
 </resources>

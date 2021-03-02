@@ -5,15 +5,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -109,14 +106,20 @@ class DataViewMapper @Inject constructor(
         )
     }
 
-    fun mapTokopoints(context: Context?, tokopointsDrawerList: TokopointsDrawerList): CommonDataView {
+    fun mapTokopoints(tokopointsDrawerList: TokopointsDrawerList): CommonDataView {
         val tokopoint: DrawerList? = tokopointsDrawerList.drawerList.find { it.type == TOKOPOINTS }
+        val title = tokopoint?.sectionContent?.get(0)
+        val body = tokopoint?.sectionContent?.get(1)
         return CommonDataView(
-                title = tokopoint?.sectionContent?.get(0)?.textAttributes?.text ?: "",
-                body = tokopoint?.sectionContent?.get(1)?.textAttributes?.text ?: "",
+                title = title?.textAttributes?.text ?: "",
+                body = body?.textAttributes?.text ?: "",
                 type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS,
                 icon = R.drawable.ic_account_tokopoint,
-                applink = tokopoint?.redirectAppLink ?: ""
+                applink = tokopoint?.redirectAppLink ?: "",
+                isTitleBold = title?.textAttributes?.isBold ?: false,
+                isBodyBold = body?.textAttributes?.isBold ?: false,
+                titleColor = title?.textAttributes?.color ?: "",
+                bodyColor = body?.textAttributes?.color ?: ""
         )
     }
 
