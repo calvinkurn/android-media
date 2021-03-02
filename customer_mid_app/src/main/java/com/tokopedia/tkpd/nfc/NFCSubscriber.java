@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
+import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +81,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                             }
                         }
                     })
-                    , "Aplikasi ini membutuhkan izin untuk mengakses NFC"
+                    , activity.getBaseContext().getResources().getString(R.string.permission_emoney_not_granted)
             );
 
         }
