@@ -57,6 +57,7 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -297,7 +298,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
 

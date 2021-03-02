@@ -35,6 +35,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -196,6 +197,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
     @Override

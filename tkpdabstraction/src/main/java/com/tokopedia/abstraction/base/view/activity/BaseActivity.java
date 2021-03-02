@@ -50,9 +50,6 @@ import timber.log.Timber;
 public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
 
-    public static final String MAINAPP_GENERAL_INFO = "android_mainapp_general_info";
-    public static final String SELLERAPP_GENERAL_INFO = "android_sellerapp_general_info";
-
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
@@ -62,7 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
-    private RemoteConfig remoteConfig;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
 
@@ -76,81 +72,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
-        showGeneralInfoMessage();
-    }
-
-    private void showGeneralInfoMessage() {
-        try {
-            String rawConfig = "";
-
-            if (GlobalConfig.isSellerApp()) {
-                rawConfig = getRemoteConfig().getString(SELLERAPP_GENERAL_INFO);
-            } else {
-                rawConfig = getRemoteConfig().getString(MAINAPP_GENERAL_INFO);
-            }
-
-            if (TextUtils.isEmpty(rawConfig)) return;
-
-            JSONArray configList = new JSONArray(rawConfig);
-
-            for(int i = 0; i < configList.length(); i++) {
-                JSONObject config = configList.optJSONObject(i);
-                handleConfig(config);
-            }
-        } catch(Exception e) { }
-    }
-
-    private void handleConfig(JSONObject config) {
-        try {
-            String className = getClass().getCanonicalName();
-
-            String pages = config.optString("pages");
-            String environment = config.optString("environment");
-            String appVersions = config.optString("app_versions");
-            String manufacturers = config.optString("device_manufacturers");
-            String models = config.optString("device_models");
-            String osVersions = config.optString("android_os_versions");
-            String message = config.optString("message");
-
-            if (!isEligibleForGeneralInfo(pages, className)) return;
-            if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return;
-            if (!isEligibleForGeneralInfo(manufacturers, Build.MANUFACTURER)) return;
-            if (!isEligibleForGeneralInfo(models, Build.MODEL)) return;
-            if (!isEligibleForGeneralInfo(osVersions, String.valueOf(Build.VERSION.SDK_INT))) return;
-
-            if (!"all".equals(environment) && GlobalConfig.isAllowDebuggingTools() && !"dev".equals(environment))
-                return;
-            if (!"all".equals(environment) && !GlobalConfig.isAllowDebuggingTools() && !"prod".equals(environment))
-                return;
-
-            Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
-                    + "';dev='" + GlobalConfig.isAllowDebuggingTools()
-                    + "';ver='" + GlobalConfig.VERSION_NAME
-                    + "';message='" + message + "'");
-
-            showPopUp(message);
-        } catch (Exception e) {}
-    }
-
-    private boolean isEligibleForGeneralInfo(String requirements, String value) {
-        List<String> requirementList = Arrays.asList(requirements.trim().split("\\s*,\\s*"));
-        if (!"all".equals(requirementList.get(0)) && !requirementList.contains(value)) return false;
-        return true;
-    }
-
-    private void showPopUp(String message) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(R.string.action_dismiss, null)
-                .show();
-    }
-
-    private RemoteConfig getRemoteConfig() {
-        if (remoteConfig == null) {
-            remoteConfig = new FirebaseRemoteConfigImpl(this);
-        }
-        return remoteConfig;
     }
 
     @Override

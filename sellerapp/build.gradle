@@ -314,6 +314,8 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)
     } else {

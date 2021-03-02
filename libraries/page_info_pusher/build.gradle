@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.remoteConfig)
+}
+
+project.ext {
+    artifactId = 'page-info-pusher'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "page_info_pusher-release"
+}
+
+apply from: '../../publish_local.gradle'
