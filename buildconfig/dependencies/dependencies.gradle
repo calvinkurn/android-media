@@ -95,8 +95,6 @@ ext {
     androidxFragment = '1.2.4'
     debugToolsEnabled = true
 
-    debugToolsEnabled = true
-
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",

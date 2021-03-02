@@ -164,9 +164,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var socmedBottomSheet: SocmedBottomSheet
-
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
     protected var isEnableSmartLock = true
@@ -177,6 +174,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var activityShouldEnd = true
     private var isFromRegister = false
     private var socmedButtonsContainer: LinearLayout? = null
+    private var socmedBottomSheet: SocmedBottomSheet? = null
+    private var socmedButton: UnifyButton? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -291,6 +290,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
+        socmedButton = view.findViewById(R.id.socmed_btn)
         return view
     }
 
@@ -520,20 +520,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-
         initTokopediaCareText()
         partialRegisterInputView.showForgotPassword()
 
-        socmedButtonsContainer = socmedBottomSheet.getSocmedButtonContainer()
-        socmedBottomSheet.setCloseClickListener {
+        socmedBottomSheet = SocmedBottomSheet(context)
+        socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
+        socmedBottomSheet?.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()
-            socmedBottomSheet.dismiss()
+            socmedBottomSheet?.dismiss()
         }
 
-        socmed_btn.setOnClickListener {
+        socmedButton?.setOnClickListener {
             analytics.eventClickSocmedButton()
             fragmentManager?.let {
-                socmedBottomSheet.show(it, getString(R.string.bottom_sheet_show))
+                socmedBottomSheet?.show(it, getString(R.string.bottom_sheet_show))
             }
         }
 
@@ -686,10 +686,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     var name = userSession.name
                     if (name.split("\\s".toRegex()).size > 1)
                         name = name.substring(0, name.indexOf(" "))
-                    if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
-                                    userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
-                            (it.id.equals(GPLUS, ignoreCase = true) &&
-                                    userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    if ((it.id.equals(FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
                         tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
                     }
                 }
@@ -748,7 +746,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun onDismissBottomSheet() {
         try {
-            socmedBottomSheet.dismiss()
+            socmedBottomSheet?.dismiss()
         } catch (e: Exception) {
         }
     }

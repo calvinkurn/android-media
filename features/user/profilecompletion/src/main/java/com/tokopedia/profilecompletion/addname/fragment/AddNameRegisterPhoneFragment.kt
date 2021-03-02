@@ -3,10 +3,7 @@ package com.tokopedia.profilecompletion.addname.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.TextWatcher
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -193,15 +190,23 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     private fun initTermPrivacyView() {
         context?.let {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            val textTermPrivacy1 = "${getString(R.string.text_term_and_privacy_1)} "
+            val textTermPrivacy2 = " ${getString(R.string.text_term_and_privacy_2)} "
+            val textTermCondition = getString(R.string.text_term_condition)
+            val textPrivacyPolicy = getString(R.string.text_privacy_policy)
+            val termPrivacy = SpannableStringBuilder()
+            termPrivacy.append(textTermPrivacy1)
+            termPrivacy.append(textTermCondition)
+            termPrivacy.setSpan(termConditionClickAction(), termPrivacy.length - textTermCondition.length, termPrivacy.length, 0)
+            termPrivacy.append(textTermPrivacy2)
+            termPrivacy.append(textPrivacyPolicy)
+            termPrivacy.setSpan(privacyClickAction(), termPrivacy.length - textPrivacyPolicy.length, termPrivacy.length, 0)
 
-            bottomInfo.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            bottomInfo.movementMethod = LinkMovementMethod.getInstance()
-            bottomInfo.isSelected = false
+            bottomInfo.run {
+                movementMethod = LinkMovementMethod.getInstance()
+                isSelected = false
+                text = termPrivacy
+            }
         }
     }
 
@@ -212,6 +217,11 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
                     startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION))
                 }
             }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
         }
     }
 
@@ -221,6 +231,11 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
                 context?.let {
                     startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY))
                 }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }

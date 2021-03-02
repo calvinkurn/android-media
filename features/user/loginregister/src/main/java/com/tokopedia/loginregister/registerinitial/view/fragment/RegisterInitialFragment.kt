@@ -590,8 +590,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             if (item.id != PHONE_NUMBER) {
                 val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(item.name)
-                loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
-                        .black_38))
                 loginTextView.setImage(item.image)
                 loginTextView.setRoundCorner(10)
 
@@ -719,7 +717,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
+                val adapter = TickerPagerAdapter(requireActivity(), mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         registerAnalytics.trackClickLinkTicker(linkUrl.toString())

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Patterns
 import android.view.KeyEvent
@@ -18,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -142,49 +144,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             source = arguments?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "") ?: ""
         }
         initObserver()
-        val sourceString = activity?.getString(R.string.bottom_info_terms_and_privacy2)
-        val spannable = SpannableString(sourceString)
-        val clickableSpanTermCondition: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(textView: View) {
-                registerAnalytics?.trackClickTermConditionButton()
-                activity?.let {
-                    val intent = RouteManager.getIntent(it, TERM_PRIVACY, PAGE_TERM_AND_CONDITION);
-                    it.startActivity(intent)
-                }
-            }
-
-            override fun updateDrawState(textPaint: TextPaint) {
-                super.updateDrawState(textPaint)
-                textPaint.color = MethodChecker.getColor(registerNextTAndC?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-            }
-        }
-        val clickableSpanPrivacyPolicy: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(textView: View) {
-                registerAnalytics?.trackClickPrivacyPolicyButton()
-                if (activity != null) {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(PRIVACY_POLICY_URL)
-                    activity?.startActivity(intent)
-                }
-                activity?.let {
-                    val intent = RouteManager.getIntent(it, TERM_PRIVACY, PAGE_PRIVACY_POLICY);
-                    it.startActivity(intent)
-                }
-            }
-
-            override fun updateDrawState(textPaint: TextPaint) {
-                super.updateDrawState(textPaint)
-                textPaint.color = MethodChecker.getColor(registerNextTAndC?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-            }
-        }
-        sourceString?.run {
-            spannable.setSpan(clickableSpanTermCondition, indexOf(TERM_CONDITION),
-                    indexOf(TERM_CONDITION) + TERM_CONDITION.length, 0)
-            spannable.setSpan(clickableSpanPrivacyPolicy, indexOf(PRIVACY_POLICY),
-                    indexOf(PRIVACY_POLICY) + PRIVACY_POLICY.length, 0)
-        }
-        registerNextTAndC?.setText(spannable, TextView.BufferType.SPANNABLE)
-        registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
+        initTermPrivacyView()
         showPasswordHint()
         showNameHint()
     }
@@ -538,6 +498,58 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     fun onBackPressed() {
         registerAnalytics?.trackClickOnBackButtonRegisterEmail()
+    }
+
+    private fun initTermPrivacyView() {
+        context?.let {
+            val textTermPrivacy1 = "${getString(R.string.text_term_and_privacy_1)} "
+            val textTermPrivacy2 = " ${getString(R.string.text_term_and_privacy_2)} "
+            val textTermCondition = getString(R.string.text_term_condition)
+            val textPrivacyPolicy = getString(R.string.text_privacy_policy)
+            val termPrivacy = SpannableStringBuilder()
+            termPrivacy.append(textTermPrivacy1)
+            termPrivacy.append(textTermCondition)
+            termPrivacy.setSpan(termConditionClickAction(), termPrivacy.length - textTermCondition.length, termPrivacy.length, 0)
+            termPrivacy.append(textTermPrivacy2)
+            termPrivacy.append(textPrivacyPolicy)
+            termPrivacy.setSpan(privacyClickAction(), termPrivacy.length - textPrivacyPolicy.length, termPrivacy.length, 0)
+
+            registerNextTAndC?.run {
+                movementMethod = LinkMovementMethod.getInstance()
+                isSelected = false
+                text = termPrivacy
+            }
+        }
+    }
+
+    private fun termConditionClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, TERM_PRIVACY, PAGE_TERM_AND_CONDITION))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
+        }
+    }
+
+    private fun privacyClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, TERM_PRIVACY, PAGE_PRIVACY_POLICY))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
+        }
     }
 
     companion object {
