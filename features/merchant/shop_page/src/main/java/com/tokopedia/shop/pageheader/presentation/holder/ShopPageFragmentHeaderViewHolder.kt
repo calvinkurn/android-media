@@ -61,6 +61,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    private val chooseAddressWidget: ChooseAddressWidget?
+        get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
 
     companion object {
@@ -68,7 +70,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun updateChooseAddressWidget(){
-        view.choose_address_widget?.updateWidget()
+        chooseAddressWidget?.updateWidget()
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
@@ -128,7 +130,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
-        view.choose_address_widget?.apply {
+        chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
@@ -136,11 +138,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             )
             if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
                 show()
-                val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
-                if(isCoachMarkAlreadyShown == false) {
-                    setupChooseAddressWidgetCoachMark(this)
-                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
-                }
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
             } else {
@@ -150,17 +147,67 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupChooseAddressWidgetCoachMark(viewChooseAddressWidget: ChooseAddressWidget){
-        val coachMarkList = arrayListOf<CoachMark2Item>()
-        coachMarkList.add(
+    fun showCoachMark(
+            followStatusData: FollowStatus?,
+            shopId: String,
+            userId: String
+    ){
+        val coachMarkList = arrayListOf<CoachMark2Item>().apply {
+            getShopFollowButtonCoachMarkItem(followStatusData)?.let{
+                add(it)
+            }
+            getChooseAddressWidgetCoachMarkItem()?.let{
+                add(it)
+            }
+        }
+        if(coachMarkList.isNotEmpty()){
+            coachMark = CoachMark2(context)
+            coachMark?.isOutsideTouchable = true
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    when (coachMarkItem.anchorView.id) {
+                        chooseAddressWidget?.id -> {
+                            ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                        }
+                        followButton?.id -> {
+                            listener.saveFirstTimeVisit()
+                            shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                        }
+                    }
+                }
+            })
+            coachMark?.showCoachMark(coachMarkList)
+        }
+    }
+
+    private fun getShopFollowButtonCoachMarkItem(
+            followStatusData: FollowStatus?
+    ): CoachMark2Item? {
+        val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
+        return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false) {
+            CoachMark2Item(
+                    anchorView = followButton,
+                    title = "",
+                    description = MethodChecker.fromHtml(coachMarkText)
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
+        val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        return if (isCoachMarkAlreadyShown == false) {
+            chooseAddressWidget?.let {
                 CoachMark2Item(
-                        viewChooseAddressWidget,
+                        it,
                         view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
                         view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
                 )
-        )
-        coachMark?.isOutsideTouchable = true
-        coachMark?.showCoachMark(coachMarkList)
+            }
+        } else {
+            null
+        }
     }
 
     fun setupFollowButton(isMyShop: Boolean){
@@ -348,7 +395,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
             val voucherUrl = it.followButton?.voucherIconURL
-            val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 followButton.loadLeftDrawable(
                         context = context,
@@ -358,11 +404,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
             } else {
                 removeCompoundDrawableFollowButton()
-            }
-            if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
-                setCoachMark(coachMarkText)
-                listener.saveFirstTimeVisit()
-                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
             }
         }
         changeColorButton()
@@ -381,19 +422,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         if (!followButton.compoundDrawables.isNullOrEmpty()) {
             followButton.removeDrawable()
         }
-    }
-
-    private fun setCoachMark(description: String) {
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        coachMarkItem.add(
-                CoachMark2Item(
-                        anchorView = followButton,
-                        title = "",
-                        description = MethodChecker.fromHtml(description)
-                )
-        )
-        coachMark = CoachMark2(context)
-        coachMark?.showCoachMark(coachMarkItem)
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
