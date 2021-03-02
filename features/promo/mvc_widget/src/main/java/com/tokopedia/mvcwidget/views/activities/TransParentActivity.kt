@@ -18,11 +18,13 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSession
 
 class TransParentActivity : BaseActivity() {
-    companion object{
+    var isOnResume = false
+
+    companion object {
         const val SHOP_ID = "shopId"
         const val MVC_SOURCE = "mvcSource"
 
-        fun getIntent(context: Context, shopId:String, @MvcSource source:Int):Intent{
+        fun getIntent(context: Context, shopId: String, @MvcSource source: Int): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(MVC_SOURCE, source)
@@ -34,10 +36,12 @@ class TransParentActivity : BaseActivity() {
     val REQUEST_CODE_LOGIN = 12
     val userSession = UserSession(this)
     lateinit var shopId: String
-    @MvcSource var mvcSource = MvcSource.DEFAULT
+    @MvcSource
+    var mvcSource = MvcSource.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setDimAmount(0f)
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         if (userSession.isLoggedIn) {
@@ -54,7 +58,7 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.isHideable = true
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false
-        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels/2).toDp()
+        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
         bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
 
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
@@ -68,10 +72,33 @@ class TransParentActivity : BaseActivity() {
             bottomSheet.bottomSheetTitle.setMargin(titleMargin, 0, 0, 0)
         }
 
-        bottomSheet.setCloseClickListener {
-            finish()
-            Tracker.closeMainBottomSheet(shopId,UserSession(this).userId,mvcSource)
+        bottomSheet.setOnDismissListener {
+            if (isOnResume) {
+                finish()
+                Tracker.closeMainBottomSheet(shopId, UserSession(this).userId, mvcSource)
+            }
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isOnResume = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isOnResume = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isOnResume = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isOnResume = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
