@@ -443,11 +443,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 combination = combination)
     }
 
-    fun setupMultiLocationValue(isProductSingleLocation: Boolean = true) {
+    fun setupMultiLocationValue() {
         isMultiLocationShop = userSession.run {
             isMultiLocationShop && (isShopAdmin || isShopOwner)
         }
-        if (isEditMode && isMultiLocationShop && !isProductSingleLocation) {
+        if (isEditMode && isMultiLocationShop) {
             minProductStockLimit = 0
         }
     }

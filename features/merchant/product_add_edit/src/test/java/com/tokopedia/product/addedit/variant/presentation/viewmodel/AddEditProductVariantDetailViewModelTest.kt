@@ -346,7 +346,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         every { userSession.isShopAdmin } returns true
         viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
-        viewModel.setupMultiLocationValue(false)
+        viewModel.setupMultiLocationValue()
 
         val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
         assert(actualProductStockLimit == 0)
@@ -358,7 +358,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         every { userSession.isShopAdmin } returns true
         viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
-        viewModel.setupMultiLocationValue(false)
+        viewModel.setupMultiLocationValue()
 
         val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
         assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
@@ -371,7 +371,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         every { userSession.isShopAdmin } returns false
         viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
-        viewModel.setupMultiLocationValue(false)
+        viewModel.setupMultiLocationValue()
 
         val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
         assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
@@ -383,7 +383,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         every { userSession.isShopAdmin } returns true
         viewModel.productInputModel.value = ProductInputModel(productId = 0)
 
-        viewModel.setupMultiLocationValue(false)
+        viewModel.setupMultiLocationValue()
 
         val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
         assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)

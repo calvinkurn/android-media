@@ -39,7 +39,6 @@ import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
-import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,15 +60,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
-        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
         private val userSession: UserSessionInterface,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
-
-    companion object {
-        private val SOURCE = "ken_add-edit"
-    }
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
@@ -154,8 +148,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // Enable showing ticker if seller has multi location shop
     val shouldShowMultiLocationTicker
         get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
-
-    var isProductSingleLocation = true
 
     init {
         with (productInputModel) {
@@ -289,11 +281,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             launchCatchError(block = {
                 val data = withContext(Dispatchers.IO) {
                     getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
-                    val productDataDeferred = async { getProductUseCase.executeOnBackground() }
-                    val adminInfoShopLocationDeferred = async { getAdminInfoShopLocationUseCase.execute(userSession.shopId.toIntOrZero(), SOURCE) }
-                    productDataDeferred.await().also {
-                        isProductSingleLocation = adminInfoShopLocationDeferred.await().size <= 1
-                    }
+                    getProductUseCase.executeOnBackground()
                 }
                 mGetProductResult.value = Success(data)
                 mIsLoading.value = false
