@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
-class ProductMerchantVoucherSummaryViewHolder(val view: View, val dynamicProductDetailListener: DynamicProductDetailListener): AbstractViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
+class ProductMerchantVoucherSummaryViewHolder(val view: View): AbstractViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_merchant_voucher_summary
@@ -19,8 +19,13 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val dynamicProduct
     private var merchantVoucher: MvcView? = null
 
     override fun bind(element: ProductMerchantVoucherSummaryDataModel?) {
+        if(element?.isShown != true) {
+            view.layoutParams.height = 0
+            return
+        }
+        view.layoutParams.height = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
         initMerchantVoucher()
-        element?.let {
+        element.let {
             setMerchantVoucher(it.title, it.subTitle, it.imageURL, it.shopId)
         }
     }
