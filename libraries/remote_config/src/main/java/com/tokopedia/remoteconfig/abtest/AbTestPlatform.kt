@@ -201,6 +201,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
 
+        //TBD
+        const val BALANCE_EXP = "Balance Widget"
+        const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
+        const val BALANCE_VARIANT_NEW = "New Balance Widget"
+
         const val HOME_EXP = "Home Revamp 2021"
         const val HOME_VARIANT_OLD = "Existing Home"
         const val HOME_VARIANT_REVAMP = "home revamp"
