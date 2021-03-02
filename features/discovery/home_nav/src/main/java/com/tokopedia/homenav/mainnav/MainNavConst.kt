@@ -21,4 +21,10 @@ object MainNavConst {
         const val SALDO_IMG = "/img/android/saldo_tokopedia/drawable-xxxhdpi/saldo_tokopedia.png";
     }
 
+    object RecentViewAb{
+        const val EXP_NAME = "review_counter_home"
+        const val CONTROL = "control_grey_counter"
+        const val VARIANT = "variant_red_counter"
+    }
+
 }

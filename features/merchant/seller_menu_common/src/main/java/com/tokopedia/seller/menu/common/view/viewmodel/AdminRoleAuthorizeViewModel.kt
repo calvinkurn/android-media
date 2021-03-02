@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
 import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
@@ -85,7 +86,7 @@ class AdminRoleAuthorizeViewModel @Inject constructor(
                     if (userSession.isShopOwner) {
                         true
                     } else {
-                        AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), accessId).let { requestParams ->
+                        AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), accessId).let { requestParams ->
                             authorizeAccessUseCase.execute(requestParams)
                         }
                     }

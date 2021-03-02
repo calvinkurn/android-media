@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -103,7 +104,7 @@ abstract class SomOrderBaseViewModel(
         return when {
             userSession.isShopOwner -> Success(true to true)
             userSession.isShopAdmin -> {
-                userSession.shopId.toIntOrZero().let { shopId ->
+                userSession.shopId.toLongOrZero().let { shopId ->
                     val firstEligibilityDeferred = async {
                         AuthorizeAccessUseCase.createRequestParams(shopId, firstAccessId).let { requestParam ->
                             firstAuthorizeAccessUseCase.execute(requestParam)

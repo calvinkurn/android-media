@@ -12,14 +12,14 @@ ext {
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
-    workManagerVersion = "2.3.4"
+    workManagerVersion = "2.5.0"
 
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     androidxCoreVersion = '1.3.2'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    coroutineVersion = '1.3.3'
+    coroutineVersion = '1.4.2'
     retrofitVersion = '2.6.0'
     okHttpVersion = '3.12.5'
     brotliVersion = '0.1.2'
@@ -105,7 +105,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.1'
+    unifyIconsVersion = '1.0.5'
     unifyPrinciplesVersion = '1.3.5'
     unifyComponentsVersion = '1.1.60'
     unifyCoachMarkVersion = '1.2.10'
@@ -207,7 +207,7 @@ ext {
             installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
-            branch     : "io.branch.sdk.android:library:4.1.1",
+            branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 
     deeplinkDispatchDependencies = [

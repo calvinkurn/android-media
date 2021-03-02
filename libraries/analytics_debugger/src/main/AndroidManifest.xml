@@ -22,7 +22,7 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".validator.MainValidatorActivity"
+            android:name="com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity"
             android:exported="true"
             android:label="Analytics Validator"
             android:launchMode="singleTask"
@@ -38,16 +38,9 @@
             android:exported="true"/>
 
         <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
+            android:name=".cassava.debugger.AnalyticsDebuggerActivity"
             android:exported="true"
             android:label="Analytics Debugger"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.tokopedia.analytics.task"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity"
-            android:exported="true"
-            android:label="Analytics Debugger - GTM Error"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -65,9 +58,6 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
-            android:theme="@style/Theme.Green" />
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
@@ -97,7 +98,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     private suspend fun getIsRoleChatAdmin(): Boolean {
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
-                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_LIST)
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT_LIST)
                 authorizeChatAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
@@ -108,7 +109,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     private suspend fun getIsRoleOrderAdmin(): Boolean {
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
-                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.SOM_LIST)
                 authorizeOrderAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
