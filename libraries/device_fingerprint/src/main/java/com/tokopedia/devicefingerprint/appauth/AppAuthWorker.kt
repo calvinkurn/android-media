@@ -31,6 +31,9 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
     }
 
     override suspend fun doWork(): Result {
+        if (isRunning) {
+            return Result.failure()
+        }
         isRunning = true
         return withContext(Dispatchers.IO) {
             try {
