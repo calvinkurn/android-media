@@ -83,7 +83,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel),
+                mapVariantParam(variantInputModel, shouldPutStockOnParam),
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }
@@ -93,7 +93,7 @@ class EditProductInputMapper @Inject constructor() {
                 ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
             }
 
-    private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
+    private fun mapVariantParam(variantInputModel: VariantInputModel, shouldPutStockOnParam: Boolean): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
             // if there is no variant input then return null
             if (variantInputModel.isRemoteDataHasVariant) {
@@ -104,7 +104,7 @@ class EditProductInputMapper @Inject constructor() {
         } else {
             Variant(
                     mapVariantSelections(variantInputModel.selections),
-                    mapVariantProducts(variantInputModel.products),
+                    mapVariantProducts(variantInputModel.products, shouldPutStockOnParam),
                     mapSizeChart(variantInputModel.sizecharts)
             )
         }
@@ -126,17 +126,16 @@ class EditProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
+    private fun mapVariantProducts(products: List<ProductVariantInputModel>, shouldPutStockOnParam: Boolean) = products.map {
         val filePath = it.pictures.firstOrNull()?.filePath ?: ""
         val picID = it.pictures.firstOrNull()?.picID ?: ""
         var productPicture = it.pictures
 
-        // Edit headquarters stock to zero requires status to be INACTIVE
-        val productStatus =
-                if (it.stock == 0) {
-                    ProductStatus.STATUS_INACTIVE_STRING
+        val productStock =
+                if (shouldPutStockOnParam) {
+                    it.stock
                 } else {
-                    it.status
+                    null
                 }
 
         if (filePath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
@@ -146,8 +145,8 @@ class EditProductInputMapper @Inject constructor() {
                 it.combination,
                 it.price,
                 it.sku,
-                productStatus,
-                it.stock,
+                it.status,
+                productStock,
                 it.isPrimary,
                 mapPictureVariant(productPicture)
         )

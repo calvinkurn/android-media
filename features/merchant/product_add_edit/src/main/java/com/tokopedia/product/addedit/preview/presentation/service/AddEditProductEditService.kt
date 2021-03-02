@@ -140,15 +140,12 @@ class AddEditProductEditService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
-                val updateHqStockDeferred = async {
-                    if (!shouldEditStockDirectly) {
-                        productInputModel.run {
-                            updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
-                        }
-                    }}
-                val productEditDeferred = async { productEditUseCase.executeOnBackground() }
-                updateHqStockDeferred.await()
-                productEditDeferred.await()
+                if (!shouldEditStockDirectly) {
+                    productInputModel.run {
+                        updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
+                    }
+                }
+                productEditUseCase.executeOnBackground()
             }
             // (4)
             clearProductDraft()
