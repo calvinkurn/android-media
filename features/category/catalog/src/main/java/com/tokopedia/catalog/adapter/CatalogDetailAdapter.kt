@@ -15,7 +15,7 @@ import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.catalog.viewholder.CatalogProductsContainerViewHolder
 
-class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
+class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 
@@ -45,7 +45,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.hideFloatingLayout()
-            attachFragmentToContainer(R.id.products_container_frame)
+            //attachFragmentToContainer(R.id.products_container_frame)
         }
         super.onViewAttachedToWindow(holder)
     }
@@ -59,7 +59,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
 
     private fun attachFragmentToContainer(containerId: Int) {
         val fragment = if (context.supportFragmentManager.fragments.firstOrNull { it is CatalogDetailProductListingFragment } == null)
-            CatalogDetailProductListingFragment.newInstance("65051","","","")
+            CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
         else
             null
 

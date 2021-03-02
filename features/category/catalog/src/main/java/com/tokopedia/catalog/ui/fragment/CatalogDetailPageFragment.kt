@@ -70,7 +70,7 @@ class CatalogDetailPageFragment : Fragment(),
     private val catalogDetailAdapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
                 .build()
-        CatalogDetailAdapter(requireActivity(),this,asyncDifferConfig, catalogAdapterFactory
+        CatalogDetailAdapter(requireActivity(),this,catalogId,asyncDifferConfig, catalogAdapterFactory
         )
     }
 
