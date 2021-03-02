@@ -105,14 +105,6 @@ class DetailCreditCardFragment : BaseDaggerFragment() {
                 show()
             }
         }
-        /*fragmentManager?.run {
-            val creditCardDialog = DeleteCreditCardDialogPayment.newInstance(
-                    settingListPaymentModel?.tokenId ?: "",
-                    settingListPaymentModel?.maskedNumber ?: "")
-            creditCardDialog.setListener(this@DetailCreditCardFragment)
-            creditCardDialog.show(this,
-                    "")
-        }*/
     }
 
     private fun showProgressDialog() {
