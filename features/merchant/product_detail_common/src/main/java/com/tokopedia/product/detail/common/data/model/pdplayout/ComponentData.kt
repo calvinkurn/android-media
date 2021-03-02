@@ -29,8 +29,6 @@ data class ComponentData(
         val campaign: CampaignModular = CampaignModular(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
-        @SerializedName("isFreeOngkir")
-        val isFreeOngkir: IsFreeOngkir = IsFreeOngkir(),
         @SerializedName("isOS")
         val isOS: Boolean = false,
         @SerializedName("isPowerMerchant")
@@ -55,6 +53,8 @@ data class ComponentData(
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
         //endregion
         //region Variant data
         @SerializedName("parentID")
@@ -68,7 +68,7 @@ data class ComponentData(
         @SerializedName("variants")
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children: List<ProductP1VariantChild> = listOf()
         //endregion
 )  {
     companion object{
@@ -102,14 +102,6 @@ data class ComponentData(
         return media.find {
             it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
-    }
-
-    fun getFsProductIsActive(): Boolean {
-        return isFreeOngkir.isActive
-    }
-
-    fun getFsProductImageUrl(): String {
-        return isFreeOngkir.imageURL
     }
 
     fun getImagePathExceptVideo(): ArrayList<String>? {

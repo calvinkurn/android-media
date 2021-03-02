@@ -7,6 +7,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -21,11 +22,12 @@ object DiscomPresenterTest: Spek({
     val view: DiscomContract.View = mockk(relaxed = true)
     val rest: GetDistrictRequestUseCase = mockk(relaxUnitFun = true)
     val gql: GetDistrictRecommendation = mockk(relaxUnitFun = true)
+    val revGeocodeUseCase: RevGeocodeUseCase = mockk(relaxed = true)
     val mapper = DistrictRecommendationMapper()
     lateinit var presenter: DiscomPresenter
 
     beforeEachTest {
-        presenter = DiscomPresenter(rest, gql, mapper)
+        presenter = DiscomPresenter(rest, revGeocodeUseCase, gql, mapper)
         presenter.attach(view)
     }
 

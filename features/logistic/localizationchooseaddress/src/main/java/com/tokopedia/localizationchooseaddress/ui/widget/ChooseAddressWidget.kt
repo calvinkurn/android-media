@@ -44,6 +44,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private var textChosenAddress: Typography? = null
     private var buttonChooseAddress: IconUnify? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
+    private var hasClicked: Boolean? = false
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -158,12 +159,15 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         initObservers()
 
         buttonChooseAddress?.setOnClickListener {
-            val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
-            val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-            source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
-            val chooseAddressBottomSheet = ChooseAddressBottomSheet()
-            chooseAddressBottomSheet.setListener(this)
-            chooseAddressBottomSheet.show(fragment?.childFragmentManager)
+            if (hasClicked == false ) {
+                val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+                val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+                chooseAddressBottomSheet.setListener(this)
+                chooseAddressBottomSheet.show(fragment?.childFragmentManager)
+                hasClicked = true
+            }
         }
     }
 
@@ -183,6 +187,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     override fun onLocalizingAddressLoginSuccessBottomSheet() {
         chooseAddressWidgetListener?.onLocalizingAddressLoginSuccess()
+    }
+
+    override fun onDismissChooseAddressBottomSheet() {
+        hasClicked = false
     }
 
     interface ChooseAddressWidgetListener {
@@ -216,6 +224,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * We need Object Host Fragment to get viewmodel
          */
         fun getLocalizingAddressHostFragment(): Fragment
+
 
         /**
          * String Source of Host Page

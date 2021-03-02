@@ -1244,7 +1244,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+                Lego6AutoBannerComponentCallback(context, this),
+                ChooseAddressWidgetCallback(context, this, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1491,6 +1492,10 @@ open class HomeFragment : BaseDaggerFragment(),
         stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
+    }
+
+    override fun onChooseAddressUpdated() {
+
     }
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce

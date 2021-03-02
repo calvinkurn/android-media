@@ -12,12 +12,14 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
+    fun isNewShipment(): Boolean
 
     /**
      * ProductMediaViewHolder
@@ -152,4 +154,12 @@ interface DynamicProductDetailListener {
      * ProductReportViewHolder
      */
     fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductShippingViewHolder
+     */
+    fun openShipmentClickedBottomSheet()
+    fun openShipmentBottomSheetWhenError() : Boolean
+    fun goToShipmentErrorAddressOrChat(errorCode: Int)
+    fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }

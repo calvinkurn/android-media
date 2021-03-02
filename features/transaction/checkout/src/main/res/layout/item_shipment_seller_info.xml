@@ -54,18 +54,6 @@
         tools:src="@drawable/ic_badge_shop_official"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_fulfillment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:text="@string/label_fulfilment"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
-        app:layout_constraintStart_toEndOf="@+id/tv_shop_name"
-        app:layout_constraintTop_toTopOf="@+id/tv_shop_name" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
         android:layout_width="wrap_content"
@@ -90,12 +78,21 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
         tools:visibility="visible">
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_image_fulfill"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:scaleType="fitCenter"
+            app:unify_image_corner_radius="0" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_fulfill_district"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_shop_name"
             android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
             app:typographyType="body_3"
@@ -103,32 +100,59 @@
             tools:text="Tangerang Selatan"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small" />
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_pre_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center_vertical"
             app:labelType="general_light_grey"
             tools:labelTitle="Pre Order 8 Hari" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_incident_shop_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_incident_shop_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center_vertical"
             app:labelType="general_light_grey"
             tools:labelTitle="Label Incident" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center_vertical"
             app:unify_image_type="rect"
             tools:src="@color/Unify_G500" />
