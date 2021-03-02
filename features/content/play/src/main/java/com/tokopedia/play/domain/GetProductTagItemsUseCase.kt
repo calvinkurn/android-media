@@ -57,47 +57,6 @@ class GetProductTagItemsUseCase @Inject constructor(
                   voucher_image_square: VoucherImageSquare
                   voucher_quota: VoucherQuota
                   voucher_finish_time: VoucherFinishTime,
-                  voucher_code: VoucherCode
-                }
-              }
-            }
-        """.trimIndent()
-
-        /**
-         * TODO: uncomment
-        private val query = """
-            query(${'$'}channelId: String){
-              playGetTagsItem(req: {channelID:${'$'}channelId}){
-                 products{
-                  id: ID
-                  name: Name
-                  image_url: ImageUrl
-                  shop_id: ShopID
-                  original_price: OriginalPrice
-                  original_price_formatted: OriginalPriceFormatted
-                  discount: Discount
-                  price: Price
-                  price_formatted: PriceFormatted
-                  quantity: Quantity
-                  is_variant: IsVariant
-                  is_available: IsAvailable
-                  order: Order
-                  app_link: AppLink
-                  web_link: WebLink
-                  min_quantity: MinQuantity
-                  is_free_shipping: IsFreeShipping
-                }
-                vouchers{
-                  voucher_id: ID
-                  voucher_name: Name
-                  shop_id: ShopID
-                  title: Title
-                  subtitle: Subtitle
-                  voucher_type: VoucherType
-                  voucher_image: VoucherImage
-                  voucher_image_square: VoucherImageSquare
-                  voucher_quota: VoucherQuota
-                  voucher_finish_time: VoucherFinishTime,
                   voucher_code: VoucherCode,
                   is_copyable: IsVoucherCopyable,
                   is_highlighted: IsHighlighted
@@ -108,7 +67,6 @@ class GetProductTagItemsUseCase @Inject constructor(
               }
             }
         """.trimIndent()
-         */
 
         fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(
