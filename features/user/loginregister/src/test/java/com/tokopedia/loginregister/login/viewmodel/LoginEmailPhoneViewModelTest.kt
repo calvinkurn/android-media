@@ -122,7 +122,6 @@ class LoginEmailPhoneViewModelTest {
             testDispatcher
         )
 
-        viewModel.idlingResourceProvider = null
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)
         viewModel.activateResponse.observeForever(activateUserObserver)
         viewModel.discoverResponse.observeForever(discoverObserver)
