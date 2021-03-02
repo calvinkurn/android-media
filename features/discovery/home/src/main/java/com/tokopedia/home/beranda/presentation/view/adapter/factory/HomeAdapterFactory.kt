@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.BalanceWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
@@ -274,6 +275,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeAtfErrorViewHolder.LAYOUT
     }
 
+    override fun type(balanceWidgetDataModel: BalanceWidgetDataModel): Int {
+        return BalanceWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -357,6 +362,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
+            BalanceWidgetViewHolder.LAYOUT -> viewHolder = BalanceWidgetViewHolder(view, listener)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,

@@ -11,7 +11,9 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.BalanceWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -91,5 +93,17 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 ovoView.gone()
             }
         }
+    }
+
+    private fun renderBalanceLayout(data: BalanceWidgetDataModel?, needToShowUserWallet: Boolean ) {
+        val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
+//        data?.let {
+//            if (it.isUserLogin && needToShowUserWallet) {
+//                ovoView.visible()
+//                ovoView.bind(it, listener)
+//            } else {
+//                ovoView.gone()
+//            }
+//        }
     }
 }
