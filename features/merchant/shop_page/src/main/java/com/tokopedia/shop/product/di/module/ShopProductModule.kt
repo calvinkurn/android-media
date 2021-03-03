@@ -176,6 +176,7 @@ class ShopProductModule {
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData
