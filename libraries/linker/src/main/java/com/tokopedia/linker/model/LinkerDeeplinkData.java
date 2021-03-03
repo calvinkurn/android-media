@@ -3,10 +3,12 @@ package com.tokopedia.linker.model;
 import android.app.Activity;
 import android.net.Uri;
 
+import java.lang.ref.WeakReference;
+
 public class LinkerDeeplinkData {
     private String clientId;
     private Uri referrable;
-    private Activity activity;
+    private WeakReference<Activity> activity;
 
 
     public Uri getReferrable() {
@@ -18,11 +20,11 @@ public class LinkerDeeplinkData {
     }
 
     public Activity getActivity() {
-        return activity;
+        return activity.get();
     }
 
     public void setActivity(Activity activity) {
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
     }
 
     public String getClientId() {
