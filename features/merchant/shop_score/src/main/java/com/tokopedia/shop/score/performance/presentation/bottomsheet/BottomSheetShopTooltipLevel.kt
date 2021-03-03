@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.performance.presentation.adapter.CardTooltipLevelAdapter
@@ -35,14 +36,22 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_information_level
 
+    override fun getTitleBottomSheet(): String = getString(R.string.title_income_information_level)
+
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
             show(it, SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG)
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shopLevel = arguments?.getInt(SHOP_PERFORMANCE_LEVEL_KEY, 0).orZero()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initView(view)
         setRecyclerView()
         observeShopInfoLevel()
@@ -90,6 +99,15 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
     }
 
     companion object {
-        const val SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG = "SomFilterBottomSheetTag"
+        const val SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG = "ShopTooltipLevelBottomSheetTag"
+        private const val SHOP_PERFORMANCE_LEVEL_KEY = "shop_performance_level_key"
+
+        fun createInstance(shopLevel: Int): BottomSheetShopTooltipLevel {
+            return BottomSheetShopTooltipLevel().apply {
+                val bundle = Bundle()
+                bundle.putInt(SHOP_PERFORMANCE_LEVEL_KEY, shopLevel)
+                arguments = bundle
+            }
+        }
     }
 }

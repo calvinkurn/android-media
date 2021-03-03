@@ -11,10 +11,13 @@ abstract class BaseBottomSheetShopScore: BottomSheetUnify() {
 
     abstract fun getLayoutResId(): Int
 
+    abstract fun getTitleBottomSheet(): String
+
     abstract fun show(fragmentManager: FragmentManager?)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChildView(inflater, container)
+        setTitle(getTitleBottomSheet())
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

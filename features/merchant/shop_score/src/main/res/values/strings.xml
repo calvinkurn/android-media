@@ -23,6 +23,8 @@
     <string name="shop_score_max_value">100</string>
 
     <string name="title_shopscore">Skor Performa Toko</string>
+    <string name="title_shop_information_level">Informasi Level Toko</string>
+    <string name="title_score_performance">Skor Performa</string>
 
     <!-- Shop Performance page -->
     <string name="title_detail_performa">Detail Performa</string>
@@ -30,6 +32,8 @@
     <string name="title_target_progress">Target %s</string>
     <string name="title_level_performance">Level %s</string>
     <string name="maximum_score_performance">/100</string>
+
+    <string name="title_period_performance_detail">%1s | Update selanjutnya: %2s</string>
 
 
 
@@ -111,6 +115,9 @@
 
     <string name="increase_up_to_performance">Tingkatkan hingga <![CDATA[<b> > %1s</b>]]></string>
     <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
+    <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
+    <string name="set_time_selling_shop_performance_detail">Yuk, baca tips atur waktu jualan online &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
+
 
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
