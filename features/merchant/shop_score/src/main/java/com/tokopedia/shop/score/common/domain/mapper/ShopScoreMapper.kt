@@ -6,14 +6,27 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY_NINE
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_FIFTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_FIFTY_NINE
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_FORTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_ONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_THREE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_TWO
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NINETY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_TOTAL_LEVEL
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
 import com.tokopedia.shop.score.performance.presentation.model.CardTooltipLevelUiModel
+import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
 
@@ -21,7 +34,7 @@ object ShopScoreMapper {
 
     fun mapToShopPerformanceDetail(titlePerformanceDetail: String): ShopPerformanceDetailUiModel {
         val shopPerformanceDetailUiModel = ShopPerformanceDetailUiModel()
-        when(titlePerformanceDetail) {
+        when (titlePerformanceDetail) {
             ORDER_SUCCESS_RATE -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_success_order
@@ -80,6 +93,105 @@ object ShopScoreMapper {
             }
         }
         return shopPerformanceDetailUiModel
+    }
+
+    fun mapToHeaderShopPerformance(shopLevel: Int, shopScore: Int): HeaderShopPerformanceUiModel {
+        val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
+        when (shopScore) {
+            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
+                when (shopLevel) {
+                    SHOP_SCORE_LEVEL_ONE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_keep_up_level_1
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_keep_up_level_1
+                    }
+                    SHOP_SCORE_LEVEL_TWO -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_keep_up_level_2
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_keep_up_level_2
+                    }
+                    SHOP_SCORE_LEVEL_THREE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_keep_up_level_3
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_keep_up_level_3
+                    }
+                    SHOP_SCORE_LEVEL_FOUR -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_keep_up_level_4
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_keep_up_level_4
+                    }
+                }
+            }
+            in SHOP_SCORE_SEVENTY..SHOP_SCORE_SEVENTY_NINE -> {
+                when (shopLevel) {
+                    SHOP_SCORE_LEVEL_ONE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_good_level_1
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_good_level_1
+                    }
+                    SHOP_SCORE_LEVEL_TWO -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_good_level_2
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_good_level_2
+                    }
+                    SHOP_SCORE_LEVEL_THREE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_good_level_3
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_good_level_3
+                    }
+                    SHOP_SCORE_LEVEL_FOUR -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_good_level_4
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_good_level_4
+                    }
+                }
+            }
+            in SHOP_SCORE_EIGHTY..SHOP_SCORE_EIGHTY_NINE -> {
+                when (shopLevel) {
+                    SHOP_SCORE_LEVEL_ONE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_great_level_1
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_great_level_1
+                    }
+                    SHOP_SCORE_LEVEL_TWO -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_great_level_2
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_great_level_2
+                    }
+                    SHOP_SCORE_LEVEL_THREE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_great_level_3
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_great_level_3
+                    }
+                    SHOP_SCORE_LEVEL_FOUR -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_great_level_4
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_great_level_4
+                    }
+                }
+            }
+            in SHOP_SCORE_NINETY..SHOP_SCORE_ONE_HUNDRED -> {
+                when (shopLevel) {
+                    SHOP_SCORE_LEVEL_ONE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_perfect_level_1
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_perfect_level_1
+                    }
+                    SHOP_SCORE_LEVEL_TWO -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_perfect_level_2
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_perfect_level_2
+                    }
+                    SHOP_SCORE_LEVEL_THREE -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_perfect_level_3
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_perfect_level_3
+                    }
+                    SHOP_SCORE_LEVEL_FOUR -> {
+                        headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_perfect_level_4
+                        headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_perfect_level_4
+                    }
+                }
+            }
+            in SHOP_SCORE_FIFTY..SHOP_SCORE_FIFTY_NINE -> {
+                headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_performance_approaching
+                headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_performance_approaching
+            }
+            in SHOP_SCORE_ZERO..SHOP_SCORE_FORTY_NINE -> {
+                headerShopPerformanceUiModel.titleHeaderShopService = R.string.title_performance_below
+                headerShopPerformanceUiModel.descHeaderShopService = R.string.desc_performance_below
+            }
+        }
+
+        headerShopPerformanceUiModel.shopLevel = shopLevel
+        headerShopPerformanceUiModel.shopScore = shopScore
+
+        return headerShopPerformanceUiModel
     }
 
     fun mapToShoInfoLevelUiModel(level: Int): ShopInfoLevelUiModel {
