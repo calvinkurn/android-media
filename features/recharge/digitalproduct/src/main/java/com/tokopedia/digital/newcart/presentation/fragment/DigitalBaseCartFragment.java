@@ -488,7 +488,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if(message == null || message.isEmpty()){
             emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
         } else {
-            emptyState.setDescription(message);
             if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
                 errorDesc = message;
                 errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
