@@ -17,23 +17,22 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
@@ -51,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
 import javax.inject.Inject
 import kotlin.math.abs
+
 /**
  * @author by furqan on 01/03/2021
  */
@@ -62,35 +62,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
 
     private lateinit var adapterCardList: HotelSearchResultAdapter
-    private lateinit var recyclerViewCardList: RecyclerView
 
     private lateinit var googleMap: GoogleMap
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
-    var searchDestinationName = ""
-    var searchDestinationType = ""
-
-    var allMarker: ArrayList<Marker> = ArrayList()
+    private var searchDestinationName = ""
+    private var searchDestinationType = ""
+    private var allMarker: ArrayList<Marker> = ArrayList()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
-    override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
-        return HotelSearchResultAdapter(this, adapterTypeFactory)
-    }
+    override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> =
+            HotelSearchResultAdapter(this, adapterTypeFactory)
 
     override fun initInjector() {
         getComponent(HotelSearchMapComponent::class.java).inject(this)
     }
 
-    private fun initRecyclerViewMap(view: View){
-        recyclerViewCardList = view.findViewById(R.id.recycler_view_map)
-        adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
-
-        recyclerViewCardList.adapter = adapterCardList
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewCardList.layoutManager = linearLayoutManager
-    }
+    override fun getRecyclerViewResourceId(): Int = R.id.rvVerticalPropertiesHotelSearchMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +103,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, {
+        hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
             }
@@ -126,16 +116,49 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initRecyclerViewMap(view)
-
+        initRecyclerViewMap()
         initFloatingButton()
-
         showLoadingCardListMap()
-
         initLocationMap()
-
         setupContentPeekSize(collapsingHeightSize = COLLAPSING_HALF_OF_SCREEN)
         showCoachMark()
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        this.googleMap = map
+        setGoogleMap()
+    }
+
+    override fun onItemClicked(property: Property, position: Int) {
+        with(hotelSearchMapViewModel.searchParam) {
+            context?.run {
+                startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                        checkIn, checkOut, property.id, room, guest.adult,
+                        searchDestinationType, searchDestinationName, property.isDirectPayment),
+                        REQUEST_CODE_DETAIL_HOTEL)
+            }
+        }
+    }
+
+    override fun loadData(page: Int) {
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        hotelSearchMapViewModel.searchProperty(page, searchQuery)
+    }
+
+    override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory(this)
+
+    override fun onEmptyContentItemTextClicked() {}
+
+    override fun onEmptyButtonClicked() {}
+
+    override fun onItemClicked(t: Property) {}
+
+    private fun initRecyclerViewMap() {
+        adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
+
+        rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
     }
 
     /**
@@ -193,35 +216,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         return 0
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        this.googleMap = map
-        setGoogleMap()
-    }
-
-    override fun onItemClicked(property: Property, position: Int) {
-        with(hotelSearchMapViewModel.searchParam) {
-            context?.run {
-                startActivityForResult(HotelDetailActivity.getCallingIntent(this,
-                        checkIn, checkOut, property.id, room, guest.adult,
-                        searchDestinationType, searchDestinationName, property.isDirectPayment),
-                        REQUEST_CODE_DETAIL_HOTEL)
-            }
-        }
-    }
-
-    override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
-        hotelSearchMapViewModel.searchProperty(page, searchQuery)
-    }
-
-    override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory(this)
-
-    override fun onEmptyContentItemTextClicked() {}
-
-    override fun onEmptyButtonClicked() {}
-
-    override fun onItemClicked(t: Property) {}
-
     private fun setGoogleMap() {
         if (::googleMap.isInitialized) {
             googleMap.uiSettings.isMapToolbarEnabled = true
@@ -245,23 +239,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    private fun initFloatingButton(){
+    private fun initFloatingButton() {
         val wrapper = LinearLayout(context)
 
         val imageView = ImageView(context)
-        imageView.setImageResource(R.drawable.ic_search)
+        imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
         wrapper.addView(imageView)
 
         val textView = TextView(context)
         textView.setHeadingText(5)
-        textView.text = getString(R.string.hotel_search_around_here)
-
+        textView.text = getString(R.string.hotel_search_map_around_here)
         wrapper.addView(textView)
+        wrapper.setOnClickListener {}
 
-        wrapper.setOnClickListener {
-        }
-
-        button_get_radius.addItem(wrapper)
+        btnGetRadiusHotelSearchMap.addItem(wrapper)
     }
 
     private fun addMarker(latitude: Double, longitude: Double, price: String) {
@@ -294,8 +285,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
-    private fun getPin(markerType: String): Int{
-        return when(markerType){
+    private fun getPin(markerType: String): Int {
+        return when (markerType) {
             MY_LOCATION_PIN -> R.drawable.ic_get_location
             HOTEL_PRICE_ACTIVE_PIN -> R.drawable.ic_hotel_price_active
             HOTEL_PRICE_INACTIVE_PIN -> R.drawable.price_marker_default
@@ -313,22 +304,23 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
-    private fun showLoadingCardListMap(){
+    private fun showLoadingCardListMap() {
         adapter.removeErrorNetwork()
         adapter.setLoadingModel(loadingModel)
         adapter.showLoading()
     }
 
-    private fun hideLoadingCardListMap(){
+    private fun hideLoadingCardListMap() {
         adapterCardList.hideLoading()
     }
 
-    private fun renderCardListMap(listProperty: List<Property>){
+    private fun renderCardListMap(listProperty: List<Property>) {
         hideLoadingCardListMap()
 
         val dataCollection = mutableListOf<Visitable<*>>()
         dataCollection.addAll(listProperty)
-        adapterCardList.renderList(dataCollection)
+        adapterCardList.clearAllElements()
+        adapterCardList.addElement(dataCollection)
     }
 
     private fun showCoachMark() {

@@ -26,11 +26,6 @@ class HotelSearchResultAdapter(val onClickListener: OnClickListener, propertyAda
         super.onBindViewHolder(holder, position)
     }
 
-    fun renderList(data: List<Visitable<*>>) {
-        clearAllElements()
-        addElement(data)
-    }
-
     override fun isItemClickableByDefault(): Boolean = false
 
     interface OnClickListener {

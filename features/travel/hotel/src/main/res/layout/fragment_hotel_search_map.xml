@@ -91,7 +91,14 @@
         android:background="@color/Unify_N0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Other UI Component-->
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/rvVerticalPropertiesHotelSearchMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/hotel_12dp"
+            android:paddingBottom="@dimen/hotel_12dp"
+            android:scrollbars="vertical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

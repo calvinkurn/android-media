@@ -284,7 +284,7 @@
     <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
 
-    <string name="hotel_search_around_here">Cari di sekitar sini</string>
+    <string name="hotel_search_map_around_here">Cari di sekitar sini</string>
 
     <string name="hotel_search_map_coach_mark_map_title">Sekarang bisa cari pakai peta, lho!</string>
     <string name="hotel_search_map_coach_mark_map_desc">Klik atau geser ke bawah di sini untuk lihat  hasil pencarian kamu dalam bentuk peta.</string>
