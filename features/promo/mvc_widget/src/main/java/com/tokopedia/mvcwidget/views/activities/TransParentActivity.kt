@@ -16,6 +16,7 @@ import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 
 class TransParentActivity : BaseActivity() {
     var isOnResume = false
@@ -41,7 +42,7 @@ class TransParentActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setDimAmount(0f)
+        handleDimming()
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         if (userSession.isLoggedIn) {
@@ -49,6 +50,14 @@ class TransParentActivity : BaseActivity() {
         } else {
             val loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
+        }
+    }
+
+    fun handleDimming(){
+        try{
+            window.setDimAmount(0f)
+        }catch (th:Throwable){
+            Timber.e(th)
         }
     }
 
