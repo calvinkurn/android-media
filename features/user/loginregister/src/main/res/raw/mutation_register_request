@@ -1,4 +1,4 @@
-mutation register($regType: String!, $fullname: String, $email: String, $password: String, $osType: String, $validateToken: String, $hash: String) {
+mutation register($regType: String!, $fullname: String, $email: String, $password: String, $osType: String, $validateToken: String, $h: String) {
     register_v2(input: {
         reg_type: $regType
         fullname: $fullname
@@ -6,7 +6,7 @@ mutation register($regType: String!, $fullname: String, $email: String, $passwor
         password: $password
         os_type: $osType
         validate_token: $validateToken
-        h: $hash
+        h: $h
     }) {
         user_id
         sid
