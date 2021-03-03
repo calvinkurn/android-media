@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -8,14 +9,17 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.ID_ANDROID_CONTENT
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -64,6 +69,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var adapterCardList: HotelSearchResultAdapter
 
     private lateinit var googleMap: GoogleMap
+    private lateinit var valueAnimator: ValueAnimator
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -120,8 +126,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initFloatingButton()
         showLoadingCardListMap()
         initLocationMap()
-        setupContentPeekSize(collapsingHeightSize = COLLAPSING_HALF_OF_SCREEN)
-        showCoachMark()
+        setupContentPeekSize()
+        Handler().postDelayed({
+            animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
+        }, 500)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -302,6 +310,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         searchProperties.forEach {
             addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
         }
+
+        showCoachMark()
     }
 
     private fun showLoadingCardListMap() {
@@ -323,8 +333,51 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         adapterCardList.addElement(dataCollection)
     }
 
+    private fun setupValueAnimator() {
+        val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior: AppBarLayout.Behavior? = params.behavior as AppBarLayout.Behavior?
+
+        behavior?.let {
+            valueAnimator = ValueAnimator.ofInt()
+            valueAnimator.interpolator = DecelerateInterpolator()
+            valueAnimator.addUpdateListener { animation ->
+                behavior.topAndBottomOffset = animation.animatedValue as Int
+                appBarHotelSearchMap.requestLayout()
+            }
+        }
+    }
+
+    private fun animateCollapsingToolbar(collapsingHeightSize: Double = 1.0) {
+        if (!::valueAnimator.isInitialized) {
+            setupValueAnimator()
+        }
+
+        activity?.let {
+            val display = it.windowManager.defaultDisplay
+            val size = Point()
+            try {
+                display.getRealSize(size)
+            } catch (error: NoSuchMethodError) {
+                display.getSize(size)
+            }
+            val height = size.y.toDouble() * collapsingHeightSize
+
+            val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
+            val behavior: AppBarLayout.Behavior? = params.behavior as AppBarLayout.Behavior?
+
+            behavior?.let {
+                valueAnimator.cancel()
+                valueAnimator.setIntValues(behavior.topAndBottomOffset, height.toInt() * -1)
+                valueAnimator.duration = 400
+                valueAnimator.start()
+            }
+        }
+    }
+
     private fun showCoachMark() {
         context?.let {
+            localCacheHandler.putBoolean(KEY_SEARCH_MAP_COACHMARK, false)
+
             if (!localCacheHandler.getBoolean(KEY_SEARCH_MAP_COACHMARK, false)) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
@@ -350,15 +403,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 coachmark.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                         if (currentIndex == COACHMARK_LIST_STEP_POSITION) {
-                            setupContentPeekSize(collapsingHeightSize = COLLAPSING_NINE_TENTHS_OF_SCREEN)
+                            animateCollapsingToolbar(COLLAPSING_ONE_TENTHS_OF_SCREEN)
                         } else if (currentIndex == COACHMARK_FILTER_STEP_POSITION) {
-                            setupContentPeekSize(collapsingHeightSize = COLLAPSING_HALF_OF_SCREEN)
+                            animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
                         }
                     }
 
                 })
                 coachmark.onFinishListener = {
-                    setupContentPeekSize(collapsingHeightSize = COLLAPSING_NINE_TENTHS_OF_SCREEN)
                     localCacheHandler.putBoolean(KEY_SEARCH_MAP_COACHMARK, true)
                 }
                 coachmark.showCoachMark(coachMarkItem, null, 0)
@@ -373,7 +425,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val COACHMARK_FILTER_STEP_POSITION = 2
 
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
-        private const val COLLAPSING_NINE_TENTHS_OF_SCREEN = 9.0 / 10.0
+        private const val COLLAPSING_ONE_TENTHS_OF_SCREEN = 1.0 / 10.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
