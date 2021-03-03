@@ -37,6 +37,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private var selectedDistrictId = -1
     private var selectedCityId = -1
     private var selectedProvinceId = -1
+    private var hasTouchedDistrict = false
     private val zipCodes: MutableList<String> = mutableListOf()
     private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
         ArrayAdapter<String>(requireActivity(), R.layout.item_auto_complete_text_double_row, R.id.item, zipCodes)
@@ -90,7 +91,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             }
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
-
         tfPostalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ ->
             if (position == 0 && !tfPostalCode?.textFieldInput?.text.toString()[0].isDigit())
                 tfPostalCode?.textFieldInput?.setText("")
@@ -103,7 +103,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
-        var hasTouchedDistrict = false
+        tfAddress?.textFieldInput?.isSingleLine = false
+
         tfDistrict?.textFieldInput?.setOnTouchListener { view, motionEvent ->
             if (!hasTouchedDistrict) {
                 gotoDistrictActivity()
@@ -115,6 +116,11 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             initializeFillData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        hasTouchedDistrict = false
+    }
+
     private fun initializeViews() {
         view?.apply {
             tfName = findViewById(R.id.text_input_name)
@@ -124,9 +130,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             tfPhone = findViewById(R.id.text_input_phone)
             tfEmail = findViewById(R.id.text_input_email)
             tfFax = findViewById(R.id.text_input_fax)
-
-            tfAddress?.textFieldInput?.isSingleLine = false
-            tfPostalCode?.textFieldWrapper?.counterMaxLength = 5
         }
     }
 
