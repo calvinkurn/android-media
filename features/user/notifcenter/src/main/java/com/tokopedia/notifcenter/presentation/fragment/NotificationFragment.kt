@@ -129,6 +129,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
+        if (rvAdapter?.lastItemIsErrorNetwork() == true) return
         if (!viewModel.hasFilter()) {
             viewModel.loadRecommendations(page)
         } else {

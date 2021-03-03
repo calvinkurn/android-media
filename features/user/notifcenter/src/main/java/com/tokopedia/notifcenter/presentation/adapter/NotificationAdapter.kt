@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -77,6 +78,10 @@ class NotificationAdapter constructor(
 
     override fun getSavedCarouselState(position: Int): Parcelable? {
         return productCarouselState[position]
+    }
+
+    fun lastItemIsErrorNetwork(): Boolean {
+        return visitables.getOrNull(visitables.lastIndex) is ErrorNetworkModel
     }
 
     fun shouldDrawDivider(position: Int): Boolean {
