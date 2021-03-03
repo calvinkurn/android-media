@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -58,9 +59,9 @@ data class ProductMiniSocialProofDataModel(
 
     private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount, type)
-            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount, type)
-            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount, type)
+            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
+            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
+            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
             else -> ProductMiniSocialProofItemDataModel(type = type)
         }
     }
@@ -80,15 +81,21 @@ data class ProductMiniSocialProofDataModel(
             socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
             return
         }
-        socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText),
-                ProductMiniSocialProofItemDataModel(RATING, ratingCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
-                ProductMiniSocialProofItemDataModel(BUYER_PHOTOS, buyerPhotosCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip),
-                ProductMiniSocialProofItemDataModel(TALK, talkCount, ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
-                .filter { it.count > 0 }
-                .take(4)
+        val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
+        appendChipIfNotZero(ratingCount, RATING, socialProofBuilder)
+        appendChipIfNotZero(buyerPhotosCount, BUYER_PHOTOS, socialProofBuilder)
+        appendChipIfNotZero(talkCount, TALK, socialProofBuilder)
+        socialProofData = socialProofBuilder.take(4)
     }
 
     fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
         return socialProofData
+    }
+
+    private fun appendChipIfNotZero(count: Int, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>): MutableList<ProductMiniSocialProofItemDataModel> {
+        if(count != 0) {
+            list.add(ProductMiniSocialProofItemDataModel(type, count.productThousandFormatted(), ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+        }
+        return list
     }
 }
