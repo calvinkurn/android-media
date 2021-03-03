@@ -275,21 +275,26 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         })
 
         viewModel.orderList.observe(viewLifecycleOwner, Observer {
-            updateOrRenderOrderListState(it)
+            when (it.status) {
+                Status.LOADING -> {
+                    if (rvAdapter?.hasNotifOrderList() == false) {
+                        updateOrRenderOrderListState(it.data)
+                    }
+                }
+                Status.SUCCESS -> {
+                    updateOrRenderOrderListState(it.data)
+                }
+                else -> {
+                }
+            }
         })
     }
 
-    private fun updateOrRenderOrderListState(resource: Resource<NotifOrderListResponse>) {
-        when (resource.status) {
-            Status.SUCCESS -> {
-                rvAdapter?.updateOrRenderOrderListState(resource.data) {
-                    val visibleItems = rvLm.findFirstVisibleItemPositions(null)
-                    if (visibleItems.isNotEmpty() && visibleItems.first() == 0) {
-                        moveToTop()
-                    }
-                }
-            }
-            else -> {
+    private fun updateOrRenderOrderListState(data: NotifOrderListResponse?) {
+        rvAdapter?.updateOrRenderOrderListState(data) {
+            val visibleItems = rvLm.findFirstVisibleItemPositions(null)
+            if (visibleItems.isNotEmpty() && visibleItems.first() == 0) {
+                moveToTop()
             }
         }
     }

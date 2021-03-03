@@ -212,12 +212,17 @@ class NotificationAdapter constructor(
         if (response == null) return
         if (hasNotifOrderList()) {
             val payload = PayloadOrderList(response.notifcenterNotifOrderList)
+            getOrderListUiModel()?.update(payload.orderList)
             notifyItemChanged(0, payload)
         } else {
             visitables.add(0, response.notifcenterNotifOrderList)
             notifyItemInserted(0)
             inserted()
         }
+    }
+
+    private fun getOrderListUiModel(): NotifOrderListUiModel? {
+        return visitables.getOrNull(0) as? NotifOrderListUiModel
     }
 
     private inline fun <reified T : Visitable<NotificationTypeFactory>> getUpToDateUiModelPosition(

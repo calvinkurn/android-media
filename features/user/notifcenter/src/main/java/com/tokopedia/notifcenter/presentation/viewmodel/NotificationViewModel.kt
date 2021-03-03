@@ -116,7 +116,6 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        // TODO: Adjust role and param
         launchCatchError(dispatcher.io(),
                 {
                     notifOrderListUseCase.getOrderList(role).collect {

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Card(
         @SerializedName("counter_str")
-        val counter: String = "0",
+        var counter: String = "0",
         @SerializedName("icon")
         val icon: String = "",
         @SerializedName("link")

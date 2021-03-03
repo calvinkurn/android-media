@@ -52,9 +52,8 @@ class NotificationOrderListViewHolder constructor(
 
     override fun bind(element: NotifOrderListUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-        when (val payload = payloads.first()) {
+        when (payloads.first()) {
             is PayloadOrderList -> {
-                element.update(payload.orderList)
                 bind(element)
             }
         }
