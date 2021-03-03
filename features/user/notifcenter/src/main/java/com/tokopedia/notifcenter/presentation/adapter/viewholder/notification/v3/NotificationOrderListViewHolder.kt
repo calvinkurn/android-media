@@ -31,7 +31,7 @@ class NotificationOrderListViewHolder(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.color.notifcenter_dms_order_list_card_shadow,
             R.dimen.notif_dp_6,
             R.dimen.notif_dp_6
     )
@@ -42,7 +42,7 @@ class NotificationOrderListViewHolder(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.color.notifcenter_dms_order_list_card_shadow,
             R.dimen.notif_dp_6,
             R.dimen.notif_dp_6
     )

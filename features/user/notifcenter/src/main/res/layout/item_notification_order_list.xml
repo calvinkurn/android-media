@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_N50"
+    android:background="@color/Unify_N50"
     android:paddingHorizontal="@dimen/notif_dp_10"
     android:paddingVertical="@dimen/notif_dp_6">
 
