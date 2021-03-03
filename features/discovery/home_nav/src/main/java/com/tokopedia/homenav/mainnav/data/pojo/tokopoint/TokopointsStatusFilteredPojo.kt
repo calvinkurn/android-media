@@ -16,7 +16,7 @@ data class TokopointsStatusFilteredPojo (
     )
 
     data class StatusFilteredData(
-        @SerializedName("statusFilteredData")
+        @SerializedName("tier")
         val tier: Tier = Tier(),
         @SerializedName("points")
         val points: Points = Points()

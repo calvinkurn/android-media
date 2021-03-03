@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Typeface.BOLD
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -155,7 +156,11 @@ class AccountHeaderViewHolder(itemView: View,
                 tvOvo.text = element.saldo
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
             } else if(element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty()){
-                tvOvo.text = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
+                val spanText = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
+                val span = SpannableString(spanText)
+                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, element.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), element.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvOvo.setText(span, TextView.BufferType.SPANNABLE)
                 usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
             } else {
                 tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)

@@ -93,6 +93,8 @@ data class AccountHeaderDataModel(
         this.tokopointPointAmount = point
         this.tokopointExternalAmount = amount
         this.tokopointBadgeUrl = badge
+        this.isGetSaldoError = false
+        this.isGetOvoError = false
     }
 
     fun setUserBadge(badge: String) {
