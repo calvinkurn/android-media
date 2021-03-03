@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.promoui.common.CouponView
+    <com.tokopedia.promoui.common.PromoCouponView
         android:id="@+id/couponView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             app:typographyType="heading_5"
             tools:text="Rp100.000" />
 
-    </com.tokopedia.promoui.common.CouponView>
+    </com.tokopedia.promoui.common.PromoCouponView>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn"
