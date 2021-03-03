@@ -1,16 +1,13 @@
 package com.tokopedia.tkpd.nfc;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.provider.Settings;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.RouteManager;
@@ -77,26 +74,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                         @Override
                         public void onPermissionGranted() {
                             try {
-                                if (!nfcAdapter.isEnabled()) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                    builder.setMessage(activity.getBaseContext().getResources().getString(R.string.emoney_please_activate_nfc_from_settings_subsriber))
-                                            .setPositiveButton(activity.getBaseContext().getResources().getString(R.string.emoney_activate_subsriber), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    //set what would happen when positive button is clicked
-                                                    Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
-                                                    activity.startActivity(intent);
-                                                }
-                                            })
-                                            .setNegativeButton(activity.getBaseContext().getResources().getString(R.string.emoney_activate_subsriber), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                                }
-                                            })
-                                            .show();
-
-                                } else {
+                                if (nfcAdapter.isEnabled()) {
                                     pendingIntent = PendingIntent.getActivity(activity, 0,
                                             activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
                                     nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
