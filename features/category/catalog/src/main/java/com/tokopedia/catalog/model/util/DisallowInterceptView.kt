@@ -30,4 +30,8 @@ class DisallowInterceptView : LinearLayout {
         }
         return super.onTouchEvent(event)
     }
+
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
 }

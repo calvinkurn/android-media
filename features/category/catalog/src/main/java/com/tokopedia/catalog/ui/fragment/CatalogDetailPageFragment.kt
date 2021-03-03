@@ -26,6 +26,7 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.slidinguppanel.SlidingUpPanelLayout
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
@@ -36,6 +37,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -59,7 +61,6 @@ class CatalogDetailPageFragment : Fragment(),
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
-    private lateinit var fragment: CatalogGalleryFragment
 
     private var navToolbar: NavToolbar? = null
     private var catalogPageRecyclerView: RecyclerView? = null
@@ -175,7 +176,9 @@ class CatalogDetailPageFragment : Fragment(),
         navToolbar?.apply {
             setIcon(
                     IconBuilder()
-                            .addIcon(IconList.ID_SHARE) {}
+                            .addIcon(IconList.ID_SHARE) {
+                                generateCatalogShareData(catalogId)
+                            }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
@@ -225,26 +228,17 @@ class CatalogDetailPageFragment : Fragment(),
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
 
-
-    fun onBackPress() {
-        if (::fragment.isInitialized && fragment.isAdded) {
-            childFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
-                    .remove(fragment)
-                    .commit()
-        } else {
-            activity?.finish()
-        }
-    }
-
-    private fun generateCatalogShareData(catalogUrl: String, catalogId: String): LinkerData {
-        return LinkerData.Builder.getLinkerBuilder()
+    private fun generateCatalogShareData(catalogId: String) {
+        val shareData =  LinkerData.Builder.getLinkerBuilder()
                 .setId(catalogId)
                 .setName(getString(R.string.catalog_message_share_catalog))
                 .setType(LinkerData.CATALOG_TYPE)
                 .setTextContent(getString(R.string.catalog_share_text_content))
-                .setUri(catalogUrl)
+                .setUri(CatalogConstant.CATALOG_URL)
                 .build()
+
+        shareData.type = LinkerData.CATALOG_TYPE
+        DefaultShare(activity, shareData).show()
     }
 
     private fun showImage(currentItem: Int) {

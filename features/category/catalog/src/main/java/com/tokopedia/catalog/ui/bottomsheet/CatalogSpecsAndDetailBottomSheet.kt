@@ -38,6 +38,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
+        const val PAGE_DESCRIPTION = 0
+        const val PAGE_SPECIFICATIONS = 1
         fun newInstance(description: String, specifications: ArrayList<FullSpecificationsComponentData>,
                         openPage : String): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
@@ -66,9 +68,9 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         initViews()
         setCustomTabText(context,tab_layout_specs)
         if(openPage == SPECIFICATION)
-            view_pager_specs.currentItem = 1
+            view_pager_specs.currentItem = PAGE_SPECIFICATIONS
         else
-            view_pager_specs.currentItem = 0
+            view_pager_specs.currentItem = PAGE_DESCRIPTION
     }
 
     private fun initData(){

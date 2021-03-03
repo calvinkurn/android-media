@@ -283,7 +283,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setHeaderCount(totalProductsCount : String){
-        if("0".equals(totalProductsCount)) {
+        if(CatalogConstant.ZERO_VALUE == totalProductsCount) {
             headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
             showNoDataScreen(true)
         }
@@ -445,7 +445,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
+        val intent = getProductIntent(item.id, item.categoryID.toString())
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
@@ -454,7 +454,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         CatalogDetailPageAnalytics.eventProductListClick(
                 item.name,
-                item.id.toString(),
+                item.id,
                 CurrencyFormatHelper.convertRupiahToInt(item.price),
                 adapterPosition,
                 "catalog/$catalogName - $catalogId",
@@ -470,14 +470,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
         if (userSession.isLoggedIn) {
-            disableWishListButton(productItem.id.toString())
+            disableWishListButton(productItem.id)
             if (productItem.wishlist) {
-                removeWishList(productItem.id.toString(), userSession.userId, position)
+                removeWishList(productItem.id, userSession.userId, position)
             } else {
-                addWishList(productItem.id.toString(), userSession.userId, position)
+                addWishList(productItem.id, userSession.userId, position)
             }
         } else {
-            launchLoginActivity(productItem.id.toString())
+            launchLoginActivity(productItem.id)
         }
     }
 

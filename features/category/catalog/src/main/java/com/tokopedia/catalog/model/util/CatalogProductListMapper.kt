@@ -29,7 +29,6 @@ class CatalogProductListMapper {
                                 discountPercentage = dataItem.product?.campaign?.discountPercentage
                                 ?: 0,
                                 originalPrice = dataItem.product?.campaign?.originalPrice ?: "",
-                                priceRange = dataItem.product?.priceFormat ?: "",
                                 price = dataItem.product?.priceFormat ?: "",
                                 badgeList = dataItem.shop?.badges,
                                 isTopAds = true,
@@ -37,7 +36,7 @@ class CatalogProductListMapper {
                                 countReview = getReviewCount(dataItem.product?.countReviewFormat
                                 ?: "0"),
                                 wishlist = (dataItem.product?.wishlist) ?: false,
-                                id = (dataItem.product?.id?.toInt()) ?: 0,
+                                id = (dataItem.product?.id) ?: "0",
                                 categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0,
                                 productImpTrackingUrl = dataItem.product?.image?.sUrl ?: "",
                                 productClickTrackingUrl = dataItem.productClickUrl ?: "",

@@ -111,7 +111,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
-                if (productId == model.id) {
+                if (productId.toString() == model.id) {
                     model.wishlist = isWishlisted
                     notifyItemChanged(i)
                     break
@@ -124,7 +124,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
-                if (productId == model.id) {
+                if (productId.toString() == model.id) {
                     model.isWishListEnabled = isEnabled
                     notifyItemChanged(i)
                     break
@@ -144,7 +144,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 item.adapter_position = position
 
                 if (item.isTopAds) {
-                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl, item.id.toString() ?: "", item.name, item.imageUrl)
+                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl, item.id, item.name, item.imageUrl)
                     viewedTopAdsList.add(item)
                 } else {
                     viewedProductList.add(item)

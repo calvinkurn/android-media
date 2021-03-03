@@ -21,7 +21,7 @@
             app:layout_constraintDimensionRatio="H,1:1"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            />
+            tools:ignore="ContentDescription" />
         
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_name"
@@ -163,7 +163,6 @@
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
-            android:contentDescription="null"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
@@ -172,7 +171,8 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_three_dots"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

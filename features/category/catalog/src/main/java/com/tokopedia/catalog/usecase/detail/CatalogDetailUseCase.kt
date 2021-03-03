@@ -1,6 +1,5 @@
 package com.tokopedia.catalog.usecase.detail
 
-import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.catalog.model.datamodel.CatalogDetailDataModel
 import com.tokopedia.catalog.model.raw.CatalogResponseData
@@ -22,10 +21,6 @@ class CatalogDetailUseCase @Inject constructor(private val catalogDetailReposito
         else{
             catalogDetailDataModel.value = Fail(Throwable("No data found"))
         }
-
-//        Handler().postDelayed({
-//            catalogDetailDataModel.value = Success(mapIntoModel(CatalogDetailMapper.getDummyCatalogData()))
-//        },600)
     }
 
     private fun mapIntoModel(data :  CatalogResponseData) : CatalogDetailDataModel{

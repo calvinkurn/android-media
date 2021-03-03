@@ -9,7 +9,6 @@ import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
-import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.sortfilter.SortFilterItem

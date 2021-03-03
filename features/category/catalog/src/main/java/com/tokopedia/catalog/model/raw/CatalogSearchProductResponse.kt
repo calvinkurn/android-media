@@ -13,7 +13,7 @@ import java.util.*
 data class CatalogSearchProductResponse(
         @SerializedName("ace_search_product_v4")
         @Expose
-        val searchProduct: SearchProduct = SearchProduct(),
+        val searchProduct: SearchProduct = SearchProduct()
 
 ) {
 
@@ -109,7 +109,7 @@ data class CatalogSearchProductResponse(
 data class CatalogProductItem(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("name")
         @Expose
@@ -142,14 +142,6 @@ data class CatalogProductItem(
         @SerializedName("price")
         @Expose
         val price: String = "",
-
-        @SerializedName("priceInt")
-        @Expose
-        val priceInt: Int = 0,
-
-        @SerializedName("priceRange")
-        @Expose
-        val priceRange: String = "",
 
         @SerializedName("categoryBreadcrumb")
         @Expose
@@ -245,7 +237,7 @@ data class CatalogProductItem(
 
         @SerializedName("categoryID")
         @Expose
-        var categoryID: Int? = null,
+        var categoryID: Int? = null
 
 ) : ImpressHolder() , Parcelable , Visitable<CatalogTypeFactory> {
 
