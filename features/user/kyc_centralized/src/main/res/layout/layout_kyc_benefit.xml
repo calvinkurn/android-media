@@ -11,9 +11,11 @@
         android:layout_height="wrap_content"
         android:scaleType="fitStart"
         android:adjustViewBounds="true"
+        app:layout_constraintCircleRadius="@dimen/layout_lvl0"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:unify_image_type="rect"
         app:srcCompat="@drawable/kyc_benefit_banner"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -176,6 +178,7 @@
         app:layout_constraintLeft_toRightOf="@id/close_button"
         app:layout_constraintTop_toTopOf="@id/close_button"
         app:typographyType="heading_4"
+        android:textColor="@color/Neutral_N700_96"
         android:text="@string/title_kyc_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

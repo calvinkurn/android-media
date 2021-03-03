@@ -38,6 +38,7 @@ import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -70,6 +71,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var projectId = -1
     private var callback: String? = null
     private var kycBenefitLayout: View? = null
+    private var kycBenefitImage: ImageUnify? = null
     private var kycBenefitButton: UnifyButton? = null
     private var kycBenefitCloseButton: ImageButton? = null
     private var defaultStatusBarColor = 0
@@ -124,6 +126,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
         kycBenefitButton = parentView.findViewById(R.id.kyc_benefit_btn)
         kycBenefitCloseButton = parentView.findViewById(R.id.close_button)
+        kycBenefitImage = parentView.findViewById(R.id.image_banner)
+        kycBenefitImage?.cornerRadius = 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
