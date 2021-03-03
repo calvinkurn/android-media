@@ -56,6 +56,7 @@ class MapHQVariantUseCase @Inject constructor(private val graphqlRepository: Gra
                             combination
                             isPrimary
                             price
+                            sku
                             stock
                         }
                     }
