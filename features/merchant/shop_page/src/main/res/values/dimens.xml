@@ -39,5 +39,6 @@
 
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>
     <dimen name="play_sgc_btn_start_live_height">36dp</dimen>
+    <dimen name="play_widget_seller_action_height">56dp</dimen>
 
 </resources>
