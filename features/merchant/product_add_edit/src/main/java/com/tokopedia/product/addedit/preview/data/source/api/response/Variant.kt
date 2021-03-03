@@ -28,7 +28,9 @@ data class ProductVariant(
         @SerializedName("stock")
         val stock: Int,
         @SerializedName("pictures")
-        val pictures: List<Picture>
+        val pictures: List<Picture>,
+        @SerializedName("warehouseCount")
+        val warehouseCount: Int
 )
 
 data class Selection(

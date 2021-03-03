@@ -182,6 +182,7 @@ class GetProductUseCase @Inject constructor(
                           url300
                           status
                         }
+                        warehouseCount
                       }
                       selections{
                         variantID
