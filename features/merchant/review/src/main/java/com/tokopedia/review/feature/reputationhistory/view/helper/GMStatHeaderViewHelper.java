@@ -36,7 +36,7 @@ import java.util.Locale;
 
 public class GMStatHeaderViewHelper {
 
-    public static final String CALENDAR_IMAGE_URL = "";
+    public static final String CALENDAR_IMAGE_URL = "https://images.tokopedia.net/img/android/review/review_calendar.png";
     public static final int MOVE_TO_SET_DATE = 1;
     public static final String YYYY_M_MDD = "yyyyMMdd";
     private static final int MAX_DATE_RANGE = 60;

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 
 /**
@@ -104,7 +105,8 @@ public class ReputationLevelUtils {
             @Override
             public void onClick(final View v) {
                 View popup = View.inflate(context, R.layout.popup_reputation, null);
-
+                ImageView popupImage = (ImageView) popup.findViewById(R.id.popup_reputation_speech_bubble);
+                ImageViewExtKt.loadImage(popupImage, SPEECH_BUBBLE_IMAGE, 0);
                 TextView point = (TextView)popup.findViewById(R.id.point);
                 point.setText(reputationPoint + " Poin");
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
