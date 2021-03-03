@@ -38,6 +38,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomC
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
@@ -382,6 +383,14 @@ PopularCityAdapter.ActionListener {
             }
             it.setResult(Activity.RESULT_OK, resultIntent)
             it.finish()
+        }
+    }
+
+    override fun showToasterError() {
+        val toaster = Toaster
+        view?.let { v ->
+            toaster.build(v, getString(R.string.toaster_failed_get_district), Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR, "").show()
         }
     }
 
