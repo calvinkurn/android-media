@@ -347,7 +347,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeSocketInfo()
-        observeEventUserInfo()
+        observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
@@ -371,7 +371,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
+    private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
@@ -383,7 +383,6 @@ class PlayFragment @Inject constructor(
             }
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 unregisterKeyboardListener(requireView())
-                onBottomInsetsViewHidden()
             }
 
             fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
@@ -409,6 +408,7 @@ class PlayFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             buttonCloseViewOnStateChanged(bottomInsets = it)
+            fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
 
             if (it.isAnyShown) playNavigation.requestDisableNavigation()
             else playNavigation.requestEnableNavigation()
@@ -539,18 +539,20 @@ class PlayFragment @Inject constructor(
 
     private fun fragmentVideoViewOnStateChanged(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (videoPlayer.isYouTube || isFreezeOrBanned) {
+        if (videoPlayer.isYouTube || (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown)) {
             fragmentVideoView.safeRelease()
             fragmentVideoView.hide()
         }
     }
 
     private fun fragmentBottomSheetViewOnStateChanged(
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (isFreezeOrBanned) {
+        if (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown) {
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }
