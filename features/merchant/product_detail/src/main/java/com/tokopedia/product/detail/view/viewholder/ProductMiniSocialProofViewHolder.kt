@@ -87,6 +87,5 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
 
     private fun setAdapterData(element: ProductMiniSocialProofDataModel) {
         miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
-        element.getSocialProofData().toMutableList()
     }
 }
