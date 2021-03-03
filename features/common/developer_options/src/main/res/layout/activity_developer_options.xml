@@ -40,6 +40,18 @@
             android:textColor="@color/white" />
 
         <TextView
+            android:id="@+id/app_auth_secret"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="App Auth Secret (IT Risk)"
+            android:textColor="@color/white" />
+
+        <TextView
             android:id="@+id/reset_onboarding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
