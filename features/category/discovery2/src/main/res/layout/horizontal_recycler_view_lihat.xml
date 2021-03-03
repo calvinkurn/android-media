@@ -46,8 +46,7 @@
         android:id="@+id/list_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_goneMarginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_tv" />
 
