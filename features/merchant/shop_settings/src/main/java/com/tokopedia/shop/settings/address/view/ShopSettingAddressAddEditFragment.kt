@@ -103,8 +103,12 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
+        var hasTouchedDistrict = false
         tfDistrict?.textFieldInput?.setOnTouchListener { view, motionEvent ->
-            gotoDistrictActivity()
+            if (!hasTouchedDistrict) {
+                gotoDistrictActivity()
+                hasTouchedDistrict = true
+            }
             false
         }
         if (!isAddNew)
@@ -120,6 +124,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             tfPhone = findViewById(R.id.text_input_phone)
             tfEmail = findViewById(R.id.text_input_email)
             tfFax = findViewById(R.id.text_input_fax)
+
+            tfAddress?.textFieldInput?.isSingleLine = false
+            tfPostalCode?.textFieldWrapper?.counterMaxLength = 5
         }
     }
 
