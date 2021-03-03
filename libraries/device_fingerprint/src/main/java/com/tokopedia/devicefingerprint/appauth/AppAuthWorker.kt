@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.appauth
 import android.content.Context
 import androidx.work.*
 import com.tkpd.util.Base64
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.devicefingerprint.appauth.usecase.AppAuthUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
@@ -93,6 +94,9 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
          * isForce = true will force the scheduler, even if the previous worker was success.
          */
         fun scheduleWorker(context: Context, isForce:Boolean) {
+            if (GlobalConfig.isSellerApp()) {
+                return
+            }
             if (!isForce && alreadySuccessSend(context)) {
                 return
             }
