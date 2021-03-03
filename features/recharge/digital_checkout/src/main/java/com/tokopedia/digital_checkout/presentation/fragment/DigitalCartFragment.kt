@@ -193,18 +193,18 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             viewModel.applyPromoData(it)
-            checkoutBottomViewWidget.buttonDescription = getPromoData().description
+            checkoutBottomViewWidget.promoButtonDescription = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 renderDefaultEmptyPromoView()
             } else {
-                checkoutBottomViewWidget.buttonTitle = getPromoData().title
+                checkoutBottomViewWidget.promoButtonTitle = getPromoData().title
             }
-            checkoutBottomViewWidget.buttonState = getPromoData().state.mapToStatePromoCheckout()
+            checkoutBottomViewWidget.promoButtonState = getPromoData().state.mapToStatePromoCheckout()
 
             when (getPromoData().state) {
                 TickerCheckoutView.State.ACTIVE -> {
                     cartDetailInfoAdapter.isExpanded = true
-                    checkoutBottomViewWidget.buttonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                    checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 }
                 TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
                 else -> {
@@ -214,8 +214,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun renderDefaultEmptyPromoView() {
-        checkoutBottomViewWidget.buttonTitle = getString(R.string.digital_checkout_promo_title)
-        checkoutBottomViewWidget.buttonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+        checkoutBottomViewWidget.promoButtonTitle = getString(R.string.digital_checkout_promo_title)
+        checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
     }
 
     private fun showContent() {
@@ -318,8 +318,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
 
         checkoutBottomViewWidget.setButtonChevronIconListener {
-            if (checkoutBottomViewWidget.buttonDescription.isNotEmpty()) {
-                checkoutBottomViewWidget.buttonState = ButtonPromoCheckoutView.State.LOADING
+            if (checkoutBottomViewWidget.promoButtonDescription.isNotEmpty()) {
+                checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.LOADING
                 onResetPromoDiscount()
             } else {
                 onClickUsePromo()

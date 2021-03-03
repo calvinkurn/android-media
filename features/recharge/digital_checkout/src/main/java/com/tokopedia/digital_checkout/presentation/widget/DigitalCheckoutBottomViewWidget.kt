@@ -18,31 +18,25 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         LayoutInflater.from(context).inflate(R.layout.layout_digital_checkout_bottom_view, this, true)
     }
 
-    var buttonTitle: String = ""
+    var promoButtonTitle: String = ""
         set(title) {
             field = title
             digitalPromoBtnView.title = title
         }
 
-    var buttonDescription: String = ""
+    var promoButtonDescription: String = ""
         set(desc) {
             field = desc
             digitalPromoBtnView.desc = desc
         }
 
-    var buttonState: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE
+    var promoButtonState: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE
         set(state) {
             field = state
             digitalPromoBtnView.state = state
         }
 
-    var buttonVisibility: Int = View.VISIBLE
-        set(visibility) {
-            field = visibility
-            digitalPromoBtnView.visibility = visibility
-        }
-
-    var buttonChevronIcon: Int = 0
+    var promoButtonChevronIcon: Int = 0
         set(value) {
             field = value
             digitalPromoBtnView.chevronIcon = value
