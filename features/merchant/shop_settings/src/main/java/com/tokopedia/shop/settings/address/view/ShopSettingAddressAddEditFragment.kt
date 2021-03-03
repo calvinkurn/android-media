@@ -3,6 +3,8 @@ package com.tokopedia.shop.settings.address.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -102,6 +104,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         }
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
+
+        // set max length programmatically
+        tfPostalCode?.textFieldInput?.filters = arrayOf<InputFilter>(LengthFilter(5))
 
         tfAddress?.textFieldInput?.isSingleLine = false
 
@@ -232,7 +237,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 selectedCityId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1)
                 selectedDistrictId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1)
                 zipCodes.clear()
-                zipCodes.addAll(it.getStringArrayList(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: listOf())
+                zipCodes.addAll(it.getStringArrayList(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES)
+                        ?: listOf())
                 updateAutoTextZipCodes()
             }
         }

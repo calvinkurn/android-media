@@ -48,7 +48,6 @@
             app:text_field_label="@string/shop_address_label_postal_code"
             app:text_field_placeholder="@string/shop_address_postal_code_placeholder"
             android:layout_width="match_parent"
-            android:maxLength="5"
             app:text_field_input_type="phone"
             android:layout_height="wrap_content"/>
 
