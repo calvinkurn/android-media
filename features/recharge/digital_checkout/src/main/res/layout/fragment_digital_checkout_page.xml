@@ -9,7 +9,6 @@
         android:id="@+id/contentCheckout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toTopOf="@id/layout_digital_checkout_bottom_view"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -114,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/inputPriceContainer"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/spacing_lvl4">
+                android:paddingBottom="@dimen/spacing_lvl3">
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"
