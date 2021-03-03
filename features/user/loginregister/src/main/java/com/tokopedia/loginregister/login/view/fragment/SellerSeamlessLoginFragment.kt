@@ -33,6 +33,7 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -245,6 +246,13 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
         SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
+
+        /*
+        * broadcast through AIDL service if user have login
+        * (send the flag into another app).
+        * */
+        PushNotificationApi.bindService(requireContext())
+
         finishIntent()
     }
 
