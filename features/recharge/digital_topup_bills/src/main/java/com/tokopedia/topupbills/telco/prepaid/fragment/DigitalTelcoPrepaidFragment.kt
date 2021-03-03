@@ -32,7 +32,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.util.GqlQuery
+import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
@@ -129,7 +129,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(GqlQuery.catalogProductTelco, menuId, operatorId, it)
+                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it)
             }
         })
 
@@ -456,7 +456,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
-            sharedModelPrepaid.getCatalogProductList(GqlQuery.catalogProductTelco, menuId, operatorId, null)
+            sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null)
         }
     }
 

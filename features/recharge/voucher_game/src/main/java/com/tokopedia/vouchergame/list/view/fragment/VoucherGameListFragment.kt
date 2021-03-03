@@ -38,7 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
-import com.tokopedia.vouchergame.common.util.GqlQuery
+import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
@@ -152,7 +152,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(com.tokopedia.common.topupbills.utils.GqlQuery.catalogMenuDetail,
+            voucherGameViewModel.getVoucherGameMenuDetail(com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.catalogMenuDetail,
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
@@ -421,7 +421,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameOperators(GqlQuery.voucherGameProductList,
+            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
                     voucherGameViewModel.createParams(it), query, loadFromCloud)
         }
     }

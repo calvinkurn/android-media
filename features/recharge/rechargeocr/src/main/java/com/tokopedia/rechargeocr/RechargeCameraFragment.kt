@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
-import com.tokopedia.rechargeocr.util.GqlQuery
+import com.tokopedia.rechargeocr.util.RechargeOcrGqlQuery
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -162,7 +162,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
             uploadImageviewModel.uploadImageRecharge(imagePath,
-                    GqlQuery.rechargeCameraRecognition)
+                    RechargeOcrGqlQuery.rechargeCameraRecognition)
         } else {
             Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
                     .LENGTH_LONG).show()
