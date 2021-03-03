@@ -533,16 +533,6 @@ class MainNavViewModel @Inject constructor(
         else null
     }
 
-    private inline fun <reified T:Visitable<*>> findMenu(): Int?{
-        val menu = _mainNavListVisitable.findLast{
-            it::class == T::class
-        } as? Visitable<*>
-        menu?.let {
-            return _mainNavListVisitable.indexOf(it)+1
-        }
-        return null
-    }
-
     private fun HomeNavMenuDataModel.updateBadgeCounter(counter: String) {
         val indexOfMenu = _mainNavListVisitable.indexOf(this)
         updateWidget(this.copy(notifCount = counter), indexOfMenu)
