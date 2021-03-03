@@ -1,7 +1,7 @@
 package com.tokopedia.shop.settings.notes.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
+import com.tokopedia.shop.settings.common.util.ItemTouchHelperAdapter
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
 

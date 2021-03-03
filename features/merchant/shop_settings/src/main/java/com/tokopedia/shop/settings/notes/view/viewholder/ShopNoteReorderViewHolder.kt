@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel

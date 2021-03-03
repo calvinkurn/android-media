@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.BaseShopNoteFactory
+import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 
 class ShopNoteUiModel() : Parcelable, Visitable<BaseShopNoteFactory> {
     var id: String? = null
@@ -24,7 +24,7 @@ class ShopNoteUiModel() : Parcelable, Visitable<BaseShopNoteFactory> {
         this.content = shopNoteModel.content
         this.terms = shopNoteModel.terms
         this.updateTime = shopNoteModel.updateTime
-        if (!StringUtils.isEmptyNumber(updateTime)){
+        if (!isEmptyNumber(updateTime)){
             // update time in server is in GMT, convert to UTC, by minus 7 * 3600
             this.updateTimeUTC = updateTime!!.toLong() - 25200
         }

@@ -15,11 +15,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.OnStartDragListener
+import com.tokopedia.shop.settings.common.util.SimpleItemTouchHelperCallback
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
@@ -49,10 +49,12 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     }
 
     override fun initInjector() {
-        DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopSettingsComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build()
+                    .inject(this)
+        }
         shopSettingNoteListReorderPresenter.attachView(this)
     }
 
@@ -62,9 +64,11 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopNoteModels = arguments!!.getParcelableArrayList(EXTRA_NOTE_LIST)
+        shopNoteModels = arguments?.getParcelableArrayList(EXTRA_NOTE_LIST)
         super.onCreate(savedInstanceState)
-        GraphqlClient.init(context!!)
+        context?.let {
+            GraphqlClient.init(it)
+        }
         adapterTerms = ShopNoteReorderAdapter(ShopNoteReorderFactory(null))
     }
 
