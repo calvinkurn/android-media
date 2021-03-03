@@ -6,6 +6,8 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
+import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_FIFTY
@@ -40,7 +42,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_success_order
                     descTips = R.string.desc_tips_success_order
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = ""
+                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             CHAT_DISCUSSION_REPLY_SPEED -> {
@@ -48,7 +50,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_speed_reply_chat
                     descTips = R.string.desc_tips_speed_reply_chat
                     moreInformation = R.string.set_hour_operational_shop_performance_detail
-                    urlLink = ""
+                    urlLink = SET_OPERATIONAL_HOUR_SHOP_URL
                 }
             }
             CHAT_DISCUSSION_SPEED -> {
@@ -56,7 +58,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_level_reply_chat
                     descTips = R.string.desc_tips_level_reply_chat
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = ""
+                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             SPEED_SENDING_ORDERS -> {
@@ -64,7 +66,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_speed_process_order
                     descTips = R.string.desc_tips_speed_process_order
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = ""
+                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             PRODUCT_REVIEW_WITH_FOUR_STARS -> {
@@ -72,7 +74,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_review_product
                     descTips = R.string.desc_tips_review_product
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = ""
+                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             TOTAL_BUYER -> {
@@ -80,7 +82,7 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_total_buyer
                     descTips = R.string.desc_tips_total_buyer
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = ""
+                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             OPEN_TOKOPEDIA_SELLER -> {

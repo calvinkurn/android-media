@@ -28,6 +28,10 @@ object ShopScoreConstant {
     const val TOTAL_BUYER = "Total Pembeli"
     const val OPEN_TOKOPEDIA_SELLER = "Membuka Tokopedia Seller"
 
+    const val READ_TIPS_MORE_INFO_URL = "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
+    const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
+
+
     const val REGULAR_MERCHANT_TYPE = "regular_merchant_type"
     const val POWER_MERCHANT_TYPE = "power_merchant_type"
     const val OFFICIAL_STORE_TYPE = "official_store_type"
