@@ -23,10 +23,10 @@ class MiniSocialProofAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductMiniSocialProofChipViewHolder {
         val view = when (viewType) {
-            TYPE_TEXT -> {
-                LayoutInflater.from(parent.context).inflate(R.layout.social_proof_item, parent, false)
+            TYPE_CHIP -> {
+                LayoutInflater.from(parent.context).inflate(R.layout.chip_social_proof_item, parent, false)
             }
-            else -> LayoutInflater.from(parent.context).inflate(R.layout.chip_social_proof_item, parent, false)
+            else -> LayoutInflater.from(parent.context).inflate(R.layout.social_proof_item, parent, false)
         }
 
         return ProductMiniSocialProofChipViewHolder(view, listener)
@@ -42,8 +42,8 @@ class MiniSocialProofAdapter(
 
 
     override fun getItemViewType(position: Int): Int {
-        if (socialProof[position].type == ProductMiniSocialProofItemType.ProductMiniSocialProofText) return TYPE_TEXT
-        return TYPE_CHIP
+        if (socialProof[position].type == ProductMiniSocialProofItemType.ProductMiniSocialProofChip) return TYPE_CHIP
+        return TYPE_TEXT
     }
 
 }
