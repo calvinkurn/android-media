@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.util
 
-object GqlQuery {
+object RechargeGeneralGqlQuery {
 
     val catalogOperatorSelectGroup = """
         query catalogOperatorSelectGroup(${'$'}menuID: Int!) {

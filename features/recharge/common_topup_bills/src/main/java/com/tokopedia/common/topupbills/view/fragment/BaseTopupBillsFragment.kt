@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -22,8 +21,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.utils.GqlMutation
-import com.tokopedia.common.topupbills.utils.GqlQuery
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
@@ -344,26 +343,26 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getEnquiry(operatorId: String, productId: String, inputData: Map<String, String>) {
-        topupBillsViewModel.getEnquiry(GqlQuery.rechargeInquiry,
+        topupBillsViewModel.getEnquiry(CommonTopupBillsGqlQuery.rechargeInquiry,
                 topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
 
     fun getMenuDetail(menuId: Int) {
         onLoadingMenuDetail(true)
-        topupBillsViewModel.getMenuDetail(GqlQuery.catalogMenuDetail,
+        topupBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
     fun getCatalogPluginData(operatorId: Int, categoryId: Int) {
         if (operatorId > 0 && categoryId > 0) {
-            topupBillsViewModel.getCatalogPluginData(GqlQuery.rechargeCatalogPlugin,
+            topupBillsViewModel.getCatalogPluginData(CommonTopupBillsGqlQuery.rechargeCatalogPlugin,
                     topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId))
         }
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
         topupBillsViewModel.getFavoriteNumbers(
-                GqlMutation.favoriteNumber,
+                CommonTopupBillsGqlMutation.favoriteNumber,
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
@@ -381,7 +380,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(
-                    GqlMutation.rechargeExpressCheckout,
+                    CommonTopupBillsGqlMutation.rechargeExpressCheckout,
                     topupBillsViewModel.createExpressCheckoutParams(
                             productId,
                             inputFields,

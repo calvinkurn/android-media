@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home.util
 
-object GqlQuery {
+object DigitalHomepageGqlQuery {
 
     val digitalHomeSection = """
         query rechargeSubHomePageSection(${'$'}sectionType: SubHomePageSection!) {

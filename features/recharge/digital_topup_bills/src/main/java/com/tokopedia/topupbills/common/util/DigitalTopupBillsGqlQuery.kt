@@ -1,6 +1,6 @@
 package com.tokopedia.topupbills.common.util
 
-object GqlQuery {
+object DigitalTopupBillsGqlQuery {
     val catalogProductTelco = """
         query telcoProductMultiTab(${'$'}menuID: Int!,${'$'}operatorID: String!,${'$'}filterData: [RechargeCatalogFilterData]) {
           rechargeCatalogProductInputMultiTab(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operatorID, filterData:${'$'}filterData) {

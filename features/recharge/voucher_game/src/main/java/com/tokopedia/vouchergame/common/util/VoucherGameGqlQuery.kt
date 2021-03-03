@@ -1,6 +1,6 @@
 package com.tokopedia.vouchergame.common.util
 
-object GqlQuery {
+object VoucherGameGqlQuery {
     val voucherGameProductList = """
         query voucherGameProductList(${'$'}menuID: Int!){
           rechargeCatalogOperatorSelect(menuID:${'$'}menuID, platformID: 5) {

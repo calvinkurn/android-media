@@ -1,6 +1,6 @@
 package com.tokopedia.recharge_credit_card.util
 
-object GqlQuery {
+object RechargeCCGqlQuery {
     val creditCardBankList = """
         query rechargeBankList(${'$'}categoryId: Int!) {
           rechargePCIDSSSignature(category_id: ${'$'}categoryId) {

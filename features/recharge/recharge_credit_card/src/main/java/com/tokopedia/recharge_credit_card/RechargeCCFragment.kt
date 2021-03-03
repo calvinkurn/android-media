@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -27,7 +26,7 @@ import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
-import com.tokopedia.recharge_credit_card.util.GqlQuery
+import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
@@ -191,7 +190,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun getTickerData() {
-        rechargeCCViewModel.getMenuDetail(GqlQuery.catalogMenuDetail, menuId)
+        rechargeCCViewModel.getMenuDetail(RechargeCCGqlQuery.catalogMenuDetail, menuId)
     }
 
     private fun renderTicker(tickers: List<TickerCreditCard>) {
@@ -218,7 +217,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
         rechargeCCViewModel.getPrefixes(
-                GqlQuery.catalogPrefix,
+                RechargeCCGqlQuery.catalogPrefix,
                 clientNumber, menuId)
     }
 
@@ -262,7 +261,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val mapParam = rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
 
-            rechargeSubmitCCViewModel.postCreditCard(GqlQuery.rechargeCCSignature, categoryId, mapParam)
+            rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
             navigateUserLogin()
         }

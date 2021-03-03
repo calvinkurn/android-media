@@ -1,6 +1,6 @@
 package com.tokopedia.common.topupbills.utils
 
-object GqlMutation {
+object CommonTopupBillsGqlMutation {
     val favoriteNumber = """
         mutation favouriteNumber(${'$'}categoryID: Int!){
           recharge_favorite_number(categoryID:${'$'}categoryID) {

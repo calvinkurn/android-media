@@ -1,6 +1,6 @@
 package com.tokopedia.common.topupbills.utils
 
-object GqlQuery {
+object CommonTopupBillsGqlQuery {
     val rechargeCatalogProductInput = """
         query rechargeCatalogDynamicInput(${'$'}menuID: Int!,${'$'}operator: String!) {
           rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {

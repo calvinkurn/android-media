@@ -1,16 +1,14 @@
-package com.tokopedia.recharge_slice.util
+package com.tokopedia.common_digital.common.util
 
-object GqlQuery {
+object CommonDigitalGqlQuery {
     val rechargeFavoriteRecommendationList = """
         query rechargeFavoriteRecommendationList(${'$'}device_id: Int!) {
         	rechargeFavoriteRecommendationList(device_id:${'$'}device_id) {
         		title
         		recommendations{
-        		    productId
         			iconUrl
         			title
         			clientNumber
-        			operatorName
         			appLink
         			webLink
         			position
@@ -18,7 +16,6 @@ object GqlQuery {
         			categoryId
         			productName
         			type
-        			productPrice
         		}
         	}
         }

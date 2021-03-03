@@ -15,13 +15,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
-import com.tokopedia.common_digital.common.util.GqlQuery
+import com.tokopedia.common_digital.common.util.CommonDigitalGqlQuery
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
@@ -230,10 +229,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         showLoading()
 
         val queryList = mapOf(
-                QUERY_BANNER to com.tokopedia.digital.home.util.GqlQuery.digitalHomeBanner,
-                QUERY_CATEGORY to com.tokopedia.digital.home.util.GqlQuery.digitalHomeCategory,
-                QUERY_SECTIONS to com.tokopedia.digital.home.util.GqlQuery.digitalHomeSection,
-                QUERY_RECOMMENDATION to GqlQuery.rechargeFavoriteRecommendationList
+                QUERY_BANNER to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeBanner,
+                QUERY_CATEGORY to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeCategory,
+                QUERY_SECTIONS to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeSection,
+                QUERY_RECOMMENDATION to CommonDigitalGqlQuery.rechargeFavoriteRecommendationList
         )
         viewModel.initialize(queryList)
         viewModel.getData(swipeToRefresh?.isRefreshing ?: false)

@@ -1,6 +1,6 @@
 package com.tokopedia.rechargeocr.util
 
-object GqlQuery {
+object RechargeOcrGqlQuery {
     val rechargeCameraRecognition = """
         query RechargeCameraRecognition(${'$'}Image: String){
           rechargeOCR(Type:OCR, Image:${'$'}Image) {

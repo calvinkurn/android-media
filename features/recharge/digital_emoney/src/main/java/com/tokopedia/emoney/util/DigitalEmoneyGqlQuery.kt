@@ -1,6 +1,6 @@
 package com.tokopedia.emoney.util
 
-object GqlQuery {
+object DigitalEmoneyGqlQuery {
     val rechargeEmoneyInquiryBalance = """
         query rechargeEmoneyInquiryBalance(${'$'}type: RechargeEmoneyRequestType!,${'$'}id: Int!,${'$'}attributes: RechargeEmoneyAttributesInput!) {
           rechargeEmoneyInquiry(type:${'$'}type, id:${'$'}id, attributes:${'$'}attributes) {

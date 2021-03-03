@@ -1,6 +1,6 @@
 package com.tokopedia.brizzi.util
 
-object GqlMutation {
+object DigitalBrizziGqlMutation {
 
     val emoneyLogBrizzi = """
         mutation rechargeBrizziLog(${'$'}log: RechargeEmoneyInquiryLogRequest!){

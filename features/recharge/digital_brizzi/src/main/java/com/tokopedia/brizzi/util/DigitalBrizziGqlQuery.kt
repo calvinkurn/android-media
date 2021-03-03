@@ -1,6 +1,6 @@
 package com.tokopedia.brizzi.util
 
-object GqlQuery {
+object DigitalBrizziGqlQuery {
 
     val tokenBrizzi = """
         query tokenEmoney(${'$'}refresh: Boolean) {
