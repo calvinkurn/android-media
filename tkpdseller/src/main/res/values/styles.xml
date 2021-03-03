@@ -28,48 +28,6 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
-    <style name="LabelLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">@dimen/dp_64</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="android:background">@android:color/white</item>
-        <item name="android:paddingTop">@dimen/margin_sm</item>
-        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingBottom">@dimen/margin_sm</item>
-    </style>
-
-    <style name="LabelLayout.Border">
-        <item name="android:background">@drawable/border_background_view_topads</item>
-    </style>
-
-    <style name="LabelLayout.BorderBottom">
-        <item name="android:background">@drawable/bg_border_bottom</item>
-    </style>
-
-    <style name="BaseCardViewLayoutMatchParent">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">-2dp</item>
-        <item name="android:layout_marginRight">-2dp</item>
-        <item name="cardCornerRadius">0dp</item>
-        <item name="cardElevation">1dp</item>
-        <item name="cardPreventCornerOverlap">false</item>
-    </style>
-
-    <style name="CardViewLayoutMatchParent" parent="BaseCardViewLayoutMatchParent">
-        <item name="android:layout_marginLeft">-2dp</item>
-        <item name="android:layout_marginRight">-2dp</item>
-    </style>
-
-    <style name="LabelLayout.NoPadding">
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
-    </style>
-
     <style name="ColorSwitchCompat">
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
