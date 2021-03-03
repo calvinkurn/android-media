@@ -482,25 +482,31 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
+        String errorDesc = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        String errorTitle = getString(R.string.digital_transaction_failed_title);
+
         if(message == null || message.isEmpty()){
-            emptyState.setDescription(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
-            emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
         } else {
             emptyState.setDescription(message);
             if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
+                errorDesc = message;
+                errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
                 emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
-                emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionAction));
             }
             else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
+                errorDesc = message;
+                errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
                 emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
-                emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title));
             }
             else {
+                errorDesc = message;
+                errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
                 emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
-                emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
             }
         }
+        emptyState.setDescription(errorDesc);
+        emptyState.setTitle(errorTitle);
         emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
         emptyState.setPrimaryCTAClickListener(() -> {
             emptyState.setVisibility(View.GONE);
