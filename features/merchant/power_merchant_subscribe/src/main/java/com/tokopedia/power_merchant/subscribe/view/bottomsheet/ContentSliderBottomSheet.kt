@@ -12,6 +12,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.ContentSliderAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.ContentSliderUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottom_sheet_pm_content_slider.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 01/03/21
@@ -65,7 +66,11 @@ class ContentSliderBottomSheet : BaseBottomSheet() {
         rvPmContentSlider.layoutManager = layoutManager
         rvPmContentSlider.adapter = sliderAdapter
 
-        PagerSnapHelper().attachToRecyclerView(rvPmContentSlider)
+        try {
+            PagerSnapHelper().attachToRecyclerView(rvPmContentSlider)
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
 
         rvPmContentSlider.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

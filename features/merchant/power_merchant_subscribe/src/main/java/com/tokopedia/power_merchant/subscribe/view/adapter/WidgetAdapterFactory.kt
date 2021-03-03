@@ -1,8 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
-import com.tokopedia.power_merchant.subscribe.view.model.GradeBenefitUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.PotentialUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.RegistrationHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -10,9 +11,11 @@ import com.tokopedia.power_merchant.subscribe.view.model.RegistrationHeaderUiMod
 
 interface WidgetAdapterFactory {
 
-    fun type(model: RegistrationHeaderUiModel): Int
+    fun type(model: WidgetRegistrationHeaderUiModel): Int
 
-    fun type(model: PotentialUiModel): Int
+    fun type(model: WidgetPotentialUiModel): Int
 
-    fun type(model: GradeBenefitUiModel): Int
+    fun type(model: WidgetGradeBenefitUiModel): Int
+
+    fun type(model: WidgetDividerUiModel): Int
 }

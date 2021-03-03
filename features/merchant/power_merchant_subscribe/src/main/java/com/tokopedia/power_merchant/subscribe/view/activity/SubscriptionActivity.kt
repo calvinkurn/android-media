@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.power_merchant.subscribe.view.fragment.RegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.SubscriptionFragment
 
 /**
@@ -11,6 +12,6 @@ import com.tokopedia.power_merchant.subscribe.view.fragment.SubscriptionFragment
 class SubscriptionActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return SubscriptionFragment.createInstance()
+        return RegistrationFragment.createInstance()
     }
 }

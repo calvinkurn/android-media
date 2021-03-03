@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.item_pm_potential.view.*
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class PotentialViewAdapter(
+class PotentialAdapter(
         private val items: List<PotentialItemUiModel>
-) : RecyclerView.Adapter<PotentialViewAdapter.PotentialViewHolder>() {
+) : RecyclerView.Adapter<PotentialAdapter.PotentialViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PotentialViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -6,8 +6,8 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 02/03/21
  */
 
-data class RegistrationHeaderUiModel(
-        val title: String
+class WidgetGradeBenefitUiModel(
+        val benefitPages: List<GradeBenefitPagerUiModel>
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
