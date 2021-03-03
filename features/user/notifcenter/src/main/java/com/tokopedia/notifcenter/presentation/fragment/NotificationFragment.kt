@@ -119,7 +119,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun loadData(page: Int) {
         if (page == 1) {
-            viewModel.loadNotifOrderList(containerListener?.role)
+            if (!hasFilter()) {
+                viewModel.loadNotifOrderList(containerListener?.role)
+            }
             viewModel.loadFirstPageNotification(
                     containerListener?.role
             )
