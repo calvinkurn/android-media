@@ -292,4 +292,5 @@
     <string name="hotel_search_map_coach_mark_list_desc">Gampang, tinggal geser ke atas dan tampilan peta bakal otomatis tertutup.</string>
     <string name="hotel_search_map_coach_mark_filter_title">Mau sesuaikan pencarianmu?</string>
     <string name="hotel_search_map_coach_mark_filter_desc">Urutkan dan pilih penginapan berdasarkan harga, bintang, atau kategori lainnya di sini.</string>
+    <string name="hotel_search_map_list_title">Sesuai pencarian kamu</string>
 </resources>

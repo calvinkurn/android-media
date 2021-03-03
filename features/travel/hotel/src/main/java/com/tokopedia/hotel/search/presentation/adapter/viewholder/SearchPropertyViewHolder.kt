@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.search.presentation.adapter.viewholder
 
 import android.graphics.Paint
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -35,7 +36,7 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
                 rate.text = element.review.description
             }
 
-            if (element.roomAvailability <= MINIMUM_ROOM_AVAILALE) {
+            if (element.roomAvailability <= MINIMUM_ROOM_AVAILABLE) {
                 info.visible()
                 info.text = getString(R.string.hotel_room_room_left_text,
                         Integer.toString(element.roomAvailability))
@@ -74,11 +75,32 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
                 tv_tag_hotel_badge.hide()
                 ic_tag_hotel_badge_outline.hide()
             }
+
+            renderView(element.isForHorizontalItem)
+        }
+    }
+
+    private fun renderView(isHorizontal: Boolean) {
+        with(itemView) {
+            if (isHorizontal) {
+                Log.d("HORIZONTAL", "Is Horizontal")
+                type.gone()
+                rating_star.gone()
+                hotel_property_item_tag.gone()
+                include_tax.gone()
+                container_pay_at_hotel.gone()
+            } else {
+                // other view no need to change the visibility when not for horizontal,
+                // because already handled in bind function.
+                // Only type and include_tax need to be handled manually in here
+                type.visible()
+                include_tax.visible()
+            }
         }
     }
 
     companion object {
-        val MINIMUM_ROOM_AVAILALE = 3
+        const val MINIMUM_ROOM_AVAILABLE = 3
         val LAYOUT = R.layout.item_property_search_result
     }
 }

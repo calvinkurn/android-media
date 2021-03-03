@@ -60,6 +60,8 @@ data class Property(
         val propertySafetyBadge: PropertySafetyBadge = PropertySafetyBadge()
 ) : Visitable<PropertyAdapterTypeFactory> {
 
+    var isForHorizontalItem: Boolean = false
+
     override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
