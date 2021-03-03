@@ -14,4 +14,10 @@ object CatalogConstant {
     const val TOP_ADS_PARAMS = "top_params"
     const val PRODUCT_PARAMS = "product_params"
     const val QUICK_FILTER_PARAMS = "params"
+
+    const val DEFAULT_SPECS_ICON_URL="https://image.flaticon.com/icons/png/128/3524/3524636.png"
+
+    const val ZERO_VALUE = "0"
+
+    const val CATALOG_URL = "tokopedia://catalog/"
 }

@@ -14,7 +14,7 @@ import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.model.raw.CatalogImage
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
-class CatalogGalleryFragment : Fragment(), CatalogBottomGalleyRecyclerViewAdapter.Listener {
+class CatalogGalleryFragment : Fragment() {
     private var catalogImages: ArrayList<CatalogImage>? = null
     private var currentImage: Int = -1
     private lateinit var catalogBottomGalleyRecyclerViewAdapter: CatalogBottomGalleyRecyclerViewAdapter
@@ -77,7 +77,7 @@ class CatalogGalleryFragment : Fragment(), CatalogBottomGalleyRecyclerViewAdapte
             })
             if(SHOW_BOTTOM_GALLERY){
                 image_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                catalogBottomGalleyRecyclerViewAdapter = CatalogBottomGalleyRecyclerViewAdapter(catalogImages!!, this, currentImage)
+                catalogBottomGalleyRecyclerViewAdapter = CatalogBottomGalleyRecyclerViewAdapter(catalogImages!!, onImageClick, currentImage)
                 image_recycler_view.adapter = catalogBottomGalleyRecyclerViewAdapter
             }
         }
@@ -87,7 +87,7 @@ class CatalogGalleryFragment : Fragment(), CatalogBottomGalleyRecyclerViewAdapte
         }
     }
 
-    override fun onImageClick(adapterPosition: Int) {
+    private val onImageClick : (Int) -> Unit = {adapterPosition ->
         CatalogDetailPageAnalytics.trackEventClickIndexPicture(adapterPosition)
         view_pager_intermediary.setCurrentItem(adapterPosition, true)
         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(adapterPosition)

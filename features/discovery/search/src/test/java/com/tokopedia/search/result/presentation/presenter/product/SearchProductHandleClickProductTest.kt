@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.shouldBe
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.slot
@@ -14,6 +15,8 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
     private val userId = "12345678"
     private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemViewModel>()
+    private var suggestedRelatedKeyword = ""
+    private val suggestedRelatedKeywordSlot = slot<String>()
 
     @Test
     fun `Handle onProductClick with null ProductItemViewModel`() {
@@ -96,6 +99,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `When handle product click`(productItemViewModel)
 
         `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
     private fun `Given user session data`() {
@@ -105,11 +109,15 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 
         confirmVerified(productListView)
+    }
+
+    private fun `Then verify relatedKeyword`() {
+        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     @Test
@@ -132,6 +140,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `When handle product click`(productItemViewModel)
 
         `Then verify view interaction is correct for organic Ads Product`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify view interaction is correct for organic Ads Product`(productItemViewModel: ProductItemViewModel) {
@@ -147,7 +156,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 

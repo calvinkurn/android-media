@@ -95,10 +95,12 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+    override fun useDefaultReplyWatcher(): Boolean = false
 
     override fun initView() {
         super.initView()
         recyclerView.setHasFixedSize(true)
+        recyclerView.itemAnimator = null
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -234,7 +236,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onSetCustomMessage(customMessage: String) {
-        replyEditText.setText(customMessage)
+        if (customMessage.isNotEmpty()) {
+            replyEditText.setText(customMessage)
+        }
     }
 
     override fun getAdapter(): TopChatRoomAdapter {

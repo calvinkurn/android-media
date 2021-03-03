@@ -10,7 +10,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 
-class CatalogDetailPageViewModel @Inject constructor(var catalogDetailUseCase: CatalogDetailUseCase) : ViewModel() {
+class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUseCase: CatalogDetailUseCase) : ViewModel() {
 
     private val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
 

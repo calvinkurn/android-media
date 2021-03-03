@@ -12,8 +12,6 @@ class AndroidPCanvasSaveProxy implements CanvasSaveProxy {
     private final Canvas mCanvas;
 
     AndroidPCanvasSaveProxy(final Canvas canvas) {
-        Log.d(TAG, "New AndroidPCanvasSaveProxy");
-
         mCanvas = canvas;
     }
 

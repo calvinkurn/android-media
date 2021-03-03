@@ -1,13 +1,11 @@
 package com.tokopedia.catalog.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.catalog.R
@@ -15,11 +13,9 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.catalog.viewholder.CatalogInfoViewHolder
 import com.tokopedia.catalog.viewholder.CatalogProductsContainerViewHolder
-import kotlinx.android.synthetic.main.item_catalog_products_container.view.*
 
-class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
+class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)
     :ListAdapter<BaseCatalogDataModel, AbstractViewHolder<*>>(asyncDifferConfig){
 
@@ -64,7 +60,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
 
     private fun attachFragmentToContainer(containerId: Int) {
         val fragment = if (context.supportFragmentManager.fragments.firstOrNull { it is CatalogDetailProductListingFragment } == null)
-            CatalogDetailProductListingFragment.newInstance("65051","","","")
+            CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
         else
             null
 

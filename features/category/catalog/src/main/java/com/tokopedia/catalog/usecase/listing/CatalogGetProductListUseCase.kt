@@ -1,8 +1,8 @@
 package com.tokopedia.catalog.usecase.listing
 
+import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.common_category.model.productModel.ProductListResponse
-import com.tokopedia.common_category.usecase.mapper.ProductListMapper
+import com.tokopedia.catalog.model.util.CatalogProductListMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -25,8 +25,8 @@ class CatalogGetProductListUseCase @Inject constructor(private val categoryProdu
                 categoryProductUseCase.createObservable(paramProductListing).subscribeOn(Schedulers.io()),
                 topAdsProductsUseCase.createObservable(paramTopAd).subscribeOn(Schedulers.io())
         ) { aceSearchProductResponse, topAdsResponse ->
-            aceSearchProductResponse?.aceSearchProduct?.searchData?.totalData = aceSearchProductResponse?.aceSearchProduct?.header?.totalData
-            ProductListMapper().transform(ProductListResponse(aceSearchProductResponse.aceSearchProduct?.searchData), topAdsResponse)
+            aceSearchProductResponse?.searchProduct?.data?.totalData = aceSearchProductResponse?.searchProduct?.header?.totalData ?: 0
+            CatalogProductListMapper().transform(ProductListResponse(aceSearchProductResponse.searchProduct), topAdsResponse)
         }
 
     }

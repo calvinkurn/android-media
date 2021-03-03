@@ -75,7 +75,7 @@ data class CatalogResponseData (
 
             data class Component (
                     @SerializedName( "id")
-                    val id: Long,
+                    val id: String,
                     @SerializedName( "name")
                     val name: String,
                     @SerializedName( "type")

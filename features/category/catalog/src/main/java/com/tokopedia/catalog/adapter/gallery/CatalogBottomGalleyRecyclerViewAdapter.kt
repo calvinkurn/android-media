@@ -8,7 +8,7 @@ import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_catalog_gallery_bottom_image_view.view.*
 
-class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, val listener: Listener?,
+class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, private val onImageClick : (Int) -> Unit,
                                              private var selectedPosition:Int) :  RecyclerView.Adapter<CatalogBottomGalleyRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -18,7 +18,7 @@ class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, 
     override fun getItemCount(): Int  = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], listener, selectedPosition)
+        holder.bind(list[position], onImageClick, selectedPosition)
     }
 
     fun changeSelectedPosition(selectedPosition:Int){
@@ -26,7 +26,7 @@ class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, 
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        fun bind(model: CatalogImage, listener: Listener?, selectedPosition: Int) {
+        fun bind(model: CatalogImage, onImageClick : (Int) -> Unit , selectedPosition: Int) {
             if(adapterPosition == selectedPosition){
                 itemView.image.alpha = 1.0F
             } else {
@@ -34,12 +34,8 @@ class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, 
             }
             itemView.image.loadImage(model.imageURL)
             itemView.setOnClickListener {
-                listener?.onImageClick(adapterPosition)
+                onImageClick(adapterPosition)
             }
         }
-    }
-
-    interface Listener{
-        fun onImageClick(adapterPosition: Int)
     }
 }

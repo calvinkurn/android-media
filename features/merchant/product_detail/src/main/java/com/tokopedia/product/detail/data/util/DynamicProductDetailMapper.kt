@@ -48,7 +48,8 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
                             ?: "", contentData?.title ?: "",
                             contentData?.isApplink ?: true, contentData?.icon
-                            ?: "", content ?: listOf(Content()))
+                            ?: "", content?.firstOrNull()?.subtitle
+                            ?: "", content?.firstOrNull()?.icon ?: "")
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
@@ -88,6 +89,9 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.REPORT -> {
                     listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.MVC -> {
+                    listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
             }
         }

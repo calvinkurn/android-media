@@ -6,15 +6,15 @@
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     android:id="@+id/catalog_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <com.tokopedia.catalog.model.util.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/sliding_layout"
         sothree:umanoDragView="@+id/dragView"
         sothree:umanoOverlay="true"
         sothree:umanoPanelHeight="@dimen/dp_76"
-        app:umanoFlingVelocity="100"
+        sothree:umanoFadeColor="@android:color/transparent"
+        sothree:umanoFlingVelocity="100"
         sothree:umanoScrollableView="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

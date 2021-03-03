@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/productCard"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/notif_dp_8"
@@ -47,7 +47,7 @@
             android:layout_marginRight="@dimen/notif_dp_8"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_6"
             app:layout_constraintStart_toEndOf="@+id/imgThumbnail"
             app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
@@ -79,7 +79,7 @@
             android:layout_marginRight="@dimen/notif_dp_8"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -88,6 +88,7 @@
             tools:text="Rp 500.000"/>
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/viewCampaignTag"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/notif_dp_20"

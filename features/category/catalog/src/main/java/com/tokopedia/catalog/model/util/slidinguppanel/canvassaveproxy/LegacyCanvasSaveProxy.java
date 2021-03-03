@@ -18,8 +18,6 @@ class LegacyCanvasSaveProxy implements CanvasSaveProxy {
     private final int mClipSaveFlag;
 
     LegacyCanvasSaveProxy(final Canvas canvas) {
-        Log.d(TAG, "New LegacyCanvasSaveProxy");
-
         mCanvas = canvas;
         mSaveMethod = findSaveMethod();
         mClipSaveFlag = getClipSaveFlagValue();

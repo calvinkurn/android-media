@@ -3,9 +3,11 @@ package com.tokopedia.seller.menu.common.analytics
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 
 /**
  * Sellerapp Navigation Revamp
@@ -85,4 +87,32 @@ private fun sendTrackingManual(eventName: String,
              SettingTrackingConstant.EVENT_LABEL to eventLabel
     )
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
+}
+
+fun sendEventImpressionStatisticMenuItem(userId: String) {
+    val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.VIEW_STATISTIC_IRIS,
+            SettingTrackingConstant.SELLER_APP_LAINNYA,
+            SettingTrackingConstant.IMPRESSION_MENU_STATISTIC,
+            ""
+    )
+    event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS
+    event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIASELLER
+    event[SettingTrackingConstant.USER_ID] = userId
+
+    TrackApp.getInstance().gtm.sendGeneralEvent(event)
+}
+
+fun sendEventClickStatisticMenuItem(userId: String) {
+    val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.CLICK_STATISTIC,
+            SettingTrackingConstant.SELLER_APP_LAINNYA,
+            SettingTrackingConstant.CLICK_MENU_STATISTIC,
+            ""
+    )
+    event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS
+    event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIASELLER
+    event[SettingTrackingConstant.USER_ID] = userId
+
+    TrackApp.getInstance().gtm.sendGeneralEvent(event)
 }
