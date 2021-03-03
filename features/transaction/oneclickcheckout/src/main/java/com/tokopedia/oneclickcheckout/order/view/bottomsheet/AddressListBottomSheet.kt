@@ -259,7 +259,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         onChangeData(OccState.Loading)
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero())
+                useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero(), false)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 onChangeData(OccState.Failed(Failure(e)))
@@ -287,7 +287,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero())
+                    useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero(), false)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     onChangeData(OccState.Failed(Failure(e)))
