@@ -1,23 +1,21 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window.ID_ANDROID_CONTENT
+import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
+import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,11 +41,12 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
+import com.tokopedia.unifycomponents.setHeadingText
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
 import javax.inject.Inject
 import kotlin.math.abs
-
 /**
  * @author by furqan on 01/03/2021
  */
@@ -66,7 +65,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     var searchDestinationName = ""
     var searchDestinationType = ""
 
-    var allMarker: List<Marker> = listOf()
+    var allMarker: ArrayList<Marker> = ArrayList()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -118,6 +117,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerViewMap(view)
+
+        initFloatingButton()
 
         showLoadingCardListMap()
 
@@ -227,30 +228,52 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    private fun addMarker(latitude: Double, longitude: Double) {
+    private fun initFloatingButton(){
+        val wrapper = LinearLayout(context)
+
+        val imageView = ImageView(context)
+        imageView.setImageResource(R.drawable.ic_search)
+        wrapper.addView(imageView)
+
+        val textView = TextView(context)
+        textView.setHeadingText(5)
+        textView.text = getString(R.string.hotel_search_around_here)
+
+        wrapper.addView(textView)
+
+        wrapper.setOnClickListener {
+        }
+
+        button_get_radius.addItem(wrapper)
+    }
+
+    private fun addMarker(latitude: Double, longitude: Double, price: String) {
         val latLng = LatLng(latitude, longitude)
 
         context?.run {
-            googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(this, getPin(HOTEL_PRICE_INACTIVE_PIN)))
-                    .draggable(false))
+            allMarker.add(googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, price))
+                    .draggable(false)))
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
-        var drawable = ContextCompat.getDrawable(context, drawableId)
+    private fun createCustomMarker(context: Context, price: String): BitmapDescriptor {
+        val marker: View = View.inflate(context, R.layout.custom_price_marker, null)
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable?.run {
-                drawable = DrawableCompat.wrap(this).mutate()
-            }
-        }
+        val bgMarker = marker.findViewById<View>(R.id.bg_marker)
+        bgMarker.setBackgroundResource(R.drawable.price_marker_default)
 
-        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 0,
-                drawable?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
+        val txtPrice = marker.findViewById<View>(R.id.txtPriceHotelMarker) as Typography
+        txtPrice.text = price
+
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels)
+        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+
+        val bitmap = Bitmap.createBitmap(marker.measuredWidth, marker.measuredHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        drawable?.setBounds(0, 0, canvas.width, canvas.height)
-        drawable?.draw(canvas)
+        marker.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
@@ -258,7 +281,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         return when(markerType){
             MY_LOCATION_PIN -> R.drawable.ic_get_location
             HOTEL_PRICE_ACTIVE_PIN -> R.drawable.ic_hotel_price_active
-            HOTEL_PRICE_INACTIVE_PIN -> R.drawable.ic_hotel_price_inactive
+            HOTEL_PRICE_INACTIVE_PIN -> R.drawable.price_marker_default
             else -> R.drawable.ic_get_location
         }
     }
@@ -269,10 +292,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         renderList(searchProperties)
 
         searchProperties.forEach {
-            addMarker(it.location.latitude.toDouble(),it.location.longitude.toDouble())
-            Log.d("Sukses",it.location.latitude.toString() + it.location.longitude.toString())
+            addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
         }
-        /** add marker*/
     }
 
     private fun showLoadingCardListMap(){
