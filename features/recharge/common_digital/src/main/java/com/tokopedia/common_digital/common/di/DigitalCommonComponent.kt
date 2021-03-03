@@ -3,7 +3,10 @@ package com.tokopedia.common_digital.common.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,5 +26,12 @@ interface DigitalCommonComponent {
     fun userSession(): UserSessionInterface
 
     fun rechargeAnalytics(): RechargeAnalytics
+
+    @DigitalCommonQualifier
+    fun restRepository(): RestRepository
+
+    fun digitalInterceptor(): DigitalInterceptor
+
+    fun networkRouter(): NetworkRouter
 }
 

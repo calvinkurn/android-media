@@ -1,8 +1,6 @@
 package com.tokopedia.digital_checkout.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
+import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component
@@ -14,7 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 @DigitalCheckoutScope
 @Component(modules = [DigitalCheckoutModule::class, DigitalCheckoutViewModelModule::class],
-        dependencies = [BaseAppComponent::class])
+        dependencies = [DigitalCommonComponent::class])
 interface DigitalCheckoutComponent {
 
     fun inject(digitalCartFragment: DigitalCartFragment)
@@ -22,7 +20,4 @@ interface DigitalCheckoutComponent {
     fun graphQlRepository(): GraphqlRepository
 
     fun coroutineDispatcher(): CoroutineDispatcher
-
-    @DigitalCommonQualifier
-    fun restRepository(): RestRepository
 }
