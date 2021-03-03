@@ -24,6 +24,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by yfsx on 3/1/21.
@@ -77,9 +79,17 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
             val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
             val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
+            tokopointProgressBarLayout.gone()
+            tokopointActionContainer.gone()
+            when (element?.state) {
+                BalanceDrawerItemModel.STATE_LOADING -> tokopointProgressBarLayout.show()
+                BalanceDrawerItemModel.STATE_SUCCESS -> {
+                    tokopointActionContainer.show()
+                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, tvBalanceTokoPoint)
+                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, tvActionTokopoint)
+                }
+            }
 
-            renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, tvBalanceTokoPoint)
-            renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, tvActionTokopoint)
 
         }
 

@@ -50,8 +50,6 @@
             android:textSize="@dimen/sp_12"
             android:textColor="@color/Unify_N700_68"
             android:textStyle="bold"
-            android:visibility="gone"
-            tools:visibility="visible"
             tools:text="50 Toko Poin"/>
 
         <TextView
@@ -63,9 +61,7 @@
             android:singleLine="true"
             android:textColor="@color/Unify_G500"
             android:textSize="@dimen/sp_10"
-            android:visibility="gone"
-            tools:text="Kupon Baru"
-            tools:visibility="visible" />
+            tools:text="Kupon Baru" />
 
         <TextView
             android:id="@+id/text_coupon_count"
@@ -78,8 +74,6 @@
             android:singleLine="true"
             android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_10"
-            android:visibility="gone"
-            tools:text="900000000000000000 Poin"
-            tools:visibility="visible" />
+            tools:text="900000000000000000 Poin" />
     </LinearLayout>
 </RelativeLayout>
