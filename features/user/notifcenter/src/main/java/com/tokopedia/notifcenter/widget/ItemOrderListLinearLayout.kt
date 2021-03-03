@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.orderlist.Card
@@ -43,6 +44,19 @@ class ItemOrderListLinearLayout : LinearLayout {
         icon = view.findViewById(R.id.iv_order_icon)
         title = view.findViewById(R.id.tp_order_title)
         counter = view.findViewById(R.id.tp_counter)
+    }
+
+    fun hasVisibleIcon(): Boolean {
+        return icon?.isVisible == true
+    }
+
+    fun setTitleMarginStart(leftMargin: Float?) {
+        leftMargin ?: return
+        val lpTitle = title?.layoutParams as? MarginLayoutParams ?: return
+        lpTitle.apply {
+            setMargins(leftMargin.toInt(), topMargin, rightMargin, bottomMargin)
+        }
+        title?.layoutParams = lpTitle
     }
 
     fun bindItem(order: Card) {

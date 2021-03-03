@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
-import android.view.Gravity
+import android.graphics.drawable.Drawable
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,8 +18,25 @@ class NotificationOrderListViewHolder(
 
     private val firstCard: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_first_card)
     private val secondCard: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_second_card)
-    private val bg = ShadowGenerator.generateBackgroundWithShadow(
+    private val titleWithIconMargin = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
+    )
+    private val titleWithoutIconMargin = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+    )
+    private val bgFirst = ShadowGenerator.generateBackgroundWithShadow(
             firstCard,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.notif_dp_6,
+            R.dimen.notif_dp_6
+    )
+    private val bgSecond = ShadowGenerator.generateBackgroundWithShadow(
+            secondCard,
             com.tokopedia.unifyprinciples.R.color.Unify_N0,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
@@ -41,23 +58,39 @@ class NotificationOrderListViewHolder(
     }
 
     override fun bind(element: NotifOrderListUiModel) {
-        bindFirstCard(element)
-        bindFirstCardBackground()
+        bindCard(element, 0, firstCard)
+        bindCardBackground(firstCard, bgFirst)
+        bindCardTitleMargin(firstCard)
+        bindCard(element, 1, secondCard)
+        bindCardBackground(secondCard, bgSecond)
+        bindCardTitleMargin(secondCard)
     }
 
-    private fun bindFirstCard(element: NotifOrderListUiModel) {
-        val firstItem = element.list.getOrNull(0)
+    private fun bindCard(
+            element: NotifOrderListUiModel,
+            cardIndex: Int,
+            cardLayout: ItemOrderListLinearLayout?
+    ) {
+        val firstItem = element.list.getOrNull(cardIndex)
         if (firstItem == null) {
-            firstCard?.hide()
+            cardLayout?.hide()
         } else {
-            firstCard?.show()
-            firstCard?.bindItem(firstItem)
+            cardLayout?.show()
+            cardLayout?.bindItem(firstItem)
         }
     }
 
-    private fun bindFirstCardBackground() {
-        if (firstCard?.isVisible == true) {
-            firstCard.background = bg
+    private fun bindCardBackground(cardLayout: ItemOrderListLinearLayout?, drawable: Drawable?) {
+        if (cardLayout?.isVisible == true) {
+            cardLayout.background = drawable
+        }
+    }
+
+    private fun bindCardTitleMargin(cardLayout: ItemOrderListLinearLayout?) {
+        if (cardLayout?.hasVisibleIcon() == true) {
+            cardLayout.setTitleMarginStart(titleWithIconMargin)
+        } else {
+            cardLayout?.setTitleMarginStart(titleWithoutIconMargin)
         }
     }
 
