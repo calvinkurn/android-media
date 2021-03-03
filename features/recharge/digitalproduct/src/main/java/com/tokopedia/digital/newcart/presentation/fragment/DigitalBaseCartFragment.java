@@ -494,13 +494,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
             }
             else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
-                errorDesc = message;
+                errorDesc = getString(com.tokopedia.globalerror.R.string.error500Desc);
                 errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
                 emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
             }
             else {
                 errorDesc = message;
-                errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
                 emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
             }
         }
