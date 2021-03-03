@@ -59,11 +59,14 @@ class ItemOrderListLinearLayout : LinearLayout {
         title?.layoutParams = lpTitle
     }
 
-    fun bindItem(order: Card) {
+    fun bindItem(
+            order: Card,
+            onClick: () -> Unit
+    ) {
         bindIcon(order)
         bindTitle(order)
         bindCounter(order)
-        bindClick(order)
+        bindClick(order, onClick)
     }
 
     private fun bindIcon(order: Card) {
@@ -89,7 +92,13 @@ class ItemOrderListLinearLayout : LinearLayout {
         }
     }
 
-    private fun bindClick(order: Card) {
-        RouteManager.route(context, order.link.androidLink)
+    private fun bindClick(
+            order: Card,
+            onClick: () -> Unit
+    ) {
+        setOnClickListener {
+            RouteManager.route(context, order.link.androidLink)
+            onClick()
+        }
     }
 }

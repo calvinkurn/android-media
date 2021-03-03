@@ -89,12 +89,14 @@ class NotificationOrderListViewHolder constructor(
             cardIndex: Int,
             cardLayout: ItemOrderListLinearLayout?
     ) {
-        val firstItem = element.list.getOrNull(cardIndex)
-        if (firstItem == null) {
+        val order = element.list.getOrNull(cardIndex)
+        if (order == null) {
             cardLayout?.hide()
         } else {
             cardLayout?.show()
-            cardLayout?.bindItem(firstItem)
+            cardLayout?.bindItem(order) {
+                notificationItemListener?.trackClickOrderListItem(order)
+            }
         }
     }
 

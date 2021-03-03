@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.listener.v3
 
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 
 /**
@@ -31,4 +32,5 @@ interface NotificationItemListener {
     fun trackClickCtaWidget(element: NotificationUiModel)
     fun trackExpandTimelineHistory(element: NotificationUiModel)
     fun amISeller(): Boolean
+    fun trackClickOrderListItem(order: Card)
 }
