@@ -154,6 +154,9 @@
 
     <string name="title_emoney">emoney</string>
     <string name="permission_emoney_not_granted">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
+    <string name="emoney_please_activate_nfc_from_settings_subsriber">Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan</string>
+    <string name="emoney_activate_subsriber" translatable="false">Aktifkan</string>
+    <string name="emoney_cancel_subriber" translatable="false">Batalkan</string>
 
     <!-- Content -->
     <string name="title_profile">Profile</string>
