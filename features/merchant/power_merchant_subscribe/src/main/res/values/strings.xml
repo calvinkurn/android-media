@@ -148,4 +148,5 @@
     <string name="pm_grade_benefit_widget_title">Dapatkan keuntungan eksklusif PM Gold!</string>
     <string name="pm_grade_benefit_widget_description">Grade dapat mengalami kenaikan setiap bulan dan \npenurunan setiap 3 bulan.</string>
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
+    <string name="pm_pm_registration_header_ticker_message">Tunggu, ya! Jika verifikasi data berhasil, tokomu akan langsung jadi Power Merchant!</string>
 </resources>

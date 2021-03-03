@@ -31,6 +31,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) {
         val selected = element.benefitPages.indexOfFirst { it.isSelected }
         if (selected != RecyclerView.NO_POSITION) {
+            itemView.rvPmGradeBenefitPager.scrollToPosition(selected)
             itemView.tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
         }
     }
