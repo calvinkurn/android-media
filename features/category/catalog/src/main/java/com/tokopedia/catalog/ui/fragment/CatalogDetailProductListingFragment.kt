@@ -93,8 +93,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
-    private var pageCount = 0
-    private var isPagingAllowed: Boolean = true
     private var pagingRowCount = 20
 
     private lateinit var catalogTypeFactory: CatalogTypeFactory
@@ -169,7 +167,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.changeListView()
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getLinearLayoutManager()
-        productNavListAdapter?.addShimmer()
+        if(viewModel.list.size == 0)
+            productNavListAdapter?.addShimmer()
 
         attachScrollListener()
     }
@@ -225,8 +224,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         loadMoreTriggerListener?.updateStateAfterGetData()
-                        isPagingAllowed = true
+                        viewModel.isPagingAllowed = true
                     } else {
+                        productNavListAdapter?.removeLoading()
                         if (viewModel.list.isEmpty()) {
                             showNoDataScreen(true)
                         }
@@ -242,7 +242,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     if (viewModel.list.isEmpty()) {
                         showNoDataScreen(true)
                     }
-                    isPagingAllowed = true
+                    viewModel.isPagingAllowed = true
                 }
 
             }
@@ -313,7 +313,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         productNavListAdapter?.clearData()
-        productNavListAdapter?.addShimmer()
+        if(viewModel.list.size == 0)
+            productNavListAdapter?.addShimmer()
         layout_no_data?.hide()
         resetPage()
         loadMoreTriggerListener?.resetState()
@@ -347,8 +348,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun resetPage() {
-        isPagingAllowed = true
-        pageCount = 0
+        viewModel.isPagingAllowed = true
+        viewModel.pageCount = 0
     }
 
     private fun fetchProductData(paramMap: RequestParams) {
@@ -428,7 +429,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun getPage(): Int {
-        return pageCount
+        return viewModel.pageCount
     }
 
     private fun getProductIntent(productId: String, warehouseId: String): Intent? {

@@ -37,6 +37,9 @@ class CatalogDetailProductListingViewModel
     var quickFilterOptionList: List<Option> = ArrayList()
     var dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
 
+    var pageCount = 0
+    var isPagingAllowed: Boolean = true
+
     var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {
@@ -57,6 +60,7 @@ class CatalogDetailProductListingViewModel
             }
 
             override fun onError(e: Throwable?) {
+
             }
         })
     }
