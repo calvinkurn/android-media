@@ -99,9 +99,6 @@ object ShopPageHomeMapper {
                     discountPercentage = discountPercentage,
                     slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                     formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                    labelGroupList = shopHomeProductViewModel.labelGroupList.map {
-                        mapToProductCardLabelGroup(it)
-                    },
                     hasAddToCartButton = isHasATC,
                     addToCartButtonType = UnifyButton.Type.MAIN,
                     addToCardText = occButtonText
