@@ -41,3 +41,9 @@ data class OptionV3(
         @Expose
         val variant: Boolean = true
 )
+
+data class ExtraInfoV3(
+        @SerializedName("aggregate")
+        @Expose
+        val aggregate: Boolean = false
+)

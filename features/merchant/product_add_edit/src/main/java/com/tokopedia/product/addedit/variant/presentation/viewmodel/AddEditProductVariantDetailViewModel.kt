@@ -371,9 +371,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
-        if (productStock < minProductStockLimit.toBigInteger()) {
+        // Edit variant stock can be zero if there are allocated stock in other warehouse
+        val canSetStockToZero = isEditMode && isMultiLocationShop && inputModel.canSetStockToZero
+        val minStockLimit = if (canSetStockToZero) 0 else MIN_PRODUCT_STOCK_LIMIT
+        if (productStock < minStockLimit.toBigInteger()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(minProductStockLimit) ?: ""
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(minStockLimit) ?: ""
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -400,8 +403,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
-            stockInput < minProductStockLimit.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage(minProductStockLimit).orEmpty()
+            stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
+                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT).orEmpty()
             }
             else -> ""
         }
@@ -413,8 +416,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         return variantDetailInputLayoutModels.any {
             val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
             val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
-            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
-                    productStock < minProductStockLimit.toBigInteger()
+            val canSetStockToZero = isEditMode && isMultiLocationShop && it.canSetStockToZero
+            val minStock = if (canSetStockToZero) 0 else MIN_PRODUCT_STOCK_LIMIT
+            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() || productStock < minStock.toBigInteger()
         }
     }
 
@@ -440,7 +444,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
-                combination = combination)
+                combination = combination,
+                canSetStockToZero = !productVariant.getIsSingleLocation())
     }
 
     fun setupMultiLocationValue() {

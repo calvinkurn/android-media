@@ -131,14 +131,6 @@ class EditProductInputMapper @Inject constructor() {
         val picID = it.pictures.firstOrNull()?.picID ?: ""
         var productPicture = it.pictures
 
-        val isSingleLocationProduct = it.warehouseCount <= 1
-        val productStatus =
-                if (isSingleLocationProduct && it.stock == 0) {
-                    ProductStatus.STATUS_INACTIVE_STRING
-                } else {
-                    it.status
-                }
-
         if (filePath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
             productPicture = getExistingPictureFromProductVariants(filePath, picID, products)
         }
@@ -146,7 +138,7 @@ class EditProductInputMapper @Inject constructor() {
                 it.combination,
                 it.price,
                 it.sku,
-                productStatus,
+                it.status,
                 it.stock,
                 it.isPrimary,
                 mapPictureVariant(productPicture)

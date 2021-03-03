@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.preview.data.source.api.param.ExtraInfoV3
 import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
@@ -36,19 +37,23 @@ class GetProductUseCase @Inject constructor(
 
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
+        private const val PARAM_EXTRA_INFO = "extraInfo"
 
-        fun createRequestParams(productId: String): RequestParams {
+        fun createRequestParams(productId: String,
+                                isMultiLocation: Boolean = false): RequestParams {
             val options = OptionV3()
             val getProductV3Param = GetProductV3Param(productId, options)
+            val extraInfo = ExtraInfoV3(isMultiLocation)
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_PRODUCT_ID, getProductV3Param.productID)
             requestParams.putObject(PARAM_OPTIONS, getProductV3Param.options)
+            requestParams.putObject(PARAM_EXTRA_INFO, extraInfo)
             return requestParams
         }
 
         private fun getQuery() = """
-            query getProductV3(${'$'}productID: String!, ${'$'}options: OptionV3!) {
-                getProductV3(productID: ${'$'}productID, options: ${'$'}options ) {
+            query getProductV3(${'$'}productID: String!, ${'$'}options: OptionV3!, ${'$'}extraInfo: ExtraInfoV3) {
+                getProductV3(productID: ${'$'}productID, options: ${'$'}options, extraInfo: ${'$'}extraInfo ) {
                     productID
                     productName
                    	status
