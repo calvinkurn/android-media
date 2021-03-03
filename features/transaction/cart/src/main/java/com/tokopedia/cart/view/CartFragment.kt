@@ -132,6 +132,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -147,27 +148,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var binding: FragmentCartBinding? = null
 
     lateinit var toolbar: CartToolbar
-    lateinit var basicToolbar: Toolbar
-    lateinit var navToolbar: NavToolbar
-    lateinit var appBarLayout: AppBarLayout
-    lateinit var cartRecyclerView: RecyclerView
-    lateinit var btnToShipment: UnifyButton
-    lateinit var vDisabledBtnToShipment: View
-    lateinit var tvTotalPrice: TextView
-    lateinit var rlContent: RelativeLayout
-    lateinit var bottomLayout: LinearLayout
-    lateinit var bottomLayoutShadow: View
-    lateinit var layoutGlobalError: GlobalError
-    lateinit var llCartContainer: LinearLayout
-    lateinit var llPromoCheckout: LinearLayout
-    lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
-    lateinit var imgChevronSummary: UnifyImageButton
-    lateinit var textTotalPaymentLabel: Typography
-    lateinit var tmpAnimatedImage: ImageUnify
-    lateinit var topLayout: ConstraintLayout
-    lateinit var topLayoutShadow: View
-    lateinit var checkboxGlobal: CheckboxUnify
-    lateinit var textActionDelete: Typography
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -392,12 +372,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
+        Timber.d("CART DESTROY FRAGMENT")
         super.onDestroy()
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         binding = null
+        Timber.d("CART DESTROY VIEW")
+        super.onDestroyView()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
