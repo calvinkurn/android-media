@@ -214,7 +214,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         setupView(view)
         setChild(view)
         setCloseClickListener { dismissBottomSheet() }
-        setOnDismissListener { dismissBottomSheet() }
+        setOnDismissListener {
+            listener?.onDismissChooseAddressBottomSheet()
+        }
         setShowListener {
             onBottomSheetShown()
         }
@@ -283,7 +285,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName,
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                     }
@@ -312,7 +314,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = data.districtId.toString(),
                             lat = data.latitude,
                             long = data.longitude,
-                            label = data.addressName,
+                            label = "${data.addressName} ${data.receiverName}",
                             postalCode = data.postalCode
                     )
                     chooseAddressPref?.setLocalCache(localData)
