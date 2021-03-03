@@ -161,7 +161,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun performSearch(query: String) {
         clearData()
         maxItemPosition = 0
-        viewModel.searchAddress(query, prevState, getChosenAddrId())
+        context?.let {
+            viewModel.searchAddress(query, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+        }
     }
 
     private fun initHeader() {
@@ -203,8 +205,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
                     if (viewModel.isClearData) clearData()
-                    updateTicker(it.data.pageInfo?.ticker)
-                    updateButton(it.data.pageInfo?.buttonLabel)
+                    if (context?.let { it1 -> ChooseAddressUtils.isRollOutUser(it1) } == true) {
+                        updateTicker(it.data.pageInfo?.ticker)
+                        updateButton(it.data.pageInfo?.buttonLabel)
+                    }
                     updateData(it.data.listAddress)
                     setEmptyState()
                     isLoading = false
@@ -234,7 +238,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        viewModel.searchAddress("", prevState, getChosenAddrId())
+                        context?.let {
+                            viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                        }
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -313,7 +319,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
-                    viewModel.loadMore(prevState, getChosenAddrId())
+                    context?.let {
+                        viewModel.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                    }
                 }
             }
         })
@@ -441,15 +449,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId())
+                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
-                prevState?.let { it1 -> localChosenAddr?.address_id?.toInt()?.let { it2 -> viewModel.deletePeopleAddress(data.id, it1, it2) } }
+                localChosenAddr?.address_id?.toInt()?.let { addrId ->
+                    viewModel.deletePeopleAddress(data.id, prevState, addrId, ChooseAddressUtils.isRollOutUser(context)) }
                 bottomSheetLainnya?.dismiss()
             }
             btn_alamat_utama_choose?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId())
+                context?.let {
+                    viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 _selectedAddressItem = data
             }
         }
@@ -500,7 +511,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun showGlobalError(type: Int) {
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
-            viewModel.searchAddress("", prevState, getChosenAddrId())
+            context?.let {
+                viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.gone()
         addressList?.gone()
