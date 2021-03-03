@@ -25,28 +25,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
-//    private val llWarningAndError: LinearLayout = itemView.findViewById(R.id.ll_warning_and_error)
-//    private val flShopItemContainer: FrameLayout = itemView.findViewById(R.id.fl_shop_item_container)
-//    private val llShopContainer: LinearLayout = itemView.findViewById(R.id.ll_shop_container)
-//    private val cbSelectShop: CheckboxUnify = itemView.findViewById(R.id.cb_select_shop)
-//    private val tvShopName: Typography = itemView.findViewById(R.id.tv_shop_name)
-//    private val imgShopBadge: ImageView = itemView.findViewById(R.id.img_shop_badge)
-//    private val tvFulfillDistrict: Typography = itemView.findViewById(R.id.tv_fulfill_district)
-//    private val rvCartItem: RecyclerView = itemView.findViewById(R.id.rv_cart_item)
-//    private val layoutError: LinearLayout = itemView.findViewById(R.id.layout_error)
-//    private val tickerError: Ticker = itemView.findViewById(R.id.ticker_error)
-//    private val layoutWarning: LinearLayout = itemView.findViewById(R.id.layout_warning)
-//    private val tickerWarning: Ticker = itemView.findViewById(R.id.ticker_warning)
-//    private val separatorPreOrder: Typography = itemView.findViewById(R.id.separator_pre_order)
-//    private val labelPreOrder: Label = itemView.findViewById(R.id.label_pre_order)
-//    private val separatorIncident: Typography = itemView.findViewById(R.id.separator_incident)
-//    private val labelIncident: Label = itemView.findViewById(R.id.label_incident)
-//    private val separatorFreeShipping: Typography = itemView.findViewById(R.id.separator_free_shipping)
-//    private val imgFreeShipping: ImageView = itemView.findViewById(R.id.img_free_shipping)
-//    private val labelFulfillment: Label = itemView.findViewById(R.id.label_fulfillment)
-//    private val separatorEstimatedTimeArrival: Typography = itemView.findViewById(R.id.separator_estimated_time_arrival)
-//    private val textEstimatedTimeArrival: Typography = itemView.findViewById(R.id.text_estimated_time_arrival)
-
     fun bindData(cartShopHolderData: CartShopHolderData) {
         renderWarningAndError(cartShopHolderData)
         renderErrorItemHeader(cartShopHolderData)
