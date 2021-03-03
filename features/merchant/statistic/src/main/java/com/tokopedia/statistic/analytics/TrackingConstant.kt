@@ -21,17 +21,22 @@ object TrackingConstant {
     const val PROMO_CODE = "promo_code"
     const val POSITION = "position"
     const val PROMOTIONS = "promotions"
-    const val SCREEN_NAME = "screenName"
+    const val USER_ID = "userId"
+    const val BUSINESS_UNIT = "businessUnit"
+    const val CURRENT_SITE = "currentSite"
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
     const val CLICK_SHOP_INSIGHT = "clickShopInsight"
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
+    const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
+    const val CLICK_STATISTIC = "clickStatistik"
 
     //category
     const val SHOP_INSIGHT = "shop insight"
     const val SELLER_APP = "seller app"
+    const val SELLER_APP_STATISTIC = "seller app - statistik"
 
     //action
     const val CLICK_WIDGET_CARD = "click widget card"
@@ -42,8 +47,11 @@ object TrackingConstant {
     const val CLICK_WIDGET_BANNER = "click widget banner"
     const val CLICK_DATE_FILTER = "click date filter"
     const val CLICK_SELECT_ON_DATE_FILTER = "click select on date filter"
-    const val CLICK_TABS = "click tabs"
     const val CLICK_INFO_ICON = "click info icon"
+    const val CLICK_MENU_TAB = "click - tab menu"
+    const val CLICK_MENU_CALENDAR = "click- %s - calendar"
+    const val CLICK_MENU_3_DOT = "click - 3 dot"
+    const val CLICK_MENU_MENU_LAINNYA = "click - %s - menu lainnya"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"
@@ -53,6 +61,10 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_TABLE = "impression widget simple table"
     const val IMPRESSION_WIDGET_PIE_CHART = "impression widget pie chart"
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
+    const val IMPRESSION_MENU_TAB = "impression - tab menu"
+    const val IMPRESSION_CALENDAR = "impression - %s - calendar"
+    const val IMPRESSION_3_DOT = "impression - 3 dot"
+    const val IMPRESSION_MENU_LAINNYA = "impression - %s - menu lainnya"
     const val SEE_MORE = "see more"
 
     //other
@@ -68,4 +80,6 @@ object TrackingConstant {
     const val WIDGET_TREND_LINE = "widget trend line"
     const val WIDGET_PIE_CHART = "widget pie chart"
     const val WIDGET_BAR_CHART = "widget bar chart"
+    const val PHYSICAL_GOODS = "physicalgoods"
+    const val TOKOPEDIASELLER = "tokopediaseller"
 }

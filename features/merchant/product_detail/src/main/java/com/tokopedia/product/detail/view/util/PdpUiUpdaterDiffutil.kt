@@ -104,6 +104,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
+    val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
+        get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -334,6 +337,16 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
             updateData(ProductDetailConstant.SHOP_VOUCHER) {
                 productMerchantVoucherMap?.run {
                     voucherData = ArrayList(it.vouchers)
+                }
+            }
+
+            updateData(ProductDetailConstant.MVC) {
+                mvcSummaryData?.run {
+                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
+                    subTitle = it.merchantVoucherSummary.subTitle
+                    imageURL = it.merchantVoucherSummary.imageURL
+                    isShown = it.merchantVoucherSummary.isShown
+                    shopId = it.shopInfo.shopCore.shopID
                 }
             }
 
