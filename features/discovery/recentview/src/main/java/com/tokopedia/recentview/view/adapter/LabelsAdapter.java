@@ -48,7 +48,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
         String defaultWhiteColor = "#"+Integer.toHexString(
                 ContextCompat.getColor(
                         holder.itemView.getContext(),
-                        R.color.Unify_Static_White)
+                        R.color.recentview_dms_label_background)
         );
         if (!listLabel.get(position).getColor().toLowerCase().equals(defaultWhiteColor)) {
             background.setColor(Color.parseColor(listLabel.get(position)
