@@ -676,6 +676,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationText()
         subscribeToInputStatus()
 
+        viewModel.getProductPriceRecommendation()
+
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
