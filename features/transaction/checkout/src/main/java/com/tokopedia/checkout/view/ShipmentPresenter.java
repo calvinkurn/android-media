@@ -49,6 +49,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -1613,6 +1614,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                      ChosenAddressModel chosenAddressModel,
                                       boolean isOneClickShipment,
                                       boolean isTradeInDropOff,
                                       boolean isHandleFallback,
@@ -1628,16 +1630,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
                     dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
                     dataChangeAddressRequest.setCartIdStr(String.valueOf(cartItemModel.getCartId()));
-                    if (isTradeInDropOff) {
-                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                newRecipientAddressModel.getLocationDataModel().getAddrId() : "0"
-                        );
-                        dataChangeAddressRequest.setIndomaret(true);
-                    } else {
-                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                newRecipientAddressModel.getId() : "0"
-                        );
-                        dataChangeAddressRequest.setIndomaret(false);
+                    if (newRecipientAddressModel != null) {
+                        if (isTradeInDropOff) {
+                            dataChangeAddressRequest.setAddressId(newRecipientAddressModel.getLocationDataModel().getAddrId());
+                            dataChangeAddressRequest.setIndomaret(true);
+                        } else {
+                            dataChangeAddressRequest.setAddressId(newRecipientAddressModel.getId());
+                            dataChangeAddressRequest.setIndomaret(false);
+                        }
+                    }
+                    if (chosenAddressModel != null) {
+                        dataChangeAddressRequest.setAddressId(String.valueOf(chosenAddressModel.getAddressId()));
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
                 }
