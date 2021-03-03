@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTex
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 
 /**
@@ -88,8 +89,12 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, tvActionTokopoint)
                 }
             }
-
-
+            element?.defaultIconRes?.let {
+                ivLogoTokoPoint.setImageDrawable(itemView.context.getDrawable(it))
+            }
+            element?.iconImageUrl?.let {
+                ivLogoTokoPoint.loadImage(it)
+            }
         }
 
         private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_12) {
