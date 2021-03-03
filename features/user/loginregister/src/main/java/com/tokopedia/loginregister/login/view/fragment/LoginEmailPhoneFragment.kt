@@ -46,7 +46,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CR
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
@@ -475,7 +474,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 }
             }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
-            register_button.setText(spannable, TextView.BufferType.SPANNABLE)
+            register_button?.setText(spannable, TextView.BufferType.SPANNABLE)
 
             initTokopediaCareText()
         }
@@ -499,8 +498,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
                 0
         )
-        callTokopediaCare.movementMethod = LinkMovementMethod.getInstance()
-        callTokopediaCare.setText(spannable, TextView.BufferType.SPANNABLE)
+        callTokopediaCare?.movementMethod = LinkMovementMethod.getInstance()
+        callTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun onChangeButtonClicked() {
