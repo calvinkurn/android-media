@@ -47,7 +47,6 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="SiCepat"
                 android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintStart_toEndOf="@id/img_shipment_item"

@@ -327,9 +327,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun showDialog() {
         val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
         dialog?.apply {
-            setTitle("Kurir pilihanmu tidak tersedia di lokasi baru ini")
-            setDescription("Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.")
-            setPrimaryCTAText("Simpan & Atur Pengiriman")
+            setTitle(getString(R.string.title_save_dialog))
+            setDescription(getString(R.string.desc_save_dialog))
+            setPrimaryCTAText(getString(R.string.primary_button_save_dialog))
             setPrimaryCTAClickListener {
                 uncoveredCourierFlag = true
                 val latLong = "$currentLat,$currentLong"
@@ -339,7 +339,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             etZipCode?.text.toString(), userSession.phoneNumber)
                 }
             }
-            setSecondaryCTAText("Batalkan")
+            setSecondaryCTAText(getString(R.string.secondary_button_save_dialog))
             setSecondaryCTAClickListener {
                 dialog.hide()
             }

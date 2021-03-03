@@ -24,8 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        android:text="AWB Otomatis" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info_courier_detail"
@@ -38,8 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        app:typographyType="body_2"
-        android:text="Dengan fitur ini, pengiriman otomastis terisi dan penjual balbalbalbalbalbalbalablbla " />
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_close"
@@ -50,7 +48,7 @@
         android:layout_marginStart="@dimen/unify_space_48"
         android:layout_marginEnd="@dimen/unify_space_48"
         android:layout_weight="1"
-        android:text="Tutup"
+        android:text="@string/tutup"
         android:textStyle="bold"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

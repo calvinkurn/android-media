@@ -26,6 +26,9 @@ import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
+import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_LAT
+import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_LONG
+import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.manageaddress.util.ShopLocationConstant.EDIT_WAREHOUSE_REQUEST_CODE
 import com.tokopedia.manageaddress.util.ShopLocationConstant.ERROR_CODE_NO_ACCESS
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -358,10 +361,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun openFormShopEditAddress(data: Warehouse) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS)
         if (!data.latLon.isNullOrEmpty()) {
-            intent.putExtra("EXTRA_LAT", data.latLon.substringBefore(",").toDouble())
-            intent.putExtra("EXTRA_LONG", data.latLon.substringAfter(",").toDouble())
+            intent.putExtra(EXTRA_LAT, data.latLon.substringBefore(",").toDouble())
+            intent.putExtra(EXTRA_LONG, data.latLon.substringAfter(",").toDouble())
         }
-        intent.putExtra("EXTRA_WAREHOUSE_DATA", data)
+        intent.putExtra(EXTRA_WAREHOUSE_DATA, data)
         startActivityForResult(intent, EDIT_WAREHOUSE_REQUEST_CODE)
     }
 

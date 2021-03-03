@@ -56,7 +56,7 @@
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="heading_3"
                         app:typographyWeight="bold"
-                        android:text="Layanan Pengiriman"
+                        android:text="@string/layanan_pengiriman"
                         app:layout_constraintTop_toBottomOf="@id/ticker_shipper_info"
                         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -84,7 +84,7 @@
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="heading_4"
                         app:typographyWeight="bold"
-                        android:text="Dijemput Kurir"
+                        android:text="@string/dijemput_kurir"
                         app:layout_constraintTop_toBottomOf="@id/ticker_header"
                         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -95,7 +95,7 @@
                         android:layout_marginTop="@dimen/unify_space_12"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="body_3"
-                        android:text="Kurir akan menjemput pesanan di alamatmu untuk diantar ke pembeli"
+                        android:text="@string/dijemput_kurir_desc"
                         app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
                         app:layout_constraintStart_toStartOf="@id/tv_dijemput_kurir"
                         app:layout_constraintEnd_toEndOf="parent"/>
@@ -141,7 +141,7 @@
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="heading_4"
                         app:typographyWeight="bold"
-                        android:text="Antar ke Gerai"
+                        android:text="@string/antar_ke_gerai"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/divider_shipping_editor_1"/>
 
@@ -154,7 +154,7 @@
                         app:typographyType="body_3"
                         app:layout_constraintStart_toStartOf="@id/tv_antar_ke_agen"
                         app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen"
-                        android:text="Bawa pesanan ke gerai terdekat dan minta resi dari petugas" />
+                        android:text="@string/antar_ke_gerai_desc" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_conventional"
@@ -211,7 +211,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:text="Simpan"
+                android:text="@string/simpan"
                 android:visibility="gone"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />

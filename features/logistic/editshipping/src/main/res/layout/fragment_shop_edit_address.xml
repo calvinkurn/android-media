@@ -65,7 +65,7 @@
                     android:paddingStart="@dimen/dp_2"
                     android:paddingEnd="@dimen/dp_2"
                     android:text=""
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_12" />
 
@@ -82,7 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:focusable="false"
+                        android:focusable="true"
                         android:inputType="text"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"

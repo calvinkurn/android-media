@@ -10,7 +10,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -24,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.common.ui.MaintenancePage.createIntent
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
@@ -149,7 +147,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
         tickerOnDemand?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl == "awb_otomatis") {
+                if (linkUrl == STATE_AWB_VALIDATION){
                     bottomSheetShipperInfoType = 1
                     openBottomSheetShipperInfo()
                 } else {
@@ -166,7 +164,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun renderTextDetailCourier() {
         val textDetailCourier = MethodChecker.fromHtml(getString(R.string.tv_detail_kurir))
-        val selengkapnyaButton = "Selengkapnya"
+        val selengkapnyaButton = getString(R.string.selengkapnya)
         val spannableString = SpannableString(textDetailCourier)
         val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -322,6 +320,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 setDescriptionClickEvent(object: TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         bottomSheetCourierInactiveState = BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE
+                        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
                         openBottomSheetWarehouseInactive(context, data.warehouseModel, "")
                     }
 
@@ -410,7 +409,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             }
         } else {
             bottomSheetCourierInactive?.apply {
-                setTitle("Lokasi toko yang tidak memiliki kurir")
+                setTitle(getString(R.string.bottomsheet_inactive_title))
                 setCloseClickListener { dismiss() }
                 setChild(viewBottomSheetWarehouseInactive)
                 setOnDismissListener { dismiss() }
@@ -429,7 +428,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         setUpChildBottomSheetValidateBOData(viewBottomSheetBOValidation, data)
 
         bottomSheetBOValidation?.apply {
-            setTitle("Yakin mau nonaktifkan?")
+            setTitle(getString(R.string.bottomsheet_validation_title))
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetBOValidation)
             setOnDismissListener { dismiss() }
@@ -718,6 +717,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE = 3
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE = 4
 
+        private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
     }
 

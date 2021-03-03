@@ -65,6 +65,7 @@ object ShippingEditorQuery {
             	  text_link
             	  url_link
             	  is_active
+                  warehouse_ids
             	}
               courier_ticker {
                 shipper_id
