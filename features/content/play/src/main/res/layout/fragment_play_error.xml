@@ -5,7 +5,7 @@
     android:id="@+id/container_global_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_error_background"
+    android:background="@color/play_background"
     android:visibility="gone"
     >
 
@@ -26,7 +26,7 @@
         android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_back_white"
+        app:srcCompat="@drawable/ic_play_close_white"
         />
 
     <com.tokopedia.unifyprinciples.Typography
