@@ -1941,7 +1941,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     districtId = localizationChooseAddressData.districtId,
                     lat = localizationChooseAddressData.latitude,
                     long = localizationChooseAddressData.longitude,
-                    addressName = localizationChooseAddressData.addressName,
+                    label = localizationChooseAddressData.addressName,
                     postalCode = localizationChooseAddressData.postalCode)
         }
     }
