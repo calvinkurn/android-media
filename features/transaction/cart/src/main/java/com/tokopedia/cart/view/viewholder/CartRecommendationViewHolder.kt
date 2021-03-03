@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(view: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(view) {
+class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         @JvmStatic
@@ -24,7 +24,7 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     internal var isTopAds = false
 
     fun bind(element: CartRecommendationItemHolderData) {
-        itemView.productCardView?.apply {
+        binding.productCardView.apply {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -32,7 +32,7 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             formattedPrice = element.recommendationItem.price,
                             productImageUrl = element.recommendationItem.imageUrl,
                             isTopAds = element.recommendationItem.isTopAds,
-                            discountPercentage = element.recommendationItem.discountPercentage.toString(),
+                            discountPercentage = element.recommendationItem.discountPercentage,
                             reviewCount = element.recommendationItem.countReview,
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,

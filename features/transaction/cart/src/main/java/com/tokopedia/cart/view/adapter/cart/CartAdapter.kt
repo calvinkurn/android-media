@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemEmptyCartBinding
+import com.tokopedia.cart.databinding.*
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
@@ -265,19 +265,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         initializeCompositeSubscription()
         when (viewType) {
             CartSelectAllViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
-                return CartSelectAllViewHolder(view, actionListener, compositeSubscription)
+                val binding = ItemSelectAllBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartSelectAllViewHolder(binding, actionListener, compositeSubscription)
             }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false)
-                return CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription)
+                val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false)
-                return CartTickerErrorViewHolder(view, actionListener)
+                val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartTickerErrorViewHolder(binding, actionListener)
             }
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 val view = LayoutInflater.from(parent.context)
@@ -289,24 +286,20 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return CartEmptyViewHolder(binding, actionListener)
             }
             CartRecentViewViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartRecentViewViewHolder.LAYOUT, parent, false)
-                return CartRecentViewViewHolder(view, actionListener)
+                val binding = ItemCartRecentViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartRecentViewViewHolder(binding, actionListener)
             }
             CartWishlistViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartWishlistViewHolder.LAYOUT, parent, false)
-                return CartWishlistViewHolder(view, actionListener)
+                val binding = ItemCartWishlistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartWishlistViewHolder(binding, actionListener)
             }
             CartSectionHeaderViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartSectionHeaderViewHolder.LAYOUT, parent, false)
-                return CartSectionHeaderViewHolder(view, actionListener)
+                val binding = ItemCartSectionHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartSectionHeaderViewHolder(binding, actionListener)
             }
             CartRecommendationViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartRecommendationViewHolder.LAYOUT, parent, false)
-                return CartRecommendationViewHolder(view, actionListener)
+                val binding = ItemCartRecommendationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartRecommendationViewHolder(binding, actionListener)
             }
             CartLoadingViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
@@ -319,14 +312,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return TickerAnnouncementViewHolder(view, tickerAnnouncementActionListener)
             }
             DisabledCartItemViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(DisabledCartItemViewHolder.LAYOUT, parent, false)
-                return DisabledCartItemViewHolder(view, actionListener)
+                val binding = HolderItemCartErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return DisabledCartItemViewHolder(binding, actionListener)
             }
             DisabledItemHeaderViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(DisabledItemHeaderViewHolder.LAYOUT, parent, false)
-                return DisabledItemHeaderViewHolder(view, actionListener)
+                val binding = ItemCartDisabledHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return DisabledItemHeaderViewHolder(binding, actionListener)
             }
             DisabledReasonViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
@@ -334,9 +325,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return DisabledReasonViewHolder(view, actionListener)
             }
             DisabledShopViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
-                return DisabledShopViewHolder(view, actionListener)
+                val binding = ItemCartDisabledShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return DisabledShopViewHolder(binding, actionListener)
             }
             DisabledAccordionViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)

@@ -16,6 +16,10 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 repositories {
