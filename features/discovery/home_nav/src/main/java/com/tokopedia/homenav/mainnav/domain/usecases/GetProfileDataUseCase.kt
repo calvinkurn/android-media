@@ -78,7 +78,6 @@ class GetProfileDataUseCase @Inject constructor(
     private fun getLoginState(): Int {
         return when {
             userSession.isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
             else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
         }
     }
