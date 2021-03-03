@@ -31,6 +31,7 @@ class HotelSearchMapViewModel @Inject constructor(
         private val travelTickerUseCase: TravelTickerCoroutineUseCase)
     : BaseViewModel(dispatcher.io()) {
 
+    lateinit var hotelSearchModel: HotelSearchModel
     val searchParam: SearchParam = SearchParam()
 
     var selectedSort: Sort = Sort()
@@ -38,7 +39,7 @@ class HotelSearchMapViewModel @Inject constructor(
     var defaultSort = ""
 
     var filter: Filter = Filter()
-    
+
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
     val liveSelectedFilter = MutableLiveData<Pair<List<ParamFilterV2>, Boolean>>()
 
@@ -49,7 +50,7 @@ class HotelSearchMapViewModel @Inject constructor(
     var isFilter = false
 
     fun initSearchParam(hotelSearchModel: HotelSearchModel) {
-
+        this.hotelSearchModel = hotelSearchModel
         with(searchParam) {
             location = ParamLocation()
 
@@ -85,7 +86,8 @@ class HotelSearchMapViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.first?.toMutableList() ?: mutableListOf()
+    fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.first?.toMutableList()
+            ?: mutableListOf()
 
     fun searchProperty(page: Int, searchQuery: String) {
         searchParam.page = page

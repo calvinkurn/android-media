@@ -19,6 +19,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
@@ -45,6 +47,7 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
+import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -101,6 +104,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         }
+
+        activity?.let {
+            (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -121,12 +128,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         initRecyclerViewMap()
         initFloatingButton()
-        showLoadingCardListMap()
         initLocationMap()
+        showLoadingCardListMap()
+        setUpTitleAndSubtitle()
         setupCollapsingToolbar()
         Handler().postDelayed({
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
-        }, 500)
+        }, ANIMATION_DETAIL_TIMES)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -157,6 +165,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onEmptyButtonClicked() {}
 
     override fun onItemClicked(t: Property) {}
+
+    private fun setUpTitleAndSubtitle() {
+        context?.let {
+            val hotelSearchModel = hotelSearchMapViewModel.hotelSearchModel
+            val checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkIn))
+            val checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkOut))
+
+            headerHotelSearchMap.title = hotelSearchModel.name
+            headerHotelSearchMap.subtitle = getString(R.string.template_search_subtitle,
+                    checkInString,
+                    checkOutString,
+                    hotelSearchModel.room,
+                    hotelSearchModel.adult)
+            headerHotelSearchMap.subheaderView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        }
+    }
 
     private fun initRecyclerViewMap() {
         adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
@@ -393,7 +417,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             behavior?.let {
                 valueAnimator.cancel()
                 valueAnimator.setIntValues(behavior.topAndBottomOffset, height.toInt() * -1)
-                valueAnimator.duration = 400
+                valueAnimator.duration = ANIMATION_DETAIL_TIMES
                 valueAnimator.start()
             }
         }
@@ -471,6 +495,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
         private const val DAYS_A_YEAR: Long = 365
+
+        private const val ANIMATION_DETAIL_TIMES: Long = 500
 
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
         private const val COLLAPSING_ONE_THREE_OF_SCREEN = 1.0 / 3.0
