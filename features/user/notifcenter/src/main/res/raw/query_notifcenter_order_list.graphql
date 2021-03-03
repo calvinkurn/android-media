@@ -7,7 +7,7 @@ query notifcenter_notifOrderList(
     list {
       icon
       text
-      counter
+      counter_str
       link {
         android_link
       }

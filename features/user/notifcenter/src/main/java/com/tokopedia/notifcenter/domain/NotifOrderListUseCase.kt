@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.state.Resource
@@ -15,6 +16,7 @@ class NotifOrderListUseCase @Inject constructor(
 ) {
 
     fun getOrderList(
+            @RoleType
             userType: Int
     ) = flow {
         emit(Resource.loading(null))
@@ -28,6 +30,7 @@ class NotifOrderListUseCase @Inject constructor(
     }
 
     private fun generateParam(
+            @RoleType
             userType: Int
     ): Map<String, Any?> {
         return mapOf(
