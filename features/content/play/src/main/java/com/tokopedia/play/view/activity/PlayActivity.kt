@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -22,12 +23,14 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -66,6 +69,10 @@ class PlayActivity : BaseActivity(),
     private lateinit var orientationManager: PlaySensorOrientationManager
 
     private lateinit var viewModel: PlayParentViewModel
+
+    private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
+            creator = { FloatingWindowAdapter(this) }
+    )
 
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
@@ -107,6 +114,8 @@ class PlayActivity : BaseActivity(),
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
+
+        removePip()
 
         setupIntentExtra()
 
@@ -302,6 +311,10 @@ class PlayActivity : BaseActivity(),
 
     private fun setupIntentExtra() {
         intent.putExtra(PLAY_KEY_CHANNEL_ID, startChannelId)
+    }
+
+    private fun removePip() {
+        pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
     }
 
     companion object {
