@@ -50,6 +50,10 @@ class ManageAddressViewModel @Inject constructor(
     val getChosenAddress: LiveData<Result<ChosenAddressModel>>
         get() = _getChosenAddress
 
+    private val _setChosenAddress = MutableLiveData<Result<ChosenAddressModel>>()
+    val setChosenAddress: LiveData<Result<ChosenAddressModel>>
+        get() = _setChosenAddress
+
     private val compositeSubscription = CompositeSubscription()
 
     fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
@@ -128,8 +132,19 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
+    fun setStateChosenAddress(status: Int?, addressId: String?, receiverName: String?, addressName: String?, latitude: String?, longitude: String?, districtId: String?, postalCode: String?) {
+        viewModelScope.launch(onErrorSetStateChosenAddress) {
+            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId?.toInt(), receiverName, addressName, latitude, longitude, districtId?.toInt(), postalCode)
+            _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
+        }
+    }
+
     private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
         _getChosenAddress.value = Fail(e)
+    }
+
+    private val onErrorSetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
+        _setChosenAddress.value = Fail(e)
     }
 
     override fun onCleared() {

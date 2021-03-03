@@ -80,7 +80,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName,
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
@@ -104,7 +104,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName,
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
