@@ -8,7 +8,6 @@ import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.
@@ -85,6 +84,6 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     }
 
     fun clearImage() {
-        itemView.productCardView?.recycle()
+        binding.productCardView.recycle()
     }
 }

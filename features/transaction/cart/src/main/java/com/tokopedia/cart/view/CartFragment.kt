@@ -499,28 +499,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun initView(view: View) {
-//        basicToolbar = view.findViewById(R.id.toolbar)
-//        navToolbar = view.findViewById(R.id.nav_toolbar)
-//        appBarLayout = view.findViewById(R.id.app_bar_layout)
-//        cartRecyclerView = view.findViewById(R.id.rv_cart)
-//        btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
-//        vDisabledBtnToShipment = view.findViewById(R.id.v_disabled_go_to_courier_page_button)
-//        tvTotalPrice = view.findViewById(R.id.tv_total_prices)
-//        rlContent = view.findViewById(R.id.rl_content)
-//        layoutGlobalError = view.findViewById(R.id.layout_global_error)
-//        bottomLayout = view.findViewById(R.id.bottom_layout)
-//        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow)
-//        llCartContainer = view.findViewById(R.id.ll_cart_container)
-//        llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
-//        promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
-//        imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
-//        textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
-//        tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
-//        topLayout = view.findViewById(R.id.top_layout)
-//        topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
-//        checkboxGlobal = view.findViewById(R.id.checkbox_global)
-//        textActionDelete = view.findViewById(R.id.text_action_delete)
-
         initToolbar(view)
 
         activity?.let {
