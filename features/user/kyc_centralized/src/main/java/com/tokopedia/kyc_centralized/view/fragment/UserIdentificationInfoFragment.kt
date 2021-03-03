@@ -2,12 +2,16 @@ package com.tokopedia.kyc_centralized.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,11 +21,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
@@ -63,6 +71,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var callback: String? = null
     private var kycBenefitLayout: View? = null
     private var kycBenefitButton: UnifyButton? = null
+    private var kycBenefitCloseButton: ImageButton? = null
+    private var defaultStatusBarColor = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,6 +81,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val parentView = inflater.inflate(R.layout.fragment_user_identification_info, container, false)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) defaultStatusBarColor = activity?.window?.statusBarColor ?: 0
         initView(parentView)
         return parentView
     }
@@ -112,6 +123,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         iconTwo = parentView.findViewById(R.id.ic_x_2)
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
         kycBenefitButton = parentView.findViewById(R.id.kyc_benefit_btn)
+        kycBenefitCloseButton = parentView.findViewById(R.id.close_button)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -197,10 +209,44 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusNotVerified() {
-        mainView?.visibility = View.GONE
-        kycBenefitLayout?.visibility = View.VISIBLE
+        setStatusBar(R.color.kyc_centralized_D8F4F3)
+        mainView?.hide()
+        kycBenefitLayout?.show()
         kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
+        kycBenefitCloseButton?.setOnClickListener {
+            activity?.onBackPressed()
+        }
         analytics?.eventViewOnKYCOnBoarding()
+    }
+
+    private fun setStatusBar(color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val window = activity?.window ?: return
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = MethodChecker.getColor(context, color)
+        }
+
+        if(activity != null && activity is AppCompatActivity) {
+              (activity as AppCompatActivity).supportActionBar?.hide()
+        }
+    }
+
+    private fun restoreStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val window = activity?.window ?: return
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = if(defaultStatusBarColor.isZero()) {
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            } else {
+                defaultStatusBarColor
+            }
+        }
+
+        if(activity != null && activity is AppCompatActivity) {
+            (activity as AppCompatActivity).supportActionBar?.show()
+        }
     }
 
     private fun showStatusVerified() {
@@ -276,9 +322,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun hideKycBenefit() {
-        kycBenefitLayout?.visibility = View.GONE
-        kycBenefitLayout?.visibility = View.GONE
-        mainView?.visibility = View.VISIBLE
+        activity?.actionBar?.show()
+        restoreStatusBar()
+        mainView?.show()
+        kycBenefitLayout?.hide()
     }
 
     private fun showStatusBlacklist() {
