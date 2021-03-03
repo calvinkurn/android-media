@@ -213,6 +213,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         return super.getEmptyDataViewModel()
     }
 
+    override fun isListEmpty(): Boolean {
+        return super.isListEmpty() ||
+                (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
+    }
+
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
         filter = view.findViewById<NotificationFilterView>(R.id.sv_filter)?.also {
