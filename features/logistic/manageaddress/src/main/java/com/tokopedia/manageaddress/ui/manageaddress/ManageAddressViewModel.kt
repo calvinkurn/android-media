@@ -52,10 +52,11 @@ class ManageAddressViewModel @Inject constructor(
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int) {
+    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.execute(query, prevState = prevState, localChosenAddrId = localChosenAddrId)
+                getPeopleAddressUseCase.execute(query, prevState = prevState,
+                        localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhiteListChosenAddress)
                         .subscribe(object: rx.Observer<AddressListModel> {
                             override fun onError(it: Throwable?) {
                                 _addressList.value = ManageAddressState.Fail(it, "")
@@ -76,10 +77,10 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun loadMore(prevState: Int, localChosenAddrId: Int) {
+    fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId)
+                getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
                         .subscribe(object: rx.Observer<AddressListModel> {
                             override fun onError(it: Throwable?) {
                                 _addressList.value = ManageAddressState.Fail(it, "")
@@ -99,22 +100,22 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Int) {
+    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
         _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
-            searchAddress("", prevState, localChosenAddrId)
+            searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })
     }
 
-    fun setDefaultPeopleAddress(id: String, prevState: Int, localChosenAddrId: Int) {
+    fun setDefaultPeopleAddress(id: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
         setDefaultPeopleAddressUseCase.execute(id.toInt(), {
             _setDefault.value = ManageAddressState.Success("Success")
             isClearData = true
-            searchAddress("", prevState, localChosenAddrId)
+            searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
         },  {
             _setDefault.value  = ManageAddressState.Fail(it, "")
         })
