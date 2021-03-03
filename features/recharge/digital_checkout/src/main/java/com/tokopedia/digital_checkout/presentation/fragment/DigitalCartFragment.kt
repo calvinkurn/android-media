@@ -481,6 +481,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         else if (fintechProductInfo.tooltipText.isNotEmpty()) {
             val moreInfoView = View.inflate(context, R.layout.layout_digital_fintech_product_info_bottom_sheet, null)
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
+            moreInfoText.setPadding(0, 0, 0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
             moreInfoText.text = fintechProductInfo.tooltipText
 
             val moreInfoBottomSheet = BottomSheetUnify()
