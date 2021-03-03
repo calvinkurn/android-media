@@ -98,6 +98,7 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

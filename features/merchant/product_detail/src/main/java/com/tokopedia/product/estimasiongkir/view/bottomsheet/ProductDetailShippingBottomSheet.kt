@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingTracking
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
@@ -148,6 +149,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId ?: "")
             ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
         }
     }

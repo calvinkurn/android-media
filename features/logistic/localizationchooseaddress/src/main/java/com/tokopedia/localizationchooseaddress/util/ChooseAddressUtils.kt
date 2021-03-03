@@ -65,16 +65,18 @@ object ChooseAddressUtils {
      * it mean data has same. no need action from host
      */
     fun isLocalizingAddressHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        var latestChooseAddressData = chooseAddressPref.getLocalCacheData()
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val latestChooseAddressData = chooseAddressPref.getLocalCacheData()
         var validate = false
-        if (latestChooseAddressData?.address_id != localizingAddressStateData.address_id) validate = true
-        if (latestChooseAddressData?.city_id != localizingAddressStateData.city_id) validate = true
-        if (latestChooseAddressData?.district_id != localizingAddressStateData.district_id) validate = true
-        if (latestChooseAddressData?.lat != localizingAddressStateData.lat) validate = true
-        if (latestChooseAddressData?.long != localizingAddressStateData.long) validate = true
-        if (latestChooseAddressData?.label != localizingAddressStateData.label) validate = true
-        if (latestChooseAddressData?.postal_code != localizingAddressStateData.postal_code) validate = true
+        if (latestChooseAddressData != null) {
+            if (latestChooseAddressData.address_id != localizingAddressStateData.address_id) validate = true
+            if (latestChooseAddressData.city_id != localizingAddressStateData.city_id) validate = true
+            if (latestChooseAddressData.district_id != localizingAddressStateData.district_id) validate = true
+            if (latestChooseAddressData.lat != localizingAddressStateData.lat) validate = true
+            if (latestChooseAddressData.long != localizingAddressStateData.long) validate = true
+            if (latestChooseAddressData.label != localizingAddressStateData.label) validate = true
+            if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
+        }
         return validate
     }
 

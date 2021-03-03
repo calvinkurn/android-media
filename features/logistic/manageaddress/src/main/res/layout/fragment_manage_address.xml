@@ -50,7 +50,8 @@
                 android:layout_height="@dimen/dp_140"
                 android:layout_marginLeft="@dimen/dp_60"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginRight="@dimen/dp_60"/>
+                android:layout_marginRight="@dimen/dp_60"
+                android:contentDescription="@string/image_desc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_empty_search"
@@ -83,11 +84,11 @@
             android:id="@+id/address_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_input_view" />
+            app:layout_constraintBottom_toTopOf="@id/ll_btn"
+            app:layout_constraintTop_toBottomOf="@id/search_input_view"/>
 
 
         <include

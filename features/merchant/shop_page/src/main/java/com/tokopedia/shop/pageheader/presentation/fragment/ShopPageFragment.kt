@@ -528,8 +528,8 @@ class ShopPageFragment :
             }
         })
 
-        shopViewModel?.followStatusData?.observe(owner) {
-            when(it) {
+        shopViewModel?.followStatusData?.observe(owner, Observer {
+            when (it) {
                 is Success -> {
                     it.data.followStatus.apply {
                         shopPageFragmentHeaderViewHolder?.setFollowStatus(
@@ -544,7 +544,13 @@ class ShopPageFragment :
                     shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(false)
                 }
             }
-        }
+            val followStatusData = (it as? Success)?.data?.followStatus
+            shopPageFragmentHeaderViewHolder?.showCoachMark(
+                    followStatusData,
+                    shopId,
+                    shopViewModel?.userId.orEmpty()
+            )
+        })
 
         shopViewModel?.followShopData?.observe(owner) {
             when(it) {
