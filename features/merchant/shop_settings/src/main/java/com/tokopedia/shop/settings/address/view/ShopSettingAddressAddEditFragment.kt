@@ -92,7 +92,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         }
 
         tfPostalCode?.textFieldInput?.setOnClickListener {
-            if (tfPostalCode?.textFieldInput?.isPopupShowing == true)
+            if (tfPostalCode?.textFieldInput?.isPopupShowing != true)
                 tfPostalCode?.textFieldInput?.showDropDown()
         }
         tfPostalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !tfPostalCode?.textFieldInput?.text.toString()[0].isDigit())
