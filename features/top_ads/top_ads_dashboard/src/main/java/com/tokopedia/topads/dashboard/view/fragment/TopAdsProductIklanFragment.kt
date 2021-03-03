@@ -114,7 +114,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
         context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
+            TopadsGroupFilterSheet.newInstance(this)
         }
     }
 
@@ -307,7 +307,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsWidget?.gone()
         autoads_layout.gone()
         if (checkInProgress()) {
-            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+            context?.run {
+                imgBg.background = AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+            }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
             autoadsOnboarding.gone()
@@ -408,7 +410,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.tabLayout?.selectedTabPosition == 1)
             adType = SINGLE_AD
 
-        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getStatistic(startDate ?: Date(), endDate
+                ?: Date(), selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     override fun onLoadTopAdsShopDepositError(throwable: Throwable) {
