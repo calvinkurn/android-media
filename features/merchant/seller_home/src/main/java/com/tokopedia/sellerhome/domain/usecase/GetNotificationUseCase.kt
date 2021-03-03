@@ -21,7 +21,7 @@ class GetNotificationUseCase(
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
-        val gqlRequest = GraphqlRequest(true, QUERY, GetNotificationsResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, GetNotificationsResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetNotificationsResponse::class.java)
