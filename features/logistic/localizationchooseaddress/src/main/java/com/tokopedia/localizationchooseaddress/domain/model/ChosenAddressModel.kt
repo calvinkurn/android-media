@@ -1,5 +1,9 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class ChosenAddressModel (
         var addressId: Int = 0,
         var receiverName: String = "",
@@ -12,4 +16,4 @@ data class ChosenAddressModel (
         var latitude: String = "",
         var longitude: String = "",
         var postalCode: String = "",
-)
+): Parcelable
