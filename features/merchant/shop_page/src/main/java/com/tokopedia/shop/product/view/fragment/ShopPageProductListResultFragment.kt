@@ -822,7 +822,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedEtalaseName = selectedEtalaseName.takeIf { it.isNotEmpty() } ?: "",
                 selectedSortId = sortId,
                 selectedSortName = selectedSortName,
-                isShowSortFilter = selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                isShowSortFilter = isNeededToShowSortFilter(),
                 filterIndicatorCounter = getIndicatorCount(
                         shopProductFilterParameter?.getMapData()
                 )
@@ -842,6 +842,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             hideLoading()
             endlessRecyclerViewScrollListener.resetState()
         }
+    }
+
+    private fun isNeededToShowSortFilter(): Boolean {
+        return selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN &&
+                selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
     }
 
     private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
