@@ -165,6 +165,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         view?.apply {
             tfTitle = findViewById(R.id.text_input_title)
             tfDesc = findViewById(R.id.text_input_desc)
+            tfDesc?.textFieldInput?.isSingleLine = false
         }
     }
 
