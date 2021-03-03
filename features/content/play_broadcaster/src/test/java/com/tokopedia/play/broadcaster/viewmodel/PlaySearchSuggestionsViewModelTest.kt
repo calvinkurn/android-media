@@ -22,7 +22,6 @@ import org.junit.Test
 
 /**
  * Created by jegul on 25/09/20
- */
 class PlaySearchSuggestionsViewModelTest {
 
     @get:Rule
@@ -96,3 +95,4 @@ class PlaySearchSuggestionsViewModelTest {
     }
 
 }
+ */

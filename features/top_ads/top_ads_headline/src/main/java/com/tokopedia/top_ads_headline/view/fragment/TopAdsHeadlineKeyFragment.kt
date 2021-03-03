@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
 import com.tokopedia.top_ads_headline.Constants.POSITIVE_PHRASE
@@ -52,7 +53,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var minSuggestedBid = 0
+    private var minSuggestedBid = "0"
 
     companion object {
         fun createInstance() = TopAdsHeadlineKeyFragment()
@@ -104,7 +105,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
                                 type = POSITIVE_PHRASE,
                                 status = ACTIVE_STATUS,
-                                priceBid = it.bidSuggest,
+                                priceBid = it.bidSuggest.toLong(),
                                 tag = it.keyword)
                 ))
             }
@@ -232,7 +233,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (stepperModel?.selectedProductIds?.isEmpty() == false) {
-            viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+            val list: MutableList<String>? = stepperModel?.selectedProductIds
+            viewModel.getSuggestionKeyword(list?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
         } else
             onEmptySuggestion()
     }
@@ -247,8 +249,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun getLatestBid() {
-        val selectedProductIds: MutableList<Int>? = stepperModel?.selectedProductIds
-                ?: mutableListOf()
+
+        val selectedProductIds: List<Long>? = stepperModel?.selectedProductIds?.map {
+            it.toLong()
+        }
         val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
     }
@@ -256,9 +260,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
-        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
-        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
-        minSuggestedBid = data.firstOrNull()?.minBid ?: 0
+        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: "0")
+        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: "0"
+        minSuggestedBid = data.firstOrNull()?.minBid ?: "0"
     }
 
     private fun setAdapter() {
@@ -276,7 +280,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 item.keyword = editText.textFieldInput.text.toString()
                 item.totalSearch = SEARCH_NOT_AVAILABLE
                 item.fromSearch = true
-                item.bidSuggest = minSuggestedBid
+                item.bidSuggest = minSuggestedBid.toString()
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
                 if (!addedKeywords.contains(item)) {
@@ -305,7 +309,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
-        keywordListAdapter.setList(list, list.firstOrNull()?.minBid
+        keywordListAdapter.setList(list, list.firstOrNull()?.minBid?.toIntOrZero()
                 ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
     }

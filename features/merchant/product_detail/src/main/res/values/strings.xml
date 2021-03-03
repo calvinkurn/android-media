@@ -35,7 +35,6 @@
     <string name="label_move_to_warehouse">Gudangkan</string>
     <string name="label_move_to_etalase">Ke Etalase</string>
     <string name="label_product_wholesale">Harga Grosir</string>
-    <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
     <string name="label_category">Kategori</string>
@@ -66,7 +65,6 @@
     <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
-    <string name="template_installment">Min. Pembelanjaan %1$s</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
