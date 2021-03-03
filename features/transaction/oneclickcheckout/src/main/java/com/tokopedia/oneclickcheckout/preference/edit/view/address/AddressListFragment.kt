@@ -233,7 +233,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
 
-        viewModel.searchAddress(searchKey, getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+        context?.let {
+            viewModel.searchAddress(searchKey, getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+        }
     }
 
     private fun initView() {
@@ -261,7 +263,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         addressListRv?.clearOnScrollListeners()
         endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMore(getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+                context?.let {
+                    viewModel.loadMore(getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
             }
         }
         endlessScrollListener?.let {
@@ -326,11 +330,15 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 viewModel.destinationLatitude = saveAddressDataModel.latitude
                 viewModel.destinationPostalCode = saveAddressDataModel.postalCode
                 viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
-                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+                context?.let {
+                    viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+            context?.let {
+                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
 
     }
@@ -343,13 +351,17 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAddress?.clearFocus()
-                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+                context?.let {
+                    viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
         searchAddress?.clearListener = {
-            viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
@@ -433,7 +445,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             searchAddress?.searchBarTextField?.setText("")
-            viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(context))
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.gone()
         textSearchError?.gone()
