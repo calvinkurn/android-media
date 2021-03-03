@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -161,24 +160,20 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopTagLineTextField() {
-        shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopTagLineTextField.setMessage("")
-                shopTagLineTextField.setError(false)
-                determineSubmitButton()
-            }
-        })
+        shopTagLineTextField.textFieldInput.afterTextChanged {
+            shopTagLineTextField.setMessage("")
+            shopTagLineTextField.setError(false)
+            determineSubmitButton()
+        }
     }
 
     private fun setupShopDescriptionTextField() {
         shopDescriptionTextField.textFieldInput.isSingleLine = false
-        shopDescriptionTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopDescriptionTextField.setMessage("")
-                shopDescriptionTextField.setError(false)
-                determineSubmitButton()
-            }
-        })
+        shopDescriptionTextField.textFieldInput.afterTextChanged {
+            shopDescriptionTextField.setMessage("")
+            shopDescriptionTextField.setError(false)
+            determineSubmitButton()
+        }
     }
 
     private fun setupDomainSuggestion() {

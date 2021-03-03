@@ -12,8 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
@@ -22,6 +21,7 @@ import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
 import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.common.widget.Menus
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -104,9 +104,11 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
     }
 
     override fun onErrorDeleteAddress(throwable: Throwable?) {
-        throwable?.let {
-            Toaster.make(view!!, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
+        throwable?.let { throwable ->
+            view?.let {
+                Toaster.make(it, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
+            }
         }
     }
 
@@ -167,13 +169,13 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
 
     private fun deleteShopAddress(item: ShopLocationUiModel) {
         activity?.let {
-            Dialog(it, Dialog.Type.PROMINANCE).apply {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
-                setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
-                setBtnOk(getString(R.string.action_delete))
-                setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-                setOnOkClickListener { presenter.deleteItem(item); dismiss() }
-                setOnCancelClickListener { dismiss() }
+                setDescription(getString(R.string.desc_dialog_delete_shop_address, item.name))
+                setPrimaryCTAText(getString(R.string.action_delete))
+                setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+                setPrimaryCTAClickListener { presenter.deleteItem(item); dismiss() }
+                setSecondaryCTAClickListener { dismiss() }
                 show()
             }
         }

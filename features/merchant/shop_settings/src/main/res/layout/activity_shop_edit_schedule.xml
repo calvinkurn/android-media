@@ -65,27 +65,23 @@
         app:ilv_drawable="@drawable/ic_calendar_grey"
         app:ilv_title="@string/date_end_shop_close" />
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/tilShopCloseNote"
-        style="@style/HintTextInputLayout"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfShopCloseNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:hint="@string/shop_close_note">
+        app:text_field_input_type="text"
+        app:text_field_label="@string/shop_close_note"
+        app:text_field_counter="@integer/max_slogan_char"/>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etShopCloseNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions|textMultiLine"
-            android:maxLength="@integer/max_slogan_char" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         android:layout_margin="@dimen/dp_16"
         android:text="@string/closed_note_information" />
 

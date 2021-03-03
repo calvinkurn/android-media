@@ -17,13 +17,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
-import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
@@ -37,10 +34,12 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.widget.Menus
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import java.util.*
@@ -95,7 +94,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
                 val itemMenusList = ArrayList<Menus.ItemMenus>()
                 if (shopBasicDataModel.isOpen) {
-                    if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                    if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
                     } else {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
@@ -123,12 +122,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
             getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
-                    Dialog(it, Dialog.Type.PROMINANCE).apply {
+                    DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(R.string.remove_schedule))
-                        setDesc(getString(R.string.remove_schedule_message))
-                        setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.design.R.string.label_cancel))
-                        setOnOkClickListener {
+                        setDescription(getString(R.string.remove_schedule_message))
+                        setPrimaryCTAText(getString(R.string.action_delete))
+                        setSecondaryCTAText(getString(com.tokopedia.design.R.string.label_cancel))
+                        setPrimaryCTAClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingsInfoViewModel.updateShopSchedule(
@@ -140,7 +139,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                             )
                             dismiss()
                         }
-                        setOnCancelClickListener { dismiss() }
+                        setSecondaryCTAClickListener { dismiss() }
                         show()
                     }
                 }

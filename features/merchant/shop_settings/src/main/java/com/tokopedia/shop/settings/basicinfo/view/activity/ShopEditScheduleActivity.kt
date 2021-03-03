@@ -5,22 +5,19 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.text.watcher.AfterTextWatcher
-import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -35,6 +32,7 @@ import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
@@ -123,19 +121,19 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             if (isClosedNow) { // if close now, default: H
                 selectedStartCloseUnixTimeMs = currentDate.time
                 val closedUntil = shopBasicDataModel?.closeUntil
-                selectedEndCloseUnixTimeMs = if (StringUtils.isEmptyNumber(closedUntil)) {
+                selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     currentDate.time
                 } else {
                     closedUntil!!.toLong() * 1000L
                 }
             } else { // if NOT close now, default: H+1
-                selectedStartCloseUnixTimeMs = if (StringUtils.isEmptyNumber(closeSchedule)) {
+                selectedStartCloseUnixTimeMs = if (isEmptyNumber(closeSchedule)) {
                     tomorrowDate.time
                 } else {
                     closeSchedule!!.toLong() * 1000L
                 }
                 val closedUntil = shopBasicDataModel?.closeUntil
-                selectedEndCloseUnixTimeMs = if (StringUtils.isEmptyNumber(closedUntil)) {
+                selectedEndCloseUnixTimeMs = if (isEmptyNumber(closedUntil)) {
                     tomorrowDate.time
                 } else {
                     closedUntil!!.toLong() * 1000L
@@ -157,11 +155,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             showEndDatePickerDialog(selectedDate, minDate)
         }
 
-        etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                tilShopCloseNote.error = null
-            }
-        })
+        tfShopCloseNote.textFieldInput.afterTextChanged {
+            tfShopCloseNote.setError(false)
+            tfShopCloseNote.textFieldWrapper.error = null
+        }
     }
 
     private fun setupUI() {
@@ -269,9 +266,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     private fun onSaveButtonClicked() {
         hideKeyboard()
-        val closeNote = etShopCloseNote.text.toString()
+        val closeNote = tfShopCloseNote.textFieldInput.text.toString()
         if (closeNote.isEmpty()) {
-            tilShopCloseNote.error = getString(R.string.note_must_be_filled)
+            tfShopCloseNote.setError(true)
+            tfShopCloseNote.textFieldWrapper.error = getString(R.string.note_must_be_filled)
             return
         }
 
@@ -329,7 +327,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
         //set open schedule.
         setEndCloseDate(Date(selectedEndCloseUnixTimeMs))
-        etShopCloseNote.setText(shopBasicDataModel?.closeNote)
+        tfShopCloseNote.textFieldInput.setText(shopBasicDataModel?.closeNote)
 
     }
 
@@ -346,4 +344,5 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
         snackbar?.show()
     }
+
 }
