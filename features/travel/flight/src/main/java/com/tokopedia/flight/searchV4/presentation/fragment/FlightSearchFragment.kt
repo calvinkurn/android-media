@@ -319,6 +319,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     onResetFilterClicked()
                 }
             }
+        } else if (flightSearchViewModel.filterModel.departureArrivalTime.isNotEmpty()) {
+            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_for_return_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_for_return_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+                override fun onEmptyButtonClicked() {
+                    activity?.finish()
+                }
+            }
         } else {
             emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
             emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
@@ -387,6 +396,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             filterModel.also {
                 it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
                 it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+                it.departureArrivalTime = ""
             }
 
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport

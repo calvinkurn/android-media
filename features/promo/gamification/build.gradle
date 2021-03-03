@@ -60,6 +60,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.dialog
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.promoUiCommon)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -70,7 +73,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 

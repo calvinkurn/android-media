@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
@@ -51,6 +51,7 @@ import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -115,7 +116,6 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -164,6 +164,8 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    var isDetailChanged: Boolean = false
 
     private var somToaster: Snackbar? = null
 
@@ -235,7 +237,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         val invoiceId = invoiceUri.getQueryParameter(ATTRIBUTE_ID)
         val intent = RouteManager.getIntent(activity,
                 ApplinkConst.TOPCHAT_ASKBUYER,
-                detailResponse?.customer?.id.toString(), "",
+                detailResponse?.customer?.id.orEmpty(), "",
                 PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image).apply {
             putExtra(ApplinkConst.Chat.INVOICE_ID, invoiceId)
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
@@ -357,6 +359,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
+                    isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
                     renderDetail()
@@ -548,7 +551,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     deadline.text,
                     deadline.color,
                     listLabelInfo,
-                    orderId.toString(),
+                    orderId,
                     shipment.awbUploadUrl,
                     shipment.awbUploadProofText,
                     bookingInfo.onlineBooking.bookingCode,
@@ -645,7 +648,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                             buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
+                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                         }
                     }
                 }
@@ -813,8 +816,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
         secondaryBottomSheet = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
-            clearClose(true)
-            clearHeader(true)
+            setTitle(this@SomDetailFragment.context?.getString(R.string.som_detail_other_bottomsheet_title).orEmpty())
             setCloseClickListener { dismiss() }
         }
 
@@ -836,7 +838,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
-                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                 }
             }
         }
@@ -870,7 +872,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionUbahNoResi() {
         SomOrderEditAwbBottomSheet().apply {
-            setListener(object: SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+            setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
                 override fun onEditAwbButtonClicked(cancelNotes: String) {
                     doEditAwb(cancelNotes)
                 }
@@ -922,7 +924,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 override fun onRejectOrder(reasonBuyer: String) {
                     SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
                     val orderRejectRequest = SomRejectRequestParam(
-                            orderId = detailResponse?.orderId?.toString().orEmpty(),
+                            orderId = detailResponse?.orderId.orEmpty(),
                             rCode = "0",
                             reason = reasonBuyer
                     )
@@ -1008,7 +1010,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetProductEmpty.dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
-                orderRejectRequest.orderId = detailResponse?.orderId?.toString().orEmpty()
+                orderRejectRequest.orderId = detailResponse?.orderId.orEmpty()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
                 var strListPrd = ""
                 var indexPrd = 0
@@ -1137,7 +1139,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetCourierProblems?.dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
-                orderRejectRequest.orderId = detailResponse?.orderId?.toString().orEmpty()
+                orderRejectRequest.orderId = detailResponse?.orderId.orEmpty()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
 
                 if (tf_extra_notes?.visibility == View.VISIBLE) {
@@ -1233,7 +1235,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 bottomSheetBuyerOtherReason.dismiss()
 
                 val orderRejectRequest = SomRejectRequestParam().apply {
-                    orderId = detailResponse?.orderId?.toString().orEmpty()
+                    orderId = detailResponse?.orderId.orEmpty()
                     rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
                 }
@@ -1391,11 +1393,12 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickProduct(productId: Int) {
-        startActivity(RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId.toString()))
+    override fun onClickProduct(orderDetailId: Int) {
+        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
+        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
+        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
+        startActivity(intent)
+        SomAnalytics.clickProductNameToSnapshot(detailResponse?.statusText.orEmpty(), userSession.userId.orEmpty())
     }
 
     override fun onRefresh(view: View?) {

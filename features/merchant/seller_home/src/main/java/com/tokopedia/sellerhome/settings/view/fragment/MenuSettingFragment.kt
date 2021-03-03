@@ -32,6 +32,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpress
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
+import com.tokopedia.sellerreview.common.SellerReviewUtils
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
@@ -252,6 +253,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun reviewApplication() {
+        SellerReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext, userSession.userId)
         val uri = Uri.parse(MARKET_DETAIL_HOST + activity?.application?.packageName)
         val goToMarket = Intent(Intent.ACTION_VIEW, uri)
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)

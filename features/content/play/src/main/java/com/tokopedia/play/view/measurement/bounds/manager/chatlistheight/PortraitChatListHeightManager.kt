@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.globalVisibleRect
 import kotlinx.coroutines.async
@@ -33,7 +33,7 @@ class PortraitChatListHeightManager(
 
     override suspend fun invalidateHeightNonChatMode(
             videoOrientation: VideoOrientation,
-            videoPlayer: VideoPlayerUiModel
+            videoPlayer: PlayVideoPlayerUiModel
     ) {
         val key = getKey(videoOrientation, null, null)
         val value = chatListHeightMap[key]
@@ -51,7 +51,7 @@ class PortraitChatListHeightManager(
         } catch (e: Throwable) {}
     }
 
-    override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
+    override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
         val key = getKey(videoOrientation, maxTopPosition, hasQuickReply)
         val value = chatListHeightMap[key]
         if (value.orZero() > 0f) {

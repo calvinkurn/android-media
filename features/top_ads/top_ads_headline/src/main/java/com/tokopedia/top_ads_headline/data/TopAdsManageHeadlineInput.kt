@@ -71,7 +71,7 @@ data class TopAdsManageHeadlineInput(
                         @SerializedName("id")
                         var id: String = "0",
                         @SerializedName("priceBid")
-                        var priceBid: Int = 0,
+                        var priceBid: Long = 0,
                         @SerializedName("status")
                         var status: String = "",
                         @SerializedName("tag")
