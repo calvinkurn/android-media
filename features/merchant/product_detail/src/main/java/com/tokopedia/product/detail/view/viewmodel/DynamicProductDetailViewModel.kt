@@ -298,8 +298,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getBebasOngkirDataByProductId() : BebasOngkirImage {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        val boType = _p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
-        val image = _p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
+        val boType = p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
+        val image = p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
         return image
     }
 
