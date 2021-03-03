@@ -1,5 +1,6 @@
 package com.tokopedia.digital_checkout.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,14 +24,15 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
     override fun getItemCount(): Int = summaries.size
 
     fun addItem(item: DummyItem, position: Int) {
-        val insertPosition = if (position <= itemCount-1) position else itemCount-1
+        val insertPosition = if (position < itemCount) position else itemCount
         summaries.add(insertPosition, item)
-        notifyItemInserted(insertPosition)
+        notifyItemInserted(itemCount - 1)
     }
 
     fun removeItem(title: String) {
         val item: DummyItem = summaries.firstOrNull { it.title == title } ?: return
         val deletePosition = summaries.indexOf(item)
+        summaries.removeAt(deletePosition)
         notifyItemRemoved(deletePosition)
     }
 

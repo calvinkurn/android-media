@@ -25,15 +25,20 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
         }
+        addItem()
+        removeItem()
     }
 
     fun addItem() {
-        // TODO : change function name and add functionality
-        // mAdapter.addItem()
+//         TODO : change function name and add functionality
+//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("A", "12000"), 0)
+//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("B", "12000"), 1)
+//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("C", "12000"), 2)
+//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("D", "12000"), 5)
     }
 
     fun removeItem() {
-        // TODO : change function name and add functionality
-        // mAdapter.removeItem()
+//         TODO : change function name and add functionality
+//         mAdapter.removeItem("A")
     }
 }
