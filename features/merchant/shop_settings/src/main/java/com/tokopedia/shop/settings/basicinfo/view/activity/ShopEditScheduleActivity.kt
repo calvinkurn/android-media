@@ -157,7 +157,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
         tfShopCloseNote.textFieldInput.afterTextChanged {
             tfShopCloseNote.setError(false)
-            tfShopCloseNote.textFieldWrapper.error = null
+            tfShopCloseNote.setMessage("")
         }
     }
 
@@ -269,7 +269,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         val closeNote = tfShopCloseNote.textFieldInput.text.toString()
         if (closeNote.isEmpty()) {
             tfShopCloseNote.setError(true)
-            tfShopCloseNote.textFieldWrapper.error = getString(R.string.note_must_be_filled)
+            tfShopCloseNote.setMessage(getString(R.string.note_must_be_filled))
             return
         }
 

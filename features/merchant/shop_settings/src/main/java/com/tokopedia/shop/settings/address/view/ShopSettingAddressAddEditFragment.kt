@@ -91,14 +91,14 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        tfPostalCode?.textFieldInput?.setOnTouchListener { _, _ -> if (tfPostalCode?.textFieldInput?.isPopupShowing == true) tfPostalCode?.textFieldInput?.showDropDown()
+        tfPostalCode?.setOnTouchListener { _, _ -> if (tfPostalCode?.textFieldInput?.isPopupShowing == true) tfPostalCode?.textFieldInput?.showDropDown()
             false }
         tfPostalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !tfPostalCode?.textFieldInput?.text.toString()[0].isDigit())
             tfPostalCode?.textFieldInput?.setText("")}
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
-        tfDistrict?.textFieldInput?.setOnClickListener { gotoDistrictActivity() }
+        tfDistrict?.setOnClickListener { gotoDistrictActivity() }
         if (!isAddNew)
             initializeFillData()
     }
@@ -140,27 +140,51 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         if (TextUtils.isEmpty(tfName?.textFieldInput?.text.toString())){
             valid = false
-            tfName?.textFieldInput?.error = getString(R.string.shop_address_name_required)
+            tfName?.setError(true)
+            tfName?.setMessage(getString(R.string.shop_address_name_required))
         } else if (tfName?.textFieldInput?.text.toString().length > 128){
             valid = false
-            tfName?.textFieldInput?.error = getString(R.string.shop_address_name_max_length_error)
+            tfName?.setError(true)
+            tfName?.setMessage(getString(R.string.shop_address_name_max_length_error))
+        } else {
+            tfName?.setError(false)
+            tfName?.setMessage("")
         }
 
         if (TextUtils.isEmpty(tfAddress?.textFieldInput?.text.toString())){
             valid = false
-            tfAddress?.textFieldInput?.error = getString(R.string.shop_address_required)
+            tfAddress?.setError(true)
+            tfAddress?.setMessage(getString(R.string.shop_address_required))
+        } else {
+            tfAddress?.setError(false)
+            tfAddress?.setMessage("")
         }
+
         if (TextUtils.isEmpty(tfDistrict?.textFieldInput?.text.toString())){
             valid = false
-            tfDistrict?.textFieldInput?.error = getString(R.string.shop_district_required)
+            tfDistrict?.setError(true)
+            tfDistrict?.setMessage(getString(R.string.shop_district_required))
+        } else {
+            tfDistrict?.setError(false)
+            tfDistrict?.setMessage("")
         }
+
         if (TextUtils.isEmpty(tfPostalCode?.textFieldInput?.text.toString())){
             valid = false
-            tfPostalCode?.textFieldInput?.error = getString(R.string.shop_postal_code_required)
+            tfPostalCode?.setError(true)
+            tfPostalCode?.setMessage(getString(R.string.shop_postal_code_required))
+        } else {
+            tfPostalCode?.setError(false)
+            tfPostalCode?.setMessage("")
         }
+
         if (!TextUtils.isEmpty(tfEmail?.textFieldInput?.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(tfEmail?.textFieldInput?.text.toString()).matches()){
             valid = false
-            tfEmail?.textFieldInput?.error = getString(R.string.shop_email_invalid)
+            tfEmail?.setError(true)
+            tfEmail?.setMessage(getString(R.string.shop_email_invalid))
+        } else {
+            tfEmail?.setError(false)
+            tfEmail?.setMessage("")
         }
 
         return valid
