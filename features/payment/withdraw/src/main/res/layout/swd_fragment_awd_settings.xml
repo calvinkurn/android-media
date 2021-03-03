@@ -61,14 +61,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/swd_fg_awd_ticker" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivAWBannerClose"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/unify_space_16"
+        app:icon_name="CLOSE"
+        app:icon_color_light_enable="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="@+id/right_guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unify_bottomsheet_close" />
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDBannerTitle"
@@ -346,12 +348,11 @@
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
         app:typographyType="body_3" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerAutoWDTermsAndCond"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        android:background="@drawable/swd_top_shadow"
         app:layout_constraintBottom_toTopOf="@+id/tvAutoWDTermsAndCond"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
