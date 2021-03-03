@@ -4,7 +4,6 @@
     android:id="@+id/account_user_item_profile_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_account_backdrop"
     android:padding="@dimen/padding_dp_16"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
