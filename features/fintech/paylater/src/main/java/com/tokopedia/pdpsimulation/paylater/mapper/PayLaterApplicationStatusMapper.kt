@@ -38,4 +38,16 @@ object PayLaterApplicationStatusMapper {
             else -> PayLaterStatusEmpty
         }
     }
+
+    /*
+    *  do not show expiration date if the following conditions pass
+    * */
+    fun isExpirationDateHidden(applicationDetail: PayLaterApplicationDetail): Boolean {
+        val status = getApplicationStatusType(applicationDetail)
+        return (status is PayLaterStatusActive ||
+                status is PayLaterStatusApproved ||
+                status is PayLaterStatusSuspended ||
+                status is PayLaterStatusEmpty ||
+                applicationDetail.payLaterExpirationDate.isNullOrEmpty())
+    }
 }

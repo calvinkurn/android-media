@@ -25,6 +25,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_action_steps_bottomsheet_widget.*
+import java.net.URLEncoder
 
 class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
@@ -48,6 +49,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var partnerUsageData: PayLaterPartnerStepDetails? = null
     private var sheetTitle: String = ""
     private var actionUrl: String = ""
+    private var productUrl: String = ""
     private var partnerName: String? = ""
     private var isUsageType = false
 
@@ -65,13 +67,16 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             val payLaterItemProductData: PayLaterItemProductData? = it.getParcelable(STEPS_DATA)
+            productUrl = it.getString(PRODUCT_URL) ?: ""
             setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }
 
     private fun setDataFromArguments(payLaterItemProductData: PayLaterItemProductData?) {
         payLaterItemProductData?.let {
-            actionUrl = it.actionWebUrl ?: ""
+            if (!it.actionWebUrl.isNullOrEmpty())
+                actionUrl = "${it.actionWebUrl}?URL=$productUrl"
+
             partnerName = it.partnerName ?: ""
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(it, applicationStatusData)) {
                 is RegisterStepsPartnerType -> {
@@ -150,7 +155,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
-            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
             RouteManager.route(context, webViewAppLink)
         }
     }
@@ -159,6 +164,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
+        const val PRODUCT_URL = "productUrl"
         const val APPLICATION_STATUS_DATA = "applicationStatusData"
 
         fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {

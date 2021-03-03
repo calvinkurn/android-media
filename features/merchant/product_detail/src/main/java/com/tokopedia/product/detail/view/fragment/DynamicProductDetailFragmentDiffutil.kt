@@ -157,7 +157,6 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import timber.log.Timber
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -483,7 +482,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.hide()
@@ -749,8 +749,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
-                        ?: FtInstallmentCalculationDataResponse())
+                openInstallmentFlow(true)
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
@@ -778,7 +777,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
+                ?: ""
     }
 
     private fun getPPTitleName(): String {
@@ -1343,7 +1343,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
                 }
             })
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant() ?: false)
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
+                    ?: false)
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
@@ -1448,7 +1449,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateRecommendationData(it.data)
-                    updateUi()
+                updateUi()
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -2227,15 +2228,26 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
+    private fun openInstallmentFlow(shouldOpenNewFlow: Boolean) {
+        if (shouldOpenNewFlow) openPdpSimulation()
+        else openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
+                ?: FtInstallmentCalculationDataResponse())
+    }
+
+    private fun openPdpSimulation() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.PAYLATER)
         val bundle = Bundle().apply {
-            putInt(ProductDetailConstant.PARAM_PRICE, viewModel.getDynamicProductInfoP1?.finalPrice?: 0)
+            putString(ProductDetailConstant.PARAM_PRODUCT_URL, viewModel.getDynamicProductInfoP1?.basic?.url
+                    ?: "")
+            putInt(ProductDetailConstant.PARAM_PRICE, viewModel.getDynamicProductInfoP1?.finalPrice
+                    ?: 0)
         }
         intent.putExtras(bundle)
         startActivity(intent)
+    }
 
-        /*val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+    private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
 
@@ -2252,7 +2264,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }*/
+        }
     }
 
     /**
@@ -2730,7 +2742,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
-        openFtInstallmentBottomSheet(FtInstallmentCalculationDataResponse())
+        openInstallmentFlow(true)
 
         /*if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({

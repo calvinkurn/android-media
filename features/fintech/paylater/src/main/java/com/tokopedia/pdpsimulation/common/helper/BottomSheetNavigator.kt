@@ -13,14 +13,15 @@ import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterVe
 
 class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
-    fun <T : Any> showBottomSheet(modelClass: Class<T>, bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback) {
+    fun <T : Any> showBottomSheet(modelClass: Class<T>, bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, productUrl: String) {
         when {
             modelClass.isAssignableFrom(PayLaterSignupBottomSheet::class.java) ->
                 PayLaterSignupBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
 
-            modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) ->
+            modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) -> {
+                bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productUrl)
                 PayLaterActionStepsBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
-
+            }
             modelClass.isAssignableFrom(PayLaterVerificationBottomSheet::class.java) ->
                 PayLaterVerificationBottomSheet.show(bundle, childFragmentManager)
 

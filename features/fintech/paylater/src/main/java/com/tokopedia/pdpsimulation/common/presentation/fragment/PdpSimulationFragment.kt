@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.*
@@ -64,6 +65,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private val productPrice: Int by lazy {
         arguments?.getInt(PRODUCT_PRICE) ?: 0
+    }
+    private val productUrl: String by lazy {
+        arguments?.getString(PARAM_PRODUCT_URL) ?: ""
     }
 
     private val isCreditCardModeAvailable: Boolean = true
@@ -236,7 +240,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this)
+        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productUrl)
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {

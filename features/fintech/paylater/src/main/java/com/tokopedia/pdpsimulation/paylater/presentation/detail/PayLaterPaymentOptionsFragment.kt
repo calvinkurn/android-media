@@ -1,6 +1,10 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +20,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Compa
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterApplicationStatusMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
@@ -104,17 +109,36 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             }
 
             tvTitlePaymentPartner.text = data.partnerName
-            data.subHeader?.let {
-                if (it.isNotEmpty()) {
-                    tvSubTitlePaylaterPartner.text = it
-                    tvSubTitlePaylaterPartner.visible()
-                }
-            }
+
             applicationStatusData?.let {
+                setSubHeaderText(it, data.subHeader)
                 setLabelData(it)
-            }
+            } ?: setSubHeaderText(null, data.subHeader)
             setPartnerImage(data)
         }
+    }
+
+    /*
+    * if sub header from application state api is non empty set it otherwise
+    * set pay later product detail response in sub header text
+    * */
+    private fun setSubHeaderText(detail: PayLaterApplicationDetail?, productDetailSubHeader: String?) {
+        tvSubTitlePaylaterPartner.visible()
+        if (detail != null) {
+            if (PayLaterApplicationStatusMapper.isExpirationDateHidden(detail)) {
+                tvSubTitlePaylaterPartner.text = detail.payLaterStatusContent?.verificationContentSubHeader
+                        ?: productDetailSubHeader ?: ""
+            } else {
+                val subTitleText = detail.payLaterStatusContent?.verificationContentSubHeader ?: ""
+                val builder = SpannableStringBuilder()
+                builder.append(subTitleText)
+                builder.append(detail.payLaterExpirationDate)
+                builder.setSpan(StyleSpan(Typeface.BOLD), subTitleText.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvSubTitlePaylaterPartner.text = builder
+            }
+        } else if (!productDetailSubHeader.isNullOrEmpty()) {
+            tvSubTitlePaylaterPartner.text = productDetailSubHeader
+        } else tvSubTitlePaylaterPartner.gone()
     }
 
     private fun setPartnerImage(data: PayLaterItemProductData) {

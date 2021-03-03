@@ -15,10 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterApplicationStatusMapper
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterStatusActive
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterStatusApproved
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterStatusEmpty
+import com.tokopedia.pdpsimulation.paylater.mapper.*
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
@@ -50,7 +47,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 if (it.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
                     tvDescription.text = context.getString(R.string.pay_later_default_subtitle)
                 } else {
-                    if (checkExpirationStatus(it)) {
+                    if (PayLaterApplicationStatusMapper.isExpirationDateHidden(it)) {
                         tvDescription.text = it.payLaterStatusContent?.verificationContentSubHeader
                                 ?: context.getString(R.string.pay_later_default_subtitle)
                     } else {
@@ -65,14 +62,6 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 }
             }
         }
-    }
-
-    private fun checkExpirationStatus(applicationDetail: PayLaterApplicationDetail): Boolean {
-        val status = PayLaterApplicationStatusMapper.getApplicationStatusType(applicationDetail)
-        return (status is PayLaterStatusActive ||
-                status is PayLaterStatusApproved ||
-                status is PayLaterStatusEmpty ||
-                applicationDetail.payLaterExpirationDate.isNullOrEmpty())
     }
 
     private fun setLabel(applicationDetail: PayLaterApplicationDetail, view: View) {

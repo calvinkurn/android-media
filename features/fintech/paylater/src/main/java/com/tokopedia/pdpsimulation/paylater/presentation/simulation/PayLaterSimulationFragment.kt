@@ -46,6 +46,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private var pdpSimulationCallback: PdpSimulationCallback? = null
+    private var isSimulationSuccessFull = false
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -96,12 +97,13 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationDataLoaded(data: ArrayList<PayLaterSimulationGatewayItem>) {
+        isSimulationSuccessFull = true
         payLaterViewModel.getPayLaterProductData()
         shimmerGroup.gone()
         showSimulationData(data)
     }
 
-    private fun showSimulationData(data: java.util.ArrayList<PayLaterSimulationGatewayItem>) {
+    private fun showSimulationData(data: ArrayList<PayLaterSimulationGatewayItem>) {
         simulationDataGroup.visible()
         tickerSimulation.visible()
         tickerSimulation.setTextDescription(context?.getString(R.string.pay_later_simulation_ticker_text)
@@ -111,6 +113,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
+        isSimulationSuccessFull = false
         payLaterViewModel.getPayLaterProductData()
         shimmerGroup.gone()
         showErrorLayout(throwable)
@@ -154,9 +157,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun handleRegisterWidgetVisibility() {
-        supervisorWidget.visible()
         registerShimmer.gone()
-        dividerVertical.visible()
+        showRegisterWidgetComponents()
         if (payLaterViewModel.isPayLaterProductActive) {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.visible()
@@ -165,6 +167,11 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             paylaterDaftarWidget.gone()
             pdpSimulationCallback?.showRegisterWidget()
         }
+    }
+
+    private fun showRegisterWidgetComponents() {
+        supervisorWidget.visible()
+        if(!isSimulationSuccessFull) dividerVertical.visible()
     }
 
     /**
