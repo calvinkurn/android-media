@@ -31,7 +31,7 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                 it.district_id = "0"
             }
             return ChosenAddress(
-                    mode = if (it.address_id.toLongOrZero() != 0L) ChosenAddress.MODE_ADDRESS else ChosenAddress.MODE_SNIPPET,
+                    mode = if (it.address_id.toLongOrZero() != 0L) ChosenAddress.MODE_ADDRESS else if (it.district_id.toLongOrZero() != 0L) ChosenAddress.MODE_SNIPPET else ChosenAddress.MODE_EMPTY,
                     addressId = it.address_id,
                     districtId = it.district_id,
                     postalCode = it.postal_code,
