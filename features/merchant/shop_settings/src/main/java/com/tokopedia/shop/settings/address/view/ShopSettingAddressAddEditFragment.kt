@@ -103,8 +103,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
-        tfDistrict?.textFieldInput?.setOnClickListener {
+        tfDistrict?.textFieldInput?.setOnTouchListener { view, motionEvent ->
             gotoDistrictActivity()
+            false
         }
         if (!isAddNew)
             initializeFillData()
