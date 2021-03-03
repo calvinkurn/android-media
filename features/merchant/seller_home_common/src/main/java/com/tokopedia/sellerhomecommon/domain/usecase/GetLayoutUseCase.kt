@@ -22,7 +22,7 @@ class GetLayoutUseCase(
         mapper: LayoutMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
-        gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, true) {
+        gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

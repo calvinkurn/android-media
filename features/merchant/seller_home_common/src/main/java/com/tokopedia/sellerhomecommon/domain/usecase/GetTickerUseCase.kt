@@ -18,7 +18,7 @@ class GetTickerUseCase(
         mapper: TickerMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetTickerResponse, List<TickerItemUiModel>>(
-        gqlRepository, mapper, dispatchers, GetTickerResponse::class.java, QUERY, true) {
+        gqlRepository, mapper, dispatchers, GetTickerResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

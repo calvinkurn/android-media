@@ -19,7 +19,7 @@ class GetAnnouncementDataUseCase(
         mapper: AnnouncementMapper,
         dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetAnnouncementDataResponse, List<AnnouncementDataUiModel>>(
-        gqlRepository, mapper, dispatchers, GetAnnouncementDataResponse::class.java, QUERY, true) {
+        gqlRepository, mapper, dispatchers, GetAnnouncementDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
