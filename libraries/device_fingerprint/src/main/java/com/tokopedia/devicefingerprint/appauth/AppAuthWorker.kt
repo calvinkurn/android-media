@@ -38,10 +38,10 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         isRunning = true
         return withContext(Dispatchers.IO) {
             try {
-                val encd = Base64.GetDecoder(appContext)
-                val androidId = DeviceInfo.getAndroidId(appContext)
-                val adsId = DeviceInfo.getAdsId(appContext)
-                val uuid = DeviceInfo.getUUID(appContext)
+                val encd = Base64.GetDecoder(appContext).trim()
+                val androidId = DeviceInfo.getAndroidId(appContext).trim()
+                val adsId = DeviceInfo.getAdsId(appContext).trim()
+                val uuid = DeviceInfo.getUUID(appContext).trim()
                 val content = (adsId + androidId + uuid + encd + appContext.packageName)
                 val contentSha = content.sha256()
                 appAuthUseCase.setParams(contentSha)
