@@ -26,11 +26,15 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         val LAYOUT = R.layout.item_hierarchycal_social_proof
     }
 
+    init {
+        initRecyclerView()
+        initAdapter()
+    }
+
     private var miniSocialProofAdapter: MiniSocialProofAdapter? = null
     private var miniSocialProofRecyclerView: RecyclerView? = null
 
     override fun bind(element: ProductMiniSocialProofDataModel) {
-        initRecyclerView()
         if (!element.shouldRenderSocialProof) {
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
@@ -44,7 +48,7 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                     layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
                 hideLoading()
-                initAdapter(element)
+                setAdapterData(element)
             }
         }
     }
@@ -70,14 +74,19 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
 
     private fun initRecyclerView() {
         miniSocialProofRecyclerView = view.findViewById(R.id.mini_social_proof_recycler_view)
+        miniSocialProofRecyclerView?.setHasFixedSize(true)
     }
 
-    private fun initAdapter(element: ProductMiniSocialProofDataModel) {
-        miniSocialProofAdapter = MiniSocialProofAdapter(element.getSocialProofData().toMutableList(), listener, getComponentTrackData(element))
+    private fun initAdapter() {
+        miniSocialProofAdapter = MiniSocialProofAdapter(listener)
         miniSocialProofRecyclerView?.apply {
             adapter = miniSocialProofAdapter
             layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
         }
-        miniSocialProofAdapter?.notifyDataSetChanged()
+    }
+
+    private fun setAdapterData(element: ProductMiniSocialProofDataModel) {
+        miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
+        element.getSocialProofData().toMutableList()
     }
 }

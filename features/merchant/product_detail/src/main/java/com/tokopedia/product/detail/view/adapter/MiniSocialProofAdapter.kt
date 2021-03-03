@@ -11,15 +11,16 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofChipViewHolder
 
 class MiniSocialProofAdapter(
-        private val socialProof: MutableList<ProductMiniSocialProofItemDataModel>,
-        private val listener: DynamicProductDetailListener,
-        private val componentTrackDataModel: ComponentTrackDataModel
+        private val listener: DynamicProductDetailListener
 ) : RecyclerView.Adapter<ProductMiniSocialProofChipViewHolder>() {
 
     companion object {
         const val TYPE_TEXT = 0
         const val TYPE_CHIP = 1
     }
+
+    private var socialProof: MutableList<ProductMiniSocialProofItemDataModel> = mutableListOf()
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductMiniSocialProofChipViewHolder {
         val view = when (viewType) {
@@ -44,6 +45,12 @@ class MiniSocialProofAdapter(
     override fun getItemViewType(position: Int): Int {
         if (socialProof[position].type == ProductMiniSocialProofItemType.ProductMiniSocialProofChip) return TYPE_CHIP
         return TYPE_TEXT
+    }
+
+    fun setData(socialProofData: MutableList<ProductMiniSocialProofItemDataModel>, tracker: ComponentTrackDataModel) {
+        socialProof = socialProofData
+        componentTrackDataModel = tracker
+        notifyDataSetChanged()
     }
 
 }

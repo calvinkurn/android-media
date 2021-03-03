@@ -17,7 +17,7 @@ class ProductMiniSocialProofChipViewHolder(
         private val listener: DynamicProductDetailListener
 ) : RecyclerView.ViewHolder(view) {
 
-    fun bind(socialProof: ProductMiniSocialProofItemDataModel, componentTrackDataModel: ComponentTrackDataModel) {
+    fun bind(socialProof: ProductMiniSocialProofItemDataModel, componentTrackDataModel: ComponentTrackDataModel?) {
         with(socialProof) {
             when (type) {
                 ProductMiniSocialProofItemType.ProductMiniSocialProofChip -> {
@@ -63,7 +63,10 @@ class ProductMiniSocialProofChipViewHolder(
                 }
                 ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText -> {
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
-                    firstSocialProofTxt.text = generateSingleView(socialProof)
+                    firstSocialProofTxt.apply {
+                        text = generateSingleView(socialProof)
+                        setPadding(0,0,8,0)
+                    }
                 }
             }
         }
