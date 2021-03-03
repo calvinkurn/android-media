@@ -358,6 +358,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                 })
                 coachmark.onFinishListener = {
+                    setupContentPeekSize(collapsingHeightSize = COLLAPSING_NINE_TENTHS_OF_SCREEN)
                     localCacheHandler.putBoolean(KEY_SEARCH_MAP_COACHMARK, true)
                 }
                 coachmark.showCoachMark(coachMarkItem, null, 0)
