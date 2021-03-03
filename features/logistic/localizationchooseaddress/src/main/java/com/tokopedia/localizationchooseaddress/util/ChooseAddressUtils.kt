@@ -92,9 +92,9 @@ object ChooseAddressUtils {
         )
     }
 
-    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, addressName: String, postalCode: String) {
+    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, addressName, postalCode)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
         chooseAddressPref.setLocalCache(localData)
     }
 
