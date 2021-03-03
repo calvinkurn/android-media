@@ -66,8 +66,8 @@ class GetProfileDataUseCase @Inject constructor(
                 getShopInfoUseCase.executeOnBackground()
             }
             userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-            if(context.isABNewTokopoint()) tokopoint = (
-                    getTokopointCall.await().takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
+            if(isABNewTokopoint()) tokopoint =
+                    (getTokopointCall.await().takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
 
             // check if tokopoint = 0 or null then follow old flow (fetch saldo)
             if(!tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.isMoreThanZero()){
