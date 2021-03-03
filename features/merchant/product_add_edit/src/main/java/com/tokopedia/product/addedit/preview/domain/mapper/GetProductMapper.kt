@@ -218,7 +218,7 @@ class GetProductMapper @Inject constructor() {
      * This is needed because we need to get warehouse count for all variant and other data for headquarters only
      * @param   mainProduct Product for all warehouse
      * @param   hqProduct   Product only in headquarter
-     * @return  combine product pojo
+     * @return  combined product pojo
      */
     fun combineHeadquartersProductVariant(mainProduct: Product, hqProduct: Product): Product {
         val mainProductSequence = mainProduct.variant.products.asSequence().apply {
