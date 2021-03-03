@@ -82,14 +82,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return getBranchDefferedDeeplink();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, getApplicationContext());
+        getBranchDefferedDeeplink();
     }
 
     @Override
@@ -219,13 +212,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return getBranchDefferedDeeplink();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
+        getBranchDefferedDeeplink();
     }
 }
