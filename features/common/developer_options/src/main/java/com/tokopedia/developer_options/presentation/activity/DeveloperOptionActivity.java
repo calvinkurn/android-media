@@ -273,6 +273,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
         Button alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
+        Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
+        Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -306,6 +308,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         String HOME_VARIANT_OLD = AbTestPlatform.HOME_VARIANT_OLD;
         String HOME_VARIANT_REVAMP = AbTestPlatform.HOME_VARIANT_REVAMP;
 
+        String EXP_BALANCE_WIDGET = AbTestPlatform.BALANCE_EXP;
+        String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
+        String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
+
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -335,6 +341,22 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysOldBalanceWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_BALANCE_WIDGET, BALANCE_WIDGET_VARIANT_OLD);
+                Toast.makeText(DeveloperOptionActivity.this, "balance widget: Old", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysNewBalanceWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_BALANCE_WIDGET, BALANCE_WIDGET_VARIANT_REVAMP);
+                Toast.makeText(DeveloperOptionActivity.this, "balance widget: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 

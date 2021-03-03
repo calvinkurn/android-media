@@ -31,6 +31,9 @@ data class HomeBalanceModel (
         // State 3: Tokopoints, Coupon, Bebas Ongkir
         const val TYPE_STATE_3 = 3
 
+        // State 4: Non login, will not rendered
+        const val TYPE_STATE_4 = 4
+
         private const val HASH_CODE = 39
     }
     fun setCache(cache: Boolean) {
@@ -98,6 +101,29 @@ data class HomeBalanceModel (
         return result
     }
 
+    //call to init balance widget data
+    fun initBalanceModelByType() {
+        balanceDrawerItemModels.clear()
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_2 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[3] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_3 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+        }
+    }
+
     fun mapBalanceData(
             homeHeaderWalletAction: HomeHeaderWalletAction? = null,
             tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
@@ -112,6 +138,14 @@ data class HomeBalanceModel (
                                 drawerItemType = type,
                                 state = STATE_SUCCESS
                         )
+//                        balanceDrawerItemModels[1]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
+//                        balanceDrawerItemModels[1]?.balanceTitleTextAttribute = buildDefaultTextAttr()
+//
+//                        balanceDrawerItemModels[2]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
+//                        balanceDrawerItemModels[2]?.balanceTitleTextAttribute = buildDefaultTextAttr()
+//
+//                        balanceDrawerItemModels[3]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
+//                        balanceDrawerItemModels[3]?.balanceTitleTextAttribute = buildDefaultTextAttr()
                     }
             )
         }
@@ -154,6 +188,14 @@ data class HomeBalanceModel (
                 action = { balanceDrawerItemModels[it]?.state = state }
         )
         return this
+    }
+
+    private fun buildDefaultTextAttr(): BalanceTextAttribute {
+        return BalanceTextAttribute("#000000", "test", true)
+    }
+
+    private fun buildDefaultTagAttr(): BalanceTagAttribute {
+        return BalanceTagAttribute("test tag", "#abcdef")
     }
 
     private fun getDrawerType(type: String) = when(type) {
@@ -273,10 +315,10 @@ data class BalanceDrawerItemModel(
         val applink: String = "",
         val iconImageUrl: String = "",
         val defaultIconRes: Int? = null,
-        val balanceTitleTextAttribute: BalanceTextAttribute? = null,
-        val balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
-        val balanceTitleTagAttribute: BalanceTagAttribute? = null,
-        val balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
+        var balanceTitleTextAttribute: BalanceTextAttribute? = null,
+        var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
+        var balanceTitleTagAttribute: BalanceTagAttribute? = null,
+        var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
         val drawerItemType: Int = TYPE_TOKOPOINT,
         var state: Int = STATE_LOADING
 ) {
@@ -296,6 +338,10 @@ data class BalanceDrawerItemModel(
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
+    }
+
+    fun buildDefaultData(titleTagAttributes: BalanceTagAttribute) {
+        balanceTitleTagAttribute = titleTagAttributes
     }
 }
 

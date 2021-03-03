@@ -17,5 +17,6 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
     }
 
     override fun bind(element: HomeBalanceModel?) {
+
     }
 }
