@@ -207,7 +207,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        if (viewModel.hasFilter() || containerListener?.role == RoleType.SELLER) {
+        if (viewModel.hasFilter() || amISeller()) {
             return EmptyNotificationUiModel(viewModel.hasFilter())
         }
         return super.getEmptyDataViewModel()
@@ -605,6 +605,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun trackExpandTimelineHistory(element: NotificationUiModel) {
         analytic.trackExpandTimelineHistory(element, containerListener?.role)
+    }
+
+    override fun amISeller(): Boolean {
+        return containerListener?.role == RoleType.SELLER
     }
 
     override fun hasFilter(): Boolean {

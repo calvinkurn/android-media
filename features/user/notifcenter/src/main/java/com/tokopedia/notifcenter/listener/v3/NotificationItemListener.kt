@@ -30,4 +30,5 @@ interface NotificationItemListener {
     fun refreshPage()
     fun trackClickCtaWidget(element: NotificationUiModel)
     fun trackExpandTimelineHistory(element: NotificationUiModel)
+    fun amISeller(): Boolean
 }
