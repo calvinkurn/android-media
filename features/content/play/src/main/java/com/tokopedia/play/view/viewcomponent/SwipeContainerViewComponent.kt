@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.play.util.findCurrentFragment
 import com.tokopedia.play.view.adapter.SwipeContainerStateAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -44,6 +45,10 @@ class SwipeContainerViewComponent(
                     isLoading = true
                     listener.onShouldLoadNextPage()
                 }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == SCROLL_STATE_IDLE) listener.onSwipeNextPage()
             }
         })
     }
@@ -96,6 +101,7 @@ class SwipeContainerViewComponent(
     interface Listener {
 
         fun onShouldLoadNextPage()
+        fun onSwipeNextPage()
     }
 
     enum class ScrollDirection {
