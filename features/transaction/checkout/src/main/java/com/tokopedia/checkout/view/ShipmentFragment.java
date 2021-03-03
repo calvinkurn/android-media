@@ -2660,6 +2660,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             // If ticker not exist, add ticker to list, then update the list
             TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
             shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
+            if (rvShipment.isComputingLayout()) {
+                rvShipment.post(this::onAddTickerAnnouncementMessage);
+            } else {
+                onAddTickerAnnouncementMessage();
+            }
+        }
+    }
+
+    private void onAddTickerAnnouncementMessage() {
+        if (!rvShipment.canScrollVertically(-1)) {
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
+            rvShipment.scrollToPosition(0);
+        } else {
             shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
         }
     }
