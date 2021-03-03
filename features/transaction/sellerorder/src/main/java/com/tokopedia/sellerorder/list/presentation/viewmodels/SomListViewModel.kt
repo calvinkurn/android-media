@@ -86,6 +86,10 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
+    private val _isLoadingOrder = MutableLiveData<Boolean>()
+    val isLoadingOrder: LiveData<Boolean>
+        get() = _isLoadingOrder
+
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
@@ -185,6 +189,14 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
+    private fun updateLoadOrderStatus(job: Job) {
+        job.invokeOnCompletion {
+            launch(context = dispatcher.main) {
+                _isLoadingOrder.value = isRefreshingOrder()
+            }
+        }
+    }
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
@@ -254,7 +266,7 @@ class SomListViewModel @Inject constructor(
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
-        })
+        }).apply { updateLoadOrderStatus(this) }
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -278,7 +290,7 @@ class SomListViewModel @Inject constructor(
                     _refreshOrderResult.value = Fail(it)
                     containsFailedRefreshOrder = true
                 }
-            })
+            }).apply { updateLoadOrderStatus(this) }
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }
