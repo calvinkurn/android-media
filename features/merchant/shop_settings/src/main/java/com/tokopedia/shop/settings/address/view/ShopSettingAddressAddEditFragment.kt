@@ -91,14 +91,18 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        tfPostalCode?.setOnTouchListener { _, _ -> if (tfPostalCode?.textFieldInput?.isPopupShowing == true) tfPostalCode?.textFieldInput?.showDropDown()
-            false }
+        tfPostalCode?.textFieldInput?.setOnClickListener {
+            if (tfPostalCode?.textFieldInput?.isPopupShowing == true)
+                tfPostalCode?.textFieldInput?.showDropDown()
+        }
         tfPostalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !tfPostalCode?.textFieldInput?.text.toString()[0].isDigit())
             tfPostalCode?.textFieldInput?.setText("")}
 
         tfPostalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
-        tfDistrict?.setOnClickListener { gotoDistrictActivity() }
+        tfDistrict?.textFieldWrapper?.setOnClickListener {
+            gotoDistrictActivity()
+        }
         if (!isAddNew)
             initializeFillData()
     }
