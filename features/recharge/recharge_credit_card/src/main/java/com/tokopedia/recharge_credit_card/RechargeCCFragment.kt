@@ -154,7 +154,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
         })
 
-        rechargeCCViewModel.tickers.observe(this, Observer {
+        rechargeCCViewModel.tickers.observe(viewLifecycleOwner, Observer {
             renderTicker(it)
             performanceMonitoring.stopTrace()
         })
