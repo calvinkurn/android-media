@@ -1,6 +1,9 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.*
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -11,10 +14,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.util.AnimationUtil
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +30,7 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -50,6 +56,8 @@ class ChatItemListViewHolder(
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
     private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
     private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    private val typingImage: ImageUnify = itemView.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
+    private val typingText: Typography = itemView.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
 
     private val menu = LongClickMenu()
 
@@ -269,12 +277,32 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTypingState() {
-        message.setText(R.string.is_typing)
-        message.setTypeface(null, ITALIC)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        typingImage.show()
+        animateTyping(true, typingImage.drawable)
+        setMessageTyping()
+    }
+
+    private fun setMessageTyping() {
+        message.hide()
+        typingText.show()
+    }
+
+    private fun animateTyping(start: Boolean, drawable: Drawable) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) {
+            AnimationUtil.animateTypingImage(start, drawable)
+        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) { //lollipop device (API 21 & 22)
+            val animatedVector = AnimatedVectorDrawableCompat.create(itemView.context, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            animatedVector?.let {
+                typingImage.setImageDrawable(animatedVector)
+                AnimationUtil.animateTypingImage(start, it)
+            }
+        } else if(drawable is AnimatedVectorDrawableCompat) {
+            AnimationUtil.animateTypingImage(start, drawable)
+        }
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
+        hideTyping()
         val spanText = SpannableStringBuilder()
         val lastMsg = MethodChecker.fromHtml(chat.lastReplyMessage)
         if (chat.label.isNotEmpty()) {
@@ -284,8 +312,16 @@ class ChatItemListViewHolder(
         spanText.append(lastMsg)
         message.text = spanText
         message.setLines(2)
+        message.maxLines = 2
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+    }
+
+    private fun hideTyping() {
+        message.show()
+        typingImage.hide()
+        typingText.hide()
+        animateTyping(false, typingImage.drawable)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

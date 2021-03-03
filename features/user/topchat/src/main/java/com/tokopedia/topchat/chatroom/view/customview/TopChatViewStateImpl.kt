@@ -641,4 +641,6 @@ class TopChatViewStateImpl constructor(
         replyEditText.requestFocus()
     }
 
+    override fun getPageType() = TYPE_TOPCHAT
+
 }

@@ -2,6 +2,9 @@ package com.tokopedia.chat_common.view
 
 import android.content.res.Resources
 import android.graphics.Rect
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -11,6 +14,7 @@ import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
@@ -21,9 +25,14 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.AnimationUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -51,6 +60,9 @@ open class BaseChatViewStateImpl(
     protected var mainLoading: ProgressBar? = null
     protected var attachmentMenu: AttachmentMenuRecyclerView? = null
     protected var attachmentMenuContainer: FrameLayout? = null
+    private var userStatus: Typography? = null
+    private var typingImage: ImageUnify? = null
+    private var typingText: Typography? = null
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -70,6 +82,9 @@ open class BaseChatViewStateImpl(
         chatMenuButton = view.findViewById(getChatMenuId())
         attachmentMenu = view.findViewById(getAttachmentMenuId())
         attachmentMenuContainer = view.findViewById(getAttachmentMenuContainer())
+        userStatus = toolbar.findViewById(R.id.subtitle)
+        typingImage = toolbar.findViewById(R.id.iv_typing)
+        typingText = toolbar.findViewById(R.id.tv_typing)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -157,12 +172,58 @@ open class BaseChatViewStateImpl(
     open fun getOnlineIndicatorResource() = R.drawable.status_indicator_online
 
     override fun onShowStartTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
+        when(getPageType()) {
+            TYPE_CHATBOT -> {
+                getAdapter().showTyping()
+                scrollDownWhenInBottom()
+            }
+            TYPE_TOPCHAT -> {
+                showTypingToolbar()
+            }
+        }
+    }
+
+    private fun showTypingToolbar() {
+        userStatus?.hide()
+        typingImage?.show()
+        typingText?.show()
+        typingImage?.let {
+            animateTyping(true, it.drawable)
+        }
     }
 
     override fun onShowStopTyping() {
-        getAdapter().removeTyping()
+        when(getPageType()) {
+            TYPE_CHATBOT -> {
+                getAdapter().removeTyping()
+            }
+            TYPE_TOPCHAT -> {
+                hideTypingToolbar()
+            }
+        }
+    }
+
+    private fun hideTypingToolbar() {
+        userStatus?.show()
+        typingImage?.hide()
+        typingText?.hide()
+        typingImage?.let {
+            animateTyping(false, it.drawable)
+        }
+    }
+
+    private fun animateTyping(start: Boolean, drawable: Drawable) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) {
+            AnimationUtil.animateTypingImage(start, drawable)
+        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) { //lollipop device (API 21 & 22)
+            val animatedVector = AnimatedVectorDrawableCompat.create(view.context, R.drawable.topchat_typing_motion)
+            animatedVector?.let {
+                typingImage?.setImageDrawable(animatedVector)
+                AnimationUtil.animateTypingImage(start, it)
+            }
+        } else if(drawable is AnimatedVectorDrawableCompat) {
+            AnimationUtil.animateTypingImage(start, drawable)
+        }
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -358,5 +419,11 @@ open class BaseChatViewStateImpl(
     open fun getAttachmentMenuId() = R.id.rv_attachment_menu
     open fun getRootViewId() = R.id.main
     open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
+    open fun getPageType(): Int = TYPE_CHATBOT
+
+    companion object {
+        const val TYPE_CHATBOT = 0
+        const val TYPE_TOPCHAT = 1
+    }
 
 }

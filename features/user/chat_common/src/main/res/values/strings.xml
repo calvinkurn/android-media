@@ -61,4 +61,6 @@
     <string name="action_buy">Beli</string>
     <string name="action_resume_on_browser">Lanjut di Browser</string>
 
+    <string name="is_typing">"lagi ngetik"</string>
+
 </resources>
