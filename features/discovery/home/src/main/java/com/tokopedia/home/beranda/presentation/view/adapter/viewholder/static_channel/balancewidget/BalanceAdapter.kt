@@ -78,7 +78,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_tokopoint)
             val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
             val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
-            val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
             tokopointProgressBarLayout.gone()
             tokopointActionContainer.gone()
             when (element?.state) {

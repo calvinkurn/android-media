@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_balance"
-    android:layout_margin="@dimen/dp_8"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_weight="3.2"
     android:clickable="true"
     android:focusable="true"
+    android:layout_centerInParent="true"
     android:background="@drawable/ripple_tokopoint"
     android:orientation="horizontal">
 
@@ -22,8 +21,8 @@
     <include
         layout="@layout/layout_item_shimmering_ovo"
         android:id="@+id/progress_bar_tokopoint_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_centerVertical="true"
@@ -33,12 +32,13 @@
         android:layout_toRightOf="@+id/iv_logo_tokopoint"
         android:layout_toEndOf="@+id/iv_logo_tokopoint"
         android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:gravity="center|left">
 
         <TextView
             android:id="@+id/tv_balance_tokopoint"
@@ -62,18 +62,5 @@
             android:textColor="@color/Unify_G500"
             android:textSize="@dimen/sp_10"
             tools:text="Kupon Baru" />
-
-        <TextView
-            android:id="@+id/text_coupon_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/sp_4"
-            android:lines="1"
-            android:singleLine="true"
-            android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/sp_10"
-            tools:text="900000000000000000 Poin" />
     </LinearLayout>
 </RelativeLayout>
