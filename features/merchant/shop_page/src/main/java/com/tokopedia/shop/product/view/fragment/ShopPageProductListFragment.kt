@@ -482,50 +482,51 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            REQUEST_CODE_ETALASE -> if (resultCode == Activity.RESULT_OK && data != null) {
-                if (shopProductAdapter.isLoading) {
-                    return
-                }
+            REQUEST_CODE_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (shopProductAdapter.isLoading) {
+                        return
+                    }
 
-                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
-                val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+                    val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                    val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
-                shopPageTracking?.clickEtalaseChip(
-                        isOwner,
-                        etalaseName,
-                        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-                )
-                shopPageTracking?.clickMoreMenuChip(
-                        isOwner,
-                        etalaseName,
-                        customDimensionShopPage
-                )
-                if (shopPageTracking != null) {
-                    shopPageTracking!!.clickMenuFromMoreMenu(
-                            viewModel.isMyShop(shopId),
+                    shopPageTracking?.clickEtalaseChip(
+                            isOwner,
                             etalaseName,
                             CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
                     )
+                    shopPageTracking?.clickMoreMenuChip(
+                            isOwner,
+                            etalaseName,
+                            customDimensionShopPage
+                    )
+                    if (shopPageTracking != null) {
+                        shopPageTracking!!.clickMenuFromMoreMenu(
+                                viewModel.isMyShop(shopId),
+                                etalaseName,
+                                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+                        )
+                    }
+                    val intent = ShopProductListResultActivity.createIntent(
+                            activity,
+                            shopId,
+                            "",
+                            etalaseId,
+                            attribution,
+                            "",
+                            shopRef
+                    )
+                    intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                    startActivity(intent)
                 }
-                val intent = ShopProductListResultActivity.createIntent(
-                        activity,
-                        shopId,
-                        "",
-                        etalaseId,
-                        attribution,
-                        "",
-                        shopRef
-                )
-                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
-                startActivity(intent)
             }
             REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW -> if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(urlNeedTobBeProceed)) {
                 promoClicked(urlNeedTobBeProceed)
             }
             REQUEST_CODE_LOGIN_USE_VOUCHER, REQUEST_CODE_MERCHANT_VOUCHER, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    viewModel.clearMerchantVoucherCache()
                     loadMerchantVoucher()
                 }
             }
@@ -706,7 +707,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
         return ShopProductAdapterTypeFactory(
-                this,
                 this,
                 this,
                 this,
@@ -1240,11 +1240,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherUiModel) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
-        data.shopMerchantVoucherViewModelArrayList?.let {
-            if (it.isNotEmpty())
-                shopProductAdapter.setMerchantVoucherDataModel(data)
-        }
+        shopPageTracking?.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel.userId)
+        shopProductAdapter.setMerchantVoucherDataModel(data)
     }
 
     private fun onSuccessGetMembershipData(data: MembershipStampProgressUiModel) {
