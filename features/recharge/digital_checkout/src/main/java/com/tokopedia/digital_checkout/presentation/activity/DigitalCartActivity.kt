@@ -26,8 +26,6 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
 import com.tokopedia.user.session.UserSession
-import java.lang.Boolean
-
 
 /**
  * @author by jessica on 07/01/21
@@ -84,12 +82,14 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         val subParams = DigitalSubscriptionParams()
         val showSubscribePopUpArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP)
         val autoSubscribeArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE)
-        if (showSubscribePopUpArg != null) {
-            subParams.showSubscribePopUp = Boolean.parseBoolean(showSubscribePopUpArg)
+
+        showSubscribePopUpArg?.let {
+            subParams.showSubscribePopUp = it.toBoolean()
         }
-        if (autoSubscribeArg != null) {
-            subParams.autoSubscribe = Boolean.parseBoolean(autoSubscribeArg)
+        autoSubscribeArg?.let {
+            subParams.autoSubscribe = autoSubscribeArg.toBoolean()
         }
+
         return subParams
     }
 
@@ -105,7 +105,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         return DigitalCheckoutComponentInstance.getDigitalCheckoutComponent(application)
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): kotlin.Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
             KeyboardHandler.hideSoftKeyboard(this)
             currentFocus?.clearFocus()

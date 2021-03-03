@@ -14,7 +14,7 @@ data class RechargeGetCart(
 
         @SerializedName("user_id")
         @Expose
-        val userId: Long = 0,
+        val userId: String = "",
 
         @SerializedName("client_number")
         @Expose

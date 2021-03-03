@@ -125,7 +125,7 @@ class DigitalCartActivityTest {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
 
         Thread.sleep(1000)
     }

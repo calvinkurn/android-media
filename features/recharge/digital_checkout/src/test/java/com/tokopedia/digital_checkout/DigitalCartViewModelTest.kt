@@ -112,28 +112,28 @@ class DigitalCartViewModelTest {
         // show mapped cart data
         val mappedCartInfoData = digitalCartViewModel.cartDigitalInfoData.value
         assert(mappedCartInfoData != null)
-        assert(mappedCartInfoData!!.mainInfo?.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
-        assert(mappedCartInfoData.mainInfo?.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.label
+        assert(mappedCartInfoData!!.mainInfo.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
+        assert(mappedCartInfoData.mainInfo.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
                 == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.value
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
                 == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
-        assert(mappedCartInfoData.attributes?.categoryName == dummyResponse.categoryName)
-        assert(mappedCartInfoData.attributes?.operatorName == dummyResponse.operatorName)
-        assert(mappedCartInfoData.attributes?.clientNumber == dummyResponse.clientNumber)
-        assert(mappedCartInfoData.attributes?.icon == dummyResponse.icon)
-        assert(mappedCartInfoData.attributes?.isInstantCheckout == dummyResponse.isInstantCheckout)
-        assert(mappedCartInfoData.attributes?.price == dummyResponse.priceText)
-        assert(mappedCartInfoData.attributes?.pricePlain == dummyResponse.price)
-        assert(mappedCartInfoData.attributes?.isEnableVoucher == dummyResponse.enableVoucher)
-        assert(mappedCartInfoData.attributes?.isCouponActive == 1)
-        assert(mappedCartInfoData.attributes?.voucherAutoCode == dummyResponse.voucher)
+        assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
+        assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
+        assert(mappedCartInfoData.attributes.clientNumber == dummyResponse.clientNumber)
+        assert(mappedCartInfoData.attributes.icon == dummyResponse.icon)
+        assert(mappedCartInfoData.attributes.isInstantCheckout == dummyResponse.isInstantCheckout)
+        assert(mappedCartInfoData.attributes.price == dummyResponse.priceText)
+        assert(mappedCartInfoData.attributes.pricePlain == dummyResponse.price)
+        assert(mappedCartInfoData.attributes.isEnableVoucher == dummyResponse.enableVoucher)
+        assert(mappedCartInfoData.attributes.isCouponActive == 1)
+        assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
         assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wording.headerTitle)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
+        assert(mappedCartInfoData.crossSellingConfig.headerTitle == dummyResponse.crossSellingConfig.wording.headerTitle)
+        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.fintechAmount ==
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
@@ -210,23 +210,23 @@ class DigitalCartViewModelTest {
         // show mapped cart data
         val mappedCartInfoData = digitalCartViewModel.cartDigitalInfoData.value
         assert(mappedCartInfoData != null)
-        assert(mappedCartInfoData!!.mainInfo?.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
-        assert(mappedCartInfoData.mainInfo?.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.label
+        assert(mappedCartInfoData!!.mainInfo.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
+        assert(mappedCartInfoData.mainInfo.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
                 == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.value
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
                 == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
-        assert(mappedCartInfoData.attributes?.categoryName == dummyResponse.categoryName)
-        assert(mappedCartInfoData.attributes?.operatorName == dummyResponse.operatorName)
-        assert(mappedCartInfoData.attributes?.clientNumber == dummyResponse.clientNumber)
-        assert(mappedCartInfoData.attributes?.icon == dummyResponse.icon)
-        assert(mappedCartInfoData.attributes?.isInstantCheckout == dummyResponse.isInstantCheckout)
-        assert(mappedCartInfoData.attributes?.price == dummyResponse.priceText)
-        assert(mappedCartInfoData.attributes?.pricePlain == dummyResponse.price)
-        assert(mappedCartInfoData.attributes?.isEnableVoucher == dummyResponse.enableVoucher)
-        assert(mappedCartInfoData.attributes?.isCouponActive == 1)
-        assert(mappedCartInfoData.attributes?.voucherAutoCode == dummyResponse.voucher)
+        assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
+        assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
+        assert(mappedCartInfoData.attributes.clientNumber == dummyResponse.clientNumber)
+        assert(mappedCartInfoData.attributes.icon == dummyResponse.icon)
+        assert(mappedCartInfoData.attributes.isInstantCheckout == dummyResponse.isInstantCheckout)
+        assert(mappedCartInfoData.attributes.price == dummyResponse.priceText)
+        assert(mappedCartInfoData.attributes.pricePlain == dummyResponse.price)
+        assert(mappedCartInfoData.attributes.isEnableVoucher == dummyResponse.enableVoucher)
+        assert(mappedCartInfoData.attributes.isCouponActive == 1)
+        assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
         assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
         assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
@@ -395,33 +395,33 @@ class DigitalCartViewModelTest {
         // show mapped cart data
         val mappedCartInfoData = digitalCartViewModel.cartDigitalInfoData.value
         assert(mappedCartInfoData != null)
-        assert(mappedCartInfoData!!.mainInfo?.getOrNull(0)?.label
+        assert(mappedCartInfoData!!.mainInfo.getOrNull(0)?.label
                 == dummyResponse.attributes?.mainInfo?.getOrNull(0)?.label)
-        assert(mappedCartInfoData.mainInfo?.getOrNull(0)?.value
+        assert(mappedCartInfoData.mainInfo.getOrNull(0)?.value
                 == dummyResponse.attributes?.mainInfo?.getOrNull(0)?.value)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.title
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.title
                 == dummyResponse.attributes?.additionalInfo?.getOrNull(0)?.title)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.label
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
                 == dummyResponse.attributes?.additionalInfo?.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(mappedCartInfoData.additionalInfos?.getOrNull(0)?.items?.getOrNull(0)?.value
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
                 == dummyResponse.attributes?.additionalInfo?.getOrNull(0)?.detail?.getOrNull(0)?.value)
-        assert(mappedCartInfoData.attributes?.categoryName == dummyResponse.attributes?.categoryName)
-        assert(mappedCartInfoData.attributes?.operatorName == dummyResponse.attributes?.operatorName)
-        assert(mappedCartInfoData.attributes?.clientNumber == dummyResponse.attributes?.clientNumber)
-        assert(mappedCartInfoData.attributes?.icon == dummyResponse.attributes?.icon)
-        assert(mappedCartInfoData.attributes?.isInstantCheckout == dummyResponse.attributes?.isInstantCheckout)
-        assert(mappedCartInfoData.attributes?.price == dummyResponse.attributes?.price)
-        assert(mappedCartInfoData.attributes?.pricePlain == dummyResponse.attributes?.pricePlain)
-        assert(mappedCartInfoData.attributes?.isEnableVoucher == dummyResponse.attributes?.isEnableVoucher)
-        assert(mappedCartInfoData.attributes?.isCouponActive == 1)
-        assert(mappedCartInfoData.attributes?.voucherAutoCode == dummyResponse?.attributes?.voucherAutoCode)
+        assert(mappedCartInfoData.attributes.categoryName == dummyResponse.attributes?.categoryName)
+        assert(mappedCartInfoData.attributes.operatorName == dummyResponse.attributes?.operatorName)
+        assert(mappedCartInfoData.attributes.clientNumber == dummyResponse.attributes?.clientNumber)
+        assert(mappedCartInfoData.attributes.icon == dummyResponse.attributes?.icon ?: "")
+        assert(mappedCartInfoData.attributes.isInstantCheckout == dummyResponse.attributes?.isInstantCheckout)
+        assert(mappedCartInfoData.attributes.price == dummyResponse.attributes?.price)
+        assert(mappedCartInfoData.attributes.pricePlain == dummyResponse.attributes?.pricePlain)
+        assert(mappedCartInfoData.attributes.isEnableVoucher == dummyResponse.attributes?.isEnableVoucher)
+        assert(mappedCartInfoData.attributes.isCouponActive == 1)
+        assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.attributes?.voucherAutoCode ?: "")
         assert(!mappedCartInfoData.isNeedOtp)
         assert(mappedCartInfoData.crossSellingType == dummyResponse.attributes?.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle
+        assert(mappedCartInfoData.crossSellingConfig.headerTitle
                 == dummyResponse.attributes?.crossSellingConfig?.wordingIsSubscribed?.headerTitle)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType
+        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.transactionType
                 == dummyResponse.attributes?.fintechProduct?.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
+        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.fintechAmount ==
                 dummyResponse.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.attributes?.isInstantCheckout)
@@ -565,7 +565,7 @@ class DigitalCartViewModelTest {
         // given
         val dummyResponse = ResponseCheckout(
                 type = "null",
-                id = 123,
+                id = "123",
                 attributes = getAttributesCheckout()
         )
         val dataResponse = DataResponse<ResponseCheckout>()
@@ -586,11 +586,11 @@ class DigitalCartViewModelTest {
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
         assert(paymentPassDataValue != null)
-        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.attributes?.callbackUrlFailed)
-        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.attributes?.callbackUrlSuccess)
-        assert(paymentPassDataValue.redirectUrl == dummyResponse.attributes?.redirectUrl)
-        assert(paymentPassDataValue.queryString == dummyResponse.attributes?.queryString)
-        assert(paymentPassDataValue.transactionId == dummyResponse.attributes?.parameter?.transactionId)
+        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.attributes.callbackUrlFailed)
+        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.attributes.callbackUrlSuccess)
+        assert(paymentPassDataValue.redirectUrl == dummyResponse.attributes.redirectUrl)
+        assert(paymentPassDataValue.queryString == dummyResponse.attributes.queryString)
+        assert(paymentPassDataValue.transactionId == dummyResponse.attributes.parameter?.transactionId)
     }
 
     @Test
@@ -768,7 +768,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam.let {
             assert(it.cartId == cartInfoData.id)
             assert(it.accessToken == accessTokenDummy)
-            assert(it.walletRefreshToken?.isEmpty() ?: false)
+            assert(it.walletRefreshToken.isEmpty())
             assert(it.ipAddress == DeviceUtil.localIpAddress)
             assert(it.relationId == cartInfoData.id)
             assert(it.relationType == cartInfoData.type)

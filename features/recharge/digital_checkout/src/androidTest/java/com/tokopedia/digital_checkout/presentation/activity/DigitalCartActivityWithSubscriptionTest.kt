@@ -166,7 +166,7 @@ class DigitalCartActivityWithSubscriptionTest {
         Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click()).perform(ViewActions.typeText("10000"),
                 ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 10.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 10.500")))
     }
 
     private fun validateOnClickPromo() {

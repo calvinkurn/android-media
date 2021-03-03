@@ -1,11 +1,9 @@
 package com.tokopedia.digital_checkout.usecase
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -84,14 +82,19 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val repo
 
             val requestBodyAtcDigital = RequestBodyAtcDigital()
             val fieldList: MutableList<Attributes.Field> = ArrayList()
-            if (!digitalCheckoutPassData.clientNumber.isNullOrEmpty()) {
-                val field: Attributes.Field = Attributes.Field(PARAM_CLIENT_NUMBER, digitalCheckoutPassData.clientNumber)
+
+            digitalCheckoutPassData.clientNumber?.let { clientNumber ->
+                val field: Attributes.Field = Attributes.Field(PARAM_CLIENT_NUMBER, clientNumber)
                 fieldList.add(field)
             }
-            if (!digitalCheckoutPassData.zoneId.isNullOrEmpty()) {
-                val field: Attributes.Field = Attributes.Field(PARAM_ZONE_ID, digitalCheckoutPassData.zoneId)
-                fieldList.add(field)
+
+            digitalCheckoutPassData.zoneId?.let { zoneId ->
+                if (zoneId.isNotEmpty()) {
+                    val field: Attributes.Field = Attributes.Field(PARAM_ZONE_ID, zoneId)
+                    fieldList.add(field)
+                }
             }
+
             for ((key, value) in digitalCheckoutPassData.fields ?: hashMapOf()) {
                 val field: Attributes.Field = Attributes.Field(key, value)
                 fieldList.add(field)
@@ -118,12 +121,10 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val repo
             attributes.isThankyouNativeNew = true
             // Handle subscription params
             val subParams: DigitalSubscriptionParams = digitalSubscriptionParams
-            if (subParams.showSubscribePopUp != null) {
-                attributes.showSubscribePopUp = subParams.showSubscribePopUp
-            }
-            if (subParams.autoSubscribe != null) {
-                attributes.autoSubscribe = subParams.autoSubscribe
-            }
+
+            subParams.showSubscribePopUp?.let { attributes.showSubscribePopUp = it }
+            subParams.autoSubscribe?.let { attributes.autoSubscribe = it }
+
             requestBodyAtcDigital.type = PARAM_ADD_TO_CART
             requestBodyAtcDigital.attributes = attributes
             return requestBodyAtcDigital

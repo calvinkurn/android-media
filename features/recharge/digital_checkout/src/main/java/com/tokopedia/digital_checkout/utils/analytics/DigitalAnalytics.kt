@@ -97,15 +97,15 @@ class DigitalAnalytics {
     }
 
     fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData) {
-        val productName: String = cartDigitalInfoData.attributes?.operatorName?.toLowerCase() + " " +
-                cartDigitalInfoData.attributes?.price?.toLowerCase()
+        val productName: String = cartDigitalInfoData.attributes.operatorName.toLowerCase() + " " +
+                cartDigitalInfoData.attributes.price.toLowerCase()
 
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName))
 
         val label = String.format("%s - %s",
-                cartDigitalInfoData.attributes?.categoryName?.toLowerCase(),
-                cartDigitalInfoData.attributes?.operatorName?.toLowerCase()
+                cartDigitalInfoData.attributes.categoryName.toLowerCase(),
+                cartDigitalInfoData.attributes.operatorName.toLowerCase()
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -123,15 +123,15 @@ class DigitalAnalytics {
     }
 
     fun eventProceedToPayment(cartDataInfo: CartDigitalInfoData, voucherCode: String) {
-        val productName: String = cartDataInfo.attributes?.operatorName?.toLowerCase() + " " +
-                cartDataInfo.attributes?.price?.toLowerCase()
+        val productName: String = cartDataInfo.attributes.operatorName.toLowerCase() + " " +
+                cartDataInfo.attributes.price.toLowerCase()
 
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName))
 
         var label = String.format("%s - %s - ",
-                cartDataInfo.attributes?.categoryName?.toLowerCase(),
-                cartDataInfo.attributes?.operatorName?.toLowerCase())
+                cartDataInfo.attributes.categoryName.toLowerCase(),
+                cartDataInfo.attributes.operatorName.toLowerCase())
         label += if (TextUtils.isEmpty(voucherCode)) {
             DigitalCheckoutTrackingConst.Value.NO_PROMO
         } else {
@@ -159,18 +159,18 @@ class DigitalAnalytics {
     private fun constructProductEnhanceEcommerce(cartDigitalInfoData: CartDigitalInfoData,
                                                  productName: String): Map<String?, Any?> {
         var productId = DigitalCheckoutTrackingConst.Value.NONE
-        cartDigitalInfoData.relationProduct?.id?.let {
+        cartDigitalInfoData.relationProduct.id.let {
             if (it.isNotEmpty()) productId = it
         }
         return DataLayer.mapOf(
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, productName,
                 DigitalCheckoutTrackingConst.Product.KEY_ID, productId,
-                DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes?.pricePlain.toString(),
-                DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes?.operatorName?.toLowerCase(),
-                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes?.categoryName?.toLowerCase(),
+                DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes.pricePlain.toString(),
+                DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes.operatorName?.toLowerCase(),
+                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes.categoryName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_VARIANT, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_QUANTITY, "1",
-                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, cartDigitalInfoData.relationCategory?.id,
+                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, cartDigitalInfoData.relationCategory.id,
                 DigitalCheckoutTrackingConst.Product.KEY_CART_ID, cartDigitalInfoData.id,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,

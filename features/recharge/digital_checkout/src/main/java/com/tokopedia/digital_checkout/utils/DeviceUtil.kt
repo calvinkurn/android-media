@@ -83,8 +83,8 @@ object DeviceUtil {
 
     fun getAppsFlyerIdentifierParam(afUniqueId: String?, adsId: String?): RequestBodyCheckout.RequestBodyAppsFlyer {
         val requestBodyAppsFlyer: RequestBodyCheckout.RequestBodyAppsFlyer = RequestBodyCheckout.RequestBodyAppsFlyer()
-        requestBodyAppsFlyer.appsflyerId = afUniqueId
-        requestBodyAppsFlyer.deviceId = adsId
+        requestBodyAppsFlyer.appsflyerId = afUniqueId ?: ""
+        requestBodyAppsFlyer.deviceId = adsId ?: ""
         return requestBodyAppsFlyer
     }
 }
