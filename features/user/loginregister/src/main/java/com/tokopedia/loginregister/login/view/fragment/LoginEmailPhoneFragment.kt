@@ -749,6 +749,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
+
+        /*
+        * broadcast through AIDL service if user have login
+        * (send the flag into another app).
+        * */
+        PushNotificationApi.bindService(requireContext())
     }
 
     override fun setLoginSuccessSellerApp() {
@@ -1583,12 +1589,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if(isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
-
-                /*
-                * broadcast through AIDL service if user have login
-                * (send the flag into another app).
-                * */
-                PushNotificationApi.bindService(it.applicationContext)
             }
         }
     }
