@@ -133,6 +133,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <include
+            android:id="@+id/layout_kyc_benefit"
+            layout="@layout/layout_kyc_benefit"
+            android:visibility="gone"/>
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"

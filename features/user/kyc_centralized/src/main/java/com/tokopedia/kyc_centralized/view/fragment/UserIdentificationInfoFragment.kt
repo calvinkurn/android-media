@@ -61,6 +61,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var statusCode = 0
     private var projectId = -1
     private var callback: String? = null
+    private var kycBenefitLayout: View? = null
+    private var kycBenefitButton: UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,6 +110,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         reasonTwo = parentView.findViewById(R.id.txt_reason_2)
         iconOne = parentView.findViewById(R.id.ic_x_1)
         iconTwo = parentView.findViewById(R.id.ic_x_2)
+        kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
+        kycBenefitButton = parentView.findViewById(R.id.kyc_benefit_btn)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -150,6 +154,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun onSuccessGetUserProjectInfo(status: Int, reasons: List<String>) {
         hideLoading()
+        hideKycBenefit()
         hideRejectedReason()
         statusCode = status
         when (status) {
@@ -192,13 +197,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusNotVerified() {
-        ImageHandler.LoadImage(image, KycUrl.ICON_NOT_VERIFIED)
-        title?.setText(R.string.kyc_intro_title)
-        text?.setText(R.string.kyc_intro_text)
-        button?.isEnabled = true
-        button?.setText(R.string.kyc_intro_button)
-        button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
+        mainView?.visibility = View.GONE
+        kycBenefitLayout?.visibility = View.VISIBLE
+        kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
         analytics?.eventViewOnKYCOnBoarding()
     }
 
@@ -272,6 +273,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         iconOne?.visibility = View.GONE
         reasonTwo?.visibility = View.GONE
         iconTwo?.visibility = View.GONE
+    }
+
+    private fun hideKycBenefit() {
+        kycBenefitLayout?.visibility = View.GONE
+        kycBenefitLayout?.visibility = View.GONE
+        mainView?.visibility = View.VISIBLE
     }
 
     private fun showStatusBlacklist() {
