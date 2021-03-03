@@ -26,7 +26,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.RestrictTo;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -38,6 +37,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -56,11 +56,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceUtil;
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
-import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -100,7 +99,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.applink.RouteManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -192,6 +191,7 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+    private boolean useNewInbox = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -224,6 +224,7 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
+        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -240,7 +241,14 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
-        SubmitDeviceUtil.scheduleWorker(this, false);
+        SubmitDeviceWorker.Companion.scheduleWorker(this, false);
+        DataVisorWorker.Companion.scheduleWorker(this, false);
+    }
+
+    private void initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isRollanceTestingUsingNavigationRevamp();
     }
 
     private void installDFonBackground() {
@@ -717,9 +725,13 @@ public class MainParentActivity extends BaseActivity implements
                 return;
 
             if (fragment instanceof AllNotificationListener && notification != null) {
+                int totalInbox = notification.getTotalInbox();
+                if (useNewInbox) {
+                    totalInbox = notification.totalNewInbox;
+                }
                 ((AllNotificationListener) fragment).onNotificationChanged(
                         notification.getTotalNotif(),
-                        notification.getTotalInbox(),
+                        totalInbox,
                         notification.getTotalCart());
             }
 

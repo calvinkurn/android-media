@@ -177,7 +177,11 @@ class HotelHomepageActivityTest {
         cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
                 Calendar.DATE, 2)
         val tomorrowDate = cal[Calendar.DATE]
-        onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 1)).perform(click())
+        try {
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+        } catch (e: Exception) {
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 1)).perform(click())
+        }
     }
 
     @After

@@ -79,11 +79,16 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()
-        productAdapter?.submitList(visitables)
+
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
-        productAdapter?.submitList(visitables)
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun showLoading() {
@@ -149,7 +154,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private fun setupRecyclerView(view: View) {
         rvPdp = view.findViewById(R.id.rv_pdp)
-
+        rvPdp?.isNestedScrollingEnabled = false
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
         showLoading()

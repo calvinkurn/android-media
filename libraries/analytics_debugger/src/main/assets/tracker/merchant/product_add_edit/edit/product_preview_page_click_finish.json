@@ -1,0 +1,13 @@
+{
+  "readme": "click finish on product preview page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click finish on stepper page",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}"
+    }
+  ]
+}

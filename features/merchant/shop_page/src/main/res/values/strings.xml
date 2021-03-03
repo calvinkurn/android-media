@@ -27,6 +27,17 @@
     <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari.</string>
     <string name="new_shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari. <![CDATA[<a href="">%1$s</a>]]></string>
 
+    <string name="shop_page_header_request_unmoderate_bottomsheet_title">Permintaan buka moderasi toko</string>
+    <string name="shop_page_header_request_unmoderate_already_sent">Permintaan anda sedang dalam proses.</string>
+    <string name="shop_page_header_request_unmoderate_success_message">Permintaan buka moderasi toko berhasil</string>
+    <string name="shop_page_header_request_unmoderate_option_1_text">Saya sudah mengikuti syarat &amp; ketentuan Tokopedia.</string>
+    <string name="shop_page_header_request_unmoderate_option_1_value">Following Rules</string>
+    <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
+    <string name="shop_page_header_request_unmoderate_option_2_value">Have Fixed</string>
+    <string name="shop_page_header_request_unmoderate_btn_send_text">Kirim</string>
+    <string name="shop_page_header_request_unmoderate_appended_text">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="shop_page_header_request_unmoderate_appended_text_dummy_url">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
+
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
     <string name="shop_page_bottom_sheet_speed_title">"Kecepatan Toko"</string>
@@ -125,12 +136,6 @@
 
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
-
-    <string name="moderate_shop_error">Oops… Request moderasi gagal</string>
-    <string name="moderate_shop_success">Request moderasi toko berhasil</string>
-    <string name="moderate_shop_title">Permintaan untuk membuka moderasi toko</string>
-    <string name="moderate_shop_option_1">Saya sudah mematuhi syarat &amp; ketentuan yang ditetapkan oleh Tokopedia.</string>
-    <string name="moderate_shop_option_2">Saya sudah memperbaiki konten yang ada di toko saya.</string>
 
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
     <string name="favorited_shop_title">Followers Toko</string>
@@ -251,6 +256,7 @@
     <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
     <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
+    <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
@@ -275,6 +281,14 @@
     <string name="shop_change_grid_section_total_product">%s Produk</string>
     <string name="shop_sort_filter_chips_name">Filter</string>
 
+    <!-- shop merchant voucher & follow status -->
+    <string name="shop_follow_error_toaster">Oops, ada sedikit gangguan. Coba follow lagi, ya.</string>
+    <string name="shop_follow_error_toaster_action_text">Coba Lagi</string>
+    <string name="shop_merchant_voucher_title_bottom_sheet">Daftar Kupon Toko</string>
+    <string name="shop_merchant_voucher_tag_bottom_sheet">BottomSheet Tag</string>
+    <string name="follow_button_label">Follow</string>
+    <string name="follow_button_label_npl">Follow Toko</string>
+
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
@@ -298,5 +312,6 @@
     <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
+    <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
 
 </resources>

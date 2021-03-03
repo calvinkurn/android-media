@@ -20,6 +20,7 @@ object ExternalRegisterConstants {
     const val PREF_KEY_AUTH_CODE = "externalRegisterAuthCode"
     const val PREF_KEY_NAME = "externalRegisterFullname"
     const val PREF_KEY_PHONE = "externalRegisterPhone"
+    const val PREF_KEY_NEED_CONTINUE = "externalRegisterContinue"
 
     const val CONFIG_EXTERNAL_REGISTER = "user_external_register_enable"
     const val OVO_REGISTER_AB_TEST_VALUE = "ovo_auto_account"

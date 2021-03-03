@@ -10,8 +10,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.home.R
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -38,7 +39,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     private var pltIdlingResource: IdlingResource? = PerformanceAnalyticsUtil.performanceIdlingResource
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark()
@@ -67,9 +68,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     fun testPageLoadTimePerformance() {
         onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         val datasource = checkDataSource()
-        if (isCacheDataSource(datasource)) {
-            savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
-        }
+        savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
 
         activityRule.activity.finishAndRemoveTask()
     }
@@ -87,7 +86,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     }
 
     private fun savePLTPerformanceResultData(tag: String, datasource: String) {
-        val performanceData = activityRule.activity.getPltPerformanceResultData()
+        var performanceData = activityRule.activity.getPltPerformanceResultData()
         performanceData?.let {
             writePLTPerformanceFile(
                     activityRule.activity,

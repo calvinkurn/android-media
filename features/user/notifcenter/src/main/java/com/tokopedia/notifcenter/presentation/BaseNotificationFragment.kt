@@ -39,7 +39,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         NotificationItemListener,
         NotificationFilterListener {
 
-    private lateinit var longerTextDialog: BottomSheetDialogFragment
+    private var longerTextDialog: BottomSheetDialogFragment? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -162,6 +162,8 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun showLongerContent(element: NotificationItemViewBean) {
+        if (longerTextDialog?.isAdded == true) return
+
         val bundle = Bundle()
 
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
@@ -173,14 +175,14 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
         bundle.putString(PARAM_NOTIF_ID, element.notificationId)
 
-        if (!::longerTextDialog.isInitialized) {
+        if (longerTextDialog == null) {
             longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
         } else {
-            longerTextDialog.arguments = bundle
+            longerTextDialog?.arguments = bundle
         }
 
-        if (!longerTextDialog.isAdded) {
-            longerTextDialog.show(childFragmentManager, TAG_LONGER_TEXT)
+        if (childFragmentManager.findFragmentByTag(TAG_LONGER_TEXT) == null) {
+            longerTextDialog?.show(childFragmentManager, TAG_LONGER_TEXT)
         }
     }
 
