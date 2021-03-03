@@ -47,6 +47,7 @@ object PayLaterApplicationStatusMapper {
         return (status is PayLaterStatusActive ||
                 status is PayLaterStatusApproved ||
                 status is PayLaterStatusSuspended ||
+                status is PayLaterStatusExpired ||
                 status is PayLaterStatusEmpty ||
                 applicationDetail.payLaterExpirationDate.isNullOrEmpty())
     }

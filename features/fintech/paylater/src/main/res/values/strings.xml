@@ -72,13 +72,13 @@
     <string name="credit_card_view_more">Lihat Selengkapnya</string>
     <!-- Application Status -->
     <string name="pay_later_status_active">Aktif</string>
-    <string name="pay_later_status_waiting">Menunggu</string>
-    <string name="pay_later_status_rejected">Ditolak</string>
-    <string name="pay_later_status_cancelled">Dibatalkan</string>
+    <string name="pay_later_status_waiting">Menunggu persetujuan</string>
+    <string name="pay_later_status_rejected">Pengajuan ditolak</string>
+    <string name="pay_later_status_cancelled">Pengajuan dibatalkan</string>
     <string name="pay_later_status_approved">Pengajuan disetujui</string>
     <string name="pay_later_status_suspended">Akun dinonaktifkan</string>
     <string name="pay_later_status_failed">Pengajuan gagal</string>
-    <string name="pay_later_status_expired">Pengajuan Kedaluwarsa</string>
+    <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
 
 
 </resources>
