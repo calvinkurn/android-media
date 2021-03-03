@@ -39,7 +39,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private var selectedProvinceId = -1
     private val zipCodes: MutableList<String> = mutableListOf()
     private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
-        ArrayAdapter<String>(requireActivity(), R.layout.item_autocomplete_text_double_row, R.id.item, zipCodes)
+        ArrayAdapter<String>(requireActivity(), R.layout.item_auto_complete_text_double_row, R.id.item, zipCodes)
     }
 
     @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
