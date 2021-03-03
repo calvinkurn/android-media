@@ -33,7 +33,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             context?.registerReceiver(this, getIntentFilter())
             isRegistered = true
         } else {
-            crashlytics.recordException(Throwable("PhoneCallBroadcastReceiver already registered"))
+            sendLogTracker("PhoneCallBroadcastReceiver already registered")
         }
     }
 
@@ -52,12 +52,12 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
                     if (::listener.isInitialized) {
                         onStateChanged(state, phoneNumber ?: "")
                     } else {
-                        crashlytics.recordException(Throwable("PhoneCallBroadcastReceiver listener not initialized"))
+                        sendLogTracker("PhoneCallBroadcastReceiver listener not initialized")
                     }
                 }
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
-            crashlytics.recordException(Throwable("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]"))
+            sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
             e.printStackTrace()
         }
     }
@@ -80,6 +80,14 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         }
 
         lastState = state
+    }
+
+    private fun sendLogTracker(message: String) {
+        try {
+            crashlytics.recordException(Throwable(message))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     interface OnCallStateChange {

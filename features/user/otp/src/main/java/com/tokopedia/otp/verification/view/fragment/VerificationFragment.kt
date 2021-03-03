@@ -60,6 +60,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -172,7 +173,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
         } else {
-            crashlytics.recordException(Throwable("PhoneCallBroadcastReceiver not registered"))
+            sendLogTracker("PhoneCallBroadcastReceiver not registered")
         }
     }
 
@@ -705,6 +706,14 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                 PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
         )
+    }
+
+    private fun sendLogTracker(message: String) {
+        try {
+            crashlytics.recordException(Throwable(message))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
