@@ -41,7 +41,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero())
+                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero(), false)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
@@ -69,7 +69,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero())
+                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero(), false)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     _addressList.value = OccState.Failed(Failure(e))
