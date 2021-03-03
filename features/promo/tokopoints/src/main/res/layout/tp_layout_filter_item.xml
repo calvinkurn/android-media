@@ -8,7 +8,7 @@
         android:id="@+id/writeChipsItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:chipSize="medium"
+        app:chipSize="small"
         app:chipText="Filter"
         app:chipType="normal"
         app:layout_constraintTop_toTopOf="parent"

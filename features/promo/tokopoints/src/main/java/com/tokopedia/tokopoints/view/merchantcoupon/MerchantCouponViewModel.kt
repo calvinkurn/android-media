@@ -27,7 +27,9 @@ class MerchantCouponViewModel @Inject constructor(private val repository: Mercha
         launchCatchError(block = {
             val response = repository.getProductData(page, category)
             val data = response.getData<MerchantCouponResponse>(MerchantCouponResponse::class.java)
-            couponData.value = Success(MerchantCouponData(data, firstSetup))
+            if (data != null) {
+                couponData.value = Success(MerchantCouponData(data, firstSetup))
+            } else throw NullPointerException()
         }) {
             couponData.value = ErrorMessage(it.toString())
         }

@@ -16,7 +16,6 @@ class MerchantCouponFilterAdapter(private var clickListener: OnFilterTypeClickLi
 
 
     private var items: List<ProductCategoriesFilterItem> = listOf()
-    private var maxSelectedItems = 0
     private var selectedItems: ArrayList<MerchantCouponFilterViewholder.ViewHolderState> = arrayListOf()
 
 
@@ -37,7 +36,7 @@ class MerchantCouponFilterAdapter(private var clickListener: OnFilterTypeClickLi
         if (position < 0 || position > selectedItems.lastIndex) return
         selectedItems[position] = MerchantCouponFilterViewholder.ViewHolderState.SELECTED
         manageUnSelectedItems(position)
-        clickListener.onFilterTypeSelected(position, items[position])
+        clickListener.onFilterTypeSelected(itemCount-1, items[position])
     }
 
     override fun filterClickDisableListener(position: Int): Boolean {
