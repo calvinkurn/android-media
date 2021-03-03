@@ -221,6 +221,16 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
     }
 
+    override fun showGetListError(throwable: Throwable?) {
+        hideLoading()
+        updateStateScrollListener()
+        if (!isListEmpty) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            onGetListErrorWithEmptyData(throwable)
+        }
+    }
+
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
         filter = view.findViewById<NotificationFilterView>(R.id.sv_filter)?.also {

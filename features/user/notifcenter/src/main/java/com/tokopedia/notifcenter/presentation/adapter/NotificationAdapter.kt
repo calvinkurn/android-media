@@ -177,6 +177,16 @@ class NotificationAdapter constructor(
         }
     }
 
+    override fun showErrorNetwork() {
+        if (!listener.hasFilter() && hasNotifOrderList()) {
+            clearElementExceptOrderList()
+            visitables.add(errorNetworkModel)
+            notifyDataSetChanged()
+        } else {
+            super.showErrorNetwork()
+        }
+    }
+
     override fun isShowLoadingMore(): Boolean {
         return visitables.size > 0 && !hasNotifOrderList()
     }
@@ -184,6 +194,7 @@ class NotificationAdapter constructor(
     override fun clearAllElements() {
         if (!listener.hasFilter() && hasNotifOrderList()) {
             clearElementExceptOrderList()
+            notifyDataSetChanged()
         } else {
             super.clearAllElements()
         }
@@ -198,11 +209,10 @@ class NotificationAdapter constructor(
         return visitables.getOrNull(0) is NotifOrderListUiModel
     }
 
-    fun clearElementExceptOrderList() {
+    private fun clearElementExceptOrderList() {
         val orderListUiModel = visitables.getOrNull(0)
         visitables.clear()
         visitables.add(orderListUiModel)
-        notifyDataSetChanged()
     }
 
     fun updateOrRenderOrderListState(
