@@ -4,4 +4,5 @@
     <dimen name="promo_promo_creation_card_top_margin">28dp</dimen>
     <dimen name="power_merchant_benefit_icon_size">22dp</dimen>
     <dimen name="pm_reputation_icon_height">14dp</dimen>
+    <dimen name="height_shimmer_banner_shop_performance">161dp</dimen>
 </resources>
