@@ -12,11 +12,11 @@ data class AdminData(
     val detail: AdminDetailInformation = AdminDetailInformation(),
     @Expose
     @SerializedName("status")
-    val status: Int? = 0
+    val status: String? = ""
 ) {
 
     companion object {
-        private const val ACTIVE_STATUS = 1
+        private const val ACTIVE_STATUS = "1"
     }
 
     fun isShopActive(): Boolean = status == ACTIVE_STATUS
