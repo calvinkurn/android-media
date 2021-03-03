@@ -500,44 +500,48 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun showOutOfReachDialog() {
         showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.out_of_indonesia_title)
-        invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
-        invalid_img?.loadRemoteImageDrawable(ADDRESS_OUT_OF_INDONESIA)
-        invalid_button?.visibility = View.GONE
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        with(binding.bottomSheetGetDistrict) {
+            invalidTitle.text = getString(R.string.out_of_indonesia_title)
+            invalidDesc.text = getString(R.string.out_of_indonesia_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_OUT_OF_INDONESIA)
+            invalidButton.visibility = View.GONE
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
     override fun showUndetectedDialog() {
         showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.undetected_title)
-        invalid_desc?.text = getString(R.string.undetected_desc)
-        invalid_img?.loadRemoteImageDrawable(ADDRESS_KONSLET)
-        invalid_button?.visibility = View.GONE
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        with(binding.bottomSheetGetDistrict) {
+            invalidTitle.text = getString(R.string.undetected_title)
+            invalidDesc.text = getString(R.string.undetected_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_KONSLET)
+            invalidButton.visibility = View.GONE
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
     override fun showLocationNotFoundCTA() {
         showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.invalid_title)
-        invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.loadRemoteImageDrawable(ADDRESS_INVALID)
-        invalid_button?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isLogisticLabel = isLogisticLabel, isFullFlow = isFullFlow, isCircuitBreaker = false)
+        with(binding.bottomSheetGetDistrict) {
+            invalidTitle.text = getString(R.string.invalid_title)
+            invalidDesc.text = getString(R.string.invalid_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
+            invalidButton.visibility = View.VISIBLE
+            invalidButton.setOnClickListener {
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false,
+                        isUnnamedRoad = false, isZipCodeNull = false,
+                        isLogisticLabel = isLogisticLabel, isFullFlow = isFullFlow,
+                        isCircuitBreaker = false)
             }
-        }
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
@@ -546,23 +550,22 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun showDialogForUnnamedRoad() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
+        showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.invalid_title)
-        invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.loadRemoteImageDrawable(ADDRESS_INVALID)
-        invalid_button?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
+        with(binding.bottomSheetGetDistrict) {
+            invalidTitle.text = getString(R.string.invalid_title)
+            invalidDesc.text = getString(R.string.invalid_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
+            invalidButton.visibility = View.VISIBLE
+            invalidButton.setOnClickListener {
                 AddNewAddressAnalytics.eventClickButtonUnnamedRoad(isFullFlow, isLogisticLabel)
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel, isCircuitBreaker = false)
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false,
+                        isUnnamedRoad = true, isZipCodeNull = false, isFullFlow = isFullFlow,
+                        isLogisticLabel = isLogisticLabel, isCircuitBreaker = false)
             }
-        }
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
 
         AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(isFullFlow, isLogisticLabel)
