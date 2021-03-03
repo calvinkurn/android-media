@@ -19,6 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -32,8 +34,6 @@ import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_P
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
-import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel

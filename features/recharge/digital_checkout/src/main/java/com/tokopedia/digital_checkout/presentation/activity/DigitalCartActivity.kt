@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CLIENT_NUMBER
@@ -21,7 +22,6 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Comp
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_PRODUCT_ID
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment

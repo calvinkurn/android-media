@@ -1,4 +1,4 @@
-package com.tokopedia.digital_checkout.data.response.getcart
+package com.tokopedia.common_digital.atc.data.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

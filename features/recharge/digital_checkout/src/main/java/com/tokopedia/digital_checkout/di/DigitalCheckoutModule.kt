@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
@@ -44,7 +46,7 @@ class DigitalCheckoutModule {
 
     @Provides
     @DigitalCheckoutScope
-    @DigitalCartQualifier
+    @DigitalCommonQualifier
     fun provideDigitalInterceptor(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
@@ -95,8 +97,8 @@ class DigitalCheckoutModule {
 
     @Provides
     @DigitalCheckoutScope
-    @DigitalCartQualifier
-    fun provideRestRepository(@DigitalCartQualifier interceptors: ArrayList<Interceptor>,
+    @DigitalCommonQualifier
+    fun provideRestRepository(@DigitalCommonQualifier interceptors: ArrayList<Interceptor>,
                               @ApplicationContext context: Context): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
@@ -120,4 +122,11 @@ class DigitalCheckoutModule {
     @DigitalCheckoutScope
     @Provides
     fun provideRechargeAnalytics(usecase: RechargePushEventRecommendationUseCase): RechargeAnalytics = RechargeAnalytics(usecase)
+
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideDigitalAtcUseCase(@DigitalCommonQualifier restRepository: RestRepository)
+            : DigitalAddToCartUseCase = DigitalAddToCartUseCase(restRepository)
+
 }

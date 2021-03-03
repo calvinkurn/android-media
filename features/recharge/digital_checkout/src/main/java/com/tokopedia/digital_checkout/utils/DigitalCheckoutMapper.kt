@@ -1,6 +1,8 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
@@ -13,8 +15,6 @@ import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
-import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero

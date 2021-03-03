@@ -1,4 +1,4 @@
-package com.tokopedia.digital_checkout.usecase
+package com.tokopedia.common_digital.atc
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -9,22 +9,22 @@ import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common_digital.atc.data.request.Attributes
+import com.tokopedia.common_digital.atc.data.request.RequestBodyAtcDigital
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalUrl
+import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.digital_checkout.data.request.Attributes
-import com.tokopedia.digital_checkout.data.request.RequestBodyAtcDigital
-import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
-import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
-import com.tokopedia.digital_checkout.di.DigitalCartQualifier
-import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val repository: RestRepository)
+class DigitalAddToCartUseCase @Inject constructor(@DigitalCommonQualifier val repository: RestRepository)
     : RestRequestUseCase(repository) {
 
     private val url = DigitalUrl.CART

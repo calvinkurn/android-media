@@ -1,4 +1,4 @@
-package com.tokopedia.digital_checkout.data.request
+package com.tokopedia.common_digital.atc.data.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

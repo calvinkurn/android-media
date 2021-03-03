@@ -1,13 +1,13 @@
 package com.tokopedia.digital_checkout.dummy
 
+import com.tokopedia.common_digital.atc.data.response.AttributesCart
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.common_digital.atc.data.response.RelationshipsCart
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
-import com.tokopedia.digital_checkout.data.response.atc.AttributesCart
-import com.tokopedia.digital_checkout.data.response.atc.RelationshipsCart
-import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.AutoApplyVoucher
 import com.tokopedia.digital_checkout.data.response.getcart.CrossSellingConfig
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 
 /**
@@ -263,22 +263,22 @@ object DigitalCartDummyData {
                 detail = listOf(AttributesCart.InfoDetail("Admin Bank", "Rp 2.500"))
         )
 
-        val autoApplyVoucher = com.tokopedia.digital_checkout.data.response.atc.AutoApplyVoucher(
+        val autoApplyVoucher = com.tokopedia.common_digital.atc.data.response.AutoApplyVoucher(
                 discountAmount = 2510.0,
                 messageSuccess = "Success"
         )
 
-        val crossSellingConfig = com.tokopedia.digital_checkout.data.response.atc.CrossSellingConfig(
+        val crossSellingConfig = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig(
                 isSkipAble = true,
                 isChecked = false,
-                wording = com.tokopedia.digital_checkout.data.response.atc.CrossSellingConfig.CrossSellingWording(
+                wording = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig.CrossSellingWording(
                         headerTitle = "Checkout",
                         bodyTitle = "Aktifkan auto debit untuk tagihan ini",
                         bodyContentBefore = "Akitifkan auto debit",
                         bodyContentAfter = "Kamu harus memasukkan OVO PIN",
                         checkoutButtonText = "Bayar"
                 ),
-                wordingIsSubscribed = com.tokopedia.digital_checkout.data.response.atc.CrossSellingConfig.CrossSellingWording(
+                wordingIsSubscribed = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig.CrossSellingWording(
                         headerTitle = "Checkout",
                         bodyTitle = "Kamu memiliki auto debut yang belum aktif",
                         bodyContentBefore = "Akitifkan auto debit",
@@ -322,7 +322,7 @@ object DigitalCartDummyData {
                 crossSellingConfig = crossSellingConfig,
                 postPaidPopUp = null,
                 fintechProduct = listOf(fintechProduct)
-                )
+        )
         val relationshipsCart = RelationshipsCart(
                 category = RelationshipsCart.Category(RelationshipsCart.RelationData("category", "3")),
                 operator = RelationshipsCart.Operator(RelationshipsCart.RelationData("operator", "18")),

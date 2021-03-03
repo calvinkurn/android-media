@@ -2,6 +2,7 @@ package com.tokopedia.digital_checkout.data.response.getcart
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 
 /**
  * @author by jessica on 08/01/21
