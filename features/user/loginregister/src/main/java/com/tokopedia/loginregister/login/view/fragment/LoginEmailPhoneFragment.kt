@@ -188,8 +188,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onResume() {
         super.onResume()
         if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
-            requireActivity().setResult(Activity.RESULT_OK)
-            requireActivity().finish()
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
     }
 
@@ -226,7 +226,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun getDraw(): Drawable? {
         var drawable: TextDrawable? = null
         activity?.run {
-            drawable = TextDrawable(requireActivity())
+            drawable = TextDrawable(this)
             drawable?.text = resources.getString(R.string.register)
             drawable?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
@@ -329,8 +329,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginEmailClick() {
-        val email = requireArguments().getString(AUTO_LOGIN_EMAIL, "")
-        val pw = requireArguments().getString(AUTO_LOGIN_PASS, "")
+        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "")?: ""
+        val pw = arguments?.getString(AUTO_LOGIN_PASS, "")?: ""
         partialRegisterInputView.showLoginEmailView(email)
         emailPhoneEditText.setText(email)
         wrapper_password?.textFieldInput?.setText(pw)
@@ -761,7 +761,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         * broadcast through AIDL service if user have login
         * (send the flag into another app).
         * */
-        PushNotificationApi.bindService(requireContext())
+        context?.let { PushNotificationApi.bindService(it) }
     }
 
     override fun setLoginSuccessSellerApp() {
