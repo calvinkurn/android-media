@@ -1,5 +1,6 @@
 package com.tokopedia.digital_checkout.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
@@ -230,6 +231,7 @@ class DigitalCartViewModel @Inject constructor(
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
             _payment.postValue(Payment(PAYMENT_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)) to true)
+            Log.d("RaceCondition", "postValue")
 
             requestCheckoutParam.transactionAmount = pricePlain
 
