@@ -29,6 +29,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
@@ -72,6 +73,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var callback: String? = null
     private var kycBenefitLayout: View? = null
     private var kycBenefitImage: ImageUnify? = null
+    private var kycBenefitPowerMerchant: ImageUnify? = null
+    private var kycBenefitFintech: ImageUnify? = null
+    private var kycBenefitShield: ImageUnify? = null
     private var kycBenefitButton: UnifyButton? = null
     private var kycBenefitCloseButton: ImageButton? = null
     private var defaultStatusBarColor = 0
@@ -127,7 +131,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         kycBenefitButton = parentView.findViewById(R.id.kyc_benefit_btn)
         kycBenefitCloseButton = parentView.findViewById(R.id.close_button)
         kycBenefitImage = parentView.findViewById(R.id.image_banner)
-        kycBenefitImage?.cornerRadius = 0
+        kycBenefitPowerMerchant = parentView.findViewById(R.id.image_power_merchant)
+        kycBenefitFintech = parentView.findViewById(R.id.image_fintech)
+        kycBenefitShield = parentView.findViewById(R.id.image_shiled_star)
+        setupKycBenefitImage()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,6 +228,14 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             activity?.onBackPressed()
         }
         analytics?.eventViewOnKYCOnBoarding()
+    }
+
+    private fun setupKycBenefitImage() {
+        (kycBenefitImage as ImageView).loadImage(KycUrl.KYC_BENEFIT_BANNER)
+        kycBenefitImage?.cornerRadius = 0
+        (kycBenefitPowerMerchant as ImageView).loadImage(KycUrl.KYC_BENEFIT_POWER_MERCHANT)
+        (kycBenefitFintech as ImageView).loadImage(KycUrl.KYC_BENEFIT_FINTECH)
+        (kycBenefitShield as ImageView).loadImage(KycUrl.KYC_BENEFIT_SHIELD)
     }
 
     private fun setStatusBar(color: Int) {

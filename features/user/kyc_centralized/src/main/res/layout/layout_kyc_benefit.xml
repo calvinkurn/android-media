@@ -15,8 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:unify_image_type="rect"
-        app:srcCompat="@drawable/kyc_benefit_banner"/>
+        app:unify_image_type="rect"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/benefit_title_tv"
@@ -75,8 +74,7 @@
         app:layout_constraintTop_toTopOf="@id/benefit_list_one_tv"
         app:layout_constraintBottom_toBottomOf="@id/benefit_list_one_desc_tv"
         app:layout_constraintRight_toLeftOf="@id/benefit_list_one_tv"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        app:srcCompat="@drawable/ic_kyc_power_merchant" />
+        android:layout_marginLeft="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/benefit_list_two_tv"
@@ -110,8 +108,7 @@
         app:layout_constraintTop_toTopOf="@id/benefit_list_two_tv"
         app:layout_constraintBottom_toBottomOf="@id/benefit_list_two_desc_tv"
         app:layout_constraintRight_toLeftOf="@id/benefit_list_two_tv"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        app:srcCompat="@drawable/ic_fintech" />
+        android:layout_marginLeft="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/benefit_list_three_tv"
@@ -146,8 +143,7 @@
         app:layout_constraintBottom_toBottomOf="@id/benefit_list_three_desc_tv"
         app:layout_constraintRight_toLeftOf="@id/benefit_list_three_tv"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:srcCompat="@drawable/ic_shield_star" />
+        android:layout_marginRight="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/kyc_benefit_btn"
@@ -168,7 +164,8 @@
         android:background="@color/kyc_centralized_00ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_kyc_arrow_back_black" />
+        app:srcCompat="@drawable/ic_kyc_arrow_back_black"
+        android:contentDescription="close_button"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
