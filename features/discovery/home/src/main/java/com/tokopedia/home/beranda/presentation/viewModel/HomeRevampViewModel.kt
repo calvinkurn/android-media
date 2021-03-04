@@ -35,16 +35,17 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.STATE_ERROR
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.STATE_LOADING
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_COUPON
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_WALLET
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -1513,7 +1514,13 @@ open class HomeRevampViewModel @Inject constructor(
                 val pendingCashback = getPendingTokoCashContent()
                 homeBalanceModel.mapBalanceData(
                         tokopointDrawerListHomeData = tokopointContentDefered.await(),
-                        pendingCashBackData = pendingCashback
+                        homeHeaderWalletAction = walletContent.copy(cashBalance = pendingCashback.amountText),
+                        pendingCashBackData = PendingCashbackModel(
+                                pendingCashback = pendingCashback,
+                                labelActionButton = walletContent.labelActionButton,
+                                labelTitle = walletContent.labelTitle,
+                                walletType = walletContent.walletType
+                        )
                 )
             } else {
                 homeBalanceModel.mapBalanceData(

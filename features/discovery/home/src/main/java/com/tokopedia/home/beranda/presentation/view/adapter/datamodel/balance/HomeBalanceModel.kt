@@ -1,0 +1,232 @@
+package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
+
+import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_UNKNOWN
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+
+data class HomeBalanceModel (
+        var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
+        var balanceType: Int = TYPE_STATE_1
+) {
+    companion object {
+        // State 1: Ovo, Coupon, Bebas Ongkir
+        const val TYPE_STATE_1 = 1
+
+        // State 2: Tokopoints, Ovo, Bebas Ongkir
+        const val TYPE_STATE_2 = 2
+
+        // State 3: Tokopoints, Coupon, Bebas Ongkir
+        const val TYPE_STATE_3 = 3
+
+        // State 4: Non login, will not rendered
+        const val TYPE_STATE_4 = 4
+
+        const val OVO_WALLET_TYPE = "OVO"
+
+        const val OVO_TITLE = "OVO"
+
+        const val OVO_TOP_UP = "Top-up OVO"
+
+        const val OVO_POINTS_BALANCE = "%s Points"
+
+        private const val HASH_CODE = 39
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HomeBalanceModel
+
+        if (balanceDrawerItemModels != other.balanceDrawerItemModels) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = balanceDrawerItemModels?.hashCode() ?: 0
+        return result
+    }
+
+    //call to init balance widget data
+    fun initBalanceModelByType() {
+        balanceDrawerItemModels.clear()
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_2 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[3] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_3 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+        }
+    }
+
+    fun mapBalanceData(
+            homeHeaderWalletAction: HomeHeaderWalletAction? = null,
+            tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
+            pendingCashBackData: PendingCashbackModel? = null
+    ) {
+        mapTokopoint(tokopointDrawerListHomeData)
+        mapWallet(homeHeaderWalletAction)
+        mapPendingCashback(pendingCashBackData)
+    }
+
+    fun setBalanceState(type: Int, state: Int): HomeBalanceModel {
+        flagStateCondition(
+                itemType = type,
+                action = { balanceDrawerItemModels[it]?.state = state }
+        )
+        return this
+    }
+
+
+    private fun mapPendingCashback(pendingCashBackData: PendingCashbackModel?) {
+        pendingCashBackData?.let { pendingCashBackData ->
+            val type = TYPE_WALLET_PENDING_CASHBACK
+            flagStateCondition(
+                    itemType = type,
+                    action = {
+                        if (pendingCashBackData.walletType == OVO_WALLET_TYPE) {
+                            balanceDrawerItemModels[it] =
+                                    BalanceDrawerItemModel(
+                                            applink = "",
+                                            iconImageUrl = "",
+                                            defaultIconRes = R.drawable.wallet_ic_ovo_home,
+                                            balanceTitleTextAttribute = BalanceTextAttribute(
+                                                    text = "(+ ${pendingCashBackData.pendingCashback.amountText} )",
+                                                    isBold = true
+                                            ),
+                                            balanceSubTitleTextAttribute = BalanceTextAttribute(
+                                                    text = pendingCashBackData.labelActionButton
+                                            ),
+                                            balanceTitleTagAttribute = null,
+                                            balanceSubTitleTagAttribute = null,
+                                            drawerItemType = type,
+                                            state = STATE_SUCCESS
+                                    )
+                        }
+                    }
+            )
+        }
+    }
+
+    private fun mapWallet(homeHeaderWalletAction: HomeHeaderWalletAction?) {
+        homeHeaderWalletAction?.let { homeHeaderWalletAction ->
+            val type = when(homeHeaderWalletAction.walletType) {
+                OVO_WALLET_TYPE -> {
+                    if (homeHeaderWalletAction.isShowTopup) {
+                        TYPE_WALLET_WITH_TOPUP
+                    } else {
+                        TYPE_WALLET_OVO
+                    }
+                }
+                else -> TYPE_WALLET_OTHER
+            }
+
+            flagStateCondition(
+                    itemType = type,
+                    action = {
+                        balanceDrawerItemModels[it] = homeHeaderWalletAction.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
+                    }
+            )
+        }
+    }
+
+    private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
+        tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.forEach { drawerContent ->
+            val type = getDrawerType(drawerContent.type)
+            flagStateCondition(
+                    itemType = type,
+                    action = {
+                        balanceDrawerItemModels[it] = drawerContent.mapToHomeBalanceItemModel(
+                                drawerItemType = type,
+                                state = STATE_SUCCESS
+                        )
+                    }
+            )
+        }
+    }
+
+    private fun getDrawerType(type: String) = when(type) {
+        "TokoPoints" -> TYPE_TOKOPOINT
+        "Rewards" -> TYPE_REWARDS
+        "Coupon" -> TYPE_COUPON
+        "BBO" -> TYPE_FREE_ONGKIR
+        else -> TYPE_UNKNOWN
+    }
+
+    private fun flagStateCondition(
+            itemType: Int,
+            action: (pos: Int) -> Unit
+    ) {
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                itemTypeCondition(
+                        itemType,
+                        typeWalletCondition = { action.invoke(0) },
+                        typeCouponCondition = { action.invoke(1) },
+                        typeRewardsCondition = { action.invoke(2) },
+                        typeFreeOngkirCondition = { action.invoke(2) }
+                )
+            }
+            TYPE_STATE_2 -> {
+                itemTypeCondition(
+                        itemType,
+                        typeTokopointCondition = { action.invoke(0) },
+                        typeWalletCondition = { action.invoke(1) },
+                        typeCouponCondition = { action.invoke(2) },
+                        typeRewardsCondition = { action.invoke(2) },
+                        typeFreeOngkirCondition = { action.invoke(3) }
+                )
+            }
+            TYPE_STATE_3 -> {
+                itemTypeCondition(
+                        itemType,
+                        typeTokopointCondition = { action.invoke(0) },
+                        typeCouponCondition = { action.invoke(2) },
+                        typeRewardsCondition = { action.invoke(2) },
+                        typeFreeOngkirCondition = { action.invoke(3) }
+                )
+            }
+        }
+    }
+
+    private fun itemTypeCondition(
+            type: Int,
+            typeTokopointCondition: () -> Unit = {},
+            typeWalletCondition: () -> Unit = {},
+            typeCouponCondition: () -> Unit = {},
+            typeFreeOngkirCondition: () -> Unit = {},
+            typeRewardsCondition: () -> Unit = {}
+    ) {
+        when(type) {
+            TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
+            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_OVO, TYPE_WALLET_PENDING_CASHBACK -> typeWalletCondition.invoke()
+            TYPE_COUPON -> typeCouponCondition.invoke()
+            TYPE_FREE_ONGKIR -> typeFreeOngkirCondition.invoke()
+            TYPE_REWARDS -> typeRewardsCondition.invoke()
+        }
+    }
+}
+
+

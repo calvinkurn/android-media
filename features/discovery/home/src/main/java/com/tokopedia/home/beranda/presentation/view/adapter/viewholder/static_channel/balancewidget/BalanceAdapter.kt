@@ -10,7 +10,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +18,10 @@ import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTagAttribute
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTextAttribute
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
@@ -170,13 +173,15 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         private fun renderTextAttribute(textAttr: BalanceTextAttribute, textView: TextView) {
             if (textAttr.colour.isNotEmpty() && textAttr.colour.isHexColor()) {
                 textView.setTextColor(Color.parseColor(textAttr.colour).invertIfDarkMode(itemView.context))
+            } else if (textAttr.colourRef != null) {
+                textView.setTextColor(ContextCompat.getColor(itemView.context, textAttr.colourRef))
             } else {
                 textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
             if (textAttr.isBold) {
-                textView.setTypeface(null, Typeface.BOLD)
+                textView.setTypeface(textView.typeface, Typeface.BOLD)
             } else {
-                textView.setTypeface(null, Typeface.NORMAL)
+                textView.setTypeface(textView.typeface, Typeface.NORMAL)
             }
             if (textAttr.text.isNotEmpty()) {
                 textView.text = textAttr.text
