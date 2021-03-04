@@ -354,10 +354,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_main_app_enabled_cache_pdp</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_mainapp_enable_event_revamp</key>
         <value>true</value>
     </entry>
