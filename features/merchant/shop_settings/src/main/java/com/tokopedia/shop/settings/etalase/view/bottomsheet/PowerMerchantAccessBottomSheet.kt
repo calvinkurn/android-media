@@ -17,6 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
 class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
+    private var contentView: View? = null
     private var buttonRedirectTo: Button? = null
     private var imageViewIcon: ImageView? = null
     private var textViewTitle: Typography? = null
@@ -41,35 +42,38 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        inflater.inflate(R.layout.fragment_power_merchant_access, container)
+        initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initVar()
     }
 
-    private fun initView(view: View) {
-        initVar()
-        imageViewIcon = view.findViewById(R.id.image_view_icon)
-        buttonRedirectTo = view.findViewById(R.id.button_redirect_to)
-        textViewTitle = view.findViewById(R.id.text_view_title)
-        textViewDescription = view.findViewById(R.id.text_view_description)
+    private fun initChildLayout() {
+        contentView = View.inflate(context, R.layout.fragment_power_merchant_access, null)
+        contentView?.let { contentView ->
+            imageViewIcon = contentView.findViewById(R.id.image_view_icon)
+            buttonRedirectTo = contentView.findViewById(R.id.button_redirect_to)
+            textViewTitle = contentView.findViewById(R.id.text_view_title)
+            textViewDescription = contentView.findViewById(R.id.text_view_description)
 
-        model?.let {
-            imageViewIcon?.loadImage(it.imageUrl)
-            textViewTitle?.text = MethodChecker.fromHtml(it.title)
-            textViewDescription?.text = MethodChecker.fromHtml(it.desc)
-            buttonRedirectTo?.text = it.btnTitle
-            buttonRedirectTo?.setOnClickListener {
-                when (model?.trackingFlag) {
-                    GMParamConstant.PM_HOME_NONACTIVE -> powerMerchantTracking.eventIncreaseScoreBottomSheet()
-                    GMParamConstant.PM_SUBSCRIBE_SUCCESS -> powerMerchantTracking.eventLearnMoreSuccessPopUp()
+            model?.let {
+                imageViewIcon?.loadImage(it.imageUrl)
+                textViewTitle?.text = MethodChecker.fromHtml(it.title)
+                textViewDescription?.text = MethodChecker.fromHtml(it.desc)
+                buttonRedirectTo?.text = it.btnTitle
+                buttonRedirectTo?.setOnClickListener {
+                    when (model?.trackingFlag) {
+                        GMParamConstant.PM_HOME_NONACTIVE -> powerMerchantTracking.eventIncreaseScoreBottomSheet()
+                        GMParamConstant.PM_SUBSCRIBE_SUCCESS -> powerMerchantTracking.eventLearnMoreSuccessPopUp()
+                    }
+                    listener?.onBottomSheetButtonClicked()
                 }
-                listener?.onBottomSheetButtonClicked()
             }
         }
+        setChild(contentView)
     }
 
     private fun initVar() {
