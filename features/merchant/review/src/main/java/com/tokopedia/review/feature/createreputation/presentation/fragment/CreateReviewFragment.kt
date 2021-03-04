@@ -507,6 +507,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewViewModel.isUserEligible() && isReviewComplete()
         )
         if (isEditMode) {
+            if(reviewMessage.isBlank()) {
+                showToasterError(getString(R.string.review_edit_blank_error))
+                return
+            }
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toLongOrZero(),
                     createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {

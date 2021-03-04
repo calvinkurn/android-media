@@ -74,7 +74,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticCommon)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
