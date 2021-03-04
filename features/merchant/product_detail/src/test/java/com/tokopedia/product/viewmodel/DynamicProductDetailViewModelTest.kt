@@ -13,6 +13,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -23,7 +24,11 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirProduct
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -166,24 +171,58 @@ class DynamicProductDetailViewModelTest {
     }
 
     @Test
-    fun `get shop info from P2`() {
-        val shopInfo = viewModel.getShopInfo()
+    fun `success update video tracker data`() {
+        viewModel.updateVideoTrackerData(10L, 120L)
+        Assert.assertTrue(viewModel.videoTrackerData?.first == 10L)
+        Assert.assertTrue(viewModel.videoTrackerData?.second == 120L)
+    }
+
+    //region getShopInfo
+    @Test
+    fun `get shop info from P2 when data null`() {
+        every {
+            spykViewModel.p2Data.value?.shopInfo
+        } returns null
+        val shopInfo = spykViewModel.getShopInfo()
 
         Assert.assertNotNull(shopInfo)
     }
 
     @Test
-    fun `get cart type by product id`() {
-        val cartRedirection = viewModel.getCartTypeByProductId()
+    fun `get shop info from P2 when data not null`() {
+        every {
+            spykViewModel.p2Data.value?.shopInfo
+        } returns ShopInfo()
 
-        Assert.assertNull(cartRedirection)
+        val shopInfo = spykViewModel.getShopInfo()
+
+        Assert.assertNotNull(shopInfo)
+    }
+    //endregion
+
+    //region getCartTypeByProductId
+    @Test
+    fun `get cart type by product id when data not null`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value?.cartRedirection
+        } returns mapOf("123" to CartTypeData())
+
+        val cartRedirection = spykViewModel.getCartTypeByProductId()
+
+        Assert.assertNotNull(cartRedirection)
     }
 
     @Test
-    fun `get multi origin but p1 data is null`() {
+    fun `get cart type by product id when data null`() {
         spykViewModel.getDynamicProductInfoP1 = null
-        val data = viewModel.getMultiOriginByProductId()
-        Assert.assertEquals(data.id, "")
+        every {
+            spykViewModel.p2Data.value?.cartRedirection
+        } returns mapOf("321" to CartTypeData())
+
+        val cartRedirection = spykViewModel.getCartTypeByProductId()
+
+        Assert.assertNull(cartRedirection)
     }
 
     @Test
@@ -192,6 +231,101 @@ class DynamicProductDetailViewModelTest {
 
         Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
     }
+    //endregion
+
+    //region getMultiOriginByProductId
+    @Test
+    fun `get multi origin but p1 data is null`() {
+        spykViewModel.getDynamicProductInfoP1 = null
+        val data = viewModel.getMultiOriginByProductId()
+        Assert.assertEquals(data.id, "")
+    }
+
+    @Test
+    fun `get multi origin but p1 data not null`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        val data = spykViewModel.getMultiOriginByProductId()
+        Assert.assertNotNull(data.id)
+    }
+    //endregion
+
+    //region getP2RatesEstimateByProductId
+    @Test
+    fun `get rates with success result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(ratesEstimate = listOfNotNull(P2RatesEstimate(listfProductId = listOf("123"))))
+
+        val data = spykViewModel.getP2RatesEstimateByProductId()
+        Assert.assertNotNull(data)
+    }
+
+    @Test
+    fun `get rates with null result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(ratesEstimate = listOfNotNull(P2RatesEstimate(listfProductId = listOf("321"))))
+
+        val data = spykViewModel.getP2RatesEstimateByProductId()
+        Assert.assertNull(data)
+    }
+    //endregion
+
+    //region getP2RatesBottomSheetData
+    @Test
+    fun `get bottom sheet rates error with success result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(ratesEstimate = listOfNotNull(P2RatesEstimate(listfProductId = listOf("123"))))
+
+        val data = spykViewModel.getP2RatesBottomSheetData()
+        Assert.assertNotNull(data)
+    }
+
+    @Test
+    fun `get bottom sheet rates error with null result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(ratesEstimate = listOfNotNull(P2RatesEstimate(listfProductId = listOf("321"))))
+
+        val data = spykViewModel.getP2RatesBottomSheetData()
+        Assert.assertNull(data)
+    }
+    //endregion
+
+    //region getBebasOngkirDataByProductId
+    @Test
+    fun `get bebas ongkir data with success result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        val imageUrl = "gambar boe gan"
+        val boType = 1
+        every {
+            spykViewModel.p2Data.value?.bebasOngkir
+        } returns BebasOngkir(boProduct = listOf(BebasOngkirProduct(boType, productId = "123")), boImages = listOf(BebasOngkirImage(boType, imageUrl)))
+
+        val data = spykViewModel.getBebasOngkirDataByProductId()
+        Assert.assertTrue(data.imageURL == "gambar boe gan")
+        Assert.assertTrue(data.boType == 1)
+    }
+
+    @Test
+    fun `get bebas ongkir data with null result`() {
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        val imageUrl = "gambar boe gan"
+        val boType = 1
+        every {
+            spykViewModel.p2Data.value?.bebasOngkir
+        } returns BebasOngkir(boProduct = listOf(BebasOngkirProduct(boType, productId = "312")), boImages = listOf(BebasOngkirImage(boType, imageUrl)))
+
+        val data = spykViewModel.getBebasOngkirDataByProductId()
+        Assert.assertTrue(data.imageURL == "")
+        Assert.assertTrue(data.boType == 0)
+    }
+    //endregion
 
     @Test
     fun `update variable p1 with null`() {
