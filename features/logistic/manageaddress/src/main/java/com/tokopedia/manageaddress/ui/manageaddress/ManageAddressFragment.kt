@@ -187,9 +187,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         llButtonChooseAddress = view?.findViewById(R.id.ll_btn)
         buttonChooseAddress = view?.findViewById(R.id.btn_choose_address)
-        buttonChooseAddress?.setOnClickListener {
-            setChosenAddress()
-        }
+        setButtonEnabled(false)
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
@@ -543,6 +541,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
+        setButtonEnabled(true)
         _selectedAddressItem = peopleAddress
         if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
@@ -599,4 +598,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
         return chosenAddrId
     }
+
+
+    private fun setButtonEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+            buttonChooseAddress?.apply {
+                setEnabled(true)
+                setOnClickListener { setChosenAddress() }
+            }
+        } else {
+            buttonChooseAddress?.isEnabled = false
+        }
+    }
+
 }
