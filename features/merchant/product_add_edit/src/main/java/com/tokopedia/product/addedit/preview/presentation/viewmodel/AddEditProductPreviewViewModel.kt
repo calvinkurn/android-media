@@ -280,7 +280,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         if (isAuthorized) {
             launchCatchError(block = {
                 val data = withContext(Dispatchers.IO) {
-                    getProductUseCase.params = GetProductUseCase.createRequestParams(productId, userSession.isMultiLocationShop)
+                    getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                     getProductUseCase.executeOnBackground()
                 }
                 mGetProductResult.value = Success(data)

@@ -23,11 +23,7 @@ data class ProductVariantInputModel(
         var stock: Int = 0,
         var isPrimary: Boolean = false,
         var warehouseCount: Int = 0
-) : Parcelable {
-
-    fun getIsSingleLocation() = warehouseCount == 0
-
-}
+) : Parcelable
 
 @Parcelize
 data class SelectionInputModel(
