@@ -179,7 +179,7 @@ object ShopPageProductListMapper {
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 formattedPrice = shopProductUiModel.displayedPrice ?: "",
-                countSoldRating = shopProductUiModel.rating.takeIf { it != 0.0 }.toString(),
+                countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
