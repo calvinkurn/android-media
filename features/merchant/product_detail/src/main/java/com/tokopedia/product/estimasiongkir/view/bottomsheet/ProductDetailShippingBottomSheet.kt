@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.view.View
@@ -53,6 +54,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
     private var shouldRefresh: Boolean = false
 
+    @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         viewContainer = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
