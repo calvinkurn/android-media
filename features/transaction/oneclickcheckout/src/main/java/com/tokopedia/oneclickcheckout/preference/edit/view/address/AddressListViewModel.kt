@@ -36,12 +36,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String) {
+    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         // Todo : add addressState param to GetAddressCornerUseCase
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero())
+                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
@@ -64,12 +64,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         )
     }
 
-    fun loadMore(addressState: Int, localCacheAddressId: String) {
+    fun loadMore(addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         if (_addressList.value !is OccState.Loading && !isLoadingMore) {
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero())
+                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     _addressList.value = OccState.Failed(Failure(e))

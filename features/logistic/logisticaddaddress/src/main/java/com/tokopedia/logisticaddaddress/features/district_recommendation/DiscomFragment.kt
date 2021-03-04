@@ -282,10 +282,11 @@ PopularCityAdapter.ActionListener {
 
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
-                            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                             if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                                     if (data != null) {
+                                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                                         presenter.autoFill(data.latitude, data.longitude)
                                     } else {
                                         fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
@@ -400,6 +401,7 @@ PopularCityAdapter.ActionListener {
             if (AddNewAddressUtils.isGpsEnabled(context)) {
                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                     if (data != null) {
+                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                         presenter.autoFill(data.latitude, data.longitude)
                     }
                 }
