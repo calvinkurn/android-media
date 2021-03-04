@@ -33,10 +33,10 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
 
     fun addItem() {
 //         TODO : change function name and add functionality
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("A", 12000), 0)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("B", 12000), 1)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("C", 12000), 2)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("D", 12000), 5)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("A", 12000), 0)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("B", 12000), 1)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("C", 12000), 2)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("D", 12000), 5)
         actionListener?.updateTotalPayment(calculateTotalPayment())
     }
 
