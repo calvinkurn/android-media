@@ -137,7 +137,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun loadData() {
         loaderCheckout.visibility = View.VISIBLE
         cartPassData?.let {
-            if (it.isFromPDP) {
+            if (it.isFromPDP || it.needGetCart) {
                 viewModel.getCart(cartPassData?.categoryId
                         ?: "", getString(R.string.digital_cart_login_message))
             } else {

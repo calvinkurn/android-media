@@ -113,7 +113,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             getView().hideCartView();
             getView().showFullPageLoading();
             getView().startPerfomanceMonitoringTrace();
-            if (getView().getCartPassData().getNeedGetCart()) {
+            if (getView().getCartPassData().isFromPDP()) {
                 RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
                         getView().getCartPassData().getCategoryId(),
                         userSession.getUserId(),
