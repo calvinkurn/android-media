@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -675,8 +676,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationList()
         subscribeToSpecificationText()
         subscribeToInputStatus()
-
-        viewModel.getProductPriceRecommendation()
+        subscribeToProductPriceRecommendation()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -1443,6 +1443,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun subscribeToProductPriceRecommendation() {
+        //observe only if product has product id
+        if (viewModel.productInputModel.productId == 0L) return
+        viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
+            println(it)
+        }
+        viewModel.getProductPriceRecommendation()
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {

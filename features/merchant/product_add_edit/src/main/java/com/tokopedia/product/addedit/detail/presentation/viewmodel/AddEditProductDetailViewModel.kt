@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
@@ -176,6 +177,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mSpecificationText = MutableLiveData<String>()
     val specificationText: LiveData<String>
         get() = mSpecificationText
+
+    private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
+    val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
+        get() = mProductPriceRecommendation
 
     private fun isInputValid(): Boolean {
 
@@ -537,15 +542,15 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun getProductPriceRecommendation() {
-        // remote product name validation
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
                 priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
                 priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
             }
-
+            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
             // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
     }
 }
