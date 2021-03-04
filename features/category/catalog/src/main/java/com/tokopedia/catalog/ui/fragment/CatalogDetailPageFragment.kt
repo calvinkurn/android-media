@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
+import com.tokopedia.catalog.adapter.DividerItemDecorator
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
@@ -130,6 +130,13 @@ class CatalogDetailPageFragment : Fragment(),
         ).commit()
     }
 
+    private fun addProductListingFragment(){
+//        requireActivity().supportFragmentManager.beginTransaction().replace(
+//                R.id.products_fragment_container,
+//                CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
+//        ).commit()
+    }
+
     private fun setObservers() {
         catalogDetailPageViewModel.getCatalogResponseData().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -139,6 +146,7 @@ class CatalogDetailPageFragment : Fragment(),
                     }
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
+                    addProductListingFragment()
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -209,9 +217,9 @@ class CatalogDetailPageFragment : Fragment(),
         catalogPageRecyclerView?.apply {
             layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             itemAnimator = null
-            addItemDecoration(DividerItemDecoration(activity,DividerItemDecoration.VERTICAL).apply {
-                setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
-            })
+            ContextCompat.getDrawable(context, R.drawable.divider)?.let {
+                addItemDecoration(DividerItemDecorator(it))
+            }
             adapter = catalogDetailAdapter
         }
     }
@@ -263,11 +271,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun hideFloatingLayout() {
-
+        bottom_sheet_fragment_container.hide()
     }
 
     override fun showFloatingLayout() {
-
+        bottom_sheet_fragment_container.show()
     }
 
     override fun onViewMoreDescriptionClick() {

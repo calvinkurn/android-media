@@ -19,17 +19,13 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         BaseCategorySectionFragment.SortAppliedListener{
 
     private var catalogId: String = ""
-    private var shareData: LinkerData? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private lateinit var catalogDetailFragment: CatalogDetailPageFragment
-    private lateinit var catalogDetailListingFragment: Fragment
-    private var catalogName: String = ""
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
-        private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         @JvmStatic
         fun createIntent(context: Context, catalogId: String?): Intent {
             val intent = Intent(context, CatalogDetailPageActivity::class.java)
@@ -59,13 +55,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         return CatalogDetailPageFragment.newInstance(catalogId)
     }
 
-    private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {
-        val departmentName: String? = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
-        val fragment: BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
-        fragment.setSortListener(this)
-        return fragment
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
@@ -86,17 +75,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
 
     }
 
-    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId: String) {
-        this.shareData = shareData
-        this.catalogName = catalogName
-
-        catalogDetailListingFragment = getNewCatalogDetailListingFragment(catalogName, departmentId)
-        supportFragmentManager.beginTransaction()
-                .add(R.id.catalog_detail_parent_view, catalogDetailListingFragment)
-                .commit()
-    }
-
-
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
         navigationListenerList.add(clickListener)
     }
@@ -110,6 +88,10 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     override fun onSortApplied(showTick: Boolean) {
+
+    }
+
+    override fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String) {
 
     }
 }
