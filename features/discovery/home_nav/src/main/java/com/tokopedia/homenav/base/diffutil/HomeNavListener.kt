@@ -10,4 +10,5 @@ interface HomeNavListener {
     fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun getUserId(): String
+    fun getReviewCounterAbIsUnify(): Boolean
 }
