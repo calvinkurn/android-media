@@ -139,12 +139,6 @@ class MixLeftComponentViewHolder (itemView: View,
         } else {
             loadingBackground.hide()
         }
-
-        if (channel.channelHeader.backColor.isEmpty()) {
-            val params = containerMixLeft.layoutParams as ConstraintLayout.LayoutParams
-            params.setMargins(params.leftMargin, convertDpToPixel(10f, itemView.context), params.rightMargin, params.bottomMargin)
-            containerMixLeft.layoutParams = params
-        }
     }
 
     private fun setupList(channel: ChannelModel) {
@@ -220,7 +214,8 @@ class MixLeftComponentViewHolder (itemView: View,
                                 ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
-                                        type = it.type
+                                        type = it.type,
+                                        imageUrl = it.url
                                 )
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(

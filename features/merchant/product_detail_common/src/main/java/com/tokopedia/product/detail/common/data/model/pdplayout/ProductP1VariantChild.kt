@@ -54,7 +54,11 @@ data class ProductP1VariantChild(
 
         @SerializedName("warehouseInfo")
         @Expose
-        val warehouseInfo: ProductP1VariantWarehouse? = null
+        val warehouseInfo: ProductP1VariantWarehouse? = null,
+
+        @SerializedName("isCOD")
+        @Expose
+        val isCod: Boolean = false
 )
 
 data class ProductP1VariantWarehouse(

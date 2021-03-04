@@ -29,17 +29,17 @@ class PartialContentView(private val view: View,
         const val ONE_SECOND = 1000L
     }
 
-    fun renderData(data: ProductContentMainData, isUpcomingNplType: Boolean, upcomingNplData: UpcomingNplDataModel) = with(view) {
+    fun renderData(data: ProductContentMainData, isUpcomingNplType: Boolean, upcomingNplData: UpcomingNplDataModel, freeOngkirImgUrl: String) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)
 
-        img_free_ongkir.shouldShowWithAction(data.freeOngkir.isActive) {
+        img_free_ongkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
+            //If !enableBoe render image from p1
             Glide.with(view.context)
-                    .load(data.freeOngkir.imageURL)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .load(freeOngkirImgUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .dontAnimate()
-                    .fitCenter()
                     .into(view.img_free_ongkir)
         }
 
@@ -89,6 +89,17 @@ class PartialContentView(private val view: View,
             }
         } else {
             share_product_pdp.hide()
+        }
+    }
+
+    fun renderFreeOngkir(freeOngkirUrl: String) = with(view) {
+        img_free_ongkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
+            Glide.with(view.context)
+                    .load(freeOngkirUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .fitCenter()
+                    .into(view.img_free_ongkir)
         }
     }
 
@@ -205,8 +216,9 @@ class PartialContentView(private val view: View,
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {
-        tradein_header_container.showWithCondition(showTradein)
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
+        tradein_header_container.shouldShowWithAction(showTradein) {
+            tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
+        }
     }
 
     private fun showCountDownTimerUpcomingNpl(startDateData: String) = with(view) {

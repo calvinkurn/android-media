@@ -6,6 +6,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CAMPAIGN
+import com.tokopedia.shop.common.data.model.Actions
+import com.tokopedia.shop.common.data.model.RestrictionEngineModel
+import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
@@ -92,7 +95,8 @@ object ShopPageProductListMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
@@ -176,8 +180,7 @@ object ShopPageProductListMapper {
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 formattedPrice = shopProductUiModel.displayedPrice ?: "",
-                ratingCount = shopProductUiModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = shopProductUiModel.rating.toString(),
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
@@ -189,11 +192,30 @@ object ShopPageProductListMapper {
         )
     }
 
+    fun mapRestrictionEngineResponseToModel(restrictionEngineResponse: RestrictionEngineDataResponse?): RestrictionEngineModel {
+        return RestrictionEngineModel().apply {
+            productId = restrictionEngineResponse?.productId.toIntOrZero()
+            status = restrictionEngineResponse?.status ?: ""
+            val list : MutableList<Actions> = mutableListOf()
+            restrictionEngineResponse?.actions?.map {
+                list.add(Actions(
+                        actionType = it.actionType,
+                        title = it.title,
+                        description = it.description,
+                        actionUrl = it.actionUrl,
+                        attributeName = it.attributeName
+                ))
+            }
+            actions = list
+        }
+    }
+
     private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 }

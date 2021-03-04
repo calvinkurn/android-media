@@ -59,7 +59,7 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_TRADEIN = 421321
+    const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
@@ -95,6 +95,7 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
+    const val SHIPMENT = "shipment"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -117,6 +118,7 @@ object ProductDetailConstant {
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
+    const val MVC = "mvc"
 
 
     //Arguments
@@ -184,4 +186,16 @@ object ProductDetailConstant {
     const val LAYOUT_FLOATING = "floating"
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
+
+    const val KEY_PRODUCT_DETAIL = "product detail"
+
+    //bo type
+    const val NO_BEBAS_ONGKIR = 0
+    const val BEBAS_ONGKIR_NORMAL = 1
+    const val BEBAS_ONGKIR_EXTRA = 2
+
+    //shipping error code
+    const val SHIPPING_ERROR_WEIGHT = 50503
+
+    const val ELIGIBLE_TRADE_IN = 1
 }

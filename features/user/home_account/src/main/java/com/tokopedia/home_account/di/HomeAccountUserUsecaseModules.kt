@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -54,12 +55,5 @@ class HomeAccountUserUsecaseModules {
     fun provideSafeSettingUseCase(@HomeAccountUserContext context: Context,
                                   graphqlRepository: GraphqlRepository): SafeSettingProfileUseCase {
         return SafeSettingProfileUseCase(context, graphqlRepository)
-    }
-
-    @Provides
-    fun provideGetRecomendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                       graphqlUseCase: GraphqlUseCase,
-                                       userSession: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
     }
 }

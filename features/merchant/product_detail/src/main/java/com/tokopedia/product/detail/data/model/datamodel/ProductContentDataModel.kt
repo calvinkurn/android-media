@@ -17,6 +17,7 @@ data class ProductContentDataModel(
         val name: String = "",
         var data: ProductContentMainData? = null,
         var isWishlisted: Boolean = false,
+        var freeOngkirImgUrl: String = "",
 
         //Ribbon Data
         var shouldShowTradein: Boolean = false,
@@ -67,8 +68,8 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN)
+            if (shouldShowTradein != newData.shouldShowTradein || freeOngkirImgUrl != newData.freeOngkirImgUrl) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
                 return bundle
             }
 
@@ -85,7 +86,6 @@ data class ProductContentDataModel(
 
 data class ProductContentMainData(
         var campaign: CampaignModular = CampaignModular(),
-        var freeOngkir: IsFreeOngkir = IsFreeOngkir(),
         var cashbackPercentage: Int = 0,
         var price: Price = Price(),
         var stockWording: String = "",

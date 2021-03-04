@@ -10,9 +10,13 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
+Data Layer Docs:
+
 Shop Page Home Revamp
-Data layer docs
 https://docs.google.com/spreadsheets/d/1l91ritx5rj-RJzcTNVXnMTcOp3sWZz6O2v__nfV64Co/edit#gid=306885993
+
+Mvc + Shop Follower Revamp
+https://mynakama.tokopedia.com/datatracker/requestdetail/690
  */
 
 class ShopPageHomeTracking(
@@ -93,78 +97,16 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickSeeAllMerchantVoucher(
-            isOwner: Boolean,
+    fun impressionSeeEntryPointMerchantVoucherCoupon(
             shopId: String,
-            layoutId: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            userId: String?
     ) {
-        sendGeneralEvent(CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                "$MERCHANT_VOUCHER_CODE - $CLICK_SEE_ALL",
-                "$shopId - $MERCHANT_VOUCHER - $layoutId",
-                customDimensionShopPage
+        followUnfollowShop(
+                VIEW_SHOP_PAGE_IRIS,
+                SEE_ENTRY_POINT,
+                SHOP_PAGE_LABEL + shopId,
+                userId,
         )
-    }
-
-    fun clickDetailMerchantVoucher(
-            isOwner: Boolean,
-            shopId: String,
-            layoutId: String,
-            parentPosition: Int,
-            position: Int,
-            voucherData: MerchantVoucherViewModel,
-            customDimensionShopPage: CustomDimensionShopPage
-    ) {
-        val eventAction = joinDash(HOME_TAB, MERCHANT_VOUCHER_CODE, CLICK_DETAIL)
-        val eventLabel = "$shopId - $MERCHANT_VOUCHER - $layoutId - ${voucherData.voucherId}"
-        val eventMap = createMap(
-                PROMO_CLICK,
-                getShopPageCategory(isOwner),
-                eventAction,
-                eventLabel,
-                customDimensionShopPage
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-                PROMO_CLICK to mutableMapOf(
-                        PROMOTIONS to mutableListOf(
-                                createVoucherItemMap(
-                                        parentPosition,
-                                        position,
-                                        voucherData
-                                )
-                        )))
-        sendDataLayerEvent(eventMap)
-    }
-
-    fun onImpressionVoucherItem(
-            isOwner: Boolean,
-            shopId: String,
-            layoutId: String,
-            parentPosition: Int,
-            itemPosition: Int,
-            voucherItem: MerchantVoucherViewModel,
-            customDimensionShopPage: CustomDimensionShopPage
-    ) {
-        val eventAction = joinDash(HOME_TAB, MERCHANT_VOUCHER_CODE, IMPRESSION)
-        val eventLabel = "$shopId - $MERCHANT_VOUCHER - $layoutId - ${voucherItem.voucherId}"
-        val eventMap = createMap(
-                PROMO_VIEW,
-                getShopPageCategory(isOwner),
-                eventAction,
-                eventLabel,
-                customDimensionShopPage
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-                PROMO_VIEW to mutableMapOf(
-                        PROMOTIONS to mutableListOf(
-                                createVoucherItemMap(
-                                        parentPosition,
-                                        itemPosition,
-                                        voucherItem
-                                )
-                        )))
-        sendDataLayerEvent(eventMap)
     }
 
     fun impressionProduct(
@@ -436,6 +378,13 @@ class ShopPageHomeTracking(
                 widgetOption,
                 customDimensionShopPage
         )
+        val boe = if (customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+            BOE
+        } else if (!customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+            BO_PRODUCT
+        } else {
+            NON_BO_PRODUCT
+        }
         return mutableMapOf(
                 NAME to productName,
                 ID to productId,
@@ -447,7 +396,8 @@ class ShopPageHomeTracking(
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType,
                 DIMENSION_79 to customDimensionShopPage.shopId,
-                SHOP_REF to customDimensionShopPage.shopRef
+                SHOP_REF to customDimensionShopPage.shopRef,
+                DIMENSION_83 to boe
         )
     }
 
@@ -742,7 +692,7 @@ class ShopPageHomeTracking(
                 customDimensionShopPage
         )
         val listEventValue = createCampaignNplProductListValue(
-            verticalPosition,
+                verticalPosition,
                 statusCampaign,
                 customDimensionShopPage.shopId,
                 isLogin
@@ -876,7 +826,7 @@ class ShopPageHomeTracking(
         sendGeneralEvent(
                 CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
-                String.format(CLICK_FILTER_PRICE,min, max),
+                String.format(CLICK_FILTER_PRICE, min, max),
                 productListName,
                 customDimensionShopPage
         )
@@ -917,7 +867,8 @@ class ShopPageHomeTracking(
             userId: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
-        val eventAction = String.format(CLICK_FOLLOW_UNFOLLOW_TNC_PAGE, FOLLOW.takeIf { isFollowShop } ?: UNFOLLOW )
+        val eventAction = String.format(CLICK_FOLLOW_UNFOLLOW_TNC_PAGE, FOLLOW.takeIf { isFollowShop }
+                ?: UNFOLLOW)
         sendGeneralEventNplFollower(
                 CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),

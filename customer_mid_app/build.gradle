@@ -83,6 +83,7 @@ dependencies {
     implementation project(rootProject.ext.features.discovery2)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.qrscanner)
@@ -122,6 +123,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.libraries.moengageWrapper)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -239,7 +241,6 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -269,7 +270,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

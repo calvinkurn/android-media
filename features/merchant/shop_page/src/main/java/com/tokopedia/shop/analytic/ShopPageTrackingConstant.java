@@ -100,6 +100,14 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
     public static final String CLICK_FILTER_RATING = "click filter rating - ";
     public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
+    public static final String VIEW_FOLLOW_VOUCHER_ICON = "view follow voucher icon";
+    public static final String VIEW_COACHMARK_FOLLOW = "view coachmark follow";
+    public static final String VIEW_TOASTER_FOLLOW_SUCCESS = "view toaster follow success";
+    public static final String VIEW_TOASTER_FOLLOW_ERROR = "view toaster follow error";
+    public static final String VIEW_TOASTER_UNFOLLOW_SUCCESS = "view toaster unfollow success";
+    public static final String VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error";
+    public static final String CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success";
+    public static final String SEE_ENTRY_POINT = "see entry point";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -165,9 +173,10 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
-
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
+    public static final String SHOP_PAGE_LABEL = "shop page - ";
+    public static final String COACHMARK_DISAPPEAR = " - coachmark disappear";
 
     //key
     public static final String EVENT = "event";
@@ -227,8 +236,7 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION_45 = "dimension45";
     public static final String DIMENSION_38 = "dimension38";
     public static final String DIMENSION_40 = "dimension40";
-
-
+    public static final String DIMENSION_83 = "dimension83";
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
@@ -249,8 +257,11 @@ public class ShopPageTrackingConstant {
     public static final String VALUE_NO_SEE_CAMPAIGN = "no see campaign";
     public static final String VALUE_HOME = "home";
 
-
-
+    //dimension83
+    public static final String BOE = "BoE";
+    public static final String BO_PRODUCT = "BO Product";
+    public static final String NON_BO_PRODUCT = "Non-BO Product";
+    public static final String LABEL_GROUP_POSITION_FULFILLMENT = "fulfillment";
 
     //page_url
     public static final String ETALASE_SHOPNAME = "etalase-%s";

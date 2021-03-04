@@ -27,22 +27,10 @@ data class CartListData(
         var errorDefault: PromoCheckoutErrorDefault? = null,
         var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null,
         var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData(),
+        var promoSummaryData: PromoSummaryData = PromoSummaryData(),
         var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var showLessUnavailableDataWording: String = "",
-        var showMoreUnavailableDataWording: String = ""
-) : Parcelable {
-
-    override fun equals(other: Any?): Boolean {
-        if (other is CartListData) {
-            val `object` = other as CartListData?
-            return `object`?.isError == isError &&
-                    `object`.isAllSelected == isAllSelected &&
-                    `object`.unavailableGroupData == unavailableGroupData &&
-                    `object`.shopGroupAvailableDataList == shopGroupAvailableDataList &&
-                    `object`.isShowOnboarding == isShowOnboarding &&
-                    `object`.isPromoCouponActive == isPromoCouponActive
-        }
-        return super.equals(other)
-    }
-
-}
+        var showMoreUnavailableDataWording: String = "",
+        var localizationChooseAddressData: LocalizationChooseAddressData = LocalizationChooseAddressData(),
+        var popUpMessage: String = ""
+) : Parcelable

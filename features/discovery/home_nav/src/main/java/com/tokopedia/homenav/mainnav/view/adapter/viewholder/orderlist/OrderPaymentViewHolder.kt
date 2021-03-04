@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
@@ -86,7 +87,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     paymentModel.navPaymentModel.statusText)
-            RouteManager.route(context, paymentModel.navPaymentModel.applink)
+            RouteManager.route(context, if(itemView.order_payment_status.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
         }
     }
 }

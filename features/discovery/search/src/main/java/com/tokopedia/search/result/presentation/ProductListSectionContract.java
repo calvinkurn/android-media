@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -90,8 +91,6 @@ public interface ProductListSectionContract {
 
         void setDefaultLayoutType(int defaultView);
 
-        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
@@ -154,7 +153,7 @@ public interface ProductListSectionContract {
 
         void setQuickFilter(List<SortFilterItem> items);
 
-        void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding);
+        void showOnBoarding(int firstProductPosition);
 
         boolean isQuickFilterSelected(Option option);
 
@@ -195,6 +194,12 @@ public interface ProductListSectionContract {
         void switchSearchNavigationLayoutTypeToBigGridView(int position);
 
         void switchSearchNavigationLayoutTypeToSmallGridView(int position);
+
+        boolean isChooseAddressWidgetEnabled();
+
+        LocalCacheModel getChooseAddressData();
+
+        boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -225,15 +230,13 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item);
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
 
         void getProductCount(Map<String, String> mapParameter);
-
-        void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
 
@@ -252,5 +255,9 @@ public interface ProductListSectionContract {
         void handleVisitShopAction();
 
         void handleChangeView(int position, SearchConstant.ViewType currentLayoutType);
+
+        void onViewResumed();
+
+        void onLocalizingAddressSelected();
     }
 }

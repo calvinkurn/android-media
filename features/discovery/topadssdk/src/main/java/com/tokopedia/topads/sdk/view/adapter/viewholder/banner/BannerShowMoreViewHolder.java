@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
 
 /**
@@ -31,7 +31,7 @@ public class BannerShowMoreViewHolder extends AbstractViewHolder<BannerShopViewM
         itemView.setOnClickListener(v -> {
             if(topAdsBannerClickListener!=null) {
                 topAdsBannerClickListener.onBannerAdsClicked(getAdapterPosition(), element.getAppLink(), element.getCpmData());
-                new ImpresionTask(className).execute(element.getAdsClickUrl());
+                new TopAdsUrlHitter(itemView.getContext()).hitClickUrl(className, element.getAdsClickUrl(),"","","");
             }
         });
     }

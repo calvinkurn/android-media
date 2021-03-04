@@ -24,6 +24,10 @@ class WishlistItemViewHolder(
 
     override fun bind(element: WishlistItemDataModel, listener: SmartListener) {
         productCardView.run {
+            val productFreeOngkir = when {
+                element.productItem.freeOngkirExtra.isActive -> element.productItem.freeOngkirExtra
+                else -> element.productItem.freeOngkir
+            }
             setProductModel(
                     ProductCardModel(
                             productName = element.productItem.name,
@@ -38,8 +42,8 @@ class WishlistItemViewHolder(
                             ratingCount = element.productItem.rating,
                             reviewCount = element.productItem.reviewCount,
                             freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.productItem.freeOngkir.isActive,
-                                    imageUrl = element.productItem.freeOngkir.imageUrl
+                                    isActive = productFreeOngkir.isActive,
+                                    imageUrl = productFreeOngkir.imageUrl
                             ),
                             labelGroupList = element.productItem.labels.map { labelGroup ->
                                 ProductCardModel.LabelGroup(

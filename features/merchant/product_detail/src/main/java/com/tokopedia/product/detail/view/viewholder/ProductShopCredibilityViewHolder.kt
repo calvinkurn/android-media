@@ -38,7 +38,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                     componentTracker = getComponentTrackData(element)
                 }
                 shop_name.text = MethodChecker.fromHtml(element.shopName)
-                shop_location_online.text = context.getString(R.string.location_dot_builder, element.shopLocation)
+                shop_location_online?.shouldShowWithAction(element.shopLocation.isNotEmpty()) {
+                    shop_location_online.text = context.getString(R.string.location_dot_builder, element.shopLocation)
+                }
                 setupLastActive(element.shopLastActive)
                 setupBadgeAndImage(element.shopAva, element.isOs, element.isPm)
                 setupGoApotik(element.isGoApotik)
@@ -155,7 +157,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
     private fun setupBadgeAndImage(avatar: String, isOs: Boolean, isPm: Boolean) = with(view) {
         val drawable = when {
             isOs -> {
-                MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
+                MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
             }
             isPm -> {
                 MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)

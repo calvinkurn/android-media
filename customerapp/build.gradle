@@ -138,12 +138,9 @@ android {
     }
 
     lintOptions {
-        checkReleaseBuilds false
-        checkDependencies true
-        htmlReport false
-        warningsAsErrors false
         abortOnError false
-        check lintchecks
+        xmlReport true
+        htmlReport false
     }
 
     signingConfigs {
@@ -265,6 +262,7 @@ android {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
     implementation project(rootProject.ext.features.customer_mid_app)
     implementation project(rootProject.ext.features.tkpdcore)
@@ -288,7 +286,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
-
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.playServicesDependencies.maps
@@ -319,7 +316,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation project(rootProject.ext.libraries.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -435,7 +432,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
+
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam

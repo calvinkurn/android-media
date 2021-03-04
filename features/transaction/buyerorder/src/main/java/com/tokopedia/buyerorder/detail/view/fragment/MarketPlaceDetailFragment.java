@@ -1257,7 +1257,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             RouteManager.route(getContext(), applink);
         });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status, userSessionInterface.getUserId(), getArguments().getString(KEY_ORDER_ID)));
     }
 
     @Override
@@ -1313,7 +1313,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            long productId = 0;
+            String productId = "";
             int quantity = 0;
             int shopId = 0;
             String notes = "";

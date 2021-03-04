@@ -83,6 +83,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("eligible_new_shipping_experience")
     @Expose
     private boolean eligibleNewShippingExperience;
+    @SerializedName("pop_up_message")
+    @Expose
+    private String popUpMessage = "";
 
     public List<String> getErrors() {
         return errors;
@@ -172,5 +175,9 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isEligibleNewShippingExperience() {
         return eligibleNewShippingExperience;
+    }
+
+    public String getPopUpMessage() {
+        return popUpMessage;
     }
 }

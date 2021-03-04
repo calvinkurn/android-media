@@ -131,4 +131,6 @@ interface HomeCategoryListener {
     fun getSalamWidget()
 
     fun getRechargeBUWidget(source: WidgetSource)
+
+    fun onChooseAddressUpdated()
 }

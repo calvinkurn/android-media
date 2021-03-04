@@ -63,6 +63,7 @@ object ProductTrackingConstant {
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_DEFAULT_VALUE = "IDR"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val VALUE_NONE_OTHER = "none / other"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"
@@ -185,6 +186,8 @@ object ProductTrackingConstant {
         const val CLICK_MUTE_VIDEO = "click - mute on video"
 
         const val CLICK_CHECK_CART = "click - cek keranjang"
+        const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
+        const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
     }
 
 
@@ -200,6 +203,8 @@ object ProductTrackingConstant {
         const val VIDEO_DURATION = "duration:"
         const val VIDEO_LAST_STOP_TIME = "stop time:"
         const val VIDEO_AUTO_PLAY = "auto play:"
+        const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
+
     }
 
     object Report {
@@ -214,6 +219,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
+        const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
     object Affiliate {

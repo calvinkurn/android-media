@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -74,6 +78,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
@@ -91,6 +96,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var promoCheckoutMarketplaceHanselHelper: PromoCheckoutMarketplaceHanselHelper? = null
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
@@ -139,6 +145,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
+
+        private const val COACHMARK_PERIOD_ONE_YEAR : Long = 365
+        private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -206,6 +215,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Initialize hansel helper
+        initializeHanselHelper()
 
         // UI Initialization
         initializeToolbar(view)
@@ -230,6 +241,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun initializeHanselHelper() {
+        promoCheckoutMarketplaceHanselHelper = PromoCheckoutMarketplaceHanselHelper(viewModel, analytics)
+    }
+
+    private fun getHanselHelper(): PromoCheckoutMarketplaceHanselHelper? {
+        return promoCheckoutMarketplaceHanselHelper
     }
 
     private fun initializeFlagIsPromoMvcLockCourierFlow() {
@@ -278,17 +297,23 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeClickListener() {
-        buttonApplyPromo?.let { buttonApplyPromo ->
-            buttonApplyPromo.setOnClickListener {
-                setButtonLoading(buttonApplyPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                        ?: ValidateUsePromoRequest()
-                val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
-                        ?: ArrayList())
+        initializeClickButtonApplyPromo()
+        initializeClickButtonApplyNoPromo()
+        initializeClickBottomsheet()
+    }
+
+    private fun initializeClickBottomsheet() {
+        bottomsheetCloseButton?.let { bottomsheetCloseButton ->
+            bottomsheetCloseButton.setOnClickListener {
+                analytics.eventDismissLastSeen(viewModel.getPageSource())
+                hidePromoCheckoutLastSeenBottomsheet()
             }
         }
 
+        bottomSheetTitle?.setOnClickListener { }
+    }
+
+    private fun initializeClickButtonApplyNoPromo() {
         buttonApplyNoPromo?.let { buttonApplyNoPromo ->
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
@@ -300,15 +325,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
+    }
 
-        bottomsheetCloseButton?.let { bottomsheetCloseButton ->
-            bottomsheetCloseButton.setOnClickListener {
-                analytics.eventDismissLastSeen(viewModel.getPageSource())
-                hidePromoCheckoutLastSeenBottomsheet()
+    private fun initializeClickButtonApplyPromo() {
+        buttonApplyPromo?.let { buttonApplyPromo ->
+            buttonApplyPromo.setOnClickListener {
+                setButtonLoading(buttonApplyPromo, true)
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                        ?: ValidateUsePromoRequest()
+                val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
+                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                        ?: ArrayList())
             }
         }
-
-        bottomSheetTitle?.setOnClickListener { }
     }
 
     private fun initializePromoCheckoutLastSeenBottomsheet() {
@@ -468,6 +497,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observePromoListUiModel() {
         viewModel.promoListUiModel.observe(viewLifecycleOwner, Observer {
             adapter.addVisitableList(it)
+            renderPromoCoachMark()
         })
     }
 
@@ -609,8 +639,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val availableSpaceHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
 
                 // Determine total space, in pixel, needed to show all promo last seen item
-                val headerPromoLastSeenHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_56)
-                val itemPromoLastSeenHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_52)
+                val headerPromoLastSeenHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+                val itemPromoLastSeenHeight = resources.getDimensionPixelSize(R.dimen.dp_52)
                 val totalSpaceNeededForPromoLastSeenItems = (data.uiData.promoLastSeenItemUiModelList.size * itemPromoLastSeenHeight) + headerPromoLastSeenHeight
 
                 // If available space is not sufficient to show all promo item, then set max available height for the bottomsheet
@@ -845,6 +875,40 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }.show()
 
             analytics.eventViewPopupSavePromo(viewModel.getPageSource())
+        }
+    }
+
+    private fun renderPromoCoachMark() {
+        val coachMarkIndex = adapter.list.indexOfFirst { item ->
+            if (item is PromoListItemUiModel) {
+                item.uiData.coachMark.isShown
+            } else {
+                false
+            }
+        }
+
+        if (coachMarkIndex != -1 && PersistentCacheManager.instance.get(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, Boolean::class.java, false) != true) {
+            recyclerView.smoothScrollToPosition(coachMarkIndex)
+            Handler().postDelayed({
+                val holder = recyclerView.findViewHolderForAdapterPosition(coachMarkIndex)
+                val coachMarkData = adapter.list[coachMarkIndex] as PromoListItemUiModel
+                holder?.let {
+                    val coachMarkItem = arrayListOf(
+                            CoachMark2Item(
+                                    holder.itemView,
+                                    coachMarkData.uiData.coachMark.title,
+                                    coachMarkData.uiData.coachMark.content,
+                                    CoachMark2.POSITION_TOP
+                            )
+                    )
+
+                    context?.let {
+                        val coachMark = CoachMark2(it)
+                        coachMark.showCoachMark(coachMarkItem)
+                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, TimeUnit.DAYS.toMillis(COACHMARK_PERIOD_ONE_YEAR))
+                    }
+                }
+            }, 300)
         }
     }
 
