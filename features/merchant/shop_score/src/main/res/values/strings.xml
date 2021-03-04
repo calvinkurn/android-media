@@ -255,5 +255,7 @@
     <string name="shop_performance_learn">Pelajari Performa Toko</string>
     <string name="title_tv_watch">Tonton Video</string>
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
+    <string name="item_detail_performance_value">%1s %2s</string>
+    <string name="item_detail_performance_target">Target 30 Menit</string>
 
 </resources>

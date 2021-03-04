@@ -4,3 +4,7 @@ interface ShopPerformanceListener {
     fun onTooltipLevelClicked(level: Int)
     fun onTooltipScoreClicked()
 }
+
+interface ItemShopPerformanceListener {
+    fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String)
+}

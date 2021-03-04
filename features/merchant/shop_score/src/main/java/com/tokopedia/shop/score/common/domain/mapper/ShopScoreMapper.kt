@@ -28,10 +28,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
-import com.tokopedia.shop.score.performance.presentation.model.CardTooltipLevelUiModel
-import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
+import com.tokopedia.shop.score.performance.presentation.model.*
 
 object ShopScoreMapper {
 
@@ -195,6 +192,10 @@ object ShopScoreMapper {
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
         shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(level)
         return shopInfoLevelUiModel
+    }
+
+    fun mapToItemDetailPerformanceUiModel(): ItemDetailPerformanceUiModel {
+        return ItemDetailPerformanceUiModel()
     }
 
     private fun mapToCardTooltipLevel(level: Int): List<CardTooltipLevelUiModel> {
