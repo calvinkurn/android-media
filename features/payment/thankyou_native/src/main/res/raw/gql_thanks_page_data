@@ -29,8 +29,6 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         item_desc
         amount
         amount_str
-        info_url
-        info_applink
     }
     payment_details {
        gateway_code
@@ -125,10 +123,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     }
     config_flag
     config_list
-    gateway_additional_data{
-            key
-            value
-        }
+
   }
 }
 
