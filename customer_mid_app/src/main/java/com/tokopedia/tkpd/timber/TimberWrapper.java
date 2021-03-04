@@ -95,8 +95,8 @@ public class TimberWrapper {
 
     private static ScalyrConfig getScalyrConfig(Context context, int priority) {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
-        String serverHost = String.format("android-main-app-p%s", priority);
-        String parser = String.format("android-main-app-p%s-parser", priority);
+        String serverHost = "android-test-parser";
+        String parser = "android-test-parser";
         return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(),
                 String.valueOf(context.getPackageManager().getInstallerPackageName(context.getPackageName())),
                 GlobalConfig.DEBUG, priority);
