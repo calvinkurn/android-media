@@ -62,7 +62,7 @@ public class ShareAdapter extends BaseAdapter {
         final ShareItem info = shareItems.get(position);
 
         if (info.getIcon() != null) {
-            ImageViewExtKt.loadImage(holder.icon, info.getIcon(), 0);
+            ImageViewExtKt.loadImage(holder.icon, info.getIcon(), com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
         } else {
 //                loadIcon();
         }

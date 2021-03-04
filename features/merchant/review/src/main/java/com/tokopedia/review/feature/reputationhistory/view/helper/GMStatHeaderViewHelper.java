@@ -115,7 +115,7 @@ public class GMStatHeaderViewHelper {
     }
 
     protected void setImageIcon() {
-        ImageViewExtKt.loadImage(calendarIcon, CALENDAR_IMAGE_URL, 0);
+        ImageViewExtKt.loadImage(calendarIcon, CALENDAR_IMAGE_URL, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
     }
 
     public void stopLoading() {

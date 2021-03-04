@@ -481,6 +481,6 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private void setChevronDownImage() {
-        ImageViewExtKt.loadImage(replyArrow, CHEVRON_DOWN_IMAGE, 0);
+        ImageViewExtKt.loadImage(replyArrow, CHEVRON_DOWN_IMAGE, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
     }
 }

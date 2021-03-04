@@ -106,7 +106,7 @@ public class ReputationLevelUtils {
             public void onClick(final View v) {
                 View popup = View.inflate(context, R.layout.popup_reputation, null);
                 ImageView popupImage = (ImageView) popup.findViewById(R.id.popup_reputation_speech_bubble);
-                ImageViewExtKt.loadImage(popupImage, SPEECH_BUBBLE_IMAGE, 0);
+                ImageViewExtKt.loadImage(popupImage, SPEECH_BUBBLE_IMAGE, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
                 TextView point = (TextView)popup.findViewById(R.id.point);
                 point.setText(reputationPoint + " Poin");
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
