@@ -21,6 +21,8 @@ import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter
+import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter.Payment
 import com.tokopedia.digital_checkout.usecase.*
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
@@ -102,6 +104,10 @@ class DigitalCartViewModel @Inject constructor(
     private val _promoData = MutableLiveData<PromoData>()
     val promoData: LiveData<PromoData>
         get() = _promoData
+
+    private val _payment = MutableLiveData<Pair<Payment, Boolean>>()
+    val payment: LiveData<Pair<Payment, Boolean>>
+        get() = _payment
 
     var requestCheckoutParam = DigitalCheckoutDataParameter()
 
@@ -223,6 +229,8 @@ class DigitalCartViewModel @Inject constructor(
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
+            _payment.postValue(Payment(PAYMENT_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)) to true)
+
             requestCheckoutParam.transactionAmount = pricePlain
 
             val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
@@ -285,7 +293,10 @@ class DigitalCartViewModel @Inject constructor(
             val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.postValue(additionals)
+            _payment.postValue(Payment(PAYMENT_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))) to true)
             _totalPrice.forceRefresh()
+        } else {
+            _payment.postValue(Payment(PAYMENT_KODE_PROMO, getStringIdrFormat(promoDataValue.toDouble())) to false)
         }
     }
 
@@ -298,6 +309,9 @@ class DigitalCartViewModel @Inject constructor(
             }
         }
         _cartAdditionalInfoList.postValue(additionalInfos)
+
+        // TODO: ini rada maksa bgt masukin priceAmount dummy
+        _payment.postValue(Payment(PAYMENT_KODE_PROMO, "") to false)
         _totalPrice.forceRefresh()
     }
 
@@ -310,11 +324,14 @@ class DigitalCartViewModel @Inject constructor(
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = if (inputPrice > 0) inputPrice else attributes.pricePlain
+            val fintechProductName = attributes.fintechProduct.getOrNull(0)?.info?.title
+                    ?: ""
+            val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
+                    ?: 0.0
             if (isChecked) {
-                val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
-                        ?: 0.0
                 totalPrice += fintechProductPrice
             }
+            _payment.postValue(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)) to isChecked)
             _totalPrice.postValue(totalPrice)
         }
     }
@@ -397,5 +414,10 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun <T> MutableLiveData<T>.forceRefresh() {
         this.value = this.value
+    }
+
+    companion object {
+        private const val PAYMENT_SUBTOTAL_TAGIHAN = "Subtotal Tagihan"
+        private const val PAYMENT_KODE_PROMO = "Kode Promo"
     }
 }

@@ -17,8 +17,6 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
     private var rvCheckoutSummary: RecyclerView
     private var mAdapter: DigitalCheckoutSummaryAdapter
 
-    var actionListener: ActionListener? = null
-
     init {
         LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_summary_view, this, true)
         mAdapter = DigitalCheckoutSummaryAdapter()
@@ -27,33 +25,17 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        addItem()
-        removeItem()
     }
 
-    fun addItem() {
-//         TODO : change function name and add functionality
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("A", 12000), 0)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("B", 12000), 1)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("C", 12000), 2)
-        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("D", 12000), 5)
-        actionListener?.updateTotalPayment(calculateTotalPayment())
+    fun addItem(payment: DigitalCheckoutSummaryAdapter.Payment) {
+        mAdapter.addItem(payment)
+//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("A", 12000), 0)
+//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("B", 12000), 1)
+//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("C", 12000), 2)
+//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("D", 12000), 5)
     }
 
-    fun removeItem() {
-//         TODO : change function name and add functionality
-        mAdapter.removeItem("A")
-        actionListener?.updateTotalPayment(calculateTotalPayment())
-    }
-
-    private fun calculateTotalPayment(): Int {
-        val payments = mAdapter.getAllItems()
-        var totalPayment = 0
-        payments.forEach { totalPayment += it.priceAmount }
-        return totalPayment
-    }
-
-    interface ActionListener {
-        fun updateTotalPayment(totalPayment: Int)
+    fun removeItem(payment: DigitalCheckoutSummaryAdapter.Payment) {
+        mAdapter.removeItem(payment)
     }
 }

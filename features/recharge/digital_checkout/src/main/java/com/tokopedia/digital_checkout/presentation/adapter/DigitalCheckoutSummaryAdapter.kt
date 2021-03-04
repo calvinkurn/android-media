@@ -22,20 +22,21 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
 
     override fun getItemCount(): Int = summaries.size
 
-    fun addItem(item: Payment, position: Int) {
-        val insertPosition = if (position < itemCount) position else itemCount
-        summaries.add(insertPosition, item)
+    fun addItem(payment: Payment) {
+//        val insertPosition = if (position < itemCount) position else itemCount
+//        summaries.add(insertPosition, payment)
+//        notifyItemInserted(insertPosition)
+
+        summaries.add(payment)
         notifyItemInserted(itemCount - 1)
     }
 
-    fun removeItem(title: String) {
-        val item: Payment = summaries.firstOrNull { it.title == title } ?: return
+    fun removeItem(payment: Payment) {
+        val item: Payment = summaries.firstOrNull {it.title == payment.title} ?: return
         val deletePosition = summaries.indexOf(item)
         summaries.removeAt(deletePosition)
         notifyItemRemoved(deletePosition)
     }
-
-    fun getAllItems(): List<Payment> = summaries
 
     class DigitalCheckoutSummaryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         companion object {
@@ -51,6 +52,6 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
 
     data class Payment (
             val title: String,
-            val priceAmount: Int
+            val priceAmount: String
     )
 }
