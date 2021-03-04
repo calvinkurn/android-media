@@ -56,7 +56,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     private var inputFieldSize = 0
     private var collapsedFields = 0
-    private var minProductStockLimit = MIN_PRODUCT_STOCK_LIMIT
 
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
@@ -371,9 +370,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
-        if (productStock < minProductStockLimit.toBigInteger()) {
+        if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(minProductStockLimit) ?: ""
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) ?: ""
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -400,8 +399,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
-            stockInput < minProductStockLimit.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage(minProductStockLimit).orEmpty()
+            stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
+                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT).orEmpty()
             }
             else -> ""
         }
@@ -414,7 +413,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
             val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
             productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
-                    productStock < minProductStockLimit.toBigInteger()
+                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
         }
     }
 
@@ -446,9 +445,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun setupMultiLocationValue() {
         isMultiLocationShop = userSession.run {
             isMultiLocationShop && (isShopAdmin || isShopOwner)
-        }
-        if (isEditMode && isMultiLocationShop) {
-            minProductStockLimit = 0
         }
     }
 
