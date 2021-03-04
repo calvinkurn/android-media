@@ -71,7 +71,7 @@ class ImageLabelView : FrameLayout {
             titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color,
                     ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ImageLabelView_ilv_title_text_style, Typeface.NORMAL)
-            titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, resources.getDimension(com.tokopedia.design.R.dimen.sp_12))
+            titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, resources.getDimension(R.dimen.sp_12))
             drawableRes = styledAttributes.getResourceId(R.styleable.ImageLabelView_ilv_drawable, 0)
             contentHint = styledAttributes.getString(R.styleable.ImageLabelView_ilv_content_hint)
         } finally {

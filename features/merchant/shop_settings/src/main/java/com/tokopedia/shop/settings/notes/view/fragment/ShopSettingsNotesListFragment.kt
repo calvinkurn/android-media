@@ -132,7 +132,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
+        emptyModel.iconRes = R.drawable.ic_tree_empty_state
         emptyModel.title = getString(R.string.shop_has_no_notes)
         emptyModel.content = getString(R.string.shop_notes_info)
         emptyModel.buttonTitleRes = R.string.add_note

@@ -126,7 +126,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         setTitle(getString(R.string.remove_schedule))
                         setDescription(getString(R.string.remove_schedule_message))
                         setPrimaryCTAText(getString(R.string.action_delete))
-                        setSecondaryCTAText(getString(com.tokopedia.design.R.string.label_cancel))
+                        setSecondaryCTAText(getString(R.string.label_cancel))
                         setPrimaryCTAClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
@@ -385,7 +385,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 if (URLUtil.isNetworkUrl(it)) {
                     it
                 } else {
-                    getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
+                    getString(R.string.tokopedia_domain) + "/$it"
                 }
             }
 
@@ -394,7 +394,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             try {
                 if (ivShopLogo.context.isValidGlideContext()) {
                     if (TextUtils.isEmpty(logoUrl)) {
-                        ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
+                        ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_shopdefault_empty)
                     } else {
                         ImageHandler.LoadImage(ivShopLogo, logoUrl)
                     }
@@ -419,7 +419,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription.text = shopBasicData.description
             }
 
-            tvShopStatus.text = if (shopBasicData.isOpen) getString(com.tokopedia.design.R.string.label_open) else getString(com.tokopedia.design.R.string.label_close)
+            tvShopStatus.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
         }
     }
 
@@ -428,7 +428,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             container_regular_merchant.visibility = View.VISIBLE
             container_power_merchant.visibility = View.GONE
             container_official_store.visibility = View.GONE
-            tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
+            tv_regular_merchant_type.text = getString(R.string.label_regular_merchant)
         }
     }
 
@@ -438,7 +438,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+        tv_power_merchant_type.text = getString(R.string.label_power_merchant)
     }
 
     private fun showOfficialStore(expirationDate: String) {
@@ -447,7 +447,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_power_merchant.visibility = View.GONE
         iv_logo_official_store.visibility = View.VISIBLE
         iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
-        tv_official_store.text = getString(com.tokopedia.design.R.string.label_official_store)
+        tv_official_store.text = getString(R.string.label_official_store)
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
 
