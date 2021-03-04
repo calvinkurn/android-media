@@ -46,6 +46,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.data.model.Property
@@ -92,6 +93,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var screenHeight: Int = 0
     private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
+    private lateinit var hotelSearchModel: HotelSearchModel
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -118,7 +120,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.setPermissionHelper(permissionCheckerHelper)
 
         arguments?.let {
-            val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
+            hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
             hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
@@ -127,6 +129,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         activity?.let {
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
+
+        setCardListViewAdapter()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -141,9 +145,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    hotelSearchMapViewModel.searchParam.location.latitude = it.data.first.toFloat()
-                    hotelSearchMapViewModel.searchParam.location.longitude = it.data.second.toFloat()
+                    hotelSearchModel.apply {
+                        searchType = HotelTypeEnum.COORDINATE.value
+                        searchId = ""
+                        long = it.data.first.toFloat()
+                        lat = it.data.second.toFloat()
+                    }
+                    hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                     addMyLocation(LatLng(it.data.first, it.data.second))
+                    loadInitialData()
                 }
             }
         })
@@ -155,6 +165,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         })
     }
 
+    override fun loadInitialData() {
+        super.loadInitialData()
+        showLoadingCardListMap()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
 
@@ -164,7 +179,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initRecyclerViewMap()
         initFloatingButton()
         initLocationMap()
-        showLoadingCardListMap()
         setUpTitleAndSubtitle()
         setupCollapsingToolbar()
         Handler().postDelayed({
@@ -231,9 +245,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
-    private fun initRecyclerViewMap() {
+    private fun setCardListViewAdapter(){
         adapterCardList = HotelSearchResultAdapter(this, adapterTypeFactory)
+    }
 
+    private fun initRecyclerViewMap() {
         rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
@@ -490,9 +506,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun showLoadingCardListMap() {
-        adapter.removeErrorNetwork()
-        adapter.setLoadingModel(loadingModel)
-        adapter.showLoading()
+        adapterCardList.setLoadingModel(loadingModel)
+        adapterCardList.showLoading()
     }
 
     private fun hideLoadingCardListMap() {
