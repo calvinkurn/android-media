@@ -320,18 +320,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return DisabledItemHeaderViewHolder(binding, actionListener)
             }
             DisabledReasonViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(DisabledReasonViewHolder.LAYOUT, parent, false)
-                return DisabledReasonViewHolder(view, actionListener)
+                val binding = ItemCartDisabledReasonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return DisabledReasonViewHolder(binding, actionListener)
             }
             DisabledShopViewHolder.LAYOUT -> {
                 val binding = ItemCartDisabledShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return DisabledShopViewHolder(binding, actionListener)
             }
             DisabledAccordionViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(DisabledAccordionViewHolder.LAYOUT, parent, false)
-                return DisabledAccordionViewHolder(view, actionListener)
+                val binding = ItemCartDisabledAccordionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return DisabledAccordionViewHolder(binding, actionListener)
             }
 
             else -> throw RuntimeException("No view holder type found")
