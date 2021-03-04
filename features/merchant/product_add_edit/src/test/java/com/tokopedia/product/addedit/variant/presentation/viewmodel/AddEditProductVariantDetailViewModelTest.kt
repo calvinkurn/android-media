@@ -341,51 +341,34 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     }
 
     @Test
-    fun `When setupMultiLocationValue, min stock limit will be 0 if all conditions met`() {
+    fun `When setupMultiLocationValue, isMultiLocationShop will be true if all conditions met`() {
         every { userSession.isMultiLocationShop } returns true
         every { userSession.isShopAdmin } returns true
-        viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
         viewModel.setupMultiLocationValue()
 
-        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
-        assert(actualProductStockLimit == 0)
+        assert(viewModel.isMultiLocationShop)
     }
 
     @Test
-    fun `When setupMultiLocationValue, non multi location shop stock limit will be default`() {
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not multi location shop`() {
         every { userSession.isMultiLocationShop } returns false
         every { userSession.isShopAdmin } returns true
-        viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
         viewModel.setupMultiLocationValue()
 
-        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
-        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
+        assert(!viewModel.isMultiLocationShop)
     }
 
     @Test
-    fun `When setupMultiLocationValue, multiloc shop, non shop admin or shop owner stock limit will be default`() {
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not shop admin or shop owner`() {
         every { userSession.isMultiLocationShop } returns true
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopAdmin } returns false
-        viewModel.productInputModel.value = ProductInputModel(productId = 1)
 
         viewModel.setupMultiLocationValue()
 
-        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
-        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
+        assert(!viewModel.isMultiLocationShop)
     }
 
-    @Test
-    fun `When setupMultiLocationValue, not editing mode stock limit will be default`() {
-        every { userSession.isMultiLocationShop } returns true
-        every { userSession.isShopAdmin } returns true
-        viewModel.productInputModel.value = ProductInputModel(productId = 0)
-
-        viewModel.setupMultiLocationValue()
-
-        val actualProductStockLimit: Int? = viewModel.getPrivateProperty("minProductStockLimit")
-        assert(actualProductStockLimit == MIN_PRODUCT_STOCK_LIMIT)
-    }
 }
