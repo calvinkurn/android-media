@@ -213,45 +213,6 @@ class GetProductMapper @Inject constructor() {
         )
     }
 
-    /**
-     * Combine the headquarter product and all warehouse product.
-     * This is needed because we need to get warehouse count for all variant and other data for headquarters only
-     * @param   mainProduct Product for all warehouse
-     * @param   hqProduct   Product only in headquarter
-     * @return  combine product pojo
-     */
-    fun combineHeadquartersProductVariant(mainProduct: Product, hqProduct: Product): Product {
-        val mainProductSequence = mainProduct.variant.products.asSequence().apply {
-            sortedWith(compareBy {
-                it.id.toIntOrZero()
-            })
-        }
-        val mappedVariantProducts =
-                hqProduct.variant.products.asSequence()
-                        .filter { mainProductSequence.any { mainProduct -> it.id == mainProduct.id } }
-                        .sortedWith(compareBy { it.id.toIntOrZero() })
-                        .zip(mainProductSequence) { hqVariant, mainVariant ->
-                            ProductVariant(
-                                  status = hqVariant.status,
-                                  id = hqVariant.id,
-                                  combination = hqVariant.combination,
-                                  isPrimary = hqVariant.isPrimary,
-                                  price = hqVariant.price,
-                                  sku = hqVariant.sku,
-                                  stock = hqVariant.stock,
-                                  pictures = mainVariant.pictures,
-                                  warehouseCount = mainVariant.warehouseCount
-                            )
-
-                        }.toList()
-
-        return mainProduct.copy(
-                variant = mainProduct.variant.copy(
-                        products = mappedVariantProducts
-                )
-        )
-    }
-
     companion object {
         const val IS_ACTIVE = 1
         const val IS_INACTIVE = 0

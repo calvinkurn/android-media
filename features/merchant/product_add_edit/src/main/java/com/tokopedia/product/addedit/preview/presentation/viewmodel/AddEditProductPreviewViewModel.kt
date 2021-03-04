@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -23,7 +24,6 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.MapHQVariantUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -44,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -59,7 +60,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
-        private val mapHQVariantUseCase: MapHQVariantUseCase,
         private val userSession: UserSessionInterface,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val dispatcher: CoroutineDispatchers
@@ -148,9 +148,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // Enable showing ticker if seller has multi location shop
     val shouldShowMultiLocationTicker
         get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
-
-    val shouldCheckAndMapWarehousesVariants
-        get() = isEditing.value == true && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
     init {
         with (productInputModel) {
@@ -284,13 +281,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             launchCatchError(block = {
                 val data = withContext(Dispatchers.IO) {
                     getProductUseCase.params = GetProductUseCase.createRequestParams(productId, userSession.isMultiLocationShop)
-                    if (shouldCheckAndMapWarehousesVariants) {
-                        val mainProductDeferred = async { getProductUseCase.executeOnBackground() }
-                        val hqProductDeferred = async { getHeadquartersVariant(productId) }
-                        getProductMapper.combineHeadquartersProductVariant(mainProductDeferred.await(), hqProductDeferred.await())
-                    } else {
-                        getProductUseCase.executeOnBackground()
-                    }
+                    getProductUseCase.executeOnBackground()
                 }
                 mGetProductResult.value = Success(data)
                 mIsLoading.value = false
@@ -509,11 +500,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     mIsProductManageAuthorized.value = Fail(it)
                 }
         )
-    }
-
-    private suspend fun getHeadquartersVariant(productId: String): Product {
-        mapHQVariantUseCase.params = MapHQVariantUseCase.createRequestParams(productId)
-        return mapHQVariantUseCase.executeOnBackground()
     }
 
 }
