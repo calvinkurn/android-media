@@ -1,7 +1,9 @@
 package com.tokopedia.shop.settings.etalase.view.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -13,6 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
     private var listener: BottomSheetListener? = null
+    private var contentView: View? = null
 
     companion object {
         private const val MODEL = "model"
@@ -29,14 +32,22 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setData()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        val model = arguments?.getParcelable(MODEL) ?: PowerMerchantAccessModel()
-        val contentView = View.inflate(context, R.layout.fragment_power_merchant_access, null)
+        contentView = View.inflate(context, R.layout.fragment_power_merchant_access, null)
+        setChild(contentView)
+    }
 
-        contentView.apply {
+    private fun setData() {
+        val model = arguments?.getParcelable(MODEL) ?: PowerMerchantAccessModel()
+        contentView?.apply {
             val imageViewIcon = findViewById<ImageView>(R.id.image_view_icon)
             val textViewTitle = findViewById<Typography>(R.id.text_view_title)
             val textViewDescription = findViewById<Typography>(R.id.text_view_description)
@@ -52,8 +63,6 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
                 }
             }
         }
-
-        setChild(contentView)
     }
 
     fun setListener(listener: BottomSheetListener) {
