@@ -10,13 +10,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import java.util.HashMap
@@ -52,7 +50,7 @@ class MerchantVoucherViewholder(val view: View)
             view.findViewById<View>(R.id.text_sub_title_merchant).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title_merchant) as TextView).text = content.sectionSubTitle
         }
-       // sendCouponImpression()
+        sendCouponImpression(content.sectionTitle)
 
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_merchant_coupon)
         rvCarousel?.isDrawingCacheEnabled = true
@@ -90,17 +88,17 @@ class MerchantVoucherViewholder(val view: View)
 
     private fun sendCouponImpression(bannerName: String) {
         val promotionItem = HashMap<String, Any>()
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = CommonConstant.IMPRESSION_LIST
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.POSITION] = -1
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.ID] = bannerName
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO
 
         val promotionMap = HashMap<String, Any>()
         promotionMap[AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS] = listOf(promotionItem)
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_MVC_COUPON_ON_REWARDS,
-                "", promotionMap)
+                AnalyticsTrackerUtil.ActionKeys.VIEW_MVC_COUPON_ON_REWARDS, "",
+                AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE, promotionMap)
     }
 }
 
