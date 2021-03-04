@@ -38,8 +38,8 @@ object MockOvoModel {
                         redirectURL="https://www.tokopedia.com/rewards/kupon-saya",
                         iconImageURL="https://ecs7.tokopedia.net/img/blog/promo/2020/05/kupon-sayaxxxhdpi.png",
                         sectionContent= listOf(
-                                SectionContentItem(textAttributes= TextAttributes(colour="#31353B", text="Kupon Saya", isBold=true), tagAttributes= TagAttributes(text="", backgroundColour=""), type="text"),
-                                SectionContentItem(textAttributes=TextAttributes(colour="#03ac0e", text="Kupon Baru", isBold=true), tagAttributes=TagAttributes(text="", backgroundColour=""), type="text")
+                                SectionContentItem(textAttributes= TextAttributes(colour="", text="Kupon Saya", isBold=true), tagAttributes= TagAttributes(text="", backgroundColour=""), type="text"),
+                                SectionContentItem(textAttributes=TextAttributes(colour="", text="Kupon Baru", isBold=true), tagAttributes=TagAttributes(text="", backgroundColour=""), type="text")
                         ),
                         redirectAppLink="tokopedia://rewards/kupon-saya", mainPageTitle=""), cashBackData=null, isPendingTokocashChecked=false, isWalletDataError=false, isTokoPointDataError=false, isUserLogin=true)
         return headerDataModel
