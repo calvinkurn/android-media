@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -33,11 +34,11 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
     }
 
     private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
-        validateUsePromoRequest.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         return mapOf(
                 PARAM_PARAMS to mapOf(
                         PARAM_PROMO to validateUsePromoRequest
-                )
+                ),
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
 

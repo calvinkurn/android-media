@@ -598,14 +598,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
         validateUsePromoRequest.skipApply = 0
 
-        // Add current selected address from local cache
-        validateUsePromoRequest.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
-
         // Set param
         val applyPromoRequestParam = mapOf(
                 "params" to mapOf(
                         "promo" to validateUsePromoRequest
-                )
+                ),
+                // Add current selected address from local cache
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
 
         // Get response data
