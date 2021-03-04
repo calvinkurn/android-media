@@ -74,4 +74,6 @@ public interface IProductDigitalView extends IBaseView {
     void goToCartPage(ProductDigitalData productDigitalData);
 
     void showPromoContainer();
+
+    void navigateToDigitalCart(DigitalCheckoutPassData digitalCheckoutPassData);
 }
