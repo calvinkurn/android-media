@@ -41,14 +41,10 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initChildLayout()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVar()
+        initChildLayout()
     }
 
     private fun initChildLayout() {
