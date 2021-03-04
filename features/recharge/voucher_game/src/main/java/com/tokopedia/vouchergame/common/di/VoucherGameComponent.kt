@@ -1,10 +1,14 @@
 package com.tokopedia.vouchergame.common.di
 
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
@@ -23,6 +27,8 @@ interface VoucherGameComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
+    fun coroutineDispatcher(): CoroutineDispatcher
+
     fun topupBillsDispatchersProvider(): TopupBillsDispatchersProvider
 
     fun voucherGameDispatchersProvider(): VoucherGameDispatchersProvider
@@ -38,5 +44,12 @@ interface VoucherGameComponent {
     fun digitalCheckVoucherUseCase(): DigitalCheckVoucherUseCase
 
     fun inject(baseVoucherGameActivity: BaseVoucherGameActivity)
+
+    @DigitalCommonQualifier
+    fun restRepository(): RestRepository
+
+    fun digitalInterceptor(): DigitalInterceptor
+
+    fun networkRouter(): NetworkRouter
 
 }
