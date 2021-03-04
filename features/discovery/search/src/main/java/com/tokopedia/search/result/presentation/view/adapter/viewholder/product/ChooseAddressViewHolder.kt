@@ -44,7 +44,7 @@ internal class ChooseAddressViewHolder(
     private fun configureChooseAddress() {
         chooseAddressWidget?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
-                chooseAddressWidget.updateWidget()
+                chooseAddressWidget?.updateWidget()
                 chooseAddressListener.onLocalizingAddressSelected()
             }
 
