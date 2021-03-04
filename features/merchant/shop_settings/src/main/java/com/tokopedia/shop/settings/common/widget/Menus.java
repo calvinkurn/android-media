@@ -36,6 +36,11 @@ public class Menus extends BaseBottomSheetView {
         super(context);
     }
 
+    public void setItemMenuList(List<ItemMenus> itemMenusList) {
+        this.menusAdapter.itemMenusList = itemMenusList;
+        menusAdapter.notifyDataSetChanged();
+    }
+
     public void setItemMenuList(String[] menus) {
         List<ItemMenus> itemMenus = new ArrayList<>();
         for (String title : menus) {

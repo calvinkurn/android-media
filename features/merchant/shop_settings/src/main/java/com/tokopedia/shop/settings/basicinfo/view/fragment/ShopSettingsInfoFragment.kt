@@ -105,7 +105,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
                     itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
                 }
-                menus.itemMenuList = itemMenusList
+                menus.setItemMenuList(itemMenusList)
                 menus.setOnItemMenuClickListener { itemMenus, _ ->
                     onItemMenuClicked(itemMenus.title)
                     menus.dismiss()
