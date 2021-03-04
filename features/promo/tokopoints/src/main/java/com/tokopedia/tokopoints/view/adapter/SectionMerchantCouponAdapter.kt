@@ -12,7 +12,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.unifycomponents.ImageUnify
-import java.util.*
+import java.util.Arrays
 
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 

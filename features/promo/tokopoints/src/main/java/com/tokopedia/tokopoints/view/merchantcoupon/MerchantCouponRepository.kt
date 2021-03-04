@@ -20,7 +20,7 @@ class MerchantCouponRepository @Inject constructor(@Named(CommonConstant.GQLQuer
         mGetMerchantCouponUsecase.clearRequest()
         val variablesMain = java.util.HashMap<String, Any>()
         variablesMain[CommonConstant.GraphqlVariableKeys.PAGE] = page
-        variablesMain[CommonConstant.GraphqlVariableKeys.PAGESIZE] = 10
+        variablesMain[CommonConstant.GraphqlVariableKeys.PAGESIZE] = PAGE_SIZE
         variablesMain[CommonConstant.GraphqlVariableKeys.CATEGORY_ID] = categoryId
         val request = GraphqlRequest(tp_gql_merchantcoupon,
                 MerchantCouponResponse::class.java,variablesMain,false)

@@ -124,7 +124,6 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <include
-        android:id="@+id/abcd"
         layout="@layout/tp_layout_usersaving"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

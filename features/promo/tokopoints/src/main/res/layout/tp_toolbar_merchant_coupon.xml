@@ -18,15 +18,15 @@
         android:paddingBottom="@dimen/dp_8"
         tools:background="@color/black">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_tpToolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             android:textColor="@color/black"
-            android:textSize="@dimen/tp_text_size_regular"
-            android:textStyle="bold"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

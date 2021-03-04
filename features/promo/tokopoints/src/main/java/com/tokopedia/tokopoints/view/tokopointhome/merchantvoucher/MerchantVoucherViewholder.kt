@@ -102,7 +102,5 @@ class MerchantVoucherViewholder(val view: View)
                 AnalyticsTrackerUtil.ActionKeys.VIEW_MVC_COUPON_ON_REWARDS,
                 "", promotionMap)
     }
-
-
 }
 

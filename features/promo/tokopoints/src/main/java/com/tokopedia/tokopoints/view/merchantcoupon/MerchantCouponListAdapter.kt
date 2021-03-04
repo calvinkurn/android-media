@@ -15,7 +15,8 @@ import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProducts
 import com.tokopedia.tokopoints.view.model.merchantcoupon.Productlist
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.unifycomponents.ImageUnify
-import java.util.*
+import java.util.Arrays
+import kotlin.collections.HashMap
 
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null

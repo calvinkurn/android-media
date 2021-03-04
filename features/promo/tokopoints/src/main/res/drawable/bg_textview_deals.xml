@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:ignore="MissingDefaultResource">
     <corners android:radius="@dimen/dp_8" />
-    <solid android:color="#FF5C84" />
+    <solid android:color="@color/tp_merchant_deals_border" />
     <stroke
         android:width="@dimen/dp_2"
         android:color="@color/white" />

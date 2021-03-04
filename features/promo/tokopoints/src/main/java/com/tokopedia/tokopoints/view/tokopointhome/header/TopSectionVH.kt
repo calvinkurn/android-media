@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
-import com.tokopedia.tokopoints.view.merchantcoupon.MerchantCouponActivity
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
@@ -95,9 +94,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 customBackground(cardTierInfo, Color.parseColor("#" + it.backgroundColor), MEMBER_STATUS_BG_RADII)
             }
             cardTierInfo.setOnClickListener {
-
-                itemView.context.startActivity(Intent(itemView.context,MerchantCouponActivity::class.java))
-             //   RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
+                RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
                 AnalyticsTrackerUtil.sendEvent(itemView.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
