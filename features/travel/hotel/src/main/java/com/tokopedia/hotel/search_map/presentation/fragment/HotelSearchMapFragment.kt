@@ -391,7 +391,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         context?.run {
             allMarker.add(googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
                     .title(price)
-                    .anchor(0.8f, 1f)
+                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
                     .draggable(false)))
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
