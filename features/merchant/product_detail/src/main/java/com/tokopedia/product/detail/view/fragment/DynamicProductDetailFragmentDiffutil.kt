@@ -3366,7 +3366,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun isNewShipment(): Boolean {
         if (context == null) return false
-        return true
         return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
