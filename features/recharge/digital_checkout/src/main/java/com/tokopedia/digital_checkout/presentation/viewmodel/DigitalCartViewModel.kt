@@ -208,8 +208,8 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
-        analytics.eventAddToCart(mappedCartData, source)
-        analytics.eventCheckout(mappedCartData)
+        analytics.eventAddToCart(mappedCartData, source, userSession.userId)
+        analytics.eventCheckout(mappedCartData, userSession.userId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
@@ -305,11 +305,11 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double) {
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double?) {
         requestCheckoutParam.isFintechProductChecked = isChecked
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
-            var totalPrice = if (inputPrice > 0) inputPrice else attributes.pricePlain
+            var totalPrice = inputPrice ?: attributes.pricePlain
             if (isChecked) {
                 val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
                         ?: 0.0
@@ -361,11 +361,11 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun getPromoDigitalModel(cartPassData: DigitalCheckoutPassData?, userInputPriceAmount: Double): PromoDigitalModel {
+    fun getPromoDigitalModel(cartPassData: DigitalCheckoutPassData?, userInputPriceAmount: Double?): PromoDigitalModel {
         val cartInfoData = cartDigitalInfoData.value ?: CartDigitalInfoData()
         var price: Double = cartInfoData.attributes.pricePlain
 
-        if (userInputPriceAmount > 0.0) {
+        if (userInputPriceAmount != null) {
             price = userInputPriceAmount
         }
 

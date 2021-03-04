@@ -234,7 +234,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         cartInfo.attributes.userInputPrice.run {
             if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
-                renderInputPriceView(cartInfo.attributes.pricePlain.toLong().toString(), cartInfo.attributes.userInputPrice)
+                renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
             }
         }
 
@@ -481,6 +481,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         else if (fintechProductInfo.tooltipText.isNotEmpty()) {
             val moreInfoView = View.inflate(context, R.layout.layout_digital_fintech_product_info_bottom_sheet, null)
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
+            moreInfoText.setPadding(0, 0, 0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
             moreInfoText.text = fintechProductInfo.tooltipText
 
             val moreInfoBottomSheet = BottomSheetUnify()
@@ -495,34 +497,32 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
+    private fun renderInputPriceView(total: Long, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
         userInputPriceDigital?.let {
             inputPriceContainer.visibility = View.VISIBLE
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
-                inputPriceHolderView.setMessageText(getString(R.string.digital_cart_error_input_price_less_than_min,
-                        userInputPriceDigital.minPayment))
+                inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
+                    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
+                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
+                                fintechProductWidget.isChecked())
+                    }
+
+                    override fun enableCheckoutButton() {
+                        btnCheckout.isEnabled = true
+                    }
+
+                    override fun disableCheckoutButton() {
+                        btnCheckout.isEnabled = false
+                    }
+                }
 
             inputPriceHolderView.setMinMaxPayment(
-                    total ?: "",
+                    total,
                     userInputPriceDigital.minPaymentPlain.toLong(),
                     userInputPriceDigital.maxPaymentPlain.toLong(),
                     userInputPriceDigital.minPayment ?: "",
                     userInputPriceDigital.maxPayment ?: "")
-
-            inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                override fun onInputPriceByUserFilled(paymentAmount: Long) {
-                    viewModel.setTotalPriceBasedOnUserInput(paymentAmount.toDouble(), fintechProductWidget.isChecked())
-                }
-
-                override fun enableCheckoutButton() {
-                    checkoutBottomViewWidget.isCheckoutButtonEnabled = true
-                }
-
-                override fun disableCheckoutButton() {
-                    checkoutBottomViewWidget.isCheckoutButtonEnabled = false
-                }
-            }
         }
     }
 
@@ -539,7 +539,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToTopPayActivity(paymentPassData: PaymentPassData) {
-        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode)
+        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode, userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
@@ -580,7 +580,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes.categoryName
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes.operatorName
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
-    private fun getPriceInput(): Double = inputPriceHolderView.getPriceInput().toDouble()
+    private fun getPriceInput(): Double? {
+        return if (inputPriceHolderView.getPriceInput() == null) return null
+        else inputPriceHolderView.getPriceInput()?.toDouble()
+    }
 
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"

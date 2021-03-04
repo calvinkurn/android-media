@@ -34,7 +34,6 @@ class TestMainNavViewModel {
     @ApplicationContext
     lateinit var context: Context
 
-    private val defaultLoginState = AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
     private lateinit var viewModel : MainNavViewModel
     private val shopId = 1224
 

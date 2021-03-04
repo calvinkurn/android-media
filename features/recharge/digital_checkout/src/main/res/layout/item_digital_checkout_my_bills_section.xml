@@ -31,7 +31,6 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:tint="@color/Unify_N200"
         android:layout_marginTop="@dimen/spacing_lvl1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvCheckoutMyBillsHeaderTitle"
