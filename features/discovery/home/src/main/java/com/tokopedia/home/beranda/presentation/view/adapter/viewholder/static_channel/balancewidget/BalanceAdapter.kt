@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
+import android.app.Activity
+import android.content.ContextWrapper
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
@@ -12,9 +14,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_COUPON
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTagAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
@@ -63,6 +73,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v) {
+
+        private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?) {
             this.listener = listener
@@ -78,8 +90,44 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
+                    itemView.home_container_action_balance.handleItemCLickType(element,
+                            {
+                                //handle click for type tokopoints
+                            },
+                            {
+                                //handle click for type ovo
+//                                if (RouteManager.isSupportApplink(itemView.context, element.applink)) {
+//                                    if (!linkedOvo) {
+//                                        (itemView.context as ContextWrapper).let {
+//                                            val context = it.baseContext
+//                                            val activity = context as Activity
+//                                            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
+//                                        }
+//                                        walletAnalytics.eventClickActivationOvoHomepage()
+//                                    } else {
+//                                        OvoWidgetTracking.eventOvo()
+//                                    }
+//                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applink)
+//                                    itemView.context.startActivity(intentBalanceWallet)
+//                                }
+                            },
+                            {
+                                //handle click for type rewards
+                            },
+                            {
+                                //handle click for type coupon
+                            },
+                            {
+                                //handle click for type bbo
+                            })
+                }
+                BalanceDrawerItemModel.STATE_ERROR -> {
+                    itemView.home_container_action_balance.show()
+                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
+                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
                 }
             }
+
             element?.defaultIconRes?.let {
                 itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
             }
@@ -133,6 +181,32 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             if (textAttr.text.isNotEmpty()) {
                 textView.text = textAttr.text
             }
+        }
+
+        private fun View.handleItemCLickType(element: BalanceDrawerItemModel, tokopoints: () -> Unit, ovoWallet: () -> Unit,rewards: () -> Unit, coupons: () -> Unit, bbo: () -> Unit) {
+            when(element.drawerItemType) {
+                TYPE_TOKOPOINT -> tokopoints.invoke()
+                TYPE_FREE_ONGKIR -> bbo.invoke()
+                TYPE_COUPON -> coupons.invoke()
+                TYPE_REWARDS -> rewards.invoke()
+                TYPE_WALLET -> ovoWallet.invoke()
+            }
+        }
+
+        //use customApplinkAction if you need passing context or custom intent
+        private fun onActionApplinkClickWithAnalytics(applink: String = "", customApplinkAction: () -> Unit, tracking: () -> Unit): View.OnClickListener {
+            return View.OnClickListener {
+                if (applink.isNotEmpty()) {
+                    RouteManager.route(itemView.context, applink)
+                } else {
+                    customApplinkAction.invoke()
+                }
+                tracking.invoke()
+            }
+        }
+
+        private fun setViewClick(view: View, clickAction: View.OnClickListener) {
+            view.setOnClickListener(clickAction)
         }
     }
 }
