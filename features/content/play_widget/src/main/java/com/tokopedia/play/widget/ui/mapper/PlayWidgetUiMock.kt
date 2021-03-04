@@ -109,7 +109,7 @@ object PlayWidgetUiMock {
             totalView = "10,0 rb",
             totalViewVisible = true,
             hasPromo = cardItemTypeRandom.nextBoolean(),
-            activeReminder = cardItemTypeRandom.nextBoolean(),
+            actionReminder = PlayWidgetActionReminder.UnRemind,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
             hasAction = true,

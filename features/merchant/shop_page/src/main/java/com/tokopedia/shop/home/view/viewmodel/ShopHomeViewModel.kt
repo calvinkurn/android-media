@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -12,9 +13,12 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderEvent
+import com.tokopedia.play.widget.ui.model.revert
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -22,6 +26,9 @@ import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
@@ -31,11 +38,6 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -120,9 +122,13 @@ class ShopHomeViewModel @Inject constructor(
         get() = _playWidgetObservable
     private val _playWidgetObservable = MutableLiveData<CarouselPlayWidgetUiModel?>()
 
-    val playWidgetToggleReminderObservable: LiveData<PlayWidgetReminderUiModel>
-        get() = _playWidgetToggleReminderObservable
-    private val _playWidgetToggleReminderObservable = MutableLiveData<PlayWidgetReminderUiModel>()
+    val playWidgetReminderActionEvent: LiveData<PlayWidgetReminderEvent>
+        get() = _playWidgetReminderActionEvent
+    private val _playWidgetReminderActionEvent = MutableLiveData<PlayWidgetReminderEvent>()
+
+    val playWidgetReminderObservable: LiveData<Result<PlayWidgetActionReminder>>
+        get() = _playWidgetReminderObservable
+    private val _playWidgetReminderObservable = MutableLiveData<Result<PlayWidgetActionReminder>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -491,31 +497,51 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun setToggleReminderPlayWidget(channelId: String, remind: Boolean, position: Int) {
+    fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
+        if (channelId == null || totalView == null) return
+
+        updateWidget {
+            it.copy(widgetUiModel = playWidgetTools.updateTotalView(it.widgetUiModel, channelId, totalView))
+        }
+    }
+
+    fun shouldUpdatePlayWidgetToggleReminder(channelId: String, actionReminder: PlayWidgetActionReminder) {
+        if (!isLogin) _playWidgetReminderActionEvent.value = PlayWidgetReminderEvent.NeedLoggedIn(channelId, actionReminder)
+        else updatePlayWidgetToggleReminder(channelId, actionReminder)
+    }
+
+    private fun updatePlayWidgetToggleReminder(channelId: String, actionReminder: PlayWidgetActionReminder) {
+        updateWidget {
+            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder))
+        }
+
         launchCatchError(block = {
-            val response = playWidgetTools.setToggleReminder(
+            val response = playWidgetTools.updateToggleReminder(
                     channelId,
-                    remind,
+                    actionReminder,
                     dispatcherProvider.io
             )
-            val reminderUiModel = playWidgetTools.mapWidgetToggleReminder(response)
-            _playWidgetToggleReminderObservable.postValue(reminderUiModel.copy(remind = remind, position = position))
-        }) {
-            _playWidgetToggleReminderObservable.postValue(PlayWidgetReminderUiModel(
-                    remind = remind,
-                    success = false,
-                    position = position
-            ))
+
+            when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
+                success -> {
+                    _playWidgetReminderObservable.postValue(Success(actionReminder))
+                }
+                else -> {
+                    updateWidget {
+                        it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder.revert()))
+                    }
+                    _playWidgetReminderObservable.postValue(Fail(Throwable()))
+                }
+            }
+        }) { throwable ->
+            updateWidget {
+                it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder.revert()))
+            }
+            _playWidgetReminderObservable.postValue(Fail(throwable))
         }
     }
 
     fun deleteChannel(channelId: String) {
-
-        fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
-            val currentValue = _playWidgetObservable.value
-            if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
-        }
-
         updateWidget {
             it.copy(widgetUiModel = playWidgetTools.updateDeletingChannel(it.widgetUiModel, channelId))
         }
@@ -540,6 +566,11 @@ class ShopHomeViewModel @Inject constructor(
                 )
             }
         })
+    }
+
+    private fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
+        val currentValue = _playWidgetObservable.value
+        if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
     }
 
     fun isCampaignFollower(campaignId: String): Boolean {

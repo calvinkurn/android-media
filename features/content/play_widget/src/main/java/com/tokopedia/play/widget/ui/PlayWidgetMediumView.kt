@@ -115,9 +115,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             }
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
-            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
-            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, actionReminder: PlayWidgetActionReminder, position: Int) {
+            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, actionReminder == PlayWidgetActionReminder.Remind)
+            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, actionReminder, position)
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {

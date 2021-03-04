@@ -53,9 +53,9 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderEvent
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -145,7 +145,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
-        private const val REQUEST_CODE_PLAY_ROOM = 256
+        private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
@@ -566,7 +566,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         observePlayWidget()
-        observePlayWidgetToggleReminder()
+        observePlayWidgetReminderEvent()
+        observePlayWidgetReminder()
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -875,6 +876,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK)
                     (parentFragment as? ShopPageFragment)?.refreshData()
+            }
+            REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
+                val playWidgetReminderEvent = viewModel?.playWidgetReminderActionEvent?.value
+                if (playWidgetReminderEvent != null) viewModel?.shouldUpdatePlayWidgetToggleReminder(playWidgetReminderEvent.channelId, playWidgetReminderEvent.actionReminder)
             }
             else -> {
             }
@@ -1632,17 +1637,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
-        if (isLogin) {
-            viewModel?.setToggleReminderPlayWidget(channelId, remind, position)
-        } else {
-            shopHomeAdapter.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
-                    remind = remind,
-                    success = false,
-                    position = position
-            ))
-            redirectToLoginPage()
-        }
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, actionReminder: PlayWidgetActionReminder, position: Int) {
+        viewModel?.shouldUpdatePlayWidgetToggleReminder(channelId, actionReminder)
     }
 
     override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
@@ -1667,9 +1663,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-        shopHomeAdapter.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+        viewModel?.updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun observePlayWidget() {
@@ -1710,18 +1706,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-    private fun observePlayWidgetToggleReminder() {
-        viewModel?.playWidgetToggleReminderObservable?.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
-                showToastSuccess(
-                        if(it.remind) {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        } else {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
-                        })
-            } else {
-                shopHomeAdapter.updatePlayWidgetReminder(it)
-                showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
+    private fun observePlayWidgetReminder() {
+        viewModel?.playWidgetReminderObservable?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> showToastSuccess(
+                        when (it.data) {
+                            PlayWidgetActionReminder.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetActionReminder.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        }
+                )
+                is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
+            }
+        })
+    }
+
+    private fun observePlayWidgetReminderEvent() {
+        viewModel?.playWidgetReminderActionEvent?.observe(viewLifecycleOwner, Observer {
+            if (it is PlayWidgetReminderEvent.NeedLoggedIn) {
+                redirectToLoginPage(requestCode = REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
             }
         })
     }
