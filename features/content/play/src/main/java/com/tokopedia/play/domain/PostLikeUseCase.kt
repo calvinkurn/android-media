@@ -1,25 +1,27 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.LikeContent
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 2019-12-05.
  */
-class PostLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<Boolean>() {
+class PostLikeUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<Boolean>(graphqlRepository) {
 
     var params = HashMap<String, Any>()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<LikeContent.Response>(LikeContent.Response::class.java)
