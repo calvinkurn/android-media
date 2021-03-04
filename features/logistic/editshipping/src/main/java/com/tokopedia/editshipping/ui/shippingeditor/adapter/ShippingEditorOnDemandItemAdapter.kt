@@ -85,7 +85,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         lateinit var onDemandModel: OnDemandModel
         private val productItemAdapter = ShipperProductItemAdapter()
         private val featureItemAdapter = ShipperFeatureAdapter()
-        private val featureInfoAdapter = FeatureInfoAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -180,7 +179,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
             featureItemAdapter.setData(data.featureInfo)
 
-            featureInfoAdapter.setData(data.featureInfo)
 
         }
 

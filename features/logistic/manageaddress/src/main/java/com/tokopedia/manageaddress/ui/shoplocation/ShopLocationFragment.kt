@@ -31,6 +31,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_LONG
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.manageaddress.util.ShopLocationConstant.EDIT_WAREHOUSE_REQUEST_CODE
 import com.tokopedia.manageaddress.util.ShopLocationConstant.ERROR_CODE_NO_ACCESS
+import com.tokopedia.manageaddress.util.ShopLocationConstant.INTENT_SHOP_SETTING_ADDRESS_OLD
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -120,7 +121,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                     } else {
                         activity?.finish()
                         val intent = context?.let { context -> ShopSettingsAddressActivity.createIntent(context) }
-                        startActivityForResult(intent, 1998)
+                        startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
                     }
                 }
 

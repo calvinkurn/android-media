@@ -374,7 +374,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun convertFeatureIdToString(featureId: List<Int>?): String? {
-        return featureId?.joinToString()?.replace(" ", "")
+        return featureId?.joinToString(separator = ",")
     }
 
     private fun openBottomSheetWarehouseInactive(ctx: Context, data: List<WarehousesModel>, shipperName: String) {
@@ -641,7 +641,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val activatedListShipperIds = mutableListOf<String>()
         activatedListShipperIds.addAll(onDemandList)
         activatedListShipperIds.addAll(conventionalList)
-        return activatedListShipperIds.joinToString().replace(" ", "")
+        return activatedListShipperIds.joinToString(separator = ",")
     }
 
     private fun handleError(throwable: Throwable) {

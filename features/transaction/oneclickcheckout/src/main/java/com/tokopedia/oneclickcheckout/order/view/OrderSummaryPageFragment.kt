@@ -18,7 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -282,7 +281,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
@@ -342,7 +341,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderShipment.observe(viewLifecycleOwner, Observer {
+        viewModel.orderShipment.observe(viewLifecycleOwner, {
             orderPreferenceCard.setShipment(it)
             newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
@@ -351,20 +350,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderPayment.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPayment.observe(viewLifecycleOwner, {
             orderPreferenceCard.setPayment(it)
             newOrderPreferenceCard.setPayment(it)
         })
 
-        viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
+        viewModel.orderTotal.observe(viewLifecycleOwner, {
             orderTotalPaymentCard.setupPayment(it, viewModel.isNewFlow)
         })
 
-        viewModel.orderPromo.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPromo.observe(viewLifecycleOwner, {
             setupButtonPromo(it)
         })
 
-        viewModel.globalEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.globalEvent.observe(viewLifecycleOwner, {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
@@ -1213,7 +1212,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId.toString(), "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
     }
 
     override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
