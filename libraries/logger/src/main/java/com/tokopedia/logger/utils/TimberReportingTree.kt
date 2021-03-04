@@ -2,8 +2,10 @@ package com.tokopedia.logger.utils
 
 import android.os.Build
 import android.util.Log
+import com.google.gson.Gson
 import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.common.LoggerException
+import org.json.JSONObject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,34 +42,25 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             val timeStamp = System.currentTimeMillis()
 
             val loggerExceptionData = (t as? LoggerException)
-            val priority = loggerExceptionData?.priority
+            val priority = loggerExceptionData?.priority.orEmpty()
             val tagKey = loggerExceptionData?.tag.orEmpty()
-            val data = loggerExceptionData?.dataException
+            val messageData = loggerExceptionData?.dataException
 
-            if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
+            if (LogManager.instance == null) {
                 return@globalScopeLaunch
             }
-            if (priority?.startsWith(PREFIX) == false || tags.isEmpty()) {
-                return@globalScopeLaunch
-            }
-//            val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
-            if ((data?.size ?: 0) < SIZE_MESSAGE) {
-                return@globalScopeLaunch
-            }
-//            val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
-//            val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
+
             tagMaps[tagKey]?.let {
-                val priority = it.postPriority
+                val priorityTag = it.postPriority
                 val classLine = tag ?: ""
-//                val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
-//                val processedMessage = getMessage(tagKey, timeStamp, classLine, replaceNewline(messageToBeSend))
-
-//                LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
+                val messageJson = messageData?.convertMapToJsonString().orEmpty()
+                val processedMessage = getMessage(tagKey, timeStamp, classLine, messageJson)
+                LogManager.log(processedMessage, timeStamp, priorityTag, priority)
             }
         })
     }
 
-    override fun createStackElementTag(element: StackTraceElement): String? {
+    override fun createStackElementTag(element: StackTraceElement): String {
         return String.format(
                 "[%s:%s:%s]",
                 super.createStackElementTag(element),
@@ -124,8 +117,8 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         return PRIORITY_ONLINE
     }
 
-    private fun replaceNewline(message: String): String {
-        return message.trim().replace("\\s+".toRegex(), " ")
+    private fun Map<String, String>.convertMapToJsonString(): String {
+        return Gson().toJson(this)
     }
 
     private fun populateTagMaps(tags: List<String>?) {
@@ -152,7 +145,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     companion object {
-        const val DELIMITER = "#"
+        const val DELIMITER = ","
         const val MAX_RANDOM_NUMBER = 100
 
         const val SIZE_MESSAGE = 3
