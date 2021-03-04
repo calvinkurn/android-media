@@ -465,10 +465,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(new VoucherViewModel());
     }
 
-    public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
-    }
-
     @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);

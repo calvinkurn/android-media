@@ -48,12 +48,6 @@
         </activity>
 
         <activity
-            android:label="@string/payment_title_activity_howtopay"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".howtopay.ReactNativeHowToPayActivity" >
-        </activity>
-        <activity
             android:label="@string/payment_title_activity_dest_bank"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
