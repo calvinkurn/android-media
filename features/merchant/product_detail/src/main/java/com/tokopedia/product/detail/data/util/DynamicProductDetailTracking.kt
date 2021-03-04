@@ -4,9 +4,6 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -57,6 +54,21 @@ object DynamicProductDetailTracking {
     }
 
     object Click {
+        fun eventClickShipmentErrorComponent(productInfo: DynamicProductInfoP1?, userId: String, title: String, componentTrackDataModel: ComponentTrackDataModel?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_SHIPMENT_ERROR_COMPONENT,
+                    String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT_ERROR, title))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SHIPMENT_ERROR_COMPONENT)
+        }
+
         fun eventClickShipment(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?,
                                title: String, labelShipping: String, isCod: Boolean) {
             val mapEvent = TrackAppUtils.gtmData(
@@ -1309,13 +1321,13 @@ object DynamicProductDetailTracking {
     object Branch {
         fun eventBranchItemView(productInfo: DynamicProductInfoP1?, userId: String?) {
             if (productInfo != null) {
-                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerDataForViewItem(productInfo, userId)))
+//                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerDataForViewItem(productInfo, userId)))
             }
         }
 
         fun eventBranchAddToWishlist(productInfo: DynamicProductInfoP1?, userId: String?, description: String) {
             if (productInfo != null) {
-                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_WHISHLIST, TrackingUtil.createLinkerData(productInfo, userId, description)))
+//                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_WHISHLIST, TrackingUtil.createLinkerData(productInfo, userId, description)))
             }
         }
     }
@@ -1936,6 +1948,44 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CHECK_DISCUSSION_BOTTOM_SHEET)
+        }
+    }
+
+    object BottomSheetErrorShipment {
+        fun impressShipmentErrorBottomSheet(productInfo: DynamicProductInfoP1?, userId: String, bottomSheetTitle: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.VIEW_SHIPMENT_ERROR_BOTTOM_SHEET,
+                    String.format(ProductTrackingConstant.Label.VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET, bottomSheetTitle))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.VIEW_SHIPMENT_ERROR_BOTTOM_SHEET)
+        }
+
+        fun eventClickButtonShipmentErrorBottomSheet(productInfo: DynamicProductInfoP1?, userId: String, bottomSheetTitle: String, errorCode: Int) {
+            val eventAction = if (errorCode == ProductDetailConstant.SHIPPING_ERROR_WEIGHT) {
+                ProductTrackingConstant.Action.CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT
+            } else {
+                ProductTrackingConstant.Action.CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS
+            }
+
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    eventAction,
+                    String.format(ProductTrackingConstant.Label.VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET, bottomSheetTitle))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, eventAction)
         }
     }
 }

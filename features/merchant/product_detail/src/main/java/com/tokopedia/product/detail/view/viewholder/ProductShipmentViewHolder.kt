@@ -88,7 +88,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
         shipmentOtherContainer?.setOnClickListener(null)
         otherCourierTxt?.setOnClickListener {
-            listener.goToShipmentErrorAddressOrChat(errorCode)
+            listener.clickShippingComponentError(errorCode, title, componentTrackDataModel)
         }
 
         otherCourierTxt?.show()

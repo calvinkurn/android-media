@@ -1961,18 +1961,28 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    override fun openShipmentBottomSheetWhenError(): Boolean {
+    override fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickShipmentErrorComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, title, componentTrackDataModel)
+        goToShipmentErrorAddressOrChat(errorCode)
+    }
+
+    private fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
             val rates = viewModel.getP2RatesEstimateByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
+
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
-            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode
-                    ?: 0, ::goToShipmentErrorAddressOrChat).show(childFragmentManager, "bs_shipping_error")
+
+            DynamicProductDetailTracking.BottomSheetErrorShipment.impressShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title)
+            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0) { errorCode ->
+                DynamicProductDetailTracking.BottomSheetErrorShipment.eventClickButtonShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title, errorCode)
+                goToShipmentErrorAddressOrChat(errorCode)
+            }.show(childFragmentManager, ProductDetailConstant.BS_SHIPMENT_ERROR_TAG)
             return true
         } ?: return false
     }
 
-    override fun goToShipmentErrorAddressOrChat(errorCode: Int) {
+    private fun goToShipmentErrorAddressOrChat(errorCode: Int) {
         if (errorCode == ProductDetailConstant.SHIPPING_ERROR_WEIGHT) {
             onShopChatClicked()
         } else {
@@ -3356,6 +3366,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun isNewShipment(): Boolean {
         if (context == null) return false
+        return true
         return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
