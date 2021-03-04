@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
+import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
@@ -31,7 +33,8 @@ import javax.inject.Inject
 
 class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCartUseCase: DigitalAddToCartUseCase,
                                                     private val userSession: UserSessionInterface,
-                                                    private val dispatcher: CoroutineDispatcher)
+                                                    private val dispatcher: CoroutineDispatcher,
+                                                    private val rechargeAnalytics: RechargeAnalytics)
     : BaseViewModel(dispatcher) {
 
     private val _addToCartResult = MutableLiveData<Result<String>>()
@@ -59,6 +62,8 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
                 val restResponse = data[token]?.getData<DataResponse<*>>()?.data as ResponseCartData
                 if (restResponse.id != null) {
+                    rechargeAnalytics.eventAddToCart(DigitalAtcMapper.mapToDigitalAtcTrackingModel(restResponse,
+                            digitalCheckoutPassData, userSession.userId))
                     _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 

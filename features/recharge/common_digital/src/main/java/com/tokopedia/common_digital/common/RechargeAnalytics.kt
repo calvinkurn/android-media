@@ -99,6 +99,8 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                         TrackAppUtils.EVENT_CATEGORY, eventCategory,
                         TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
                         TrackAppUtils.EVENT_LABEL, eventLabel,
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.USER_ID, digitalAtcTrackingModel.userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
                         DigitalTrackingConst.CurrencyCode.KEY, DigitalTrackingConst.CurrencyCode.IDR,
                         DigitalTrackingConst.Label.ADD,

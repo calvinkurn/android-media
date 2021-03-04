@@ -24,6 +24,7 @@ object DigitalTrackingConst {
         const val PRODUCTS = "products"
         const val CURRENTSITE = "currentSite"
         const val BUSINESS_UNIT = "businessUnit"
+        const val USER_ID = "userId"
     }
 
     object Product {
@@ -46,6 +47,7 @@ object DigitalTrackingConst {
         const val INSTANT = "instant"
         const val NON_INSTANT = "non instant"
         const val SITE = "tokopediadigital"
+        const val RECHARGE_BU = "recharge"
     }
 
     object CurrencyCode {

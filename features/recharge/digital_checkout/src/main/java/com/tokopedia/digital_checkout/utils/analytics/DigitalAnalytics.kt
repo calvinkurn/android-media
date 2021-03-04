@@ -96,7 +96,7 @@ class DigitalAnalytics {
         ))
     }
 
-    fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData) {
+    fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData, userId: String) {
         val productName: String = cartDigitalInfoData.attributes.operatorName.toLowerCase() + " " +
                 cartDigitalInfoData.attributes.price.toLowerCase()
 

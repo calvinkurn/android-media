@@ -11,6 +11,7 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams;
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData;
+import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
@@ -168,6 +169,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }.getType();
         ResponseCartData responseCartData = ((DataResponse<ResponseCartData>) responseMap.get(token).getData()).getData();
         if (responseCartData != null && responseCartData.getId() != null) {
+            rechargeAnalytics.eventAddToCart(DigitalAtcMapper.INSTANCE.mapToDigitalAtcTrackingModel(responseCartData,
+                    digitalCheckoutPassData, userSession.getUserId()));
             getView().navigateToDigitalCart(digitalCheckoutPassData);
         } else onError(new Throwable());
     }

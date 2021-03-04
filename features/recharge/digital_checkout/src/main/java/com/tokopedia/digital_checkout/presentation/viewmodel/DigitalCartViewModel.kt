@@ -161,7 +161,7 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
-        analytics.eventCheckout(mappedCartData)
+        analytics.eventCheckout(mappedCartData, userSession.userId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
