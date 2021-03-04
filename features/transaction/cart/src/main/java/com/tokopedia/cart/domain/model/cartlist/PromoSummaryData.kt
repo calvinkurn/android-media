@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PromoSummaryData(
         val title: String = "",
-        val details: ArrayList<PromoSummaryDetailData> = arrayListOf()
+        val details: MutableList<PromoSummaryDetailData> = arrayListOf()
 ) : Parcelable
 
 @Parcelize

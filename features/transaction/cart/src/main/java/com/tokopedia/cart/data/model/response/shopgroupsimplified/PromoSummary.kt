@@ -12,7 +12,7 @@ data class PromoSummary(
         val title: String = "",
         @SerializedName("detail")
         @Expose
-        val details: List<PromoSummaryDetail> = arrayListOf()
+        val details: MutableList<PromoSummaryDetail> = arrayListOf()
 )
 
 data class PromoSummaryDetail(

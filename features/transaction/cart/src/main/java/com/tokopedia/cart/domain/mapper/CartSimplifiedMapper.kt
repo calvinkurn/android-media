@@ -170,7 +170,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                 amount = it.amount,
                                 currencyDetailStr = it.currencyDetailStr
                         )
-                    }.toList() as ArrayList<PromoSummaryDetailData>
+                    }.toMutableList()
             )
 
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
