@@ -64,6 +64,7 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -276,6 +277,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
+        addItem(TopadsHeadlineUiModel(), addSeparator = false)
         adapter?.notifyDataSetChanged()
         addRecommendationItem(recommendation.recommendationItemList)
     }
@@ -336,7 +338,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         financialAdapter = HomeAccountFinancialAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter)
+        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter, userSession)
         setupList()
         setLoadMore()
         showLoading()

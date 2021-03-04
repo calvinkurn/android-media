@@ -33,6 +33,7 @@ import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
+import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
@@ -49,6 +50,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -67,7 +69,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     @Inject
     lateinit var buyerAccountMapper: BuyerAccountMapper
 
-    private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    lateinit var adapter: BuyerAccountAdapter
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
@@ -96,6 +98,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         endlessRecyclerViewScrollListener?.let {
             recycler_buyer.addOnScrollListener(it)
         }
+
+        adapter = BuyerAccountAdapter(AccountTypeFactory(this, userSession), arrayListOf())
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
@@ -160,6 +164,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                 is Success -> {
                     val visitable = ArrayList<Visitable<*>>()
                     visitable.add(AccountRecommendationTitleViewModel(it.data.title))
+                    visitable.add(TopadsHeadlineUiModel())
                     visitable.addAll(getRecommendationVisitable(it.data))
                     adapter.addElement(visitable)
                 }
