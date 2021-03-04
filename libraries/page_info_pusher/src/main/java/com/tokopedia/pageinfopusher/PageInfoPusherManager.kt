@@ -1,6 +1,8 @@
 package com.tokopedia.pageinfopusher
 
 import android.app.Activity
+import android.util.Log
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -76,10 +78,20 @@ class PageInfoPusherManager(val activity: Activity) {
     }
 
     private fun showPopUp(message: String) {
-        android.app.AlertDialog.Builder(activity)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(R.string.action_dismiss, null)
-                .show()
+        DialogUnify(context = this,
+                actionType = DialogUnify.SINGLE_ACTION,
+                imageType = DialogUnify.NO_IMAGE).apply {
+            setTitle(activity.getString(R.string.announcement))
+            setDescription(message)
+            setPrimaryCTAText(activity.getString(R.string.action_dismiss))
+            setPrimaryCTAClickListener {
+                this.dismiss()
+            }
+            setOnDismissListener {
+                Log.d("PageInfoPusherManager", "dialog dismissed")
+            }
+            setOverlayClose(false)
+            show()
+        }
     }
 }
