@@ -27,12 +27,11 @@
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
                 style="@style/TextView.Title"
                 android:layout_width="0dp"
                 android:layout_marginEnd="@dimen/dp_32"
-                android:layout_marginRight="@dimen/dp_32"
                 android:layout_weight="1"
                 android:lineSpacingExtra="@dimen/sp_8"
                 tools:text="MyShop" />
@@ -47,20 +46,18 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginEnd="@dimen/dp_56"
-            android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Jl. Prof. DR. Satrio No.Kav 11, RT.3/RW.3, Karet Semanggi, Setia Budi" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginEnd="@dimen/dp_56"
-            android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_2"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Setiabudi, Jakarta Selatan, DKI Jakarta, Indonesia 12345" />
@@ -79,13 +76,15 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_4"
+                android:paddingStart="@dimen/dp_4"
                 android:drawablePadding="16dp"
-                android:textSize="@dimen/sp_13"
                 android:textColor="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"
-                app:drawableLeftCompat="@drawable/ic_shop_icon_phone" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                app:drawableLeftCompat="@drawable/ic_shop_icon_phone"
+                tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/email"
@@ -93,13 +92,15 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_2"
+                android:paddingStart="@dimen/dp_2"
                 android:drawablePadding="@dimen/dp_16"
-                android:textSize="@dimen/sp_13"
                 android:textColor="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"
-                app:drawableLeftCompat="@drawable/ic_shop_setting_email" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                app:drawableLeftCompat="@drawable/ic_shop_setting_email"
+                tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/fax"
@@ -107,13 +108,15 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_1"
+                android:paddingStart="@dimen/dp_1"
                 android:drawablePadding="@dimen/dp_15"
-                android:textSize="@dimen/sp_13"
                 android:textColor="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"
-                app:drawableLeftCompat="@drawable/ic_shop_setting_fax" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                app:drawableLeftCompat="@drawable/ic_shop_setting_fax"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
     </LinearLayout>
 

@@ -104,7 +104,7 @@ public class Menus extends BaseBottomSheetView {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.widget_menu;
+        return R.layout.widget_menus;
     }
 
     @Override
