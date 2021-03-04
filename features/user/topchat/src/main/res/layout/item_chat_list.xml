@@ -26,7 +26,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
         app:layout_constraintEnd_toEndOf="@+id/thumbnail"
         app:srcCompat="@drawable/ic_pinned_blue"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="pin"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/message"

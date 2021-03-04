@@ -273,7 +273,7 @@ class ChatItemListViewHolder(
 
     private fun bindTypingState() {
         typingImage.show()
-        MethodChecker.animateTyping(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        MethodChecker.animateVectorDrawable(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
         setMessageTyping()
     }
 
@@ -302,7 +302,7 @@ class ChatItemListViewHolder(
         message.show()
         typingImage.hide()
         typingText.hide()
-        MethodChecker.animateTyping(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        MethodChecker.animateVectorDrawable(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

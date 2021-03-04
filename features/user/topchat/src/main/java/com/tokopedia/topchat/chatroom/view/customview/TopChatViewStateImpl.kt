@@ -656,7 +656,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.show()
         typingText?.show()
         typingImage?.let {
-            MethodChecker.animateTyping(true, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            MethodChecker.animateVectorDrawable(true, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
         }
     }
 
@@ -665,7 +665,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.hide()
         typingText?.hide()
         typingImage?.let {
-            MethodChecker.animateTyping(false, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            MethodChecker.animateVectorDrawable(false, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
         }
     }
 }

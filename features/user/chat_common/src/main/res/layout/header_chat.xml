@@ -20,7 +20,8 @@
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/chatcommon_40dp"
             android:layout_height="@dimen/chatcommon_40dp"
-            tools:src="@color/Unify_Y500" />
+            tools:src="@color/Unify_Y500"
+            android:contentDescription="user_avatar"/>
 
         <ImageView
             android:id="@+id/online_status"
@@ -29,7 +30,8 @@
             android:layout_gravity="end|bottom"
             android:visibility="gone"
             tools:srcCompat="@drawable/status_indicator_offline"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="online_status"/>
 
     </FrameLayout>
 
@@ -68,7 +70,8 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry"
             tools:src="@drawable/ic_badge_shop_official"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="badge"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"

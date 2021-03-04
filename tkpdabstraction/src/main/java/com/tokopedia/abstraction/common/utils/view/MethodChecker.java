@@ -115,7 +115,7 @@ public class MethodChecker {
         }
     }
 
-    public static void animateTyping(Boolean start, Drawable drawable, Context context, @Nullable ImageUnify view, @Nullable Integer animationResource) {
+    public static void animateVectorDrawable(Boolean start, Drawable drawable, Context context, @Nullable ImageUnify view, @Nullable Integer animationResource) {
         try {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable instanceof AnimatedVectorDrawable) {
                 AnimationUtil.INSTANCE.animateTypingImage(start, (AnimatedVectorDrawable) drawable);
