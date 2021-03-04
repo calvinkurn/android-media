@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -35,6 +34,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,13 +51,13 @@ import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
+import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
-import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
@@ -78,12 +78,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+
     lateinit var viewModel: RechargeGeneralViewModel
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
+
     @Inject
     lateinit var mapper: RechargeGeneralMapper
 
@@ -144,9 +149,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
-            sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
+            viewModel = viewModelFragmentProvider.get(RechargeGeneralViewModel::class.java)
+            sharedViewModel = viewModelFragmentProvider.get(SharedRechargeGeneralViewModel::class.java)
 
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
@@ -970,6 +974,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     // Exception because checkout view is located in bottom sheet
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return null
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun onPromoTickerNull(data: PromoData) {

@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
@@ -27,6 +28,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -78,6 +80,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,8 +141,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (it) {
                 telcoClientNumberWidget.setVisibleResultNumber(false)
                 hideDynamicSpacer()
-            }
-            else {
+            } else {
                 telcoClientNumberWidget.setVisibleResultNumber(true)
                 if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
             }
@@ -148,7 +151,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun showDynamicSpacer() {
         val defaultSpaceHeight = 81
         dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
+                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
+                        ?: defaultSpaceHeight
         dynamicSpacer.requestLayout()
     }
 
@@ -181,7 +185,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         initViewPager()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        if(rechargeProductFromSlice.isNotEmpty()) {
+        if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
@@ -353,6 +357,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return telco_buy_widget
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -598,7 +606,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupBillsRecommendation.productId.toString())
 
         if (userSession.isLoggedIn) {
-            navigateToCart()
+            addToCart()
         } else {
             navigateToLoginPage()
         }

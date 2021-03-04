@@ -38,6 +38,7 @@ android {
 dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonTopupBills)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)

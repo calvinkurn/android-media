@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
@@ -26,7 +25,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
@@ -45,6 +43,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
@@ -205,7 +204,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
                     if (userSession.isLoggedIn) {
-                        navigateToCart()
+                        addToCart()
                     }
                 }
             }

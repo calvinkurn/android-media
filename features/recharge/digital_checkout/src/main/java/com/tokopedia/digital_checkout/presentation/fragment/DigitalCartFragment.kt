@@ -137,7 +137,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun loadData() {
         loaderCheckout.visibility = View.VISIBLE
         cartPassData?.let {
-            if (it.needGetCart) {
+            if (it.isFromPDP) {
                 viewModel.getCart(cartPassData?.categoryId
                         ?: "", getString(R.string.digital_cart_login_message))
             } else {
@@ -158,16 +158,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    viewModel.getCart(it.data)
-                }
-                is Fail -> {
-                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
-                        viewModel.handleError(Throwable(getString(R.string.digital_cart_login_message)))
-                    } else {
-                        viewModel.handleError(it.throwable)
-                    }
-                }
+                is Success -> viewModel.getCart(it.data)
+                is Fail -> closeViewWithMessageAlert(it.throwable.message)
             }
         })
 

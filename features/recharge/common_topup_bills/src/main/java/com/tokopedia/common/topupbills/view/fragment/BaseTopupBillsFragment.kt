@@ -25,6 +25,9 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -53,8 +56,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var topupBillsViewModel: TopupBillsViewModel
+
+    lateinit var addToCartViewModel: DigitalAddToCartViewModel
+
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
 
@@ -86,6 +93,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var productName = ""
 
     private fun subscribeUi() {
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> navigateToCart()
+                is Fail -> showErrorMessage(it.throwable)
+            }
+        })
+
         topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
@@ -168,6 +182,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initAddToCartViewModel()
         subscribeUi()
 
         savedInstanceState?.run {
@@ -234,6 +249,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     abstract fun getCheckoutView(): TopupBillsCheckoutWidget?
+
+    abstract fun initAddToCartViewModel()
 
     fun getPromoListener(): TickerPromoStackingCheckoutView.ActionListener {
         return object : TickerPromoStackingCheckoutView.ActionListener {
@@ -372,6 +389,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, error.message
+                    ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
         val voucherCode = promoTicker?.run {
@@ -401,7 +425,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         onLoadingMenuDetail(false)
     }
 
-    abstract fun onLoadingMenuDetail(showLoading:  Boolean)
+    abstract fun onLoadingMenuDetail(showLoading: Boolean)
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
@@ -424,18 +448,26 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             if (isExpressCheckout) {
                 processExpressCheckout()
             } else {
-                navigateToCart()
+                addToCart()
             }
         } else {
             navigateToLoginPage()
         }
     }
 
-    fun navigateToCart() {
+    fun addToCart() {
+        if (::checkoutPassData.isInitialized) {
+            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+            checkoutPassData.voucherCodeCopied = promoCode
+            addToCartViewModel.addToCart(checkoutPassData,
+                    DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                    DigitalSubscriptionParams())
+        }
+    }
+
+    private fun navigateToCart() {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
-                checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-                checkoutPassData.voucherCodeCopied = promoCode
                 val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
