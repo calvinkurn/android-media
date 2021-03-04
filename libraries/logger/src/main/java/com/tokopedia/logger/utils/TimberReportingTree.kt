@@ -1,11 +1,9 @@
 package com.tokopedia.logger.utils
 
 import android.os.Build
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.common.LoggerException
-import org.json.JSONObject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
