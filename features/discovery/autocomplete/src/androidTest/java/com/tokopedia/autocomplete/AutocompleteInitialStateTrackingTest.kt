@@ -119,9 +119,9 @@ internal class AutocompleteInitialStateTrackingTest {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<PopularSearchTitleViewHolder>(i,
                         CommonActions.clickChildViewWithId(R.id.actionRefreshButton)))
             }
-//            is PopularSearchViewHolder -> {
-//                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
-//            }
+            is PopularSearchViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recyclerView, 0)
+            }
             is DynamicInitialStateTitleViewHolder -> {
                 onView(withId(recyclerViewId)).perform(RecyclerViewActions.actionOnItemAtPosition<DynamicInitialStateTitleViewHolder>(i,
                         CommonActions.clickChildViewWithId(R.id.initialStateDynamicButton)))
