@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Companion.PAY_LATER_REGISTER_ACTION
@@ -124,19 +125,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     * */
     private fun setSubHeaderText(detail: PayLaterApplicationDetail?, productDetailSubHeader: String?) {
         tvSubTitlePaylaterPartner.visible()
-        if (detail != null) {
-            if (PayLaterApplicationStatusMapper.isExpirationDateHidden(detail)) {
-                tvSubTitlePaylaterPartner.text = detail.payLaterStatusContent?.verificationContentSubHeader
-                        ?: productDetailSubHeader ?: ""
-            } else {
-                val subTitleText = detail.payLaterStatusContent?.verificationContentSubHeader ?: ""
-                val builder = SpannableStringBuilder()
-                builder.append(subTitleText)
-                builder.append(detail.payLaterExpirationDate)
-                builder.setSpan(StyleSpan(Typeface.BOLD), subTitleText.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                tvSubTitlePaylaterPartner.text = builder
-            }
-        } else if (!productDetailSubHeader.isNullOrEmpty()) {
+        if (!detail?.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
+            tvSubTitlePaylaterPartner.text = detail?.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
+        } else if(!productDetailSubHeader.isNullOrEmpty()) {
             tvSubTitlePaylaterPartner.text = productDetailSubHeader
         } else tvSubTitlePaylaterPartner.gone()
     }

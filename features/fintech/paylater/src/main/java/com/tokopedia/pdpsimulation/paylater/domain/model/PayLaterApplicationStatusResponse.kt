@@ -30,7 +30,7 @@ data class PayLaterApplicationDetail(
         @SerializedName("expiration_date")
         val payLaterExpirationDate: String?,
         @SerializedName("app_status_content")
-        val payLaterStatusContent: PayLaterStatusContent?,
+        var payLaterStatusContent: PayLaterStatusContent?,
         var payLaterApplicationStatusLabelStringId: Int = 0,
         var payLaterApplicationStatusLabelType: Int = 0,
 ) : Parcelable

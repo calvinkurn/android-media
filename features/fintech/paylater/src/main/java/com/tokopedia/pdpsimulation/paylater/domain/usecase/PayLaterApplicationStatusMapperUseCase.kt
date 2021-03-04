@@ -2,6 +2,7 @@ package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterStatusContent
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.mapper.*
 import com.tokopedia.unifycomponents.Label
@@ -42,6 +43,7 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
             } else {
                 applicationDetailList.map {
                     val appStatus = setLabelData(it)
+                    it.payLaterStatusContent = computeSubHeaderText(it)
                     if (appStatus is PayLaterStatusActive ||
                             appStatus is PayLaterStatusApproved ||
                             appStatus is PayLaterStatusWaiting)
@@ -97,6 +99,39 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
             }
         }
         return applicationStatusType
+    }
+
+    private fun computeSubHeaderText(payLaterApplicationDetail: PayLaterApplicationDetail): PayLaterStatusContent? {
+        val subHeader: String
+        payLaterApplicationDetail.let {
+            subHeader = if (isExpirationDateHidden(it)) {
+                it.payLaterStatusContent?.verificationContentSubHeader ?: ""
+            } else {
+                // expiration date is never empty --> check isExpirationDateHidden
+                (it.payLaterStatusContent?.verificationContentSubHeader ?: "") +
+                        "<b>${it.payLaterExpirationDate ?: ""}</b>"
+            }
+            return PayLaterStatusContent(
+                    it.payLaterStatusContent?.verificationContentEmail,
+                    subHeader,
+                    it.payLaterStatusContent?.verificationContentPhoneNumber,
+                    it.payLaterStatusContent?.verificationContentPopUpDetail,
+                    it.payLaterStatusContent?.verificationContentInfo
+            )
+        }
+    }
+
+    /*
+    *  do not show expiration date if the following conditions pass
+    * */
+    private fun isExpirationDateHidden(applicationDetail: PayLaterApplicationDetail): Boolean {
+        val status = PayLaterApplicationStatusMapper.getApplicationStatusType(applicationDetail)
+        return (status is PayLaterStatusActive ||
+                status is PayLaterStatusApproved ||
+                status is PayLaterStatusSuspended ||
+                status is PayLaterStatusExpired ||
+                status is PayLaterStatusEmpty ||
+                applicationDetail.payLaterExpirationDate.isNullOrEmpty())
     }
 }
 

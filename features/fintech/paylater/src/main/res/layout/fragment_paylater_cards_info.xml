@@ -47,7 +47,6 @@
             tools:text="Yuk, daftar sekarang!"
             android:visibility="gone"
             android:textSize="@dimen/unify_font_14"
-            app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/tvTitlePaymentPartner"
             app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
             app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
@@ -61,7 +60,6 @@
             android:textSize="@dimen/unify_font_10"
             app:labelType="general_light_blue"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
             app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
             tools:text="Aktif" />

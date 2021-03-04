@@ -1,21 +1,13 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.registration
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.mapper.*
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
@@ -47,18 +39,8 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 if (it.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
                     tvDescription.text = context.getString(R.string.pay_later_default_subtitle)
                 } else {
-                    if (PayLaterApplicationStatusMapper.isExpirationDateHidden(it)) {
-                        tvDescription.text = it.payLaterStatusContent?.verificationContentSubHeader
-                                ?: context.getString(R.string.pay_later_default_subtitle)
-                    } else {
-                        val subHeader = it.payLaterStatusContent?.verificationContentSubHeader ?: ""
-                        val builder = SpannableStringBuilder()
-                        builder.append(subHeader)
-                        builder.append(" ")
-                        builder.append(it.payLaterExpirationDate)
-                        builder.setSpan(StyleSpan(Typeface.BOLD), subHeader.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        tvDescription.text = builder
-                    }
+                    tvDescription.text = it.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
+                            ?: context.getString(R.string.pay_later_default_subtitle)
                 }
             }
         }
