@@ -206,8 +206,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 title,
                 description,
                 imageUrl,
-                buttonName,
-                ""
+                buttonName
         )
         val bottomSheet = PowerMerchantAccessBottomSheet.newInstance(model)
         bottomSheet.setListener(this)

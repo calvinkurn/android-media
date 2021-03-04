@@ -37,11 +37,10 @@
         app:fontSize="micro"
         android:layout_marginBottom="@dimen/dp_20"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_redirect_to"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Button.Submit.Green.Full"
         tools:text="Button Text"/>
 
 </LinearLayout>

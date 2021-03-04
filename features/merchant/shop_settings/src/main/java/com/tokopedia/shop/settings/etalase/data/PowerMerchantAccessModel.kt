@@ -8,6 +8,5 @@ data class PowerMerchantAccessModel(
         val title: String = "",
         val desc: String = "",
         val imageUrl: String = "",
-        val btnTitle: String = "",
-        val trackingFlag: String = ""
+        val btnTitle: String = ""
 ): Parcelable
