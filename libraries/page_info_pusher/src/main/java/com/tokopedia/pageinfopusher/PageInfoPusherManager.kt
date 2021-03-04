@@ -78,7 +78,7 @@ class PageInfoPusherManager(val activity: Activity) {
     }
 
     private fun showPopUp(message: String) {
-        DialogUnify(context = this,
+        DialogUnify(context = activity,
                 actionType = DialogUnify.SINGLE_ACTION,
                 imageType = DialogUnify.NO_IMAGE).apply {
             setTitle(activity.getString(R.string.announcement))
