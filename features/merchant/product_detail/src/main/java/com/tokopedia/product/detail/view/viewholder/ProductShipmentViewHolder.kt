@@ -176,13 +176,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun adjustUiSuccess(title: String, instantLabel: String, isCod: Boolean) = with(itemView) {
-        otherCourierTxt?.setOnClickListener(null)
-        shipmentOtherContainer?.setOnClickListener {
-            listener.openShipmentClickedBottomSheet(title, instantLabel, isCod, componentTrackDataModel)
-        }
-        shipmentArrow?.setOnClickListener {
-            listener.openShipmentClickedBottomSheet(title, instantLabel, isCod, componentTrackDataModel)
-        }
+        val clickListener = commonClickListener(title, instantLabel, isCod)
+        otherCourierTxt?.setOnClickListener(clickListener)
+        shipmentOtherContainer?.setOnClickListener(clickListener)
+        shipmentArrow?.setOnClickListener(clickListener)
+
         otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         shipmentArrow?.show()
         shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
@@ -204,6 +202,12 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLocalLoad?.hide()
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.show()
+    }
+
+    private fun commonClickListener(title: String, instantLabel: String, isCod: Boolean): View.OnClickListener {
+        return View.OnClickListener {
+            listener.openShipmentClickedBottomSheet(title, instantLabel, isCod, componentTrackDataModel)
+        }
     }
 
     private fun getComponentTrackData(element: ProductShipmentDataModel?) = ComponentTrackDataModel(element?.type
