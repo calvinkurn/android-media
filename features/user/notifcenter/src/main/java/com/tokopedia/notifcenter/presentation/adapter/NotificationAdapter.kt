@@ -13,16 +13,14 @@ import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResp
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
-import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
-import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
-import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
-import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 
@@ -233,6 +231,14 @@ class NotificationAdapter constructor(
             visitables.add(0, response.notifcenterNotifOrderList)
             notifyItemInserted(0)
             inserted()
+            updateSectionTitlePadding()
+        }
+    }
+
+    private fun updateSectionTitlePadding() {
+        val nextItem = visitables.getOrNull(1) ?: return
+        if (nextItem is SectionTitleUiModel) {
+            notifyItemChanged(1, SectionTitleViewHolder.PAYLOAD_UPDATE_PADDING)
         }
     }
 
