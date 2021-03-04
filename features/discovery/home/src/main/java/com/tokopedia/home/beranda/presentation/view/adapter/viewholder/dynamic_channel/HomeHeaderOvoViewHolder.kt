@@ -10,8 +10,10 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -31,14 +33,27 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
+        resetView()
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
-        renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+        element.headerDataModel?.let {
+            if (it.homeBalanceModel.balanceType == HomeBalanceModel.TYPE_STATE_1) {
+                renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+            } else {
+                renderBalanceLayout(it.homeBalanceModel)
+            }
+        }
+
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: HomeHeaderOvoDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun resetView() {
+        itemView.findViewById<OvoWidgetView>(R.id.view_ovo).gone()
+        itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).gone()
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
@@ -90,6 +105,14 @@ class HomeHeaderOvoViewHolder(itemView: View,
             } else {
                 ovoView.gone()
             }
+        }
+    }
+
+    private fun renderBalanceLayout(data: HomeBalanceModel?) {
+        val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
+        data?.let {
+            balanceWidgetView.visible()
+            balanceWidgetView.bind(it, listener)
         }
     }
 }

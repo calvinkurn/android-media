@@ -1,5 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel
 
+import android.os.Bundle
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
+
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.*
@@ -12,9 +16,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDra
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
+
 data class HomeBalanceModel (
-        var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel?> = mutableMapOf(),
-        var balanceType: Int? = null
+        var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
+        var balanceType: Int = TYPE_STATE_1
 ) {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
@@ -25,6 +30,50 @@ data class HomeBalanceModel (
 
         // State 3: Tokopoints, Coupon, Bebas Ongkir
         const val TYPE_STATE_3 = 3
+
+        // State 4: Non login, will not rendered
+        const val TYPE_STATE_4 = 4
+
+        private const val HASH_CODE = 39
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HomeBalanceModel
+
+        if (balanceDrawerItemModels != other.balanceDrawerItemModels) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = balanceDrawerItemModels?.hashCode() ?: 0
+        return result
+    }
+
+    //call to init balance widget data
+    fun initBalanceModelByType() {
+        balanceDrawerItemModels.clear()
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_2 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[3] = BalanceDrawerItemModel()
+            }
+            TYPE_STATE_3 -> {
+                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+            }
+        }
     }
 
     fun mapBalanceData(
@@ -202,10 +251,10 @@ data class BalanceDrawerItemModel(
         val applink: String = "",
         val iconImageUrl: String = "",
         val defaultIconRes: Int? = null,
-        val balanceTitleTextAttribute: BalanceTextAttribute? = null,
-        val balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
-        val balanceTitleTagAttribute: BalanceTagAttribute? = null,
-        val balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
+        var balanceTitleTextAttribute: BalanceTextAttribute? = null,
+        var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
+        var balanceTitleTagAttribute: BalanceTagAttribute? = null,
+        var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
         val drawerItemType: Int = TYPE_TOKOPOINT,
         var state: Int = STATE_LOADING
 ) {
@@ -225,6 +274,10 @@ data class BalanceDrawerItemModel(
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
+    }
+
+    fun buildDefaultData(titleTagAttributes: BalanceTagAttribute) {
+        balanceTitleTagAttribute = titleTagAttributes
     }
 }
 

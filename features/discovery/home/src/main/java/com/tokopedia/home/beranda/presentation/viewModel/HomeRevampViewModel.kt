@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
+import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -293,7 +294,8 @@ open class HomeRevampViewModel @Inject constructor(
         if (balanceWidgetRollanceType == AbTestPlatform.BALANCE_VARIANT_NEW) {
             isNewBalanceWidget.invoke()
         } else {
-            isOldBalanceWidget.invoke()
+//            isOldBalanceWidget.invoke()
+            isNewBalanceWidget.invoke()
         }
     }
 
@@ -480,19 +482,10 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             homeHeaderOvoDataModel.headerDataModel = HeaderDataModel(
-                    homeHeaderWalletActionData = HomeHeaderWalletAction(
-                            isLinked = true,
-                            labelTitle = when(homeBalanceModel.balanceType){
-                                HomeBalanceModel.TYPE_STATE_1 -> "Type state 1"
-                                HomeBalanceModel.TYPE_STATE_2 -> "Type state 2"
-                                HomeBalanceModel.TYPE_STATE_3 -> "Type state 3"
-                                else -> "Unknown"
-                            }
-                    ),
-                    isUserLogin = true
+                    homeBalanceModel = homeBalanceModel
             )
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
             this.homeBalanceModel = homeBalanceModel
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
         }
     }
 
@@ -575,8 +568,13 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun evaluateHomeFlagData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
-//            val flag = it.homeFlag.getFlag()
-            homeBalanceModel.balanceType = HomeBalanceModel.TYPE_STATE_2
+            homeBalanceModel.balanceType = when(it.homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
+                1 -> HomeBalanceModel.TYPE_STATE_1
+                2 -> HomeBalanceModel.TYPE_STATE_2
+                3 -> HomeBalanceModel.TYPE_STATE_3
+                else -> HomeBalanceModel.TYPE_STATE_4
+            }
+            homeBalanceModel.initBalanceModelByType()
         }
         return homeDataModel
     }
