@@ -92,8 +92,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var _binding: FragmentPinpointMapBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var mapView: MapView
-
     private var composite = CompositeSubscription()
 
     @Inject
@@ -184,13 +182,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun prepareMap(savedInstanceState: Bundle?) {
-        mapView = binding.mapView
         binding.mapView.run {
             onCreate(savedInstanceState)
             getMapAsync(this@PinpointMapFragment)
@@ -214,7 +206,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
                 (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
 
-                mapView.onPause()
                 AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(isFullFlow, isLogisticLabel)
                 activity?.finish()
             }
@@ -339,7 +330,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
         binding.mapView.onResume()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             binding.icCurrentLocation.setImageResource(R.drawable.ic_gps_enable)
@@ -379,23 +369,25 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.onDestroy()
+        binding.mapView.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        binding.mapView.onLowMemory()
     }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onDestroyView() {
+        binding.mapView.onDestroy()
+        _binding = null
+        super.onDestroyView()
+    }
+
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
         val autocompleteGeocodeBottomSheetFragment =
@@ -620,7 +612,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 visibility = View.VISIBLE
                 text = saveAddressDataModel.formattedAddress
                 setOnClickListener {
-                    AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow,isLogisticLabel)
+                    AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
                     showAutoCompleteBottomSheet(saveAddressDataModel.title)
                 }
             }
@@ -854,24 +846,26 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private fun requestLocation() {
         activity?.let {
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)  }
-                        permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                    }
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG) }
+                            permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                        }
 
-                    override fun onNeverAskAgain(permissionText: String) {
-                        permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                    }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                        }
 
-                    override fun onPermissionGranted() {
-                        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                            if (data != null) {
-                                moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL) } }
-                        googleMap?.isMyLocationEnabled = true
-                    }
+                        override fun onPermissionGranted() {
+                            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                                if (data != null) {
+                                    moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
+                                }
+                            }
+                            googleMap?.isMyLocationEnabled = true
+                        }
 
-                }, it.getString(R.string.rationale_need_location))
+                    }, it.getString(R.string.rationale_need_location))
         }
     }
 
