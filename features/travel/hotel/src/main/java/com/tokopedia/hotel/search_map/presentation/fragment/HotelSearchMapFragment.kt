@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
@@ -18,11 +19,16 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -55,6 +61,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -64,11 +71,14 @@ import kotlin.math.abs
  * @author by furqan on 01/03/2021
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
+
+    lateinit var fusedLocationClient: FusedLocationProviderClient
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private lateinit var adapterCardList: HotelSearchResultAdapter
 
@@ -80,6 +90,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var allMarker: ArrayList<Marker> = ArrayList()
     private var screenHeight: Int = 0
     private var isInAnimation: Boolean = false
+    private var cardListPosition: Int = SELECTED_POSITION_INIT
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -95,8 +106,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-        hotelSearchMapViewModel = viewModelProvider.get(HotelSearchMapViewModel::class.java)
+        activity?.run {
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+            hotelSearchMapViewModel = viewModelProvider.get(HotelSearchMapViewModel::class.java)
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            permissionCheckerHelper = PermissionCheckerHelper()
+        }
+
+        hotelSearchMapViewModel.setPermissionHelper(permissionCheckerHelper)
 
         arguments?.let {
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
@@ -118,6 +136,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> onSuccessGetResult(it.data)
             }
         })
+
+        hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    hotelSearchMapViewModel.searchParam.location.latitude = it.data.first.toFloat()
+                    hotelSearchMapViewModel.searchParam.location.longitude = it.data.second.toFloat()
+                    addMyLocation(LatLng(it.data.first, it.data.second))
+                }
+            }
+        })
+
+        hotelSearchMapViewModel.radius.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> ""
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -135,11 +169,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         Handler().postDelayed({
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
         }, ANIMATION_DETAIL_TIMES)
+        initGetMyLocation()
     }
 
     override fun onMapReady(map: GoogleMap) {
         this.googleMap = map
         setGoogleMap()
+    }
+
+    /** Marker ID consists m{position} ex. m3. To track the position dropped the the first string*/
+    override fun onMarkerClick(marker: Marker): Boolean {
+        allMarker.forEach {
+            if (it.id  == marker.id) {
+                val idMarker = it.id.drop(DROP_FIRST_STRING_MARKER_ID).toInt()
+                cardListPosition = idMarker
+                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(idMarker)
+                changeMarkerState(idMarker)
+            }
+        }
+        return true
     }
 
     override fun onItemClicked(property: Property, position: Int) {
@@ -188,6 +236,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
+
+        initScrollCardList()
+    }
+
+    private fun initScrollCardList(){
+        rvHorizontalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    cardListPosition = getCurrentItemCardList()
+                    changeMarkerState(cardListPosition)
+                }
+            }
+        })
+    }
+
+    private fun getCurrentItemCardList(): Int {
+        return (rvHorizontalPropertiesHotelSearchMap.layoutManager as LinearLayoutManager)
+                .findFirstVisibleItemPosition()
     }
 
     /**
@@ -273,6 +340,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
+            googleMap.setOnMarkerClickListener(this)
+
             googleMap.setOnMapClickListener {
                 // do nothing
             }
@@ -296,32 +365,89 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.addView(imageView)
 
         val textView = TextView(context)
-        textView.setHeadingText(5)
+        textView.setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
         textView.text = getString(R.string.hotel_search_map_around_here)
         wrapper.addView(textView)
-        wrapper.setOnClickListener {}
+        wrapper.setOnClickListener {
+            hotelSearchMapViewModel.getVisibleRadius(googleMap)
+        }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
+    }
+
+    private fun addMyLocation(latLong: LatLng){
+        googleMap.addMarker(MarkerOptions().position(latLong)
+                .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
+                .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
+                .draggable(false))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong))
+
+        removeAllMarker()
     }
 
     private fun addMarker(latitude: Double, longitude: Double, price: String) {
         val latLng = LatLng(latitude, longitude)
 
         context?.run {
-            allMarker.add(googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, price))
+            allMarker.add(googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
+                    .title(price)
+                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
                     .draggable(false)))
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    private fun createCustomMarker(context: Context, price: String): BitmapDescriptor {
-        val marker: View = View.inflate(context, R.layout.custom_price_marker, null)
+    private fun changeMarkerState(position: Int){
+        resetMarkerState()
+        if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+    }
 
-        val bgMarker = marker.findViewById<View>(R.id.bg_marker)
-        bgMarker.setBackgroundResource(R.drawable.price_marker_default)
+    private fun resetMarkerState(){
+        allMarker.forEach {
+            it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
+        }
+    }
+
+    private fun removeAllMarker(){
+        allMarker.forEach {
+            it.remove()
+        }
+        allMarker.clear()
+    }
+
+    /**Location permission is handled by LocationDetector*/
+    private fun initGetMyLocation(){
+        ivGetLocationHotelSearchMap.setOnClickListener {
+            getCurrentLocation()
+        }
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable?.run {
+                drawable = DrawableCompat.wrap(this).mutate()
+            }
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 0,
+                drawable?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable?.setBounds(0, 0, canvas.width, canvas.height)
+        drawable?.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    private fun createCustomMarker(context: Context, markerType: String, price: String): BitmapDescriptor {
+        val marker: View = View.inflate(context, R.layout.hotel_custom_price_marker, null)
 
         val txtPrice = marker.findViewById<View>(R.id.txtPriceHotelMarker) as Typography
-        txtPrice.text = price
+        with(txtPrice){
+            text = price
+            background = resources.getDrawable(getPin(markerType))
+            if(markerType == HOTEL_PRICE_ACTIVE_PIN) setTextColor(color = resources.getColor(R.color.Unify_N0))
+        }
 
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -336,10 +462,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun getPin(markerType: String): Int {
         return when (markerType) {
-            MY_LOCATION_PIN -> R.drawable.ic_get_location
-            HOTEL_PRICE_ACTIVE_PIN -> R.drawable.ic_hotel_price_active
-            HOTEL_PRICE_INACTIVE_PIN -> R.drawable.price_marker_default
-            else -> R.drawable.ic_get_location
+            MY_LOCATION_PIN -> R.drawable.ic_hotel_my_location
+            HOTEL_PRICE_ACTIVE_PIN -> R.drawable.bg_price_marker_selected
+            HOTEL_PRICE_INACTIVE_PIN -> R.drawable.bg_price_marker_default
+            else -> R.drawable.bg_price_marker_default
         }
     }
 
@@ -490,6 +616,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         btnGetRadiusHotelSearchMap.gone()
     }
 
+    private fun getCurrentLocation(){
+        hotelSearchMapViewModel.getCurrentLocation(fusedLocationClient, requireActivity())
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
+            }
+        }
+    }
+
     companion object {
         private const val KEY_SEARCH_MAP_COACHMARK = "key_hotel_search_map_coachmark"
         private const val COACHMARK_LIST_STEP_POSITION = 1
@@ -504,12 +646,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
+        private const val ANCHOR_MARKER_X: Float = 0.8f
+        private const val ANCHOR_MARKER_Y: Float = 1f
+
         private const val MY_LOCATION_PIN = "MY LOCATION"
         private const val HOTEL_PRICE_ACTIVE_PIN = "HOTEL PRICE ACTIVE"
         private const val HOTEL_PRICE_INACTIVE_PIN = "HOTEL PRICE INACTIVE"
 
+        private const val BUTTON_RADIUS_HEADING_SIZE = 5
+
+        private const val DROP_FIRST_STRING_MARKER_ID = 1
+
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+
+        const val SELECTED_POSITION_INIT = -1
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
