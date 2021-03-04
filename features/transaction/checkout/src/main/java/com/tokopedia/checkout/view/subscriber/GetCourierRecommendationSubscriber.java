@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.subscriber;
 
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -91,22 +92,25 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     shippingCourierUiModel.setSelected(true);
                                     presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
                                     CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
-                                    if (shippingRecommendationData.getLogisticPromo() != null) {
-                                        String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
+                                    LogisticPromoUiModel logisticPromo = shippingRecommendationData.getLogisticPromo();
+                                    if (logisticPromo != null) {
+                                        String disableMsg = logisticPromo.getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
 
                                         // Auto apply Promo Stacking Logistic
-                                        if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
-                                                && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
-                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()
-                                                && !shippingRecommendationData.getLogisticPromo().getDisabled()) {
-                                            courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
-                                            courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
-                                            courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
-                                            courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
-                                            courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
-                                            courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
-                                            courierItemData.setShipperName(shippingRecommendationData.getLogisticPromo().getShipperName());
+                                        if (logisticPromo.getShipperId() == shipperId
+                                                && logisticPromo.getShipperProductId() == spId
+                                                && !logisticPromo.getPromoCode().isEmpty()
+                                                && !logisticPromo.getDisabled()) {
+                                            courierItemData.setLogPromoCode(logisticPromo.getPromoCode());
+                                            courierItemData.setDiscountedRate(logisticPromo.getDiscountedRate());
+                                            courierItemData.setShippingRate(logisticPromo.getShippingRate());
+                                            courierItemData.setBenefitAmount(logisticPromo.getBenefitAmount());
+                                            courierItemData.setPromoTitle(logisticPromo.getTitle());
+                                            courierItemData.setHideShipperName(logisticPromo.getHideShipperName());
+                                            courierItemData.setShipperName(logisticPromo.getShipperName());
+                                            courierItemData.setEtaText(logisticPromo.getEtaData().getTextEta());
+                                            courierItemData.setEtaErrorCode(logisticPromo.getEtaData().getErrorCode());
                                         }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates);
