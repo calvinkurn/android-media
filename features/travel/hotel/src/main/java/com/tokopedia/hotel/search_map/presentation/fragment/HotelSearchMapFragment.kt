@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -359,14 +360,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun initFloatingButton() {
         val wrapper = LinearLayout(context)
+        wrapper.gravity = Gravity.CENTER
 
         val imageView = ImageView(context)
         imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
         wrapper.addView(imageView)
 
         val textView = TextView(context)
-        textView.setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-        textView.text = getString(R.string.hotel_search_map_around_here)
+        textView.apply {
+            setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+            setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+            text = getString(R.string.hotel_search_map_around_here)
+        }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
@@ -653,7 +658,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val HOTEL_PRICE_ACTIVE_PIN = "HOTEL PRICE ACTIVE"
         private const val HOTEL_PRICE_INACTIVE_PIN = "HOTEL PRICE INACTIVE"
 
-        private const val BUTTON_RADIUS_HEADING_SIZE = 5
+        private const val BUTTON_RADIUS_HEADING_SIZE = 6
 
         private const val DROP_FIRST_STRING_MARKER_ID = 1
 
