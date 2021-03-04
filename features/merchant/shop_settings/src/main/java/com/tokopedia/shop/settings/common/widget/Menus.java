@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ArrayRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -35,32 +34,6 @@ public class Menus extends BaseBottomSheetView {
 
     public Menus(@NonNull Context context) {
         super(context);
-    }
-
-    public Menus(@NonNull Context context, int theme) {
-        super(context, theme);
-    }
-
-    protected Menus(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-    }
-
-    public List<ItemMenus> getItemMenuList() {
-        return menusAdapter.itemMenusList;
-    }
-
-    public ItemMenus getItemMenu(int position) {
-        return menusAdapter.itemMenusList.get(position);
-    }
-
-    public void setItemMenuList(List<ItemMenus> itemMenusList) {
-        this.menusAdapter.itemMenusList = itemMenusList;
-        menusAdapter.notifyDataSetChanged();
-    }
-
-    public void setItemMenuList(@ArrayRes int stringArray) {
-        String[] menus = this.getContext().getResources().getStringArray(stringArray);
-        setItemMenuList(menus);
     }
 
     public void setItemMenuList(String[] menus) {
@@ -173,13 +146,13 @@ public class Menus extends BaseBottomSheetView {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item, parent, false);
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menus_item, parent, false);
                 return new ViewHolder(itemView);
             } else if (viewType == TYPE_HEADER) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item_title, parent, false);
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menus_item_title, parent, false);
                 return new HeaderViewHolder(itemView);
             } else if (viewType == TYPE_FOOTER) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item_action, parent, false);
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menus_item_action, parent, false);
                 return new FooterViewHolder(itemView);
             } else return null;
         }
@@ -290,18 +263,6 @@ public class Menus extends BaseBottomSheetView {
 
         public ItemMenus(String title) {
             this.title = title;
-        }
-
-        public ItemMenus(String title, int icon) {
-            this.title = title;
-            this.icon = icon;
-        }
-
-        public ItemMenus(String title, boolean hasCheck) {
-            this.title = title;
-            if(hasCheck) {
-                this.iconEnd = R.drawable.ic_check;
-            }
         }
     }
 }
