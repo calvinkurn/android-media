@@ -40,6 +40,7 @@ import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAd
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -308,21 +309,25 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         viewModel.getDefaultAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val data = it.data.addressData
-                    val localData = ChooseAddressUtils.setLocalizingAddressData(
-                            addressId = data.addressId.toString(),
-                            cityId = data.cityId.toString(),
-                            districtId = data.districtId.toString(),
-                            lat = data.latitude,
-                            long = data.longitude,
-                            label = "${data.addressName} ${data.receiverName}",
-                            postalCode = data.postalCode
-                    )
-                    chooseAddressPref?.setLocalCache(localData)
-                    if (isLoginFlow) {
-                        listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                    if (it.data.keroAddrError.detail.isNotEmpty()) {
+                        showToaster(getString(R.string.toaster_failed_chosen_address), Toaster.TYPE_ERROR)
+                    } else {
+                        val data = it.data.addressData
+                        val localData = ChooseAddressUtils.setLocalizingAddressData(
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = "${data.addressName} ${data.receiverName}",
+                                postalCode = data.postalCode
+                        )
+                        chooseAddressPref?.setLocalCache(localData)
+                        if (isLoginFlow) {
+                            listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                        }
+                        dismissBottomSheet()
                     }
-                    dismissBottomSheet()
                 }
 
                 is Fail -> {
@@ -331,6 +336,14 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
         })
+    }
+
+    private fun showToaster(message: String, type: Int) {
+        println("++ already showToaster!")
+        val toaster = Toaster
+        this.view?.let { v ->
+            toaster.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
+        }
     }
 
     private fun setInitialViewState() {
@@ -476,7 +489,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
         viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source)
-        setInitialViewState()
+        // setInitialViewState()
     }
 
     private fun showGpsPopUp() {

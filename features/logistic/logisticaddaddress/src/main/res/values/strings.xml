@@ -140,6 +140,7 @@
     <string name="content_desc_receiver_phone">input nomor telepon</string>
     <string name="content_desc_value_location">input lokasi pickup</string>
     <string name="content_desc_save_button">button simpan</string>
+    <string name="toaster_failed_get_district">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
