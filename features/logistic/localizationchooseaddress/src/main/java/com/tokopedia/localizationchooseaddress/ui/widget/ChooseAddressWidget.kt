@@ -42,7 +42,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
     private var textChosenAddress: Typography? = null
-    private var buttonChooseAddress: IconUnify? = null
+    private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
 
@@ -56,7 +56,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         chooseAddressPref = ChooseAddressSharePref(context)
 
         textChosenAddress = findViewById(R.id.text_chosen_address)
-        buttonChooseAddress = findViewById(R.id.btn_arrow)
+        buttonChooseAddress = findViewById(R.id.choose_address_widget)
 
         checkRollence()
     }
