@@ -1,9 +1,6 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.*
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -14,12 +11,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.util.AnimationUtil
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -278,27 +273,13 @@ class ChatItemListViewHolder(
 
     private fun bindTypingState() {
         typingImage.show()
-        animateTyping(true, typingImage.drawable)
+        MethodChecker.animateTyping(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
         setMessageTyping()
     }
 
     private fun setMessageTyping() {
         message.hide()
         typingText.show()
-    }
-
-    private fun animateTyping(start: Boolean, drawable: Drawable) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) {
-            AnimationUtil.animateTypingImage(start, drawable)
-        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M && drawable is AnimatedVectorDrawable) { //lollipop device (API 21 & 22)
-            val animatedVector = AnimatedVectorDrawableCompat.create(itemView.context, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
-            animatedVector?.let {
-                typingImage.setImageDrawable(animatedVector)
-                AnimationUtil.animateTypingImage(start, it)
-            }
-        } else if(drawable is AnimatedVectorDrawableCompat) {
-            AnimationUtil.animateTypingImage(start, drawable)
-        }
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -321,7 +302,7 @@ class ChatItemListViewHolder(
         message.show()
         typingImage.hide()
         typingText.hide()
-        animateTyping(false, typingImage.drawable)
+        MethodChecker.animateTyping(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

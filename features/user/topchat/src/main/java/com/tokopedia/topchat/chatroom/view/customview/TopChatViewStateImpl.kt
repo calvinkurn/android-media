@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -40,7 +41,9 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author : Steven 29/11/18
@@ -68,6 +71,9 @@ class TopChatViewStateImpl constructor(
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
     var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
+    private var userStatus: Typography? = null
+    private var typingImage: ImageUnify? = null
+    private var typingText: Typography? = null
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -114,6 +120,10 @@ class TopChatViewStateImpl constructor(
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.hide()
+
+        userStatus = toolbar.findViewById(com.tokopedia.chat_common.R.id.subtitle)
+        typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
+        typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
 
         initProductPreviewLayout()
         initHeaderLayout()
@@ -641,6 +651,21 @@ class TopChatViewStateImpl constructor(
         replyEditText.requestFocus()
     }
 
-    override fun getPageType() = TYPE_TOPCHAT
+    override fun onShowStartTyping() {
+        userStatus?.hide()
+        typingImage?.show()
+        typingText?.show()
+        typingImage?.let {
+            MethodChecker.animateTyping(true, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        }
+    }
 
+    override fun onShowStopTyping() {
+        userStatus?.show()
+        typingImage?.hide()
+        typingText?.hide()
+        typingImage?.let {
+            MethodChecker.animateTyping(false, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        }
+    }
 }

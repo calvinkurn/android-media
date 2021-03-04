@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.util
+package com.tokopedia.abstraction.common.utils.view
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Animatable2
