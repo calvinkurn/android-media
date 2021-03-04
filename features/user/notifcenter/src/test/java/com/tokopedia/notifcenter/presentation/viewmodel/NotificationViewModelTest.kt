@@ -687,7 +687,6 @@ class NotificationViewModelTest {
         // given
         val role = RoleType.BUYER
         val throwable: Throwable = IllegalStateException()
-
         every { notifOrderListUseCase.getOrderList(role) } throws throwable
 
         // when
@@ -700,6 +699,35 @@ class NotificationViewModelTest {
             orderListObserver.onChanged(any())
         }
         assertThat(viewModel.orderList.value?.throwable, `is`(throwable))
+    }
+
+    @Test
+    fun `clearNotifCounter do nothing if role is null`() {
+        // when
+        viewModel.clearNotifCounter(null)
+
+        // then
+        verify(exactly = 0) {
+            clearNotifUseCase.clearNotifCounter(any())
+        }
+    }
+
+    @Test
+    fun `clearNotifCounter propagate success data to liveData`() {
+        // Given
+        val role = RoleType.BUYER
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
     }
 
     private fun getErrorAtcModel(): AddToCartDataModel {
@@ -760,6 +788,7 @@ class NotificationViewModelTest {
         )
 
         private val notifOrderListResponse = NotifOrderListResponse()
+        private val clearNotifCounterResponse = ClearNotifCounterResponse()
     }
 
 }
