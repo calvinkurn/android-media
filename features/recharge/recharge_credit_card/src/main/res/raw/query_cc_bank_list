@@ -1,9 +1,0 @@
-query rechargeBankList($categoryId: Int!) {
-  rechargePCIDSSSignature(category_id: $categoryId) {
-    bank_list{
-      name
-      image_url
-    }
-    message_error
-  }
-}
