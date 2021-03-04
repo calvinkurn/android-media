@@ -10,7 +10,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
-import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 

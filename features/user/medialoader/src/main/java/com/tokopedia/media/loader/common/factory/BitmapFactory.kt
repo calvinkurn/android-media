@@ -83,7 +83,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 * the blurHash image, but if placeholder is 0 and blurHash is inactive,
                 * the placeholder will render the default of built-in placeholder.
                 * */
-                placeHolder == ZERO_PLACEHOLDER -> {
+                placeHolder == ZERO -> {
                     if (blurHash && hash.isNotEmpty()) {
                         placeholder(BitmapDrawable(context.resources, generateBlurHash(
                                 hash = hash,
@@ -96,7 +96,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 }
 
                 // render the custom placeholder that provided by Properties()
-                placeHolder != ZERO_PLACEHOLDER && placeHolder > ZERO_PLACEHOLDER -> {
+                placeHolder != ZERO && placeHolder > ZERO -> {
                     placeholder(placeHolder)
                 }
             }
@@ -117,7 +117,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
     }
 
     companion object {
-        private const val ZERO_PLACEHOLDER = 0
+        private const val ZERO = 0
     }
 
 }

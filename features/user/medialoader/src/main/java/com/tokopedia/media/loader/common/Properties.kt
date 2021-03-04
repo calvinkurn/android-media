@@ -17,7 +17,7 @@ open class Properties(
         internal var data: Any? = null,
         internal var renderDelay: Long = 0L,
         internal var thumbnailUrl: String = "",
-        internal var blurHash: Boolean = true,
+        internal var blurHash: Boolean = false,
         internal var isAnimate: Boolean = false,
         internal var isCircular: Boolean = false,
         internal var roundedRadius: Float = 0f,
