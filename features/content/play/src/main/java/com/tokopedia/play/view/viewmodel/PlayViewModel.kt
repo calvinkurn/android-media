@@ -852,7 +852,7 @@ class PlayViewModel @Inject constructor(
                     val report = deferredReportSummaries.await().data.first().channel.metrics
                     Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
-                    Triple("", 0 , "0")
+                    Triple("0", 0 , "0")
                 }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
