@@ -51,9 +51,7 @@ class CatalogInfoViewHolder(private val view: View,
         view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_more_description).setOnClickListener {
             catalogDetailListener.onViewMoreDescriptionClick()
         }
-        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.product_description_title).setOnClickListener {
-            catalogDetailListener.onDescriptionClick()
-        }
+
         productInfo.run {
             view.product_name.text = productName
             view.product_brand.displayTextOrHide(productBrand)

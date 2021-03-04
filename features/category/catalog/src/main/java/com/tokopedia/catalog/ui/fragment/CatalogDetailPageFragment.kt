@@ -28,7 +28,6 @@ import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
-import com.tokopedia.catalog.model.util.slidinguppanel.SlidingUpPanelLayout
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
@@ -113,8 +112,7 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        openBottomSheetProductListing()
-        addCatalogProductsFragment()
+        setUpBottomSheet()
     }
 
     fun setCatalogId(catalogId: String){
@@ -122,22 +120,14 @@ class CatalogDetailPageFragment : Fragment(),
         requireArguments().putString(ARG_EXTRA_CATALOG_ID,catalogId)
     }
 
-    private fun addCatalogProductsFragment(){
-        requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.catalog_products_container_view,
-                CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
-        ).commit()
-    }
-
-    private fun openBottomSheetProductListing() {
-        requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.dragView,CatalogPreferredProductsBottomSheet.newInstance(catalogId)
-        ).commit()
-
-    }
-
     private fun initViews() {
         shimmerLayout = view?.findViewById(R.id.shimmer_layout)
+    }
+
+    private fun setUpBottomSheet(){
+        requireActivity().supportFragmentManager.beginTransaction().replace(
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
+        ).commit()
     }
 
     private fun setObservers() {
@@ -273,15 +263,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun hideFloatingLayout() {
-        sliding_layout.panelState = SlidingUpPanelLayout.PanelState.HIDDEN
+
     }
 
     override fun showFloatingLayout() {
-        sliding_layout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-    }
 
-    override fun onDescriptionClick() {
-        openBottomSheetProductListing()
     }
 
     override fun onViewMoreDescriptionClick() {
