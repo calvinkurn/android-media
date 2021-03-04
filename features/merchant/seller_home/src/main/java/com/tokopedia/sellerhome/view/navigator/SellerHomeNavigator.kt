@@ -74,13 +74,13 @@ class SellerHomeNavigator(
                 val currentTag = currentPage::class.java.canonicalName
                 val currentFragment = fm.findFragmentByTag(currentTag)
 
-                if (currentFragment == null) {
-                    showFragment(selectedPage, transaction)
-                } else {
+                if (currentFragment != null && currentFragment != selectedPage) {
                     transaction
                             .remove(currentFragment)
                             .add(R.id.sahContainer, selectedPage, currentTag)
                             .commitNowAllowingStateLoss()
+                } else {
+                    showFragment(selectedPage, transaction)
                 }
 
                 setSelectedPage(type)
