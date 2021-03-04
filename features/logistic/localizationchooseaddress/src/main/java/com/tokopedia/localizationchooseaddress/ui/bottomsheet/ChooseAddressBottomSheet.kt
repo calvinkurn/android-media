@@ -65,16 +65,17 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private val adapter = AddressListItemAdapter(this)
     private var chooseAddressLayout: ConstraintLayout? = null
     private var noAddressLayout: ConstraintLayout? = null
-    private var loginLayout: ConstraintLayout? = null
-    private var buttonLogin: IconUnify? = null
-    private var buttonAddAddress: IconUnify? = null
+    private var buttonLogin: ConstraintLayout? = null
+    private var buttonAddAddress: ConstraintLayout? = null
     private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
     private var listener: ChooseAddressBottomSheetListener? = null
 
     private var txtLocalization: Typography? = null
+    private var divider: View? = null
+    private var txtSnippet: Typography? = null
     private var contentLayout: FrameLayout? = null
-    private var bottomLayout: ConstraintLayout? = null
+    private var buttonSnippet: ConstraintLayout? = null
     private var errorLayout: ConstraintLayout? = null
     private var imageError: ImageView? = null
     private var progressBar: LoaderUnify? = null
@@ -226,16 +227,16 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setupView(child: View) {
         chooseAddressPref = ChooseAddressSharePref(context)
         chooseAddressLayout = child.findViewById(R.id.choose_address_layout)
-        noAddressLayout = child.findViewById(R.id.no_address_layout)
-        loginLayout = child.findViewById(R.id.login_layout)
-        buttonLogin = child.findViewById(R.id.btn_chevron_login)
-        buttonAddAddress = child.findViewById(R.id.btn_chevron_add)
+        buttonAddAddress = child.findViewById(R.id.no_address_layout)
+        buttonLogin = child.findViewById(R.id.login_layout)
         buttonSnippetLocation = child.findViewById(R.id.btn_chevron_snippet)
         addressList = child.findViewById(R.id.rv_address_card)
 
+        divider = child.findViewById(R.id.divider)
+        txtSnippet = child.findViewById(R.id.txt_snippet_location)
         txtLocalization = child.findViewById(R.id.txt_bottomsheet_localization)
         contentLayout = child.findViewById(R.id.frame_content_layout)
-        bottomLayout = child.findViewById(R.id.bottom_layout)
+        buttonSnippet = child.findViewById(R.id.pilih_kota_kecamatan_layout)
         errorLayout = child.findViewById(R.id.error_state_layout)
         imageError = child.findViewById(R.id.img_info_error)
         progressBar = child.findViewById(R.id.progress_bar)
@@ -352,46 +353,41 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         progressBar?.visible()
         txtLocalization?.gone()
         contentLayout?.gone()
-        bottomLayout?.gone()
+        divider?.gone()
+        txtSnippet?.gone()
+        buttonSnippet?.gone()
         errorLayout?.gone()
         setTitle("")
     }
 
     private fun setViewState(loginState: Boolean) {
         if (!loginState) {
-            progressBar?.gone()
-            txtLocalization?.visible()
-            contentLayout?.visible()
-            bottomLayout?.visible()
-            errorLayout?.gone()
             chooseAddressLayout?.gone()
             noAddressLayout?.gone()
-            loginLayout?.visible()
+            buttonLogin?.visible()
             shouldShowGpsPopUp = true
             showGpsPopUp()
         } else {
             if (adapter.addressList.isEmpty()) {
-                progressBar?.gone()
-                txtLocalization?.visible()
-                contentLayout?.visible()
-                bottomLayout?.visible()
-                errorLayout?.gone()
                 chooseAddressLayout?.gone()
                 noAddressLayout?.visible()
-                loginLayout?.gone()
+                buttonAddAddress?.gone()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
             } else {
-                progressBar?.gone()
-                txtLocalization?.visible()
-                contentLayout?.visible()
-                bottomLayout?.visible()
-                errorLayout?.gone()
                 chooseAddressLayout?.visible()
                 noAddressLayout?.gone()
-                loginLayout?.gone()
+                buttonAddAddress?.gone()
             }
         }
+        errorLayout?.gone()
+        progressBar?.gone()
+        txtLocalization?.visible()
+        contentLayout?.visible()
+        divider?.visible()
+        txtSnippet?.visible()
+        buttonSnippet?.visible()
+
         setTitle("Mau kirim belanjaan ke mana")
         renderButton()
         setCloseClickListener {
@@ -413,7 +409,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }, REQUEST_CODE_ADD_ADDRESS)
         }
 
-        buttonSnippetLocation?.setOnClickListener {
+        buttonSnippet?.setOnClickListener {
             ChooseAddressTracking.onClickPilihKotaKecamatan(userSession.userId)
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS).apply {
                 putExtra(IS_LOCALIZATION, true)
@@ -425,7 +421,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         progressBar?.gone()
         txtLocalization?.gone()
         contentLayout?.gone()
-        bottomLayout?.gone()
+        buttonSnippet?.gone()
         errorLayout?.visible()
         imageError?.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_service_error) })
         setTitle("")
