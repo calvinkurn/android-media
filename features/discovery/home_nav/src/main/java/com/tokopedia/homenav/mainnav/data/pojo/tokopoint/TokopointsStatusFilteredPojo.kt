@@ -16,33 +16,8 @@ data class TokopointsStatusFilteredPojo (
     )
 
     data class StatusFilteredData(
-        @SerializedName("tier")
-        val tier: Tier = Tier(),
         @SerializedName("points")
         val points: Points = Points()
-    )
-
-    data class Tier(
-            @SerializedName("id")
-            val id: Int = 0,
-            @SerializedName("name")
-            val name: String = "",
-            @SerializedName("nameDesc")
-            val nameDesc: String = "",
-            @SerializedName("imageURL")
-            val imageURL: String = "",
-            @SerializedName("eggImageURL")
-            val eggImageURL: String = "",
-            @SerializedName("eggImageHomepageURL")
-            val eggImageHomepageURL: String = "",
-            @SerializedName("backgroundImgURLMobile")
-            val backgroundImgURLMobile: String = "",
-            @SerializedName("parentID")
-            val parentId: Int = 0,
-            @SerializedName("parentName")
-            val parentName: String = "",
-            @SerializedName("parentNameDesc")
-            val parentNameDesc: String = ""
     )
 
     data class Points(

@@ -43,9 +43,6 @@ class AccountHeaderMapper (
                 }
                 tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
                     data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
-                    data.setUserBadge(
-                            badge = it.statusFilteredData.tier.imageURL
-                    )
                 }
                 saldoPojo?.let {
                     data.setSaldoData(

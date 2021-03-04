@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -25,18 +24,6 @@ class GetTokopointStatusFiltered @Inject constructor(
             {
               tokopointsStatusFiltered(filterKeys: ["points"], pointsExternalCurrency: "IDR", source: "globalMenu"){
                 statusFilteredData {
-                  tier {
-                    id
-                    name
-                    nameDesc
-                    imageURL
-                    eggImageURL
-                    eggImageHomepageURL
-                    backgroundImgURLMobile
-                    parentID
-                    parentName
-                    parentNameDesc
-                  }
                   points {
                     iconImageURL
                     pointsAmount
