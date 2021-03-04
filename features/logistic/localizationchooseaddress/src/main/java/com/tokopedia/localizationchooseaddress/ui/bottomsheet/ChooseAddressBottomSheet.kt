@@ -200,8 +200,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
             REQUEST_CODE_LOGIN_PAGE -> {
                 isLoginFlow = true
-                viewModel.getDefaultChosenAddress("", source)
                 setInitialViewState()
+                viewModel.getDefaultChosenAddress("", source)
             }
         }
     }
@@ -310,6 +310,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 is Success -> {
                     if (it.data.keroAddrError.detail.isNotEmpty()) {
                         showToaster(getString(R.string.toaster_failed_chosen_address), Toaster.TYPE_ERROR)
+                        if (isLoginFlow) {
+                            initData()
+                        }
                     } else {
                         val data = it.data.addressData
                         val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -340,7 +343,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun showToaster(message: String, type: Int) {
         println("++ already showToaster!")
         val toaster = Toaster
-        this.view?.let { v ->
+        view?.rootView?.let { v ->
             toaster.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
         }
     }
@@ -493,7 +496,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
         viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source)
-        // setInitialViewState()
     }
 
     private fun showGpsPopUp() {
