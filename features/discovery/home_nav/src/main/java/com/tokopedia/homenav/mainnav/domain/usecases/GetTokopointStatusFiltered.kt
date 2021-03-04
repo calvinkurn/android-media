@@ -23,7 +23,7 @@ class GetTokopointStatusFiltered @Inject constructor(
     init {
         val query = """
             {
-              tokopointsStatusFiltered{
+              tokopointsStatusFiltered(filterKeys: ["points"], pointsExternalCurrency: "IDR", source: "globalMenu"){
                 statusFilteredData {
                   tier {
                     id
@@ -61,21 +61,5 @@ class GetTokopointStatusFiltered @Inject constructor(
         } catch (e: Exception) {
             Fail(e)
         }
-    }
-
-    fun setStrategyCache() {
-        graphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                        .setSessionIncluded(true)
-                        .build())
-    }
-
-    fun setStrategyCloudThenCache() {
-        graphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                        .setSessionIncluded(true)
-                        .build())
     }
 }
