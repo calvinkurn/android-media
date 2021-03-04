@@ -51,7 +51,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 DaggerAdditionalCheckComponents
                         .builder()
                         .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                        .additionalCheckModules(AdditionalCheckModules())
+                        .additionalCheckModules(AdditionalCheckModules(activity))
                         .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
                         .build()
                         .inject(this)

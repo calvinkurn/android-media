@@ -217,11 +217,12 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        Toaster.build(this, context.getString(R.string.sah_failed_to_get_information),
-                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
-        ) {
-            refreshLayout()
-        }.show()
+        Toaster.make(this, context.getString(R.string.sah_failed_to_get_information),
+                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload),
+                View.OnClickListener {
+                    refreshLayout()
+                }
+        )
 
         Handler().postDelayed({
             isErrorToastShown = false
