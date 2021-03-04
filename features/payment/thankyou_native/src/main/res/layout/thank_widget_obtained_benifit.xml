@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/thank_dp_12">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view_divider_1"
@@ -19,7 +19,7 @@
         android:id="@+id/tvObtainedAfterTransaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/thank_dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/thank_obtained_after_transaction"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"

@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/thank_dp_12">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view_divider_1"
@@ -20,7 +20,7 @@
         android:id="@+id/tvTotalBillPaid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/thank_dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/thank_instant_payment_total_pay"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
         android:id="@+id/tvTotalBillPaidValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/thank_dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:gravity="end"
         android:textColor="@color/Unify_Y500"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:id="@+id/tvTotalBillPaidWith"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/thank_dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/thank_bill_paid_with"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
