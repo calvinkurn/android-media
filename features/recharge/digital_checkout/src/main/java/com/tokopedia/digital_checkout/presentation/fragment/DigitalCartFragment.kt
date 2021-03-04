@@ -39,6 +39,7 @@ import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfo
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
@@ -280,6 +281,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         btnCheckout.setOnClickListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
+        }
+
+        checkoutSummaryWidget.actionListener = object: DigitalCheckoutSummaryWidget.ActionListener {
+            override fun updateTotalPayment(totalPayment: Int) {
+                tvTotalPayment.text = totalPayment.toString()
+            }
         }
     }
 

@@ -36,6 +36,8 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
         notifyItemRemoved(deletePosition)
     }
 
+    fun getAllItems(): List<DummyItem> = summaries
+
     class DigitalCheckoutSummaryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         companion object {
             val LAYOUT = R.layout.item_digital_checkout_summary_detail
@@ -43,7 +45,7 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
         fun bind(item: DummyItem) {
             with(itemView) {
                 tvCheckoutSummaryDetailLabel.text = item.title
-                tvCheckoutSummaryDetailValue.text = item.price
+                tvCheckoutSummaryDetailValue.text = item.priceAmount.toString()
             }
         }
     }
@@ -51,6 +53,6 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
     // TODO : replace this with actual class
     data class DummyItem (
             val title: String,
-            val price: String
+            val priceAmount: Int
     )
 }

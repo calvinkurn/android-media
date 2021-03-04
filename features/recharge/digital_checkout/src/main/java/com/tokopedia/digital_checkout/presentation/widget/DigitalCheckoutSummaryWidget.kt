@@ -17,6 +17,8 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
     private var rvCheckoutSummary: RecyclerView
     private var mAdapter: DigitalCheckoutSummaryAdapter
 
+    var actionListener: ActionListener? = null
+
     init {
         LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_summary_view, this, true)
         mAdapter = DigitalCheckoutSummaryAdapter()
@@ -31,14 +33,27 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
 
     fun addItem() {
 //         TODO : change function name and add functionality
-//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("A", "12000"), 0)
-//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("B", "12000"), 1)
-//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("C", "12000"), 2)
-//         mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("D", "12000"), 5)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("A", 12000), 0)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("B", 12000), 1)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("C", 12000), 2)
+        mAdapter.addItem(DigitalCheckoutSummaryAdapter.DummyItem("D", 12000), 5)
+        actionListener?.updateTotalPayment(calculateTotalPayment())
     }
 
     fun removeItem() {
 //         TODO : change function name and add functionality
-//         mAdapter.removeItem("A")
+        mAdapter.removeItem("A")
+        actionListener?.updateTotalPayment(calculateTotalPayment())
+    }
+
+    private fun calculateTotalPayment(): Int {
+        val payments = mAdapter.getAllItems()
+        var totalPayment = 0
+        payments.forEach { totalPayment += it.priceAmount }
+        return totalPayment
+    }
+
+    interface ActionListener {
+        fun updateTotalPayment(totalPayment: Int)
     }
 }
