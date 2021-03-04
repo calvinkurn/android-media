@@ -24,7 +24,7 @@ class GratificationDialogHandlerTest : Spek({
         val broadcastScreenNames = arrayListOf<String>()
         val activityProvider: ActivityProvider = mockk()
         val firebaseRemote: FirebaseRemoteConfigImpl = mockk()
-        return GratificationDialogHandler(gratificationPresenter, mapOfGratificationJobs, mapOfPendingInApp, broadcastScreenNames, activityProvider, firebaseRemote)
+        return GratificationDialogHandler(gratificationPresenter, mapOfGratificationJobs, mapOfPendingInApp, broadcastScreenNames, activityProvider, firebaseRemote, mockk(), mockk())
     }
 
     //===============showPushDialog========================

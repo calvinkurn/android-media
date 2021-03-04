@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class LineGraphWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val subtitle: String,
@@ -29,6 +30,6 @@ data class LineGraphWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<LineGraphDataUiModel> {
-        return LineGraphWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return LineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }
