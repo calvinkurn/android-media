@@ -24,6 +24,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -31,7 +32,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -168,13 +168,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         handleGetPromoListResponse(response, tmpPromoCode)
     }
 
-    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest): HashMap<String, Any> {
+    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest): Map<String, Any?> {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
         resetGetPromoRequestData(promoCode, promoRequest)
-
-        // Add current selected address from local cache
-        promoRequest.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
 
         // For refresh state, add current selected promo code to request param
         promoRequest.orders.forEach { order ->
@@ -193,10 +190,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
         removeDuplicateAttemptedPromoRequestData(promoRequest, promoCode)
 
-        val getPromoRequestParam = HashMap<String, Any>()
-        getPromoRequestParam["params"] = CouponListRecommendationRequest(promoRequest = promoRequest)
-
-        return getPromoRequestParam
+        return mapOf(
+                "params" to CouponListRecommendationRequest(promoRequest = promoRequest),
+                // Add current selected address from local cache
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+        )
     }
 
     private fun setGetPromoRequestDataFromSelectedPromoItem(it: PromoListItemUiModel, order: Order, promoRequest: PromoRequest) {
