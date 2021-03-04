@@ -149,7 +149,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     val shouldShowMultiLocationTicker
         get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
-    private val shouldCheckAndMapWarehousesVariants
+    val shouldCheckAndMapWarehousesVariants
         get() = isEditing.value == true && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
     init {
