@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.text.TextUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +12,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.HexValidator
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.v2.OvoWidgetTracking
-import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTagAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -73,27 +70,21 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         }
 
         private fun renderTokoPoint(element: BalanceDrawerItemModel?) {
-            val tokoPointHolder = itemView.findViewById<View>(R.id.container_tokopoint)
-            val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_tokopoint)
-            val tvActionTokopoint = itemView.findViewById<TextView>(R.id.tv_btn_action_tokopoint)
-            val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_tokopoint)
-            val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
-            val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
-            tokopointProgressBarLayout.gone()
-            tokopointActionContainer.gone()
+            itemView.home_progress_bar_balance_layout.gone()
+            itemView.home_container_action_balance.gone()
             when (element?.state) {
-                BalanceDrawerItemModel.STATE_LOADING -> tokopointProgressBarLayout.show()
+                BalanceDrawerItemModel.STATE_LOADING -> itemView.home_progress_bar_balance_layout.show()
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
-                    tokopointActionContainer.show()
-                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, tvBalanceTokoPoint)
-                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, tvActionTokopoint)
+                    itemView.home_container_action_balance.show()
+                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
+                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
                 }
             }
             element?.defaultIconRes?.let {
-                ivLogoTokoPoint.setImageDrawable(itemView.context.getDrawable(it))
+                itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
             }
             element?.iconImageUrl?.let {
-                ivLogoTokoPoint.loadImage(it)
+                itemView.home_iv_logo_balance.loadImage(it)
             }
         }
 
@@ -101,39 +92,46 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             textView.background = null
             textView.text = null
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
-            if (tagAttr != null && !TextUtils.isEmpty(tagAttr.text)) {
-                if (!TextUtils.isEmpty(tagAttr.backgroundColour) && HexValidator.validate(tagAttr.backgroundColour)) {
-                    val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_tokopoints_rounded)
-                    if (drawable is GradientDrawable) {
-                        val shapeDrawable = drawable as GradientDrawable?
-                        shapeDrawable!!.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
-                        textView.background = shapeDrawable
-                        val horizontalPadding = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_8))
-                        textView.setTypeface(null, Typeface.NORMAL)
-                        textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
-                    }
-                    textView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N0))
-                } else {
-                    textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                }
-                if (!TextUtils.isEmpty(tagAttr.text)) {
-                    textView.text = tagAttr.text
-                }
-            } else if (textAttr != null && !TextUtils.isEmpty(textAttr.text)) {
-                if (!TextUtils.isEmpty(textAttr.colour) && HexValidator.validate(textAttr.colour)) {
-                    textView.setTextColor(Color.parseColor(textAttr.colour).invertIfDarkMode(itemView.context))
-                } else {
-                    textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                }
-                if (textAttr.isBold) {
-                    textView.setTypeface(null, Typeface.BOLD)
-                } else {
+            if (tagAttr != null && tagAttr.text.isNotEmpty()) {
+                renderTagAttribute(tagAttr, textView)
+            } else if (textAttr != null && textAttr.text.isNotEmpty()) {
+                renderTextAttribute(textAttr, textView)
+            }
+        }
+
+        private fun renderTagAttribute(tagAttr: BalanceTagAttribute, textView: TextView) {
+            if (tagAttr.backgroundColour.isNotEmpty() && tagAttr.backgroundColour.isHexColor()) {
+                val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_tokopoints_rounded)
+                (drawable as GradientDrawable?)?.let {
+                    it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
+                    textView.background = it
+                    val horizontalPadding = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_8))
                     textView.setTypeface(null, Typeface.NORMAL)
+                    textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                 }
-                if (!TextUtils.isEmpty(textAttr.text)) {
-                    textView.text = textAttr.text
-                }
+                textView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N0))
+            } else {
+                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            }
+            if (tagAttr.text.isNotEmpty()) {
+                textView.text = tagAttr.text
+            }
+        }
+
+        private fun renderTextAttribute(textAttr: BalanceTextAttribute, textView: TextView) {
+            if (textAttr.colour.isNotEmpty() && textAttr.colour.isHexColor()) {
+                textView.setTextColor(Color.parseColor(textAttr.colour).invertIfDarkMode(itemView.context))
+            } else {
+                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            }
+            if (textAttr.isBold) {
+                textView.setTypeface(null, Typeface.BOLD)
+            } else {
+                textView.setTypeface(null, Typeface.NORMAL)
+            }
+            if (textAttr.text.isNotEmpty()) {
+                textView.text = textAttr.text
             }
         }
     }

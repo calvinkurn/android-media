@@ -82,6 +82,4 @@ interface HomeTypeFactory {
     fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
 
     fun type(errorStateAtfModel: ErrorStateAtfModel): Int
-
-    fun type(homeBalanceModel: HomeBalanceModel): Int
 }

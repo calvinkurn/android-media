@@ -275,10 +275,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeAtfErrorViewHolder.LAYOUT
     }
 
-    override fun type(homeBalanceModel: HomeBalanceModel): Int {
-        return BalanceWidgetViewHolder.LAYOUT
-    }
-
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -362,7 +358,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
-            BalanceWidgetViewHolder.LAYOUT -> viewHolder = BalanceWidgetViewHolder(view, listener)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,

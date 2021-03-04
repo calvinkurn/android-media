@@ -20,7 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 data class HomeBalanceModel (
         var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
         var balanceType: Int = TYPE_STATE_1
-): HomeVisitable {
+) {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
         const val TYPE_STATE_1 = 1
@@ -35,54 +35,6 @@ data class HomeBalanceModel (
         const val TYPE_STATE_4 = 4
 
         private const val HASH_CODE = 39
-    }
-    fun setCache(cache: Boolean) {
-        isCache = cache
-    }
-
-    override fun type(typeFactory: HomeTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-
-    override fun setTrackingData(trackingData: Map<String, Any>) {
-
-    }
-
-    override fun getTrackingData(): Map<String, Any>? {
-        return null
-    }
-
-    override fun getTrackingDataForCombination(): List<Any>? {
-        return null
-    }
-
-    override fun setTrackingDataForCombination(`object`: List<Any>) {
-
-    }
-
-    override fun isTrackingCombined(): Boolean {
-        return false
-    }
-
-    override fun setTrackingCombined(isCombined: Boolean) {
-
-    }
-
-    override fun isCache(): Boolean {
-        return false
-    }
-
-    override fun visitableId(): String {
-        return "HomeBalanceModel"
-    }
-
-    override fun equalsWith(b: Any?): Boolean {
-        return equals(b)
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null
     }
 
     override fun equals(other: Any?): Boolean {
@@ -138,14 +90,6 @@ data class HomeBalanceModel (
                                 drawerItemType = type,
                                 state = STATE_SUCCESS
                         )
-//                        balanceDrawerItemModels[1]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
-//                        balanceDrawerItemModels[1]?.balanceTitleTextAttribute = buildDefaultTextAttr()
-//
-//                        balanceDrawerItemModels[2]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
-//                        balanceDrawerItemModels[2]?.balanceTitleTextAttribute = buildDefaultTextAttr()
-//
-//                        balanceDrawerItemModels[3]?.balanceSubTitleTagAttribute = buildDefaultTagAttr()
-//                        balanceDrawerItemModels[3]?.balanceTitleTextAttribute = buildDefaultTextAttr()
                     }
             )
         }
@@ -188,14 +132,6 @@ data class HomeBalanceModel (
                 action = { balanceDrawerItemModels[it]?.state = state }
         )
         return this
-    }
-
-    private fun buildDefaultTextAttr(): BalanceTextAttribute {
-        return BalanceTextAttribute("#000000", "test", true)
-    }
-
-    private fun buildDefaultTagAttr(): BalanceTagAttribute {
-        return BalanceTagAttribute("test tag", "#abcdef")
     }
 
     private fun getDrawerType(type: String) = when(type) {
