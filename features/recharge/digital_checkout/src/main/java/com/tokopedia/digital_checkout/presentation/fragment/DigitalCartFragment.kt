@@ -342,6 +342,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun closeViewWithMessageAlert(message: String?) {
+        loaderCheckout.visibility = View.GONE
+
         if (cartPassData?.isFromPDP == true) {
             val intent = Intent()
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message)
