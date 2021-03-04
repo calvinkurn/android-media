@@ -41,6 +41,8 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -678,6 +680,26 @@ class NotificationViewModelTest {
             notifOrderListUseCase.getOrderList(role)
             orderListObserver.onChanged(expectedValue)
         }
+    }
+
+    @Test
+    fun `loadNotifOrderList propagate error data`() {
+        // given
+        val role = RoleType.BUYER
+        val throwable: Throwable = IllegalStateException()
+
+        every { notifOrderListUseCase.getOrderList(role) } throws throwable
+
+        // when
+        viewModel.loadNotifOrderList(role)
+        viewModel.orderList.observeForever(orderListObserver)
+
+        // then
+        verifyOrder {
+            notifOrderListUseCase.getOrderList(role)
+            orderListObserver.onChanged(any())
+        }
+        assertThat(viewModel.orderList.value?.throwable, `is`(throwable))
     }
 
     private fun getErrorAtcModel(): AddToCartDataModel {
