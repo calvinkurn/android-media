@@ -5,8 +5,8 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import javax.inject.Inject
 
 class FilterResultMapper @Inject constructor() {
-    fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data.OrderFilterSom): SomListFilterUiModel {
-        return SomListFilterUiModel(statusList = mapStatusList(resultFilterList.statusList))
+    fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data.OrderFilterSom, fromCache: Boolean): SomListFilterUiModel {
+        return SomListFilterUiModel(statusList = mapStatusList(resultFilterList.statusList), fromCache = fromCache)
     }
 
     private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>): List<SomListFilterUiModel.Status> {

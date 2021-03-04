@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatListStickerUseCase @Inject constructor(
+open class ChatListStickerUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<StickerResponse>,
         private val cacheManager: TopchatCacheManager,
         private var dispatchers: TopchatCoroutineContextProvider

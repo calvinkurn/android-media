@@ -13,8 +13,9 @@ class InsertDeviceInfoPayloadCreator @Inject constructor(
 
     suspend fun create(): InsertDeviceInfoPayload {
         val deviceInfoPayload = deviceInfoPayloadCreator.createDevicePayload()
-        val content = contentCreator.createContent(deviceInfoPayload)
-        val identifier = gson.toJson(deviceInfoPayload).md5()
+        val json = gson.toJson(deviceInfoPayload)
+        val content = contentCreator.createContent(json)
+        val identifier = json.md5()
         return InsertDeviceInfoPayload(content, identifier)
     }
 

@@ -36,7 +36,9 @@ class ChatMenuAttachmentView : RecyclerView {
         setAdapter(adapter)
     }
 
-    private fun getTabCount(): Int = if (GlobalConfig.isSellerApp()) SPAN_COUNT_SELLER_APP else SPAN_COUNT_MAIN_APP
+    private fun getTabCount(): Int {
+        return if (GlobalConfig.isSellerApp()) SPAN_COUNT_SELLER_APP else SPAN_COUNT_MAIN_APP
+    }
 
     fun setAttachmentMenuListener(listener: AttachmentMenu.AttachmentMenuListener) {
         adapter.attachmentMenuListener = listener
