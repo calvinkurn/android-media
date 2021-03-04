@@ -38,9 +38,9 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
 
         contentView.apply {
             val imageViewIcon = findViewById<ImageView>(R.id.image_view_icon)
-            val buttonRedirectTo = findViewById<Typography>(R.id.button_redirect_to)
             val textViewTitle = findViewById<Typography>(R.id.text_view_title)
-            val textViewDescription = findViewById<UnifyButton>(R.id.text_view_description)
+            val textViewDescription = findViewById<Typography>(R.id.text_view_description)
+            val buttonRedirectTo = findViewById<UnifyButton>(R.id.button_redirect_to)
 
             model.let {
                 imageViewIcon?.loadImage(it.imageUrl)
