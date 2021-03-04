@@ -136,8 +136,10 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             chatFilter?.reset()
             chatFilter?.onRoleChanged(isTabSeller())
             webSocket.onRoleChanged(role)
-            loadInitialData()
-            setupSellerBroadcast()
+            if (isResumed) {
+                loadInitialData()
+                setupSellerBroadcast()
+            }
         }
     }
 
