@@ -74,12 +74,12 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun setDataFromArguments(payLaterItemProductData: PayLaterItemProductData?) {
         payLaterItemProductData?.let {
-            if (!it.actionWebUrl.isNullOrEmpty())
-                actionUrl = "${it.actionWebUrl}?URL=$productUrl"
-
             partnerName = it.partnerName ?: ""
+            actionUrl = it.actionWebUrl ?: ""
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(it, applicationStatusData)) {
                 is RegisterStepsPartnerType -> {
+                    if (!it.actionWebUrl.isNullOrEmpty())
+                        actionUrl = "${it.actionWebUrl}?URL=$productUrl"
                     sheetTitle = "${context?.getString(R.string.pay_later_how_to_register)} ${it.partnerName}"
                     partnerUsageData = it.partnerApplyDetails
                     isUsageType = false
