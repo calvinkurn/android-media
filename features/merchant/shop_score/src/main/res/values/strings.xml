@@ -126,6 +126,7 @@
     <string name="title_level_2">Level 2</string>
     <string name="title_level_3">Level 3</string>
     <string name="title_level_4">Level 4</string>
+    <string name="title_tooptip_level_bottom_sheet">Levelmu: %s</string>
 
     <string name="desc_level_1"><![CDATA[<b>&lt; Rp350.000</b> atau <b>0–2</b> produk terjual]]></string>
     <string name="desc_level_2"><![CDATA[Mulai dari <b>Rp350.000</b> dan <b>3</b> produk terjual]]></string>

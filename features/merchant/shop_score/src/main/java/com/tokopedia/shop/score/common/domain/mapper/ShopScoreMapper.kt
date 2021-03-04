@@ -26,6 +26,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_TOTAL_LEVEL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
+import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
 import com.tokopedia.shop.score.performance.presentation.model.CardTooltipLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
@@ -57,8 +58,6 @@ object ShopScoreMapper {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_level_reply_chat
                     descTips = R.string.desc_tips_level_reply_chat
-                    moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             SPEED_SENDING_ORDERS -> {
@@ -66,31 +65,25 @@ object ShopScoreMapper {
                     descCalculation = R.string.desc_calculation_speed_process_order
                     descTips = R.string.desc_tips_speed_process_order
                     moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = READ_TIPS_MORE_INFO_URL
+                    urlLink = SPEED_SENDING_ORDERS_URL
                 }
             }
             PRODUCT_REVIEW_WITH_FOUR_STARS -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_review_product
                     descTips = R.string.desc_tips_review_product
-                    moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             TOTAL_BUYER -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_total_buyer
                     descTips = R.string.desc_tips_total_buyer
-                    moreInformation = R.string.read_tips_more_info_performance_detail
-                    urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
             OPEN_TOKOPEDIA_SELLER -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_open_seller_app
                     descTips = R.string.desc_tips_open_seller_app
-                    moreInformation = R.string.set_time_selling_shop_performance_detail
-                    urlLink = ""
                 }
             }
         }
