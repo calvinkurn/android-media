@@ -29,7 +29,7 @@
             android:id="@+id/choose_address_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_address_card"
@@ -108,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/dp_14"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_login"
@@ -171,7 +171,7 @@
         android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/frame_content_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_snippet_location"
@@ -181,7 +181,8 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         android:text="@string/txt_snippet_loc"
-        app:layout_constraintTop_toBottomOf="@id/divider" />
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        android:visibility="gone"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -190,7 +191,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/txt_snippet_location"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_information"
