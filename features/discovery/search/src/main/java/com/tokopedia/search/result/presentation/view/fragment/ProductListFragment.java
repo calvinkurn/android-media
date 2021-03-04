@@ -1606,7 +1606,7 @@ public class ProductListFragment
         searchSortFilter.setVisibility(View.VISIBLE);
         searchSortFilter.getSortFilterHorizontalScrollView().setScrollX(0);
         searchSortFilter.addItem((ArrayList<SortFilterItem>) items);
-        searchSortFilter.getTextView().setText(getString(R.string.search_filter));
+        if (searchSortFilter.getTextView() != null) searchSortFilter.getTextView().setText(getString(R.string.search_filter));
         searchSortFilter.setParentListener(this::openBottomSheetFilterRevamp);
         setSortFilterNewNotification(items);
     }

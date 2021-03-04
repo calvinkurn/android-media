@@ -440,10 +440,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if(GlobalConfig.isSellerApp()) {
             val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
             if (filter == FILTER_UNREAD) {
-                val indexReadFilter = talkInboxSortFilter.chipItems.indexOfFirst {  it.title == getString(R.string.inbox_read) }
-                val indexUnreadFilter = talkInboxSortFilter.chipItems.indexOfFirst { it.title == getString(R.string.inbox_unread) }
-                val readFilter = talkInboxSortFilter.chipItems.getOrNull(indexReadFilter)
-                val unreadFilter = talkInboxSortFilter.chipItems.getOrNull(indexUnreadFilter)
+                val indexReadFilter = talkInboxSortFilter.chipItems?.indexOfFirst {  it.title == getString(R.string.inbox_read) } ?: -1
+                val indexUnreadFilter = talkInboxSortFilter.chipItems?.indexOfFirst { it.title == getString(R.string.inbox_unread) } ?: -1
+                val readFilter = talkInboxSortFilter.chipItems?.getOrNull(indexReadFilter)
+                val unreadFilter = talkInboxSortFilter.chipItems?.getOrNull(indexUnreadFilter)
                 unreadFilter?.toggle()
                 selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
                 if(unreadFilter?.type == ChipsUnify.TYPE_SELECTED) {

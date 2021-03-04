@@ -212,7 +212,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
-            sortFilter.chipItems.map {
+            sortFilter.chipItems?.map {
                 it.refChipUnify.setChevronClickListener {}
             }
             sortFilter.filterType = SortFilter.TYPE_QUICK
