@@ -140,13 +140,12 @@ class AddEditProductEditService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
-                productEditUseCase.executeOnBackground().also {
-                    if (!shouldEditStockDirectly) {
-                        productInputModel.run {
-                            updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
-                        }
+                if (!shouldEditStockDirectly) {
+                    productInputModel.run {
+                        updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
                     }
                 }
+                productEditUseCase.executeOnBackground()
             }
             // (4)
             clearProductDraft()
