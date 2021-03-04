@@ -539,7 +539,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToTopPayActivity(paymentPassData: PaymentPassData) {
-        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode)
+        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode, userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
