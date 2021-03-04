@@ -30,6 +30,7 @@ object ShopScoreConstant {
 
     const val READ_TIPS_MORE_INFO_URL = "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
+    const val SPEED_SENDING_ORDERS_URL = "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
 
 
     const val REGULAR_MERCHANT_TYPE = "regular_merchant_type"
