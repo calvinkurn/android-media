@@ -114,5 +114,10 @@
   <string name="text_update_dialog_description">Aplikasimu harus di-update dulu biar bisa pakai semua fitur Tokopedia.</string>
   <string name="text_update_cta_primary">Update Sekarang</string>
   <string name="text_update_cta_secondary">Batal</string>
+  <string name="image_preview">image preview</string>
+  <string name="button_flip_camera">button flip camera</string>
+  <string name="image_shutter_1">image shutter 1</string>
+  <string name="image_shutter_2">image shutter 2</string>
+
 
 </resources>
