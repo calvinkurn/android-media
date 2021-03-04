@@ -1,13 +1,19 @@
 package com.tokopedia.hotel.search_map.presentation.viewmodel
 
+import android.app.Activity
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.VisibleRegion
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
@@ -16,9 +22,14 @@ import com.tokopedia.hotel.search.data.model.params.ParamSort
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,8 +51,18 @@ class HotelSearchMapViewModel @Inject constructor(
 
     var filter: Filter = Filter()
 
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
     val liveSelectedFilter = MutableLiveData<Pair<List<ParamFilterV2>, Boolean>>()
+
+    private val mutableLatLong = MutableLiveData<Result<Pair<Double, Double>>>()
+    val latLong: LiveData<Result<Pair<Double, Double>>>
+        get() = mutableLatLong
+
+    private val mutableRadius = MutableLiveData<Result<Double>>()
+    val radius: LiveData<Result<Double>>
+        get() = mutableRadius
 
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
@@ -165,6 +186,48 @@ class HotelSearchMapViewModel @Inject constructor(
         launch(dispatcher.ui()) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.SEARCH_LIST)
             mutableTickerData.postValue(tickerData)
+        }
+    }
+
+    fun setPermissionHelper(permissionCheckerHelper: PermissionCheckerHelper) {
+        this.permissionCheckerHelper = permissionCheckerHelper
+    }
+
+    fun getCurrentLocation(fusedLocationProviderClient: FusedLocationProviderClient, activity: Activity) {
+        val locationDetectorHelper = LocationDetectorHelper(
+                permissionCheckerHelper,
+                fusedLocationProviderClient,
+                activity.applicationContext)
+        locationDetectorHelper.getLocation(onGetLocation(), activity,
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                activity.getString(R.string.hotel_destination_need_permission))
+    }
+
+    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
+        return { (latitude, longitude) ->
+            if (latitude == 0.0 && longitude == 0.0) mutableLatLong.postValue(Fail(Throwable()))
+            else mutableLatLong.postValue(Success(Pair(longitude, latitude)))
+        }
+    }
+
+    fun getVisibleRadius(googleMap: GoogleMap){
+        try {
+            val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
+            val diagonalDistance = FloatArray(1)
+
+            val farLeft = visibleRegion.farLeft
+            val nearRight = visibleRegion.nearRight
+
+            Location.distanceBetween(
+                    farLeft.latitude,
+                    farLeft.longitude,
+                    nearRight.latitude,
+                    nearRight.longitude,
+                    diagonalDistance
+            )
+            mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
+        }catch (error: Throwable){
+            mutableRadius.postValue(Fail(error))
         }
     }
 

@@ -16,11 +16,13 @@
     <dimen name="hotel_3dp">3dp</dimen>
     <dimen name="hotel_5dp">5dp</dimen>
     <dimen name="hotel_6dp">6dp</dimen>
+    <dimen name="hotel_8dp">8dp</dimen>
     <dimen name="hotel_10dp">10dp</dimen>
     <dimen name="hotel_12dp">12dp</dimen>
     <dimen name="hotel_14dp">14dp</dimen>
     <dimen name="hotel_18dp">18dp</dimen>
     <dimen name="hotel_20dp">20dp</dimen>
+    <dimen name="hotel_22dp">22dp</dimen>
     <dimen name="hotel_25dp">25dp</dimen>
     <dimen name="hotel_28dp">28dp</dimen>
     <dimen name="hotel_30dp">30dp</dimen>
