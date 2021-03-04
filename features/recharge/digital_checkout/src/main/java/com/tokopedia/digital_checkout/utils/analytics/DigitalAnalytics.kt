@@ -113,6 +113,9 @@ class DigitalAnalytics {
                         TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT,
                         TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.VIEW_CHECKOUT,
                         TrackAppUtils.EVENT_LABEL, label,
+                        DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                        DigitalCheckoutTrackingConst.Label.USER_ID, userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(DigitalCheckoutTrackingConst.Event.CHECKOUT,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
                                 DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.STEP, "1",
@@ -122,7 +125,7 @@ class DigitalAnalytics {
         )
     }
 
-    fun eventProceedToPayment(cartDataInfo: CartDigitalInfoData, voucherCode: String) {
+    fun eventProceedToPayment(cartDataInfo: CartDigitalInfoData, voucherCode: String, userId: String) {
         val productName: String = cartDataInfo.attributes.operatorName.toLowerCase() + " " +
                 cartDataInfo.attributes.price.toLowerCase()
 
@@ -144,6 +147,9 @@ class DigitalAnalytics {
                         TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT,
                         TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_PROCEED_PAYMENT,
                         TrackAppUtils.EVENT_LABEL, label,
+                        DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                        DigitalCheckoutTrackingConst.Label.USER_ID, userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
                         DigitalCheckoutTrackingConst.Event.CHECKOUT, DataLayer.mapOf(
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD, DataLayer.mapOf(

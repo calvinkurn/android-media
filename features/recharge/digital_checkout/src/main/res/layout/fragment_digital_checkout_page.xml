@@ -155,7 +155,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/digital_checkout_total_payment_label"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@id/btnCheckout"
@@ -186,7 +186,7 @@
             android:text="@string/digital_cart_checkout_pay_label"
             app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
+            app:layout_constraintTop_toTopOf="@id/tvTotalPaymentLabel"
             app:unifyButtonSize="medium" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

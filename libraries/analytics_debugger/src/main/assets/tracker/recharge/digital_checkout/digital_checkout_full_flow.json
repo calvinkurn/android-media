@@ -11,6 +11,8 @@
       "checkout_option": "cart page loaded",
       "currentSite": "tokopediadigital",
       "sessionIris": "{{.+}}",
+      "businessUnit": "recharge",
+      "userId": "{{.+}}",
       "items": [
         {
           "cart_id": "{{.+}}",
@@ -37,6 +39,8 @@
       "checkout_option": "click payment option button",
       "currentSite": "tokopediadigital",
       "sessionIris": "{{.+}}",
+      "businessUnit": "recharge",
+      "userId": "{{.+}}",
       "items": [
         {
           "cart_id": "{{.+}}",

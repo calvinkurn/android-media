@@ -579,7 +579,7 @@ class DigitalCartViewModelTest {
 
         // when
         updateTotalPriceWithFintechProduct_checked()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, 0.0)
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, null)
 
         // then
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0
@@ -687,7 +687,7 @@ class DigitalCartViewModelTest {
 
         //when
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, 0.0)
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)
 
         assert(promoDigitalModel.categoryId.toString() == digitalCheckoutPassData.categoryId ?: "")
         assert(promoDigitalModel.productId.toString() == digitalCheckoutPassData.productId ?: "")
