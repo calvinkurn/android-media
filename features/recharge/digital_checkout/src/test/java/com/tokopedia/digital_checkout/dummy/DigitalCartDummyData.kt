@@ -1,9 +1,6 @@
 package com.tokopedia.digital_checkout.dummy
 
-import com.tokopedia.common_digital.atc.data.response.AttributesCart
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.common_digital.atc.data.response.RelationshipsCart
-import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
 import com.tokopedia.digital_checkout.data.response.getcart.AutoApplyVoucher
@@ -254,85 +251,6 @@ object DigitalCartDummyData {
                 crossSellingType = 0,
                 crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct)
-        )
-    }
-
-    fun getDummyCartData(): ResponseCartData {
-        val additionalInfo = AttributesCart.AdditionalInfo(
-                title = "Detail Tagihan",
-                detail = listOf(AttributesCart.InfoDetail("Admin Bank", "Rp 2.500"))
-        )
-
-        val autoApplyVoucher = com.tokopedia.common_digital.atc.data.response.AutoApplyVoucher(
-                discountAmount = 2510.0,
-                messageSuccess = "Success"
-        )
-
-        val crossSellingConfig = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig(
-                isSkipAble = true,
-                isChecked = false,
-                wording = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "Checkout",
-                        bodyTitle = "Aktifkan auto debit untuk tagihan ini",
-                        bodyContentBefore = "Akitifkan auto debit",
-                        bodyContentAfter = "Kamu harus memasukkan OVO PIN",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribed = com.tokopedia.common_digital.atc.data.response.CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "Checkout",
-                        bodyTitle = "Kamu memiliki auto debut yang belum aktif",
-                        bodyContentBefore = "Akitifkan auto debit",
-                        bodyContentAfter = "",
-                        checkoutButtonText = "Bayar"
-                )
-        )
-
-        val fintechProduct = FintechProduct(
-                transactionType = "egold",
-                tierId = "1",
-                optIn = true,
-                checkBoxDisabled = false,
-                allowOVOPoints = false,
-                fintechAmount = 500.0,
-                fintechPartnerAmount = 500.0,
-                info = FintechProduct.FintechProductInfo(
-                        title = "Yuk mulai nabung emas",
-                        subtitle = "Rp  500",
-                        tooltipText = "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)"
-                )
-        )
-
-        val attributes = AttributesCart(
-                userId = "17211378",
-                clientNumber = "102111110611",
-                title = "Detail Pembayaran",
-                categoryName = "Listrik PLN",
-                operatorName = "Tagihan Listrik",
-                price = "Rp 2.510",
-                pricePlain = 100000.0,
-                isNeedOtp = false,
-                mainInfo = listOf(AttributesCart.InfoDetail("ID Pelanggan",
-                        "102111106111")),
-                additionalInfo = listOf(additionalInfo),
-                isEnableVoucher = true,
-                isCouponActive = 1,
-                autoApply = autoApplyVoucher,
-                defaultPromoTab = "VOUCHER",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
-                postPaidPopUp = null,
-                fintechProduct = listOf(fintechProduct)
-        )
-        val relationshipsCart = RelationshipsCart(
-                category = RelationshipsCart.Category(RelationshipsCart.RelationData("category", "3")),
-                operator = RelationshipsCart.Operator(RelationshipsCart.RelationData("operator", "18")),
-                product = RelationshipsCart.Product(RelationshipsCart.RelationData("product", "291"))
-        )
-        return ResponseCartData(
-                type = "cart",
-                id = "17211378",
-                attributes = attributes,
-                relationships = relationshipsCart
         )
     }
 

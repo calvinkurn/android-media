@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -59,6 +60,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
@@ -83,6 +85,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(DigitalCartViewModel::class.java) }
+    private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
@@ -132,22 +135,41 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun loadData() {
+        loaderCheckout.visibility = View.VISIBLE
         cartPassData?.let {
             if (it.needGetCart) {
-                viewModel.getCart(it, getString(R.string.digital_cart_login_message))
+                viewModel.getCart(cartPassData?.categoryId
+                        ?: "", getString(R.string.digital_cart_login_message))
             } else {
-                viewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams,
-                        getString(R.string.digital_cart_login_message))
+                addToCartViewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams)
             }
         }
     }
 
     private fun getCartAfterCheckout() {
-        cartPassData?.let { viewModel.getCart(it, getString(R.string.digital_cart_login_message)) }
+        cartPassData?.let {
+            viewModel.getCart(cartPassData?.categoryId
+                    ?: "", getString(R.string.digital_cart_login_message))
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    viewModel.getCart(it.data)
+                }
+                is Fail -> {
+                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
+                        viewModel.handleError(Throwable(getString(R.string.digital_cart_login_message)))
+                    } else {
+                        viewModel.handleError(it.throwable)
+                    }
+                }
+            }
+        })
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
