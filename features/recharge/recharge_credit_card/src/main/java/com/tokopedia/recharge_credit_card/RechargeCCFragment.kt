@@ -121,7 +121,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
         }
         observeData()
-        creditCardAnalytics.impressionInitialPage(categoryId, "none", userSession.userId)
+        creditCardAnalytics.impressionInitialPage(userSession.userId)
     }
 
     private fun getDataBundle() {
