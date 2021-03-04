@@ -50,7 +50,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun hideHeadlineView() {
-        shimmerView.show()
+        shimmerView.hide()
         topadsHeadlineView.hide()
     }
 
