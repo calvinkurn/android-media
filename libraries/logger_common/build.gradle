@@ -17,7 +17,6 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
 
-    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.miscDependencies.gson
 
     testImplementation rootProject.ext.testDependencies.junit

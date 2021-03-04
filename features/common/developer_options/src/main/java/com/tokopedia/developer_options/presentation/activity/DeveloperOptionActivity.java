@@ -54,6 +54,8 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
+import com.tokopedia.logger.common.LoggerException;
+import com.tokopedia.logger.common.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -63,6 +65,9 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -401,7 +406,33 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
-                    Timber.w(timberMessage);
+                    int priorityIndex = 0;
+                    int tagIndex = 1;
+                    String priority = "";
+                    String tag = "";
+                    String delimiterMessage = "##";
+                    String regexEqualSign = "=([*]*)";
+                    Map<String, String> messageMap = new HashMap<>();
+                    String[] splitMessage = timberMessage.split(delimiterMessage);
+                    for (int i = 0; i < splitMessage.length; i++) {
+                        if (i == priorityIndex) {
+                            priority = splitMessage[priorityIndex];
+                        } else if (i == tagIndex) {
+                            tag = splitMessage[tagIndex];
+                        } else {
+                            String message = splitMessage[i];
+                            if(message != null & !message.isEmpty()) {
+                                String[] keyValue = message.split(regexEqualSign);
+                                if (keyValue != null && keyValue.length > 0) {
+                                    if (!keyValue[0].isEmpty() && !keyValue[1].isEmpty()){
+                                        messageMap.put(keyValue[0], keyValue[1]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Timber.w(new LoggerException(priority, tag, messageMap));
                     Toast.makeText(DeveloperOptionActivity.this,
                             timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                 }
