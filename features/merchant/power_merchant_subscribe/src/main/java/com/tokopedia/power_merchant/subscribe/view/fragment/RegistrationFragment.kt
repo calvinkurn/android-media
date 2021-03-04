@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gm.common.constant.GMParamTracker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.*
+import kotlinx.android.synthetic.main.fragment_pm_registration.view.*
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -49,14 +53,39 @@ class RegistrationFragment : BaseListFragment<BaseWidgetUiModel, WidgetAdapterFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderDummy()
+        //renderDummyTransition()
+        renderDummyFinalPeriod()
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
 
     override fun loadData(page: Int) {}
 
-    private fun renderDummy() {
+    private fun renderDummyFinalPeriod() {
+        view?.pmRegistrationFooterView?.gone()
+        val widgets = listOf(
+                WidgetQuitSubmissionUiModel(),
+                WidgetShopGradeUiModel(),
+                WidgetDividerUiModel,
+                WidgetExpandableUiModel(
+                        title = "Keuntungan PM Silver",
+                        items = listOf(
+                                ExpandableSectionUiModel("PENGATURAN PRODUK"),
+                                ExpandableItemUiModel("Limit 2000 produk & 200 etalase", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD),
+                                ExpandableItemUiModel("Limit 2000 produk & 200 etalase"),
+                                ExpandableSectionUiModel("PROMOSI PRODUK"),
+                                ExpandableItemUiModel("Gratis 200 kuota layanan Broadcast Chat", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD),
+                                ExpandableItemUiModel("Promosikan toko dengan ekstra 5% kredit TopAds. Yuk, pasang iklan TopAds!", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+                        )
+                ),
+                WidgetDividerUiModel,
+                WidgetSingleCtaUiModel("Pelajari Selengkapnya Tentang Power Merchant", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+        )
+        renderList(widgets)
+    }
+
+    private fun renderDummyTransition() {
+        view?.pmRegistrationFooterView?.visible()
         val gradeBenefits = listOf(
                 GradeBenefitItemUiModel(
                         iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",

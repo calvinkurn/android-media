@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineExpandableStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineExpandableEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmExpandableTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@+id/icPmExpandableTitleIcon"
+        app:layout_constraintStart_toStartOf="@+id/guidelineExpandableStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="Keuntungan PM Silver" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icPmExpandableTitleIcon"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPmExpandableTitle"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
+        app:layout_constraintTop_toTopOf="@+id/tvPmExpandableTitle" />
+
+    <View
+        android:id="@+id/viewPmExpandableHorLine"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="0.8dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmExpandableTitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPmExpandableItem"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineExpandableStart"
+        app:layout_constraintTop_toBottomOf="@+id/viewPmExpandableHorLine"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_pm_expandable_widget_item" />
+</androidx.constraintlayout.widget.ConstraintLayout>

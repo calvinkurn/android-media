@@ -7,6 +7,4 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 02/03/21
  */
 
-interface BaseWidgetUiModel : Visitable<WidgetAdapterFactory> {
-
-}
+interface BaseWidgetUiModel : Visitable<WidgetAdapterFactory>
