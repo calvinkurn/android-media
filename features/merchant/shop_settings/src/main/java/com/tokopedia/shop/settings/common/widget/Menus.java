@@ -18,7 +18,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.design.R;
+import com.tokopedia.shop.settings.R;
 
 import java.util.ArrayList;
 import java.util.List;
