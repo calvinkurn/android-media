@@ -172,4 +172,13 @@ object ChooseAddressUtils {
 
         }
     }
+
+    fun LocalCacheModel.convertToLocationParams(): String {
+        return "user_lat=" + lat +
+                "&user_long=" + long +
+                "&user_addressId=" + address_id +
+                "&user_cityId=" + city_id +
+                "&user_districtId=" + district_id +
+                "&user_postCode=" + postal_code
+    }
 }
