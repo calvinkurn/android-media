@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
@@ -34,6 +35,7 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,12 +103,29 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     private fun createHeadlineAd() {
+        showLoader()
         val topAdsHeadlineInput = getTopAdsManageHeadlineInput()
         viewModel.createHeadlineAd(topAdsHeadlineInput, this::onCreationSuccess, this::onCreationError)
 
     }
 
+    private fun showLoader() {
+        view?.run {
+            findViewById<LoaderUnify>(R.id.loader_unify).show()
+
+        }
+        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun hideLoader() {
+        view?.run {
+            findViewById<LoaderUnify>(R.id.loader_unify).hide()
+        }
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
     private fun onCreationError(message: String) {
+        hideLoader()
         view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
     }
 
@@ -123,6 +142,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+        hideLoader()
     }
 
     private fun getTimeSelected(): Long? {
@@ -184,7 +204,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             val cost = convertToCurrency(it.toLong())
             advertisingCost.textFieldInput.setText(cost)
             advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
-            val budget = it * MULTIPLIER
+            val budget = it.toDouble() * MULTIPLIER
             stepperModel?.dailyBudget = budget.toFloat()
             budgetCost.textFieldInput.setText(convertToCurrency(budget.toLong()))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
@@ -198,13 +218,13 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                 super.onNumberChanged(number)
                 val input = number.toInt()
                 when {
-                    input < stepperModel?.minBid ?: 0 -> {
+                    input < stepperModel?.minBid.toDoubleOrZero() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.minBid?.toLong()
                                 ?: 0)))
                         btnNext.isEnabled = false
                     }
-                    input > stepperModel?.maxBid ?: 0 -> {
+                    input > stepperModel?.maxBid.toDoubleOrZero() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), convertToCurrency(stepperModel?.maxBid?.toLong()
                                 ?: 0)))
@@ -228,13 +248,13 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(number.toLong()))
-                val minBid = if (advertisingCost.isTextFieldError) {
-                    stepperModel?.minBid ?: 0
+                val minBid: String = if (advertisingCost.isTextFieldError) {
+                    stepperModel?.minBid ?: "0"
                 } else {
-                    advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+                    advertisingCost.textFieldInput.text.toString().removeCommaRawString()
                 }
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < minBid * MULTIPLIER && budgetCost.isVisible) {
+                if (number < (minBid.toDoubleOrZero() * MULTIPLIER) && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))

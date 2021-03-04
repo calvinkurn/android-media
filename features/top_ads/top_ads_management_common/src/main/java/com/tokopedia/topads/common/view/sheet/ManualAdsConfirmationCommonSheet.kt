@@ -1,10 +1,10 @@
 package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_common_autoads_bottom_sheet_layout_confirmation_manual_ads.*
@@ -27,6 +27,7 @@ class ManualAdsConfirmationCommonSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
+        subtitle?.text = Html.fromHtml(getString(R.string.topads_common_confirmation_switch_manual_description))
         btn_start_manual_ads?.setOnClickListener {
             manualAdsBtnClicked = true
             dismiss()

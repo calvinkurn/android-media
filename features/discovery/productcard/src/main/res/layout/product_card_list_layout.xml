@@ -78,6 +78,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
+            android:contentDescription="null"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -150,6 +151,7 @@
             android:paddingRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             android:visibility="gone"
+            android:contentDescription="null"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
@@ -212,23 +214,23 @@
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="small"
             tools:visibility="visible" />
-        <ProgressBar
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressBarStock"
-            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_card_flashsale_progressbar_height"
-            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
             android:layout_marginLeft="@dimen/product_card_content_margin"
             android:layout_marginRight="@dimen/product_card_content_margin"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
             android:layout_marginBottom="@dimen/product_card_flashsale_label_margintop"
-            android:max="100"
-            android:progressDrawable="@drawable/progressbar_flashsale"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/textViewStockLabel"
             app:layout_constraintVertical_bias="1.0"
-            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop" />
+            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop"
+            android:gravity="bottom"/>
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewStockLabel"

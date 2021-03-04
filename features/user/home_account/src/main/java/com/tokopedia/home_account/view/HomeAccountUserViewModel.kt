@@ -102,6 +102,7 @@ class HomeAccountUserViewModel @Inject constructor(
         launchCatchError(block = {
             val wallet = getBuyerWalletBalance()
             _walletData.value = Success(wallet)
+            walletPref.saveWallet(wallet)
         }, onError = {
             _walletData.postValue(Fail(it))
         })
@@ -158,22 +159,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun checkFirstPage(page: Int): Boolean = page == 1
 
-    private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
-        walletPref.saveWallet(accountDataModel.wallet)
-        accountDataModel?.vccUserStatus?.let{
-            walletPref.tokoSwipeUrl = it.redirectionUrl
-        }
-    }
-
-    private fun saveLocallyVccUserStatus(accountDataModel: UserAccountDataModel) {
-        accountDataModel?.vccUserStatus?.let{
-            walletPref.saveVccUserStatus(it)
-        }
-    }
-
     fun saveLocallyAttributes(accountDataModel: UserAccountDataModel) {
-        saveLocallyWallet(accountDataModel)
-        saveLocallyVccUserStatus(accountDataModel)
         savePhoneVerified(accountDataModel)
         saveIsAffiliateStatus(accountDataModel)
         saveDebitInstantData(accountDataModel)

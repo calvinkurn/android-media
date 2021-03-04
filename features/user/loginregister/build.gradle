@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 android{
     sourceSets.each {
@@ -25,18 +26,7 @@ android{
         unitTests {
             includeAndroidResources = true
         }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                html.enabled = true
-                xml.enabled = false
-                csv.enabled = false
-            }
-        }
+
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
         }
@@ -122,7 +112,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.parceler
 
     // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
@@ -138,8 +128,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
@@ -156,9 +144,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
     testImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
@@ -171,3 +156,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

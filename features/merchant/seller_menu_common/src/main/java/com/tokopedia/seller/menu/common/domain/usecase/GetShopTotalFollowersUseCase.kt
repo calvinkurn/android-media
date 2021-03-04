@@ -1,13 +1,16 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.entity.ShopTotalFollowers
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Int>() {
+class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Long>() {
 
     companion object {
         const val QUERY = "query SingleShopTotalFollowers(\$shopID: Int!) {\n" +
@@ -34,18 +37,20 @@ class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository
 
     var params = HashMap<String, Any>()
 
-    override suspend fun executeOnBackground(): Int {
+    override suspend fun executeOnBackground(): Long {
         val gqlRequest = GraphqlRequest(QUERY, ShopTotalFollowers::class.java, params)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                .build()
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(ShopTotalFollowers::class.java)
         if (gqlErrors.isNullOrEmpty()) {
-            val shopTotalFollowersResponse : ShopTotalFollowers = gqlResponse.getData(ShopTotalFollowers::class.java)
-            val responseErrorMessage = shopTotalFollowersResponse.shopInfoById.error.message
-            responseErrorMessage.run {
-                if (isNotEmpty()) throw MessageErrorException(this)
-                else return shopTotalFollowersResponse.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite?: 0
-            }
+            val shopTotalFollowersResponse: ShopTotalFollowers? = gqlResponse.getData(ShopTotalFollowers::class.java)
+            val shopFollowers = shopTotalFollowersResponse?.shopInfoById
+                    ?.result?.firstOrNull()
+                    ?.favoriteData
+                    ?.totalFavorite ?: Constant.INVALID_NUMBER_OF_FOLLOWERS
+            return shopFollowers
         } else throw MessageErrorException(gqlErrors.firstOrNull()?.message)
     }
 }

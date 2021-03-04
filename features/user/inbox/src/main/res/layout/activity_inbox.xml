@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coor_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/inbox_nav_toolbar"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="?actionBarSize"
+            app:contentInsetLeft="@dimen/unify_space_0"
+            app:contentInsetStart="@dimen/unify_space_0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbarBackButton="back"
+            app:toolbarInitialTheme="light"
+            tools:layout_height="@dimen/layout_lvl7" />
+
+        <FrameLayout
+            android:id="@+id/fragment_contaier"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/inbox_bottom_nav"
+            app:layout_constraintTop_toBottomOf="@+id/inbox_nav_toolbar" />
+
+        <View
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/dp_inbox_1"
+            android:background="@drawable/inbox_bottom_nav_shadow"
+            app:layout_constraintBottom_toTopOf="@+id/inbox_bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.inbox.view.custom.InboxBottomNavigationView
+            android:id="@+id/inbox_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_inbox_50"
+            app:itemTextColor="@color/inbox_title_color_state"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_inbox"
+            app:theme="@style/NavigationMenuItemTextAppearance" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

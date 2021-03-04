@@ -34,7 +34,9 @@ data class ThanksPageData(
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
-        val howToPay: String,
+        val howToPay: String?,
+        @SerializedName("how_to_pay_applink")
+        val howToPayAPP : String?,
         @SerializedName("whitelisted_rba")
         val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
@@ -75,6 +77,8 @@ data class ThanksPageData(
         val thanksCustomization: ThanksCustomization?,
         @SerializedName("config_flag")
         val configFlag: String?,
+        @SerializedName("config_list")
+        val configList: String?,
         //created and used locally
         var paymentMethodCount: Int
 ) : Parcelable
@@ -375,4 +379,17 @@ data class ThanksCustomization(
 data class ConfigFlag(
         @SerializedName("enable_thanks_widget")
         val isThanksWidgetEnabled : Boolean
+)
+
+data class Tickers(
+        @SerializedName("tickers")
+        val tickerDataListStr : String?
+)
+data class ThankPageTopTickerData(
+        @SerializedName("ticker_title")
+        val tickerTitle : String?,
+        @SerializedName("ticker_text")
+        val tickerDescription : String?,
+        @SerializedName("ticker_type")
+        val ticketType : String?
 )

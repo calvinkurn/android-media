@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@HotelCancellationScope
 abstract class HotelCancellationViewModelModule {
 
 

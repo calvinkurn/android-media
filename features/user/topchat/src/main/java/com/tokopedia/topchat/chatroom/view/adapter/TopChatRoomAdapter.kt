@@ -22,7 +22,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
@@ -72,15 +71,15 @@ class TopChatRoomAdapter constructor(
         addTopData(visitables)
     }
 
-    override fun isNextItemSender(adapterPosition: Int, isSender: Boolean): Boolean {
-        val nextItem = visitables.getOrNull(adapterPosition - 1)
+    override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
+        val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
             is SendableViewModel -> nextItem.isSender
             is ProductCarouselUiModel -> nextItem.isSender
             is ReviewUiModel -> nextItem.isSender
             else -> true
         }
-        return isSender == nextItemIsSender
+        return isSender != nextItemIsSender
     }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
@@ -89,14 +88,18 @@ class TopChatRoomAdapter constructor(
 
     override fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            itemPair.second ?: return@post
-            val message = FallbackAttachmentViewModel(element.reply)
-            visitables[position] = message
-            notifyItemChanged(position)
+            postChangeToFallbackUiModel(lastKnownPosition, element)
         }
+    }
+
+    private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        val message = FallbackAttachmentViewModel(element.reply)
+        visitables[position] = message
+        notifyItemChanged(position)
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
@@ -303,34 +306,45 @@ class TopChatRoomAdapter constructor(
             state: Int
     ) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            val item = itemPair.second ?: return@post
-            when (state) {
-                ReputationCommonConstants.REVIEWED -> {
-                    item.reviewCard.apply {
-                        isReviewed = true
-                        rating = reviewClickAt.toFloat()
-                        reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
-                    }
-                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+            postUpdateReviewState(lastKnownPosition, review, state, reviewClickAt)
+        }
+    }
+
+    private fun postUpdateReviewState(
+            lastKnownPosition: Int, review: ReviewUiModel,
+            state: Int, reviewClickAt: Int
+    ) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: return
+        when (state) {
+            ReputationCommonConstants.REVIEWED -> {
+                item.reviewCard.apply {
+                    isReviewed = true
+                    rating = reviewClickAt.toFloat()
+                    reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
                 }
-                else -> {
-                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
-                }
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+            }
+            else -> {
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
             }
         }
     }
 
     fun resetReviewState(review: ReviewUiModel, lastKnownPosition: Int) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            val item = itemPair.second ?: return@post
-            notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+            postResetReviewState(lastKnownPosition, review)
         }
+    }
+
+    private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
     }
 
     private fun removeBroadcastHandler(index: Int) {
@@ -363,31 +377,7 @@ class TopChatRoomAdapter constructor(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
-    fun updateOccLoadingStatus(product: ProductAttachmentViewModel, position: Int) {
-        val occState = getItemPosition(product, position)
-        if (occState.parentPosition == RecyclerView.NO_POSITION) return
-        notifyItemChanged(occState.parentPosition, occState)
-    }
-
-    private fun getItemPosition(product: ProductAttachmentViewModel, position: Int): TopchatProductAttachmentViewHolder.OccState {
-        val item = visitables.getOrNull(position)
-        if (item == product) {
-            return TopchatProductAttachmentViewHolder.OccState(position)
-        }
-        for ((parentItemIndex, parentItem) in visitables.withIndex()) {
-            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(parentItemIndex)
-            if (parentItem is ProductCarouselUiModel) {
-                val carouselPosition = parentItem.products.indexOf(product)
-                if (carouselPosition != RecyclerView.NO_POSITION) {
-                    return TopchatProductAttachmentViewHolder.OccState(parentItemIndex, carouselPosition)
-                }
-            }
-        }
-        return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
+    private inline fun <reified T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
             lastKnownPosition: Int, element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
@@ -395,6 +385,6 @@ class TopChatRoomAdapter constructor(
             return Pair(lastKnownPosition, item as? T)
         }
         val updatePosition = visitables.indexOf(element)
-        return Pair(updatePosition, item as? T)
+        return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
     }
 }

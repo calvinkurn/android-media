@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.usecase.RequestParams
+import java.net.URLEncoder
 
 class CategoryGqlPageRepository(private val departmentName: String,
                                 private val departmentId: String,
@@ -21,6 +22,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val SAFESEARCH = "safeSearch"
         const val SEARCH_APPLINK= "tokopedia://search-autocomplete"
         const val DOMAIN_URL_LIVE = "https://www.tokopedia.com/"
+        const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED= 1
         const val INDEX_ONE = "1"
         const val INDEX_TWO = "2"
@@ -33,14 +35,15 @@ class CategoryGqlPageRepository(private val departmentName: String,
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
                         identifier = departmentId, name = data.name, type = "", path = data.url, id = data.id ?: 0,
-                        searchApplink = SEARCH_APPLINK,
+                        searchTitle = "Cari di ${data.name}",
+                        searchApplink = "${SEARCH_APPLINK}/searchbox?hint=${encodeURL("Cari di ${data.name}")}&navsource=catpage&srp_page_id=${data.id}&srp_page_title=${encodeURL(data.name)}",
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,
                         origin = AdultManager.ORIGIN_CATEGORY_PAGE,
                         share = Share(
                                 enabled = true,
                                 description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${data.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL + "://", DOMAIN_URL_LIVE), title = "", image = "")),
+                                url = "https://www.tokopedia.com${data.url}", title = "", image = "")),
                 title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null, hashMapOf(
                         KEY_CATEGORY_ID_MAP to data.id.toString(),
@@ -66,7 +69,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
             navigationChipsItems.add(DataItem(title = item?.name, id = item?.id?.toString(), applinks = item?.applinks, positionForParentItem = index))
         }
         components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = INDEX_ONE, renderByDefault = true, data = navigationChipsItems))
-        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = INDEX_TWO, renderByDefault = true, showFilter = false, properties = Properties(targetId = INDEX_THREE), isSticky = true))
+        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = INDEX_TWO, renderByDefault = true, showFilterCount = false, properties = Properties(targetId = INDEX_THREE), isSticky = true))
         components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = INDEX_THREE, renderByDefault = true, pagePath = bannedData.url ?: ""))
         return components
     }
@@ -77,5 +80,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
         request.putBoolean(INTERMEDIARY, false)
         request.putBoolean(SAFESEARCH, false)
         return request.parameters
+    }
+
+    private fun encodeURL(url : String?) : String {
+        return URLEncoder.encode(url, ENCODING_UTF_8)
     }
 }

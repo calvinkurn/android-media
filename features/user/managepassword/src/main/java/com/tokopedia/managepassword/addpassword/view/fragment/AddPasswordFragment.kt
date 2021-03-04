@@ -69,6 +69,8 @@ class AddPasswordFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hasPasswordChecker()
+
         txtPassword?.textFieldInput?.afterTextChanged {
             viewModel.validatePassword(it)
         }
@@ -95,6 +97,22 @@ class AddPasswordFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
+        viewModel.profileDataModel.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    hasPasswordProcess(it.data.profileData.isCreatedPassword)
+                }
+                is Fail -> {
+                    val message = it.throwable.message.toString()
+                    if (message.isEmpty()) {
+                        onError(getString(R.string.message_something_wrong))
+                    } else {
+                        onError(message)
+                    }
+                }
+            }
+        })
+
         viewModel.validatePassword.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -151,6 +169,21 @@ class AddPasswordFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun hasPasswordChecker() {
+        if (userSession.hasPassword()) {
+            activity?.finish()
+        } else {
+            viewModel.checkPassword()
+        }
+    }
+
+    private fun hasPasswordProcess(hasPassword: Boolean) {
+        if (hasPassword) {
+            userSession.setHasPassword(true)
+            activity?.finish()
+        }
+    }
+
     private fun clearErrorMessage(textFieldUnify: TextFieldUnify) {
         textFieldUnify.setError(false)
         textFieldUnify.setMessage("")
@@ -164,6 +197,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
 
     private fun onSuccessAdd() {
         activity?.let {
+            userSession.setHasPassword(true)
             tracker.onSuccessAddPassword()
             it.setResult(Activity.RESULT_OK)
             it.finish()
@@ -171,9 +205,13 @@ class AddPasswordFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedAdd(message: String) {
+        tracker.onFailedAddPassword(message)
+        onError(message)
+    }
+
+    private fun onError(message: String) {
         hideLoading()
         btnSubmit?.isEnabled = true
-        tracker.onFailedAddPassword(message)
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }

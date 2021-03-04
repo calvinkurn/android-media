@@ -23,10 +23,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -47,7 +47,6 @@ import javax.inject.Inject;
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
-    private int itemViewType;
     private List<ProductItem> categoryItems;
     private Context context;
     private final int ITEM_PRODUCT_NORMAL = 1;
@@ -74,6 +73,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static final int CATEGORY_PAGE = 3;
     public static final int BRAND_PAGE = 4;
     public static final int DETAIL_PAGE = 5;
+    private static final int REQUEST_CODE_DEALDETAILACTIVITY = 103;
+    private static final int REQUEST_CODE_LOGIN = 102;
     private int pageType = 1;
     private String categoryName;
 
@@ -85,7 +86,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String brandHeaderText;
     private int productCount;
     private Brand brand;
-    private boolean isDealsHomeLayout;
     private String searchText = "";
     private boolean isFromSearchResult;
     private String dealType = "";
@@ -116,14 +116,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, String fromApplink, Boolean... layoutType) {
      this( categoryItems,  pageType,  toActivityRequest,  layoutType);
      this.fromApplink = fromApplink;
-    }
-
-    public void setTopDealsLayout(boolean isTopDealsLayout) {
-        topDealsLayout = isTopDealsLayout;
-    }
-
-    public void setDealsHomeLayout(boolean isDealsHomeLayout) {
-        this.isDealsHomeLayout = isDealsHomeLayout;
     }
 
     @Override
@@ -187,6 +179,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (getItemViewType(position)) {
             case ITEM_PRODUCT_NORMAL:
+            case ITEM_PRODUCT_HOME:
                 ((ItemViewHolderNormal) holder).setShown(categoryItems.get(position).isTrack());
                 ((ItemViewHolderNormal) holder).setIndex(position);
                 ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
@@ -196,11 +189,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 ((ItemViewHolderShort) holder).setIndex(position);
                 ((ItemViewHolderShort) holder).bindData(categoryItems.get(position));
                 break;
-            case ITEM_PRODUCT_HOME:
-                ((ItemViewHolderNormal) holder).setShown(categoryItems.get(position).isTrack());
-                ((ItemViewHolderNormal) holder).setIndex(position);
-                ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
-                break;
             case ITEM_PRODUCT_TOP_DEALS:
                 ((TopSuggestionHolder) holder).setShown(categoryItems.get(position).isTrack());
                 ((TopSuggestionHolder) holder).setIndex(position);
@@ -209,12 +197,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             case HEADER_TRENDING_DEALS:
                 ((HeaderViewHolder) holder).bindData(headerText);
                 break;
-            case HEADER_TRENDING_DEALS_SEARCHED:
-                break;
             case HEADER_BRAND:
                 ((HeaderBrandViewHolder) holder).bindData(brandHeaderText, productCount);
-                break;
-            case FOOTER:
                 break;
             default:
                 break;
@@ -249,8 +233,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 itemType = HEADER_TRENDING_DEALS;
             } else if ((position == 0 && isBrandHeaderAdded && brandPageCard)) {
                 itemType = HEADER_BRAND;
-            } else if (isDealsHomeLayout) {
-                itemType = ITEM_PRODUCT_HOME;
             } else {
                 itemType = ITEM_PRODUCT_NORMAL;
             }
@@ -290,29 +272,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public void removeHeaderAndFooter() {
-        if (isHeaderAdded)
-            categoryItems.remove(0);
-        this.isHeaderAdded = false;
-        if (isFooterAdded)
-            categoryItems.remove(categoryItems.size() - 1);
-        this.isFooterAdded = false;
-    }
-
-    public void setHighLightText(String text) {
-        if (text != null && text.length() > 0) {
-            String first = text.substring(0, 1).toUpperCase();
-            lowerhighlight = text.toLowerCase();
-            upperhighlight = text.toUpperCase();
-            highLightText = first + text.substring(1).toLowerCase();
-        }
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
@@ -325,15 +284,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 itemsForGA.add(categoryItems.get(holder1.getIndex()));
                 int  itemsToSend = (categoryItems.size() - 1) - holder1.getAdapterPosition();
                 if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
-                    if (isDealsHomeLayout) {
-                        if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
-                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName, 0);
-                            itemsForGA.clear();
-                        } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)){
-                            dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, itemsForGA, holder1.getIndex(), categoryName, this.homePosition);
-                            itemsForGA.clear();
-                        }
-                    } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
+                    if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
                         dealsAnalytics.sendCategoryDealsImpressionEvent(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_ACTION_CATEGORY_DEALS_IMPRESSION, itemsForGA, holder1.getIndex(), categoryName);
                         itemsForGA.clear();
                     } else {
@@ -444,7 +395,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
                     Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
+                    toActivityRequest.onNavigateToActivityRequest(intent, REQUEST_CODE_LOGIN, position);
                 }
         ).show();
     }
@@ -514,7 +465,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 brandName.setVisibility(View.GONE);
                 Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_location);
                 dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8));
+                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
 
             }
             int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());
@@ -527,7 +478,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 setLikes(productItem.getLikes(), productItem.isLiked());
             }
 
-            if (productItem.getDisplayTags() != null && !isDealsHomeLayout) {
+            if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
                 hotDeal.setVisibility(View.GONE);
@@ -643,7 +594,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-                toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
+                toActivityRequest.onNavigateToActivityRequest(detailsIntent, REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
                 if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                     dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)) {

@@ -312,6 +312,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
@@ -336,6 +337,8 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val LAYOUT_CATEGORY_ICON: String = "category_icon"
+            const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
+            const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }

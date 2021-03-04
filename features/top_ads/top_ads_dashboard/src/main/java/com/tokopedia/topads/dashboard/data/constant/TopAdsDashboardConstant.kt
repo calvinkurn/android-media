@@ -4,8 +4,15 @@ object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
     const val PARAM_START_DATE = "startDate"
     const val PARAM_END_DATE = "endDate"
-    const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
-    const val PARAM_SOURCE_CREDIT_HISTORY = "dashboard_credit_history_app"
+    const val PARAM_INSIGHT = "insight"
+    const val PARAM_PRODUCT_AD =  "product_ad"
+    const val PARAM_SHOP_AD = "shop_ad"
+    const val PARAM_DAILY_BUDGET ="daily_budget"
+    const val PARAM_KEYWORD = "keyword"
+    const val PARAM_PRODUCT = "product"
+    const val PARAM_CURRENT_TAB = "currentTab"
+    const val PARAM_INSIGHT_TAB = "tabInsight"
+    const val PARAM_TAB = "tab"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -21,6 +28,8 @@ object TopAdsDashboardConstant {
     const val ACTIVE = "Aktif"
     const val TIDAK_TAMPIL = "Tidak Tampil"
     const val TIDAK_AKTIF = "Tidak Aktif"
+    const val RECOMMENDATION_DAILY_MAX_BUDGET = 100000
+    const val BUDGET_MULTIPLE_FACTOR = 50
 
     const val ACTION = "action"
     const val GROUPS = "groups"
@@ -40,11 +49,8 @@ object TopAdsDashboardConstant {
     const val GROUPNAME = "groupName"
     const val PRICEBID = "price_bid"
     const val CUSTOM_DATE = 5
-    const val DATE_RANGE_PRODUK = "dateRangeSelectedProduct"
     const val DATE_RANGE_BERANDA = "dateRangeSelectedBeranda"
     const val DATE_RANGE_DETAIL = "dateRangeSelectedDetail"
-    const val START_DATE_PRODUCT = "startDatePro"
-    const val END_DATE_PRODUCT = "endDatePro"
     const val START_DATE_BERANDA = "startDateBeranda"
     const val END_DATE_BERANDA = "endDateBeranad"
     const val START_DATE_DETAIL = "startDateDetail"
@@ -52,6 +58,7 @@ object TopAdsDashboardConstant {
     const val EMPTY_SEARCH_VIEW = true
     const val PRODUK = "Produk"
     const val KATA_KUNCI = "Kata Kunci"
+    const val DAILY_BUDGET = "Anggaran"
     const val NEG_KATA_KUNCI = "Kata Negatif"
     const val GRUP = "Grup"
     const val TANPA_GRUP = "Tanpa Grup"

@@ -19,6 +19,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -28,7 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -61,7 +63,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         }
 
         @JvmStatic
-        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+        fun createIntent(context: Context, productId: Long) = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }
@@ -78,6 +80,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
+    var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -193,14 +196,15 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-            productKey, isFromDeeplink,
-            isFromAffiliate ?: false, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl, layoutId)
+                    productKey, isFromDeeplink,
+                    isFromAffiliate ?: false, trackerAttribution,
+                    trackerListName, affiliateString, deeplinkUrl, layoutId)
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSessionInterface = UserSession(this)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras

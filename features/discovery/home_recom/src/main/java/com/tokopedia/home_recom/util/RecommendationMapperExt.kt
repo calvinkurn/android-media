@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import timber.log.Timber
 
 /**
  * Created by Lukas on 08/10/20.
@@ -84,14 +85,14 @@ fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
     )
 }
 
-fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.mapToUnifyFilterModel(chipClick: (item: SortFilterItem) -> Unit): List<SortFilterItem>{
+fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.mapToUnifyFilterModel(chipClick: (item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip) -> Unit): List<SortFilterItem>{
     return map {
         SortFilterItem(
             title = it.options.firstOrNull()?.name ?: it.title,
             type = if(it.options.firstOrNull()?.isActivated == true) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         ).apply{
             listener = {
-                chipClick(this)
+                chipClick(this, it)
             }
             typeUpdated = false
         }
@@ -141,21 +142,25 @@ fun List<RecommendationFilterChipsEntity.RecommendationSortChip>.toSort(): List<
     }
 }
 
-fun List<Filter>.getCountSelected(): Int{
+fun List<Option>.getCountSelected(): Int{
     var selectedCount = 0
-    forEach {
-        it.options.forEach { opt ->
-            selectedCount += if(opt.inputState == "true") 1 else 0
-        }
+    forEach { opt ->
+        selectedCount += if(opt.inputState == "true") 1 else 0
     }
     return selectedCount
+}
+
+fun List<Filter>.getOptions(): List<Option>{
+    val list = mutableListOf<Option>()
+    forEach { list.addAll(it.options) }
+    return list
 }
 
 fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getSelectedOption(): List<RecommendationFilterChipsEntity.Option>{
     val listOption = mutableListOf<RecommendationFilterChipsEntity.Option>()
     forEach {
         it.options.forEach { opt ->
-            if(opt.isActivated) listOption.add(opt)
+            if(opt.isActivated || opt.inputType == "true") listOption.add(opt)
         }
     }
     return listOption
@@ -169,4 +174,24 @@ fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getOption(): 
         }
     }
     return listOption
+}
+
+fun Map<String, String>.isActivated(key: String, value: String): Boolean{
+    return if(key in this.keys){
+        // check if separator #
+        val separator = if(this[key]?.contains("#") == true){
+            "#"
+        } else {
+            null
+        }
+        val values = mutableListOf<String>()
+        separator?.let {
+            values.addAll(this[key]?.split(it) ?: listOf())
+        }
+        if(values.isEmpty()) values.add(value)
+        Timber.tag("LUKAS").e("IsActivated: " + values + " in " + value + " is " + (values.indexOf(value) != -1))
+        values.indexOf(value) != -1
+    } else {
+        false
+    }
 }

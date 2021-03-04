@@ -29,34 +29,12 @@ class PlayWidgetAutoPlayCoordinator(
 
     private lateinit var mConfig: PlayWidgetConfigUiModel
 
+    override fun onWidgetAttached(widgetCardsContainer: RecyclerView) {
+        startAutoPlay(widgetCardsContainer)
+    }
+
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
-        if (visibleCards.isEmpty()) return
-
-        autoPlayJob?.cancel()
-        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-            delay(MAX_DELAY)
-            val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
-                    visibleCards = visibleCards,
-                    itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                    maxAutoPlay = getMaxAutoPlayCard()
-            )
-
-            videoPlayerMap.entries.forEach {
-                if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
-            }
-
-            autoPlayEligibleReceivers
-                    .filter { it.getPlayer() == null }
-                    .forEach {
-                        val nextIdlePlayer = getNextIdlePlayer()
-
-                        if (nextIdlePlayer != null) {
-                            it.setPlayer(nextIdlePlayer)
-                            videoPlayerMap[nextIdlePlayer] = it
-                        }
-                    }
-        }
+        startAutoPlay(widgetCardsContainer)
     }
 
     override fun onWidgetDetached(widget: View) {
@@ -102,6 +80,36 @@ class PlayWidgetAutoPlayCoordinator(
 
         videoPlayerMap.keys.forEach {
             it.maxDurationCellularInSeconds = config.maxAutoPlayCellularDuration
+        }
+    }
+
+    private fun startAutoPlay(widgetCardsContainer: RecyclerView) {
+        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
+        if (visibleCards.isEmpty()) return
+
+        autoPlayJob?.cancel()
+        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
+            delay(MAX_DELAY)
+            val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+                    visibleCards = visibleCards,
+                    itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
+                    maxAutoPlay = getMaxAutoPlayCard()
+            )
+
+            videoPlayerMap.entries.forEach {
+                if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
+            }
+
+            autoPlayEligibleReceivers
+                    .filter { it.getPlayer() == null }
+                    .forEach {
+                        val nextIdlePlayer = getNextIdlePlayer()
+
+                        if (nextIdlePlayer != null) {
+                            it.setPlayer(nextIdlePlayer)
+                            videoPlayerMap[nextIdlePlayer] = it
+                        }
+                    }
         }
     }
 

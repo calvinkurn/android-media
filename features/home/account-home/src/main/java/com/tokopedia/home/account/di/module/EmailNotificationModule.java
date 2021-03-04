@@ -18,7 +18,6 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 
-@EmailNotifScope
 @Module
 public class EmailNotificationModule {
 

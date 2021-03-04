@@ -1,0 +1,14 @@
+{
+  "readme": "click back on product preview page, click cancel - no image",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click cancel to stay",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}",
+      "screenName":"/addproductpage - stepper"
+    }
+  ]
+}

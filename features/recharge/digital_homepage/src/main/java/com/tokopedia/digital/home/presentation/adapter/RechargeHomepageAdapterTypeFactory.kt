@@ -11,6 +11,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.*
@@ -101,8 +102,20 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(bannerDataModel: BannerDataModel): Int {
+        return BannerComponentViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel): Int {
         return RechargeHomepageLoadingViewholder.LAYOUT
+    }
+
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
+        return -1
+    }
+
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {

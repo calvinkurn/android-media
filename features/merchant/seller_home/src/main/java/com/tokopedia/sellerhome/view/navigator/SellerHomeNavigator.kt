@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -164,7 +165,7 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "")
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -210,8 +211,8 @@ class SellerHomeNavigator(
         hideAllPages(transaction)
 
         transaction
-            .show(selectedFragment)
-            .commit()
+                .show(selectedFragment)
+                .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
@@ -258,7 +259,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch)
         return somListFragment
     }
 

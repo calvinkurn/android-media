@@ -11,7 +11,6 @@ import dagger.Provides
  * Created By @ilhamsuaib on 10/06/20
  */
 
-@StatisticScope
 @Module
 class StatisticUseCaseModule {
 
@@ -40,6 +39,15 @@ class StatisticUseCaseModule {
             mapper: LineGraphMapper
     ): GetLineGraphDataUseCase {
         return GetLineGraphDataUseCase(gqlRepository, mapper)
+    }
+
+    @StatisticScope
+    @Provides
+    fun provideGetMultiLineGraphDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: MultiLineGraphMapper
+    ): GetMultiLineGraphUseCase {
+        return GetMultiLineGraphUseCase(gqlRepository, mapper)
     }
 
     @StatisticScope

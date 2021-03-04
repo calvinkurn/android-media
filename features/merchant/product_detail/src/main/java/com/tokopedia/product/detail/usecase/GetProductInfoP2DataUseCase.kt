@@ -39,8 +39,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                 }
 
-        val QUERY = """
-        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
           pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
@@ -342,6 +341,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            merchantVoucherSummary{
+                title{
+                    text
+                }
+                subtitle
+                imageURL
+                isShown
+            }
         }
     }""".trimIndent()
     }
@@ -402,6 +409,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.merchantVoucherSummary = merchantVoucherSummary
         }
         return p2UiData
     }

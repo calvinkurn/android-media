@@ -13,7 +13,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@ImagePreviewPdpScope
 @Module(includes = [
     ImagePreviewPdpViewModelModule::class
 ])
