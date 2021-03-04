@@ -20,4 +20,5 @@
     <string name="pilih_kota_kecamatan">Pilih Kota/Kecamatan</string>
     <string name="txt_info_error">Ada gangguan di rumah Toped!</string>
     <string name="txt_info_error_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti</string>
+    <string name="toaster_failed_chosen_address">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
 </resources>
