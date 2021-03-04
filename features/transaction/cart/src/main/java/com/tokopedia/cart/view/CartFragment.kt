@@ -18,19 +18,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -92,9 +86,9 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
+import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
-import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -124,15 +118,12 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -372,13 +363,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
-        Timber.d("CART DESTROY FRAGMENT")
         super.onDestroy()
     }
 
     override fun onDestroyView() {
         binding = null
-        Timber.d("CART DESTROY VIEW")
         super.onDestroyView()
     }
 
@@ -1403,7 +1392,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecentViewProductImpression(element: CartRecentViewItemHolderData) {
         recentViewList?.let {
             if (element.isTopAds) {
-                TopAdsUrlHitter(context?.applicationContext).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                         this::class.java.simpleName,
                         element.trackerImageUrl,
                         element.id,
@@ -1418,7 +1407,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
                 if (recentView.isTopAds) {
-                    TopAdsUrlHitter(context?.applicationContext).hitClickUrl(
+                    TopAdsUrlHitter(context).hitClickUrl(
                             this::class.java.simpleName,
                             recentView.clickUrl,
                             recentView.id,
@@ -3242,13 +3231,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showPromoCheckoutStickyButtonInactive() {
-        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.INACTIVE
-        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        binding?.promoCheckoutBtnCart?.title = getString(R.string.promo_checkout_inactive_label)
-        binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_checkout_inactive_desc)
-        binding?.promoCheckoutBtnCart?.setOnClickListener {
-            renderPromoCheckoutLoading()
-            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
+        binding?.run {
+            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.title = getString(R.string.promo_checkout_inactive_label)
+            promoCheckoutBtnCart.desc = getString(R.string.promo_checkout_inactive_desc)
+            promoCheckoutBtnCart.setOnClickListener {
+                renderPromoCheckoutLoading()
+                dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
+            }
         }
     }
 
