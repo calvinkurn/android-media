@@ -17,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 
 class DiscoveryPlayWidgetViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private var playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetUiModel?> = MutableLiveData(PlayWidgetUiModel.Placeholder)
+    private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetUiModel?> = MutableLiveData(PlayWidgetUiModel.Placeholder)
     private var dataPresent: Boolean = false
 
     fun getPlayWidgetUILiveData(): LiveData<PlayWidgetUiModel?> = playWidgetUIMutableLiveData

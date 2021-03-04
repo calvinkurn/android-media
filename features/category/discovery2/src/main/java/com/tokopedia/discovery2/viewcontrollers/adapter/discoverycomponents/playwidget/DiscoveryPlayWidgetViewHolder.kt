@@ -85,7 +85,6 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     }
 
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        Log.e("TEST_PLAY","channelPositionInList: $channelPositionInList, verticalWidgetPosition: $verticalWidgetPosition")
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, verticalWidgetPosition, channelPositionInList, isAutoPlay)
     }
 }
