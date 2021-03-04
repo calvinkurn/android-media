@@ -118,6 +118,7 @@
   <string name="button_flip_camera">button flip camera</string>
   <string name="image_shutter_1">image shutter 1</string>
   <string name="image_shutter_2">image shutter 2</string>
+  <string name="button_back">button back</string>
 
 
 </resources>
