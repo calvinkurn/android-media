@@ -402,7 +402,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String searchRef) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String dimension90) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -418,7 +418,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
+                "dimension90", dimension90,
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()

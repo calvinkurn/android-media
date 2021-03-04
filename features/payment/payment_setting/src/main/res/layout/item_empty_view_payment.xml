@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_gravity="center_vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:gravity="center_vertical"
@@ -11,23 +12,32 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:paddingTop="@dimen/unify_space_16"
+            android:paddingBottom="@dimen/unify_space_16"
+            android:paddingEnd="@dimen/unify_space_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_empty_payment_list"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Untuk kemudahan pembayaran kartu kredit / debit online, simpan informasi kartu kredit / debit online anda,"
-            style="@style/TextView.Small.BlackSecondary"/>
+            app:typographyType="body_2"
+            android:textColor="@color/Unify_N700_68"
+            />
+
 
     </LinearLayout>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonAddCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/payment_label_button_add_card"
-        android:layout_marginTop="@dimen/dp_16"
-        style="@style/Button.Submit.Green.Full"/>
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main" />
 </LinearLayout>

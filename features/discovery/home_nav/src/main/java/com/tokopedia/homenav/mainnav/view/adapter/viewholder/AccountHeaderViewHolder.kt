@@ -70,7 +70,6 @@ class AccountHeaderViewHolder(itemView: View,
         initViewHolder()
         when(element.loginState) {
             AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
-            AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
             else -> renderNonLoginState()
         }
     }
