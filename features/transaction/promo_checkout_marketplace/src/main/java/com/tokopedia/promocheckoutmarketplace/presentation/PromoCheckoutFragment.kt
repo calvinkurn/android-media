@@ -917,7 +917,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                                     holder.itemView,
                                     coachMarkData.uiData.coachMark.title,
                                     coachMarkData.uiData.coachMark.content,
-                                    CoachMark2.POSITION_TOP
+                                    CoachMark2.POSITION_BOTTOM
                             )
                     )
 
