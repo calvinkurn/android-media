@@ -17,19 +17,19 @@ class ShopLocationViewHolder(val view: View, private val listener: OnIconMoreCli
         if (TextUtils.isEmpty(element.phone)) {
             itemView.phone_number.visibility = View.GONE
         } else {
-            itemView.phone_number.title = element.phone
+            itemView.phone_number.text = element.phone
             itemView.phone_number.visibility = View.VISIBLE
         }
         if (TextUtils.isEmpty(element.email)) {
             itemView.email.visibility = View.GONE
         } else {
-            itemView.email.title = element.email
+            itemView.email.text = element.email
             itemView.email.visibility = View.VISIBLE
         }
         if (TextUtils.isEmpty(element.fax)) {
             itemView.fax.visibility = View.GONE
         } else {
-            itemView.fax.title = element.fax
+            itemView.fax.text = element.fax
             itemView.fax.visibility = View.VISIBLE
         }
         itemView.menu_more.setOnClickListener { listener.onIconClicked(element, adapterPosition) }
